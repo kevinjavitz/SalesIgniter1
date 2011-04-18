@@ -1,0 +1,90 @@
+<ConfigurationGroup>
+	<title>FEDEX</title>
+	<key>fedEX</key>
+	<description>Configuration Settings For The FEDEX Extension</description>
+	<Configuration>
+		<EXTENSION_FED_EX_ENABLED>
+			<title>Enable FEDEX</title>
+			<value>True</value>
+			<description>Enable Or Disable The FEDEX Extension</description>
+			<sort_order>1</sort_order>
+			<set_function>tep_cfg_select_option(array('True','False'),</set_function>
+		</EXTENSION_FED_EX_ENABLED>
+		<EXTENSION_FED_EX_SERVER>
+			<title>FEDEX transaction type</title>
+            <value>test</value>
+			<description>Fedex username.</description>
+			<sort_order>2</sort_order>
+            <set_function>tep_cfg_select_option(array('test','production'),</set_function>
+		</EXTENSION_FED_EX_SERVER>
+        <EXTENSION_FED_EX_METER>
+			<title>FEDEX METER NUMBER</title>
+            <value>NONE</value>
+			<description>Enter the Fedex MeterID assigned to you, set to NONE to obtain a new meter number</description>
+			<sort_order>2</sort_order>
+		</EXTENSION_FED_EX_METER>
+        <EXTENSION_FED_EX_ACCOUNT>
+			<title>FEDEX ACCOUNT</title>
+            <value>NONE</value>
+			<description>Enter the fedex Account Number assigned to you</description>
+			<sort_order>2</sort_order>
+		</EXTENSION_FED_EX_ACCOUNT>
+        <EXTENSION_FED_EX_WEIGHT>
+			<title>FEDEX Weight</title>
+            <value>LBS</value>
+			<description>Fedex Weight.</description>
+			<sort_order>2</sort_order>
+            <set_function>tep_cfg_select_option(array('LBS','KGS'),</set_function>
+		</EXTENSION_FED_EX_WEIGHT>
+        <EXTENSION_FED_EX_ADDRESS1>
+			<title>FEDEX address1</title>
+            <value>NONE</value>
+			<description>Enter the first line of your ship from street address</description>
+			<sort_order>2</sort_order>
+		</EXTENSION_FED_EX_ADDRESS1>
+         <EXTENSION_FED_EX_ADDRESS2>
+			<title>FEDEX address2</title>
+            <value>NONE</value>
+			<description>Enter the second line of your ship from street address, leave set to NONE if you do not need to specify a second line</description>
+			<sort_order>2</sort_order>
+		</EXTENSION_FED_EX_ADDRESS2>
+        <EXTENSION_FED_EX_CITY>
+			<title>FEDEX CITY</title>
+            <value>NONE</value>
+			<description>Enter the city name for the ship from street address</description>
+			<sort_order>2</sort_order>
+		</EXTENSION_FED_EX_CITY>
+        <EXTENSION_FED_EX_STATE>
+			<title>FEDEX STATE</title>
+            <value>NONE</value>
+			<description>Enter the 2 letter state or province name for the ship from street address, required for Canada and US</description>
+			<sort_order>2</sort_order>
+		</EXTENSION_FED_EX_STATE>
+        <EXTENSION_FED_EX_POSTAL>
+			<title>FEDEX POSTAL CODE</title>
+            <value>NONE</value>
+			<description>Enter the postal code for the ship from street address</description>
+			<sort_order>2</sort_order>
+		</EXTENSION_FED_EX_POSTAL>
+        <EXTENSION_FED_EX_PHONE>
+			<title>FEDEX PHONE</title>
+            <value>NONE</value>
+			<description>Enter a contact phone number for your company</description>
+			<sort_order>2</sort_order>
+		</EXTENSION_FED_EX_PHONE>
+        <EXTENSION_FED_EX_PRINTING>
+			<title>FEDEX Printing</title>
+            <value>Thermal</value>
+			<description>Fedex Printing.</description>
+			<sort_order>2</sort_order>
+            <set_function>tep_cfg_select_option(array('Thermal','Laser'),</set_function>
+		</EXTENSION_FED_EX_PRINTING>
+        <EXTENSION_FED_EX_LASTSHIPMENT>
+			<title>FEDEX Last shipment</title>
+            <value>17</value>
+			<description>Define last shipment time (ex: 17 would be 5pm on your server)</description>
+			<sort_order>2</sort_order>
+		</EXTENSION_FED_EX_LASTSHIPMENT>
+
+	</Configuration>
+</ConfigurationGroup>

@@ -1,0 +1,126 @@
+	body > .ui-layout-pane { /* Page Layout Only */
+				background:		#F6F6F6 !important;
+			}
+
+		#dialogBox {
+			overflow:	hidden;	/* eliminate space for scrollbar in dialog - not needed when using a layout */
+			padding:	0;		/* use padding inside 'panes' instead - looks better if pane is 'closed' */
+			display:	none;
+			}
+			#dialogInner {
+				height:		100%; /* a layout container MUST have a 'height' */
+				}
+				#dialogInner .ui-widget-content {
+					/* nullify ui-widget-content bg-image - but KEEP widget bg-color */
+					background-image: none;
+				}
+			#dialogBox .ui-layout-pane {
+				/* start by removing all padding & scrolling */
+				padding:	0;
+				overflow:	hidden;
+			}
+			#dialogBox .pane-header ,
+			#dialogBox .ui-layout-content ,
+			#dialogBox .ui-layout-south {
+				padding:	5px 10px;
+			}
+			#dialogBox .pane-header {
+				border-width:	0 0 1px;
+			}
+			#dialogBox .ui-layout-content {
+				border-top:		0; /* header.border-bottom already creates a dividing border */
+			}
+			#dialogBox .ui-layout-resizer-west {
+				/* NOTE: SOMETHING in the theme CSS is setting opacity here */
+				opacity:	.01;
+				filter:		alpha(opacity=1);
+				background: #F00 url(img/resizable-w.gif) no-repeat 0 center;
+			}
+			#dialogBox .ui-layout-resizer-west-closed {
+				background-image: url(img/resizable-e.gif); /* looks better */
+				border:			1px solid #6C0;
+				border-width:	1px 0;
+				opacity:		.70;
+				filter:			alpha(opacity=70);
+			}
+			#dialogBox .ui-layout-resizer-dragging ,
+			#dialogBox .ui-layout-resizer-sliding ,
+			#dialogBox .ui-layout-resizer:hover {
+				opacity:		1;
+				filter:			alpha(opacity=100);
+				}
+				#dialogBox .ui-layout-toggler {
+					/*background:	#CCC;*/
+				}
+
+		.ui-layout-west ,
+		.ui-layout-center {
+			padding:		0;
+			}
+			h3 ,
+			p.footer {
+				font-size:		1.2em;
+				background:		#F6F6F6;
+				border-bottom:	1px solid #BBB;
+				padding:		5px 15px;
+				margin:			0;
+			}
+			p.footer {
+				font-size:		1em;
+				border-top:		1px solid #BBB;
+				border-bottom:	0;
+			}
+			.ui-layout-east ,
+			.ui-layout-content {
+				padding:		0;
+				overflow:		hidden !important; /* prevent scrollbars auto-added by Layout */
+				}
+				.scrolling-content {
+					height:			100%;
+					padding:		0 15px 10px; /* extra paddingTop being added by scrollpane? */
+					padding-right:	0; /* for pseudo-scrollbar on right */
+				}
+
+
+		.jScrollPaneTrack {
+			background: url(scrollpane/osx_track.gif) repeat-y;
+		}
+		.jScrollPaneDrag {
+			background: url(scrollpane/osx_drag_middle.gif) repeat-y;
+		}
+		.jScrollPaneDragTop {
+			background: url(scrollpane/osx_drag_top.gif) no-repeat;
+			height: 6px;
+		}
+		.jScrollPaneDragBottom {
+			background: url(scrollpane/osx_drag_bottom.gif) no-repeat;
+			height: 7px;
+		}
+		a.jScrollArrowUp {
+			height: 24px;
+			background: url(scrollpane/osx_arrow_up.png) no-repeat 0 -30px;
+		}
+		a.jScrollArrowUp:hover {
+			background-position: 0 0;
+		}
+		a.jScrollArrowDown {
+			height: 24px;
+			background: url(scrollpane/osx_arrow_down.png) no-repeat 0 -30px;
+		}
+		a.jScrollArrowDown:hover {
+			background-position: 0 0;
+		}
+		.cimages{
+		list-style-type: none;
+		
+		}
+		.cimages li a {
+			float:left;
+			border:1px solid #ffffff;
+		}
+
+		.cimages li a:hover {
+			float:left;
+			border:1px solid red;
+		}
+

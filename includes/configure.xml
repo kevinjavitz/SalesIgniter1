@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+	<config protected="true">
+		<key>HTTP_DOMAIN_NAME</key>
+		<value>localhost</value>
+	</config>
+	<config protected="true">
+		<key>HTTPS_DOMAIN_NAME</key>
+		<value>localhost</value>
+	</config>
+	<config protected="false">
+		<key>DIR_WS_CATALOG</key>
+		<value>/SalesIgniter/</value>
+	</config>
+	<config protected="true">
+		<key>DIR_FS_DOCUMENT_ROOT</key>
+		<value>D:\phpStormProjects</value>
+	</config>
+	<config protected="true">
+		<key>DB_SERVER</key>
+		<value>localhost</value>
+	</config>
+	<config protected="true">
+		<key>DB_SERVER_USERNAME</key>
+		<value>root</value>
+	</config>
+	<config protected="true">
+		<key>DB_SERVER_PASSWORD</key>
+		<value></value>
+	</config>
+	<config protected="true">
+		<key>DB_DATABASE</key>
+		<value>salesigniter_1</value>
+	</config>
+	<config protected="true">
+		<key>ENABLE_SSL</key>
+		<value>false</value>
+	</config>
+	<config protected="true">
+		<key>ENABLE_SSL_CATALOG</key>
+		<value>false</value>
+	</config>
+	<config protected="true">
+		<key>SYSTEM_UPGRADE_SERVER</key>
+		<value>www.itwebexperts.com</value>
+	</config>
+	<config protected="true">
+		<key>SYSTEM_VERSION</key>
+		<value>1</value>
+	</config>
+	<config protected="true">
+		<key>SYSTEM_UPGRADE_USERNAME</key>
+		<value>myusername</value>
+	</config>
+	<config protected="true">
+		<key>SYSTEM_UPGRADE_PASSWORD</key>
+		<value>mypassword</value>
+	</config>
+	<config protected="true">
+		<key>SYSTEM_FTP_SERVER</key>
+		<value>ftp.mydomain.com</value>
+	</config>
+	<config protected="true">
+		<key>SYSTEM_FTP_USERNAME</key>
+		<value>username</value>
+	</config>
+	<config protected="true">
+		<key>SYSTEM_FTP_PASSWORD</key>
+		<value>password</value>
+	</config>
+	<config protected="true">
+		<key>SYSTEM_INSTALL_DATE</key>
+		<value></value>
+	</config>
+</configuration>

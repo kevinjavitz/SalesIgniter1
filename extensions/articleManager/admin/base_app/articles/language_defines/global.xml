@@ -1,0 +1,38 @@
+<definition>
+	<define key="HEADING_TITLE"><![CDATA[Articles]]></define>
+	<define key="HEADING_TITLE_NEW"><![CDATA[New Article]]></define>
+	<define key="HEADING_TITLE_EDIT"><![CDATA[Edit Article]]></define>
+	<define key="HEADING_TITLE_SEARCH"><![CDATA[Search:]]></define>
+	<define key="HEADING_TITLE_GOTO"><![CDATA[Go To:]]></define>
+	
+	<define key="TAB_GENERAL"><![CDATA[Settings]]></define>
+	<define key="TAB_DESCRIPTION"><![CDATA[Content]]></define>
+	<define key="TAB_TOPICS"><![CDATA[Topics]]></define>
+	
+	<define key="TABLE_HEADING_ID"><![CDATA[ID]]></define>
+	<define key="TABLE_HEADING_ARTICLES"><![CDATA[Articles]]></define>
+	<define key="TABLE_HEADING_ACTION"><![CDATA[Action]]></define>
+	<define key="TABLE_HEADING_STATUS"><![CDATA[Status]]></define>
+	<define key="TEXT_ARTICLES_CURRENT"><![CDATA[Current:]]></define>
+	<define key="TEXT_NEW_ARTICLE"><![CDATA[New Article in &quot;%s&quot;]]></define>
+	<define key="TEXT_ARTICLES"><![CDATA[Articles:]]></define>
+	<define key="TEXT_ARTICLES_AVERAGE_RATING"><![CDATA[Average Rating:]]></define>
+	<define key="TEXT_ARTICLES_HEAD_TITLE_TAG"><![CDATA[HTML Page Title:]]></define>
+	<define key="TEXT_ARTICLES_HEAD_DESC_TAG"><![CDATA[Meta Description:<br><small>(Article Abstract =<br>first %s charachters)</small>]]></define>
+	<define key="TEXT_ARTICLES_HEAD_KEYWORDS_TAG"><![CDATA[Meta Keywords:]]></define>
+	<define key="TEXT_DATE_ADDED"><![CDATA[Date Added:]]></define>
+	<define key="TEXT_DATE_AVAILABLE"><![CDATA[Date Expected:]]></define>
+	<define key="TEXT_LAST_MODIFIED"><![CDATA[Last Modified:]]></define>
+	<define key="TEXT_SORT_ORDER"><![CDATA[Sort Order:]]></define>
+	<define key="TEXT_ARTICLES_STATUS"><![CDATA[Article Status:]]></define>
+	<define key="TEXT_ARTICLES_DATE_AVAILABLE"><![CDATA[Date Expected:]]></define>
+	<define key="TEXT_ARTICLE_AVAILABLE"><![CDATA[Published]]></define>
+	<define key="TEXT_ARTICLE_NOT_AVAILABLE"><![CDATA[Draft]]></define>
+	<define key="TEXT_ARTICLES_NAME"><![CDATA[Article Name:]]></define>
+	<define key="TEXT_ARTICLES_DESCRIPTION"><![CDATA[Article Content:]]></define>
+	<define key="TEXT_ARTICLES_URL"><![CDATA[Article URL:]]></define>
+	<define key="TEXT_ARTICLES_URL_WITHOUT_HTTP"><![CDATA[<small>(without http://)</small>]]></define>
+	<define key="EMPTY_TOPIC"><![CDATA[Empty Topic]]></define>
+	<define key="TEXT_DELETE_ARTICLE_INTRO"><![CDATA[Select From Which Categories]]></define>
+
+</definition>

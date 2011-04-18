@@ -1,0 +1,34 @@
+<definitions>
+	<define key="TAB_PAY_PER_RENTAL"><![CDATA[Pay Per Rental]]></define>
+	<define key="TEXT_PURCHASE_TYPE_PAY_PER_RENTAL"><![CDATA[Pay Per Rental]]></define>
+	<define key="TEXT_PAY_PER_RENTAL_DEPOSIT_AMOUNT"><![CDATA[Deposit Amount: ]]></define>
+	<define key="TEXT_PAY_PER_RENTAL_PRICING"><![CDATA[Pay Per Rental Pricing ]]></define>
+    <define key="TEXT_PAY_PER_RENTAL_PRICE_ONEH"><![CDATA[Hourly]]></define>
+    <define key="TEXT_PAY_PER_RENTAL_PRICE_TWOH"><![CDATA[2 Hours]]></define>
+    <define key="TEXT_PAY_PER_RENTAL_PRICE_FOURH"><![CDATA[4 Hours]]></define>
+	<define key="TEXT_PAY_PER_RENTAL_PRICE_DAILY"><![CDATA[Daily]]></define>
+	<define key="TEXT_PAY_PER_RENTAL_PRICE_WEEKLY"><![CDATA[Weekly]]></define>
+	<define key="TEXT_PAY_PER_RENTAL_PRICE_MONTHLY"><![CDATA[Monthly]]></define>
+	<define key="TEXT_PAY_PER_RENTAL_PRICE_SIX_MONTH"><![CDATA[6 Month]]></define>
+	<define key="TEXT_PAY_PER_RENTAL_PRICE_YEAR"><![CDATA[1 Year]]></define>
+	<define key="TEXT_PAY_PER_RENTAL_PRICE_THREE_YEAR"><![CDATA[3 Year]]></define>
+	<define key="TEXT_PAY_PER_RENTAL_SHIPPING"><![CDATA[Shipping Methods: ]]></define>
+	<define key="TEXT_PAY_PER_RENTAL_MAX_INFO"><![CDATA[Only days or months can be used, not both. the system defaults to days if both are greater than 0.]]></define>
+	<define key="TEXT_PAY_PER_RENTAL_MAX_DAYS"><![CDATA[Max rental days: ]]></define>
+	<define key="TEXT_PAY_PER_RENTAL_MAX_MONTHS"><![CDATA[Max rental months: ]]></define>
+	<define key="TEXT_PAY_PER_RENTAL_OVERBOOKING"><![CDATA[Allow overbooking: ]]></define>
+	<define key="TEXT_PAY_PER_RENTAL_CHOOSE_PRODUCT"><![CDATA[Choose Product:]]></define>
+	<define key="TEXT_PAY_PER_RENTAL_COMBO_PRICE"><![CDATA[Special Combo Price:]]></define>
+	<define key="TEXT_PAY_PER_RENTAL_IN_COMBO"><![CDATA[Products in this combo]]></define>
+	<define key="TEXT_PAY_PER_RENTAL_DONT_SHOW_SHIPPING"><![CDATA[Don't show shipping]]></define>
+	<define key="TEXT_NET_PRICE"><![CDATA[Net Price: ]]></define>
+	<define key="TEXT_GROSS_PRICE"><![CDATA[Gross Price: ]]></define>
+    <define key="TEXT_PAY_PER_RENTAL_INSURANCE"><![CDATA[Insurance Price: ]]></define>
+    <define key="TEXT_PAY_PER_RENTAL_MIN_RENTAL_DAYS"><![CDATA[Minimum Rental Days: ]]></define>
+    <define key="TEXT_PAY_PER_RENTAL_PRICING_PERIODS"><![CDATA[Price per Period: ]]></define>
+    <define key="TABLE_HEADING_NUMBER_OF"><![CDATA[Number Of ]]></define>
+    <define key="TABLE_HEADING_TYPE"><![CDATA[Type ]]></define>
+    <define key="TABLE_HEADING_DETAILS"><![CDATA[Details ]]></define>
+    <define key="TABLE_HEADING_PRICE"><![CDATA[Price ]]></define>
+
+</definitions>

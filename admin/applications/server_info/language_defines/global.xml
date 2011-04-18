@@ -1,0 +1,13 @@
+<definition>
+	<define key="HEADING_TITLE"><![CDATA[Server Information]]></define>
+	<define key="TITLE_SERVER_HOST"><![CDATA[Server Host:]]></define>
+	<define key="TITLE_SERVER_OS"><![CDATA[Server OS:]]></define>
+	<define key="TITLE_SERVER_DATE"><![CDATA[Server Date:]]></define>
+	<define key="TITLE_SERVER_UP_TIME"><![CDATA[Server Up Time:]]></define>
+	<define key="TITLE_HTTP_SERVER"><![CDATA[HTTP Server:]]></define>
+	<define key="TITLE_PHP_VERSION"><![CDATA[PHP Version:]]></define>
+	<define key="TITLE_ZEND_VERSION"><![CDATA[Zend:]]></define>
+	<define key="TITLE_DATABASE_HOST"><![CDATA[Database Host:]]></define>
+	<define key="TITLE_DATABASE"><![CDATA[Database:]]></define>
+	<define key="TITLE_DATABASE_DATE"><![CDATA[Datebase Date:]]></define>
+</definition>

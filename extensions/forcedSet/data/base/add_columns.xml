@@ -1,0 +1,11 @@
+<data>
+	<Customers>
+		<allow_one>
+			<type>integer</type>
+			<length>1</length>
+			<primary>false</primary>
+			<default>0</default>
+			<notnull>true</notnull>
+		</allow_one>
+	</Customers>
+</data>

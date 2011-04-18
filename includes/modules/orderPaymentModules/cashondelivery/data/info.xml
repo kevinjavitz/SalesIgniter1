@@ -1,0 +1,10 @@
+<info>
+	<code>cashondelivery</code>
+	<title_key>MODULE_PAYMENT_CASHONDELIVERY_TEXT_TITLE</title_key>
+	<status_key>MODULE_PAYMENT_CASHONDELIVERY_STATUS</status_key>
+	<description_key>MODULE_PAYMENT_CASHONDELIVERY_TEXT_DESCRIPTION</description_key>
+	<zone_key>MODULE_PAYMENT_CASHONDELIVERY_ZONE</zone_key>
+	<checkout_method_key>MODULE_PAYMENT_CASHONDELIVERY_CHECKOUT_METHOD</checkout_method_key>
+	<sort_key>MODULE_PAYMENT_CASHONDELIVERY_SORT_ORDER</sort_key>
+	<order_status_key>MODULE_PAYMENT_CASHONDELIVERY_ORDER_STATUS_ID</order_status_key>
+</info>

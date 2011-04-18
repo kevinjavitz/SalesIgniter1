@@ -1,0 +1,40 @@
+<ConfigurationGroup>
+	<title>Meta Tags</title>
+	<description>Set the meta tags into html header</description>
+	<key>metaTags</key>
+	<Configuration>
+
+		<EXTENSION_METATAGS_ENABLED>
+			<title>Enable Meta Tags</title>
+			<value>True</value>
+			<description>Enable Or Disable The Meta Tags Extension</description>
+			<sort_order>1</sort_order>
+			<set_function>tep_cfg_select_option(array('True','False'),</set_function>
+		</EXTENSION_METATAGS_ENABLED>
+
+		<EXTENSION_METATAGS_TITLE>
+			<value>Replace</value>
+			<title>Title</title>
+			<description>Specify the way that overwritten titles will be handled</description>
+			<sort_order>2</sort_order>
+			<set_function>tep_cfg_select_option(array('Replace','Append', 'Prepend'),</set_function>
+		</EXTENSION_METATAGS_TITLE>
+
+		<EXTENSION_METATAGS_DESCRIPTION>
+			<value>Replace</value>
+			<title>Description</title>
+			<description>Specify the way that overwritten meta-descriptions will be handled</description>
+			<sort_order>3</sort_order>
+			<set_function>tep_cfg_select_option(array('Replace','Append', 'Prepend'),</set_function>
+		</EXTENSION_METATAGS_DESCRIPTION>
+
+		<EXTENSION_METATAGS_KEYWORDS>
+			<value>Replace</value>
+			<title>Keywords</title>
+			<description>Specify the way that overwritten meta-keywords will be handled</description>
+			<sort_order>4</sort_order>
+			<set_function>tep_cfg_select_option(array('Replace','Append', 'Prepend'),</set_function>
+		</EXTENSION_METATAGS_KEYWORDS>
+
+	</Configuration>
+</ConfigurationGroup>

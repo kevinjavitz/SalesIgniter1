@@ -1,0 +1,133 @@
+<?php
+	class labelMaker_avery_5164 {
+		public function __construct(){
+			$this->maxCol = 0;
+			$this->pageCells = 6;
+		}
+		
+		public function draw($data, $type){
+			$this->outputType = $type;
+			if ($type == 'pdf'){
+				$this->pdf = new TCPDF('P', 'in', array('8.53', '11.03'), true);
+				$this->pdf->SetCreator('osCommerce Rental Script');
+				$this->pdf->SetAuthor('Kevin Javitz');
+				$this->pdf->SetTitle('Rental Product Labels');
+				$this->pdf->SetSubject('Rental Product Labels');
+				$this->pdf->SetMargins(0.15, 0.49, 0.15);
+				$this->pdf->SetCellPadding(.075);
+				$this->pdf->setPrintHeader(false);
+				$this->pdf->setPrintFooter(false);
+				$this->pdf->SetAutoPageBreak(TRUE, .51);
+				$this->pdf->setImageScale(1);
+				$this->pdf->AliasNbPages();
+				$this->pdf->AddPage();
+				$this->pdf->SetFont("helvetica", "", 11);
+			}else{
+				$topPadding = 0.49;
+				$bottomPadding = 0.51;
+				$leftPadding = 0.15;
+				$rightPadding = 0.15;
+				$this->htmlOutput = '<html>' .
+				'<head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></head>' .
+				'<body topmargin="0" leftmargin="0" style="font-family:halvetica;font-size:11pt;">' .
+				'<div style="padding-top:' . $topPadding . 'in;padding-left:' . $leftPadding . 'in;padding-right:' . $rightPadding . 'in;padding-bottom:' . $bottomPadding . 'in;width:8.53in;height:11.03in;">' . "\n";
+			}
+			
+			$col = 0;
+			if (isset($this->labelLocation) && tep_not_null($this->labelLocation)){
+				$n = $this->pageCells;
+			}else{
+				$n = sizeof($data);
+			}
+			for($i=0; $i<$n; $i++){
+				if ($col > $this->maxCol){
+					$col = 0;
+					$newLine = 1;
+				}else{
+					$col++;
+					$newLine = 0;
+				}
+				$lInfo = $data[$i];
+				if (isset($this->labelLocation) && tep_not_null($this->labelLocation)){
+					if ($i != $this->labelLocation){
+						$lInfo = array();
+					}else{
+						$lInfo = $data[0];
+					}
+				}
+				$this->buildLabel($lInfo, $newLine);
+			}
+
+			if ($type == 'pdf'){
+				$this->pdf->lastPage();
+				$this->pdf->Output("example_017.pdf", "I");
+			}else{
+				$this->htmlOutput .= '</div>' . "\n" .
+				'</body>' . "\n" .
+				'</html>' . "\n";
+				return $this->htmlOutput;
+			}
+		}
+		
+		private function buildLabel($labelInfo, $newLine, $hideBarcode = false){
+			$labelContent = array();
+			if (tep_not_null($labelInfo['products_name'])){
+				$labelContent[] = '<b>' . $labelInfo['products_name'] . '</b>';
+			}
+
+			$Qcheck = dataAccess::setQuery('select * from {fields_to_products} where product_id = {product_id}')
+			->setTable('{fields_to_products}', TABLE_PRODUCTS_CUSTOM_FIELDS_TO_PRODUCTS)
+			->setValue('{product_id}', $labelInfo['products_id'])
+			->runQuery();
+			if ($Qcheck->numberOfRows() > 0){
+				while($Qcheck->next() !== false){
+					$Qfield = dataAccess::setQuery('select * from {fields} f left join {fields_description} fd using(field_id) where fd.language_id = {language_id} and f.field_id = {field_id}')
+					->setTable('{fields}', TABLE_PRODUCTS_CUSTOM_FIELDS)
+					->setTable('{fields_description}', TABLE_PRODUCTS_CUSTOM_FIELDS_DESCRIPTION)
+					->setValue('{field_id}', $Qcheck->getVal('field_id'))
+					->setValue('{language_id}', Session::get('languages_id'))
+					->runQuery();
+					if ($Qfield->getVal('show_on_labels') == '1'){
+						$maxChars = ($Qfield->getVal('labels_max_chars') > 0 ? $Qfield->getVal('labels_max_chars') : 150);
+						if (strlen($Qcheck->getVal('value')) > $maxChars){
+							$labelContent[] = '<b>' . $Qfield->getVal('field_name') . ':</b> ' . substr($Qcheck->getVal('value'), 0, $maxChars) . '...';
+						}else{
+							$labelContent[] = '<b>' . $Qfield->getVal('field_name') . ':</b> ' . $Qcheck->getVal('value');
+						}
+					}
+				}
+			}
+
+			if (tep_not_null($labelInfo['products_description'])){
+				$labelContent[] = '<b>Description:</b> ' . (strlen($labelInfo['products_description']) > 350 ? substr($labelInfo['products_description'], 0, 350) . '...' : $labelInfo['products_description']);
+			}
+
+			if (tep_not_null($labelInfo['barcode']) && $hideBarcode === false){
+				$labelContent[] = '<b>Barcode:</b> ' . $labelInfo['barcode'];
+				if (tep_not_null($labelInfo['barcode_id'])){
+					$labelContent[] = '<img src="' . tep_href_link('showBarcode_' . $labelInfo['barcode_id'] . '.png', Session::getSessionName() . '=' . Session::getSessionId()) . '">';
+				}else{
+					$labelContent[] = 'Image Not Available';
+				}
+			}
+
+			if ($this->outputType == 'pdf'){
+				$this->pdf->MultiCell(4, 3.34, implode('<br>', $labelContent), 0, 'L', 0, $newLine, '', '', true, 0, true);
+				if ($newLine == 0){
+					$this->pdf->Cell(.2, 3.34, '');
+				}
+			}else{
+				$this->htmlOutput .= '<div style="width:4in;height:3.34in;position:relative;float:left;">' . "\n" .
+				'<div style="padding:0.075in;">' . "\n" .
+				implode('<br>', $labelContent) . "\n" .
+				'</div>' . "\n" .
+				'</div>' . "\n";
+				if ($newLine == 1){
+					$this->htmlOutput .= '<div style="clear:both;"></div>' . "\n";
+				}else{
+					$this->htmlOutput .= '<div style="width:0.2in;height:3.34in;position:relative;float:left;"></div>' . "\n";
+				}
+			}
+		}
+	}
+?>

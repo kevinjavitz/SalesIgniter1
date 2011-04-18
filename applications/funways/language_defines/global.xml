@@ -1,0 +1,29 @@
+<definitions>
+	<define key="NAVBAR_TITLE"><![CDATA[Funways]]></define>
+	<define key="TEXT_MAIN"><![CDATA[]]></define>
+	<define key="TABLE_HEADING_NEW_PRODUCTS"><![CDATA[New products For %s]]></define>
+	<define key="TABLE_HEADING_UPCOMING_PRODUCTS"><![CDATA[Upcoming Products]]></define>
+	<define key="TABLE_HEADING_DATE_EXPECTED"><![CDATA[Date Expected]]></define>
+	<define key="TABLE_HEADING_PRIORITY"><![CDATA[Priority]]></define>
+	<define key="TABLE_HEADING_MOVIE_TITLE"><![CDATA[Movie]]></define>
+	<define key="TABLE_HEADING_MOVIE_AVAILABILITY"><![CDATA[Availability]]></define>
+	<define key="TABLE_HEADING_MOVIE_REMOVE"><![CDATA[Remove]]></define>
+  	<define key="HEADING_TITLE"><![CDATA[Funways]]></define>
+  	<define key="TABLE_HEADING_IMAGE"><![CDATA[]]></define>
+  	<define key="TABLE_HEADING_MODEL"><![CDATA[Model]]></define>
+  	<define key="TABLE_HEADING_PRODUCTS"><![CDATA[Product Title]]></define>
+  	<define key="TABLE_HEADING_MANUFACTURER"><![CDATA[Distributors]]></define>
+  	<define key="TABLE_HEADING_QUANTITY"><![CDATA[Quantity]]></define>
+  	<define key="TABLE_HEADING_PRICE"><![CDATA[Price]]></define>
+  	<define key="TABLE_HEADING_WEIGHT"><![CDATA[Weight]]></define>
+  	<define key="TABLE_HEADING_BUY_NOW"><![CDATA[Buy Now]]></define>
+  	<define key="TABLE_HEADING_ONETIME_RENT_NOW"><![CDATA[Pay Per Rental]]></define>
+  	<define key="TABLE_HEADING_RENT_NOW"><![CDATA[Membership Rental]]></define>
+  	<define key="TEXT_NO_PRODUCTS"><![CDATA[There are no products to list in this category.]]></define>
+  	<define key="TEXT_NO_PRODUCTS2"><![CDATA[There is no products available from this distributor.]]></define>
+  	<define key="TEXT_NUMBER_OF_PRODUCTS"><![CDATA[Number of products: ]]></define>
+  	<define key="TEXT_SHOW"><![CDATA[<b>Show:</b>]]></define>
+  	<define key="TEXT_ALL_CATEGORIES"><![CDATA[All Genere]]></define>
+  	<define key="TEXT_ALL_MANUFACTURERS"><![CDATA[All Distributors]]></define>
+  	<define key="TEXT_DUPLICATE_RENTAL_ITEM"><![CDATA[This item is already present in your rental queue. Please select another item.]]></define>
+</definitions>

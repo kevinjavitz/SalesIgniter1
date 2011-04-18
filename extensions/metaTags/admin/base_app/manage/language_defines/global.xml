@@ -1,0 +1,14 @@
+<definitions>
+
+	<define key="METATAGS_GLOBAL"><![CDATA[Default]]></define>
+
+	<define key="HEADER_META_TITLE"><![CDATA[Meta Title:]]></define>
+	<define key="HEADER_META_DESC"><![CDATA[Meta Description:]]></define>
+	<define key="HEADER_META_KEYWORD"><![CDATA[Meta Keywords:]]></define>
+
+	<define key="METATAGS_HEADING_TITLE"><![CDATA[Meta Tags]]></define>
+	<define key="METATAGS_HEADING_DEFAULTS"><![CDATA[Defaults]]></define>
+	<define key="METATAGS_HEADING_SPECIALS"><![CDATA[Specials]]></define>
+	<define key="METATAGS_HEADING_BESTSERLLERS"><![CDATA[Best Sellers]]></define>
+
+</definitions>

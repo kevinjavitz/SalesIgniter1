@@ -1,0 +1,31 @@
+<configurations>
+	<configuration>
+		<title><![CDATA[Enable Amazon S3 EC2 Wowza Module]]></title>
+		<key><![CDATA[MODULE_STREAM_PROVIDER_AMAZONS3EC2WOWZA_STATUS]]></key>
+		<value><![CDATA[True]]></value>
+		<description><![CDATA[Do you want to enable this module to be used by providers?]]></description>
+		<sort_order>1</sort_order>
+		<set_function><![CDATA[tep_cfg_select_option(array('True', 'False'),]]></set_function>
+	</configuration>
+	<configuration>
+		<title><![CDATA[EC2 Server Instance URL]]></title>
+		<key><![CDATA[MODULE_STREAM_PROVIDER_AMAZONS3EC2WOWZA_INSTANCE]]></key>
+		<value><![CDATA[]]></value>
+		<description><![CDATA[Amazon EC2 server instance url]]></description>
+		<sort_order>2</sort_order>
+	</configuration>
+	<configuration>
+		<title><![CDATA[Wowza Port]]></title>
+		<key><![CDATA[MODULE_STREAM_PROVIDER_AMAZONS3EC2WOWZA_PORT]]></key>
+		<value><![CDATA[1935]]></value>
+		<description><![CDATA[Wowza server port, if you haven't set this up in wowza then leave it at 1935]]></description>
+		<sort_order>3</sort_order>
+	</configuration>
+	<configuration>
+		<title><![CDATA[Storage Folder]]></title>
+		<key><![CDATA[MODULE_STREAM_PROVIDER_AMAZONS3EC2WOWZA_FOLDER]]></key>
+		<value><![CDATA[my_bucket]]></value>
+		<description><![CDATA[S3 Bucket Name]]></description>
+		<sort_order>4</sort_order>
+	</configuration>
+</configurations>

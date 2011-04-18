@@ -1,0 +1,122 @@
+<configurations>
+	<configuration>
+		<title><![CDATA[Enable Payflow PRO Module]]></title>
+		<key><![CDATA[MODULE_PAYMENT_PAYFLOW_STATUS]]></key>
+		<value><![CDATA[True]]></value>
+		<description><![CDATA[Do you want to accept Payflow pro payments?]]></description>
+		<sort_order>1</sort_order>
+		<set_function><![CDATA[tep_cfg_select_option(array('True', 'False'),]]></set_function>
+	</configuration>
+    <configuration>
+		<title><![CDATA[E-Mail Address]]></title>
+		<key><![CDATA[MODULE_PAYMENT_PAYFLOW_USER]]></key>
+		<value><![CDATA[pro_1299838585_biz@itwebexperts.com]]></value>
+		<description><![CDATA[Payflow username(Merchant ID)]]></description>
+		<sort_order>2</sort_order>
+	</configuration>
+	<configuration>
+		<title><![CDATA[API Username]]></title>
+		<key><![CDATA[MODULE_PAYMENT_PAYFLOW_API_VENDOR]]></key>
+		<value><![CDATA[pro_1299838585_biz_api1.itwebexperts.com]]></value>
+		<description><![CDATA[Payflow vendor]]></description>
+		<sort_order>2</sort_order>
+	</configuration>
+	<configuration>
+		<title><![CDATA[API Password]]></title>
+		<key><![CDATA[MODULE_PAYMENT_PAYFLOW_API_PASSWORD]]></key>
+		<value><![CDATA[1299838629]]></value>
+		<description><![CDATA[Payflow password]]></description>
+		<sort_order>2</sort_order>
+	</configuration>
+	<configuration>
+		<title><![CDATA[API Signature]]></title>
+		<key><![CDATA[MODULE_PAYMENT_PAYFLOW_PARTNER]]></key>
+		<value><![CDATA[Paypal]]></value>
+		<description><![CDATA[Payflow partner]]></description>
+		<sort_order>2</sort_order>
+	</configuration>
+	<configuration>
+		<title><![CDATA[Sort order of display]]></title>
+		<key><![CDATA[MODULE_PAYMENT_PAYFLOW_SORT_ORDER]]></key>
+		<value><![CDATA[0]]></value>
+		<description><![CDATA[Sort order of display. Lowest is displayed first.]]></description>
+		<sort_order>2</sort_order>
+	</configuration>
+	<configuration>
+		<title><![CDATA[Payment Zone]]></title>
+		<key><![CDATA[MODULE_PAYMENT_PAYFLOW_ZONE]]></key>
+		<value><![CDATA[0]]></value>
+		<description><![CDATA[If a zone is selected, only enable this payment method for that zone.]]></description>
+		<sort_order>3</sort_order>
+		<use_function><![CDATA[tep_get_zone_class_title]]></use_function>
+		<set_function><![CDATA[tep_cfg_pull_down_zone_classes(]]></set_function>
+	</configuration>
+	<configuration>
+		<title><![CDATA[Set Order Status]]></title>
+		<key><![CDATA[MODULE_PAYMENT_PAYFLOW_ORDER_STATUS_ID]]></key>
+		<value><![CDATA[0]]></value>
+		<description><![CDATA[Set the status of orders made with this payment module to this value]]></description>
+		<sort_order>4</sort_order>
+		<use_function><![CDATA[tep_get_order_status_name]]></use_function>
+		<set_function><![CDATA[tep_cfg_pull_down_order_statuses(]]></set_function>
+	</configuration>
+	<configuration>
+		<title><![CDATA[Accepted Checkout Method]]></title>
+		<key><![CDATA[MODULE_PAYMENT_PAYFLOW_CHECKOUT_METHOD]]></key>
+		<value><![CDATA[Normal]]></value>
+		<description><![CDATA[Allow this payment module to be used for (Rental membership signup, Normal checkout or Both )]]></description>
+		<sort_order>5</sort_order>
+		<set_function><![CDATA[tep_cfg_select_option(array('Membership','Normal','Both'),]]></set_function>
+	</configuration>
+	<configuration>
+		<title><![CDATA[Gateway Server]]></title>
+		<key><![CDATA[MODULE_PAYMENT_PAYFLOW_GATEWAY_SERVER]]></key>
+		<value><![CDATA[Test]]></value>
+		<description><![CDATA[Use the testing (sandbox) or live gateway server for transactions?]]></description>
+		<sort_order>6</sort_order>
+		<set_function><![CDATA[tep_cfg_select_option(array('Test','Live'),]]></set_function>
+	</configuration>
+	<configuration>
+		<title><![CDATA[Transaction Currency]]></title>
+		<key><![CDATA[MODULE_PAYMENT_PAYFLOW_CURRENCY]]></key>
+		<value><![CDATA[USD]]></value>
+		<description><![CDATA[The currency to use for transactions]]></description>
+		<sort_order>9</sort_order>
+		<set_function><![CDATA[tep_cfg_select_option(array('AUD','CAD','EUR','GBP','JPY','USD'),]]></set_function>
+	</configuration>
+	<configuration>
+		<title><![CDATA[Set Payflow Acknowledged Order Status]]></title>
+		<key><![CDATA[MODULE_PAYMENT_PAYFLOW_ORDER_STATUS_ID]]></key>
+		<value><![CDATA[0]]></value>
+		<description><![CDATA[Set the status of orders made with this payment module to this value]]></description>
+		<sort_order>11</sort_order>
+		<use_function><![CDATA[tep_get_order_status_name]]></use_function>
+		<set_function><![CDATA[tep_cfg_pull_down_order_statuses(]]></set_function>
+	</configuration>
+	<configuration>
+		<title><![CDATA[Set Payflow Completed Order Status]]></title>
+		<key><![CDATA[MODULE_PAYMENT_PAYFLOW_COMP_ORDER_STATUS_ID]]></key>
+		<value><![CDATA[0]]></value>
+		<description><![CDATA[Set the status of orders which are confirmed as paid (completed) to this value]]></description>
+		<sort_order>12</sort_order>
+		<use_function><![CDATA[tep_get_order_status_name]]></use_function>
+		<set_function><![CDATA[tep_cfg_pull_down_order_statuses(]]></set_function>
+	</configuration>
+	<configuration>
+		<title><![CDATA[Transaction Type]]></title>
+		<key><![CDATA[MODULE_PAYMENT_PAYFLOW_TRANSACTION_TYPE]]></key>
+		<value><![CDATA[Sale]]></value>
+		<description><![CDATA[Send individual items to PayPal or aggregate all as one total item?]]></description>
+		<sort_order>13</sort_order>
+		<set_function><![CDATA[tep_cfg_select_option(array('Sale','Authorization'),]]></set_function>
+	</configuration>
+	<configuration>
+		<title><![CDATA[Accepted Credit Cards]]></title>
+		<key><![CDATA[MODULE_PAYMENT_PAYFLOW_ACCEPTED_CC]]></key>
+		<value><![CDATA[Visa, Mastercard]]></value>
+		<description><![CDATA[The credit cards you currently accept]]></description>
+		<sort_order>14</sort_order>
+		<set_function><![CDATA[tep_cfg_select_multioption(array('Visa','Mastercard','Amex','Discover'),]]></set_function>
+	</configuration>
+
+</configurations>

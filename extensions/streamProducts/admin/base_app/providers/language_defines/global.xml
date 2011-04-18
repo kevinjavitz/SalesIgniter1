@@ -1,0 +1,23 @@
+<definitions>
+	<define key="HEADING_TITLE_PROVIDERS"><![CDATA[Stream Providers]]></define>
+	<define key="HEADING_TITLE_PROVIDERS_MODULES"><![CDATA[Stream Provider Modules]]></define>
+	
+	<define key="TABLE_HEADING_PROVIDER_NAME"><![CDATA[Provider Name]]></define>
+	<define key="TABLE_HEADING_PROVIDER_MODULE"><![CDATA[Provider Module]]></define>
+	
+	<define key="TABLE_HEADING_MODULES"><![CDATA[Modules]]></define>
+	<define key="TABLE_HEADING_INSTALLED"><![CDATA[Installed]]></define>
+	<define key="TABLE_HEADING_INFO"><![CDATA[Info]]></define>
+	
+	<define key="TEXT_INFO_HEADING_NEW_PROVIDER"><![CDATA[New Provider]]></define>
+	<define key="TEXT_INFO_HEADING_EDIT_PROVIDER"><![CDATA[Edit Provider]]></define>
+	<define key="TEXT_INFO_HEADING_PROVIDER_MODULE_SETTINGS"><![CDATA[Provider Module Settings Overwrite]]></define>
+	<define key="TEXT_INFO_HEADING_PROVIDER_MODULE_SETTINGS_INFO"><![CDATA[Altering these settings will alter them for this provider only]]></define>
+	<define key="TEXT_INFO_HEADING_EDIT_MODULE"><![CDATA[Edit Provider Module]]></define>
+	
+	<define key="TEXT_INFO_INSERT_INTRO"><![CDATA[Please fill out the provider information]]></define>
+	<define key="TEXT_INFO_EDIT_INTRO"><![CDATA[Please make any changes.]]></define>
+	
+	<define key="TEXT_ENTRY_PROVIDER_NAME"><![CDATA[Provider Name:]]></define>
+	<define key="TEXT_ENTRY_PROVIDER_MODULE"><![CDATA[Provider Module:]]></define>
+</definitions>

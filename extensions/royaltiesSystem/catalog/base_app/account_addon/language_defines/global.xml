@@ -1,0 +1,7 @@
+<definitions>
+	<define key="HEADING_TITLE"><![CDATA[My Royalties]]></define>
+	<define key="TABLE_HEADING_PRODUCTS_NAME"><![CDATA[Products Name]]></define>
+	<define key="TABLE_HEADING_CONTENT"><![CDATA[Content]]></define>
+	<define key="TABLE_HEADING_TOTAL_VIEWS"><![CDATA[Total Views]]></define>
+	<define key="TABLE_HEADING_ROYALTY"><![CDATA[Royalty]]></define>
+</definitions>

@@ -1,0 +1,90 @@
+<definitions>
+	<define key="HEADING_TITLE"><![CDATA[Rental Queue]]></define>
+	<define key="HEADING_TITLE_DETAILS"><![CDATA[Rental Queue Details]]></define>
+	<define key="HEADING_TITLE_RENTED"><![CDATA[Rented Queue]]></define>
+	<define key="HEADING_TITLE_RETURN"><![CDATA[Return Rentals]]></define>
+	<define key="HEADING_TITLE_RETURN_BARCODE"><![CDATA[Return Rentals By Bar Code]]></define>
+	<define key="HEADING_TITLE_ISSUES"><![CDATA[Rental Issues]]></define>
+	
+	<define key="TABLE_HEADING_ID"><![CDATA[ID]]></define>
+	<define key="TABLE_HEADING_CUSTOMER"><![CDATA[MEMBER NAME ]]></define>
+	<define key="TABLE_HEADING_EMAIL"><![CDATA[Email]]></define>
+	<define key="TABLE_HEADING_RENTAL_QUEUE"><![CDATA[Rental Queue]]></define>
+	<define key="TABLE_HEADING_TITLES_RENTED_OUT"><![CDATA[Titles Rented Out]]></define>
+	<define key="TABLE_HEADING_TITLES_ALLOWED_OUT"><![CDATA[Titles Allowed Out]]></define>
+	<define key="TABLE_HEADING_TITLES_TO_SEND"><![CDATA[Titles To Send]]></define>
+	<define key="TABLE_HEADING_PRIORITY"><![CDATA[Priority ]]></define>
+	<define key="TABLE_HEADING_MOVIE_TITLE"><![CDATA[Movie Title ]]></define>
+	<define key="TABLE_HEADING_REQUEST_DATE"><![CDATA[Request Date]]></define>
+	<define key="TABLE_HEADING_RENTED_DATE"><![CDATA[Rented Date]]></define>
+	<define key="TABLE_HEADING_ITEMS"><![CDATA[Items in Rented Queue]]></define>
+	<define key="TABLE_HEADING_PACKAGE_ALLOWED"><![CDATA[ No. of rentals Allowed]]></define>
+	<define key="TABLE_HEADING_TITLE_REQUESTING"><![CDATA[Items in Rental Queue ]]></define>
+	<define key="TABLE_HEADING_STATUS"><![CDATA[Status]]></define>
+	<define key="TABLE_HEADING_BAR_CODE"><![CDATA[Barcode]]></define>
+	<define key="TABLE_HEADING_BAR_IMG"><![CDATA[Barcode Image]]></define>
+	<define key="TEXT_MEMBER_SINCE"><![CDATA[<br />Member Since: %s<br />]]></define>
+	<define key="TEXT_RENTED_QUEUE"><![CDATA[Rented queue for "%s"]]></define>
+	<define key="TEXT_NO_MOVIE_SELECTED"><![CDATA[No movie is selected for Return Rent]]></define>;
+	<define key="TEXT_INFO_TOO_MANY_MOVIES"><![CDATA[Movies being rented out are greater than allowable for]]></define>
+	<define key="TEXT_INFO_MOVIES_RENTED"><![CDATA[Selected movies are Rented Out Successfully.]]></define>
+	<define key="HEADING_TITLE_AVAIL"><![CDATA[Rental Availability <br/> <span style="font-size:12px;">Represents number of customers who have product in rental queue minus number of inventory in stock ready to ship.</span>]]></define>
+	<define key="TABLE_HEADING_AVAIL_NAME"><![CDATA[Rental Availability]]></define>
+	<define key="TABLE_HEADING_ACTION"><![CDATA[Action]]></define>
+	<define key="TEXT_BUTTON_RENT"><![CDATA[Rent]]></define>
+	
+	<define key="TABLE_HEADING_TITLE"><![CDATA[Title]]></define>
+	<define key="TABLE_HEADING_BARCODE"><![CDATA[Barcode]]></define>
+	<define key="TABLE_HEADING_COMMENTS"><![CDATA[Commments]]></define>
+	<define key="TABLE_HEADING_TITLE_SEND"><![CDATA[Return Rentals]]></define>
+	<define key="TABLE_HEADING_BROKEN"><![CDATA[Broken]]></define>
+	<define key="TABLE_HEADING_CUSTOMER"><![CDATA[Customer]]></define>
+	<define key="TABLE_HEADING_BARCODE_IMG"><![CDATA[Barcode Img]]></define>
+	<define key="EMAIL_TEXT_SUBJECT"><![CDATA[ Rental Received]]></define>
+	<define key="EMAIL_TEXT_DETAILS"><![CDATA[We have received:]]></define>
+	<define key="EMAIL_TEXT_MOVIE_TITLE"><![CDATA[Title: ]]></define>
+	<define key="EMAIL_TEXT_DATE_RECEIVED"><![CDATA[Date Received: ]]></define>
+	<define key="EMAIL_TEXT_EXPECTED_ARRIVAL"><![CDATA[Expected Arrival Date: ]]></define>
+	<define key="EMAIL_TEXT_EXTRA"><![CDATA[Your next rental on your rental queue will ship as soon as it is available. ]]></define>
+	<define key="TEXT_NO_MOVIE_SELECTED"><![CDATA[No movie is selected for Return Rent]]></define>
+	<define key="TEXT_SUCCESS_MOVIES_RETURNED"><![CDATA[Selected movies are Returned Successfully with the Comments.]]></define>
+	<define key="TEXT_RENTED_QUEUE_EMPTY"><![CDATA[Rented Queue is Empty]]></define>
+	
+	<define key="TABLE_HEADING_BARCODE"><![CDATA[Barcode]]></define>
+	<define key="TABLE_HEADING_COMMENTS"><![CDATA[Comments]]></define>
+	<define key="TABLE_HEADING_BROKEN"><![CDATA[Broken]]></define>
+	<define key="EMAIL_TEXT_SUBJECT"><![CDATA[ Return Rental Notification]]></define>
+	<define key="EMAIL_TEXT_DETAILS"><![CDATA[The details of the  returned rental are as follows.]]></define>
+	<define key="EMAIL_TEXT_MOVIE_TITLE"><![CDATA[Title: ]]></define>
+	<define key="EMAIL_TEXT_DATE_RECEIVED"><![CDATA[Date Received: ]]></define>
+	<define key="EMAIL_TEXT_EXPECTED_ARRIVAL"><![CDATA[Expected Arrival Date: ]]></define>
+	<define key="EMAIL_TEXT_EXTRA"><![CDATA[Thanking you for returning rental. ]]></define>
+	<define key="TEXT_ERROR_NO_BARCODE_ENTERED"><![CDATA[No Barcode is entered for Return Rent. Please Check Return rentals checkbox]]></define>
+	<define key="TEXT_BARCODE_NOT_RECOGNIZED"><![CDATA[Barcode: %s not recognized]]></define>
+	<define key="TEXT_BARCODE_NOT_RENTED"><![CDATA[Barcode: %s not currently rented out]]></define>
+	<define key="TEXT_PRODUCT_RETURNED"><![CDATA[%s barcode: %s has been returned.]]></define>
+	<define key="TEXT_INFO_SEND_TODAY"><![CDATA[The Following Rentals Need To Be Sent Today:]]></define>
+	<define key="TEXT_GOTO_SENDOUT"><![CDATA[Go To Rental Sendout Page]]></define>
+	<define key="TEXT_BUTTON_RETURN"><![CDATA[Return Rentals]]></define>
+	
+	<define key="TABLE_HEADING_TAX_CLASSES"><![CDATA[Rental Issues]]></define>
+	<define key="TABLE_HEADING_ISSUE_ID"><![CDATA[Issue ID]]></define>
+	<define key="TABLE_HEADING_RENTED_PRODUCT"><![CDATA[Product]]></define>
+	<define key="TABLE_HEADING_REPORTED_DATE"><![CDATA[Reported Date]]></define>
+	<define key="TABLE_HEADING_CUSTOMER_NAME"><![CDATA[Customer Name]]></define>
+	<define key="TABLE_HEADING_STATUS"><![CDATA[Status]]></define>
+	<define key="TEXT_INFO_EDIT_INTRO"><![CDATA[Please make any necessary changes]]></define>
+	<define key="TEXT_INFO_PRODUCT_NAME"><![CDATA[Product Name:]]></define>
+	<define key="TEXT_INFO_FEEDBACK"><![CDATA[Feedback:]]></define>
+	<define key="TEXT_INFO_PROBLEM"><![CDATA[Problem Reported:]]></define>
+	<define key="TEXT_INFO_DATE_REPORTED"><![CDATA[Date Reported:]]></define>
+	<define key="TEXT_INFO_LAST_MODIFIED"><![CDATA[Last Modified:]]></define>
+	<define key="TEXT_INFO_INSERT_INTRO"><![CDATA[Please enter the new tax class with its related data]]></define>
+	<define key="TEXT_INFO_DELETE_INTRO"><![CDATA[Are you sure you want to delete this rental issue?]]></define>
+	<define key="TEXT_INFO_HEADING_EDIT_RENTAL_ISSUE"><![CDATA[Edit Tax Class]]></define>
+	<define key="TEXT_INFO_HEADING_DELETE_RENTAL_ISSUE"><![CDATA[Delete Tax Class]]></define>
+	<define key="EMAIL_SUBJECT_FEEDBACK"><![CDATA[Response to your ticket]]></define>
+
+    <define key="TEXT_INFO_AVAILABILITY_NAME"><![CDATA[Available Name]]></define>
+    <define key="TEXT_INFO_AVAILABILITY_RATIO"><![CDATA[Available Ratio]]></define>
+</definitions>

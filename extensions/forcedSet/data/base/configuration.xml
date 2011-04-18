@@ -1,0 +1,21 @@
+<ConfigurationGroup>
+	<title>Forced Set</title>
+	<key>forcedSet</key>
+	<description>Configuration Settings For The Forced Set Extension</description>
+	<Configuration>
+		<EXTENSION_FORCED_SET_ENABLED>
+			<title>Enable Forced Set</title>
+			<value>True</value>
+			<description>Enable Or Disable The Forced Set Extension</description>
+			<sort_order>1</sort_order>
+			<set_function>tep_cfg_select_option(array('True','False'),</set_function>
+		</EXTENSION_FORCED_SET_ENABLED>
+		<EXTENSION_FORCED_SET_USE_CATEGORIES>
+			<title>Use categories relation or custom field relation</title>
+			<value>True</value>
+			<description>Forced set by categories or custom field</description>
+			<sort_order>2</sort_order>
+			<set_function>tep_cfg_select_option(array('True','False'),</set_function>
+		</EXTENSION_FORCED_SET_USE_CATEGORIES>
+	</Configuration>
+</ConfigurationGroup>

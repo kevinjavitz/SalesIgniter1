@@ -1,0 +1,12 @@
+<definition>
+	<define key="HEADING_TITLE"><![CDATA[Send Email To Customers]]></define>
+	<define key="TEXT_CUSTOMER"><![CDATA[Customer:]]></define>
+	<define key="TEXT_SUBJECT"><![CDATA[Subject:]]></define>
+	<define key="TEXT_FROM"><![CDATA[From:]]></define>
+	<define key="TEXT_MESSAGE"><![CDATA[Message:]]></define>
+	<define key="TEXT_SELECT_CUSTOMER"><![CDATA[Select Customer]]></define>
+	<define key="TEXT_ALL_CUSTOMERS"><![CDATA[All Customers]]></define>
+	<define key="TEXT_NEWSLETTER_CUSTOMERS"><![CDATA[To All Newsletter Subscribers]]></define>
+	<define key="NOTICE_EMAIL_SENT_TO"><![CDATA[Notice: Email sent to: %s]]></define>
+	<define key="ERROR_NO_CUSTOMER_SELECTED"><![CDATA[Error: No customer has been selected.]]></define>
+</definition>

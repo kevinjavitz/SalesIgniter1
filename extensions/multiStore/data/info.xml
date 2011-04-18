@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<data>
+	<name>Multi Stores</name>
+	<key>multiStore</key>
+	<version>1.1</version>
+	<author>Stephen Walker ( http://www.itwebexperts.com )</author>
+	<status_key>EXTENSION_MULTI_STORE_ENABLED</status_key>
+</data>

@@ -1,0 +1,8 @@
+<data>
+	<name>Meta Tags</name>
+	<key>metaTags</key>
+	<version>1.0</version>
+	<author>Erick Romero ( http://www.itwebexperts.com )</author>
+	<status_key>EXTENSION_METATAGS_ENABLED</status_key>
+	<description><![CDATA[Set the meta tags into html header]]></description>
+</data>

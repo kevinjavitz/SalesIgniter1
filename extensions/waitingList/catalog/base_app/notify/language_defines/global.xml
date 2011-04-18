@@ -1,0 +1,6 @@
+<definitions>
+	<define key="HEADING_TITLE"><![CDATA[Waiting List]]></define>
+	<define key="TEXT_ERROR_NOT_LOGGED_IN"><![CDATA[An error occurred, please notify the store administrator.]]></define>
+	<define key="TEXT_ALREADY_ON_LIST"><![CDATA[You are already on the list for this product.]]></define>
+	<define key="TEXT_ADDED_TO_LIST"><![CDATA[You have been added to the list and will be notified when inventory is available.]]></define>
+</definitions>

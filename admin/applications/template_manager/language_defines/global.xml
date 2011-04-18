@@ -1,0 +1,19 @@
+<definitions>
+	<define key="HEADING_TITLE"><![CDATA[Template Infobox Manager]]></define>
+	<define key="HEADING_TITLE_TEMPLATE"><![CDATA[Template:]]></define>
+	<define key="TEXT_TRASH_BIN"><![CDATA[Drop here to remove]]></define>
+	<define key="TEXT_INFO_EXTENSION_BOXES"><![CDATA[Extension Boxes (%s)]]></define>
+	<define key="TEXT_INFO_DEFAULT_LAYOUT_FILE"><![CDATA[Default Layout File: %s]]></define>
+	<define key="TEXT_INFO_FILES_LOCATION"><![CDATA[Files Location: %s]]></define>
+	<define key="TEXT_INFO_DEFAULT_BOXES"><![CDATA[Default Boxes]]></define>
+	
+	<define key="TEXT_CREATE_TEMPLATE"><![CDATA[Create a New Template:]]></define>
+	<define key="TEXT_EDIT_TEMPLATE"><![CDATA[Edit Template:]]></define>
+	<define key="TEXT_SELECT_TEMPLATE"><![CDATA[Please select a template]]></define>
+	<define key="TEXT_BUTTON_DELETE_TEMPLATE"><![CDATA[Delete Template]]></define>
+	<define key="HEADING_GLOBAL_VARS"><![CDATA[Global Variables]]></define>
+	<define key="HEADING_AVAIL_VARS"><![CDATA[Template Variables]]></define>
+	<define key="HEADING_COND_VARS"><![CDATA[Conditional Variables]]></define>
+	<define key="TEXT_SELECT_EVENT"><![CDATA[Select an event and click update to see available variables]]></define>
+	<define key="TEXT_TEXT"><![CDATA[Text:]]></define>
+</definitions>

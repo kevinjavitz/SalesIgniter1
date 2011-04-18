@@ -1,0 +1,12 @@
+<definitions>
+	<define key="MODULE_PAYMENT_CREDITCARDVCS_TEXT_TITLE"><![CDATA[Virtual Card Services Credit Card]]></define>
+	<define key="MODULE_PAYMENT_CREDITCARDVCS_TEXT_DESCRIPTION"><![CDATA[]]></define>
+	<define key="MODULE_PAYMENT_CREDITCARDVCS_TEXT_CREDIT_CARD_TYPE"><![CDATA[Credit Card Type:]]></define>
+	<define key="MODULE_PAYMENT_CREDITCARDVCS_TEXT_CREDIT_CARD_OWNER"><![CDATA[Credit Card Owner:]]></define>
+	<define key="MODULE_PAYMENT_CREDITCARDVCS_TEXT_CREDIT_CARD_NUMBER"><![CDATA[Credit Card Number:]]></define>
+	<define key="MODULE_PAYMENT_CREDITCARDVCS_TEXT_CREDIT_CARD_EXPIRES"><![CDATA[Credit Card Expiry Date:]]></define>
+	<define key="MODULE_PAYMENT_CREDITCARDVCS_TEXT_CREDIT_CARD_CVV"><![CDATA[Cvv Code:]]></define>
+	<define key="MODULE_PAYMENT_CREDITCARDVCS_TEXT_JS_CC_OWNER"><![CDATA[* The owner's name of the credit card must be at least %s characters.\n]]></define>
+	<define key="MODULE_PAYMENT_CREDITCARDVCS_TEXT_JS_CC_NUMBER"><![CDATA[* The credit card number must be at least %s characters.\n]]></define>
+	<define key="MODULE_PAYMENT_CREDITCARDVCS_TEXT_ERROR"><![CDATA[Credit Card Error!]]></define>
+</definitions>

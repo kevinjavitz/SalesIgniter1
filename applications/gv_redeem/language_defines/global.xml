@@ -1,0 +1,7 @@
+<definitions>
+	<define key="NAVBAR_TITLE"><![CDATA[Redeem Gift Certificate]]></define>
+	<define key="HEADING_TITLE"><![CDATA[Redeem Gift Certificate]]></define>
+	<define key="TEXT_INFORMATION"><![CDATA[For more information regarding Gift Certificates, please see our <a href="%s">F.A.Q.</a>]]></define>
+	<define key="TEXT_INVALID_GV"><![CDATA[The Gift Certificate number may be invalid or has already been redeemed. To contact the shop owner please use the Contact Page]]></define>
+	<define key="TEXT_VALID_GV"><![CDATA[Congratulations, you have redeemed a Gift Certificate worth %s]]></define>
+</definitions>

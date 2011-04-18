@@ -1,0 +1,8 @@
+<definitions>
+	<define key="MODULE_ORDER_SHIPPING_USPS_TITLE"><![CDATA[United States Postal Service]]></define>
+	<define key="MODULE_ORDER_SHIPPING_USPS_DESCRIPTION"><![CDATA[United States Postal Service<br><br>You will need to have registered an account with USPS at http://www.uspsprioritymail.com/et_regcert.html to use this module<br><br>USPS expects you to use pounds as weight measure for your products.]]></define>
+	<define key="MODULE_ORDER_SHIPPING_USPS_TEXT_OPT_PP"><![CDATA[Parcel Post]]></define>
+	<define key="MODULE_ORDER_SHIPPING_USPS_TEXT_OPT_PM"><![CDATA[Priority Mail]]></define>
+	<define key="MODULE_ORDER_SHIPPING_USPS_TEXT_OPT_EX"><![CDATA[Express Mail]]></define>
+	<define key="MODULE_ORDER_SHIPPING_USPS_TEXT_ERROR"><![CDATA[An error occured with the USPS shipping calculations.<br>If you prefer to use USPS as your shipping method, please contact the store owner.]]></define>
+</definitions>

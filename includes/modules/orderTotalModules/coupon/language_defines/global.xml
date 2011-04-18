@@ -1,0 +1,20 @@
+<definitions>
+	<define key="MODULE_ORDER_TOTAL_COUPON_TITLE"><![CDATA[Discount Coupons]]></define>
+	<define key="MODULE_ORDER_TOTAL_COUPON_HEADER"><![CDATA[Gift Vouchers/Discount Coupons]]></define>
+	<define key="MODULE_ORDER_TOTAL_COUPON_DESCRIPTION"><![CDATA[Discount Coupon]]></define>
+	<define key="SHIPPING_NOT_INCLUDED"><![CDATA[ [Shipping not included]]]></define>
+	<define key="TAX_NOT_INCLUDED"><![CDATA[ [Tax not included]]]></define>
+	<define key="MODULE_ORDER_TOTAL_COUPON_USER_PROMPT"><![CDATA[]]></define>
+	<define key="ERROR_NO_INVALID_REDEEM_COUPON"><![CDATA[Invalid Coupon Code]]></define>
+	<define key="ERROR_REDEEMED_AMOUNT_ZERO"><![CDATA[<BR>***HOWEVER:No reducion available, please see the coupon restrictions***]]></define>
+	<define key="ERROR_INVALID_STARTDATE_COUPON"><![CDATA[This coupon is not available yet]]></define>
+	<define key="ERROR_INVALID_FINISDATE_COUPON"><![CDATA[This coupon has expired]]></define>
+	<define key="ERROR_INVALID_USES_COUPON"><![CDATA[This coupon could only be used ]]></define>  
+	<define key="TIMES"><![CDATA[ times.]]></define>
+	<define key="ERROR_INVALID_USES_USER_COUPON"><![CDATA[You have used the coupon the maximum number of times allowed per customer.]]></define> 
+	<define key="REDEEMED_COUPON"><![CDATA[a coupon worth ]]></define>  
+	<define key="REDEEMED_MIN_ORDER"><![CDATA[on orders over ]]></define>  
+	<define key="REDEEMED_RESTRICTIONS"><![CDATA[ [Product-Category restrictions apply]]]></define>  
+	<define key="TEXT_ENTER_COUPON_CODE"><![CDATA[Enter Redeem Code&nbsp;&nbsp;]]></define>
+	<define key="MODULE_ORDER_TOTAL_COUPON_TEXT_ERROR"><![CDATA[Coupon Redemption]]></define>
+</definitions>

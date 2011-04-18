@@ -1,0 +1,6 @@
+<definitions>
+	<define key="TABLE_HEADING_QUANTITY_FROM"><![CDATA[Quantity From]]></define>
+	<define key="TABLE_HEADING_QUANTITY_TO"><![CDATA[Quantity To]]></define>
+	<define key="TABLE_HEADING_PRICE_NET"><![CDATA[Price Net]]></define>
+	<define key="TABLE_HEADING_PRICE_GROSS"><![CDATA[Price Gross]]></define>
+</definitions>

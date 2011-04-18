@@ -1,0 +1,25 @@
+<definitions>
+	<define key="MODULE_ORDER_SHIPPING_UPS_RESERVATION_TITLE"><![CDATA[United Parcel Service Reservation]]></define>
+	<define key="MODULE_ORDER_SHIPPING_UPS_RESERVATION_DESCRIPTION"><![CDATA[United Parcel Service Reservation]]></define>
+	<define key="MODULE_ORDER_SHIPPING_UPS_RESERVATION_TEXT_OPT_GND"><![CDATA[UPS Ground]]></define>
+	<define key="MODULE_ORDER_SHIPPING_UPS_RESERVATION_TEXT_OPT_1DM"><![CDATA[Next Day Air Early AM]]></define>
+	<define key="MODULE_ORDER_SHIPPING_UPS_RESERVATION_TEXT_OPT_1DA"><![CDATA[Next Day Air]]></define>
+	<define key="MODULE_ORDER_SHIPPING_UPS_RESERVATION_TEXT_OPT_1DP"><![CDATA[Next Day Air Saver]]></define>
+	<define key="MODULE_ORDER_SHIPPING_UPS_RESERVATION_TEXT_OPT_2DM"><![CDATA[2nd Day Air Early AM]]></define>
+	<define key="MODULE_ORDER_SHIPPING_UPS_RESERVATION_TEXT_OPT_3DS"><![CDATA[3 Day Select]]></define>
+	<define key="MODULE_ORDER_SHIPPING_UPS_RESERVATION_TEXT_OPT_STD"><![CDATA[Canada Standard]]></define>
+	<define key="MODULE_ORDER_SHIPPING_UPS_RESERVATION_TEXT_OPT_XPR"><![CDATA[Worldwide Express]]></define>
+	<define key="MODULE_ORDER_SHIPPING_UPS_RESERVATION_TEXT_OPT_XDM"><![CDATA[Worldwide Express Plus]]></define>
+	<define key="MODULE_ORDER_SHIPPING_UPS_RESERVATION_TEXT_OPT_XPD"><![CDATA[Worldwide Expedited]]></define>
+
+	<define key="TEXT_INFO_EDIT_INTRO"><![CDATA[Add methods below by pressing the plus sign]]></define>
+	<define key="TABLE_HEADING_TEXT"><![CDATA[Text]]></define>
+	<define key="TABLE_HEADING_COST"><![CDATA[Cost]]></define>
+	<define key="TABLE_HEADING_STATUS"><![CDATA[Enabled]]></define>
+	<define key="TABLE_HEADING_DEFAULT"><![CDATA[Default Selected]]></define>
+	<define key="TABLE_HEADING_MARKUP"><![CDATA[Markup(%)]]></define>
+	<define key="TABLE_HEADING_DAYS_BEFORE"><![CDATA[Days Before]]></define>
+    <define key="TABLE_HEADING_DAYS_AFTER"><![CDATA[Days After]]></define>
+	<define key="TABLE_HEADING_UPSCODE"><![CDATA[Ups Code]]></define>
+
+</definitions>

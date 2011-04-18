@@ -1,0 +1,4 @@
+<definitions>
+	<define key="MODULE_STREAM_PROVIDER_AMAZONCLOUDFRONT_TITLE"><![CDATA[Amazon Cloud Front]]></define>
+	<define key="MODULE_STREAM_PROVIDER_AMAZONCLOUDFRONT_DESCRIPTION"><![CDATA[Streams are stored in Amazon S3 and streamed from Amazon Cloud Front]]></define>
+</definitions>

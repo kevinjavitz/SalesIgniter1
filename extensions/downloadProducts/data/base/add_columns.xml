@@ -1,0 +1,13 @@
+<data>
+	<Products>
+		<products_price_download>
+			<type>decimal</type>
+			<length>15</length>
+			<scale>4</scale>
+			<unsigned>0</unsigned>
+			<primary>false</primary>
+			<default>0.0000</default>
+			<notnull>true</notnull>
+		</products_price_download>
+	</Products>
+</data>

@@ -1,0 +1,14 @@
+<definitions>
+	<define key="MODULE_ORDER_SHIPPING_UPS_TITLE"><![CDATA[United Parcel Service]]></define>
+	<define key="MODULE_ORDER_SHIPPING_UPS_DESCRIPTION"><![CDATA[United Parcel Service]]></define>
+	<define key="MODULE_ORDER_SHIPPING_UPS_TEXT_OPT_GND"><![CDATA[UPS Ground]]></define>
+	<define key="MODULE_ORDER_SHIPPING_UPS_TEXT_OPT_1DM"><![CDATA[Next Day Air Early AM]]></define>
+	<define key="MODULE_ORDER_SHIPPING_UPS_TEXT_OPT_1DA"><![CDATA[Next Day Air]]></define>
+	<define key="MODULE_ORDER_SHIPPING_UPS_TEXT_OPT_1DP"><![CDATA[Next Day Air Saver]]></define>
+	<define key="MODULE_ORDER_SHIPPING_UPS_TEXT_OPT_2DM"><![CDATA[2nd Day Air Early AM]]></define>
+	<define key="MODULE_ORDER_SHIPPING_UPS_TEXT_OPT_3DS"><![CDATA[3 Day Select]]></define>
+	<define key="MODULE_ORDER_SHIPPING_UPS_TEXT_OPT_STD"><![CDATA[Canada Standard]]></define>
+	<define key="MODULE_ORDER_SHIPPING_UPS_TEXT_OPT_XPR"><![CDATA[Worldwide Express]]></define>
+	<define key="MODULE_ORDER_SHIPPING_UPS_TEXT_OPT_XDM"><![CDATA[Worldwide Express Plus]]></define>
+	<define key="MODULE_ORDER_SHIPPING_UPS_TEXT_OPT_XPD"><![CDATA[Worldwide Expedited]]></define>
+</definitions>

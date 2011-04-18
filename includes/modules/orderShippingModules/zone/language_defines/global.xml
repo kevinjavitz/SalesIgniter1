@@ -1,0 +1,12 @@
+<definitions>
+	<define key="MODULE_ORDER_SHIPPING_ZONE_TITLE"><![CDATA[Zone Rates]]></define>
+	<define key="MODULE_ORDER_SHIPPING_ZONE_DESCRIPTION"><![CDATA[Zone Based Rates]]></define>
+	<define key="MODULE_ORDER_SHIPPING_ZONE_TEXT_WAY"><![CDATA[Shipping to]]></define>
+	<define key="MODULE_ORDER_SHIPPING_ZONE_TEXT_UNITS"><![CDATA[lb(s)]]></define>
+	<define key="MODULE_ORDER_SHIPPING_ZONE_INVALID_ZONE"><![CDATA[No shipping available to the selected country]]></define>
+	<define key="MODULE_ORDER_SHIPPING_ZONE_UNDEFINED_RATE"><![CDATA[The shipping rate cannot be determined at this time]]></define>
+	<define key="TEXT_INFO_EDIT_INTRO"><![CDATA[<small><b>Countries</b> - Comma separated list of two character ISO country codes that are part of the zone<br><b>Cost</b> - Shipping rates to the zone destinations based on a group of maximum order weights. Example: 3:8.50,7:10.50,... Weights less than or equal to 3 would cost 8.50 for the zone destinations.<br><b>Handling</b> - Handling Fee for the zone</small>]]></define>
+	<define key="TABLE_HEADING_COUNTRIES"><![CDATA[Countries]]></define>
+	<define key="TABLE_HEADING_COST"><![CDATA[Cost]]></define>
+	<define key="TABLE_HEADING_HANDLING"><![CDATA[Handling]]></define>
+</definitions>

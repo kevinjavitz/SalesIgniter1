@@ -1,0 +1,8 @@
+<definitions>
+	<define key="HEADING_TITLE"><![CDATA[Extensions]]></define>
+	<define key="TABLE_HEADING_ACTION"><![CDATA[Action]]></define>
+	<define key="TABLE_HEADING_EXTENSIONS"><![CDATA[Extensions]]></define>
+	<define key="TEXT_EXTENSION_DIRECTORY"><![CDATA[Extension Directory:]]></define>
+	<define key="IMAGE_INSTALL"><![CDATA[Install]]></define>
+	<define key="IMAGE_UNINSTALL"><![CDATA[Uninstall]]></define>
+</definitions>

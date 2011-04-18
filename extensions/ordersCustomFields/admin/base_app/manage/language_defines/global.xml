@@ -1,0 +1,13 @@
+<definitions>
+	<define key="HEADING_TITLE"><![CDATA[Products Custom Fields]]></define>
+	<define key="TABLE_HEADING_OPTION_TEXT"><![CDATA[Option Text]]></define>
+	<define key="TABLE_HEADING_SORT_ORDER"><![CDATA[Sort Order]]></define>
+	<define key="WINDOW_TITLE_NEW_FIELD"><![CDATA[Create New Field]]></define>
+	<define key="WINDOW_TITLE_EDIT_FIELD"><![CDATA[Edit Field]]></define>
+	<define key="ENTRY_FIELD_NAME"><![CDATA[Field Name: ]]></define>
+	<define key="ENTRY_INPUT_TYPE"><![CDATA[Input Type:]]></define>
+	<define key="ENTRY_SORT_ORDER"><![CDATA[Sort Order:]]></define>
+	<define key="ENTRY_FIELD_REQUIRED"><![CDATA[Required: ]]></define>
+	<define key="TEXT_TYPE"><![CDATA[Type: ]]></define>
+	<define key="TEXT_BUTTON_NEW_FIELD"><![CDATA[New Field]]></define>
+</definitions>

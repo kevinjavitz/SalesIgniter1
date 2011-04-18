@@ -1,0 +1,21 @@
+<definition>
+	<define key="HEADING_TITLE"><![CDATA[Countries]]></define>
+	
+	<define key="TABLE_HEADING_COUNTRY_NAME"><![CDATA[Country]]></define>
+	<define key="TABLE_HEADING_COUNTRY_CODES"><![CDATA[ISO Codes]]></define>
+	<define key="TABLE_HEADING_ZONE_NAME"><![CDATA[Zone Name]]></define>
+	<define key="TABLE_HEADING_ZONE_CODE"><![CDATA[Zone Code]]></define>
+	
+	<define key="TEXT_INFO_EDIT_INTRO"><![CDATA[Please make any necessary changes]]></define>
+	<define key="TEXT_INFO_INSERT_INTRO"><![CDATA[Please enter the new country with its related data]]></define>
+	
+	<define key="TEXT_INFO_ADDRESS_FORMAT"><![CDATA[Address Format:]]></define>
+	<define key="TEXT_INFO_COUNTRY_NAME"><![CDATA[Country Name:]]></define>
+	<define key="TEXT_INFO_COUNTRY_CODE_2"><![CDATA[ISO Code (2):]]></define>
+	<define key="TEXT_INFO_COUNTRY_CODE_3"><![CDATA[ISO Code (3):]]></define>
+	<define key="TEXT_INFO_ZONES_NAME"><![CDATA[Zones Name:]]></define>
+	<define key="TEXT_INFO_ZONES_CODE"><![CDATA[Zones Code:]]></define>
+	
+	<define key="TEXT_INFO_HEADING_NEW_COUNTRY"><![CDATA[New Country]]></define>
+	<define key="TEXT_INFO_HEADING_EDIT_COUNTRY"><![CDATA[Edit Country]]></define>
+</definition>

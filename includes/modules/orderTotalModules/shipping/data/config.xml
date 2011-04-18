@@ -1,0 +1,41 @@
+<configurations>
+	<configuration>
+		<title><![CDATA[Display Shipping]]></title>
+		<key><![CDATA[MODULE_ORDER_TOTAL_SHIPPING_STATUS]]></key>
+		<value><![CDATA[True]]></value>
+		<description><![CDATA[Do you want to display the order shipping cost?]]></description>
+		<sort_order>1</sort_order>
+		<set_function><![CDATA[tep_cfg_select_option(array('True', 'False'),]]></set_function>
+	</configuration>
+	<configuration>
+		<title><![CDATA[Sort order of display]]></title>
+		<key><![CDATA[MODULE_ORDER_TOTAL_SHIPPING_SORT_ORDER]]></key>
+		<value><![CDATA[0]]></value>
+		<description><![CDATA[Sort order of display. Lowest is displayed first.]]></description>
+		<sort_order>2</sort_order>
+	</configuration>
+	<configuration>
+		<title><![CDATA[Allow Free Shipping]]></title>
+		<key><![CDATA[MODULE_ORDER_TOTAL_SHIPPING_FREE_SHIPPING]]></key>
+		<value><![CDATA[False]]></value>
+		<description><![CDATA[Do you want to allow free shipping?]]></description>
+		<sort_order>3</sort_order>
+		<set_function><![CDATA[tep_cfg_select_option(array('True', 'False'),]]></set_function>
+	</configuration>
+	<configuration>
+		<title><![CDATA[Free Shipping For Orders Over]]></title>
+		<key><![CDATA[MODULE_ORDER_TOTAL_SHIPPING_FREE_SHIPPING_OVER]]></key>
+		<value><![CDATA[50]]></value>
+		<description><![CDATA[Provide free shipping for orders over the set amount.]]></description>
+		<sort_order>4</sort_order>
+		<use_function><![CDATA[currencies->format]]></use_function>
+	</configuration>
+	<configuration>
+		<title><![CDATA[Provide Free Shipping For Orders Made]]></title>
+		<key><![CDATA[MODULE_ORDER_TOTAL_SHIPPING_DESTINATION]]></key>
+		<value><![CDATA[National]]></value>
+		<description><![CDATA[Provide free shipping for orders sent to the set destination.]]></description>
+		<sort_order>5</sort_order>
+		<set_function><![CDATA[tep_cfg_select_option(array('National', 'International', 'Both'),]]></set_function>
+	</configuration>
+</configurations>

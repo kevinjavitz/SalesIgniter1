@@ -1,0 +1,46 @@
+<definitions>
+	<define key="HEADING_TITLE_ZONES"><![CDATA[Tax Zones]]></define>
+	<define key="HEADING_TITLE_CLASSES"><![CDATA[Tax Classes]]></define>
+	<define key="HEADING_TITLE_RATES"><![CDATA[Tax Rates]]></define>
+	
+	<define key="TABLE_HEADING_COUNTRY"><![CDATA[Country]]></define>
+	<define key="TABLE_HEADING_COUNTRY_ZONE"><![CDATA[Zone]]></define>
+	<define key="TABLE_HEADING_TAX_CLASS_TITLE"><![CDATA[Tax Class]]></define>
+	<define key="TABLE_HEADING_TAX_CLASSES"><![CDATA[Tax Classes]]></define>
+	<define key="TABLE_HEADING_TAX_RATE"><![CDATA[Tax Rate]]></define>
+	<define key="TABLE_HEADING_TAX_RATE_PRIORITY"><![CDATA[Priority]]></define>
+	<define key="TABLE_HEADING_TAX_ZONES"><![CDATA[Tax Zones]]></define>
+	<define key="TABLE_HEADING_INFO"><![CDATA[Info]]></define>
+	
+	<define key="TYPE_BELOW"><![CDATA[All Zones]]></define>
+	<define key="PLEASE_SELECT"><![CDATA[All Zones]]></define>
+	<define key="TEXT_ALL_COUNTRIES"><![CDATA[All Countries]]></define>
+	
+	<define key="TEXT_INFO_HEADING_NEW_TAX_CLASS"><![CDATA[New Tax Class]]></define>
+	<define key="TEXT_INFO_HEADING_EDIT_TAX_CLASS"><![CDATA[Edit Tax Class]]></define>
+	<define key="TEXT_INFO_HEADING_NEW_ZONE"><![CDATA[New Zone]]></define>
+	<define key="TEXT_INFO_HEADING_EDIT_ZONE"><![CDATA[Edit Zone]]></define>
+	<define key="TEXT_INFO_HEADING_NEW_TAX_RATE"><![CDATA[New Tax Rate]]></define>
+	<define key="TEXT_INFO_HEADING_EDIT_TAX_RATE"><![CDATA[Edit Tax Rate]]></define>
+	
+	<define key="TEXT_INFO_INSERT_CLASS_INTRO"><![CDATA[Please enter the new tax class with its related data]]></define>
+	<define key="TEXT_INFO_EDIT_CLASS_INTRO"><![CDATA[Please make any necessary changes]]></define>
+	<define key="TEXT_INFO_INSERT_RATE_INTRO"><![CDATA[Please enter the new tax rate with its related data]]></define>
+	<define key="TEXT_INFO_EDIT_RATE_INTRO"><![CDATA[Please make any necessary changes]]></define>
+	<define key="TEXT_INFO_NEW_ZONE_INTRO"><![CDATA[Please enter the new tax zone with its related data]]]></define>
+	<define key="TEXT_INFO_EDIT_ZONE_INTRO"><![CDATA[Please make any necessary changes]]></define>
+	
+	<define key="TEXT_INFO_CLASS_TITLE"><![CDATA[Tax Class Title:]]></define>
+	<define key="TEXT_INFO_CLASS_DESCRIPTION"><![CDATA[Description:]]></define>
+	<define key="TEXT_INFO_COUNTRY"><![CDATA[Country:]]></define>
+	<define key="TEXT_INFO_COUNTRY_ZONE"><![CDATA[Zone:]]></define>
+	<define key="TEXT_INFO_COUNTRY_NAME"><![CDATA[Country:]]></define>
+	<define key="TEXT_INFO_DATE_ADDED"><![CDATA[Date Added:]]></define>
+	<define key="TEXT_INFO_LAST_MODIFIED"><![CDATA[Last Modified:]]></define>
+	<define key="TEXT_INFO_NUMBER_ZONES"><![CDATA[Number of Zones:]]></define>
+	<define key="TEXT_INFO_TAX_RATE"><![CDATA[Tax Rate (%):]]></define>
+	<define key="TEXT_INFO_TAX_RATE_PRIORITY"><![CDATA[Tax rates at the same priority are added, others are compounded.<br><br>Priority:]]></define>
+	<define key="TEXT_INFO_RATE_DESCRIPTION"><![CDATA[Description:]]></define>
+	<define key="TEXT_INFO_ZONE_NAME"><![CDATA[Zone Name:]]></define>
+	<define key="TEXT_INFO_ZONE_DESCRIPTION"><![CDATA[Zone Description:]]></define>
+</definitions>

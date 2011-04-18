@@ -1,0 +1,4 @@
+<definitions>
+	<define key="MODULE_DOWNLOAD_PROVIDER_LOCAL_TITLE"><![CDATA[Local Server]]></define>
+	<define key="MODULE_DOWNLOAD_PROVIDER_LOCAL_DESCRIPTION"><![CDATA[Downloads are stored on this server]]></define>
+</definitions>

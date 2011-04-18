@@ -1,0 +1,13 @@
+<definitions>
+	<define key="NAVBAR_TITLE_DEFAULT"><![CDATA[Reviews]]></define>
+
+	<define key="HEADING_TITLE_DEFAULT"><![CDATA[Read What Others Are Saying]]></define>
+	<define key="NAVBAR_TITLE_WRITE_PRODUCT"><![CDATA[Write Review]]></define>
+	<define key="REVIEW_FROM"><![CDATA[Review from:]]></define>
+	<define key="TEXT_BAD"><![CDATA[Bad]]></define>
+	<define key="TEXT_GOOD"><![CDATA[Good]]></define>
+	<define key="NAVBAR_TITLE_INFO_PRODUCT"><![CDATA[Product Review]]></define>
+	<define key="WRITE_REVIEW"><![CDATA[Post Review]]></define>
+	<define key="TEXT_OF_5_STARS"><![CDATA[%s of 5 Stars!]]></define>
+	<define key="TEXT_CLICK_TO_ENLARGE"><![CDATA[Click the image to enlarge]]></define>
+</definitions>

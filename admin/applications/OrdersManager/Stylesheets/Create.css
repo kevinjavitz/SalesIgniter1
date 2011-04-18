@@ -1,0 +1,7 @@
+.ui-datepicker-group { margin:.3em; }
+.ui-datepicker-header { padding:0;text-align:center; }
+.ui-datepicker-header span { margin: .5em; }
+.ui-datepicker .ui-datepicker-prev, .ui-datepicker .ui-datepicker-next { top: 0px; }
+.ui-datepicker-status { margin:.5em;text-align:center;font-weight:bold; }
+.ui-datepicker-shipping-day-hover, .ui-datepicker-shipping-day-hover-info { background: #F7C8D3; }
+#datePicker .ui-state-active { background:#CACEE6; }

@@ -1,0 +1,4 @@
+<definitions>
+	<define key="EXTENSION_PAY_PER_RENTALS_ORDER_TOTAL_DEPOSIT_TITLE"><![CDATA[Refundable Deposit]]></define>
+	<define key="EXTENSION_PAY_PER_RENTALS_ORDER_TOTAL_DEPOSIT_DESCRIPTION"><![CDATA[Pay Per Rentals Refundable Deposit]]></define>
+</definitions>

@@ -1,0 +1,8 @@
+<data>
+	<name>Orders Products Notes</name>
+	<key>ordersProductsNotes</key>
+	<version>1.0</version>
+	<author>Stephen Walker ( http://www.itwebexperts.com )</author>
+	<tables></tables>
+	<status_key>EXTENSION_ORDERS_PRODUCTS_NOTES_ENABLED</status_key>
+</data>

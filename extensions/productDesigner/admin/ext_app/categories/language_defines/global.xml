@@ -1,0 +1,6 @@
+<definitions>
+	<define key="TAB_PRODUCT_DESIGNER"><![CDATA[Product Designer]]></define>
+	<define key="TEXT_LABEL_CORRELATION_TYPE"><![CDATA[Correlation Type:]]></define>
+	<define key="TEXT_LABEL_CORRELATION_ACTIVITY"><![CDATA[Activity:]]></define>
+	<define key="TEXT_LABEL_CORRELATION_CATEGORY"><![CDATA[Category:]]></define>
+</definitions>

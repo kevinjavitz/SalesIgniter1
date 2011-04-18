@@ -1,0 +1,19 @@
+<data>
+     <ProductsInventoryCenters>
+        <inventorycenter_head_title_tag>
+			<type>string</type>
+			<length>80</length>
+			<collation>utf8_general_ci</collation>
+		</inventorycenter_head_title_tag>
+		<inventorycenter_head_desc_tag>
+			<type>string</type>
+			<length>999</length>
+			<collation>utf8_general_ci</collation>
+		</inventorycenter_head_desc_tag>
+		<inventorycenter_head_keywords_tag>
+			<type>string</type>
+			<length>999</length>
+			<collation>utf8_general_ci</collation>
+		</inventorycenter_head_keywords_tag>
+    </ProductsInventoryCenters>
+</data>

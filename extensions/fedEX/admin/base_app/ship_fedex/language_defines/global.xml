@@ -1,0 +1,7 @@
+<definitions>
+	<define key="HEADING_TITLE"><![CDATA[Fedex]]></define>
+    <define key="PACKAGE_WEIGHT"><![CDATA[Package Weight:]]></define>
+    <define key="TOTAL_WEIGHT"><![CDATA[Total Weight:]]></define>
+    <define key="ORDER_HISTORY_DELIVERED"><![CDATA[Fedex Delivered:]]></define>
+    <define key="ORDER_HISTORY_CANCELLED"><![CDATA[Fedex Cancelled]]></define>
+</definitions>

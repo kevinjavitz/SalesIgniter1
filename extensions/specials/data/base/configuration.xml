@@ -1,0 +1,35 @@
+<ConfigurationGroup>
+	<title>Product Specials</title>
+	<key>specials</key>
+	<description>Configuration Settings For The Product Specials Extension</description>
+	<Configuration>
+		<EXTENSION_SPECIALS_ENABLED>
+			<title>Enable Product Specials</title>
+			<value>True</value>
+			<description>Enable Or Disable The Product Specials Extension</description>
+			<sort_order>1</sort_order>
+			<set_function>tep_cfg_select_option(array('True','False'),</set_function>
+		</EXTENSION_SPECIALS_ENABLED>
+		<EXTENSION_SPECIALS_INFOBOX>
+			<value>False</value>
+			<title>Enable Product Specials Info Box</title>
+			<description>Enable Or Disable The Product Specials Info Box</description>
+			<sort_order>2</sort_order>
+			<set_function>tep_cfg_select_option(array('True','False'),</set_function>
+		</EXTENSION_SPECIALS_INFOBOX>
+		<EXTENSION_SPECIALS_SHOW_PRICE_METHOD>
+			<value>strikethrough_new</value>
+			<title>Show Method For Special Price</title>
+			<description>How would you like to show the special price for a product?&lt;br&gt;&lt;b&gt;&lt;u&gt;replace&lt;/u&gt;&lt;/b&gt;&lt;br&gt;$29.99&lt;br&gt;&lt;br&gt;&lt;b&gt;&lt;u&gt;strikethrough_same&lt;/u&gt;&lt;/b&gt;&lt;br&gt;&lt;s&gt;$39.99&lt;/s&gt;&amp;nbsp;$29.99&lt;br&gt;&lt;br&gt;&lt;b&gt;&lt;u&gt;strikethrough_new&lt;/u&gt;&lt;/b&gt;&lt;br&gt;&lt;s&gt;$39.99&lt;/s&gt;&lt;br&gt;$29.99</description>
+			<sort_order>3</sort_order>
+			<set_function>tep_cfg_select_option(array('replace','strikethrough_same','strikethrough_new'),</set_function>
+		</EXTENSION_SPECIALS_SHOW_PRICE_METHOD>
+		<EXTENSION_SPECIALS_LISTING_METHOD>
+			<value>row</value>
+			<title>Listing Method For Specials Page</title>
+			<description>Listing method used on the specials page</description>
+			<sort_order>4</sort_order>
+			<set_function>tep_cfg_select_option(array('row'),</set_function>
+		</EXTENSION_SPECIALS_LISTING_METHOD>
+	</Configuration>
+</ConfigurationGroup>

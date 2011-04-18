@@ -1,0 +1,5 @@
+<definitions>
+	<define key="MODULE_PAYMENT_CREDITCARDERROR_TEXT_TITLE"><![CDATA[Credit Class Error]]></define>
+	<define key="MODULE_PAYMENT_CREDITCARDERROR_TEXT_DESCRIPTION"><![CDATA[Credit Class Error, needed with Gift Voucher]]></define>  
+	<define key="MODULE_PAYMENT_CREDITCARDERROR_TEXT_ERROR"><![CDATA[Payment selection error]]></define>
+</definitions>

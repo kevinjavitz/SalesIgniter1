@@ -1,0 +1,14 @@
+<ConfigurationGroup>
+	<title>Template Manager</title>
+	<key>templateManager</key>
+	<description>Configuration Settings For The Template Manager Extension</description>
+	<Configuration>
+		<EXTENSION_TEMPLATEMANAGER_ENABLED>
+			<title>Enable Template Manager</title>
+			<value>True</value>
+			<description>Enable Or Disable The Template Manager Extension</description>
+			<sort_order>1</sort_order>
+			<set_function>tep_cfg_select_option(array('True','False'),</set_function>
+		</EXTENSION_TEMPLATEMANAGER_ENABLED>
+	</Configuration>
+</ConfigurationGroup>

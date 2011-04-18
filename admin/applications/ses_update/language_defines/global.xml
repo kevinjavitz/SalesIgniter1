@@ -1,0 +1,27 @@
+<definitions>
+	<define key="HEADING_TITLE"><![CDATA[SalesIgniter Updater]]></define>
+	
+	<define key="TABLE_HEADING_NAME"><![CDATA[Name]]></define>
+	<define key="TABLE_HEADING_DATE_INSTALLED"><![CDATA[Date Installed]]></define>
+	<define key="TABLE_HEADING_INFO"><![CDATA[Info]]></define>
+	
+	<define key="WINDOW_HEADING_CHECKING_UPDATES"><![CDATA[Checking For Updates]]></define>
+	
+	<define key="TEXT_INFO_UPDATE_DESCRIPTION"><![CDATA[Update Description]]></define>
+	<define key="TEXT_INFO_DATE_RELEASED"><![CDATA[Date Released: ]]></define>
+	<define key="TEXT_INFO_UP_TO_DATE"><![CDATA[You are up to date.]]></define>
+	
+	<define key="TEXT_BUTTON_CHECK_UPDATES"><![CDATA[Check For Updates]]></define>
+	<define key="TEXT_BUTTON_VIEW_DETAILS"><![CDATA[View Details]]></define>
+	
+	<define key="TEXT_ERROR_DIFF_LINE"><![CDATA[Invalid diff file: %s. Line %s in diff file]]></define>
+	<define key="TEXT_ERROR_UNEXPECTED_END"><![CDATA[Invalid diff file: %s. Unexpected end of file]]></define>
+	<define key="TEXT_ERROR_UNKNOWN_MARKER"><![CDATA[Invalid diff file: %s. Line %s in diff file. Unknown diff marker (%s).]]></define>
+	<define key="TEXT_ERROR_UNEXPECTED_BLOCK_END"><![CDATA[Invalid diff file: %s. Unexpected end of block at line %s.]]></define>
+	<define key="TEXT_ERROR_SOURCE_CHANGED"><![CDATA[Cannot apply patch because the source file (%s) is changed. Line %s in diff file.]]></define>
+	<define key="TEXT_ERROR_MULTIPLE_MATCHES"><![CDATA[Cannot apply patch because the source file (%s) is changed. More possible locations in diff file at line %s.]]></define>
+	<define key="TEXT_ERROR_FTP_UNABLE_TO_CONNECT"><![CDATA[Unable to connect to the ftp server.]]></define>
+	<define key="TEXT_ERROR_INCORRECT_FTP_LOGIN"><![CDATA[Ftp username or password is incorrect.]]></define>
+	<define key="TEXT_ERROR_CANNOT_CHANGE_PERMS"><![CDATA[Unable to change permissions on: %s]]></define>
+	<define key="TEXT_ERROR_RETRIEVING_UPDATES"><![CDATA[There was an error retrieving updates.<br>%s]]></define>
+</definitions>

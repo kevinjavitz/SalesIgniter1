@@ -1,0 +1,42 @@
+/*
+	Coin Slider jQuery plugin CSS styles
+	http://workshop.rs/projects/coin-slider
+*/
+
+
+.coin-slider { overflow: hidden; zoom: 1; position: relative; }
+.coin-slider a{ text-decoration: none; outline: none; border: none; }
+
+.cs-buttonscustom { font-size: 0px; padding: 10px; float: left; }
+.cs-buttonscustom a { margin-left: 5px; height: 10px; width: 10px; float: left; border: 1px solid #B8C4CF; color: #B8C4CF; text-indent: -1000px; }
+.cs-activecustom { background-color: #B8C4CF; color: #FFFFFF; }
+
+.cs-buttonsnumbers { font-size: 11px; padding: 10px; float: left; }
+.cs-buttonsnumbers a { margin-left: 5px; padding:5px; height: 10px; width: 10px; float: left; border: 1px solid #B8C4CF; color: #B8C4CF; }
+.cs-activenumbers { background-color: #B8C4CF; color: #FFFFFF; }
+
+.cs-buttonsthumbs { float: left;}
+.cs-buttonsthumbs a { margin-left: 5px;  float: left; color: #B8C4CF; width:50px;height:50px;}
+.cs-activethumbs { border:1px solid #ffffff; }
+
+.cs-title {  padding: 10px; background-color: #000000; color: #FFFFFF; }
+
+.cs-prevarrows { background-image:url(left_arrow.png); text-indent:-9999px; width:50px; height:90px; background-repeat:no-repeat;}
+.cs-nextarrows { background-image:url(right_arrow.png); text-indent:-9999px; width:50px; height:90px; background-repeat:no-repeat;}
+
+.titleBar { 
+    padding: 4px;
+    font-style: italic; 
+    font-weight: bold;
+    background-color: #2c546f;
+    font-size: 1.4em; }
+ .titleBar a { color: #000000; }
+ .navigationItem { height:8px; width:8px; line-height: 8px;
+    -moz-border-radius: 8px; 
+   -webkit-border-radius: 8px; 
+   background-color: Transparent; 
+   border: dotted 1px #878787;
+   margin: 0px 3px 3px 0px; }
+.navigationItemHover { background-color: #ababab; }
+.navigationItemSelected { background-color: #dadada; border-color: #dadada; }
+

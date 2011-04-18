@@ -1,0 +1,7 @@
+<data>
+	<name>USPS CASS Validation</name>
+	<key>uspsCass</key>
+	<version>1.0</version>
+	<author>Stephen Walker ( http://www.itwebexperts.com )</author>
+	<status_key>EXTENSION_USPSCASS_ENABLED</status_key>
+</data>

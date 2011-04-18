@@ -1,0 +1,9 @@
+<info>
+	<code>flat</code>
+	<title_key>MODULE_ORDER_SHIPPING_FLAT_TITLE</title_key>
+	<description_key>MODULE_ORDER_SHIPPING_FLAT_DESCRIPTION</description_key>
+	<status_key>MODULE_ORDER_SHIPPING_FLAT_STATUS</status_key>
+	<zone_key>MODULE_ORDER_SHIPPING_FLAT_ZONE</zone_key>
+	<tax_class_key>MODULE_ORDER_SHIPPING_FLAT_TAX_CLASS</tax_class_key>
+	<sort_key>MODULE_ORDER_SHIPPING_FLAT_SORT_ORDER</sort_key>
+</info>

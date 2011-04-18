@@ -1,0 +1,5 @@
+<definitions>
+	<define key="HEADING_TITLE"><![CDATA[Fedex]]></define>
+    <define key="PACKAGE_WEIGHT"><![CDATA[Package Weight:]]></define>
+    <define key="TOTAL_WEIGHT"><![CDATA[Total Weight:]]></define>                  
+</definitions>

@@ -1,0 +1,59 @@
+<configurations>
+	<configuration>
+		<title><![CDATA[Enable Dotpay Module]]></title>
+		<key><![CDATA[MODULE_PAYMENT_DOTPAY_STATUS]]></key>
+		<value><![CDATA[True]]></value>
+		<description><![CDATA[Do you want to accept Dotpay payments?]]></description>
+		<sort_order>1</sort_order>
+		<set_function><![CDATA[tep_cfg_select_option(array('True', 'False'),]]></set_function>
+	</configuration>
+	<configuration>
+		<title><![CDATA[Sort order of display]]></title>
+		<key><![CDATA[MODULE_PAYMENT_DOTPAY_SORT_ORDER]]></key>
+		<value><![CDATA[0]]></value>
+		<description><![CDATA[Sort order of display. Lowest is displayed first.]]></description>
+		<sort_order>2</sort_order>
+	</configuration>
+	<configuration>
+		<title><![CDATA[Payment Zone]]></title>
+		<key><![CDATA[MODULE_PAYMENT_DOTPAY_ZONE]]></key>
+		<value><![CDATA[0]]></value>
+		<description><![CDATA[If a zone is selected, only enable this payment method for that zone.]]></description>
+		<sort_order>3</sort_order>
+		<use_function><![CDATA[tep_get_zone_class_title]]></use_function>
+		<set_function><![CDATA[tep_cfg_pull_down_zone_classes(]]></set_function>
+	</configuration>
+	<configuration>
+		<title><![CDATA[Set Order Status]]></title>
+		<key><![CDATA[MODULE_PAYMENT_DOTPAY_ORDER_STATUS_ID]]></key>
+		<value><![CDATA[0]]></value>
+		<description><![CDATA[Set the status of orders made with this payment module to this value]]></description>
+		<sort_order>4</sort_order>
+		<use_function><![CDATA[tep_get_order_status_name]]></use_function>
+		<set_function><![CDATA[tep_cfg_pull_down_order_statuses(]]></set_function>
+	</configuration>
+    <configuration>
+		<title><![CDATA[DOTPAYID]]></title>
+		<key><![CDATA[MODULE_PAYMENT_DOTPAY_ID]]></key>
+		<value><![CDATA[42515]]></value>
+		<description><![CDATA[DotpayID]]></description>
+		<sort_order>4</sort_order>
+	</configuration>
+    <configuration>
+		<title><![CDATA[URLC Pin]]></title>
+		<key><![CDATA[MODULE_PAYMENT_DOTPAY_URLCPIN]]></key>
+		<value><![CDATA[42515]]></value>
+		<description><![CDATA[URLC Pin]]></description>
+		<sort_order>4</sort_order>
+	</configuration>
+    <configuration>
+		<title><![CDATA[Set Dotpay Completed Order Status]]></title>
+		<key><![CDATA[MODULE_PAYMENT_DOTPAY_COMP_ORDER_STATUS_ID]]></key>
+		<value><![CDATA[0]]></value>
+		<description><![CDATA[Set the status of orders which are confirmed as paid (completed) to this value]]></description>
+		<sort_order>12</sort_order>
+		<use_function><![CDATA[tep_get_order_status_name]]></use_function>
+		<set_function><![CDATA[tep_cfg_pull_down_order_statuses(]]></set_function>
+	</configuration>
+
+</configurations>

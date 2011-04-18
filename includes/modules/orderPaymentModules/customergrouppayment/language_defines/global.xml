@@ -1,0 +1,9 @@
+<definitions>
+	<define key="MODULE_PAYMENT_CUSTOMERGROUPPAYMENT_TEXT_TITLE"><![CDATA[Customer Group Payments]]></define>
+	<define key="MODULE_PAYMENT_CUSTOMERGROUPPAYMENT_TEXT_DESCRIPTION"><![CDATA[Customer Groups Payments]]></define>
+	<define key="TEXT_GROUP_NOT_CREDIT"><![CDATA[Customer Group doesn't have enough credit to pay for the order]]></define>
+	<define key="TEXT_CREDIT_LEFT"><![CDATA[Credit Left:]]></define>
+	<define key="TEXT_NOT_IN_ANY_GROUPS"><![CDATA[Not in any groups]]></define>
+
+
+</definitions>

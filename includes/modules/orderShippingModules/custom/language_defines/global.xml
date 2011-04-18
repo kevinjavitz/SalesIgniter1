@@ -1,0 +1,9 @@
+<definitions>
+	<define key="MODULE_ORDER_SHIPPING_CUSTOM_TITLE"><![CDATA[Custom Delivery Options]]></define>
+	<define key="MODULE_ORDER_SHIPPING_CUSTOM_DESCRIPTION"><![CDATA[Preset delivery options]]></define>
+	<define key="TEXT_INFO_EDIT_INTRO"><![CDATA[Add methods below by pressing the plus sign]]></define>
+	<define key="TABLE_HEADING_TEXT"><![CDATA[Text]]></define>
+	<define key="TABLE_HEADING_COST"><![CDATA[Cost]]></define>
+	<define key="TABLE_HEADING_STATUS"><![CDATA[Enabled]]></define>
+	<define key="TABLE_HEADING_DEFAULT"><![CDATA[Default Selected]]></define>
+</definitions>

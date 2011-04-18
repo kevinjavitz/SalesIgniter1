@@ -1,0 +1,23 @@
+<definitions>
+	<define key="NAVBAR_TITLE_STREAMS"><![CDATA[My Streams]]></define>
+	<define key="HEADING_TITLE_PRODUCT_STREAMS"><![CDATA[%s's Streams]]></define>
+
+	<define key="HEADING_TITLE_STREAMS"><![CDATA[My Streams]]></define>
+
+	<define key="TABLE_HEADING_PRODUCTS_NAME"><![CDATA[Product Name]]></define>
+	<define key="TABLE_HEADING_FILENAME"><![CDATA[File Name]]></define>
+	<define key="TABLE_HEADING_DATE_PURCHASED"><![CDATA[Purchase Date]]></define>
+	<define key="TABLE_HEADING_DATE_EXPIRES"><![CDATA[Expires]]></define>
+	<define key="TABLE_HEADING_ACTION"><![CDATA[Action]]></define>
+	<define key="TABLE_HEADING_ORDER_DETAILS"><![CDATA[Order Details]]></define>
+
+	<define key="TEXT_INFO_EXPIRES_NEVER"><![CDATA[Never]]></define>
+	<define key="TEXT_INFO_PENDING_APPROVAL"><![CDATA[Pending Payment Approval]]></define>
+	<define key="TEXT_INFO_STREAM_PERMISSION_DENIED"><![CDATA[Permission Denied<br><br>if you feel this is an error please contact the store administrator]]></define>
+	<define key="TEXT_NO_PURCHASES"><![CDATA[You have no streams purchased]]></define>
+
+	<define key="TEXT_BUTTON_VIEW_ORDER"><![CDATA[View Order]]></define>
+	<define key="TEXT_BUTTON_VIEW_STREAM"><![CDATA[View Stream]]></define>
+	<define key="TEXT_NOT_ALLOWED_STREAMING"><![CDATA[Your account is not allowed streaming videos. Please <a href="%s">click here</a> to upgrade you memebership ]]></define>
+	<define key="TEXT_EXCEEDED_VIEWS"><![CDATA[You have exceed the number of views for your account]]></define>
+</definitions>

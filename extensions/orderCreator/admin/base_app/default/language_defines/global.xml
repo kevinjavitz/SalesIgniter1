@@ -1,0 +1,53 @@
+<definitions>
+	<define key="HEADING_TITLE"><![CDATA[Order Creator]]></define>
+	
+	<define key="TABLE_HEADING_PRODUCTS"><![CDATA[Products]]></define>
+	<define key="TABLE_HEADING_PRODUCTS_MODEL"><![CDATA[Model]]></define>
+	<define key="TABLE_HEADING_TAX"><![CDATA[Tax]]></define>
+	<define key="TABLE_HEADING_PRICE_EXCLUDING_TAX"><![CDATA[Price (ex)]]></define>
+	<define key="TABLE_HEADING_PRICE_INCLUDING_TAX"><![CDATA[Price (inc)]]></define>
+	<define key="TABLE_HEADING_TOTAL_EXCLUDING_TAX"><![CDATA[Total (ex)]]></define>
+	<define key="TABLE_HEADING_TOTAL_INCLUDING_TAX"><![CDATA[Total (inc)]]></define>
+	
+	<define key="TABLE_HEADING_CUSTOMER_NOTIFIED"><![CDATA[Customer Notified]]></define>
+	<define key="TABLE_HEADING_DATE_ADDED"><![CDATA[Date Added]]></define>
+	<define key="TABLE_HEADING_STATUS"><![CDATA[Status]]></define>
+	<define key="TABLE_HEADING_COMMENTS"><![CDATA[Comments]]></define>
+	<define key="TABLE_HEADING_USPS_TRACKING"><![CDATA[USPS Tracking Number(s)]]></define>
+	<define key="TABLE_HEADING_UPS_TRACKING"><![CDATA[UPS Tracking Number(s)]]></define>
+	<define key="TABLE_HEADING_FEDEX_TRACKING"><![CDATA[Fedex Tracking Number(s)]]></define>
+	<define key="TABLE_HEADING_DHL_TRACKING"><![CDATA[DHL Tracking Number(s)]]></define>
+	
+	<define key="ENTRY_STATUS"><![CDATA[Status:]]></define>
+	<define key="ENTRY_NOTIFY_CUSTOMER"><![CDATA[Notify Customer:]]></define>
+	<define key="ENTRY_NOTIFY_COMMENTS"><![CDATA[Append Comments:]]></define>
+	<define key="ENTRY_PASSWORD"><![CDATA[Account Password:]]></define>
+	<define key="ENTRY_SEARCH_CUSTOMER"><![CDATA[Search For Customer:]]></define>
+	
+	<define key="TEXT_BUTTON_SAVE_AS_ORDER"><![CDATA[Save As Order]]></define>
+	<define key="TEXT_BUTTON_UPDATE_ORDER"><![CDATA[Update Order]]></define>
+	<define key="TEXT_BUTTON_UPDATE_CUSTOMER"><![CDATA[Update Customer]]></define>
+	
+	<define key="HEADING_CUSTOMER_INFORMATION"><![CDATA[Customer Information]]></define>
+	<define key="HEADING_PRODUCTS"><![CDATA[Products]]></define>
+	<define key="HEADING_ORDER_TOTALS"><![CDATA[Order Totals]]></define>
+	<define key="HEADING_PAYMENT_HISTORY"><![CDATA[Payment History]]></define>
+	<define key="HEADING_STATUS_HISTORY"><![CDATA[Status History]]></define>
+	<define key="HEADING_COMMENTS_AND_TRACKING"><![CDATA[Comments And Tracking]]></define>
+	
+	<define key="TEXT_UNPAID_BALANCE"><![CDATA[Unpaid Balance:]]></define>
+	<define key="TEXT_PENDING_PAYMENTS"><![CDATA[Pending Payments:]]></define>
+	<define key="TEXT_OVERPAID_BALANCE"><![CDATA[Overpaid Balance:]]></define>
+	<define key="TEXT_COPY_TO"><![CDATA[Copy To:]]></define>
+	<define key="TEXT_ADDRESS_CUSTOMER"><![CDATA[Customer Address]]></define>
+	<define key="TEXT_ADDRESS_BILLING"><![CDATA[Billing Address]]></define>
+	<define key="TEXT_ADDRESS_DELIVERY"><![CDATA[Delivery Address]]></define>
+	<define key="TEXT_ADDRESS_PICKUP"><![CDATA[Pickup Address]]></define>
+
+	<define key="PURCHASE_TYPE_NEW_NAME"><![CDATA[New]]></define>
+	<define key="PURCHASE_TYPE_NEW_SHOW"><![CDATA[New]]></define>
+	<define key="PURCHASE_TYPE_USED_NAME"><![CDATA[Used]]></define>
+	<define key="PURCHASE_TYPE_USED_SHOW"><![CDATA[Used]]></define>
+	<define key="PURCHASE_TYPE_RENTAL_NAME"><![CDATA[Rental]]></define>
+	<define key="PURCHASE_TYPE_RENTAL_SHOW"><![CDATA[Rental]]></define>
+</definitions>

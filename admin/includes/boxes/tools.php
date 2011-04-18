@@ -1,0 +1,70 @@
+<?php
+/*
+	Sales Igniter E-Commerce System
+	Version: 1.0
+	
+	I.T. Web Experts
+	http://www.itwebexperts.com
+	
+	Copyright (c) 2010 I.T. Web Experts
+	
+	This script and its source are not distributable without the written conscent of I.T. Web Experts
+*/
+
+	$contents = array(
+		'text' => sysLanguage::get('BOX_HEADING_TOOLS'),
+		'link' => false,
+		'children' => array()
+	);
+
+	if (sysPermissions::adminAccessAllowed('mail', 'default') === true){
+		$contents['children'][] = array(
+			'link' => itw_app_link(null, 'mail', 'default', 'SSL'),
+			'text' => sysLanguage::get('BOX_TOOLS_MAIL')
+		);
+	}
+	
+	if (sysPermissions::adminAccessAllowed('newsletters', 'default') === true){
+		$contents['children'][] = array(
+			'link' => itw_app_link(null, 'newsletters', 'default', 'SSL'),
+			'text' => sysLanguage::get('BOX_TOOLS_NEWSLETTER_MANAGER')
+		);
+	}
+	
+	if (sysPermissions::adminAccessAllowed('server_info', 'default') === true){
+		$contents['children'][] = array(
+			'link' => itw_app_link(null, 'server_info', 'default', 'SSL'),
+			'text' => sysLanguage::get('BOX_TOOLS_SERVER_INFO')
+		);
+	}
+	
+	if (sysPermissions::adminAccessAllowed('whos_online', 'default') === true){
+		$contents['children'][] = array(
+			'link' => itw_app_link(null, 'whos_online', 'default', 'SSL'),
+			'text' => sysLanguage::get('BOX_TOOLS_WHOS_ONLINE')
+		);
+	}
+	
+	if (sysPermissions::adminAccessAllowed('zones', 'default') === true){
+		$contents['children'][] = array(
+			'link' => itw_app_link(null, 'zones', 'default', 'SSL'),
+			'text' => 'Google Zones'
+		);
+	}
+	
+	if (sysPermissions::adminAccessAllowed('ses_update', 'default') === true){
+		$contents['children'][] = array(
+			'link' => itw_app_link(null, 'ses_update', 'default', 'SSL'),
+			'text' => sysLanguage::get('TEXT_ADMIN_MENU_SES_UPDATES')
+		);
+	}
+	
+	//if (sysPermissions::adminAccessAllowed('membership', 'packages') === true){
+		$contents['children'][] = array(
+			'link' => tep_href_link('clearDB.php'),
+			'text' => 'Clear Database'
+		);
+	//}
+
+	EventManager::notify('BoxToolsAddLink', &$contents);
+?>

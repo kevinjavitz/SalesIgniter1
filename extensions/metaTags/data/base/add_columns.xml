@@ -1,0 +1,39 @@
+<data>
+
+	<CategoriesDescription>
+		<categories_htc_title_tag>
+			<type>string</type>
+			<length>80</length>
+			<collation>utf8_general_ci</collation>
+		</categories_htc_title_tag>
+		<categories_htc_desc_tag>
+			<type>string</type>
+			<length>999</length>
+			<collation>utf8_general_ci</collation>
+		</categories_htc_desc_tag>
+		<categories_htc_keywords_tag>
+			<type>string</type>
+			<length>999</length>
+			<collation>utf8_general_ci</collation>
+		</categories_htc_keywords_tag>
+	</CategoriesDescription>
+
+	<ProductsDescription>
+		<products_head_title_tag>
+			<type>string</type>
+			<length>80</length>
+			<collation>utf8_general_ci</collation>
+		</products_head_title_tag>
+		<products_head_desc_tag>
+			<type>string</type>
+			<length>999</length>
+			<collation>utf8_general_ci</collation>
+		</products_head_desc_tag>
+		<products_head_keywords_tag>
+			<type>string</type>
+			<length>999</length>
+			<collation>utf8_general_ci</collation>
+		</products_head_keywords_tag>
+	</ProductsDescription>
+
+</data>

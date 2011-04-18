@@ -1,0 +1,28 @@
+<definitions>
+	<define key="NAVBAR_TITLE_1"><![CDATA[My Account]]></define>
+	<define key="NAVBAR_TITLE_2"><![CDATA[Billing Address]]></define>
+	<define key="NAVBAR_TITLE"><![CDATA[Billing Address]]></define>
+	<define key="NAVBAR_TITLE_ADD_ENTRY"><![CDATA[New Entry]]></define>
+	<define key="NAVBAR_TITLE_MODIFY_ENTRY"><![CDATA[Update Entry]]></define>
+	<define key="NAVBAR_TITLE_DELETE_ENTRY"><![CDATA[Delete Entry]]></define>
+	<define key="HEADING_TITLE_ADD_ENTRY"><![CDATA[New Address Book Entry]]></define>
+	<define key="HEADING_TITLE_MODIFY_ENTRY"><![CDATA[Update Billing Address Entry]]></define>
+	<define key="HEADING_TITLE_DELETE_ENTRY"><![CDATA[Delete Address Book Entry]]></define>
+	<define key="DELETE_ADDRESS_TITLE"><![CDATA[Delete Address]]></define>
+	<define key="DELETE_ADDRESS_DESCRIPTION"><![CDATA[Are you sure you would like to delete the selected address from your address book?]]></define>
+	<define key="NEW_ADDRESS_TITLE"><![CDATA[New Address Book Entry]]></define>
+	<define key="SELECTED_ADDRESS"><![CDATA[Selected Address]]></define>
+	<define key="SET_AS_PRIMARY"><![CDATA[Set as primary address.]]></define>
+	<define key="SUCCESS_ADDRESS_BOOK_ENTRY_DELETED"><![CDATA[The selected address has been successfully removed from your address book.]]></define>
+	<define key="SUCCESS_ADDRESS_BOOK_ENTRY_UPDATED"><![CDATA[Your address book has been successfully updated.]]></define>
+	<define key="WARNING_PRIMARY_ADDRESS_DELETION"><![CDATA[The primary address cannot be deleted. Please set another address as the primary address and try again.]]></define>
+	<define key="ERROR_NONEXISTING_ADDRESS_BOOK_ENTRY"><![CDATA[The address book entry does not exist.]]></define>
+	<define key="ERROR_ADDRESS_BOOK_FULL"><![CDATA[Your address book is full. Please delete an unneeded address to save a new one.]]></define>
+	<define key="MODIFY_CC_INFO_TITLE"><![CDATA[Change Credit Card Information]]></define>
+	<define key="CREDIT_CARD_NUMBER"><![CDATA[Credit Card Number]]></define>
+	<define key="CREDIT_CARD_EXPIRY"><![CDATA[Expiry Month / Year]]></define>
+	<define key="CREDIT_CARD_CVV"><![CDATA[CVV]]></define>
+	<define key="CREDIT_CARD_NUMBER_TEXT"><![CDATA[*]]></define>
+	<define key="CREDIT_CARD_EXPIRY_TEXT"><![CDATA[*]]></define>
+	<define key="CREDIT_CARD_CVV_TEXT"><![CDATA[*]]></define>
+</definitions>

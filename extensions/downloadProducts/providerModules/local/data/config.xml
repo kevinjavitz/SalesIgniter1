@@ -1,0 +1,17 @@
+<configurations>
+	<configuration>
+		<title><![CDATA[Enable Local Module]]></title>
+		<key><![CDATA[MODULE_DOWNLOAD_PROVIDER_LOCAL_STATUS]]></key>
+		<value><![CDATA[True]]></value>
+		<description><![CDATA[Do you want to enable this module to be used by providers?]]></description>
+		<sort_order>1</sort_order>
+		<set_function><![CDATA[tep_cfg_select_option(array('True', 'False'),]]></set_function>
+	</configuration>
+	<configuration>
+		<title><![CDATA[Storage Folder]]></title>
+		<key><![CDATA[MODULE_DOWNLOAD_PROVIDER_LOCAL_FOLDER]]></key>
+		<value><![CDATA[]]></value>
+		<description><![CDATA[Folder where downloads are stored locally]]></description>
+		<sort_order>2</sort_order>
+	</configuration>
+</configurations>

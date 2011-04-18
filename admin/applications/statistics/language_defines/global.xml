@@ -1,0 +1,69 @@
+<definitions>
+	<define key="HEADING_TITLE_CUSTOMERS"><![CDATA[Statistics: Customers Orders]]></define>
+	<define key="TABLE_HEADING_NUMBER"><![CDATA[Rank]]></define>
+	<define key="TABLE_HEADING_CUSTOMERS"><![CDATA[Customers]]></define>
+	<define key="TABLE_HEADING_TOTAL_PURCHASED"><![CDATA[Total Purchased]]></define>
+	
+	<define key="HEADING_TITLE_KEYWORDS"><![CDATA[Statistics: Search Keywords]]></define>
+	<define key="TABLE_HEADING_SEARCH_WORDS"><![CDATA[Keywords]]></define>
+	<define key="TABLE_HEADING_SEARCH_COUNT"><![CDATA[Total Searches]]></define>
+	<define key="TEXT_BUTTON_UPDATE_WORD_LIST"><![CDATA[Update from Raw Data]]></define>
+	<define key="TEXT_BUTTON_CLEAR_WORD_LIST"><![CDATA[Clear Search Words]]></define>
+	<define key="TEXT_BUTTON_VIEW_WORD_LIST"><![CDATA[View word/phrase list]]></define>
+	
+	<define key="TABLE_HEADING_ORIGINAL_WORDS"><![CDATA[Original word/phrase]]></define>
+	<define key="TABLE_HEADING_REPLACEMENT_WORDS"><![CDATA[Replacement word/phrase]]></define>
+	<define key="TABLE_HEADING_ACTION"><![CDATA[Action]]></define>
+	<define key="TEXT_BUTTON_NEW_ENTRY"><![CDATA[Add word/phrase]]></define>
+	
+	<define key="HEADING_TITLE_MONTHLY_SALES"><![CDATA[Statistics: Monthly Sales/Tax]]></define>
+	<define key="HEADING_TITLE_STATUS"><![CDATA[Status]]></define>
+	<define key="TABLE_HEADING_YEAR"><![CDATA[Year]]></define>
+	<define key="TABLE_HEADING_MONTH"><![CDATA[Month]]></define>
+	<define key="TABLE_HEADING_DAY"><![CDATA[Day]]></define>
+	<define key="TABLE_HEADING_INCOME"><![CDATA[Gross<br> Income]]></define>
+	<define key="TABLE_HEADING_SALES"><![CDATA[Product<br> sales]]></define>
+	<define key="TABLE_HEADING_NONTAXED"><![CDATA[Nontaxed<br> sales]]></define>
+	<define key="TABLE_HEADING_TAXED"><![CDATA[Taxed<br> sales]]></define>
+	<define key="TABLE_HEADING_TAX_COLL"><![CDATA[Taxes<br> collected]]></define>
+	<define key="TABLE_HEADING_SHIPHNDL"><![CDATA[Shipping<br> & Handling]]></define>
+	<define key="TABLE_HEADING_SHIP_TAX"><![CDATA[Tax on<br /> shipping]]></define>
+	<define key="TABLE_HEADING_LOWORDER"><![CDATA[Low Order<br /> Fees]]></define>
+	<define key="TABLE_HEADING_OTHER"><![CDATA[Gift<br> Vouchers]]></define>
+	<define key="TABLE_FOOTER_YTD"><![CDATA[YTD]]></define>
+	<define key="TABLE_FOOTER_YEAR"><![CDATA[YEAR]]></define>
+	<define key="TEXT_DETAIL"><![CDATA[Detail]]></define>
+	<define key="TEXT_ALL_ORDERS"><![CDATA[All orders]]></define>
+	<define key="TEXT_NOTHING_FOUND"><![CDATA[No income for this date/status selection]]></define>
+	<define key="TEXT_BUTTON_REPORT_INVERT"><![CDATA[Invert]]></define>
+	<define key="TEXT_BUTTON_REPORT_SAVE"><![CDATA[Save CSV]]></define>
+	<define key="TEXT_REPORT_DATE_FORMAT"><![CDATA[j M Y -   g:i a]]></define>
+	
+	<define key="HEADING_TITLE_VIEWED_PRODUCTS"><![CDATA[Statistics: Products Viewed]]></define>
+	<define key="TABLE_HEADING_PRODUCTS"><![CDATA[Products]]></define>
+	<define key="TABLE_HEADING_VIEWED"><![CDATA[Views]]></define>
+	
+	<define key="HEADING_TITLE_PURCHASED_PRODUCTS"><![CDATA[Best Products Purchased]]></define>
+	<define key="TABLE_HEADING_PRODUCTS"><![CDATA[Products]]></define>
+	<define key="TABLE_HEADING_PURCHASED"><![CDATA[Purchased]]></define>
+	
+	<define key="HEADING_TITLE_REFERRALS"><![CDATA[Statistics: Referral Sources]]></define>
+	<define key="TABLE_HEADING_REFERRALS"><![CDATA[Sources]]></define>
+	<define key="TABLE_HEADING_OTHER_REFERRALS"><![CDATA[Other Sources]]></define>
+	<define key="TABLE_HEADING_REFERRED"><![CDATA[Referred]]></define>
+	<define key="TEXT_OTHER"><![CDATA[Other]]></define>
+	
+	<define key="HEADING_TITLE_RECOVERED_CARTS"><![CDATA[Statistics: Recover Cart Sales]]></define>
+	<define key="TEXT_DAYS_FILTER_PREFIX"><![CDATA[Show for last ]]></define>
+	<define key="TEXT_DAYS_FILTER_POSTFIX"><![CDATA[ days ]]></define>
+	<define key="TABLE_HEADING_SCART_ID"><![CDATA[SCart ID]]></define>
+	<define key="TABLE_HEADING_SCART_DATE"><![CDATA[Date Added]]></define>
+	<define key="TABLE_HEADING_CUSTOMER"><![CDATA[Customer Name]]></define>
+	<define key="TABLE_HEADING_ORDER_DATE"><![CDATA[Order Date]]></define>
+	<define key="TABLE_HEADING_ORDER_STATUS"><![CDATA[Status]]></define>
+	<define key="TABLE_HEADING_ORDER_AMOUNT"><![CDATA[Amount]]></define>
+	<define key="TOTAL_RECORDS"><![CDATA[Examined Records:]]></define>
+	<define key="TOTAL_SALES"><![CDATA[Recovered Sales:]]></define>
+	<define key="TOTAL_SALES_EXPLANATION"><![CDATA[ (Possible sales from customers who abanoned carts & were notified via RCS)]]></define>
+	<define key="TOTAL_RECOVERED"><![CDATA[Total Recovered:]]></define>
+</definitions>

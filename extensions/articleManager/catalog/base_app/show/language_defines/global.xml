@@ -1,0 +1,50 @@
+<definitions>
+  	<define key="NAVBAR_TITLE_DEFAULT"><![CDATA[All Articles]]></define>
+  	<define key="NAVBAR_TITLE_NESTED"><![CDATA[Topics]]></define>
+  	<define key="NAVBAR_TITLE_ARTICLES"><![CDATA[Articles]]></define>
+  	<define key="NAVBAR_TITLE_INFO"><![CDATA[Article Content]]></define>
+ 	<define key="NAVBAR_TITLE_NEW"><![CDATA[New Articles]]></define>
+ 	
+  	<define key="HEADING_TITLE_DEFAULT"><![CDATA[All Articles]]></define>
+  	<define key="HEADING_TITLE_NESTED"><![CDATA[Topics]]></define>
+  	<define key="HEADING_TITLE_ARTICLES"><![CDATA[Articles]]></define>
+	<define key="HEADING_TITLE_NEW"><![CDATA[New Articles]]></define>
+  	
+	<define key="HEADING_ARTICLE_NOT_FOUND"><![CDATA[Article Not Found]]></define>
+	<define key="TEXT_ARTICLE_NOT_FOUND"><![CDATA[Sorry, but the article you requested is not available in this site.]]></define>
+	<define key="TEXT_MORE_INFORMATION"><![CDATA[For more information, please visit this articles <a href="%s" target="_blank"><u>web page</u></a>.]]></define>
+	<define key="TEXT_DATE_ADDED"><![CDATA[This article was published on %s.]]></define>
+	<define key="TEXT_DATE_AVAILABLE"><![CDATA[<font color="#FF0000">This article will be published on %s.</font>]]></define>
+	<define key="TEXT_BY"><![CDATA[by ]]></define>
+	<define key="BOX_TEXT_TELL_A_FRIEND"><![CDATA[Tell a friend]]></define>
+	<define key="TEXT_TELL_A_FRIEND"><![CDATA[Tell a friend about this article:]]></define>
+	<define key="TEXT_XSELL_ARTICLES"><![CDATA[Products related to this article:]]></define>
+
+	<define key="TABLE_HEADING_NEW_ARTICLES"><![CDATA[New Articles in %s]]></define>
+  	<define key="TABLE_HEADING_ARTICLES"><![CDATA[Articles]]></define>
+  	<define key="TABLE_HEADING_AUTHOR"><![CDATA[Author]]></define>
+  	<define key="TEXT_NO_ARTICLES"><![CDATA[There are currently no articles in this topic.]]></define>
+  	<define key="TEXT_NO_ARTICLES2"><![CDATA[There are currently no articles available from this author.]]></define>
+  	<define key="TEXT_NUMBER_OF_ARTICLES"><![CDATA[Number of Articles: ]]></define>
+  	<define key="TEXT_SHOW"><![CDATA[Display:]]></define>
+  	<define key="TEXT_NOW"><![CDATA[' now]]></define>
+  	<define key="TEXT_ALL_TOPICS"><![CDATA[All Topics]]></define>
+  	<define key="TEXT_ALL_AUTHORS"><![CDATA[All Authors]]></define>
+  	<define key="TEXT_ARTICLES_BY"><![CDATA[Articles by ]]></define>
+  	<define key="TEXT_ARTICLES"><![CDATA[Below is a list of articles with the most recent ones listed first.]]></define>
+  	<define key="TEXT_DATE_ADDED"><![CDATA[Published:]]></define>
+  	<define key="TEXT_AUTHOR"><![CDATA[Author:]]></define>
+  	<define key="TEXT_TOPIC"><![CDATA[Topic:]]></define>
+  	<define key="TEXT_BY"><![CDATA[by]]></define>
+  	<define key="TEXT_READ_MORE"><![CDATA[Read More...]]></define>
+  	<define key="TEXT_MORE_INFORMATION"><![CDATA[For more information, please visit this authors <a href="http://%s" target="_blank">web page</a>.]]></define>
+  	
+	<define key="TEXT_NEW_ARTICLES"><![CDATA[The following articles were added in the last %s days.]]></define>
+	<define key="TEXT_ARTICLES"><![CDATA[Below is a list of articles with the most recent ones listed first.]]></define>
+	<define key="TEXT_NO_NEW_ARTICLES"><![CDATA[No new articles have been added in the last %s days.]]></define>
+	<define key="TEXT_DATE_ADDED"><![CDATA[Published:]]></define>
+	<define key="TEXT_AUTHOR"><![CDATA[Author:]]></define>
+	<define key="TEXT_TOPIC"><![CDATA[Topic:]]></define>
+	<define key="TEXT_BY"><![CDATA[by]]></define>
+	<define key="TEXT_READ_MORE"><![CDATA[Read More]]></define>
+</definitions>

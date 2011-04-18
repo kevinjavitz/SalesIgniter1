@@ -1,0 +1,18 @@
+<definitions>
+	<define key="HEADING_TITLE"><![CDATA[Products Attributes]]></define>
+	<define key="WINDOW_TITLE_NEW_OPTION"><![CDATA[Create New Option]]></define>
+	<define key="WINDOW_TITLE_EDIT_OPTION"><![CDATA[Edit Option]]></define>
+	<define key="WINDOW_TITLE_NEW_VALUE"><![CDATA[Create New Value]]></define>
+	<define key="WINDOW_TITLE_EDIT_VALUE"><![CDATA[Edit Value]]></define>
+	<define key="WINDOW_TITLE_NEW_GROUP"><![CDATA[Create New Group]]></define>
+	<define key="WINDOW_TITLE_EDIT_GROUP"><![CDATA[Edit Group]]></define>
+	<define key="ENTRY_VALUE_NAME"><![CDATA[Value Name: ]]></define>
+	<define key="ENTRY_OPTION_NAME"><![CDATA[Option Name: ]]></define>
+	<define key="ENTRY_OPTION_TYPE"><![CDATA[Option Type: ]]></define>
+	<define key="ENTRY_OPTION_SETTINGS"><![CDATA[Option Settings: ]]></define>
+	<define key="ENTRY_OPTION_GROUP_NAME"><![CDATA[Group Name: ]]></define>
+	<define key="TEXT_TRASH_BIN"><![CDATA[Drop Here To Trash]]></define>
+	<define key="TEXT_BUTTON_NEW_OPTION"><![CDATA[New Option]]></define>
+	<define key="TEXT_BUTTON_NEW_VALUE"><![CDATA[New Value]]></define>
+	<define key="TEXT_BUTTON_NEW_GROUP"><![CDATA[New Group]]></define>
+</definitions>

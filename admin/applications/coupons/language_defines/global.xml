@@ -1,0 +1,219 @@
+<definitions>
+    <define key="TOP_BAR_TITLE"><![CDATA[Statistics]]></define>
+    <define key="HEADING_TITLE"><![CDATA[Discount Coupons]]></define>
+    <define key="HEADING_TITLE_STATUS"><![CDATA[Status : ]]></define>
+    <define key="TEXT_CUSTOMER"><![CDATA[Customer:]]></define>
+    <define key="TEXT_COUPON"><![CDATA[Coupon Name]]></define>
+    <define key="TEXT_COUPON_ALL"><![CDATA[All Coupons]]></define>
+    <define key="TEXT_COUPON_ACTIVE"><![CDATA[Active Coupons]]></define>
+    <define key="TEXT_COUPON_INACTIVE"><![CDATA[Inactive Coupons]]></define>
+    <define key="TEXT_SUBJECT"><![CDATA[Subject:]]></define>
+    <define key="TEXT_FROM"><![CDATA[From:]]></define>
+    <define key="TEXT_FREE_SHIPPING"><![CDATA[Free Shipping]]></define>
+    <define key="TEXT_MESSAGE"><![CDATA[Message:]]></define>
+    <define key="TEXT_SELECT_CUSTOMER"><![CDATA[Select Customer]]></define>
+    <define key="TEXT_ALL_CUSTOMERS"><![CDATA[All Customers]]></define>
+    <define key="TEXT_NEWSLETTER_CUSTOMERS"><![CDATA[To All Newsletter Subscribers]]></define>
+    <define key="TEXT_CONFIRM_DELETE"><![CDATA[Are you sure you want to delete this Coupon?]]></define>
+
+    <define key="TEXT_TO_REDEEM"><![CDATA[You can redeem this coupon during checkout. Just enter the code in the box provided, and click on the redeem button.]]></define>
+    <define key="TEXT_IN_CASE"><![CDATA[ in case you have any problems. ]]></define>
+    <define key="TEXT_VOUCHER_IS"><![CDATA[The coupon code is ]]></define>
+    <define key="TEXT_REMEMBER"><![CDATA[Don\'t lose the coupon code, make sure to keep the code safe so you can benefit from this special offer.]]></define>
+    <define key="TEXT_ENTER_CODE"><![CDATA[ and enter the code ]]></define>
+
+    <define key="TABLE_HEADING_ACTION"><![CDATA[Action]]></define>
+
+    <define key="CUSTOMER_ID"><![CDATA[Customer id]]></define>
+    <define key="CUSTOMER_NAME"><![CDATA[Customer Name]]></define>
+    <define key="REDEEM_DATE"><![CDATA[Date Redeemed]]></define>
+    <define key="IP_ADDRESS"><![CDATA[IP Address]]></define>
+
+    <define key="TEXT_REDEMPTIONS"><![CDATA[Redemptions]]></define>
+    <define key="TEXT_REDEMPTIONS_TOTAL"><![CDATA[In Total]]></define>
+    <define key="TEXT_REDEMPTIONS_CUSTOMER"><![CDATA[For this Customer]]></define>
+    <define key="TEXT_NO_FREE_SHIPPING"><![CDATA[No Free Shipping]]></define>
+
+    <define key="NOTICE_EMAIL_SENT_TO"><![CDATA[Notice: Email sent to: %s]]></define>
+    <define key="ERROR_NO_CUSTOMER_SELECTED"><![CDATA[Error: No customer has been selected.]]></define>
+    <define key="COUPON_NAME"><![CDATA[Coupon Name]]></define>
+    <define key="COUPON_AMOUNT"><![CDATA[Coupon Amount]]></define>
+    <define key="COUPON_CODE"><![CDATA[Coupon Code]]></define>
+    <define key="COUPON_STARTDATE"><![CDATA[Start Date]]></define>
+    <define key="COUPON_FINISHDATE"><![CDATA[End Date]]></define>
+    <define key="COUPON_FREE_SHIP"><![CDATA[Free Shipping]]></define>
+    <define key="COUPON_DESC"><![CDATA[Coupon Description]]></define>
+    <define key="COUPON_MIN_ORDER"><![CDATA[Coupon Minimum Order]]></define>
+    <define key="COUPON_USES_COUPON"><![CDATA[Uses per Coupon]]></define>
+    <define key="COUPON_USES_USER"><![CDATA[Uses per Customer]]></define>
+    <define key="COUPON_PRODUCTS"><![CDATA[Valid Product List]]></define>
+    <define key="COUPON_CATEGORIES"><![CDATA[Valid Categories List]]></define>
+    <define key="VOUCHER_NUMBER_USED"><![CDATA[Number Used]]></define>
+    <define key="DATE_CREATED"><![CDATA[Date Created]]></define>
+    <define key="DATE_MODIFIED"><![CDATA[Date Modified]]></define>
+    <define key="TEXT_HEADING_NEW_COUPON"><![CDATA[Create New Coupon]]></define>
+    <define key="TEXT_NEW_INTRO"><![CDATA[Please fill out the following information for the new coupon.<br>]]></define>
+
+    <define key="COUPON_NAME_HELP"><![CDATA[A short name for the coupon]]></define>
+    <define key="COUPON_AMOUNT_HELP"><![CDATA[The value of the discount for the coupon, either fixed or add a % on the end for a percentage discount.]]></define>
+    <define key="COUPON_CODE_HELP"><![CDATA[You can enter your own code here, or leave blank for an auto generated one.]]></define>
+    <define key="COUPON_STARTDATE_HELP"><![CDATA[The date the coupon will be valid from]]></define>
+    <define key="COUPON_FINISHDATE_HELP"><![CDATA[The date the coupon expires]]></define>
+    <define key="COUPON_FREE_SHIP_HELP"><![CDATA[The coupon gives free shipping on an order. Note. This overrides the coupon_amount figure but respects the minimum order value]]></define>
+    <define key="COUPON_DESC_HELP"><![CDATA[A description of the coupon for the customer]]></define>
+    <define key="COUPON_MIN_ORDER_HELP"><![CDATA[The minimum order value before the coupon is valid]]></define>
+    <define key="COUPON_USES_COUPON_HELP"><![CDATA[The maximum number of times the coupon can be used, leave blank if you want no limit.]]></define>
+    <define key="COUPON_USES_USER_HELP"><![CDATA[Number of times a user can use the coupon, leave blank for no limit.]]></define>
+    <define key="COUPON_PRODUCTS_HELP"><![CDATA[A comma separated list of product_ids that this coupon can be used with. Leave blank for no restrictions.]]></define>
+    <define key="COUPON_CATEGORIES_HELP"><![CDATA[A comma separated list of cpaths that this coupon can be used with, leave blank for no restrictions.]]></define>
+    <define key="ERROR_NO_COUPON_AMOUNT"><![CDATA[Error: No coupon amount has been entered. Either enter an amount or select free shipping.]]></define>
+    <define key="ERROR_COUPON_EXISTS"><![CDATA[Error: A coupon with the same coupon code already exists.]]></define>
+    <define key="COUPON_BUTTON_EMAIL_VOUCHER"><![CDATA[Email Voucher]]></define>
+    <define key="COUPON_BUTTON_EDIT_VOUCHER"><![CDATA[Edit Voucher]]></define>
+    <define key="COUPON_BUTTON_DELETE_VOUCHER"><![CDATA[Delete Voucher]]></define>
+    <define key="COUPON_BUTTON_VOUCHER_REPORT"><![CDATA[Voucher Report]]></define>
+    <define key="COUPON_STATUS"><![CDATA[Status]]></define>
+    <define key="COUPON_STATUS_HELP"><![CDATA[Set to ' . IMAGE_ICON_STATUS_RED . ' to disable customers\' ability to use the coupon.]]></define>
+    <define key="HEADING_TITLE"><![CDATA[Send Gift Voucher To Customers]]></define>
+
+    <define key="TEXT_CUSTOMER"><![CDATA[Customer:]]></define>
+    <define key="TEXT_SUBJECT"><![CDATA[Subject:]]></define>
+    <define key="TEXT_FROM"><![CDATA[From:]]></define>
+    <define key="TEXT_TO"><![CDATA[Email To:]]></define>
+    <define key="TEXT_AMOUNT"><![CDATA[Amount]]></define>
+    <define key="TEXT_MESSAGE"><![CDATA[Message:]]></define>
+    <define key="TEXT_SINGLE_EMAIL"><![CDATA[<span class="smallText">Use this for sending single emails, otherwise use dropdown above</span>]]></define>
+    <define key="TEXT_SELECT_CUSTOMER"><![CDATA[Select Customer]]></define>
+    <define key="TEXT_ALL_CUSTOMERS"><![CDATA[All Customers]]></define>
+    <define key="TEXT_NEWSLETTER_CUSTOMERS"><![CDATA[To All Newsletter Subscribers]]></define>
+
+    <define key="NOTICE_EMAIL_SENT_TO"><![CDATA[Notice: Email sent to: %s]]></define>
+    <define key="ERROR_NO_CUSTOMER_SELECTED"><![CDATA[Error: No customer has been selected.]]></define>
+    <define key="ERROR_NO_AMOUNT_SELECTED"><![CDATA[Error: No amount has been selected.]]></define>
+
+    <define key="TEXT_GV_WORTH"><![CDATA[The Gift Voucher is worth ]]></define>
+    <define key="TEXT_TO_REDEEM"><![CDATA[To redeem this Gift Voucher, please click on the link below. Please also write down the redemption code]]></define>
+    <define key="TEXT_WHICH_IS"><![CDATA[ which is ]]></define>
+    <define key="TEXT_IN_CASE"><![CDATA[ in case you have any problems.]]></define>
+    <define key="TEXT_OR_VISIT"><![CDATA[or visit ]]></define>
+    <define key="TEXT_ENTER_CODE"><![CDATA[ and enter the code during the checkout process]]></define>
+    <define key="TEXT_REDEEM_COUPON_MESSAGE_HEADER"><![CDATA[You recently purchasd a Gift Voucher from our site, for security reasons, the amount of the Gift Voucher was not immediatley credited to you. The shop owner has now released this amount.]]></define>
+    <define key="TEXT_REDEEM_COUPON_MESSAGE_AMOUNT"><![CDATA[The value of the Gift Voucher was %s]]></define>
+    <define key="TEXT_REDEEM_COUPON_MESSAGE_BODY"><![CDATA[You can now visit our site, login and send the Gift Voucher amount to anyone you want.]]></define>
+    <define key="TEXT_REDEEM_COUPON_MESSAGE_FOOTER"><![CDATA[\n\n]]></define>
+    <define key="HEADING_TITLE"><![CDATA[Gift Voucher Release Queue]]></define>
+
+    <define key="TABLE_HEADING_CUSTOMERS"><![CDATA[Customers]]></define>
+    <define key="TABLE_HEADING_ORDERS_ID"><![CDATA[Order-No.]]></define>
+    <define key="TABLE_HEADING_VOUCHER_VALUE"><![CDATA[Voucher Value]]></define>
+    <define key="TABLE_HEADING_DATE_PURCHASED"><![CDATA[Date Purchased]]></define>
+    <define key="TABLE_HEADING_ACTION"><![CDATA[Action]]></define>
+    <define key="TEXT_REDEEM_COUPON_MESSAGE_HEADER"><![CDATA[You recently purchased a Gift Voucher from our online store.\nFor security reasons this was not made immediately available to you.\nHowever this amount has now been released. You can now visit our store\n and send the value via email to someone else\n\n]]></define>
+    <define key="TEXT_REDEEM_COUPON_MESSAGE_AMOUNT"><![CDATA[The Gift Voucher(s) you purchased are worth %s\n\n]]></define>
+    <define key="TEXT_REDEEM_COUPON_MESSAGE_BODY"><![CDATA[]]></define>
+    <define key="TEXT_REDEEM_COUPON_MESSAGE_FOOTER"><![CDATA[]]></define>
+    <define key="TEXT_REDEEM_COUPON_SUBJECT"><![CDATA[Gift Voucher Purchase]]></define>
+    <define key="HEADING_TITLE"><![CDATA[Gift Voucher\'s Sent]]></define>
+
+    <define key="TABLE_HEADING_SENDERS_NAME"><![CDATA[Senders Name]]></define>
+    <define key="TABLE_HEADING_VOUCHER_VALUE"><![CDATA[Voucher Value]]></define>
+    <define key="TABLE_HEADING_VOUCHER_CODE"><![CDATA[Voucher Code]]></define>
+    <define key="TABLE_HEADING_DATE_SENT"><![CDATA[Date Sent]]></define>
+    <define key="TABLE_HEADING_ACTION"><![CDATA[Action]]></define>
+
+    <define key="TEXT_INFO_SENDERS_ID"><![CDATA[Senders ID:]]></define>
+    <define key="TEXT_INFO_AMOUNT_SENT"><![CDATA[Amount Sent:]]></define>
+    <define key="TEXT_INFO_DATE_SENT"><![CDATA[Date Sent:]]></define>
+    <define key="TEXT_INFO_VOUCHER_CODE"><![CDATA[Voucher Code:]]></define>
+    <define key="TEXT_INFO_EMAIL_ADDRESS"><![CDATA[Email Addr:]]></define>
+    <define key="TEXT_INFO_DATE_REDEEMED"><![CDATA[Date Redeemed:]]></define>
+    <define key="TEXT_INFO_IP_ADDRESS"><![CDATA[IP Address:]]></define>
+    <define key="TEXT_INFO_CUSTOMERS_ID"><![CDATA[Customer Id:]]></define>
+    <define key="TEXT_INFO_NOT_REDEEMED"><![CDATA[Not Redeemed]]></define>
+    <define key="NONE"><![CDATA[None]]></define>
+   
+    
+    
+    <!-- NEW DEFINES TO REPLACE ABOVE -->
+    <define key="HEADING_TITLE_DEFAULT"><![CDATA[Coupon's]]></define>
+    
+	<define key="TABLE_HEADING_COUPON_NAME"><![CDATA[Coupon Name]]></define>
+	<define key="TABLE_HEADING_COUPON_AMOUNT"><![CDATA[Coupon Amount]]></define>
+	<define key="TABLE_HEADING_COUPON_CODE"><![CDATA[Coupon Code]]></define>
+	<define key="TABLE_HEADING_COUPON_STATUS"><![CDATA[Coupon Status]]></define>
+	<define key="TABLE_HEADING_INFO"><![CDATA[Info]]></define>
+	
+	<define key="TABLE_HEADING_CUSTOMER_ID"><![CDATA[Customer id]]></define>
+	<define key="TABLE_HEADING_CUSTOMER_NAME"><![CDATA[Customer Name]]></define>
+	<define key="TABLE_HEADING_CUSTOMER_IP_ADDRESS"><![CDATA[IP Address]]></define>
+	<define key="TABLE_HEADING_REDEEM_DATE"><![CDATA[Date Redeemed]]></define>
+	<define key="TABLE_HEADING_TOTAL_CUSTOMER_REDEMPTIONS"><![CDATA[For this Customer]]></define>
+	<define key="TABLE_HEADING_TOTAL_REDEMPTIONS"><![CDATA[In Total]]></define>
+
+	<define key="TEXT_COUPON_MIN_ORDER"><![CDATA[Coupon Minimum Order]]></define>
+	<define key="TEXT_COUPON_STARTDATE"><![CDATA[Start Date]]></define>
+	<define key="TEXT_COUPON_FINISHDATE"><![CDATA[End Date]]></define>
+	<define key="TEXT_COUPON_USES_USER"><![CDATA[Uses per Customer]]></define>
+	<define key="TEXT_COUPON_USES_COUPON"><![CDATA[Uses per Coupon]]></define>
+	<define key="TEXT_COUPON_PRODUCTS"><![CDATA[Valid Product List]]></define>
+	<define key="TEXT_COUPON_CATEGORIES"><![CDATA[Valid Categories List]]></define>
+	<define key="TEXT_COUPON_PURCHASE_TYPE"><![CDATA[Valid Purchase Types]]></define>
+	<define key="TEXT_DATE_CREATED"><![CDATA[Date Created]]></define>
+	<define key="TEXT_DATE_MODIFIED"><![CDATA[Date Modified]]></define>
+	
+	<define key="TEXT_ALL_COUPONS"><![CDATA[All Coupons]]></define>
+	<define key="TEXT_ACTIVE_COUPONS"><![CDATA[Active Coupons]]></define>
+	<define key="TEXT_INACTIVE_COUPONS"><![CDATA[Inactive Coupons]]></define>
+	
+	<define key="TEXT_INFO_COUPON"><![CDATA[Coupon Name: ]]></define>
+	<define key="ENTRY_EMAIL_CUSTOMER"><![CDATA[Customer: ]]></define>
+	<define key="ENTRY_EMAIL_SUBJECT"><![CDATA[Subject:]]></define>
+	<define key="ENTRY_EMAIL_FROM"><![CDATA[From:]]></define>
+	<define key="ENTRY_EMAIL_MESSAGE"><![CDATA[Message:]]></define>
+	<define key="TEXT_SELECT_CUSTOMER"><![CDATA[Select Customer]]></define>
+	<define key="TEXT_ALL_CUSTOMERS"><![CDATA[All Customers]]></define>
+	<define key="TEXT_NEWSLETTER_CUSTOMERS"><![CDATA[To All Newsletter Subscribers]]></define>
+	<define key="TEXT_CONFIRM_DELETE"><![CDATA[Are you sure you want to delete this Coupon?]]></define>
+	
+	<define key="TEXT_INFO_HEADING_EDIT_COUPON"><![CDATA[Edit Coupon]]></define>
+	<define key="TEXT_INFO_HEADING_NEW_COUPON"><![CDATA[New Coupon]]></define>
+	<define key="TEXT_INFO_HEADING_VOUCHER_REPORT"><![CDATA[Coupon Redemption Report [%s]]]></define>
+	<define key="TEXT_INFO_HEADING_EMAIL_COUPON"><![CDATA[Email Coupon]]></define>
+	
+	<define key="TEXT_INFO_EDIT_INTRO"><![CDATA[Please make any necessary changes]]></define>
+	<define key="TEXT_INFO_INSERT_INTRO"><![CDATA[Please enter the new coupon with its related data]]></define>
+	
+	<define key="TEXT_BUTTON_SEND_EMAIL"><![CDATA[Send Email]]></define>
+	
+	<define key="TEXT_ENABLED"><![CDATA[Enabled]]></define>
+	<define key="TEXT_DISABLED"><![CDATA[Disabled]]></define>
+	
+	<define key="TEXT_INFO_COUPON_STATUS"><![CDATA[Coupon Status: ]]></define>
+	<define key="TEXT_INFO_COUPON_AMOUNT"><![CDATA[Coupon Amount: ]]></define>
+	<define key="TEXT_INFO_COUPON_MIN_ORDER"><![CDATA[Minimum Order: ]]></define>
+	<define key="TEXT_INFO_COUPON_CODE"><![CDATA[Coupon Code: ]]></define>
+	<define key="TEXT_INFO_COUPON_USES_COUPON"><![CDATA[Uses Per Coupon: ]]></define>
+	<define key="TEXT_INFO_COUPON_USES_USER"><![CDATA[Uses Per User: ]]></define>
+	<define key="TEXT_INFO_COUPON_PRODUCTS"><![CDATA[Allowed Products: ]]></define>
+	<define key="TEXT_INFO_COUPON_CATEGORIES"><![CDATA[Allowed Categories: ]]></define>
+	<define key="TEXT_INFO_COUPON_CUSTOMERS"><![CDATA[Allowed Customers: ]]></define>
+	<define key="TEXT_INFO_COUPON_STARTDATE"><![CDATA[Start Date: ]]></define>
+	<define key="TEXT_INFO_COUPON_FINISHDATE"><![CDATA[End Date: ]]></define>
+	<define key="TEXT_INFO_COUPON_NAME"><![CDATA[Coupon Name: ]]></define>
+	<define key="TEXT_INFO_COUPON_DESC"><![CDATA[Coupon Description: ]]></define>
+	<define key="TEXT_INFO_COUPON_PURCHASE_TYPE"><![CDATA[Allowed Purchase Types: ]]></define>
+
+    <define key="TEXT_INFO_COUPON_NAME_HELP"><![CDATA[A short name for the coupon]]></define>
+    <define key="TEXT_INFO_COUPON_AMOUNT_HELP"><![CDATA[The value of the discount for the coupon, either fixed or add a % on the end for a percentage discount.]]></define>
+    <define key="TEXT_INFO_COUPON_CODE_HELP"><![CDATA[You can enter your own code here, or leave blank for an auto generated one.]]></define>
+    <define key="TEXT_INFO_COUPON_STARTDATE_HELP"><![CDATA[The date the coupon will be valid from]]></define>
+    <define key="TEXT_INFO_COUPON_FINISHDATE_HELP"><![CDATA[The date the coupon expires]]></define>
+    <define key="TEXT_INFO_COUPON_FREE_SHIP_HELP"><![CDATA[The coupon gives free shipping on an order. Note. This overrides the coupon_amount figure but respects the minimum order value]]></define>
+    <define key="TEXT_INFO_COUPON_DESC_HELP"><![CDATA[A description of the coupon for the customer]]></define>
+    <define key="TEXT_INFO_COUPON_MIN_ORDER_HELP"><![CDATA[The minimum order value before the coupon is valid]]></define>
+    <define key="TEXT_INFO_COUPON_USES_COUPON_HELP"><![CDATA[The maximum number of times the coupon can be used, leave blank if you want no limit.]]></define>
+    <define key="TEXT_INFO_COUPON_USES_USER_HELP"><![CDATA[Number of times a user can use the coupon, leave blank for no limit.]]></define>
+    <define key="TEXT_INFO_COUPON_PRODUCTS_HELP"><![CDATA[A comma separated list of product_ids that this coupon can be used with. Leave blank for no restrictions.]]></define>
+    <define key="TEXT_INFO_COUPON_CATEGORIES_HELP"><![CDATA[A comma separated list of cpaths that this coupon can be used with, leave blank for no restrictions.]]></define>
+    <define key="TEXT_INFO_COUPON_PURCHASE_TYPE_HELP"><![CDATA[Purchase types that this coupon can be used with, leave unchecked for no restrictions.]]></define>
+</definitions>

@@ -1,0 +1,9 @@
+<definitions>
+	<define key="HEADING_TITLE"><![CDATA[Google Zones]]></define>
+	<define key="TABLE_HEADING_GOOGLE_ZONE_NAME"><![CDATA[Google Zone]]></define>
+	<define key="TABLE_HEADING_ACTION"><![CDATA[Action]]></define>
+	<define key="TAB_DESCRIPTION"><![CDATA[Description]]></define>
+	<define key="TEXT_GOOGLE_ZONES_NAME"><![CDATA[Google Zone Name: ]]></define>
+	<define key="TEXT_GOOGLE_ZONES_ADDRESS"><![CDATA[Type a starting address: ]]></define>
+	<define key="TEXT_GOOGLE_ZONES_MAP"><![CDATA[Map: ]]></define>
+</definitions>

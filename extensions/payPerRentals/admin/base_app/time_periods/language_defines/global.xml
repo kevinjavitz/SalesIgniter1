@@ -1,0 +1,11 @@
+<definitions>
+	<define key="HEADING_TITLE"><![CDATA[Time Periods]]></define>
+	<define key="TABLE_HEADING_PERIODS"><![CDATA[Time Period]]></define>
+	<define key="TABLE_HEADING_ACTION"><![CDATA[Action]]></define>
+	<define key="TAB_DESCRIPTION"><![CDATA[Description]]></define>
+	<define key="TEXT_PERIOD_NAME"><![CDATA[Period Name: ]]></define>
+	<define key="TEXT_PERIOD_START_DATE"><![CDATA[Time Period Start Date: ]]></define>
+    <define key="TEXT_PERIOD_END_DATE"><![CDATA[Time Period End Date: ]]></define>
+	<define key="TEXT_PERIOD_DETAILS"><![CDATA[Time Period Details: ]]></define>
+
+</definitions>

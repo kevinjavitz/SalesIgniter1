@@ -1,0 +1,6 @@
+<definitions>
+	<define key="MODULE_ORDER_TOTAL_SHIPPING_TITLE"><![CDATA[Shipping]]></define>
+	<define key="MODULE_ORDER_TOTAL_SHIPPING_DESCRIPTION"><![CDATA[Order Shipping Cost]]></define>
+	<define key="FREE_SHIPPING_TITLE"><![CDATA[Free Shipping]]></define>
+	<define key="FREE_SHIPPING_DESCRIPTION"><![CDATA[Free shipping for orders over %s]]></define>
+</definitions>

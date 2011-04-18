@@ -1,0 +1,19 @@
+<definitions>
+	<define key="TABLE_HEADING_CONFIGURATION_TITLE"><![CDATA[Title]]></define>
+	<define key="TABLE_HEADING_CONFIGURATION_VALUE"><![CDATA[Value]]></define>
+	<define key="TABLE_HEADING_ACTION"><![CDATA[Action]]></define>
+	<define key="TEXT_INFO_EDIT_INTRO"><![CDATA[Please make any necessary changes]]></define>
+	<define key="TEXT_INFO_DATE_ADDED"><![CDATA[Date Added:]]></define>
+	<define key="TEXT_INFO_LAST_MODIFIED"><![CDATA[Last Modified:]]></define>
+	<define key="PRODUCT_LISTING_PRICE_NEW"><![CDATA[Price New]]></define>
+	<define key="PRODUCT_LISTING_PRICE_USED"><![CDATA[Price Used]]></define>
+	<define key="PRODUCT_LISTING_PRICE_STREAM"><![CDATA[Price Stream]]></define>
+	<define key="PRODUCT_LISTING_PRICE_DOWNLOAD"><![CDATA[Price Download]]></define>
+	<define key="PRODUCT_LISTING_NO_PRODUCTS"><![CDATA[There are no products to display]]></define>
+	<define key="PRODUCT_LISTING_NAME"><![CDATA[Products name]]></define>
+	<define key="PRODUCT_LISTING_PRODUCT_MODEL"><![CDATA[Product Model]]></define>
+	<define key="PRODUCT_LISTING_PRODUCT_WEIGHT"><![CDATA[Product Weight]]></define>
+	<define key="PRODUCT_LISTING_MANUFACTURERES"><![CDATA[Manufacturers Name]]></define>
+
+
+</definitions>

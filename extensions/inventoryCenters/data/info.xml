@@ -1,0 +1,8 @@
+<data>
+	<name>Inventory Centers</name>
+	<key>inventoryCenters</key>
+	<version>1.0</version>
+	<author>Stephen Walker ( http://www.itwebexperts.com )</author>
+	<tables>ProductsInventoryBarcodesToInventoryCenters,ProductsInventoryCenters</tables>
+	<status_key>EXTENSION_INVENTORY_CENTERS_ENABLED</status_key>
+</data>

@@ -1,0 +1,11 @@
+<definitions>
+	<define key="HEADING_TITLE"><![CDATA[Contact Us]]></define>
+	<define key="NAVBAR_TITLE"><![CDATA[Contact Us]]></define>
+	<define key="TEXT_SUCCESS"><![CDATA[Your enquiry has been successfully sent to the Store Owner.]]></define>
+	<define key="EMAIL_SUBJECT"><![CDATA[Enquiry from %s]]></define>
+	<define key="ENTRY_NAME"><![CDATA[Full Name:]]></define>
+	<define key="ENTRY_EMAIL"><![CDATA[E-Mail Address:]]></define>
+	<define key="ENTRY_ENQUIRY"><![CDATA[Enquiry:]]></define>
+    <define key="ENTRY_EMAIL_CHECK_ERROR"><![CDATA[There is an error in your form!]]></define>
+    <define key="PLEASE_FILL_IN_CAPTCHA"><![CDATA[Please fill in the box with the numbers/letters you see:]]></define>
+</definitions>

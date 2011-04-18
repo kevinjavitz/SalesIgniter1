@@ -1,0 +1,16 @@
+<definitions>
+	<define key="HEADING_TITLE"><![CDATA[Predesign Keys]]></define>
+	<define key="TABLE_HEADING_KEYS"><![CDATA[Keys]]></define>
+	<define key="TABLE_HEADING_KEY_TYPE"><![CDATA[Key Type]]></define>
+	<define key="TABLE_HEADING_SET_FROM"><![CDATA[Set From]]></define>
+	<define key="TABLE_HEADING_ACTION"><![CDATA[Action]]></define>
+	<define key="TEXT_EDIT_INTRO"><![CDATA[Please make any necessary changes]]></define>
+	<define key="TEXT_EDIT_KEY_NAME"><![CDATA[Key Name:]]></define>
+	<define key="TEXT_INFO_HEADING_NEW_KEY"><![CDATA[New Key]]></define>
+	<define key="TEXT_INFO_HEADING_EDIT_KEY"><![CDATA[Edit Key]]></define>
+	<define key="TEXT_INFO_HEADING_DELETE_KEY"><![CDATA[Delete Key]]></define>
+	<define key="TEXT_DELETE_KEY_INTRO"><![CDATA[Are you sure you want to delete this key?]]></define>
+	<define key="TEXT_NEW_KEY_INTRO"><![CDATA[Please fill out the following information for the new key]]></define>
+	<define key="TEXT_KEY_NAME"><![CDATA[Key Name:]]></define>
+	<define key="TEXT_BUTTON_NEW_KEY"><![CDATA[New Key]]></define>
+</definitions>

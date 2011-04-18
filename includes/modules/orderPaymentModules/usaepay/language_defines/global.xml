@@ -1,0 +1,17 @@
+<definitions>
+	<define key="MODULE_PAYMENT_USAEPAY_TEXT_TITLE"><![CDATA[Credit Card via USAePay]]></define>
+	<define key="MODULE_PAYMENT_USAEPAY_TEXT_DESCRIPTION"><![CDATA[Credit Card Test Info:<br><br>CC#: 4005562233445564<br>Expiry: Any]]></define>
+	<define key="MODULE_PAYMENT_USAEPAY_TEXT_TYPE"><![CDATA[Type:]]></define>
+	<define key="MODULE_PAYMENT_USAEPAY_TEXT_CREDIT_CARD_OWNER"><![CDATA[Credit Card Owner:]]></define>
+	<define key="MODULE_PAYMENT_USAEPAY_TEXT_CREDIT_CARD_OWNER_FIRST_NAME"><![CDATA[Credit Card Owner First Name:]]></define>
+	<define key="MODULE_PAYMENT_USAEPAY_TEXT_CREDIT_CARD_OWNER_LAST_NAME"><![CDATA[Last Name:]]></define>
+	<define key="MODULE_PAYMENT_USAEPAY_TEXT_CREDIT_CARD_NUMBER"><![CDATA[Number:]]></define>
+	<define key="MODULE_PAYMENT_USAEPAY_TEXT_CREDIT_CARD_EXPIRES"><![CDATA[Expiration Date:]]></define>
+	<define key="MODULE_PAYMENT_USAEPAY_TEXT_CREDIT_CARD_CHECKNUMBER"><![CDATA[CVS Number:]]></define>
+	<define key="MODULE_PAYMENT_USAEPAY_TEXT_CREDIT_CARDS_ACCEPTED"><![CDATA[Credit Card Type:]]></define>
+	<define key="MODULE_PAYMENT_USAEPAY_TEXT_CREDIT_CARD_CHECKNUMBER_LOCATION"><![CDATA[(located on the back of the credit card)]]></define>
+	<define key="MODULE_PAYMENT_USAEPAY_TEXT_JS_CC_NUMBER"><![CDATA[* The credit card number must be at least %s characters.\n]]></define>
+	<define key="MODULE_PAYMENT_USAEPAY_TEXT_ERROR_MESSAGE"><![CDATA[There has been an error processing your credit card. Please try again.]]></define>
+	<define key="MODULE_PAYMENT_USAEPAY_TEXT_DECLINED_MESSAGE"><![CDATA[Your card has been declined.  Please choose another form of payment.]]></define>
+	<define key="MODULE_PAYMENT_USAEPAY_TEXT_ERROR"><![CDATA[Credit Card Error!]]></define>
+</definitions>

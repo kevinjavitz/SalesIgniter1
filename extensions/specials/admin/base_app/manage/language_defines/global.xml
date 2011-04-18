@@ -1,0 +1,21 @@
+<definitions>
+	<define key="HEADING_TITLE"><![CDATA[Specials]]></define>
+	<define key="TABLE_HEADING_PRODUCTS"><![CDATA[Products]]></define>
+	<define key="TABLE_HEADING_PRODUCTS_PRICE"><![CDATA[Products Price]]></define>
+	<define key="TABLE_HEADING_STATUS"><![CDATA[Status]]></define>
+	<define key="TABLE_HEADING_ACTION"><![CDATA[Action]]></define>
+	<define key="TEXT_SPECIALS_PRODUCT"><![CDATA[Product:]]></define>
+	<define key="TEXT_SPECIALS_SPECIAL_PRICE"><![CDATA[Special Price:]]></define>
+	<define key="TEXT_SPECIALS_EXPIRES_DATE"><![CDATA[Expiry Date:]]></define>
+	<define key="TEXT_SPECIALS_PRICE_TIP"><![CDATA[<b>Specials Notes:</b><ul><li>You can enter a percentage to deduct in the Specials Price field, for example: <b>20%</b></li><li>If you enter a new price, the decimal separator must be a '.' (decimal-point), example: <b>49.99</b></li><li>Leave the expiry date empty for no expiration</li></ul>]]></define>
+	<define key="TEXT_INFO_DATE_ADDED"><![CDATA[Date Added:]]></define>
+	<define key="TEXT_INFO_LAST_MODIFIED"><![CDATA[Last Modified:]]></define>
+	<define key="TEXT_INFO_NEW_PRICE"><![CDATA[New Price:]]></define>
+	<define key="TEXT_INFO_ORIGINAL_PRICE"><![CDATA[Original Price:]]></define>
+	<define key="TEXT_INFO_PERCENTAGE"><![CDATA[Percentage:]]></define>
+	<define key="TEXT_INFO_EXPIRES_DATE"><![CDATA[Expires At:]]></define>
+	<define key="TEXT_INFO_STATUS_CHANGE"><![CDATA[Status Change:]]></define>
+	<define key="TEXT_INFO_HEADING_DELETE_SPECIALS"><![CDATA[Delete Special]]></define>
+	<define key="TEXT_INFO_DELETE_INTRO"><![CDATA[Are you sure you want to delete the special products price?]]></define>
+	<define key="TEXT_IMAGE_NONEXISTENT"><![CDATA[Image Doesn't Exist]]></define>
+</definitions>

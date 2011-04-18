@@ -1,0 +1,21 @@
+<ConfigurationGroup>
+	<title>Royalties System</title>
+	<key>royaltiesSystem</key>
+	<description>Configuration Settings For The Royalties System Extension</description>
+	<Configuration>
+		<EXTENSION_ROYALTIES_SYSTEM_ENABLED>
+			<title>Enable Royalties System</title>
+			<value>True</value>
+			<description>Enable Or Disable The Royalties System Extension</description>
+			<sort_order>1</sort_order>
+			<set_function>tep_cfg_select_option(array('True','False'),</set_function>
+		</EXTENSION_ROYALTIES_SYSTEM_ENABLED>
+
+		<EXTENSION_ROYALTIES_SYSTEM_DAYS_COUNT_STREAM>
+			<title>HOW MANY DAYS a Stream is count for a royalty</title>
+			<value>1</value>
+			<description>It can have decimal values. So if you want to have hours. It will be 0.04 </description>
+			<sort_order>2</sort_order>
+		</EXTENSION_ROYALTIES_SYSTEM_DAYS_COUNT_STREAM>
+	</Configuration>
+</ConfigurationGroup>

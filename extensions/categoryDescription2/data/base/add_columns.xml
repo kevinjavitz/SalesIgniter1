@@ -1,0 +1,8 @@
+<data>
+	<CategoriesDescription>
+		<categories_description2>
+			<type>text</type>
+			<notnull>true</notnull>
+		</categories_description2>
+	</CategoriesDescription>
+</data>

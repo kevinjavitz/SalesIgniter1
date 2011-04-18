@@ -1,0 +1,17 @@
+<definitions>
+	<define key="TEXT_INFO_SPLIT_FILE"><![CDATA[You can download your split files in the Tools/Files under /catalog/temp/]]></define>
+	<define key="TEXT_INFO_CREATING_SPLIT"><![CDATA[Creating file Import_Split %s.txt ...]]></define>
+	<define key="TEXT_INFO_ADDED_RECORDS"><![CDATA[Added %s records and closing file...<br />]]></define>
+	<define key="HEADING_UPLOAD_FILE"><![CDATA[Upload Import File]]></define>
+	<define key="HEADING_SPLIT_FILE"><![CDATA[Split Import File]]></define>
+	<define key="HEADING_IMPORT_FILE_TEMP"><![CDATA[Import from Temp Dir (%s)]]></define>
+	<define key="HEADING_CREATE_IMPORT_FILE_TEMP"><![CDATA[Create Import Files in Temp Dir (%s)]]></define>
+	<define key="HEADING_DOWNLOAD_FILE"><![CDATA[Download Import Files]]></define>
+	<define key="TEXT_BUTTON_INSERT_DB"><![CDATA[Insert into db]]></define>
+	<define key="TEXT_BUTTON_SPLIT_FILE"><![CDATA[Split file]]></define>
+	<define key="TEXT_INFO_COMPLETE"><![CDATA[Download <b>Complete</b> tab-delimited .txt file to edit]]></define>
+	<define key="TEXT_INFO_COMPLETE_TEMP"><![CDATA[Create Complete tab-delimited .txt file in temp dir]]></define>
+	<define key="TEXT_ERROR_NO_MODEL"><![CDATA[No products_model field in record. This line was not imported]]></define>
+    <define key="HEADING_FROOGLE"><![CDATA[Export Froogle]]></define>
+
+</definitions>

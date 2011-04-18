@@ -1,0 +1,4 @@
+<definitions>
+	<define key="MODULE_STREAM_PROVIDER_AMAZONS3_TITLE"><![CDATA[Amazon S3]]></define>
+	<define key="MODULE_STREAM_PROVIDER_AMAZONS3_DESCRIPTION"><![CDATA[Streams are stored in Amazon S3]]></define>
+</definitions>

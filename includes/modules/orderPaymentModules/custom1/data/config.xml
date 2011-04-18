@@ -1,0 +1,43 @@
+<configurations>
+	<configuration>
+		<title><![CDATA[Enable Custom1 Module]]></title>
+		<key><![CDATA[MODULE_PAYMENT_CUSTOM1_STATUS]]></key>
+		<value><![CDATA[True]]></value>
+		<description><![CDATA[Do you want to accept Custom1 payments?]]></description>
+		<sort_order>1</sort_order>
+		<set_function><![CDATA[tep_cfg_select_option(array('True', 'False'),]]></set_function>
+	</configuration>
+	<configuration>
+		<title><![CDATA[Sort order of display]]></title>
+		<key><![CDATA[MODULE_PAYMENT_CUSTOM1_SORT_ORDER]]></key>
+		<value><![CDATA[0]]></value>
+		<description><![CDATA[Sort order of display. Lowest is displayed first.]]></description>
+		<sort_order>2</sort_order>
+	</configuration>
+	<configuration>
+		<title><![CDATA[Payment Zone]]></title>
+		<key><![CDATA[MODULE_PAYMENT_CUSTOM1_ZONE]]></key>
+		<value><![CDATA[0]]></value>
+		<description><![CDATA[If a zone is selected, only enable this payment method for that zone.]]></description>
+		<sort_order>3</sort_order>
+		<use_function><![CDATA[tep_get_zone_class_title]]></use_function>
+		<set_function><![CDATA[tep_cfg_pull_down_zone_classes(]]></set_function>
+	</configuration>
+	<configuration>
+		<title><![CDATA[Set Order Status]]></title>
+		<key><![CDATA[MODULE_PAYMENT_CUSTOM1_ORDER_STATUS_ID]]></key>
+		<value><![CDATA[0]]></value>
+		<description><![CDATA[Set the status of orders made with this payment module to this value]]></description>
+		<sort_order>4</sort_order>
+		<use_function><![CDATA[tep_get_order_status_name]]></use_function>
+		<set_function><![CDATA[tep_cfg_pull_down_order_statuses(]]></set_function>
+	</configuration>
+	<configuration>
+		<title><![CDATA[Accepted Checkout Method]]></title>
+		<key><![CDATA[MODULE_PAYMENT_CUSTOM1_CHECKOUT_METHOD]]></key>
+		<value><![CDATA[Normal]]></value>
+		<description><![CDATA[Allow this payment module to be used for (Rental membership signup, Normal checkout or Both )]]></description>
+		<sort_order>5</sort_order>
+		<set_function><![CDATA[tep_cfg_select_option(array('Membership','Normal','Both'),]]></set_function>
+	</configuration>
+</configurations>

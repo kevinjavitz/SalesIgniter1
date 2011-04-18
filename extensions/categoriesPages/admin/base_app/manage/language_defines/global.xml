@@ -1,0 +1,9 @@
+<definitions>
+	<define key="HEADING_TITLE"><![CDATA[Categories Pages]]></define>
+	<define key="TABLE_HEADING_PAGE_KEY_NAME"><![CDATA[Page Key]]></define>
+	<define key="TABLE_HEADING_ACTION"><![CDATA[Action]]></define>
+
+	<define key="TEXT_CUSTOM_FIELD1"><![CDATA[First Custom Field In Relation: ]]></define>
+
+
+</definitions>

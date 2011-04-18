@@ -1,0 +1,123 @@
+/* Menu
+----------------------------------
+.ui-menu { width: 200px; overflow: auto; list-style-position: outside; list-style: none; padding: 0; margin: 0; list-style: none; padding: 0; margin:.2em 0; display: block; }
+
+.ui-menu .ui-menu-item { margin: 0px; padding: 2px 5px; cursor: default; display: block; font: menu; font-size: 12px; line-height: 16px; overflow: hidden; border-collapse: collapse; margin: 0 .2em; display: block; padding:0; line-height: 1.3em; }
+.ui-menu .ui-menu-item a { text-decoration: none; display: block; padding: .2em .4em; border: 1px dashed transparent; font-weight: normal !important; }
+
+.ui-menu .ui-menu-item .ui-state-hover { border: 1px solid #D3D3D3; }
+*/
+
+/* Styles for jQuery menu widget
+Author:	Maggie Wachs, maggie@filamentgroup.com
+Date:		September 2008
+*/
+
+
+/* REQUIRED STYLES - the menus will only render correctly with these rules */	
+
+.ui-menu-container { position: absolute; top:0; left:-999px; padding: .4em;  overflow: hidden; }
+.ui-menu-container.ui-menu-flyout { overflow: visible; }
+
+.ui-menu, .ui-menu ul { list-style-type:none; padding: 0; margin:0; visibility:hidden; }
+
+.ui-menu { position:relative; }
+.ui-menu-flyout .ui-menu { position:static; }
+
+.ui-menu ul { position:absolute; top:0; }
+.ui-menu ul ul { top:-1px; }
+
+.ui-menu-container.ui-menu-ipod .ui-menu-content, 
+.ui-menu-container.ui-menu-ipod .ui-menu-content ul { background: none !important; }
+
+.ui-menu.ui-menu-scroll,
+.ui-menu ul.ui-menu-scroll { overflow: scroll;  overflow-x: hidden; }
+
+.ui-menu li { clear:both; float:left; width:100%; margin: 0; padding:0; border: 0; }	
+.ui-menu li li { font-size:1em; } /* inner li font size must be reset so that they don't blow up */
+
+.ui-menu-flyout ul ul { padding: .4em; }
+.ui-menu-flyout li { position:relative; }
+
+.ui-menu-scroll { overflow: scroll; overflow-x: hidden; }
+
+.ui-menu-breadcrumb { margin: 0; padding: 0; }
+
+.ui-menu-footer {  margin-top: .4em; padding: .4em; }
+.ui-menu-header {  margin-bottom: .4em; padding: .4em; }
+
+.ui-menu-breadcrumb li { float: left; list-style: none; margin: 0; padding: 0 .2em; font-size: .9em; opacity: .7; }
+.ui-menu-breadcrumb li.ui-menu-prev-list,
+.ui-menu-breadcrumb li.ui-menu-current-crumb { clear: left; float: none; opacity: 1; }
+.ui-menu-breadcrumb li.ui-menu-current-crumb { padding-top: .2em; }
+
+.ui-menu-breadcrumb a, 
+.ui-menu-breadcrumb span { float: left; }
+
+.ui-menu-footer a:link,
+.ui-menu-footer a:visited { float:left; width:100%; text-decoration: none; }
+.ui-menu-footer a:hover,
+.ui-menu-footer a:active {  }
+
+.ui-menu-footer a span { float:left; cursor: pointer; }
+
+.ui-menu-breadcrumb .ui-menu-prev-list a:link,
+.ui-menu-breadcrumb .ui-menu-prev-list a:visited,
+.ui-menu-breadcrumb .ui-menu-prev-list a:hover,
+.ui-menu-breadcrumb .ui-menu-prev-list a:active { background-image: none; text-decoration:none; }
+	
+.ui-menu-breadcrumb .ui-menu-prev-list a { float: left; padding-right: .4em; }
+.ui-menu-breadcrumb .ui-menu-prev-list a .ui-icon { float: left; }
+	
+.ui-menu-breadcrumb .ui-menu-current-crumb a:link,
+.ui-menu-breadcrumb .ui-menu-current-crumb a:visited,
+.ui-menu-breadcrumb .ui-menu-current-crumb a:hover,
+.ui-menu-breadcrumb .ui-menu-current-crumb a:active { display:block; background-image:none; font-size:1.3em; text-decoration:none; }
+
+
+
+/* REQUIRED LINK STYLES: links are "display:block" by default; if the menu options are split into 
+	selectable node links and 'next' links, the script floats the node links left and floats the 'next' links to the right	*/
+
+.ui-menu a:link,
+.ui-menu a:visited,
+.ui-menu a:hover,
+.ui-menu a:active { line-height: 1.4em; float:left; width:92%; padding:.4em; text-decoration:none; outline: 0 !important; }
+
+.ui-menu a { border: 1px dashed transparent; font-weight:normal; }
+
+.ui-menu a.ui-state-default:link,
+.ui-menu a.ui-state-default:visited,
+.ui-menu a.ui-state-default:hover,
+.ui-menu a.ui-state-default:active,
+.ui-menu a.ui-state-hover:link,
+.ui-menu a.ui-state-hover:visited,
+.ui-menu a.ui-state-hover:hover,
+.ui-menu a.ui-state-hover:active,
+ .ui-menu a.ui-state-active:link,
+ .ui-menu a.ui-state-active:visited,
+ .ui-menu a.ui-state-active:hover,
+.ui-menu a.ui-state-active:active { border-style: solid; font-weight: normal; }
+
+.ui-menu a span { display:block; cursor:pointer; }
+
+
+ /* SUGGESTED STYLES - for use with jQuery UI Themeroller CSS */	
+ 
+.ui-menu-indicator span { float:left; }
+.ui-menu-indicator span.ui-icon { float:right; }
+
+.ui-menu-content .ui-widget-content, 
+.ui-menu-content ul.ui-widget-content { border:0; }
+
+
+/* ICONS AND DIVIDERS */
+
+.ui-menu.ui-menu-has-icons a:link,
+.ui-menu.ui-menu-has-icons a:visited,
+.ui-menu.ui-menu-has-icons a:hover,
+.ui-menu.ui-menu-has-icons a:active { padding-left:20px; }
+
+.ui-menu .horizontal-divider hr, .ui-menu .horizontal-divider span { padding:0; margin:5px .6em; }
+.ui-menu .horizontal-divider hr { border:0; height:1px; }
+.ui-menu .horizontal-divider span { font-size:.9em; text-transform: uppercase; padding-left:.2em; }

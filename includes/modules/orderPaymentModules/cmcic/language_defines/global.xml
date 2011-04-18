@@ -1,0 +1,4 @@
+<definitions>
+	<define key="MODULE_PAYMENT_CMCIC_TEXT_TITLE"><![CDATA[Credit Card Via CMCIC]]></define>
+	<define key="MODULE_PAYMENT_CMCIC_TEXT_DESCRIPTION"><![CDATA[Credit Card Via CMCIC]]></define>
+</definitions>

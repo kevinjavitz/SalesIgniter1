@@ -1,0 +1,9 @@
+<definitions>
+	<define key="HEADING_TITLE"><![CDATA[Rental Status]]></define>
+	<define key="TABLE_HEADING_RENTAL_STATUS_NAME"><![CDATA[Rental Status]]></define>
+	<define key="TABLE_HEADING_ACTION"><![CDATA[Action]]></define>
+
+	<define key="TEXT_RENTAL_STATUS_TEXT"><![CDATA[Rental Status Text: ]]></define>
+	<define key="TEXT_RENTAL_STATUS_COLOR"><![CDATA[Rental Status Color: ]]></define>
+
+</definitions>

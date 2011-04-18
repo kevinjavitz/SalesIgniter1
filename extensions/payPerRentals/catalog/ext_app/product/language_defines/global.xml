@@ -1,0 +1,17 @@
+<definitions>
+	<define key="TEXT_ONETIME_INTRO"><![CDATA[Please select your shipping speed, then your rental start date. You must first select shipping speed because it affects when your rental can begin (to allow for shipping time)]]></define>
+	<define key="TEXT_RESET_SELECTION"><![CDATA[Reset Selections: ]]></define>
+	<define key="TEXT_BUTTON_RESET_SELECTIONS"><![CDATA[Reset Selections]]></define>
+	<define key="TEXT_MAX"><![CDATA[Max ]]></define>
+	<define key="TEXT_DAYS"><![CDATA[Days]]></define>
+	<define key="TEXT_MONTHS"><![CDATA[Months]]></define>
+	<define key="ENTRY_QUANTITY"><![CDATA[Quantity: ]]></define>
+	<define key="ENTRY_RENTAL_START_DATE"><![CDATA[Select Rental Start Date:]]></define>
+	<define key="ENTRY_RENTAL_END_DATE"><![CDATA[Select Rental End Date:]]></define>
+	<define key="ERROR_SELECT_START_DATE"><![CDATA[Please Select A Start Date First]]></define>
+	<define key="ENTRY_RENTAL_DATES_SELECTED"><![CDATA[Dates Selected: ]]></define>
+	<define key="ENTRY_RENTAL_INSURANCE"><![CDATA[Add Optional Insurance:]]></define>
+	<define key="TEXT_ESTIMATED_PRICING"><![CDATA[Estimated Pricing: ]]></define>
+	<define key="TEXT_BUTTON_CHECK_AVAIL"><![CDATA[Check Availability]]></define>
+	<define key="TEXT_CHANGE_ADDRESS"><![CDATA[Change Address]]></define>	
+</definitions>

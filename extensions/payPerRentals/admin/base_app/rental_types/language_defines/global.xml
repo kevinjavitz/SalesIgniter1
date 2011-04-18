@@ -1,0 +1,9 @@
+<definitions>
+	<define key="HEADING_TITLE"><![CDATA[Rental Type]]></define>
+	<define key="TABLE_HEADING_PPR_TYPE_NAME"><![CDATA[Rental Type]]></define>
+	<define key="TABLE_HEADING_ACTION"><![CDATA[Action]]></define>
+
+	<define key="TEXT_RENTAL_TYPE_NAME"><![CDATA[Rental Type Name: ]]></define>
+	<define key="TEXT_RENTAL_TYPE_MINUTES"><![CDATA[Rental Type Minutes: ]]></define>
+
+</definitions>

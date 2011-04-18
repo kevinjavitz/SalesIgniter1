@@ -1,0 +1,23 @@
+<definitions>
+	<define key="HEADING_TITLE"><![CDATA[Label Maker]]></define>
+	<define key="TEXT_INFO_SELECT_DATES"><![CDATA[Please select the dates that correspond to when you sent the items to your customers to generate shipping labels and product information labels]]></define>
+	<define key="TEXT_LEGEND_FROM_DATE"><![CDATA[From Date]]></define>
+	<define key="TEXT_LEGEND_TO_DATE"><![CDATA[To Date]]></define>
+	<define key="TEXT_ENTRY_PRINT_FOR"><![CDATA[Print labels for: ]]></define>
+	<define key="TEXT_ALL"><![CDATA[All]]></define>
+	<define key="TEXT_RENTAL"><![CDATA[Rental Queue Rentals]]></define>
+	<define key="TEXT_PAY_PER_RENTAL"><![CDATA[Pay Per Rentals]]></define>
+	<define key="TEXT_BUTTON_GENERATE_LIST"><![CDATA[Generate List]]></define>
+	<define key="TABLE_HEADING_NAME"><![CDATA[Name]]></define>
+	<define key="TABLE_HEADING_ADDRESS"><![CDATA[Address]]></define>
+	<define key="TABLE_HEADING_PRODUCT"><![CDATA[Product]]></define>
+	<define key="TABLE_HEADING_BARCODE"><![CDATA[Barcode]]></define>
+	<define key="TABLE_HEADING_TYPE"><![CDATA[Type]]></define>
+	<define key="TEXT_ALL_CENTERS"><![CDATA[All Centers]]></define>	
+	<define key="TABLE_HEADING_DATE_SENT"><![CDATA[Date Sent]]></define>
+	<define key="TEXT_BUTTON_GENERATE_LABELS"><![CDATA[Generate Labels]]></define>
+	<define key="TEXT_BUTTON_PRINT_PAGE"><![CDATA[Print Page]]></define>
+	
+	<define key="TEXT_ENTRY_INVENTORY_CENTER"><![CDATA[Inventory Center: ]]></define>
+	<define key="TABLE_HEADING_INVENTORY_CENTER"><![CDATA[Inventory Center]]></define>
+</definitions>

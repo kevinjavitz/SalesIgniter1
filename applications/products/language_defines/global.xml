@@ -1,0 +1,74 @@
+<definitions>
+	<define key="NAVBAR_TITLE_ALL"><![CDATA[All]]></define>
+	<define key="NAVBAR_TITLE_BEST_SELLERS"><![CDATA[Best Sellers]]></define>
+	<define key="NAVBAR_TITLE_FEATURED"><![CDATA[Featured]]></define>
+	<define key="NAVBAR_TITLE_NEW"><![CDATA[New]]></define>
+	<define key="NAVBAR_TITLE_PRODUCTS"><![CDATA[Products]]></define>
+	<define key="NAVBAR_TITLE_SEARCH"><![CDATA[Search]]></define>
+	<define key="NAVBAR_TITLE_SEARCH_RESULT"><![CDATA[Results]]></define>
+	<define key="NAVBAR_TITLE_UPCOMING"><![CDATA[Upcoming]]></define>
+
+	<define key="HEADING_TITLE_ALL"><![CDATA[All Products]]></define>
+	<define key="HEADING_TITLE_BEST_SELLERS"><![CDATA[Best Sellers]]></define>
+	<define key="HEADING_TITLE_FEATURED"><![CDATA[Featured Products]]></define>
+	<define key="HEADING_TITLE_NEW"><![CDATA[New Products]]></define>
+	<define key="HEADING_TITLE_SEARCH"><![CDATA[Advanced Search]]></define>
+	<define key="HEADING_TITLE_SEARCH_RESULT"><![CDATA[Products meeting the search criteria]]></define>
+	<define key="HEADING_TITLE_UPCOMING"><![CDATA[Coming Soon]]></define>
+
+	<define key="HEADING_SEARCH_CRITERIA"><![CDATA[Search Criteria]]></define>
+	<define key="HEADING_SEARCH_HELP"><![CDATA[Search Help]]></define>
+	<define key="HEADING_SUB_TEXT"><![CDATA[All our Products]]></define>
+
+	<define key="TABLE_HEADING_IMAGE"><![CDATA[]]></define>
+	<define key="TABLE_HEADING_MODEL"><![CDATA[Model]]></define>
+	<define key="TABLE_HEADING_PRODUCTS"><![CDATA[Product Name]]></define>
+	<define key="TABLE_HEADING_MANUFACTURER"><![CDATA[Manufacturer]]></define>
+	<define key="TABLE_HEADING_QUANTITY"><![CDATA[Quantity]]></define>
+	<define key="TABLE_HEADING_PRICE"><![CDATA[Price]]></define>
+	<define key="TABLE_HEADING_WEIGHT"><![CDATA[Weight]]></define>
+	<define key="TABLE_HEADING_BUY_NOW"><![CDATA[Buy Now]]></define>
+	<define key="TABLE_HEADING_ONETIME_RENT_NOW"><![CDATA[Pay Per Rental]]></define>
+	<define key="TABLE_HEADING_RENT_NOW"><![CDATA[Membership Rental]]></define>
+	<define key="TABLE_HEADING_UPCOMING_PRODUCTS"><![CDATA[Upcoming Products]]></define>
+
+	<define key="TEXT_ALL_CATEGORIES"><![CDATA[All Categories]]></define>
+	<define key="TEXT_ALL_MANUFACTURERS"><![CDATA[All Manufacturers]]></define>
+
+	<define key="TEXT_DATE_ADDED"><![CDATA[Date Added:]]></define>
+	<define key="TEXT_MANUFACTURER"><![CDATA[Manufacturer:]]></define>
+	<define key="TEXT_PRICE"><![CDATA[Price:]]></define>
+	<define key="TEXT_SEARCH_HELP_LINK"><![CDATA[<u>Search Help</u> [?]]]></define>
+	<define key="TEXT_SEARCH_IN_DESCRIPTION"><![CDATA[Search In Product Descriptions]]></define>
+	<define key="TEXT_REPLACEMENT_SUGGESTION"><![CDATA[You could also try: ]]></define>
+	<define key="TEXT_REPLACEMENT_SEARCH_RESULTS"><![CDATA[Your search results for: ]]></define>
+	<define key="TEXT_BS_SERIES"><![CDATA[This product is disc %d of  %d in "%s" series]]></define>
+	<define key="TEXT_NUMBER_OF_PRODUCTS"><![CDATA[Number of Products: ]]></define>
+	<define key="TEXT_SHOW"><![CDATA[<b>Show:</b>]]></define>
+	<define key="TEXT_BUY"><![CDATA[Buy 1]]></define>
+	<define key="TEXT_NOW"><![CDATA[now]]></define>
+
+	<define key="ENTRY_CATEGORIES"><![CDATA[Categories:]]></define>
+	<define key="ENTRY_INCLUDE_SUBCATEGORIES"><![CDATA[Include Subcategories]]></define>
+	<define key="ENTRY_MANUFACTURERS"><![CDATA[Manufacturer:]]></define>
+	<define key="ENTRY_PRICE_FROM"><![CDATA[Price From:]]></define>
+	<define key="ENTRY_PRICE_TO"><![CDATA[Price To:]]></define>
+	<define key="ENTRY_DATE_FROM"><![CDATA[Date From:]]></define>
+	<define key="ENTRY_DATE_TO"><![CDATA[Date To:]]></define>
+
+	<define key="TEXT_SEARCH_HELP"><![CDATA[Keywords may be separated by AND and/or OR statements for greater control of the search results.<br><br>For example, <u>Microsoft AND mouse</u> would generate a result set that contain both words. However, for <u>mouse OR keyboard</u>, the result set returned would contain both or either words.<br><br>Exact matches can be searched for by enclosing keywords in double-quotes.<br><br>For example, <u>"notebook computer"</u> would generate a result set which match the exact string.<br><br>Brackets can be used for further control on the result set.<br><br>For example, <u>Microsoft and (keyboard or mouse or "visual basic")</u>.]]></define>
+	<define key="TEXT_CLOSE_WINDOW"><![CDATA[<u>Close Window</u> [x]]]></define>
+
+	<define key="TEXT_NO_PRODUCTS"><![CDATA[There are no products to list in this category.]]></define>
+	<define key="TEXT_NO_PRODUCTS_SEARCH"><![CDATA[<br><span style="font-size:11px;"><i>Your search did not match any products.</i></span><br><br>Some Suggestions:<ol><li>Check that your spelling was accurate.</li><li>Try using different keywords</li><li>Try using fewer keywords</li><li>Try using more general keywords</li></ol>]]></define>
+
+	<define key="ERROR_AT_LEAST_ONE_INPUT"><![CDATA[At least one of the fields in the search form must be entered.]]></define>
+	<define key="ERROR_INVALID_FROM_DATE"><![CDATA[Invalid From Date.]]></define>
+	<define key="ERROR_INVALID_TO_DATE"><![CDATA[Invalid To Date.]]></define>
+	<define key="ERROR_TO_DATE_LESS_THAN_FROM_DATE"><![CDATA[To Date must be greater than or equal to From Date.]]></define>
+	<define key="ERROR_PRICE_FROM_MUST_BE_NUM"><![CDATA[Price From must be a number.]]></define>
+	<define key="ERROR_PRICE_TO_MUST_BE_NUM"><![CDATA[Price To must be a number.]]></define>
+	<define key="ERROR_PRICE_TO_LESS_THAN_PRICE_FROM"><![CDATA[Price To must be greater than or equal to Price From.]]></define>
+	<define key="ERROR_INVALID_KEYWORDS"><![CDATA[Invalid keywords.]]></define>
+    <define key="PRODUCT_LISTING_SELECT_SORT_OPTION"><![CDATA[Select Sort Option]]></define>
+</definitions>

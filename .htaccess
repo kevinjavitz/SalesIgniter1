@@ -1,0 +1,148 @@
+# $Id: .htaccess,v 1.3 2003/06/12 10:53:20 hpdl Exp $
+#
+# This is used with Apache WebServers
+#
+# For this to work, you must include the parameter 'Options' to
+# the AllowOverride configuration
+#
+# Example:
+#
+# <Directory "/usr/local/apache/htdocs">
+#   AllowOverride Options
+# </Directory>
+#
+# 'All' with also work. (This configuration is in the
+# apache/conf/httpd.conf file)
+
+# The following makes adjustments to the SSL protocol for Internet
+# Explorer browsers
+
+<IfModule mod_setenvif.c>
+  <IfDefine SSL>
+    SetEnvIf User-Agent ".*MSIE.*" \
+             nokeepalive ssl-unclean-shutdown \
+             downgrade-1.0 force-response-1.0
+  </IfDefine>
+</IfModule>
+
+# If Search Engine Friendly URLs do not work, try enabling the
+# following Apache configuration parameter
+#
+# AcceptPathInfo On
+# CSS
+AddType text/css .css
+
+# XHTML
+AddType application/xhtml+xml .xhtml
+
+# XML
+AddType text/xml .xml
+
+# SVG
+AddType image/svg+xml .svg .svgz
+AddEncoding x-gzip .svgz
+
+# HTML
+# Server Side Includes (SSI)
+AddType text/html .shtml
+
+# Active Server Pages 
+AddType text/html .asp
+
+# Favicons
+AddType image/vnd.microsoft.icon .ico
+
+# Macromedia
+AddType application/x-shockwave-flash .swf
+AddType application/x-director .dir .dcr .dxr .fgd
+AddType application/x-authorware-map .aam
+AddType application/x-authorware-seg .aas
+AddType application/x-authorware-bin .aab
+AddType image/x-freehand .fh4 .fh5 .fh7 .fhc .fh
+
+# Adobe PDF
+AddType application/pdf .pdf
+
+# Real
+AddType application/vnd.rn-realmedia .rm
+AddType audio/vnd.rn-realaudio .ra .ram
+AddType video/vnd.rn-realvideo .rv
+AddType audio/x-pn-realaudio-plugin .rpm
+
+# Microsoft multimedia
+AddType video/x-ms-asf .asf .asx
+AddType audio/x-ms-wma .wma
+AddType audio/x-ms-wax .wax
+AddType video/x-ms-wmv .wmv
+AddType video/x-ms-wvx .wvx
+AddType video/x-ms-wm .wm
+AddType video/x-ms-wmx .wmx
+AddType application/x-ms-wmz .wmz
+AddType application/x-ms-wmd .wmd
+
+# MPEG
+AddType audio/x-mpegurl .m3u
+
+# Binary Compressed files and archives
+AddType application/zip .zip
+AddType application/x-gzip .gz
+AddType application/x-gtar .gtar
+AddType application/x-rar-compressed .rar
+AddType application/octet-stream .dmg
+
+# Java
+AddType application/x-java-applet .class
+
+# Quicktime movies
+AddType video/quicktime .mov .qt
+
+# XBM files
+AddType image/x-xbitmap .xbm
+
+# WAV files
+AddType audio/x-wav .wav
+
+Options +FollowSymLinks
+RewriteEngine On 
+RewriteBase /SalesIgniter/
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME} !-l
+
+# Ultimate SEO URLs BEGIN
+RewriteRule ^(.*)-p-([0-9]+).html$ product_info.php?products_id=$2&%{QUERY_STRING}
+RewriteRule ^(.*)-c-([0-9_]+).html$ index.php?cPath=$2&%{QUERY_STRING}
+RewriteRule ^(.*)-m-([0-9]+).html$ index.php?manufacturers_id=$2&%{QUERY_STRING}
+RewriteRule ^(.*)-pi-([0-9]+).html$ popup_image.php?pID=$2&%{QUERY_STRING}
+RewriteRule ^(.*)-t-([0-9_]+).html$ articles.php?tPath=$2&%{QUERY_STRING}
+RewriteRule ^(.*)-a-([0-9]+).html$ article_info.php?articles_id=$2&%{QUERY_STRING}
+RewriteRule ^(.*)-pr-([0-9]+).html$ product_reviews.php?products_id=$2&%{QUERY_STRING}
+RewriteRule ^(.*)-pri-([0-9]+).html$ product_reviews_info.php?products_id=$2&%{QUERY_STRING}
+RewriteRule ^(.*)-i-([0-9]+).html$ information.php?info_id=$2&%{QUERY_STRING}
+# Ultimate SEO URLs END
+
+RewriteRule ^checkout_rental_account.(php|html)$ application.php?app=checkout&appPage=default&checkoutType=rental&%{QUERY_STRING}
+RewriteRule ^admin/showBarcode_(.*).png$ admin/showBarcode.php?code=$1&%{QUERY_STRING}
+
+RewriteRule ^admin/rental_wysiwyg/(.*)$ admin/rental_wysiwyg/$1?%{QUERY_STRING} [L]
+
+RewriteRule ^pullStream/(.*)/(.*)$ pullStream.php?pID=$1&file=$2
+RewriteRule ^pullStream/(.*)/(.*)/(.*)/(.*)$ pullStream.php?pID=$1&oID=$2&opID=$3&file=$4
+RewriteRule ^pullStream.php/(.*)/(.*)/(.*)/(.*)$ pullStream.php?pID=$1&oID=$2&opID=$3&file=$4
+
+# Core rewrites ( these are needed for core applications using seo rewrites ) - BEGIN - 
+RewriteRule ^product/([^/]+)/([0-9]+)/([^/\.]+)\.(php|html)$ application.php?app=product&appPage=$1&products_id=$2&%{QUERY_STRING} [L]
+# Core rewrites ( these are needed for core applications using seo rewrites ) - END - 
+
+# http://www.itwebexperts.com/rentalstore2/admin/application.php?appExt=infoPages&app=manage_pages&appPage=default
+# New rewrite rules for applications/extensions - BEGIN -
+RewriteRule ^admin/([^/]+)/([^/]+)/([^/]+)\.(php|html)$ admin/application.php?appExt=$1&app=$2&appPage=$3&%{QUERY_STRING} [L]
+RewriteRule ^admin/([^/]+)/([^/]+)\.(php|html)$ admin/application.php?app=$1&appPage=$2&%{QUERY_STRING} [L]
+RewriteRule ^admin/([^/]+)\.(php|html)$ admin/$1.php?%{QUERY_STRING} [L]
+
+RewriteRule ^([^/\.]+)/([^/\.]+)/([^/\.]+)\.(php|html)$ application.php?appExt=$1&app=$2&appPage=$3&%{QUERY_STRING} [L]
+RewriteRule ^([^/\.]+)/([^/\.]+)\.(php|html)$ application.php?app=$1&appPage=$2&%{QUERY_STRING} [L]
+RewriteRule ^([^/\.]+)\.(php|html)$ $1.php?%{QUERY_STRING} [L]
+# New rewrite rules for applications/extensions - END -
+RewriteRule ie_images/?([^/]+)\.(jpe?g|png|gif) ext/jQuery/external/fancybox/images/$1.$2 [L]

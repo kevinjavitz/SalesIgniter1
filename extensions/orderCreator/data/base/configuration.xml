@@ -1,0 +1,14 @@
+<ConfigurationGroup>
+	<title>Order Creator</title>
+	<key>orderCreator</key>
+	<description>Configuration Settings For The Order Creator Extension</description>
+	<Configuration>
+		<EXTENSION_ORDER_CREATOR_ENABLED>
+			<title>Enable Order Creator</title>
+			<value>True</value>
+			<description>Enable Or Disable The Order Creator Extension</description>
+			<sort_order>1</sort_order>
+			<set_function>tep_cfg_select_option(array('True','False'),</set_function>
+		</EXTENSION_ORDER_CREATOR_ENABLED>
+	</Configuration>
+</ConfigurationGroup>

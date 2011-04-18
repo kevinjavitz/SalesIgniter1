@@ -1,0 +1,16 @@
+<definitions>
+	<define key="HEADING_RETURNING_ADMIN"><![CDATA[Login Panel:]]></define>
+	<define key="ENTRY_LOGIN_EMAIL_ADDRESS"><![CDATA[Email Address:]]></define>
+	<define key="ENTRY_LOGIN_PASSWORD"><![CDATA[Password:]]></define>
+	<define key="TEXT_LOGIN_ERROR"><![CDATA[Incorrect username or password, please try again]]></define>
+	<define key="TEXT_BUTTON_LOGIN"><![CDATA[Login]]></define>
+	<define key="TEXT_BUTTON_SEND_PASSWORD"><![CDATA[Send Password]]></define>
+	<define key="ENTRY_FIRSTNAME"><![CDATA[First Name:]]></define>
+	<define key="TEXT_PASSWORD_FORGOTTEN"><![CDATA[Password forgotten?]]></define>
+	<define key="HEADING_PASSWORD_FORGOTTEN"><![CDATA[Password Forgotten]]></define>
+	<define key="TEXT_FORGOTTEN_ERROR"><![CDATA[First name and password do not match our records!]]></define>
+	<define key="TEXT_FORGOTTEN_FAIL"><![CDATA[You have tried over 3 times. For security reasons, please contact your Web Administrator to get new password.]]></define>
+	<define key="TEXT_FORGOTTEN_SUCCESS"><![CDATA[The new password have sent to your email address. Please check your email and click back to login.]]></define>
+	<define key="ADMIN_EMAIL_SUBJECT"><![CDATA[New Password]]></define>
+	<define key="ADMIN_EMAIL_TEXT"><![CDATA[Hi %s,\n\nYou can access the admin panel with the following password. Once you access the admin, please change your password!\n\nWebsite : %s\nUsername: %s\nPassword: %s\n\nThanks!\n%s\n\nThis is an automated response, please do not reply!]]></define>
+</definitions>

@@ -1,0 +1,4 @@
+<definitions>
+	<define key="MODULE_STREAM_PROVIDER_AMAZONS3EC2WOWZA_TITLE"><![CDATA[Amazon S3 EC2 With Wowza Media Server]]></define>
+	<define key="MODULE_STREAM_PROVIDER_AMAZONS3EC2WOWZA_DESCRIPTION"><![CDATA[Streams are stored in Amazon S3 and streamed through wowza media server running on an Amazon EC2 server instance]]></define>
+</definitions>

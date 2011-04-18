@@ -1,0 +1,11 @@
+<settings>
+	<name><![CDATA[English]]></name>
+	<code><![CDATA[en]]></code>
+	<date_format><![CDATA[m/d/Y]]></date_format>
+	<date_format_short><![CDATA[%m/%d/%Y]]></date_format_short>
+	<date_format_long><![CDATA[%B %d, %Y]]></date_format_long>
+	<date_time_format><![CDATA[%m/%d/%Y %H:%M:%S]]></date_time_format>
+	<default_currency><![CDATA[USD]]></default_currency>
+	<html_params><![CDATA[dir=ltr lang=en]]></html_params>
+	<html_charset><![CDATA[utf-8]]></html_charset>
+</settings>

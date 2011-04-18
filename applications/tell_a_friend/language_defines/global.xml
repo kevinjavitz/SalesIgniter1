@@ -1,0 +1,13 @@
+<definitions>
+	<define key="NAVBAR_TITLE"><![CDATA[Tell A Friend]]></define>
+    <define key="FORM_TITLE_CUSTOMER_DETAILS"><![CDATA[Customer Details]]></define>
+    <define key="FORM_REQUIRED_INFORMATION"><![CDATA[Required Information]]></define>
+    <define key="FORM_FIELD_CUSTOMER_NAME"><![CDATA[Customer name]]></define>
+    <define key="FORM_FIELD_CUSTOMER_EMAIL"><![CDATA[Customer Email]]></define>
+    <define key="FORM_TITLE_FRIEND_DETAILS"><![CDATA[Friend Details]]></define>
+    <define key="FORM_FIELD_FRIEND_NAME"><![CDATA[Friend Name]]></define>
+	<define key="ENTRY_FIRST_NAME_TEXT"><![CDATA[Fist Name]]></define>
+    <define key="FORM_FIELD_FRIEND_EMAIL"><![CDATA[Friend Email]]></define>
+    <define key="ENTRY_EMAIL_ADDRESS_TEXT"><![CDATA[Email Address]]></define>
+    <define key="FORM_TITLE_FRIEND_MESSAGE"><![CDATA[Friend Message]]></define>        
+</definitions>

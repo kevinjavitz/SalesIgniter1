@@ -1,0 +1,14 @@
+<ConfigurationGroup>
+	<title>Product Custom Fields</title>
+	<key>customFields</key>
+	<description>Configuration Settings For The Product Custom Fields Extension</description>
+	<Configuration>
+		<EXTENSION_CUSTOM_FIELDS_ENABLED>
+			<title>Enable Product Custom Fields</title>
+			<value>True</value>
+			<description>Enable Or Disable The Product Custom Fields Extension</description>
+			<sort_order>1</sort_order>
+			<set_function>tep_cfg_select_option(array('True','False'),</set_function>
+		</EXTENSION_CUSTOM_FIELDS_ENABLED>
+	</Configuration>
+</ConfigurationGroup>

@@ -1,0 +1,24 @@
+<?php
+	$DoctrineExport->dropTable('admin_files');
+	$DoctrineExport->dropTable('affiliate_affiliate');
+	$DoctrineExport->dropTable('affiliate_banners');
+	$DoctrineExport->dropTable('affiliate_banners_history');
+	$DoctrineExport->dropTable('affiliate_clickthroughs');
+	$DoctrineExport->dropTable('affiliate_news');
+	$DoctrineExport->dropTable('affiliate_news_contents');
+	$DoctrineExport->dropTable('affiliate_newsletters');
+	$DoctrineExport->dropTable('affiliate_payment');
+	$DoctrineExport->dropTable('affiliate_payment_status');
+	$DoctrineExport->dropTable('affiliate_payment_status_history');
+	$DoctrineExport->dropTable('affiliate_sales');
+	$DoctrineExport->dropTable('banners');
+	$DoctrineExport->dropTable('banners_history');
+	$DoctrineExport->dropTable('customers_wishlist');
+	$DoctrineExport->dropTable('phesis_comments');
+	$DoctrineExport->dropTable('phesis_poll_check');
+	$DoctrineExport->dropTable('phesis_poll_config');
+	$DoctrineExport->dropTable('phesis_poll_data');
+	$DoctrineExport->dropTable('phesis_poll_desc');
+	$DoctrineExport->dropTable('sources');
+	$DoctrineExport->dropTable('sources_other');
+	$DoctrineExport->dropTable('theme_configuration');

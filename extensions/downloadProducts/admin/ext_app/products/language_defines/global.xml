@@ -1,0 +1,10 @@
+<definitions>
+	<define key="TAB_DOWNLOADS"><![CDATA[Downloads]]></define>
+	
+	<define key="TABLE_HEADING_DOWNLOAD_PROVIDER"><![CDATA[Download Provider]]></define>
+	<define key="TABLE_HEADING_DOWNLOAD_TYPE"><![CDATA[Download Type]]></define>
+	<define key="TABLE_HEADING_DOWNLOAD_FILE"><![CDATA[Download File]]></define>
+	<define key="TABLE_HEADING_DOWNLOAD_DISPLAY_NAME"><![CDATA[Display Name]]></define>
+	
+	<define key="TEXT_PLEASE_SELECT_PROVIDER"><![CDATA[Please Select A Provider]]></define>
+</definitions>

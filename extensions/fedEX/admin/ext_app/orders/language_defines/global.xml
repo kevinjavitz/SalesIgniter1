@@ -1,0 +1,4 @@
+<definitions>
+	<define key="ORDER_HISTORY_DELIVERED"><![CDATA[Fedex Delivered:]]></define>
+    <define key="ORDER_HISTORY_CANCELLED"><![CDATA[Fedex Cancelled]]></define>             
+</definitions>

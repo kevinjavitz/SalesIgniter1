@@ -1,0 +1,11 @@
+<data>
+	<ProductsInventoryQuantity>
+		<inventory_store_id>
+			<type>integer</type>
+			<length>4</length>
+			<unsigned>0</unsigned>
+			<primary>false</primary>
+			<notnull>false</notnull>
+		</inventory_store_id>
+	</ProductsInventoryQuantity>
+</data>

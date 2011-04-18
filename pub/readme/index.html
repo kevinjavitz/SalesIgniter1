@@ -1,0 +1,1954 @@
+
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+
+<html>
+
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<base target="_top">
+<style type="text/css">
+  
+
+/* default css */
+
+table {
+  font-size: 1em;
+  line-height: inherit;
+  border-collapse: collapse;
+}
+
+
+tr {
+  
+  text-align: left;
+  
+}
+
+
+div, address, ol, ul, li, option, select {
+  margin-top: 0px;
+  margin-bottom: 0px;
+}
+
+p {
+  margin: 0px;
+}
+
+
+pre {
+  font-family: Courier New;
+  white-space: pre-wrap;
+  margin:0;
+}
+
+body {
+  margin: 6px;
+  padding: 0px;
+  font-family: Verdana, sans-serif;
+  font-size: 10pt;
+  background-color: #ffffff;
+}
+
+
+img {
+  -moz-force-broken-image-icon: 1;
+}
+
+@media screen {
+  html.pageview {
+    background-color: #f3f3f3 !important;
+    overflow-x: hidden;
+    overflow-y: scroll;
+  }
+
+  
+
+  body {
+    min-height: 1100px;
+    
+    counter-reset: __goog_page__;
+  }
+  * html body {
+    height: 1100px;
+  }
+  .pageview body {
+    border-top: 1px solid #ccc;
+    border-left: 1px solid #ccc;
+    border-right: 2px solid #bbb;
+    border-bottom: 2px solid #bbb;
+    width: 648px !important;
+    margin: 15px auto 25px;
+    padding: 40px 50px;
+  }
+  /* IE6 */
+  * html {
+    overflow-y: scroll;
+  }
+  * html.pageview body {
+    overflow-x: auto;
+  }
+  /* Prevent repaint errors when scrolling in Safari. This "Star-7" css hack
+     targets Safari 3.1, but not WebKit nightlies and presumably Safari 4.
+     That's OK because this bug is fixed in WebKit nightlies/Safari 4 :-). */
+  html*#wys_frame::before {
+    content: '\A0';
+    position: fixed;
+    overflow: hidden;
+    width: 0;
+    height: 0;
+    top: 0;
+    left: 0;
+  }
+  
+  
+
+  
+    .writely-callout-data {
+      display: none;
+      *display: inline-block;
+      *width: 0;
+      *height: 0;
+      *overflow: hidden;
+    }
+    .writely-footnote-marker {
+      background-image: url('MISSING');
+      background-color: transparent;
+      background-repeat: no-repeat;
+      width: 7px;
+      overflow: hidden;
+      height: 16px;
+      vertical-align: top;
+
+      
+      -moz-user-select: none;
+    }
+    .editor .writely-footnote-marker {
+      cursor: move;
+    }
+    .writely-footnote-marker-highlight {
+      background-position: -15px 0;
+      -moz-user-select: text;
+    }
+    .writely-footnote-hide-selection ::-moz-selection, .writely-footnote-hide-selection::-moz-selection {
+      background: transparent;
+    }
+    .writely-footnote-hide-selection ::selection, .writely-footnote-hide-selection::selection {
+      background: transparent;
+    }
+    .writely-footnote-hide-selection {
+      cursor: move;
+    }
+
+    
+    .editor .writely-comment-yellow {
+      background-color: #FF9;
+      background-position: -240px 0;
+    }
+    .editor .writely-comment-yellow-hover {
+      background-color: #FF0;
+      background-position: -224px 0;
+    }
+    .editor .writely-comment-blue {
+      background-color: #C0D3FF;
+      background-position: -16px 0;
+    }
+    .editor .writely-comment-blue-hover {
+      background-color: #6292FE;
+      background-position: 0 0;
+    }
+    .editor .writely-comment-orange {
+      background-color: #FFDEAD;
+      background-position: -80px 0;
+    }
+    .editor .writely-comment-orange-hover {
+      background-color: #F90;
+      background-position: -64px 0;
+    }
+    .editor .writely-comment-green {
+      background-color: #99FBB3;
+      background-position: -48px 0;
+    }
+    .editor .writely-comment-green-hover {
+      background-color: #00F442;
+      background-position: -32px 0;
+    }
+    .editor .writely-comment-cyan {
+      background-color: #CFF;
+      background-position: -208px 0;
+    }
+    .editor .writely-comment-cyan-hover {
+      background-color: #0FF;
+      background-position: -192px 0;
+    }
+    .editor .writely-comment-purple {
+      background-color: #EBCCFF;
+      background-position: -144px 0;
+    }
+    .editor .writely-comment-purple-hover {
+      background-color: #90F;
+      background-position: -128px 0;
+    }
+    .editor .writely-comment-magenta {
+      background-color: #FCF;
+      background-position: -112px 0;
+    }
+    .editor .writely-comment-magenta-hover {
+      background-color: #F0F;
+      background-position: -96px 0;
+    }
+    .editor .writely-comment-red {
+      background-color: #FFCACA;
+      background-position: -176px 0;
+    }
+    .editor .writely-comment-red-hover {
+      background-color: #FF7A7A;
+      background-position: -160px 0;
+    }
+
+    .editor .writely-comment-marker {
+      background-image: url('MISSING');
+      background-color: transparent;
+      padding-right: 11px;
+      background-repeat: no-repeat;
+      width: 16px;
+      height: 16px;
+      -moz-user-select: none;
+    }
+
+    .editor .writely-comment-hidden {
+      padding: 0;
+      background: none;
+    }
+    .editor .writely-comment-marker-hidden {
+      background: none;
+      padding: 0;
+      width: 0;
+    }
+    .editor .writely-comment-none {
+      opacity: .2;
+      filter:progid:DXImageTransform.Microsoft.Alpha(opacity=20);
+      -moz-opacity: .2;
+    }
+    .editor .writely-comment-none-hover {
+      opacity: .2;
+      filter:progid:DXImageTransform.Microsoft.Alpha(opacity=20);
+      -moz-opacity: .2;
+    }
+  
+
+
+  
+  .br_fix span+br:not(:-moz-last-node) {
+    
+    position:relative;
+    
+    left: -1ex
+    
+  }
+
+  
+  #cb-p-tgt {
+    font-size: 8pt;
+    padding: .4em;
+    background-color: #ddd;
+    color: #333;
+  }
+  #cb-p-tgt-can {
+    text-decoration: underline;
+    color: #36c;
+    font-weight: bold;
+    margin-left: 2em;
+  }
+  #cb-p-tgt .spin {
+    width: 16px;
+    height: 16px;
+    background: url(//ssl.gstatic.com/docs/clipboard/spin_16o.gif) no-repeat;
+  }
+}
+
+h6 { font-size: 8pt }
+h5 { font-size: 8pt }
+h4 { font-size: 10pt }
+h3 { font-size: 12pt }
+h2 { font-size: 14pt }
+h1 { font-size: 18pt }
+
+blockquote {padding: 10px; border: 1px #DDD dashed }
+
+.webkit-indent-blockquote { border: none; }
+
+a img {border: 0}
+
+.pb {
+  border-width: 0;
+  page-break-after: always;
+  /* We don't want this to be resizeable, so enforce a width and height
+     using !important */
+  height: 1px !important;
+  width: 100% !important;
+}
+
+.editor .pb {
+  border-top: 1px dashed #C0C0C0;
+  border-bottom: 1px dashed #C0C0C0;
+}
+
+div.google_header, div.google_footer {
+  position: relative;
+  margin-top: 1em;
+  margin-bottom: 1em;
+}
+
+
+/* Table of contents */
+.editor div.writely-toc {
+  background-color: #f3f3f3;
+  border: 1px solid #ccc;
+}
+.writely-toc > ol {
+  padding-left: 3em;
+  font-weight: bold;
+}
+ol.writely-toc-subheading {
+  padding-left: 1em;
+  font-weight: normal;
+}
+/* IE6 only */
+* html writely-toc ol {
+  list-style-position: inside;
+}
+.writely-toc-none {
+  list-style-type: none;
+}
+.writely-toc-decimal {
+  list-style-type: decimal;
+}
+.writely-toc-upper-alpha {
+  list-style-type: upper-alpha;
+}
+.writely-toc-lower-alpha {
+  list-style-type: lower-alpha;
+}
+.writely-toc-upper-roman {
+  list-style-type: upper-roman;
+}
+.writely-toc-lower-roman {
+  list-style-type: lower-roman;
+}
+.writely-toc-disc {
+  list-style-type: disc;
+}
+
+/* Ordered lists converted to numbered lists can preserve ordered types, and
+   vice versa. This is confusing, so disallow it */
+ul[type="i"], ul[type="I"], ul[type="1"], ul[type="a"], ul[type="A"] {
+  list-style-type: disc;
+}
+
+ol[type="disc"], ol[type="circle"], ol[type="square"] {
+  list-style-type: decimal;
+}
+
+/* end default css */
+
+
+  /* default print css */
+  
+  @media print {
+    body {
+      padding: 0;
+      margin: 0;
+    }
+
+    div.google_header, div.google_footer {
+      display: block;
+      min-height: 0;
+      border: none;
+    }
+
+    div.google_header {
+      flow: static(header);
+    }
+
+    /* used to insert page numbers */
+    div.google_header::before, div.google_footer::before {
+      position: absolute;
+      top: 0;
+    }
+
+    div.google_footer {
+      flow: static(footer);
+    }
+
+    /* always consider this element at the start of the doc */
+    div#google_footer {
+      flow: static(footer, start);
+    }
+
+    span.google_pagenumber {
+      content: counter(page);
+    }
+
+    span.google_pagecount {
+      content: counter(pages);
+    }
+
+    .endnotes {
+      page: endnote;
+    }
+
+    /* MLA specifies that endnotes title should be 1" margin from the top of the page. */
+    @page endnote {
+      margin-top: 1in;
+    }
+
+    callout.google_footnote {
+      
+      display: prince-footnote;
+      footnote-style-position: inside;
+      /* These styles keep the footnote from taking on the style of the text
+         surrounding the footnote marker. They can be overridden in the
+         document CSS. */
+      color: #000;
+      font-family: Verdana;
+      font-size: 10.0pt;
+      font-weight: normal;
+    }
+
+    /* Table of contents */
+    #WritelyTableOfContents a::after {
+      content: leader('.') target-counter(attr(href), page);
+    }
+
+    #WritelyTableOfContents a {
+      text-decoration: none;
+      color: black;
+    }
+  }
+
+  @page {
+    @top {
+      content: flow(header);
+    }
+    @bottom {
+      content: flow(footer);
+    }
+    @footnotes {
+      border-top: solid black thin;
+      padding-top: 8pt;
+    }
+  }
+  /* end default print css */
+
+
+/* custom css */
+
+
+/* end custom css */
+
+/* ui edited css */
+
+body {
+  font-family: Verdana;
+  
+  font-size: 10.0pt;
+  line-height: normal;
+  background-color: #ffffff;
+}
+/* end ui edited css */
+
+
+/* editor CSS */
+.editor a:visited {color: #551A8B}
+.editor table.zeroBorder {border: 1px dotted gray}
+.editor table.zeroBorder td {border: 1px dotted gray}
+.editor table.zeroBorder th {border: 1px dotted gray}
+
+
+.editor div.google_header, .editor div.google_footer {
+  border: 2px #DDDDDD dashed;
+  position: static;
+  width: 100%;
+  min-height: 2em;
+}
+
+.editor .misspell {background-color: yellow}
+
+.editor .writely-comment {
+  font-size: 9pt;
+  line-height: 1.4;
+  padding: 1px;
+  border: 1px dashed #C0C0C0
+}
+
+
+/* end editor CSS */
+
+</style>
+
+  
+  <title>Rental System Readme Version 2.0</title>
+
+</head>
+
+<body 
+    
+    >
+    
+    
+    
+<div class=Section1 id=airo>
+  <p class=MsoNormal id=c09y10>
+    <font id=xswm size=4><b id=xswm0>Introduction</b></font><br id=xswm1>
+  </p>
+  <p class=MsoNormal id=c09y17>
+    <br id=xswm2>
+  </p>
+  <p class=MsoNormal id=xswm3>
+    This guide may seem overwhelming at first, especially if this is your first time running an E-commerce shopping cart. Don't fear though. <b id=gf00>In order to get started</b>, we recommend you <b id=gf000>first view the demo store and click the links</b>, mess around, try the different features out.<br id=he5o>
+    <br id=he5o0>
+    After you finish with that, try <b id=it.i1>logging into the administration and clicking the various links</b> to see what they do. Don't try changing anything yet, especially the configuration section. After you have clicked on the various links and see what's available, you can go through this guide to understand better what the features do. You will find that our Rental E-commerce system has lots of features to help you run your store, market your website, and make a fun shopping experience for your customers.<br id=gkni>
+    <br id=gkni0>
+    We offer consulting and support services, as well as E-commerce packages if you find need additional help with your store.<br id=kjsc1>
+    <br id=kjsc2>
+  </p>
+  <p class=MsoNormal id=c09y19>
+    <b id=c09y20><span id=c09y21 style=COLOR:gray><font size=5>Index</font></span></b>
+  </p>
+  <p class=MsoNormal id=c09y26>
+    <b id=c09y27><a href=#Quick_Setup_Guide: id=htzw title="Quick Setup Guide"><br id=jgl4>
+    Quick Setup Guide</a> </b>
+  </p>
+  <p class=MsoNormal id=kgi3>
+    <b id=v:.v><a href=#How_Do_I_Configure_My_Store? id=l_:s title="How Do I Configure My Store?">How Do I Configure My Store?<br>
+    </a></b>
+  </p>
+  <p class=MsoNormal id=bspn>
+    <b id=re6n><a href=#How_Do_I_Backup_My_Store? id=dclk title="How Do I Backup My Store?">How Do I Backup My Store?</a><br id=rzcg1>
+    <a href=#Adding_Products_to_the_Catalog id=jjrw title="Adding Products to the Catalog">Adding Products to the Catalog</a><br id=jni3>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href=#General id=ib_v title=General>General</a><br id=mabx>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href=#Pricing id=y227 title=Pricing>Pricing</a></b>
+  </p>
+  <p class=MsoNormal id=mabx2>
+    <b id=mabx3>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href=#Description id=mk1o title=Description>Description</a></b>
+  </p>
+  <p class=MsoNormal id=mabx6>
+    <b id=mabx7>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href=#Pay_Per_Rental id=mrks title="Pay Per Rental">Pay Per Rental</a><br id=jni30>
+    </b>
+  </p>
+  <p class=MsoNormal id=c09y30>
+    <b id=c09y31><a href=#Payment_Modules id=yrho title="Payment Modules">Payment Modules</a> </b>
+  </p>
+  <p class=MsoNormal id=c09y32>
+    <b id=c09y33><a href=#Shipping_Modules id=q909 title="Shipping Modules">Shipping Modules</a><br id=d2-o>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href=#Onetime_Rental_Pay_Per_Rental_Sh id=q7oa title="Onetime Pay Per Rental Shipping">Onetime Pay Per Rental Shipping</a><br>
+    </b>
+  </p>
+  <p class=MsoNormal id=zreu>
+    <b id=l2f2><br>
+    Customer Edit Page<br id=de0b0>
+    &nbsp;&nbsp;&nbsp;&nbsp; <a href=#Editing_A_Onetime_Pay_Per_Rental id=cglc title="Editing A Onetime Pay Per Rental Reservation">Editing A Onetime Pay Per Rental Reservation</a> </b><br id=r1:i>
+  </p>
+  <p class=MsoNormal id=r1:i0>
+    <b id=r1:i1>&nbsp;&nbsp;&nbsp;&nbsp; <a href=#Setting_A_Customer%E2%80%99s_Rental_Acco id=e4y0 title="Setting Up A Rental Membership Account Manually">Setting Up A Rental Membership Account Manually</a> </b>
+  </p>
+  <p class=MsoNormal id=c09y43>
+    <b id=c09y44><span style=FONT-WEIGHT:normal><b><br id=wxb:>
+    </b></span></b>
+  </p>
+  <p class=MsoNormal id=c09y46>
+    <b id=c09y47>Rental Memberships Area</b>
+  </p>
+  <p class=MsoNormal id=c09y48>
+    <b id=c09y49>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href=#Package id=jzrn title=Package>Package</a> </b>
+  </p>
+  <p class=MsoNormal id=ut1o>
+    <b id=ut1o0>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href=#Rental_Availability id=wcu: title="Rental Availability">Rental Availability</a> </b>
+  </p>
+  <p class=MsoNormal id=ut1o1>
+    <b id=ut1o2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href=#Return_Rentals_By_Barcode id=vfc2 title="Return Rentals By Barcode">Return Rentals By Barcode</a><br id=ut1o3>
+    </b>
+  </p>
+  <p class=MsoNormal id=ut1o4>
+    <b id=ut1o5>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href=#Send_Rentals id=tmy1 title="Send Rentals">Send Rentals</a> </b>
+  </p>
+  <p class=MsoNormal id=c09y50>
+    <b id=c09y51>&nbsp; &nbsp; &nbsp; <a href=#Rental_Queue_Rental_History id=v25j title="Rental Queue Rental History">Rental Queue Rental History</a>&nbsp;<br>
+    <b>&nbsp;&nbsp; &nbsp; &nbsp;<a href=#Label_maker id=fm7- title="Label maker">Label maker</a></b></b>
+  </p>
+  <p class=MsoNormal id=c09y58>
+    <b id=frba4><br id=wxb:2>
+    Pay Per Rental Area</b>
+  </p>
+  <p class=MsoNormal id=ol6e0>
+    <b id=ziz_>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href=#Calendar_Blackout_Dates id=s::p title="Calendar Blackout Dates">Calendar Blackout Dates</a><br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href=#Send_Onetime_Rentals id=c27q title="Send Onetime Rentals">Send Onetime Rentals</a> </b>
+  </p>
+  <p class=MsoNormal id=mqfc>
+    <b id=mqfc0>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href=#Return_One_Time_Rentals id=ow_g title="Return One Time Rentals">Return One Time Rentals</a> </b>
+  </p>
+  <p class=MsoNormal id=mqfc1>
+    <b id=mqfc2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href=#Return_Rentals_By_Barcode id=n9jn title="Return Rentals By Bar Code">Return Rentals By Bar Code</a><br>
+    <b>&nbsp;&nbsp; &nbsp; &nbsp;<a href=#Label_maker id=qis- title="Label maker">Label maker</a></b></b>
+  </p>
+  <p class=MsoNormal id=c09y60>
+    <br id=c09y62>
+  </p>
+  <p class=MsoNormal id=c09y63>
+    <b id=c09y64>Customizing Your Store</b>
+  </p>
+  <p class=MsoNormal id=c09y65>
+    <b id=c09y66>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href=#Changing_Web_Site_Text id=vhtr title="Changing Web Site Text for Information Pages">Changing Web Site Text for Information Pages</a> </b>
+  </p>
+  <p class=MsoNormal id=c09y73>
+    <b id=c09y74>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href=#Populating_the_site_Via_Spreadsh id=sxp1 title="Populating the site Via Spreadsheet">Populating the Product Inventory and Rental Inventory Via Spreadsheet</a> </b>
+  </p>
+  <p class=MsoNormal id=d2na>
+    <b id=f_hx>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href=#Changing_Web_Site_Text id=bn4s title="Adjusting Site Text">Adjusting Site Text</a></b>
+  </p>
+  <p class=MsoNormal id=gw58>
+    <b id=o436>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href=#Adjusting_Meta_Tags id=tcb6 title="Adjusting Meta Tags">Adjusting Meta Tags</a><br>
+    </b>
+  </p>
+  <p class=MsoNormal id=c09y77>
+    &nbsp;&nbsp;&nbsp;&nbsp; <b id=ye9a><a href=#Template_Admin/Changing_Site_Loo id=rylm title="Template Admin/Changing Site Look">Template Admin/Changing Site Look/Logo</a></b>
+  </p>
+  <p class=MsoNormal id=c09y81>
+    <b id=c09y82><span class=SpellE id=c09y83>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></b><b id=t0t7><a href=#Infobox_Admin id=cwhj title="Infobox Admin">Infobox Admin</a></b><b id=c09y85> (little boxes on left and right column of site)<br id=c09y86>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href=#Location/Taxes id=apny title=Location/Taxes>Location/Taxes</a> </b>
+  </p>
+  <p class=MsoNormal id=c09y87>
+    <b id=c09y88>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href=#Adjusting_Email_Text id=ffp2 title="Adjusting Email Text">Adjusting Email Text</a> (order receipts, rental sent, site welcome email)<br id=c09y89>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href=#Using_With_Other_Languages id=doa1 title="Using With Other Languages">Using With Other Languages</a><br id=mtjd>
+    </b>
+  </p>
+  <p class=MsoNormal id=mtjd0>
+    <b id=mtjd1>&nbsp;<br id=c09y90>
+    </b>
+  </p>
+  <p class=MsoNormal id=c09y91>
+    <b id=c09y92>Extra Features<br id=c09y93>
+    </b>
+  </p>
+  <p class=MsoNormal id=c09y94>
+    <b id=c09y95>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href=#Coupons/Gift_Vouchers id=reyq title="Coupons/Gift Vouchers">Coupons/Gift Vouchers</a> </b>
+  </p>
+  <p class=MsoNormal id=c09y96>
+    &nbsp;&nbsp;&nbsp;&nbsp; <b id=c09y97><a href=#Recover_Cart_Sales id=xogb title="Recover Cart Sales">Recover Cart Sales</a> </b>
+  </p>
+  <p class=MsoNormal id=c09y98>
+    &nbsp;&nbsp;&nbsp;&nbsp; <b id=c09y99><a href=#Affiliates id=ezws title=Affiliates>Affiliates</a><br id=c09y100>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </b><b id=c09y101><a href=#Affiliates id=pnca title="Fun Ways To Browse">Fun Ways To Browse</a> </b>
+  </p>
+  <p class=MsoNormal id=c09y103>
+    &nbsp;&nbsp;&nbsp;&nbsp; <b id=c09y104><a href=#Admin_Access_Levels id=x2o. title="Admin Access Levels">Admin Access Levels</a><br id=c09y105>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href=#Polls id=n0jz title=Polls>Polls</a> </b>
+  </p>
+  <p class=MsoNormal id=c09y106>
+    <b id=c09y107>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href=#Rental_Issues id=qb-_ title="Trouble Tickets">Trouble Tickets</a> </b>
+  </p>
+  <p class=MsoNormal id=c09y108>
+    <b id=c09y109>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href=#Articles id=memc title=Articles>Articles</a> </b>
+  </p>
+  <p class=MsoNormal id=mtjd2>
+    <b id=e-z6>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href=#Referral_Reports_and_Setup id=w8qr title="Referral Reports and Setup">Referral Reports and Setup</a><br id=wukx>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href=#Site_Search_Reports_%28Know_what_y id=gc1h title="Site Search Reports (Know what your customers are searching for)">Site Search Reports (Know what your customers are searching for)</a> <b><b><br>
+    </b></b></b>
+  </p>
+  <p>
+  </p>
+  <p class=MsoNormal id=c09y112>
+    <b id=c09y113>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br id=k1pv1>
+    </b>
+  </p>
+  <p class=MsoNormal id=c09y114>
+    <b id=c09y115><font size=2>Rental Memberships Customer Side</font></b>
+  </p>
+  <p class=MsoNormal id=c09y117>
+    <b id=c09y118><a href=#Signing_Up id=avr1 title="Signing Up">Signing Up</a> </b>
+  </p>
+  <p class=MsoNormal id=c09y119>
+    <b id=c09y120><a href=#Adding_Rentals_to_Queue_and_Mana id=aq89 title="Adding Rentals to Queue">Adding Rentals to Queue</a> </b>
+  </p>
+  <p class=MsoNormal id=c09y121>
+    <b id=c09y122><a href=#Canceling_Membership id=iq4q title="Canceling Membership">Canceling Membership</a> </b>
+  </p>
+  <p class=MsoNormal id=c09y123>
+    <b id=c09y124><a href=#Upgrading_Membership id=mxk6 title="Upgrading Membership">Upgrading Membership</a></b>
+  </p>
+  <p class=MsoNormal id=c09y127>
+    <b id=c09y128><a href=#Rental_Issues id=vxnz title="Rental Issues">Rental Issues</a><br id=c09y129>
+    </b>
+  </p>
+  <p class=MsoNormal id=c09y130>
+    <b id=t1m.>&nbsp;<br>
+    </b>
+  </p>
+  <b id=d_36>
+  <p class=MsoNormal id=m8cq style="MARGIN-RIGHT:0px; MARGIN-LEFT:0px">
+    <b id=m064>Multi-Inventory Centers (Add-on)</b>
+  </p>
+  <p class=MsoNormal id=t8tc style="MARGIN-RIGHT:0px; MARGIN-LEFT:0px">
+    <b id=ux__>&nbsp;&nbsp; &nbsp; <a href=#Config_settings id=nls8 target=_self title="Config settings">Config settings</a><br>
+    &nbsp;&nbsp; &nbsp; <a href=#Inventory_zone_delivery_areas id=xxtv target=_self title="Inventory zone delivery areas">Inventory zone delivery areas</a><br>
+    &nbsp;&nbsp; &nbsp; <a href=#Check_if_customer_is_in_inventor id=u06b target=_self title="Check if customer is in inventory zone page">Check if customer is in inventory zone page</a></b>
+  </p>
+  <p class=MsoNormal id=gg5t style="MARGIN-RIGHT:0px; MARGIN-LEFT:0px">
+    <b id=dus5><br>
+    </b>
+  </p>
+  <b id=z6o9>
+  <p class=MsoNormal id=xdf0 style="MARGIN-RIGHT:0px; MARGIN-LEFT:0px">
+    <b id=rff5>Point of Sale (Add-on)</b>
+  </p>
+  <p class=MsoNormal id=x5bw style="MARGIN-RIGHT:0px; MARGIN-LEFT:0px">
+    <b id=puwf>&nbsp;&nbsp; &nbsp; <a href=#How_to_use id=h921 target=_self title="How to use">How to use</a></b>
+  </p>
+  <br>
+  </b>
+  <p>
+  </p>
+  <b id=mvbu>
+  <p class=MsoNormal id=tzv7 style="MARGIN-RIGHT:0px; MARGIN-LEFT:0px">
+    <b id=uj.b>Streaming/Downloads (Add-on)</b>
+  </p>
+  <p class=MsoNormal id=psqo style="MARGIN-RIGHT:0px; MARGIN-LEFT:0px">
+    <b id=e8vk>&nbsp;&nbsp; &nbsp;&nbsp;<a href=#Admin_configuration_streamin id=ga8d title="Config Settings">Config Settings</a></b>
+  </p>
+  <p class=MsoNormal id=lbsc style="MARGIN-RIGHT:0px; MARGIN-LEFT:0px">
+    <b id=smhb>&nbsp;&nbsp; &nbsp;&nbsp;<a href=#Membership_Rental_Plans_Streamin id=n416 title="Membership Rental Plans Streaming Options">Membership Rental Plans Streaming Options</a></b>
+  </p>
+  <p class=MsoNormal id=q:2: style="MARGIN-RIGHT:0px; MARGIN-LEFT:0px">
+    <b id=om-t>&nbsp;&nbsp; &nbsp;&nbsp;<a href=#Adding_Streams/Downloads_To_A_Pr id=t_nn title="Adding Streams/Downloads To A Product">Adding Streams/Downloads To A Product</a></b>
+  </p>
+  <p class=MsoNormal id=h38f style="MARGIN-RIGHT:0px; MARGIN-LEFT:0px">
+    <b id=zd-t>&nbsp;&nbsp; &nbsp;&nbsp;<a href=#Viewing_A_Customers_Stream_Histo id=yh2s title="Viewing A Customers Stream/Download History">Viewing A Customers Stream/Download History</a><br>
+    &nbsp;&nbsp; &nbsp; Converting DVDs to a streaming video format<br>
+    &nbsp;&nbsp; &nbsp; Getting permission to stream videos</b>
+  </p>
+  </b></b>
+  <p class=MsoNormal id=c09y134>
+    &nbsp;<br id=c09y135>
+  </p>
+  <p class=MsoNormal id=c09y136>
+  </p>
+  <p class=MsoNormal id=c09y137>
+  </p>
+  <p class=MsoNormal id=c09y138>
+  </p>
+  <p class=MsoNormal id=c09y139>
+    <b id=c09y140><span id=c09y141 style=COLOR:gray><font size=5>&nbsp;</font></span></b>
+  </p>
+  <p class=MsoNormal id=c09y142>
+    <font class=Apple-style-span color=#808080><b><font size=5><br>
+    </font></b></font>
+  </p>
+  <br>
+  <p class=MsoNormal id=c09y177>
+    <font id=stkd1 size=4><b id=c09y178>Quick Setup Guide:</b></font>
+  </p>
+  <p class=MsoNormal id=c09y179>
+    &nbsp;
+  </p>
+  1. <b id=tvef>Go to configure &gt; my store</b> – set your store name, owner, email address, etc. You can also set different options under <b id=nut9>admin &gt; config &gt; rentals</b>. Set your shipping info under admin &gt; config &gt; shipping/packaging.<br>
+  <div id=w3jk style=TEXT-ALIGN:left>
+    <img src="images/dg872p8q_52fbbbf7hk_b.png" style="WIDTH:648px; HEIGHT:432.844px">
+  </div>
+  <br id=zlvl>
+  2. Go to catalog &gt; categories and setup categories such as action/adventure, sci-fi, etc. – or whatever categories fit your store.<br>
+  <br id=zlvl0>
+  3. Go to catalog &gt; products and add products. After adding your products you need to add stock on the inventory tab. <font class=Apple-style-span color=#ff0000>Do not add inventory until after you first save your product.<br>
+  </font>
+  <div id=mvav style=TEXT-ALIGN:left>
+    <br>
+    The rental inventory screen is an important page. You need to select what kind of inventory to use, quantity tracking or barcode tracking. We recommend you use quantity tracking for new and used items. But for pay per rentals or rental membership items, you should use barcode tracking. <span style=COLOR:#990000>A product MUST have inventory to show the buy or rent buttons to the customer</span>.<br>
+  </div>
+  <br>
+  4. You need to setup your payment now. Go to modules &gt; payment – you can use <span class=SpellE id=c09y198>USAEpay, PayPal</span>, Credit Card <span class=GramE id=c09y199>Via</span> Authorize.net, or Credit Card for rental memberships. Click on the payment module, click install &gt; and put in your info. <a href=#Payment_Modules id=p2mm target=_self title="More info">More info</a> about payment modules is below. Also, notice the last selector on the edit payment module box that allows you to enable it for regular checkout, rental, or both&nbsp;<br>
+  <div id=dpwz style=TEXT-ALIGN:left>
+    <img src="images/dg872p8q_48tgt6jggx_b.png" style="WIDTH:200px; HEIGHT:173px">
+  </div>
+  <br id=zlvl2>
+  5. Go to content management &gt; manage pages to edit your default page contents such as your terms and conditions.&nbsp;<br>
+  <br>
+  6. Go to modules &gt; shipping to chose your shipping modules and edit the shipping cost (<a href=#Shipping_Modules id=h74j target=_self title="more info">more info</a>)<br id=c09y201>
+  <p class=MsoNormal id=c09y202>
+    &nbsp;
+  </p>
+  <p class=MsoNormal id=c09y207>
+  </p>
+  <p class=MsoNormal id=pr.b>
+    <b id=c09y204>You are done with the initial setup!</b><br id=hm6n>
+    <br id=pzhh8>
+    <b id=pr.b0><font id=hxc1 size=5><a id=jlcj name=How_Do_I_Configure_My_Store?></a>How Do I Configure My Store?<br id=zo5b>
+    </font></b><font id=zo5b0 size=5><font id=zo5b1 size=2>Go to admin &gt; configuration &gt; My Store and admin &gt; configuration &gt; rental &gt; general. Here you will be able to configure many things having to do with your store, such as your store name, rental feature options, etc. In this guide we don't tell you what each option does because this is shown to you on the administration.<br id=ou6->
+    </font></font>
+  </p>
+  <p class=MsoNormal id=ou6-0>
+    <br id=ou6-3>
+  </p>
+  <p class=MsoNormal id=ou6-4>
+    <font id=ou6-5 size=5><font id=ou6-6 size=2><b id=ou6-7>For example</b>, if you go to admin &gt; configuration &gt; my store and click on "</font></font>Ignore Words In Product Listing Alphabetical List" it will tell you on the right side box what this feature does: "Put here the words that you want to be ignored by the alphabetical product listings. Useful so that products with "the" in the title or words like that don't get alphabetized under "t"&nbsp; Ignored Words: (seperate multiple words with a comma)"<br id=ou6-8>
+    <br id=ou6-9>
+    Then you can click on "edit" and edit that configuration setting.<br>
+    <br>
+    <font size=5><b><a id=hem6 name=How_Do_I_Backup_My_Store?></a>How Do I Backup My Store?</b></font><br>
+    The first step is to backup all your files. You will need to download a free FTP program like Filezilla.<br>
+    1. Open up your FTP program and put in your connection settings (provided to you by your web host).
+  </p>
+  <div id=a4_a style=TEXT-ALIGN:left>
+    <img src="images/dg872p8q_72gq5fgqdn_b.png" style="WIDTH:486px; HEIGHT:405px"><br>
+    2. Next after connecting, you will be presented with the folder like public_html, click the folder to view your files. Select all your files and folders, and drag and drop them to the left window to download them all.
+    <div id=hfd4 style=TEXT-ALIGN:left>
+      <img src="images/dg872p8q_73dw3p4pxs_b.png" style="WIDTH:648px; HEIGHT:472.342px"><br>
+      3. If you ever mess up your files, you can upload from your backup by dragging all the files from the left side of the window to the right. When it asks if you want to overwrite the files, say yes.<br>
+      <br>
+      The next step is to download your database. Go to your web hosting control panel &gt; mysql databases &gt; phpmyadmin tool. The process varies for how to access phpmyadmin, if you can't find it in your web hosting control panel, find out from your web host how to get to it.<br>
+      <br>
+      1. Export the database using the options: "Add drop table" checkbox checked, gzip, sql, save to file, click go and save it to your folder.
+      <div id=qca8 style=TEXT-ALIGN:left>
+        <img src="images/dg872p8q_75dgqxwzfb_b.png" style="WIDTH:648px; HEIGHT:573.135px"><br>
+        2. If you ever mess up your database, you can restore your database from your backup in phpmyadmin by going to the "import" tab and uploading the backup you just made.<br>
+      </div>
+      <br>
+    </div>
+    <br>
+  </div>
+  <b id=zo5b3><font id=zo5b4 size=5><br id=pzhh9>
+  <a id=suid name=Adding_Products_to_the_Catalog></a>Adding Products to the Catalog</font><br id=pr.b1>
+  </b>
+  <p class=MsoNormal id=pr.b2>
+    <br id=rhx_>
+    Many of the fields for adding products to the catalog are self-explanatory. Here we discuss fields that may be confusing.<br>
+  </p>
+  <p class=MsoNormal id=pr.b5>
+    <b id=pr.b6><font id=hxc10 size=4><br id=p1te>
+    <a id=torr name=General></a>General</font><br id=pr.b7>
+    </b>
+  </p>
+  <p class=MsoNormal id=c09y213>
+    &nbsp;
+  </p>
+  <p class=MsoNormal id=c09y214>
+    <b id=e-a->Products Type:</b> check the checkbox for the type of product you want the product to be.&nbsp;<br id=c09y217>
+    <br id=qkmp>
+    <b id=qkmp0>Date Available:</b> Set the date your product will be released if it is not yet available.<b><br id=iu180>
+    </b><br id=iu181>
+    <b id=iu182>Products Model: </b>SKU for item, <b id=iu183>not</b> related to barcode<br id=rfba>
+    <br id=rfba0>
+    <b id=rfba1>Products URL:</b> put in url here if you want a weblink shown on the product info page for that product shown to your customer.<br id=qkmp3>
+    <br id=c09y218>
+    <b id=j1_:>product weight: </b>make sure to give the product a weight if you want to charge shipping for a product (even if you are using table rate shipping).<br>
+  </p>
+  <p class=MsoNormal id=hxc11>
+    <br id=hxc12>
+  </p>
+  <p class=MsoNormal id=pr.b11>
+    <font id=hxc13 size=4><b id=pr.b12><a id=r:m1 name=Pricing></a>Pricing</b></font>
+  </p>
+  <p class=MsoNormal id=pr.b13>
+    <br id=qtjz3>
+    <b id=qtjz4>Tax Class: </b>set this to taxable goods if you want to charge sales tax.<br id=qtjz5>
+    <br id=qtjz6>
+    <b id=u:41>Products Price (Net):</b> put in your product price here for your product types<br id=qtjz7>
+    <b id=u:410><br id=qtjz8>
+    Product Price (Gross): </b>don't edit this. It is auto-calculated based on if the item is taxed.<br id=u:411>
+    <b id=u:412><br id=u:413>
+    Special Authorization Charge:</b> If you put something here, your product will only be authorized this amount to the credit card rather than the actual price of the item. Authorization means their credit card is only authorized, not actually charged. You must also have admin &gt; modules &gt; payment &gt; (your credit card processor) set to "authorize only" for this to work<br id=p2xl>
+    <br id=p2xl0>
+    <b id=p2xl1>Pay Per Rental Pricing </b>- this is the pricing for onetime pay per rentals based on time period rented.<br id=qtjz9>
+    <br id=pr.b15>
+  </p>
+  <p class=MsoNormal id=pr.b16>
+    <b><font size=4><br>
+    </font></b>
+  </p>
+  <p class=MsoNormal id=x82u>
+    <b id=scf6><font id=scf60 size=4><a id=dyjd name=Description></a>Description</font></b><br id=scf61>
+    <b id=euo9><br id=v37n0>
+    Product Name<br>
+    <br>
+    Product Description<br>
+    <br>
+    Choose Product Type: </b>This connects to admin &gt; catalog &gt; product types. The goal of this feature is to allow you to enter in custom product fields since all stores are different. For example, you may have a product type movies and here you would enter actors, director, etc. and another product type books, so here you would enter author, ISBN, etc. After you setup your product types, the entry fields will appear after you select your product type from the drop down menu.&nbsp;
+  </p>
+  <p class=MsoNormal id=iwk5>
+    <b><br>
+    </b>
+  </p>
+  <p class=MsoNormal id=e547>
+    <b id=kfuo>Meta Tag Information</b> - these 4 items are for search engines. You can leave them blank if you like and they will be auto-generated.<br id=ngdb4>
+    <b><font class=Apple-style-span size=3><span style=FONT-WEIGHT:normal><font size=2><br>
+    </font></span></font></b>
+  </p>
+  <p class=MsoNormal id=b0:u>
+    <br>
+    <b><font size=4>Inventory<br>
+    </font></b><br>
+    <b>1. First select the product type tab: </b>new/used/pay per rental/rental members for which you want to add inventory<br>
+    <br>
+    2. Next chose the inventory tracking method: quantity or barcode. For barcode tracking you must enter barcodes for each product sold or rented. Barcode is the only option available for rental membership inventory. If you have the multi-inventory module installed, you can check the checkbox "inventory centers" to make it track by inventory center.&nbsp;<br>
+    <br>
+    <b><font size=4>Box Set</font></b><br>
+    <br>
+    you don't need to adjust anything here, if you generate a box set this info will be filled in for you<br>
+    <br>
+    <b><font size=4>Packaged</font></b><br>
+    <br id=pr.b30>
+  </p>
+  <p class=MsoNormal id=y02y>
+    This is where you setup pay per rentals products that can include multiple quantities of different products. For example, you might make the main product "movie rental package" within this product under the "packaged" area you setup the movies that are part of the package.&nbsp;<br>
+    <br>
+    To add products to a package, first start to type the name of the product you want to add and select it when it appears. then put the quantity, select type "pay per rental" and click add. The product you added now forms part of the rental package.&nbsp;
+  </p>
+  <p class=MsoNormal id=ayv6>
+    <br>
+  </p>
+  <p class=MsoNormal id=mdwb>
+    <b id=e94i><font id=nuio size=4><b>Downloads/Streaming<br>
+    </b><br>
+    </font></b>
+  </p>
+  <p class=MsoNormal id=nw.e>
+    <b><font size=2>Discussed here: </font><span style=FONT-WEIGHT:normal><a href=#Adding_Streams/Downloads_To_A_Pr id=z7:y target=_self title=downloads/streaming><font size=2>downloads/streaming</font></a></span></b>
+  </p>
+  <p class=MsoNormal id=dl.8>
+    <b id=n92v><font id=pwrf size=4><br>
+    Pay Per Rental</font><br id=pr.b33>
+    </b>
+  </p>
+  <p class=MsoNormal id=pr.b34>
+  </p>
+  <br id=b.dm1>
+  <b id=m.ur>One Time Rental Shipping Methods: </b>checkbox the shipping methods you want to use for this product.<br id=jzn5>
+  <br id=jzn50>
+  <b id=tz7g>Max Rental Days: </b>The max number of days a customer can rent an item<br id=cgps>
+  <br id=cgps0>
+  <b id=hj13>Max rental methods:</b> The max number of months a customer can rent the item.<br id=nndk>
+  <b id=nndk0><br id=nndk1>
+  Allow rental overbooking: </b>checking this box means that when your customer choses to reserve a pay per rental item, they will be allowed to reserve the item on any date without checking to see if you really have that item in stock for those rental dates.<br>
+  <br>
+  <b id=ghwi><font id=ya_r size=4>Attributes<br>
+  <br>
+  </font></b>You must first setup your product attributes in admin &gt; catalog &gt; product attributes. After you finish this setup, can can load them onto products from this tab.<br>
+  <b id=rnwh><font id=ui7o size=4><br>
+  </font></b><b id=kj53><font id=eobi size=4>Custom Fields</font></b><br id=c09y221>
+  <br>
+  You must first setup your custom fields in admin &gt; catalog &gt; custom fields. After that, you can enter in the custom field data here.<br id=nb5i4>
+  <p class=MsoNormal id=c09y227>
+    <br id=nb5i5>
+  </p>
+  <p class=MsoNormal id=c09y229>
+    <font id=stkd3 size=4><b id=c09y230><a id=cpzh name=Payment_Modules></a><font id=ddud size=5>Payment Modules</font></b></font>
+  </p>
+  <p class=MsoNormal id=c09y231>
+    <b id=c09y232>&nbsp;</b>
+  </p>
+  <p class=MsoNormal id=c09y233>
+  </p>
+  <b id=stlx>
+  <div id=xfu_ style=TEXT-ALIGN:left>
+    <img src="images/dg872p8q_61v8rqqscx_b.png" style="WIDTH:648px; HEIGHT:466.856px">
+  </div>
+  <br>
+  Credit Card: </b>This module takes the credit card number from the customer and encrypts the information into your database. From the admin you can see the credit card number and enter it into the credit card processor you use.
+  <p>
+  </p>
+  <p class=MsoNormal id=c09y235>
+    <b id=c09y236>Credit Card via Authorize.net: </b>Credit card number is stored in the admin &gt; customer area and customers are automatically billed on their bill date via the member_update.php cron.<br id=c09y237>
+  </p>
+  <p class=MsoNormal id=c09y238>
+    <b id=c09y239>Credit Card via USAePay: </b>Credit card number is stored in the admin &gt; customer area and customers are automatically billed on their bill date via the member_update.php cron.
+  </p>
+  <p class=MsoNormal id=c09y240>
+    <span class=SpellE id=c09y241><b id=c09y242>Credit/Debit Card (via PayPal): </b></span><span class=SpellE id=c09y243>PayPal</span> transactions will be recorded as recurring billing transactions automatically by <span class=SpellE id=c09y244>PayPal. <span id=c09y245 style=COLOR:#ff0000>Rental Free trial periods are not compatible</span> with PayPal, though PayPal claims to support them, they have errors in their integration code causing it to not be able to be supported. Also, <span id=c09y246 style=COLOR:#ff0000>coupons and gift vouchers are not compatible with PayPal</span> rental signups, so on checkout_payment.php the coupon/gift voucher entry box will not appear when signup up for rental memberships. </span><span class=SpellE id=c09y247>We hope that PayPal will support them in the future, if they do we will upgrade your store. </span><span class=SpellE id=c09y248>Make sure that paypal ipn is set in admin &gt; modules &gt; payment to "aggregate" mode for the coupons/gift vouchers to work with buying regular products.<br id=c09y249>
+    </span>
+  </p>
+  <p class=MsoNormal id=c09y250>
+    <b id=c09y251>Cash On Delivery:</b> if enabled, this module only works for regular shopping cart purchases, not rental memberships<br id=c09y252>
+    <b id=c09y253>Check/Money Order:</b> if enabled, this module only works for regular shopping cart purchases, not rental memberships
+  </p>
+  <p class=MsoNormal id=c09y254>
+    <br id=c09y255>
+    There are also some other payment modules, but we do not officially support them.<br id=c09y256>
+  </p>
+  <br id=c09y257>
+  <p class=MsoNormal id=c09y258>
+  </p>
+  You will be able to see a customer's billing history by going to admin &gt; customer &gt; edit and looking at their account. You can also view details of each recurring billing in customers &gt; orders, and customers &gt; membership billing reports<br id=ba_3>
+  <p class=MsoNormal id=c09y259>
+    <br id=ba_31>
+    <font id=ba_32 size=5><b id=ba_33><a id=w1p0 name=Shipping_Modules></a>Shipping Modules</b></font><br id=ba_34>
+  </p>
+  In admin &gt; modules &gt; shipping you can install the shipping methods you want to use for your sales products. We do not cover shipping method configuration as part of the installation service, but if you need additional help we can configure shipping modules for you at an additional consulting fee.<br id=swtt>
+  <br id=swtt0>
+  <font id=rc:a size=4><b id=izg:><a id=k8m. name=Onetime_Rental_Pay_Per_Rental_Sh></a>Onetime Rental Pay Per Rental Shipping</b></font><br id=swtt1>
+  This is where you set your shipping methods for your onetime pay per rentals. You can offer up to 5 different shipping methods for your onetime rentals, that is why there is a #1 - #5 before the Shipping Cost, text, and Days.<br>
+  <div id=cfzw style=TEXT-ALIGN:left>
+    <img src="images/dg872p8q_57hsh6bff4_b.png" style="WIDTH:648px; HEIGHT:583.118px">
+  </div>
+  <br id=ba_35>
+  <b id=rc:a0>Tax Class</b> set to taxable good if you want to tax your shipping charge<br id=rc:a1>
+  <b id=rc:a2>Shipping Zone</b> not used<br id=rc:a3>
+  <b id=atp8>Sort Order</b> not used<br id=atp80>
+  <b id=atp81>Shipping Cost</b> cost you charge the customer for your shipping method #1<br id=rc:a4>
+  <b id=z1np>Shipping Text</b> the name of the shipping method, such as "UPS Ground" or "Express Shipping"<br id=z1np0>
+  <b id=z1np1>Shipping Days </b>This is used to calculate how many days before and after the actual reservation date to account for the shipping time.<br>
+  <br>
+  <br>
+  <br>
+</div>
+<div class=Section1 id=e.mp>
+  <br id=z1np3>
+  <font id=l7bd1 size=4><b id=l7bd2><font id=xi22 size=5>Customer Edit Page<br id=b2yv>
+  </font><br id=xi220>
+  <a id=hpxv name=Editing_A_Onetime_Pay_Per_Rental></a>Editing A Onetime Pay Per Rental Reservation<br id=xi221>
+  </b><font id=xi222 size=2>
+  <div id=o_2z style=TEXT-ALIGN:left>
+    <img src="images/dg872p8q_62dj4d8zdk_b.png" style="WIDTH:648px; HEIGHT:502.18px">
+  </div>
+  <br>
+  Go to admin &gt; customers &gt; customers and click edit on the customer you wish to edit their reservation for. Under that customer you will see a section "One Time Rentals Pending" you can click "edit" next to each reservation and edit the item, date rented, and rental status. To select the End Date, you first need to select the start date to edit the reservation. You can also edit the barcode item that the customer had assigned to them for that reservation. When you are done editing the reservation click the "save" button to save your changes. </font><br id=xi223>
+  <b id=xi224><br id=xi225>
+  Setting <span class=GramE id=c09y271>A</span> Customer’s Rental Membership Account Manually</b></font>
+  <p class=MsoNormal id=c09y272>
+    <b id=c09y273>&nbsp;</b>
+  </p>
+  <p class=MsoNormal id=c09y274>
+    You can go to customers &gt; edit customer to make a regular customer a rental membership customer. You click “set customer to rental membership customer,” then chose their package, set their status to active, and put in the payment method you want to use for them.
+  </p>
+  <p class=MsoNormal id=c09y275>
+    &nbsp;
+  </p>
+  <p class=MsoNormal id=c09y278>
+    <b id=c09y279>Cancellation and Package Upgrades:</b> If a member cancels their membership or upgrades their package you will be sent an email alert. Their account will automatically be deactivated at the end of their billing cycle.<br id=c09y280>
+  </p>
+  <p class=MsoNormal id=c09y281>
+    <br id=c09y282>
+  </p>
+  <p class=MsoNormal id=c09y283>
+    If request <span class=GramE id=c09y284>a</span> upgrade/downgrade on their next billing cycle the web site will automatically update their account and their new membership plan will take effect (note you must have the <span class=SpellE id=c09y285>cron</span> job or scheduled task setup to run everyday for the automatic upgrade/downgrade to take effect).
+  </p>
+  <b><font class=Apple-style-span size=3><span style=FONT-WEIGHT:normal><font size=2><br>
+  </font></span></font></b>
+  <p class=MsoNormal id=on9.6>
+    <br id=on9.9>
+  </p>
+  <p class=MsoNormal id=on9.10>
+    <font id=on9.11 size=4><b id=on9.12><a id=dt87 name=Label_maker></a>Label maker</b></font>
+  </p>
+  The label maker is for printing shipping or product labels for rentals that you have already sent using send rentals. If you wish to print labels for products that you have not yet shipped, please see the title above "<a href=#To_View/Edit_rental_inventory_or id=t_si title="To View/Edit rental inventory or Print Labels">Printing Labels</a>"<br>
+  <div id=azop style=TEXT-ALIGN:left>
+    <img src="images/dg872p8q_58fdbp8ncw_b.png" style="WIDTH:648px; HEIGHT:383.822px">
+  </div>
+  <br id=hfcf>
+  1. Chose the from and to dates for the date you sent the rental item. Click "Generate List"<br id=hfcf0>
+  2. Checkbox the items that you want to generate a label for<br id=wkav>
+  3. Chose the type of label you want, and click "Generate Labels"<b><font class=Apple-style-span size=3><span style=FONT-WEIGHT:normal><font size=2><br>
+  </font></span></font></b>
+  <p class=MsoNormal id=c09y267>
+    <br id=mtjd4>
+    <br id=jtav>
+  </p>
+  <p class=MsoNormal id=jtav0>
+    <font id=jtav1 size=6><b id=jtav2>Rental Memberships Area</b></font>
+  </p>
+  <p class=MsoNormal id=c09y186>
+    <a id=srm8 name=Package></a>
+  </p>
+  <font id=qcm1 size=4><b id=h805>
+  <div id=obaz style=TEXT-ALIGN:left>
+    <img src="images/dg872p8q_59mnf6xhdr_b.png" style="WIDTH:648px; HEIGHT:467.909px">
+  </div>
+  <br>
+  Package</b></font><br id=ih23>
+  <p>
+  </p>
+  <p class=MsoNormal id=h_eg>
+    <b id=hhix>Package name: </b>what you want the package to be called
+  </p>
+  <p class=MsoNormal id=c09y187>
+    <b id=hhix0>Membership Days: </b>number of days in the membership – at the end of the membership the member will be charged the price for the membership again.
+  </p>
+  <p class=MsoNormal id=c09y188>
+    <b id=hhix1>Membership Months:</b> number of months in the membership, use months or days, try to avoid using a combination of both.<br id=c09y189>
+  </p>
+  <p class=MsoNormal id=c09y190>
+    <b id=hhix2>Free Trial: </b>how many free trial days are in the membership
+  </p>
+  <p class=MsoNormal id=c09y191>
+    <b id=hhix3>Free Trial Authorization Amount: </b>Amount to authorize (but not charge) your customers credit card during the free trial period if using authorize.net or usaepay credit card payments. This is to ensure they are using a valid credit card.<br id=c09y192>
+  </p>
+  <p class=MsoNormal id=c09y193>
+    <b id=r_xa>Number of titles: </b>how many products they can have checked out at a time
+  </p>
+  <b id=hhix4>Tax Class:</b> Set to taxable goods if you want to charge tax on rental memberships.<br id=ih230>
+  <p class=MsoNormal id=jtav6>
+    <b id=jtav7><br id=jtav8>
+    <font id=wx8e0 size=4><a id=tcdq name=Rental_Availability></a>Rental Availability</font></b>
+  </p>
+  <p class=MsoNormal id=jtav9>
+  </p>
+  <div id=aa55 style=TEXT-ALIGN:left>
+    <img src="images/dg872p8q_60dzm3zdft_b.png" style="WIDTH:648px; HEIGHT:148.299px">
+  </div>
+  <br>
+  The rental availability is calculated through a formula. It takes the priority number that customers have the rental product in their rental queue and subtracts it from the number of available rentals you have. The number is determined like so:<br id=c09y326>
+  <br id=c09y327>
+  Rental Queue #<br id=c09y328>
+  1 = 1<br id=c09y329>
+  2 = .9<br id=c09y330>
+  3 = .8<br id=c09y331>
+  4 = .7<br id=c09y332>
+  5 = .6<br id=c09y333>
+  6 = .5<br id=c09y334>
+  7 = .4<br id=c09y335>
+  8 = .3<br id=c09y336>
+  9 = .2<br id=c09y337>
+  10+ = .1<br id=c09y338>
+  <br id=c09y339>
+  <b id=qp0m> Formula</b><br id=c09y340>
+  Rental Queue # - number you have available now in rental inventory = rental ratio<br id=c09y341>
+  <br id=c09y342>
+  So if 1 person had it as #1 in their queue and 1 person had it as #2, and you had 1 in rental inventory your rental ratio would be 1.9 - 1 = .9<br id=c09y343>
+  <br id=c09y344>
+  A rental ratio of 0 or less is suggested to show as available now, from 0 to 3 is a short wait, and from 3 + is a long wait.<br id=qp0m0>
+  <b id=jtav10><br id=jtav11>
+  <font id=f9ax size=4><a id=rbsv name=Return_Rentals_By_Barcode></a>Return Rentals By Barcode</font><br id=jtav12>
+  </b>
+  <p class=MsoNormal id=jtav13>
+  </p>
+  <div id=xi4s style=TEXT-ALIGN:left>
+    <img src="images/dg872p8q_63d4wgmpdm_b.png" style="WIDTH:281px; HEIGHT:400px">
+  </div>
+  <br>
+  Put your cursor in each barcode box and scan it or type in the barcode number. Add comments about the rental inventory item if you like. Check the broken checkbox if the rental inventory item is broken or lost so that the rental inventory item will no longer be available for rent. Check the box "return rentals" for the rentals you want to return, then click the button at the bottom of the page to return them. <b id=jtav14><br id=xgs3>
+  <br id=jtav15>
+  <font id=f9ax0 size=4><a id=cz-y name=Send_Rentals></a>Send Rentals</font></b>
+  <p class=MsoNormal id=jtav16>
+  </p>
+  <div id=poi. style=TEXT-ALIGN:left>
+    <div id=tn66 style=TEXT-ALIGN:left>
+      <img src="images/dg872p8q_65fprn7kfx_b.png" style="WIDTH:648px; HEIGHT:175.851px">
+    </div>
+  </div>
+  <br>
+  Here you will be presented with a page showing all your rental membership customers. It will tell you how many titles they are allowed out, and how many titles you need to send them based on how many are currently out for rental. Click "view" on the rental queue column to view that particular customers rental queue. On the next page you will be shown their rental queue. Check the checkboxes next to the items you want to send to them. If the barcode column says "stockout" for that particular product, then you can not rent them that item because you have either no rental inventory, or all the rental inventory for that item is already checked out.<b id=jtav17><br id=kd:d>
+  <br id=jtav18>
+  <font id=f9ax1 size=4><a id=vg8i name=Rental_Queue_Rental_History></a>Rental Queue Rental History</font><br id=jtav19>
+  </b>Here you can view the rental history of your rental customers<b id=jtav20><br id=esdn>
+  <br id=jtav21>
+  <font id=f9ax2 size=4><a id=g5xx name=Rental_Issues></a>Rental Issues</font></b>
+  <p class=MsoNormal id=jtav22>
+  </p>
+  <p class=MsoNormal id=on9.20>
+    Here you can review and respond to rental issues that customers have reported.<br id=h_.w>
+  </p>
+  <p class=MsoNormal id=c09y269>
+    <br id=l7bd>
+  </p>
+  <p class=MsoNormal id=c09y286>
+    <a id=pmni name=Setting_A_Customer’s_Rental_Acco></a><b id=c09y287>&nbsp;</b>
+  </p>
+  <p class=MsoNormal id=c09y288>
+    <font id=h75o0 size=4><b id=c09y289>Sending Rentals</b></font>
+  </p>
+  <p class=MsoNormal id=c09y290>
+    <b id=c09y291>&nbsp;</b>
+  </p>
+  <p class=MsoNormal id=c09y292>
+    To send rentals you go to rent &gt; rental queue. You can view which members need rentals to be sent. Click the view rental queue link. Now click the checkbox next to the titles you want to send out. Then you select the barcode of the movie in inventory you are sending. Then you click rent. If you want to adjust the estimated arrival or return dates you click the arrow and set the date.
+  </p>
+  <p class=MsoNormal id=c09y293>
+    <b id=c09y294>&nbsp;</b>
+  </p>
+  <p class=MsoNormal id=c09y295>
+    <font id=h75o1 size=4><b id=c09y296>Returning Rentals</b></font>
+  </p>
+  <p class=MsoNormal id=c09y297>
+    <b id=c09y298>&nbsp;</b>
+  </p>
+  <p class=MsoNormal id=c09y299>
+    Go to Rent &gt; return rentals. You can return rentals by scanning the barcodes of the rentals into the boxes and clicking return. You can also return rentals by clicking the box in the return rentals column, adding any comments if you want, then clicking the remove button at the bottom.
+  </p>
+  <p class=MsoNormal id=c09y322>
+    <br id=fppi>
+    <br id=fppi0>
+    <b id=fppi1><font id=fppi2 size=5>Onetime Pay Per Rental Area</font><br id=fppi3>
+    <br id=fppi4>
+    </b>
+  </p>
+  <p class=MsoNormal id=fppi5>
+    <a id=t472 name=Send_Onetime_Rentals></a><br>
+    <b id=nezm><font size=4><a id=q947 name=Calendar_Blackout_Dates></a>Calendar Blackout Dates</font><br>
+    </b>Found under admin &gt; config &gt; rentals &gt; calendar blackout dates. This is to select dates that are not selectable on the calendar for onetime rentals. These might be days where your store is closed on the weekends, holidays, or vacation periods. For the blackout dates input boxes, if you select "repeats" these days will be blacked out every year. If not checkboxed repeats, it will be for that year only.<br>
+    <br>
+    <b id=fppi6><font id=fppi7 size=4>Send Onetime Rentals</font><br id=fppi8>
+    </b>1. Here you will select the from and to date for when the customer is supposed to receive their rental item. Click "Get Reservations"<br id=i:2w>
+    2. Click the checkbox next to the reservations you want to send, and then click the "Send Selected" button at the bottom of the page to send the rentals<br id=fppi9>
+    <br id=fppi10>
+  </p>
+  <p class=MsoNormal id=fppi11>
+    <font id=kszu size=4><b id=fppi12><a id=a:jj name=Return_One_Time_Rentals></a>Return One Time Rentals</b></font>
+  </p>
+  <p class=MsoNormal id=fppi13>
+    1. Chose the start and end dates for when the reservation is supposed to be returned. You will then be presented with the rentals that should be returned during that time. It will also show how many days late the rental is. You can here enter in comments on each rental inventory item about the condition of the item if desired.<b><span style=FONT-WEIGHT:normal><br>
+    </span></b>
+  </p>
+  <br id=kdgp1>
+  2. Checkbox the items that you want to return and click "Return Rentals" button at the bottom.<br id=fppi15>
+</div>
+<div class=Section1 id=kdgp2>
+  <p class=MsoNormal id=kdgp3>
+    <b id=kdgp4><br id=fppi16>
+    <font id=ag6k size=4><a id=st3_ name=Return_Rentals_By_Bar_Code></a>Return Rentals By Bar Code</font></b>
+  </p>
+  <p class=MsoNormal id=fppi17>
+    Put your cursor in each barcode box and scan it or type in the barcode number. Add comments about the rental inventory item if you like. Check the broken checkbox if the rental inventory item is broken or lost so that the rental inventory item will no longer be available for rent. Check the box "return rentals" for the rentals you want to return, then click the button at the bottom of the page to return them.<br id=qp0m1>
+    <br id=c09y347>
+  </p>
+  <p class=MsoNormal id=c09y358>
+    <font id=aw1s size=5><font id=swrz size=5><b id=c09y359>Configuring Your Store</b></font> </font><br id=c09y360>
+  </p>
+  <p class=MsoNormal id=c09y361>
+    <br id=c09y363>
+  </p>
+  <p class=MsoNormal id=c09y364>
+    <b id=c09y365><a id=mfbd name=Populating_the_site_Via_Spreadsh></a><font id=swrz0 size=4>Populating the site Via Spreadsheet</font></b><br id=c09y366>
+  </p>
+  <br id=c09y367>
+  You can also enter your products all at once via spreadsheet if you prefer to make data entry faster.&nbsp;<br id=c09y368>
+  <br id=c09y369>
+  <p class=MsoNormal id=c09y370>
+    <b id=qych>Go to admin &gt; import/export &gt; products</b>
+  </p>
+  <br id=c09y371>
+  <p class=MsoNormal id=c09y372>
+    1. download EP &amp; Froogle Files heading, chose Download <b id=c09y373>Complete</b> tab-delimited .txt file to edit
+  </p>
+  <p class=MsoNormal id=c09y374>
+    2. download the file to your desktop. Open it with your spreadsheet program. For Excel, right click the file, and click "open with Excel"
+  </p>
+  <p class=MsoNormal id=c09y375>
+    3. fill in the fields on the spreadsheet. <span id=c09y376 style=COLOR:#ff0000>Make sure you put in a unique v_products_model (this is like a SKU) for each product, or uploading/updates will not work.</span>
+  </p>
+  <p class=MsoNormal id=c09y377>
+    <span id=c09y378 style=COLOR:#000000>4. make sure the last row of each product has EOREOR<br id=c09y379>
+    </span>
+  </p>
+  <p class=MsoNormal id=c09y380>
+    <span id=c09y381 style=COLOR:#000000>5. Now save the file, if it asks, make sure to keep it in tab delimited format</span>
+  </p>
+  <p class=MsoNormal id=c09y382>
+    <span id=c09y383 style=COLOR:#000000>6. upload the file by using "upload EP file" browse to chose the file on your hard drive, then click insert into DB. If it times out while importing your file, instead chose the "split EP file" option.<br id=c09y384>
+    </span>
+  </p>
+  <br id=c09y385>
+  <b id=xuhn1>Fields on EP file:</b> fields in RED are REQUIRED<br id=c09y386>
+  <span style=COLOR:#ff0000>v_products_model:</span> SKU of product, must be unique, is required field<br>
+  v_products_image: product image<br>
+  <span style=COLOR:#ff0000>v_products_type:</span> set the product type, possible values (should be comma separated if a product has more then one) new,stream,rental,used,download,member_stream,reservation<br>
+  v_products_in_box: if the product is a box set product. put 0 if not, 1 if it is<br>
+  v_products_featured: 1 means yes, 0 means no<br>
+  v_products_price: price for new<br>
+  v_products_price_used: price for used<br>
+  v_products_price_stream: price for streaming version<br>
+  v_products_price_download: price for download version<br>
+  v_products_weight: a number like 2 for 2 pounds<br>
+  v_date_avail: date product will be available, in this format: YYYY-MM-DD HH-MM-SS<br>
+  v_date_added: date product was added<br>
+  v_manufacturers_name: manufacturer name if there is one<br>
+  v_products_categories: categories, if product is in multiple categories separate them by a semicolon. Example: Movies&gt;Action;Movies&gt;Sci-Fi<br>
+  v_products_name_1: product name<br>
+  v_products_name_2: there are extra product name fields for other languages if you use them<br>
+  v_products_description_1: product description<br>
+  v_products_description_2: there are more product description fields for other languages if you use them<br>
+  v_products_url_1: custom product url, we recommend you DO NOT fill in this field, these are auto-generated<br>
+  v_products_head_title_tag_1: custom header tag, we recommend you DO NOT fill in this field, these are auto-generated<br>
+  v_products_head_desc_tag_1: custom description tag, we recommend you DO NOT fill in this field, these are auto-generated<br>
+  v_products_head_keywords_tag_1: custom keywords tag, we recommend you DO NOT fill in this field, these are auto-generated<br>
+  v_tax_class_title: either put --none-- for non-taxable, or you can set a tax class that you have set in admin &gt; locations/taxes &gt; tax classes by default it is Taxable Goods class for tax.<br>
+  v_status: set to Active or InActive if you want a product to be inactive<br>
+  v_pay_per_rental_price_daily:&nbsp; pay per rental daily price<br>
+  v_pay_per_rental_price_weekly: pay per rental weekly price<br>
+  v_pay_per_rental_price_monthly: pay per rental monthly price<br>
+  v_products_auth_method: Only used for products that use authorization charge. Valid entries: auth or rental If Special Authorization Charge Is Less Than The Rental Fee, Which Should Be Authorized?<br>
+  v_pay_per_rental_auth_charge: for pay per rentals, if you want to only charge a authorization charge and not the full price<br>
+  v_pay_per_rental_shipping: comma separated list of available shipping methods for onetime rental products, valid entries: method1 - method5 (see admin &gt; modules &gt; shipping &gt; reservation shipping)<br>
+  v_pay_per_rental_max_days: max rental days for onetime rental product<br>
+  v_pay_per_rental_max_months: max rental months for onetime rental product<br>
+  v_pay_per_rental_overbooking: Yes or No if you allow overbooking more than your inventory<br>
+  v_attribute_1: Group Name&gt;Option Name&gt;Value Name ( T-shirt&gt;Color&gt;Red )<br>
+  v_attribute_1 also: OptionName&gt;Value Name if not using a group<br>
+  v_attribute_1_image: image.jpg<br>
+  v_attribute_1_views: View Name:View Image; (Front:1.jpg;Back:2.png) – this is not limited to a specific amount, you can have 1 view or 30<br>
+  v_attribute_1_price: 5 or -5<br>
+  v_attribute_1_sort: 1<br>
+  v_attribute_2: Add a number to the end to add more attributes for each field listed above<br>
+  v_custom_fields_group: Custom fields group name<br>
+  v_custom_field1: value for custom field. If it is a click to search type field, separate multiple values by semicolons, example: actor 1;actor2;<br>
+  <br>
+  <b id=c.zh>Go to admin &gt; import/export &gt; rental inventory</b><br id=c09y391>
+  <br>
+  Same instructions as above, fields are:<br>
+  <br>
+  v_products_model: SKU of the product that the rental inventory item is tied to<br>
+  v_products_name: name of product rental inventory item is tied to<br>
+  v_barcode: UNIQUE barcode for rental inventory item<br>
+  v_barcode_status: current status of rental inventory item can be AV (available) or NA (not available)<br>
+  v_comments: comments posted for that rental inventory item about condition, etc.<br>
+  v_rental_type: rental or onetime (for rental queue or onetime rental inventory item)<br>
+  v_broken: 1 = yes&nbsp; 2 = no<br>
+  <br>
+  <br id=c09y392>
+  <p class=MsoNormal id=c09y393>
+    <font id=swrz2 size=4><b id=c09y394>Adjusting Site Text</b></font>
+  </p>
+  <p class=MsoNormal id=c09y395>
+    &nbsp;
+  </p>
+  <p class=MsoNormal id=c09y396>
+    The text in your information pages can be easily edited in the admin, please see above "changing web site text." Not all text can be edited there though. A lot of the text for the pages is usually in includes/languages<span class=GramE id=c09y397>/(</span>your language)/<span class=SpellE id=c09y398>filename.php<br id=c09y399>
+    <br id=c09y400>
+    For example, if the url bar of the browser says "yoursite.com/checkout_success.php" (the checkout success page) then the language file would be includes/languages/(your language)/checkout_success.php<br id=c09y401>
+    </span>
+  </p>
+  <p class=MsoNormal id=c09y402>
+    &nbsp;
+  </p>
+  <p class=MsoNormal id=c09y403>
+    Be careful about editing the text, if you need to use <span class=GramE id=c09y404>a</span> apostrophe, make sure to backslash it like \’ or it will put in a premature end of field.<br>
+    <font size=4><br>
+    <b id=fbp3><a id=sq.: name=Adjusting_Meta_Tags></a>Adjusting Meta Tags</b></font><br>
+  </p>
+  <p class=MsoNormal id=c09y405>
+    <br>
+    You can adjust the meta tags for your pages like your home page, specials page, category pages, and product pages. As part of the SEO features, your category and product pages will automatically get meta tags, but you can override them. You can adjust the index, specials, etc. pages meta tags in admin &gt; header tags &gt; text control. To add/remove pages from the header tags control system you can go to admin &gt; header tags &gt; page control and follow the instructions on the page. Admin &gt; header tags &gt; fill tags will auto-fill the meta tags for your products, manufacturers, and products.<br>
+  </p>
+  <div id=m6qe style=TEXT-ALIGN:left>
+    <img src="images/dg872p8q_67d2hp42c3_b.png" style="WIDTH:600px; HEIGHT:493px">
+  </div>
+  <br>
+  Admin &gt; catalog &gt; edit product &gt; description is where you can override the default meta tags.<br>
+  <div id=n6gk style=TEXT-ALIGN:left>
+    <img src="images/dg872p8q_68fcq5th6s_b.png" style="WIDTH:648px; HEIGHT:304.783px">
+  </div>
+  <br id=c09y406>
+  <p class=MsoNormal id=c09y407>
+    <font id=swrz3 size=4><b id=c09y408><a id=n5oj name=Template_Admin/Changing_Site_Loo></a>Template A</b><b id=c09y409>dm</b><b id=c09y410>in/Changing Site Look/Logo</b></font>
+  </p>
+  <p class=MsoNormal id=c09y411>
+    &nbsp;
+  </p>
+  <p class=MsoNormal id=c09y412>
+    You can remove the gray bar at the top of the site that allows template switching by going to admin &gt; <span class=SpellE id=c09y413>config</span>&nbsp;&gt; my store &gt; show templates menu and set it to false
+  </p>
+  <p class=MsoNormal id=c09y414>
+    &nbsp;
+  </p>
+  <p class=MsoNormal id=c09y415>
+    You can also set the template you want to use in admin &gt; <span class=SpellE id=c09y416>config</span> &gt; my store &gt; default template directory to the name of the template.
+  </p>
+  <p class=MsoNormal id=c09y423>
+    &nbsp;
+  </p>
+  <p class=MsoNormal id=c09y424>
+    To adjust the look of your web site page, the main template file is in templates/<span class=SpellE id=c09y425>templatename/main_page.tpl.php</span> (<span class=SpellE id=c09y426>templatename</span> is the name of the currently selected template you are <span class=GramE id=c09y427>using,</span> by default it is the red template. The code for the pages themselves is in templates/fallback/content.<br>
+    <br>
+    <b>Logo:</b> By default the logo is stored in yoursite.com/templates/red/images/logo.jpg<br>
+  </p>
+  <br id=c09y428>
+  <p class=MsoNormal id=c09y429>
+  </p>
+  <p class=MsoNormal id=c09y430>
+    <b id=c09y431>&nbsp;</b>
+  </p>
+  <p class=MsoNormal id=c09y432>
+    <b id=c09y433><a id=qzw5 name=Changing_Web_Site_Text></a><font id=swrz4 size=4>Changing Web Site Text</font></b>
+  </p>
+  <p class=MsoNormal id=c09y434>
+    <b id=c09y435>&nbsp;</b>
+  </p>
+  <p class=MsoNormal id=c09y436>
+    There is a built in text editor for your web site under admin &gt; content management &gt; manage pages. here you can edit the text appearing on the contact us page, about us, or your other pages. You can also insert new pages and have them appear in your Information area.
+  </p>
+  <p class=MsoNormal id=c09y439>
+    &nbsp;
+  </p>
+  <p class=MsoNormal id=c09y440>
+  </p>
+  <p class=MsoNormal id=c09y442>
+    &nbsp;<br id=c09y443>
+  </p>
+  <p class=MsoNormal id=c09y444>
+    <span class=SpellE id=c09y445><b id=c09y446><a id=pt4l name=Infobox_Admin></a><font id=swrz5 size=4>Infobox</font></b></span><font id=swrz6 size=4><b id=c09y447> A</b><b id=c09y448>dm</b><b id=c09y449>in</b></font>
+  </p>
+  <p class=MsoNormal id=c09y450>
+    &nbsp;
+  </p>
+  <p class=MsoNormal id=c09y451>
+    <span class=SpellE id=c09y452>Infoboxes</span> are the little boxes on the left and right column of your web site like “shopping cart” or “rental queue.” These can be turned on and off through admin &gt; <span class=SpellE id=c09y453>infobox</span> admin by clicking red light for off, green light for on, you can also adjust their position from top to bottom, and move them from left to right or right to left.<br>
+  </p>
+  <div id=kn63 style=TEXT-ALIGN:left>
+    <img src="images/dg872p8q_49fwnbfnhd_b.png" style="WIDTH:648px; HEIGHT:326.627px">
+  </div>
+  <p class=MsoNormal id=c09y454>
+    &nbsp;
+  </p>
+  <p class=MsoNormal id=c09y455>
+    <b id=c09y456><a id=e52u name=Location/Taxes></a><font id=emkm size=4>Location/Taxes</font></b>
+  </p>
+  <p class=MsoNormal id=c09y457>
+    &nbsp;
+  </p>
+  <p class=MsoNormal id=c09y458>
+    Go to Admin &gt; location/taxes click “zones” edit the zone and set it to your State or Area. Then click “details” and set it to your State or Area.<br>
+  </p>
+  <div id=ckpk style=TEXT-ALIGN:left>
+    <img src="images/dg872p8q_50gbdf3xgj_b.png" style="WIDTH:648px; HEIGHT:198.778px">
+  </div>
+  <div id=h57s style=TEXT-ALIGN:left>
+    <img src="images/dg872p8q_51cp76rbgw_b.png" style="WIDTH:648px; HEIGHT:186.519px">
+  </div>
+  <p class=MsoNormal id=c09y459>
+    &nbsp;
+  </p>
+  <p class=MsoNormal id=c09y460>
+    Now click Admin &gt; location/taxes &gt; tax rates and edit your tax rate.
+  </p>
+  <p class=MsoNormal id=c09y461>
+    &nbsp;
+  </p>
+  <p class=MsoNormal id=c09y462>
+    For items to be taxable or rental packages to be taxable, you need to set them to the “taxable goods” tax class when you edit them.
+  </p>
+  <p class=MsoNormal id=c09y463>
+    <br id=c09y464>
+  </p>
+  <p class=MsoNormal id=c09y465>
+    <b id=c09y466><a id=jzy3 name=Adjusting_Email_Text></a><font id=emkm0 size=4>Adjusting Email Text</font></b>
+  </p>
+  <p class=MsoNormal id=c09y467>
+    &nbsp;
+  </p>
+  Email templates can be adjusted under tools &gt; email template manager. when you edit a template, you will see in red text the template tags you can insert into the email that will be filled in with the field shown.<br>
+  <br>
+  <img alt="">
+  <div id=nt_h style=TEXT-ALIGN:left>
+    <img src="images/dg872p8q_44zttntd2v_b.png" style="WIDTH:648px; HEIGHT:334.271px">
+  </div>
+  <br id=c09y469>
+  <b id=c09y470><a id=f4-u name=Using_With_Other_Languages></a><font id=emkm1 size=4>Using With Other Languages</font></b><br id=c09y471>
+  <p class=MsoNormal id=c09y472>
+  </p>
+  <p class=MsoNormal id=c09y473>
+    <br id=c09y474>
+  </p>
+  <p class=MsoNormal id=c09y475>
+    By default English is supported, but it can work with other languages with a little work. To use with other languages:
+  </p>
+  1<span class=syntax id=zg:4><span class="syntax_alpha syntax_alpha_charset" id=r7.n>. In admin &gt; localization &gt; languages insert your new language if it doesn't already exist. If your language does already exist, just click the "green light" button to enable it. After you have installed your language, it will take some work to translate the content of your website. You can do this by going to includes/languages/your_language/ and editing the files there to edit the text for your language. Careful not to insert ' characters, if you have to use an apostrophe, backslash it like \'<br>
+  </span></span>
+  <div id=q22m style=TEXT-ALIGN:left>
+    <div id=n8dj style=TEXT-ALIGN:left>
+      <img src="images/dg872p8q_69gddz8cdv_b.png" style="WIDTH:648px; HEIGHT:162.474px">
+    </div>
+  </div>
+  <br>
+  <span class=syntax id=e8.-><span class="syntax_alpha syntax_alpha_charset" id=a-.o>After you language is installed, when you edit a product, you will see little language flags for things like product name and description. You can enter a different product name and description for each language you have installed.<br>
+  <div id=fmyg style=TEXT-ALIGN:left>
+    <img src="images/dg872p8q_71c3nc8bf8_b.png" style="WIDTH:376px; HEIGHT:161px">
+  </div>
+  <br>
+  <div id=s:z1 style=TEXT-ALIGN:left>
+  </div>
+  </span></span>
+  <p id=c09y503>
+    You will also need to copy /templates/email/english/ to /templates/email/italian/ or whatever the name of your language is and translate the email templates. This can also be translated from admin &gt; tools &gt; email template manager but you need to make sure to give 777 permissions to the email template files.<br>
+    <b><br>
+    IF YOUR LANGUAGE IS NOT ALREADY INSTALLED</b><br id=c09y506>
+  </p>
+  <p id=bo6n>
+    <span class=syntax id=d-t7><span class="syntax_alpha syntax_alpha_charset" id=sl5b><b id=lns7><br>
+    FIRST backup your Files/DB, we recommend you pay for support to add other languages<br>
+    </b></span></span>
+  </p>
+  <p id=zj_d>
+    <span class=syntax id=m-y8><span class="syntax_alpha syntax_alpha_charset" id=qfhw><b id=rf:5>**option 1 -</b> start with language files from the contributions area of Oscommerce. The language contribution must be in UTF-8 database format. Some languages such as Korean, Japanese do not have a UTF-8 language pack and may require extra billed time to install (about 1 - 2 hours)<br id=c09y510>
+    </span></span>
+  </p>
+  <p id=c09y511>
+    <span class=syntax id=c09y512><span class="syntax_alpha syntax_alpha_charset" id=c09y513>2. install the files from your language pack: http://www.oscommerce.com/community/contributions/category,7 read the readme file that comes with it. <span style=COLOR:#ff0000>IMPORTANT, DO NOT run any php script, or SQL query that comes with the language pack</span>. These can corrupt your store config settings, and make your store not run. Only copy over the language files to the languages directory.<br id=c09y514>
+    </span></span>
+  </p>
+  <p id=c09y515>
+    <span class=syntax id=c09y516><span class="syntax_alpha syntax_alpha_charset" id=c09y517>3. It will require some work to insert the extra language files for the rental module. These include files in includes/languages/english like rental_billing_history.php or other files beginning with rental_ there are also other files like wishlist, affiliate_ that don't come with the system by default, so therefor you will need to make the language files. You can start by copying over any missing language files from includes/languages/english to includes/languages/yourlanguage and then translate the files.</span></span>
+  </p>
+  <p id=c09y518>
+    <span class=syntax id=c09y519><span class="syntax_alpha syntax_alpha_charset" id=c09y520>4. You will also need to edit includes/languages/your_language.php (replace your_language.php with your language name) for the extra defines that our system uses, for example BOX_HEADING_TITLE means you are missing the language define for that item.</span></span>
+  </p>
+  <p id=c09y521>
+    <span class=syntax id=c09y522><span class="syntax_alpha syntax_alpha_charset" id=c09y523>5. </span></span><span class=syntax id=c09y524><span class="syntax_alpha syntax_alpha_charset" id=c09y525>make the new buttons for your site in includes/languages/(your language)/images/buttons</span></span>
+  </p>
+  <p id=c09y526>
+    <br id=c09y527>
+  </p>
+  <p id=c09y528>
+    <b id=n4e20><span class=syntax id=c09y529><span class="syntax_alpha syntax_alpha_charset" id=c09y530>**option 2 - copy english files and translate</span></span></b>
+  </p>
+  <p id=c09y531>
+    <span class=syntax id=c09y532><span class="syntax_alpha syntax_alpha_charset" id=c09y533>2. copy all the files from includes/languages/english to a new directory, like includes/languages/korean and copy includes/languages/english.php to includes/languages/korean.php</span></span>
+  </p>
+  <p id=c09y534>
+    <span class=syntax id=c09y535><span class="syntax_alpha syntax_alpha_charset" id=c09y536>3. make the new buttons for your site in includes/languages/(your language)/images/buttons<br id=c09y537>
+    </span></span>
+  </p>
+  <p class=MsoNormal id=c09y538>
+    &nbsp;
+  </p>
+  <p class=MsoNormal id=c09y539>
+  </p>
+  <p class=MsoNormal id=c09y540>
+  </p>
+  <br id=c09y541>
+  <p class=MsoNormal id=c09y542>
+    <b id=eiar><a id=vix9 name=Coupons/Gift_Vouchers></a><font id=f3ri size=4>Coupons/Gift Vouchers</font></b>
+  </p>
+  <div id=rg4_ style=TEXT-ALIGN:left>
+    <img src="images/dg872p8q_66c5kmk4dq_b.png" style="WIDTH:478px; HEIGHT:400px">
+  </div>
+  <p>
+  </p>
+  <p class=MsoNormal id=c09y544>
+    <b id=c09y545>&nbsp;</b>
+  </p>
+  <p class=MsoNormal id=c09y546>
+    You can setup your coupons under the Vouchers/Coupons box in the admin area. Click Insert, and it will give you different options for your coupon like valid products, valid categories, coupon amount (% or fixed amount) etc.<br>
+    <br>
+    <br>
+  </p>
+  <p class=MsoNormal id=c09y547>
+    &nbsp;
+  </p>
+  <p class=MsoNormal id=c09y548>
+    To add gift vouchers you need to add a new product to your product catalog. In the model field for the product, put GIFT, and you can set the price to any amount. Now people will be able to buy a gift certificate from the product you created. If you want to have to approve gift voucher purchases, go to Modules &gt; order total &gt; gift vouchers &gt; edit – set queue purchases to false if you want people to get instant access to their gift vouchers. If you set it to true, you will need to approve gift vouchers when you get orders under Vouchers/Coupons &gt; gift voucher queue.
+  </p>
+  <p class=MsoNormal id=c09y549>
+    <br id=c09y550>
+  </p>
+  <p class=MsoNormal id=c09y551>
+    <b id=c09y552><a id=k03u name=Recover_Cart_Sales></a><font id=emkm3 size=4>Recover Cart Sales</font></b>
+  </p>
+  <p class=MsoNormal id=c09y553>
+    &nbsp;
+  </p>
+  <p class=MsoNormal id=c09y554>
+    You can access recover cart sales at tools &gt; recover cart sales. Clicking on that page will show you a page of people with shopping carts that have not purchased them. Chose the date range and people you want to contact and then click send email at the bottom. These people will be sent an email reminding them about their shopping carts.
+  </p>
+  <p class=MsoNormal id=c09y555>
+    &nbsp;
+  </p>
+  <p class=MsoNormal id=c09y556>
+    &nbsp;<img id=c09y557 src="images/dg872p8q_18cjqkmv.jpg" style="HEIGHT:113px; WIDTH:400px">
+  </p>
+  <p class=MsoNormal id=c09y558>
+    &nbsp;
+  </p>
+  <p class=MsoNormal id=c09y559>
+    To check the results of your recover cart sales go to tools &gt; recover cart sales results. Here you can track by date range how much $ in sales you have recovered.
+  </p>
+  <p class=MsoNormal id=c09y560>
+    &nbsp;
+  </p>
+  <p class=MsoNormal id=c09y561>
+    <img id=c09y562 src="images/dg872p8q_19fjkqss.jpg" style="HEIGHT:80px; WIDTH:500px">
+  </p>
+  <p class=MsoNormal id=c09y563>
+    <b id=c09y564>&nbsp;</b>
+  </p>
+  <p class=MsoNormal id=c09y565>
+    <b id=c09y566><a id=kppf name=Affiliates></a><font id=emkm4 size=4>Affiliates</font></b>
+  </p>
+  <p class=MsoNormal id=c09y567>
+    &nbsp;
+  </p>
+  <p class=MsoNormal id=c09y568>
+    People can signup to be your affiliates and you pay them a percent of sales when they buy something. You can set the options in admin &gt; <span class=SpellE id=c09y569>config</span> &gt; affiliates, most options are self-explanatory and can be left as default, these ones are crucial:
+  </p>
+  <p class=MsoNormal id=c09y570>
+    &nbsp;
+  </p>
+  <p class=MsoNormal id=c09y571>
+    Pay per sale %: how much to pay per sale
+  </p>
+  <p class=MsoNormal id=c09y572>
+    Payment threshold: how much $ affiliate has to earn before you pay them
+  </p>
+  <p class=MsoNormal id=c09y573>
+    Billing Time: how old order has to be before you pay your affiliate (to cover returned items, etc.)
+  </p>
+  <p class=MsoNormal id=c09y574>
+    &nbsp;
+  </p>
+  <p class=MsoNormal id=c09y575>
+    Now in admin &gt; marketing &gt; affiliates here is where you can view your affiliates and click <span class=SpellE id=c09y576>throughs</span>. You can create affiliate banners under admin &gt; affiliates &gt; banners. Under admin &gt; affiliates &gt; payment you can run a payment cycle to see how much you owe them. Affiliates won’t show up here until the billing time (see above) has past, and their order status is “delivered”
+  </p>
+  <p class=MsoNormal id=c09y579>
+    <font id=emkm5 size=4><br id=c09y581>
+    <b id=c09y582><a id=b8_c name=Fun_Ways_To_Browse></a>Fun Ways <span class=GramE id=c09y583>To</span> Browse</b></font><br id=c09y584>
+    <br id=c09y585>
+    The purpose of fun ways to browse is to give your customers interesting ways of viewing your products. For example, say you want to have a holiday section, or <span class=GramE id=c09y586>a</span> academy award winners section, this allows you to do this. You would also use it to show products from $10 - $50 or something like that.<br id=c09y587>
+    <br id=c09y588>
+    <b id=c09y589>Inserting a Category:</b> insert the categories you want, such as "Academy Award Winners"<br id=c09y590>
+    <b id=c09y591>Inserting Products:</b> you can insert products from your catalog into each category<br id=c09y592>
+    <b id=c09y593>Inserting a URL Link:</b> you can also insert URL links. To insert a URL link, click insert category, and put a URL in the URL input box.<br id=c09y594>
+    <b id=c09y595>Linking to advanced search results:</b> you can also link to advanced search results. For example, go to your advanced search page, put price from $5 to $10, then click search. Now copy this url and paste it in the URL box when you insert a category.<br id=c09y596>
+  </p>
+  <br id=c09y597>
+  <p class=MsoNormal id=c09y598>
+    <b id=c09y599><a id=vs4k name=Admin_Access_Levels></a><font id=emkm6 size=4>Admin Access Levels</font></b>
+  </p>
+  <p class=MsoNormal id=c09y600>
+    <br id=c09y602>
+  </p>
+  <p class=MsoNormal id=c09y603>
+    The purpose of admin access levels is so that you can have multiple admin accounts, each with access to different parts of your admin. Say one person is the master admin - they can access all files. Then you have a marketing person who can only access your reports area, polls, and articles.
+  </p>
+  <p class=MsoNormal id=c09y604>
+    <br id=c09y605>
+  </p>
+  <p class=MsoNormal id=c09y606>
+    To make a new administrator with certain permissions, click on "administrator" on the top left of the admin menu. Then click "member groups" and then "groups." Here you will see your admin groups. Add a new group, then click "new permission" then you will be shown a checklist of what areas of the admin you want that access group to have access to.<br>
+  </p>
+  <div id=eppf style=TEXT-ALIGN:left>
+    <img src="images/dg872p8q_46cqth2ddt_b.png" style="WIDTH:648px; HEIGHT:354.375px">
+  </div>
+  <br>
+  Save it, then click "member groups" again and click "new member" to add a new admin to that access level.<br id=c09y608>
+  <p class=MsoNormal id=c09y609>
+    <br id=c09y611>
+  </p>
+  <p class=MsoNormal id=c09y612>
+    <b id=c09y613><a id=arpu name=Polls></a><font id=emkm7 size=4> Polls</font></b>
+  </p>
+  <p class=MsoNormal id=c09y614>
+    <br id=c09y615>
+  </p>
+  <p class=MsoNormal id=c09y616>
+    Polls are in the admin &gt; marketing &gt; polls. You can create new polls here. If you click a current poll and click edit, you can view the current poll results, comments, and you can also delete current comments. Under admin &gt; marketing &gt; polls &gt; configuration you can set some different configuration options for polls.<br id=c09y617>
+  </p>
+  <p class=MsoNormal id=c09y618>
+    <br id=c09y620>
+  </p>
+  <p class=MsoNormal id=c09y621>
+    <font id=emkm8 size=4><b id=c09y622>Trouble Tickets</b></font>
+  </p>
+  <p class=MsoNormal id=c09y623>
+    <br id=c09y624>
+  </p>
+  <p class=MsoNormal id=c09y625>
+    Customers can reports issues with products that are in their rental queue. You will get a report of this in your email. To respond, go to the admin &gt; customers &gt; customer edit page to respond. There is also a reply link in the admin email.<br id=c09y626>
+  </p>
+  <p class=MsoNormal id=c09y627>
+    <br id=c09y629>
+  </p>
+  <p class=MsoNormal id=c09y630>
+    <b id=c09y631><a id=m9hb name=Articles></a><font id=emkm9 size=4>Articles</font></b>
+  </p>
+  <p class=MsoNormal id=c09y632>
+    <br id=c09y633>
+  </p>
+  <p class=MsoNormal id=c09y634>
+    You can add articles to your site under admin &gt; content management &gt; &nbsp;article manager. First create your article topics (categories) then add your articles to each topic. You can set various configuration options under articles manager &gt; configuration.<br id=c09y636>
+  </p>
+  <p class=MsoNormal id=c09y637>
+    <br id=mtjd6>
+  </p>
+  <p class=MsoNormal id=c09y261>
+    <font id=n82h size=4><b id=c09y262><a id=s57s name=Referral_Reports_and_Setup></a>Referral Reports and Setup</b></font>
+  </p>
+  <p class=MsoNormal id=c09y263>
+    <b id=c09y264>&nbsp;</b>
+  </p>
+  <p class=MsoNormal id=c09y265>
+    Referral setup is useful for telling where your customers found your web site. You first need to setup referral sources under marketing &gt; reports &gt; referral sources. Here you can setup the sources that will appear on the drop down box for “How did you hear about us” on the create account page. You might put in like “<span class=SpellE id=c09y266>google</span>” or “friend” or “magazine ad” here. To view the results of the referral sources, you go to Reports &gt; referral sources. If you click twice on “other” (assuming someone on your site has signed up and put other) you can view what people typed in that field.<br id=v7k4>
+    <a id=stj3 name=Site_Search_Reports_(Know_what_y></a><font id=s:2s size=4><br id=v7k40>
+    <b id=epim>Site Search Reports (Know what your customers are searching for)</b></font><br id=v7k41>
+  </p>
+  <p class=MsoNormal id=mtjd7>
+    <br id=cwkn>
+    You will find this under: tools &gt; keyword manager<br>
+  </p>
+  <div id=u-km style=TEXT-ALIGN:left>
+    <img src="images/dg872p8q_47dp9ww7hs_b.png" style="WIDTH:648px; HEIGHT:284.447px">
+  </div>
+  <br id=cwkn1>
+  Before you can test anything you will need to do a few searches on your site to have some data entered into the database. Once you have done this you can then go to your admin section and choose the 'Tools' section, follow the link to 'Keyword Manager'.<br id=s:2s0>
+  <br id=s:2s1>
+  The first thing to do is click the button 'Update from Raw data'. Once you have done this the features should be self-explanatory<br id=cwkn2>
+  <br id=cwkn3>
+  Contribution provides:<br id=cwkn4>
+  <br id=cwkn5>
+  1) Automatic logging of all search terms used on your site.<br id=cwkn6>
+  <br id=cwkn7>
+  2) Processing of logged search terms into total counts, with sorting by totals or by name.<br id=cwkn8>
+  <br id=cwkn9>
+  3) Admin page provides a Google type facility whereby you can add words or phrases and their suggested replacements to a database table, once you've added data to this table if for example a customer searches for 'wheal' a line is added to the top of the search results page saying: 'you could also try: wheel'. This line is a clickable link that automatically re-searches on the replacement words. For this feature to work you must have made an entry via the admin page for the particular word/phrase used as well as the suggested replacement, obviously this data will take a little time to build up, this is the reason for the keyword logging, so as you can periodically check to see what needs adding to the replacements table.<br id=cwkn10>
+  <br id=cwkn11>
+  4) Words/phrases and their suggested replacements can be added/edited/deleted at any time via the admin section.<br id=cwkn12>
+  <br id=cwkn13>
+  5) Improved layout of Search results page if no results are found, providing the user with some tips on better searching.<br id=cwkn14>
+  <br id=cwkn15>
+  6) Complete admin section to view and process logged search results.<br id=cwkn16>
+  <br id=cwkn17>
+  7) When searching, any keywords entered as a plural will automatically have the final 's' stripped from the keyword, this should help if you have your products named/described in the singular form. A benefit of this is that even if there *should* be an 's' on the end of the keyword the correct results will be brought up due to the in-built partial matching of the osC search facility.<br id=cwkn18>
+  <br id=c09y639>
+  <p class=MsoNormal id=c09y640>
+    <b id=c09y641><span id=c09y642 style=COLOR:gray><font size=5>&nbsp;</font></span></b>
+  </p>
+  <p class=MsoNormal id=c09y643>
+    <font id=emkm10 size=5><b id=c09y644><span id=c09y645 style=COLOR:gray><font size=5>Rental Memberships Customer Side</font></span></b></font>
+  </p>
+  <p class=MsoNormal id=c09y646>
+    <b id=c09y647>&nbsp;</b>
+  </p>
+  <p class=MsoNormal id=c09y648>
+    <font id=emkm11 size=4><b id=c09y649><a id=i4-u name=Signing_Up></a>Signing Up</b></font>
+  </p>
+  <p class=MsoNormal id=c09y650>
+    <b id=c09y651>&nbsp;</b>
+  </p>
+  <p class=MsoNormal id=c09y652>
+    Signing up for customers is easy. They simply go to add a movie to their queue, and then it will ask them to sign in or create an account. When creating an account they can set the package that they want to purchase. The next page gives them payment options and then they confirm their order.
+  </p>
+  <p class=MsoNormal id=c09y653>
+    <b id=c09y654>&nbsp;</b>
+  </p>
+  <p class=MsoNormal id=c09y655>
+    <font id=emkm12 size=4><b id=c09y656><a id=upnc name=Adding_Rentals_to_Queue_and_Mana></a>Adding Rentals to Queue and Managing Queue</b></font>
+  </p>
+  <p class=MsoNormal id=c09y657>
+    <b id=c09y658>&nbsp;</b>
+  </p>
+  <p class=MsoNormal id=c09y659>
+    The movie rental queue is managed by going to each product page and clicking <span class=GramE id=c09y660>the add</span> to queue button. Rentals can be adjusted by priority order, and removed from the queue by clicking the checkbox and clicking update.
+  </p>
+  <p class=MsoNormal id=c09y661>
+    <b id=c09y662>&nbsp;</b>
+  </p>
+  <p class=MsoNormal id=c09y663>
+    <font id=emkm13 size=4><b id=c09y664><a id=z-5l name=Canceling_Membership></a>Canceling Membership</b></font>
+  </p>
+  <p class=MsoNormal id=c09y665>
+    <b id=c09y666>&nbsp;</b>
+  </p>
+  <p class=MsoNormal id=c09y667>
+    Members can cancel their memberships by going to my account &gt; cancel membership. Admin will be notified when a user cancels their membership. The customer's account will be automatically deactivated on their next billing cycle. For paypal, you may have to manually set their membership to inactive.
+  </p>
+  <p class=MsoNormal id=c09y668>
+    <b id=c09y669>&nbsp;</b>
+  </p>
+  <p class=MsoNormal id=c09y670>
+    <font id=emkm14 size=4><b id=c09y671><a id=nsrt name=Upgrading_Membership></a>Upgrading Membership</b></font>
+  </p>
+  <p class=MsoNormal id=c09y672>
+    <b id=c09y673>&nbsp;</b>
+  </p>
+  <p class=MsoNormal id=c09y674>
+    Members can upgrade their memberships by going to my account &gt; upgrade membership. Admin will be notified when a member wants to upgrade their account. The customer account will be auto-upgraded or downgraded on their next billing cycle.
+  </p>
+  <p class=MsoNormal id=c09y675>
+    <b id=c09y676>&nbsp;</b>
+  </p>
+  <p class=MsoNormal id=c09y677>
+    <font id=y1j_ size=4><b id=c09y678>Viewing Their Billing Info</b></font>
+  </p>
+  <p class=MsoNormal id=c09y679>
+    <b id=c09y680>&nbsp;</b>
+  </p>
+  <p class=MsoNormal id=c09y681>
+    Members can view their billing info by going to my account &gt; billing info. It will show them the package they are signed up for, the billing date, and price.
+  </p>
+  <p class=MsoNormal id=c09y682>
+    &nbsp;
+  </p>
+  <p class=MsoNormal id=c09y683>
+    <font id=pnsf size=4><b id=c09y684>Changing Their Rental Shipping Address</b></font>
+  </p>
+  <p class=MsoNormal id=c09y685>
+    &nbsp;
+  </p>
+  <p class=MsoNormal id=c09y686>
+    This is available from the my account page &gt; Change Rental Shipping Address link<br id=c09y687>
+    <br id=c09y688>
+    <font id=e.2l size=4><b id=c09y689>Changing Their Credit Card and Billing Address</b></font>
+  </p>
+  <br id=c09y690>
+  <p class=MsoNormal id=c09y691>
+  </p>
+  If you take credit card payments, your rental customers can change their credit card and billing address for their rental account by going to my account &gt; update rental account credit card and billing address<br id=c09y692>
+  <br id=c09y693>
+  <b id=c09y694><font id=e.2l0 size=4>Rental Issues</font><br id=c09y695>
+  <br id=c09y696>
+  </b>Customers can submit a rental issue by going to their rental queue, and clicking "report issue" on their sent items in the rental queue. The admin will be emailed about the issue, and can respond to it by clicking the link in the email, or going to the admin &gt; customer &gt; customer edit page.<br>
+  <br>
+  <div class=Section1 id=llyu>
+    <b><font size=5>Multi-Inventory Centers (Add-On)</font></b>
+  </div>
+  <div class=Section1 id=yyq1>
+    <font class=Apple-style-span size=6><b><span style=FONT-WEIGHT:normal><font size=2>
+    <p class=MsoNormal id=tuu_ style="MARGIN-RIGHT:0px; MARGIN-LEFT:0px">
+      <b><b><font size=4><a id=Config_settings name=Config_settings></a>Config settings<br>
+      </font></b></b>
+    </p>
+    </font></span></b></font>
+  </div>
+  <div class=Section1 id=g19m>
+    Go to admin &gt; config &gt; inventory centers &gt; settings. Here you will see the following:<br>
+    <br>
+  </div>
+  <p class=MsoNormal id=ce3_ style="MARGIN-RIGHT:0px; MARGIN-LEFT:0px">
+    <b id=a51t>Rental items pre-registration: </b>whether to show the page to the customer that makes the register their address on the customer side to see if they are in a inventory center zone before they rent something
+  </p>
+  <br>
+  <b>Require pre-registration to browse:</b> similar to above, except customer must register their address before using the customer side website. This is useful in case customers browse your site, want to order, then find out they aren't in a delivery/inventory zone.&nbsp;<br>
+  <br>
+  <b>Allow Manual Zone Selection:</b> allow a customer to manually chose what inventory zone they are in. Customer side image below showing what this refers to:<br>
+  <br>
+  <div id=lr01 style=TEXT-ALIGN:left>
+    <img src="images/dg872p8q_85fcsc7vfb_b.png" style="WIDTH:648px; HEIGHT:282.838px">
+  </div>
+  <br>
+  <b>Rentals require customer to be in zone:</b> controls whether stock is checked on pay per rentals page where customer does their reservation for one location only or for all inventory centers<br>
+  <br>
+  <b>Allow checkout if not in zone:</b> if customer ship address is not in a rental inventory zone, then it won't allow them to checkout<br>
+  <br>
+  <b>Google maps API key:</b> you need to put your API key here, can be gotten from here:&nbsp;<a href=http://code.google.com/apis/maps/signup.html>http://code.google.com/apis/maps/signup.html</a><br>
+  <br>
+  <b><font size=4><a id=Inventory_zone_delivery_areas name=Inventory_zone_delivery_areas></a>Inventory zone delivery areas<br>
+  <span style=FONT-WEIGHT:normal><font size=2>Go to admin &gt; config &gt; inventory centers &gt; manage centers to add and delete your rental centers. When you click insert you will be presented with a map. Click on this map the polygonal points that you want to be included in the inventory center delivery area.&nbsp;</font></span><br>
+  <br>
+  <a id=Check_if_customer_is_in_inventor name=Check_if_customer_is_in_inventor></a>Check if customer is in inventory zone page</font></b><br>
+  On the customer side, they will be presented with this page which checks if they are in a valid delivery location:<br>
+  <br>
+  <div id=qkdy style=TEXT-ALIGN:left>
+    <img src="images/dg872p8q_86ctvbd9cb_b.png" style="WIDTH:648px; HEIGHT:282.838px">
+  </div>
+  <br>
+  <br>
+  You may adjust the error messages in admin &gt; content management &gt; manage pages if you don't like the defaults.&nbsp;<br>
+  <div class=Section1 id=d..4>
+    <br>
+    <div class=Section1 id=cysz>
+      <b><font size=5>Point of Sale (Add-On)</font></b>
+    </div>
+    <div class=Section1 id=rsv3>
+      <font class=Apple-style-span size=6><b><span style=FONT-WEIGHT:normal><font size=2>
+      <p class=MsoNormal id=evk: style="MARGIN-RIGHT:0px; MARGIN-LEFT:0px">
+        <b><b><font size=4><a id=vwu9 name=Config_settings></a><a id=How_to_use name=How_to_use></a>How to use</font></b></b>
+      </p>
+      </font></span></b></font>
+    </div>
+    <br>
+    go to admin &gt; customers &gt; point of sale
+  </div>
+  <div class=Section1 id=h7ic>
+    <br>
+  </div>
+  <div class=Section1 id=zey7>
+    1. First click <b>browse customers</b>. Notice the first item on the customer list is ".New Customer" click this item to add a new customer. Otherwise chose one from the list. After you select a customer you will see their address on file, chose which address to use for their billing/shipping address, you can also click add address to add more addresses to their account. When you are done click "select customer".&nbsp;<br>
+    <br>
+    2. Next click <b>browse products</b>. Chose a product from the list, and the purchase type for the product (new/used/pay per rental). If you chose pay per rental, you need to choose the start and end dates and the ship method. Next click "add product and close window"<br>
+    <br>
+    3. Next click <b>apply payment</b>. The order will not be saved until a payment method is successfully applied. From the drop down you can choose "credit card via authorize.net" and put in the customer credit card info. If authorize.net is in test mode, you can use card #: 4111111111111111 any expiration date after today and a CVV of 555 then click "apply payment" and the order will be processed. After the order is processed, the page will refresh for a new order, and the order will appear under customers &gt; orders.<br>
+    <br>
+    <b><font size=5>Streaming/Downloads (Add-On)</font></b>
+  </div>
+  <div class=Section1 id=lzx6>
+    <font class=Apple-style-span size=6><b><span style=FONT-WEIGHT:normal><font size=2>
+    <p class=MsoNormal id=a5g9 style="MARGIN-RIGHT:0px; MARGIN-LEFT:0px">
+      <b id=j_yc><font size=4><a id=p41_ name=Admin_configuration_streamin></a>Admin &gt; configuration &gt; streaming and Admin &gt; configuration &gt; downloads</font></b>
+    </p>
+    <p class=MsoNormal id=uedn style="MARGIN-RIGHT:0px; MARGIN-LEFT:0px">
+      <b id=qkia><span style=FONT-WEIGHT:normal>There are several areas to be aware of in the setup of your store for streaming/downloads. The first 2 area in the configuration area:</span></b>
+    </p>
+    </font></span></b></font>
+  </div>
+  <div class=Section1 id=sfx1>
+    <font class=Apple-style-span size=6><b><font class=Apple-style-span size=3><span style=FONT-WEIGHT:normal><font size=2>Admin &gt; Configuration &gt; downloads and admin &gt; configuration &gt; streaming<br>
+    <br>
+    <b>Admin &gt; configuration &gt; download</b>&nbsp;- here is where you control options for when customers purchase a download. Pay particular attention to the order statuses. These are the order statuses that allow your customer to download the item they purchased. If you set it to allow download when an order is pending (possibly before you have collected their credit card payment) you may allow download of a product that your customer has not yet paid for.&nbsp;<br>
+    </font></span></font></b></font><br>
+    <b>Admin &gt; configuration &gt; streaming</b>&nbsp;- here is where you set your streaming options.&nbsp;<br>
+    <br>
+    <b><font size=4><a id=kn46 name=Membership_Rental_Plans_Streamin></a>Membership Rental Plans Streaming Options</font></b><br>
+    To allow your rental membership customers to access streaming download you need to go to&nbsp;<b>admin &gt; rental members &gt; packages</b>&nbsp;and edit the rental package. At the bottom of the membership options you will see these options:<br>
+    <div id=knxh style=TEXT-ALIGN:left>
+      <img src="images/dg872p8q_76db9dtpf4_b.png" style="WIDTH:268px; HEIGHT:306px">
+    </div>
+    <b>Allow streaming:</b>&nbsp;whether this rental plan has streaming privileges<br>
+    # of views allowed: how many different products this member can stream<br>
+    <b>Views per:</b>&nbsp;Time Period (chose the time period below) or Membership Period. After the period passes, their # of views resets and they have access to their full number of views again<br>
+    <b>Allow Access to stream for X hours:&nbsp;</b>once they chose to stream a product, how long they have access to this stream before it expires and it counts as a view again<br>
+    <br>
+    <br>
+    <b><font size=4><a id=zzgm name=Adding_Streams/Downloads_To_A_Pr></a>Adding Streams/Downloads To A Product</font></b><br>
+    Go to admin &gt; catalog &gt; find your product or insert new. On the first "General" Tab select that the product is one of the following:<br>
+    <div id=mpwo style=TEXT-ALIGN:left>
+      <img src="images/dg872p8q_77d25ssxgt_b.png" style="WIDTH:449px; HEIGHT:190px">
+    </div>
+    <br>
+    <b>Streaming Rental Membership:</b>&nbsp;if you want your membership rental customers to be able to stream it<br>
+    <b>Streaming Purchase:</b>&nbsp;To sell a streaming version of the product<br>
+    <b>Purchase Download:</b>&nbsp;to sell a download version of the product<br>
+    <br>
+    Next go to the&nbsp;<b>downloads/streaming tab</b>&nbsp;and from here you will upload files for your product, or you can upload them via FTP and specify what files to use on this page.<br>
+    <b>Upload File:</b>&nbsp;use to upload file from your computer, for larger files we recommend you use the Local File option and upload via FTP<br>
+    <b>Local File:</b>&nbsp;specify the file name of the uploaded file. Your files should be uploaded to streamer/movies directory of your website (for any file type)<br>
+    <b>Display Name:</b>&nbsp;the name of the file shown on the customer area downloads page<br>
+    <b>Type:</b>&nbsp;streaming or download. If download is selected, the customer will be able to download the file to their hard drive<br>
+    <div id=q.xd style=TEXT-ALIGN:left>
+      <img src="images/dg872p8q_78fjdqj9c4_b.png" style="WIDTH:648px; HEIGHT:504.456px">
+    </div>
+    <br>
+    <b><font size=4><a id=pxmk name=Viewing_A_Customers_Stream_Histo></a>Viewing A Customers Stream History</font></b><br>
+    This can be viewed by editing a customer and clicking the stream tab. You can also manually reset their stream view count.<br>
+    <div id=o-xe style=TEXT-ALIGN:left>
+      <img src="images/dg872p8q_79cdchbmg3_b.png" style="WIDTH:648px; HEIGHT:119.622px">
+    </div>
+    <br>
+  </div>
+  <p class=MsoNormal id=c09y699>
+    <b id=c09y700>&nbsp;</b>
+  </p>
+  <p class=MsoNormal id=txbq>
+    <b><font size=4><b>Converting DVDs to a streaming video format</b></font></b>
+  </p>
+  <p class=MsoNormal id=rysl>
+    <font size=2>You will need to convert your dvd files to a streaming video format. The streaming video player can play FLV, MP4, and H.264 files. To do so, you will need a software program to rip the dvd, then convert it. Please checkout the following resources:</font>
+  </p>
+  <p class=MsoNormal id=nz9h>
+    <font size=4><a href=http://lifehacker.com/software/lifehacker-top-10/top-10-free-video-rippers-encoders-and-converters-316478.php title="10 Free video rippers, encoders, and converters"><font size=2>10 Free video rippers, encoders, and converters</font></a><font size=2><br>
+    </font><a href=http://www.blazemp.com/ id=esr4 title="Blaze Media Pro software"><font size=2>Blaze Media Pro software</font></a><font size=2><br>
+    </font><a href=http://lifehacker.com/380702/five-best-dvd-ripping-tools id=hzra title="DVD ripping tools"><font size=2>DVD ripping tools</font></a></font>
+  </p>
+  <p class=MsoNormal id=x4i9>
+    <b><font size=4><b><br>
+    Getting permission to stream videos</b></font></b>
+  </p>
+  <p class=MsoNormal id=c09y707>
+    To stream videos, you need to get permission and rights from the video producers. This would be one of the major studios if you want to stream a Hollywood release, it is easier to get permission for independent movies.&nbsp;<br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+  </p>
+</div>
+<br></body>
+</html>

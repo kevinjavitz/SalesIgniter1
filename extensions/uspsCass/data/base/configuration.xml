@@ -1,0 +1,27 @@
+<ConfigurationGroup>
+	<title>USPS CASS Validation</title>
+	<key>uspsCass</key>
+	<description>Configuration Settings For The USPS CASS Validation Extension</description>
+	<Configuration>
+		<EXTENSION_USPSCASS_ENABLED>
+			<title>Enable USPS CASS Validation</title>
+			<value>True</value>
+			<description>Enable Or Disable The USPS CASS Validation Extension</description>
+			<sort_order>1</sort_order>
+			<set_function>tep_cfg_select_option(array('True','False'),</set_function>
+		</EXTENSION_USPSCASS_ENABLED>
+		<EXTENSION_USPSCASS_API_USER_ID>
+			<title>USPS CASS User ID</title>
+			<value></value>
+			<description>Your user id for the CASS API as provided by the USPS.</description>
+			<sort_order>2</sort_order>
+		</EXTENSION_USPSCASS_API_USER_ID>
+		<EXTENSION_USPSCASS_API_TEST_MODE>
+			<title>Test Mode</title>
+			<value>True</value>
+			<description>Set the requests to use the test api for USPS</description>
+			<sort_order>3</sort_order>
+			<set_function>tep_cfg_select_option(array('True','False'),</set_function>
+		</EXTENSION_USPSCASS_API_TEST_MODE>
+	</Configuration>
+</ConfigurationGroup>

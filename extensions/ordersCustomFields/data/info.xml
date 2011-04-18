@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<data>
+	<name>Orders Custom Fields</name>
+	<key>ordersCustomFields</key>
+	<version>1.0</version>
+	<author>Stephen Walker ( http://www.itwebexperts.com )</author>
+	<status_key>EXTENSION_ORDERS_CUSTOM_FIELDS_ENABLED</status_key>
+</data>

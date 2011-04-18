@@ -1,0 +1,7 @@
+<definitions>
+	<define key="TEXT_RENTAL_NOTES"><![CDATA[Rental Notes]]></define>
+	<define key="SUCCESS_ORDER_RENTAL_NOTES_UPDATED"><![CDATA[Rental Notes Updated]]></define>
+	<define key="SELECT_OPTION_RENTAL_NOTES"><![CDATA[Select Rental Notes Options]]></define>
+	<define key="TEXT_VIEW_RENTAL_NOTES"><![CDATA[View Rental Notes]]></define>
+	<define key="TEXT_VIEW_ONLY_RENTAL_NOTES"><![CDATA[View Only Rental Notes]]></define>
+</definitions>

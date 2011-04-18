@@ -1,0 +1,4 @@
+<definitions>
+	<define key="MODULE_DOWNLOAD_PROVIDER_AMAZONS3_TITLE"><![CDATA[Amazon S3]]></define>
+	<define key="MODULE_DOWNLOAD_PROVIDER_AMAZONS3_DESCRIPTION"><![CDATA[Downloads are stored in Amazon S3]]></define>
+</definitions>

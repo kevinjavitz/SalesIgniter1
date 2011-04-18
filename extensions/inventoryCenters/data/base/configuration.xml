@@ -1,0 +1,84 @@
+<ConfigurationGroup>
+	<title>Inventory Centers</title>
+	<key>inventoryCenters</key>
+	<description>Configuration Settings For The Inventory Centers Extension</description>
+	<Configuration>
+		<EXTENSION_INVENTORY_CENTERS_ENABLED>
+			<title>Enable Inventory Centers</title>
+			<value>True</value>
+			<description>Enable Or Disable The Inventory Centers Extension</description>
+			<sort_order>1</sort_order>
+			<set_function>tep_cfg_select_option(array('True','False'),</set_function>
+		</EXTENSION_INVENTORY_CENTERS_ENABLED>
+		<EXTENSION_INVENTORY_CENTERS_STOCK_METHOD>
+			<value>Zone</value>
+			<title>Stock Method To Use</title>
+			<description>Stock method to use.&lt;br /&gt;Store = Per Store&lt;br /&gt;&lt;small&gt;*requires multiStore and bypasses all configurations for this extension&lt;/small&gt;&lt;br /&gt;Zone = By Zone</description>
+			<sort_order>2</sort_order>
+			<set_function>tep_cfg_select_option(array('Store','Zone'),</set_function>
+		</EXTENSION_INVENTORY_CENTERS_STOCK_METHOD>
+		<EXTENSION_INVENTORY_CENTERS_MUST_BE_IN_ZONE>
+			<value>True</value>
+			<title>Rental stock check for customer inventory zone only?</title>
+			<description>For pay per rental items, on calendar page for reservation do stock checks only for customer zone?</description>
+			<sort_order>3</sort_order>
+			<set_function>tep_cfg_select_option(array('True','False'),</set_function>
+		</EXTENSION_INVENTORY_CENTERS_MUST_BE_IN_ZONE>
+		<EXTENSION_INVENTORY_CENTERS_ALLOW_MANUAL_ZONE>
+			<value>True</value>
+			<title>Allow Manual Zone Selection</title>
+			<description>On pre-registration page, allow customer to manually pick their zone?</description>
+			<sort_order>4</sort_order>
+			<set_function>tep_cfg_select_option(array('True','False'),</set_function>
+		</EXTENSION_INVENTORY_CENTERS_ALLOW_MANUAL_ZONE>
+		<EXTENSION_INVENTORY_CENTERS_REQUIRE_PREREG>
+			<value>False</value>
+			<title>Require Pre-Registration To Browse</title>
+			<description>Show pre-registration or sign-in page before they are able to browse website?</description>
+			<sort_order>6</sort_order>
+			<set_function>tep_cfg_select_option(array('True','False'),</set_function>
+		</EXTENSION_INVENTORY_CENTERS_REQUIRE_PREREG>
+		<EXTENSION_INVENTORY_CENTERS_GOOGLE_MAPS_API_KEY>
+			<value>ABQIAAAAJfeNSDfdlXtgf6gjHMTzDBT0_i__oM-cAYP-svDeQzBBv_RytBShCDbtJySULQi-i9FDwsHX8pK4aQ</value>
+			<title>Google Maps API Key</title>
+			<description>This is the key that google maps gives you for your domain.</description>
+			<sort_order>7</sort_order>
+		</EXTENSION_INVENTORY_CENTERS_GOOGLE_MAPS_API_KEY>
+		<EXTENSION_INVENTORY_CENTERS_SHIPPING_PER_INVENTORY>
+			<value>True</value>
+			<title>Setup shipping methods per inventory center</title>
+			<description>Allow setup shipping methods per inventory center?</description>
+			<sort_order>9</sort_order>
+			<set_function>tep_cfg_select_option(array('True','False'),</set_function>
+		</EXTENSION_INVENTORY_CENTERS_SHIPPING_PER_INVENTORY>
+		<EXTENSION_INVENTORY_CENTERS_SINGLE_INVENTORY_PER_ORDER>
+			<value>True</value>
+			<title>Allow only one inventory center per order</title>
+			<description>Allow only products from one inventory center per order?</description>
+			<sort_order>10</sort_order>
+			<set_function>tep_cfg_select_option(array('True','False'),</set_function>
+		</EXTENSION_INVENTORY_CENTERS_SINGLE_INVENTORY_PER_ORDER>
+		<EXTENSION_INVENTORY_CENTERS_SHOW_DELIVERY_INSTRUCTIONS_ON_EMAILS>
+			<value>False</value>
+			<title>If set to true delivery instructions will be added to emails</title>
+			<description>Do you want delivery instructions to be added to emails?</description>
+			<sort_order>11</sort_order>
+			<set_function>tep_cfg_select_option(array('True','False'),</set_function>
+		</EXTENSION_INVENTORY_CENTERS_SHOW_DELIVERY_INSTRUCTIONS_ON_EMAILS>
+		<EXTENSION_INVENTORY_CENTERS_SHOW_DELIVERY_INSTRUCTIONS_ON_CHECKOUT>
+			<value>False</value>
+			<title>If set to true it will show Delivery instructions per inventory center on checkout</title>
+			<description>Show delivery instructions on checkout?</description>
+			<sort_order>12</sort_order>
+			<set_function>tep_cfg_select_option(array('True','False'),</set_function>
+		</EXTENSION_INVENTORY_CENTERS_SHOW_DELIVERY_INSTRUCTIONS_ON_CHECKOUT>
+		<EXTENSION_INVENTORY_CENTERS_SHOW_DELIVERY_INSTRUCTIONS_ON_HISTORY>
+			<value>False</value>
+			<title>If set to true delivery instructions will be added to history info</title>
+			<description>Do you want delivery instructions to be added to history info?</description>
+			<sort_order>13</sort_order>
+			<set_function>tep_cfg_select_option(array('True','False'),</set_function>
+		</EXTENSION_INVENTORY_CENTERS_SHOW_DELIVERY_INSTRUCTIONS_ON_HISTORY>
+		
+	</Configuration>
+</ConfigurationGroup>

@@ -1,0 +1,8 @@
+<definitions>
+	<define key="NAVBAR_TITLE"><![CDATA[Service Area Check]]></define>
+	<define key="HEADING_TITLE"><![CDATA[Service Area Check]]></define>
+	<define key="TEXT_CHOOSE_SERVICE_ADDRESS"><![CDATA[Choose Your Service Area]]></define>
+	<define key="TEXT_CHECK_ADDRESS"><![CDATA[Check Your Address]]></define>
+	<define key="TEXT_BUTTON_CHECK_ADDRESS"><![CDATA[Check Address]]></define>
+	<define key="TEXT_BUTTON_SET_CENTER"><![CDATA[Set Service Location]]></define>
+</definitions>

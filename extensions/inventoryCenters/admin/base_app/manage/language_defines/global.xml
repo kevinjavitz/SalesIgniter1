@@ -1,0 +1,16 @@
+<definitions>
+	<define key="HEADING_TITLE"><![CDATA[Inventory Centers]]></define>
+	<define key="TABLE_HEADING_CENTER_NAME"><![CDATA[Inventory Center]]></define>
+	<define key="TABLE_HEADING_ACTION"><![CDATA[Action]]></define>
+	<define key="TAB_DESCRIPTION"><![CDATA[Description]]></define>
+	<define key="TEXT_INVENTORY_NAME"><![CDATA[Inventory Name: ]]></define>
+	<define key="TEXT_INVENTORY_ADDRESS"><![CDATA[Inventory Address: ]]></define>
+	<define key="TEXT_INVENTORY_SPECIFIC_ADDRESS"><![CDATA[Inventory Specific Address: ]]></define>
+	<define key="TEXT_INVENTORY_PROVIDERS"><![CDATA[Inventory Providers: ]]></define>
+	<define key="TEXT_INVENTORY_COMISSION"><![CDATA[Inventory Comission: ]]></define>
+	<define key="TEXT_INVENTORY_MIN_DAYS"><![CDATA[Minimum rental days: ]]></define>
+	<define key="TEXT_INVENTORY_DETAILS"><![CDATA[Inventory Details: ]]></define>
+	<define key="TEXT_INVENTORY_DELIVERY_INSTRUCTIONS"><![CDATA[Inventory Delivery Instructions: ]]></define>	
+	<define key="TEXT_INVENTORY_SHIPPING"><![CDATA[Inventory Shipping: ]]></define>
+	<define key="TEXT_INVENTORY_MAP"><![CDATA[Inventory Map: ]]></define>
+</definitions>

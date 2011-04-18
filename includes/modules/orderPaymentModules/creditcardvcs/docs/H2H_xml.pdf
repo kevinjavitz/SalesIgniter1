@@ -1,0 +1,1217 @@
+<?xml version='1.0' encoding='ISO-8859-1' standalone='yes' ?>
+<tagfile>
+  <compound kind="file">
+    <name>Abstract.php</name>
+    <path>C:/wamp/www/SalesIgniter_stephen/includes/modules/orderPaymentModules/</path>
+    <filename>_abstract_8php</filename>
+  </compound>
+  <compound kind="file">
+    <name>module.php</name>
+    <path>C:/wamp/www/SalesIgniter_stephen/includes/modules/orderPaymentModules/authorizenet/</path>
+    <filename>authorizenet_2module_8php</filename>
+    <class kind="class">OrderPaymentAuthorizeNet</class>
+  </compound>
+  <compound kind="file">
+    <name>module.php</name>
+    <path>C:/wamp/www/SalesIgniter_stephen/includes/modules/orderPaymentModules/cashondelivery/</path>
+    <filename>cashondelivery_2module_8php</filename>
+    <class kind="class">OrderPaymentCashOnDelivery</class>
+  </compound>
+  <compound kind="file">
+    <name>module.php</name>
+    <path>C:/wamp/www/SalesIgniter_stephen/includes/modules/orderPaymentModules/cmcic/</path>
+    <filename>cmcic_2module_8php</filename>
+    <class kind="class">OrderPaymentCmcic</class>
+    <member kind="function">
+      <type></type>
+      <name>HtmlEncode</name>
+      <anchorfile>cmcic_2module_8php.html</anchorfile>
+      <anchor>ad63912653bc1b0b3d3a527c8d5fa5cb5</anchor>
+      <arglist>($data)</arglist>
+    </member>
+  </compound>
+  <compound kind="file">
+    <name>module.php</name>
+    <path>C:/wamp/www/SalesIgniter_stephen/includes/modules/orderPaymentModules/creditcard/</path>
+    <filename>creditcard_2module_8php</filename>
+    <class kind="class">OrderPaymentCreditCard</class>
+  </compound>
+  <compound kind="file">
+    <name>module.php</name>
+    <path>C:/wamp/www/SalesIgniter_stephen/includes/modules/orderPaymentModules/creditcarderror/</path>
+    <filename>creditcarderror_2module_8php</filename>
+    <class kind="class">OrderPaymentCreditCardError</class>
+  </compound>
+  <compound kind="file">
+    <name>module.php</name>
+    <path>C:/wamp/www/SalesIgniter_stephen/includes/modules/orderPaymentModules/creditcardvcs/</path>
+    <filename>creditcardvcs_2module_8php</filename>
+    <class kind="class">OrderPaymentCreditCardVcs</class>
+  </compound>
+  <compound kind="file">
+    <name>module.php</name>
+    <path>C:/wamp/www/SalesIgniter_stephen/includes/modules/orderPaymentModules/custom1/</path>
+    <filename>custom1_2module_8php</filename>
+    <class kind="class">OrderPaymentCustom1</class>
+  </compound>
+  <compound kind="file">
+    <name>module.php</name>
+    <path>C:/wamp/www/SalesIgniter_stephen/includes/modules/orderPaymentModules/custom2/</path>
+    <filename>custom2_2module_8php</filename>
+    <class kind="class">OrderPaymentCustom2</class>
+  </compound>
+  <compound kind="file">
+    <name>module.php</name>
+    <path>C:/wamp/www/SalesIgniter_stephen/includes/modules/orderPaymentModules/custom3/</path>
+    <filename>custom3_2module_8php</filename>
+    <class kind="class">OrderPaymentCustom3</class>
+  </compound>
+  <compound kind="file">
+    <name>module.php</name>
+    <path>C:/wamp/www/SalesIgniter_stephen/includes/modules/orderPaymentModules/custom4/</path>
+    <filename>custom4_2module_8php</filename>
+    <class kind="class">OrderPaymentCustom4</class>
+  </compound>
+  <compound kind="file">
+    <name>module.php</name>
+    <path>C:/wamp/www/SalesIgniter_stephen/includes/modules/orderPaymentModules/moneyorder/</path>
+    <filename>moneyorder_2module_8php</filename>
+    <class kind="class">OrderPaymentMoneyOrder</class>
+  </compound>
+  <compound kind="file">
+    <name>module.php</name>
+    <path>C:/wamp/www/SalesIgniter_stephen/includes/modules/orderPaymentModules/paypalIpn/</path>
+    <filename>paypal_ipn_2module_8php</filename>
+    <class kind="class">OrderPaymentPaypalIpn</class>
+  </compound>
+  <compound kind="file">
+    <name>module.php</name>
+    <path>C:/wamp/www/SalesIgniter_stephen/includes/modules/orderPaymentModules/usaepay/</path>
+    <filename>usaepay_2module_8php</filename>
+    <class kind="class">OrderPaymentUsaEpay</class>
+  </compound>
+  <compound kind="file">
+    <name>CreditCardModule.php</name>
+    <path>C:/wamp/www/SalesIgniter_stephen/includes/modules/orderPaymentModules/</path>
+    <filename>_credit_card_module_8php</filename>
+    <class kind="class">CreditCardModule</class>
+  </compound>
+  <compound kind="file">
+    <name>install.php</name>
+    <path>C:/wamp/www/SalesIgniter_stephen/includes/modules/orderPaymentModules/</path>
+    <filename>install_8php</filename>
+    <class kind="class">OrderPaymentInstaller</class>
+  </compound>
+  <compound kind="file">
+    <name>PaymentModuleBase.php</name>
+    <path>C:/wamp/www/SalesIgniter_stephen/includes/modules/orderPaymentModules/</path>
+    <filename>_payment_module_base_8php</filename>
+    <class kind="class">PaymentModuleBase</class>
+  </compound>
+  <compound kind="file">
+    <name>StandardModule.php</name>
+    <path>C:/wamp/www/SalesIgniter_stephen/includes/modules/orderPaymentModules/</path>
+    <filename>_standard_module_8php</filename>
+    <class kind="class">StandardPaymentModule</class>
+  </compound>
+  <compound kind="class">
+    <name>CreditCardModule</name>
+    <filename>class_credit_card_module.html</filename>
+    <base>PaymentModuleBase</base>
+    <member kind="function">
+      <type></type>
+      <name>getCardImages</name>
+      <anchorfile>class_credit_card_module.html</anchorfile>
+      <anchor>a454888de9300549a357b6d782ea6c834</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>validatePost</name>
+      <anchorfile>class_credit_card_module.html</anchorfile>
+      <anchor>a11620e7c2d77d8b5ad4eb984d51b6a1c</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>processPayment</name>
+      <anchorfile>class_credit_card_module.html</anchorfile>
+      <anchor>ae8a94dc65e7292fcf30af03e6c357312</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>curlRequest</name>
+      <anchorfile>class_credit_card_module.html</anchorfile>
+      <anchor>a71705394e762c694761396e10a397568</anchor>
+      <arglist>($settings)</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>getResponse</name>
+      <anchorfile>class_credit_card_module.html</anchorfile>
+      <anchor>ae1bc2e9ab1681ca4e91d5303fbf5308f</anchor>
+      <arglist>($type)</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>parseGatewayResponse</name>
+      <anchorfile>class_credit_card_module.html</anchorfile>
+      <anchor>a5eca9bdcfbf74a4838d3d7364485e925</anchor>
+      <arglist>($response)</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>paymentGatewayProcess</name>
+      <anchorfile>class_credit_card_module.html</anchorfile>
+      <anchor>ab5ee99f98dd28ffb9455ba815a5f5a7b</anchor>
+      <arglist>($settings)</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>processGatewayResponse</name>
+      <anchorfile>class_credit_card_module.html</anchorfile>
+      <anchor>a2b891542b2c42e892b1dac3e8243fdcf</anchor>
+      <arglist>($settings, $useRedirect=true)</arglist>
+    </member>
+    <member kind="function" static="yes">
+      <type>static</type>
+      <name>getMonthDropMenuArr</name>
+      <anchorfile>class_credit_card_module.html</anchorfile>
+      <anchor>a85b4f3733fbea55c8e51ed13ceefcda4</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function" static="yes">
+      <type>static</type>
+      <name>getYearDropMenuArr</name>
+      <anchorfile>class_credit_card_module.html</anchorfile>
+      <anchor>aa316fa7d226ce8531da8f54647007819</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function" static="yes">
+      <type>static</type>
+      <name>getCreditCardOwnerField</name>
+      <anchorfile>class_credit_card_module.html</anchorfile>
+      <anchor>a55e2bf1b61b8a89a26838c86804ecc26</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function" static="yes">
+      <type>static</type>
+      <name>getCreditCardNumber</name>
+      <anchorfile>class_credit_card_module.html</anchorfile>
+      <anchor>aa66564fe6ae04a5c78240d7b22eb0039</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function" static="yes">
+      <type>static</type>
+      <name>getCreditCardExpMonthField</name>
+      <anchorfile>class_credit_card_module.html</anchorfile>
+      <anchor>a2c9ef8871500b113ab3e6ed9c142b721</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function" static="yes">
+      <type>static</type>
+      <name>getCreditCardExpYearField</name>
+      <anchorfile>class_credit_card_module.html</anchorfile>
+      <anchor>a96544fe8ac7e1545648a5c8bb482c4d2</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function" static="yes">
+      <type>static</type>
+      <name>getCreditCardCvvField</name>
+      <anchorfile>class_credit_card_module.html</anchorfile>
+      <anchor>a8cc76a20530091eb9d4ee91c2340858d</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function" static="yes">
+      <type>static</type>
+      <name>getCreditCardTypeField</name>
+      <anchorfile>class_credit_card_module.html</anchorfile>
+      <anchor>ad771dfdb7581ae80041715a54aa816a9</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function" static="yes">
+      <type>static</type>
+      <name>validateCreditCard</name>
+      <anchorfile>class_credit_card_module.html</anchorfile>
+      <anchor>aeb262d1bc148f23154a454e529aafea9</anchor>
+      <arglist>($arr, $useCvv=false)</arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>$requireCvv</name>
+      <anchorfile>class_credit_card_module.html</anchorfile>
+      <anchor>ad43fc37a3eb42db60c9968bb9805e827</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>$gatewayResponse</name>
+      <anchorfile>class_credit_card_module.html</anchorfile>
+      <anchor>a2daa08ce2a4dfc5c9f95d6677b2ca73d</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>$testMode</name>
+      <anchorfile>class_credit_card_module.html</anchorfile>
+      <anchor>ab34f01b2c33a49a5d862cd8b9ee4d66f</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>$allowedTypes</name>
+      <anchorfile>class_credit_card_module.html</anchorfile>
+      <anchor>ad6189ace3a396b38db31d835a028104e</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>$acceptedTypes</name>
+      <anchorfile>class_credit_card_module.html</anchorfile>
+      <anchor>a0c7731f58838a934fd939ded3fea082e</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>$cardTypes</name>
+      <anchorfile>class_credit_card_module.html</anchorfile>
+      <anchor>ae3c98ad00d10ed1a8de0867135989705</anchor>
+      <arglist></arglist>
+    </member>
+  </compound>
+  <compound kind="class">
+    <name>OrderPaymentAuthorizeNet</name>
+    <filename>class_order_payment_authorize_net.html</filename>
+    <base>CreditCardModule</base>
+    <member kind="function">
+      <type></type>
+      <name>__construct</name>
+      <anchorfile>class_order_payment_authorize_net.html</anchorfile>
+      <anchor>a095c5d389db211932136b53f25f39685</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>javascriptValidation</name>
+      <anchorfile>class_order_payment_authorize_net.html</anchorfile>
+      <anchor>a1c017d34fdb267081c48577e4ce4a071</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>onSelect</name>
+      <anchorfile>class_order_payment_authorize_net.html</anchorfile>
+      <anchor>a77f131f3f5487a3703b4bd75ee6d60a3</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>hasHiddenFields</name>
+      <anchorfile>class_order_payment_authorize_net.html</anchorfile>
+      <anchor>a6076edefe7ead489ba15f5fc6629efc4</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>getHiddenFields</name>
+      <anchorfile>class_order_payment_authorize_net.html</anchorfile>
+      <anchor>aacf987628c32a2a24a27bac4fa112591</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>processPayment</name>
+      <anchorfile>class_order_payment_authorize_net.html</anchorfile>
+      <anchor>ae8a94dc65e7292fcf30af03e6c357312</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>processPaymentCron</name>
+      <anchorfile>class_order_payment_authorize_net.html</anchorfile>
+      <anchor>aaef230e62c5ea74b8701b336bb2287e8</anchor>
+      <arglist>($orderID)</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>buildGatewayData</name>
+      <anchorfile>class_order_payment_authorize_net.html</anchorfile>
+      <anchor>ac98bdfcf8d37e6c7e603229acb160c0f</anchor>
+      <arglist>($settings)</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>parseGatewayResponse</name>
+      <anchorfile>class_order_payment_authorize_net.html</anchorfile>
+      <anchor>a5eca9bdcfbf74a4838d3d7364485e925</anchor>
+      <arglist>($response)</arglist>
+    </member>
+  </compound>
+  <compound kind="class">
+    <name>OrderPaymentCashOnDelivery</name>
+    <filename>class_order_payment_cash_on_delivery.html</filename>
+    <base>StandardPaymentModule</base>
+    <member kind="function">
+      <type></type>
+      <name>__construct</name>
+      <anchorfile>class_order_payment_cash_on_delivery.html</anchorfile>
+      <anchor>a095c5d389db211932136b53f25f39685</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>processPayment</name>
+      <anchorfile>class_order_payment_cash_on_delivery.html</anchorfile>
+      <anchor>ae8a94dc65e7292fcf30af03e6c357312</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>processPaymentCron</name>
+      <anchorfile>class_order_payment_cash_on_delivery.html</anchorfile>
+      <anchor>aaef230e62c5ea74b8701b336bb2287e8</anchor>
+      <arglist>($orderID)</arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>$code</name>
+      <anchorfile>class_order_payment_cash_on_delivery.html</anchorfile>
+      <anchor>a7949acdaecc70b9f035c12a7069db132</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>$title</name>
+      <anchorfile>class_order_payment_cash_on_delivery.html</anchorfile>
+      <anchor>ada57e7bb7c152edad18fe2f166188691</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>$description</name>
+      <anchorfile>class_order_payment_cash_on_delivery.html</anchorfile>
+      <anchor>a87b032cba06009e3467abf1c8018d960</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>$enabled</name>
+      <anchorfile>class_order_payment_cash_on_delivery.html</anchorfile>
+      <anchor>a8d376199cc641e3e7af6e1a0d5c736d9</anchor>
+      <arglist></arglist>
+    </member>
+  </compound>
+  <compound kind="class">
+    <name>OrderPaymentCmcic</name>
+    <filename>class_order_payment_cmcic.html</filename>
+    <base>StandardPaymentModule</base>
+    <member kind="function">
+      <type></type>
+      <name>__construct</name>
+      <anchorfile>class_order_payment_cmcic.html</anchorfile>
+      <anchor>a095c5d389db211932136b53f25f39685</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>hasHiddenFields</name>
+      <anchorfile>class_order_payment_cmcic.html</anchorfile>
+      <anchor>a6076edefe7ead489ba15f5fc6629efc4</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>getHiddenFields</name>
+      <anchorfile>class_order_payment_cmcic.html</anchorfile>
+      <anchor>aacf987628c32a2a24a27bac4fa112591</anchor>
+      <arglist>()</arglist>
+    </member>
+  </compound>
+  <compound kind="class">
+    <name>OrderPaymentCreditCard</name>
+    <filename>class_order_payment_credit_card.html</filename>
+    <base>CreditCardModule</base>
+    <member kind="function">
+      <type></type>
+      <name>__construct</name>
+      <anchorfile>class_order_payment_credit_card.html</anchorfile>
+      <anchor>a095c5d389db211932136b53f25f39685</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>javascriptValidation</name>
+      <anchorfile>class_order_payment_credit_card.html</anchorfile>
+      <anchor>a1c017d34fdb267081c48577e4ce4a071</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>onSelect</name>
+      <anchorfile>class_order_payment_credit_card.html</anchorfile>
+      <anchor>a77f131f3f5487a3703b4bd75ee6d60a3</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>processPaymentCron</name>
+      <anchorfile>class_order_payment_credit_card.html</anchorfile>
+      <anchor>aaef230e62c5ea74b8701b336bb2287e8</anchor>
+      <arglist>($orderID)</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>parseGatewayResponse</name>
+      <anchorfile>class_order_payment_credit_card.html</anchorfile>
+      <anchor>a5eca9bdcfbf74a4838d3d7364485e925</anchor>
+      <arglist>($response)</arglist>
+    </member>
+  </compound>
+  <compound kind="class">
+    <name>OrderPaymentCreditCardError</name>
+    <filename>class_order_payment_credit_card_error.html</filename>
+    <base>StandardPaymentModule</base>
+    <member kind="function">
+      <type></type>
+      <name>__construct</name>
+      <anchorfile>class_order_payment_credit_card_error.html</anchorfile>
+      <anchor>a095c5d389db211932136b53f25f39685</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>getError</name>
+      <anchorfile>class_order_payment_credit_card_error.html</anchorfile>
+      <anchor>a24ada5decce3d1b79cd82f5a90ccf404</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>$code</name>
+      <anchorfile>class_order_payment_credit_card_error.html</anchorfile>
+      <anchor>a7949acdaecc70b9f035c12a7069db132</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>$title</name>
+      <anchorfile>class_order_payment_credit_card_error.html</anchorfile>
+      <anchor>ada57e7bb7c152edad18fe2f166188691</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>$description</name>
+      <anchorfile>class_order_payment_credit_card_error.html</anchorfile>
+      <anchor>a87b032cba06009e3467abf1c8018d960</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>$enabled</name>
+      <anchorfile>class_order_payment_credit_card_error.html</anchorfile>
+      <anchor>a8d376199cc641e3e7af6e1a0d5c736d9</anchor>
+      <arglist></arglist>
+    </member>
+  </compound>
+  <compound kind="class">
+    <name>OrderPaymentCreditCardVcs</name>
+    <filename>class_order_payment_credit_card_vcs.html</filename>
+    <base>CreditCardModule</base>
+    <member kind="function">
+      <type></type>
+      <name>__construct</name>
+      <anchorfile>class_order_payment_credit_card_vcs.html</anchorfile>
+      <anchor>a095c5d389db211932136b53f25f39685</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>onSelect</name>
+      <anchorfile>class_order_payment_credit_card_vcs.html</anchorfile>
+      <anchor>a77f131f3f5487a3703b4bd75ee6d60a3</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>processPayment</name>
+      <anchorfile>class_order_payment_credit_card_vcs.html</anchorfile>
+      <anchor>ae8a94dc65e7292fcf30af03e6c357312</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>processPaymentCron</name>
+      <anchorfile>class_order_payment_credit_card_vcs.html</anchorfile>
+      <anchor>aaef230e62c5ea74b8701b336bb2287e8</anchor>
+      <arglist>($orderID)</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>parseCurlResponse</name>
+      <anchorfile>class_order_payment_credit_card_vcs.html</anchorfile>
+      <anchor>a2f33937daeeda608ffb5fc84e821d330</anchor>
+      <arglist>($CurlResponse)</arglist>
+    </member>
+    <member kind="function" protection="private">
+      <type></type>
+      <name>getXmlData</name>
+      <anchorfile>class_order_payment_credit_card_vcs.html</anchorfile>
+      <anchor>a1356e3cde416230faf535e14372108f1</anchor>
+      <arglist>($data)</arglist>
+      <docanchor file="class_order_payment_credit_card_vcs">Possible</docanchor>
+    </member>
+    <docanchor file="class_order_payment_credit_card_vcs">gateway_doc</docanchor>
+  </compound>
+  <compound kind="class">
+    <name>OrderPaymentCustom1</name>
+    <filename>class_order_payment_custom1.html</filename>
+    <base>StandardPaymentModule</base>
+    <member kind="function">
+      <type></type>
+      <name>__construct</name>
+      <anchorfile>class_order_payment_custom1.html</anchorfile>
+      <anchor>a095c5d389db211932136b53f25f39685</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>processPayment</name>
+      <anchorfile>class_order_payment_custom1.html</anchorfile>
+      <anchor>ae8a94dc65e7292fcf30af03e6c357312</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>processPaymentCron</name>
+      <anchorfile>class_order_payment_custom1.html</anchorfile>
+      <anchor>aaef230e62c5ea74b8701b336bb2287e8</anchor>
+      <arglist>($orderID)</arglist>
+    </member>
+  </compound>
+  <compound kind="class">
+    <name>OrderPaymentCustom2</name>
+    <filename>class_order_payment_custom2.html</filename>
+    <base>StandardPaymentModule</base>
+    <member kind="function">
+      <type></type>
+      <name>__construct</name>
+      <anchorfile>class_order_payment_custom2.html</anchorfile>
+      <anchor>a095c5d389db211932136b53f25f39685</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>processPayment</name>
+      <anchorfile>class_order_payment_custom2.html</anchorfile>
+      <anchor>ae8a94dc65e7292fcf30af03e6c357312</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>processPaymentCron</name>
+      <anchorfile>class_order_payment_custom2.html</anchorfile>
+      <anchor>aaef230e62c5ea74b8701b336bb2287e8</anchor>
+      <arglist>($orderID)</arglist>
+    </member>
+  </compound>
+  <compound kind="class">
+    <name>OrderPaymentCustom3</name>
+    <filename>class_order_payment_custom3.html</filename>
+    <base>StandardPaymentModule</base>
+    <member kind="function">
+      <type></type>
+      <name>__construct</name>
+      <anchorfile>class_order_payment_custom3.html</anchorfile>
+      <anchor>a095c5d389db211932136b53f25f39685</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>processPayment</name>
+      <anchorfile>class_order_payment_custom3.html</anchorfile>
+      <anchor>ae8a94dc65e7292fcf30af03e6c357312</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>processPaymentCron</name>
+      <anchorfile>class_order_payment_custom3.html</anchorfile>
+      <anchor>aaef230e62c5ea74b8701b336bb2287e8</anchor>
+      <arglist>($orderID)</arglist>
+    </member>
+  </compound>
+  <compound kind="class">
+    <name>OrderPaymentCustom4</name>
+    <filename>class_order_payment_custom4.html</filename>
+    <base>StandardPaymentModule</base>
+    <member kind="function">
+      <type></type>
+      <name>__construct</name>
+      <anchorfile>class_order_payment_custom4.html</anchorfile>
+      <anchor>a095c5d389db211932136b53f25f39685</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>processPayment</name>
+      <anchorfile>class_order_payment_custom4.html</anchorfile>
+      <anchor>ae8a94dc65e7292fcf30af03e6c357312</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>processPaymentCron</name>
+      <anchorfile>class_order_payment_custom4.html</anchorfile>
+      <anchor>aaef230e62c5ea74b8701b336bb2287e8</anchor>
+      <arglist>($orderID)</arglist>
+    </member>
+  </compound>
+  <compound kind="class">
+    <name>OrderPaymentInstaller</name>
+    <filename>class_order_payment_installer.html</filename>
+    <member kind="function">
+      <type></type>
+      <name>__construct</name>
+      <anchorfile>class_order_payment_installer.html</anchorfile>
+      <anchor>a3f326716cefdff39997685c728783f22</anchor>
+      <arglist>($moduleCode, $extName=null)</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>install</name>
+      <anchorfile>class_order_payment_installer.html</anchorfile>
+      <anchor>aa966adc12c56a4cc70da92207fa50929</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>remove</name>
+      <anchorfile>class_order_payment_installer.html</anchorfile>
+      <anchor>aff9a1fb07dca963c2c9a8ffe66b45ded</anchor>
+      <arglist>()</arglist>
+    </member>
+  </compound>
+  <compound kind="class">
+    <name>OrderPaymentMoneyOrder</name>
+    <filename>class_order_payment_money_order.html</filename>
+    <base>StandardPaymentModule</base>
+    <member kind="function">
+      <type></type>
+      <name>__construct</name>
+      <anchorfile>class_order_payment_money_order.html</anchorfile>
+      <anchor>a095c5d389db211932136b53f25f39685</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>processPayment</name>
+      <anchorfile>class_order_payment_money_order.html</anchorfile>
+      <anchor>ae8a94dc65e7292fcf30af03e6c357312</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>processPaymentCron</name>
+      <anchorfile>class_order_payment_money_order.html</anchorfile>
+      <anchor>aaef230e62c5ea74b8701b336bb2287e8</anchor>
+      <arglist>($orderID)</arglist>
+    </member>
+  </compound>
+  <compound kind="class">
+    <name>OrderPaymentPaypalIpn</name>
+    <filename>class_order_payment_paypal_ipn.html</filename>
+    <base>StandardPaymentModule</base>
+    <member kind="function">
+      <type></type>
+      <name>__construct</name>
+      <anchorfile>class_order_payment_paypal_ipn.html</anchorfile>
+      <anchor>a095c5d389db211932136b53f25f39685</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>validatePost</name>
+      <anchorfile>class_order_payment_paypal_ipn.html</anchorfile>
+      <anchor>a11620e7c2d77d8b5ad4eb984d51b6a1c</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>process_cancel_button</name>
+      <anchorfile>class_order_payment_paypal_ipn.html</anchorfile>
+      <anchor>a4c06ea7bf0a874d32eec5bec0409382b</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>getHiddenFields</name>
+      <anchorfile>class_order_payment_paypal_ipn.html</anchorfile>
+      <anchor>aacf987628c32a2a24a27bac4fa112591</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>processPayment</name>
+      <anchorfile>class_order_payment_paypal_ipn.html</anchorfile>
+      <anchor>ae8a94dc65e7292fcf30af03e6c357312</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>processPaymentCron</name>
+      <anchorfile>class_order_payment_paypal_ipn.html</anchorfile>
+      <anchor>aaef230e62c5ea74b8701b336bb2287e8</anchor>
+      <arglist>($orderID)</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>onInstall</name>
+      <anchorfile>class_order_payment_paypal_ipn.html</anchorfile>
+      <anchor>a1761688c3a4a9b2adb7106498dba5a78</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function" protection="private">
+      <type></type>
+      <name>buildEwpString</name>
+      <anchorfile>class_order_payment_paypal_ipn.html</anchorfile>
+      <anchor>a6a82adc8c43fc0c5c656ce08f1f244a2</anchor>
+      <arglist>(&amp;$parameters)</arglist>
+    </member>
+  </compound>
+  <compound kind="class">
+    <name>OrderPaymentUsaEpay</name>
+    <filename>class_order_payment_usa_epay.html</filename>
+    <base>CreditCardModule</base>
+    <member kind="function">
+      <type></type>
+      <name>__construct</name>
+      <anchorfile>class_order_payment_usa_epay.html</anchorfile>
+      <anchor>a095c5d389db211932136b53f25f39685</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>javascript_validation</name>
+      <anchorfile>class_order_payment_usa_epay.html</anchorfile>
+      <anchor>a86910574da6b6f7202d69296500f3076</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>onSelect</name>
+      <anchorfile>class_order_payment_usa_epay.html</anchorfile>
+      <anchor>a77f131f3f5487a3703b4bd75ee6d60a3</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>hasHiddenFields</name>
+      <anchorfile>class_order_payment_usa_epay.html</anchorfile>
+      <anchor>a6076edefe7ead489ba15f5fc6629efc4</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>getHiddenFields</name>
+      <anchorfile>class_order_payment_usa_epay.html</anchorfile>
+      <anchor>aacf987628c32a2a24a27bac4fa112591</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>processPayment</name>
+      <anchorfile>class_order_payment_usa_epay.html</anchorfile>
+      <anchor>ae8a94dc65e7292fcf30af03e6c357312</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>processPaymentCron</name>
+      <anchorfile>class_order_payment_usa_epay.html</anchorfile>
+      <anchor>aaef230e62c5ea74b8701b336bb2287e8</anchor>
+      <arglist>($orderID)</arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>$code</name>
+      <anchorfile>class_order_payment_usa_epay.html</anchorfile>
+      <anchor>a7949acdaecc70b9f035c12a7069db132</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>$title</name>
+      <anchorfile>class_order_payment_usa_epay.html</anchorfile>
+      <anchor>ada57e7bb7c152edad18fe2f166188691</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>$description</name>
+      <anchorfile>class_order_payment_usa_epay.html</anchorfile>
+      <anchor>a87b032cba06009e3467abf1c8018d960</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>$enabled</name>
+      <anchorfile>class_order_payment_usa_epay.html</anchorfile>
+      <anchor>a8d376199cc641e3e7af6e1a0d5c736d9</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>$timeout</name>
+      <anchorfile>class_order_payment_usa_epay.html</anchorfile>
+      <anchor>a84320a9bf3e591d7ae20dfcb0dfe6a0d</anchor>
+      <arglist></arglist>
+    </member>
+  </compound>
+  <compound kind="class">
+    <name>PaymentModuleBase</name>
+    <filename>class_payment_module_base.html</filename>
+    <member kind="function">
+      <type></type>
+      <name>init</name>
+      <anchorfile>class_payment_module_base.html</anchorfile>
+      <anchor>a04ebb40251f7e6fe41f67dac5eb84ab2</anchor>
+      <arglist>($code)</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>check</name>
+      <anchorfile>class_payment_module_base.html</anchorfile>
+      <anchor>a5fb1933974ac9aae8c7ac4d3344caca6</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>isEnabled</name>
+      <anchorfile>class_payment_module_base.html</anchorfile>
+      <anchor>ad734dc60b64a242fe183e0c23b192790</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>isInstalled</name>
+      <anchorfile>class_payment_module_base.html</anchorfile>
+      <anchor>aed5400933aebc8d6b364a68b19664d1f</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>isFromExtension</name>
+      <anchorfile>class_payment_module_base.html</anchorfile>
+      <anchor>a74579b4c899fe0ad2f0366a6af033420</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>getExtensionName</name>
+      <anchorfile>class_payment_module_base.html</anchorfile>
+      <anchor>a7daf2e3cdf3d09e01a3a642235f38539</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>getConfig</name>
+      <anchorfile>class_payment_module_base.html</anchorfile>
+      <anchor>a628300eb8464467d9344c7c59cc8770b</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>getConfigData</name>
+      <anchorfile>class_payment_module_base.html</anchorfile>
+      <anchor>a47c3ba3df535fc06609c8b51966186b2</anchor>
+      <arglist>($key)</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>getCode</name>
+      <anchorfile>class_payment_module_base.html</anchorfile>
+      <anchor>ab5e24da53b4a0d0848b18c1e832f47ff</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>setTitle</name>
+      <anchorfile>class_payment_module_base.html</anchorfile>
+      <anchor>afe5a532fed4f467e0a7804861bb6bd99</anchor>
+      <arglist>($val)</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>getTitle</name>
+      <anchorfile>class_payment_module_base.html</anchorfile>
+      <anchor>a95e859a4588a39a1824b717378a84c29</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>setDescription</name>
+      <anchorfile>class_payment_module_base.html</anchorfile>
+      <anchor>a1097bee42bb020acf43e5970448beece</anchor>
+      <arglist>($val)</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>getDescription</name>
+      <anchorfile>class_payment_module_base.html</anchorfile>
+      <anchor>a2e7bb35c71bf1824456ceb944cb7a845</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>getSortOrder</name>
+      <anchorfile>class_payment_module_base.html</anchorfile>
+      <anchor>af31b5ed3a2aa6a5ec810793e2bf1ce59</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>getStatus</name>
+      <anchorfile>class_payment_module_base.html</anchorfile>
+      <anchor>a9d21636071f529e2154051d3ea6e5921</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>hasError</name>
+      <anchorfile>class_payment_module_base.html</anchorfile>
+      <anchor>a779b938d3e5a16f6123fabb24ad07cf1</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>setFormUrl</name>
+      <anchorfile>class_payment_module_base.html</anchorfile>
+      <anchor>ae22d60afda731331477d69a2f45fe1a9</anchor>
+      <arglist>($val)</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>getFormUrl</name>
+      <anchorfile>class_payment_module_base.html</anchorfile>
+      <anchor>a834dfe9760c416660fb033a880886346</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>hasFormUrl</name>
+      <anchorfile>class_payment_module_base.html</anchorfile>
+      <anchor>a2b3f02b29b66dd63ffaa6bb747f115d1</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>updateStatus</name>
+      <anchorfile>class_payment_module_base.html</anchorfile>
+      <anchor>a5c57c6cf3734b2f5b00de3cfc376e12b</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>javascriptValidation</name>
+      <anchorfile>class_payment_module_base.html</anchorfile>
+      <anchor>a1c017d34fdb267081c48577e4ce4a071</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>onSelect</name>
+      <anchorfile>class_payment_module_base.html</anchorfile>
+      <anchor>a77f131f3f5487a3703b4bd75ee6d60a3</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>processPayment</name>
+      <anchorfile>class_payment_module_base.html</anchorfile>
+      <anchor>ae8a94dc65e7292fcf30af03e6c357312</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>processPaymentCron</name>
+      <anchorfile>class_payment_module_base.html</anchorfile>
+      <anchor>aaef230e62c5ea74b8701b336bb2287e8</anchor>
+      <arglist>($orderID)</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>afterOrderProcess</name>
+      <anchorfile>class_payment_module_base.html</anchorfile>
+      <anchor>ab4db8d956b15bae59f2e3635ce9c7741</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>afterOrderProcessCron</name>
+      <anchorfile>class_payment_module_base.html</anchorfile>
+      <anchor>a644dffe2e31ec27c68284ee71e7b7dd4</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>validatePost</name>
+      <anchorfile>class_payment_module_base.html</anchorfile>
+      <anchor>a11620e7c2d77d8b5ad4eb984d51b6a1c</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>hasHiddenFields</name>
+      <anchorfile>class_payment_module_base.html</anchorfile>
+      <anchor>a6076edefe7ead489ba15f5fc6629efc4</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>getHiddenFields</name>
+      <anchorfile>class_payment_module_base.html</anchorfile>
+      <anchor>aacf987628c32a2a24a27bac4fa112591</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>beforeRentalProcess</name>
+      <anchorfile>class_payment_module_base.html</anchorfile>
+      <anchor>a66dbcc060c86aed6181a1a2ebe0dafc4</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>afterRentalProcess</name>
+      <anchorfile>class_payment_module_base.html</anchorfile>
+      <anchor>ad11d854d1b90fe9dd154e5a6ec3938e9</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>onInstall</name>
+      <anchorfile>class_payment_module_base.html</anchorfile>
+      <anchor>a1761688c3a4a9b2adb7106498dba5a78</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>setPaymentError</name>
+      <anchorfile>class_payment_module_base.html</anchorfile>
+      <anchor>a8f70b9439e599c26212797fc45f8be9d</anchor>
+      <arglist>($val, $errMsg=null)</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>logPayment</name>
+      <anchorfile>class_payment_module_base.html</anchorfile>
+      <anchor>a75f44d9e9964376ca01c53a6684a4f3a</anchor>
+      <arglist>($info)</arglist>
+    </member>
+    <member kind="variable" protection="private">
+      <type></type>
+      <name>$configData</name>
+      <anchorfile>class_payment_module_base.html</anchorfile>
+      <anchor>ac1327e05ec6df87191052320be573ff2</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable" protection="private">
+      <type></type>
+      <name>$xmlData</name>
+      <anchorfile>class_payment_module_base.html</anchorfile>
+      <anchor>ab616bcf2a041dd7070270e3b0a279263</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable" protection="private">
+      <type></type>
+      <name>$enabled</name>
+      <anchorfile>class_payment_module_base.html</anchorfile>
+      <anchor>a8d376199cc641e3e7af6e1a0d5c736d9</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable" protection="private">
+      <type></type>
+      <name>$code</name>
+      <anchorfile>class_payment_module_base.html</anchorfile>
+      <anchor>a7949acdaecc70b9f035c12a7069db132</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable" protection="private">
+      <type></type>
+      <name>$title</name>
+      <anchorfile>class_payment_module_base.html</anchorfile>
+      <anchor>ada57e7bb7c152edad18fe2f166188691</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable" protection="private">
+      <type></type>
+      <name>$description</name>
+      <anchorfile>class_payment_module_base.html</anchorfile>
+      <anchor>a87b032cba06009e3467abf1c8018d960</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable" protection="private">
+      <type></type>
+      <name>$sortOrder</name>
+      <anchorfile>class_payment_module_base.html</anchorfile>
+      <anchor>a7711c20d3e731eba03053dddbc3d5f20</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable" protection="private">
+      <type></type>
+      <name>$check</name>
+      <anchorfile>class_payment_module_base.html</anchorfile>
+      <anchor>a830cf70d25fefacddcf4c6bc3fd7a0e0</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable" protection="private">
+      <type></type>
+      <name>$paymentZone</name>
+      <anchorfile>class_payment_module_base.html</anchorfile>
+      <anchor>a702cd828fa9ea41a533a42939cd5b931</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable" protection="private">
+      <type></type>
+      <name>$checkoutMethod</name>
+      <anchorfile>class_payment_module_base.html</anchorfile>
+      <anchor>a7458ae1c84f16c57d794de17e4cacd4e</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable" protection="private">
+      <type></type>
+      <name>$paymentError</name>
+      <anchorfile>class_payment_module_base.html</anchorfile>
+      <anchor>a320372b6147f77e22155cb29fe5e37d5</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable" protection="private">
+      <type></type>
+      <name>$orderStatus</name>
+      <anchorfile>class_payment_module_base.html</anchorfile>
+      <anchor>a8954089b89b38c2a7f8636c79cd3ee12</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable" protection="private">
+      <type></type>
+      <name>$formUrl</name>
+      <anchorfile>class_payment_module_base.html</anchorfile>
+      <anchor>a08c097a4d488bb9278e5986e5ae8c6e1</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable" protection="private">
+      <type></type>
+      <name>$installed</name>
+      <anchorfile>class_payment_module_base.html</anchorfile>
+      <anchor>abedccaa71dcf3d3f5c392fad3b3df965</anchor>
+      <arglist></arglist>
+    </member>
+  </compound>
+  <compound kind="class">
+    <name>StandardPaymentModule</name>
+    <filename>class_standard_payment_module.html</filename>
+    <base>PaymentModuleBase</base>
+  </compound>
+</tagfile>

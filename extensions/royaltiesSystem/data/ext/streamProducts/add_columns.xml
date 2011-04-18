@@ -1,0 +1,19 @@
+<data>
+	<ProductsStreams>
+		<content_provider_id>
+			<type>integer</type>
+			<length>6</length>
+			<primary>false</primary>
+			<default>0</default>
+			<notnull>true</notnull>
+		</content_provider_id>
+		<royalty_fee>
+			<type>decimal</type>
+			<length>15</length>
+			<primary>false</primary>
+			<default>0.0</default>
+			<unsigned>0</unsigned>
+			<notnull>true</notnull>
+		</royalty_fee>
+	</ProductsStreams>
+</data>

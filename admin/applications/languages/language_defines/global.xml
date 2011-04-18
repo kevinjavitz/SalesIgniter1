@@ -1,0 +1,22 @@
+<definitions>
+	<define key="HEADING_TITLE"><![CDATA[Languages]]></define>
+
+	<define key="TABLE_HEADING_LANGUAGE_NAME"><![CDATA[Language]]></define>
+	<define key="TABLE_HEADING_LANGUAGE_STATUS"><![CDATA[Status]]></define>
+	<define key="TABLE_HEADING_LANGUAGE_CODE"><![CDATA[Code]]></define>
+	<define key="TABLE_HEADING_ACTION"><![CDATA[Action]]></define>
+
+	<define key="TEXT_INFO_EDIT_INTRO"><![CDATA[Please make any necessary changes]]></define>
+	<define key="TEXT_INFO_LANGUAGE_NAME"><![CDATA[Name:]]></define>
+	<define key="TEXT_INFO_LANGUAGE_CODE"><![CDATA[Code:]]></define>
+	<define key="TEXT_INFO_LANGUAGE_IMAGE"><![CDATA[Image:]]></define>
+	<define key="TEXT_INFO_LANGUAGE_DIRECTORY"><![CDATA[Directory:]]></define>
+	<define key="TEXT_INFO_LANGUAGE_SORT_ORDER"><![CDATA[Sort Order:]]></define>
+	<define key="TEXT_INFO_INSERT_INTRO"><![CDATA[Please enter the new language with its related data]]></define>
+	<define key="TEXT_INFO_DELETE_INTRO"><![CDATA[Are you sure you want to delete this language?]]></define>
+	<define key="TEXT_INFO_HEADING_NEW_LANGUAGE"><![CDATA[New Language]]></define>
+	<define key="TEXT_INFO_HEADING_EDIT_LANGUAGE"><![CDATA[Edit Language]]></define>
+	<define key="TEXT_INFO_HEADING_DELETE_LANGUAGE"><![CDATA[Delete Language]]></define>
+
+	<define key="ERROR_REMOVE_DEFAULT_LANGUAGE"><![CDATA[Error: The default language can not be removed. Please set another language as default, and try again.]]></define>
+</definitions>

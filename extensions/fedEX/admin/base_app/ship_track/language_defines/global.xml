@@ -1,0 +1,19 @@
+<definitions>
+	<define key="HEADING_TITLE"><![CDATA[Fedex]]></define>
+    <define key="PACKAGE_WEIGHT"><![CDATA[Package Weight:]]></define>
+    <define key="TOTAL_WEIGHT"><![CDATA[Total Weight:]]></define>
+    <define key="PACKAGE_DELIVERED_ON"><![CDATA[Package delivered on: ]]></define>
+    <define key="PACKAGE_SIGNED_BY"><![CDATA[Package signed by: ]]></define>
+    <define key="PACKAGE_NOT_IN_SYSTEM"><![CDATA[Package not in sistem(test server maybe?)]]></define>
+    <define key="INVALID_TRACKING_NUM"><![CDATA[Invalid tracking number! ]]></define>
+    <define key="PACKAGE_ERROR"><![CDATA[Package Error]]></define>
+    <define key="PACKAGE_DESTINATION"><![CDATA[Package Destination: ]]></define>
+    <define key="PACKAGE_STATUS"><![CDATA[Package status: ]]></define>
+    <define key="DELIVERED_FRONTDOOR"><![CDATA[Delivered front door ]]></define>
+    <define key="DELIVERED_SIDEDOOR"><![CDATA[Delivered side door ]]></define>
+    <define key="DELIVERED_GARAGE"><![CDATA[Delivered garage ]]></define>
+    <define key="DELIVERED_BACKDOOR"><![CDATA[Delivered backdoor]]></define>
+    <define key="PACKAGE_DELIVERED_ON"><![CDATA[Package delivered on: ]]></define>
+    <define key="PACKAGE_DELIVERED_AT"><![CDATA[Package delivered at: ]]></define>
+    <define key="PACKAGE_IN_TRANSIT"><![CDATA[Package in transit]]></define>    
+</definitions>

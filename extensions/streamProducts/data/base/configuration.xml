@@ -1,0 +1,28 @@
+<ConfigurationGroup>
+	<title>Stream Products</title>
+	<key>streamProducts</key>
+	<description>Configuration Settings For The Stream Products Extension</description>
+	<Configuration>
+		<EXTENSION_STREAMPRODUCTS_ENABLED>
+			<title>Enable Stream Products</title>
+			<value>True</value>
+			<description>Enable Or Disable The Stream Products Extension</description>
+			<sort_order>1</sort_order>
+			<set_function>tep_cfg_select_option(array('True','False'),</set_function>
+		</EXTENSION_STREAMPRODUCTS_ENABLED>
+		<EXTENSION_STREAMPRODUCTS_ORDERS_STATUS>
+			<title>Allowed Order Statuses</title>
+			<value>True</value>
+			<description>Allow stream with the following order statuses</description>
+			<sort_order>2</sort_order>
+			<set_function>tep_cfg_pull_multi_order_statuses(</set_function>
+			<use_function>tep_translate_order_statuses</use_function>
+		</EXTENSION_STREAMPRODUCTS_ORDERS_STATUS>
+		<EXTENSION_STREAMPRODUCTS_MAX_DAYS>
+			<title>Maximum Days To Stream</title>
+			<value>0</value>
+			<description>Stream expires X days after purchase, 0 for unlimited</description>
+			<sort_order>3</sort_order>
+		</EXTENSION_STREAMPRODUCTS_MAX_DAYS>
+	</Configuration>
+</ConfigurationGroup>

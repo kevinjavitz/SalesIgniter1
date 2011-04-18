@@ -1,0 +1,20 @@
+<data>
+	<Orders>
+		<delivery_depot>
+			<type>string</type>
+			<length>64</length>
+			<fixed>false</fixed>
+			<primary>false</primary>
+			<default></default>
+			<notnull>true</notnull>
+		</delivery_depot>
+		<delivery_depot_postcode>
+			<type>string</type>
+			<length>12</length>
+			<fixed>false</fixed>
+			<primary>false</primary>
+			<default></default>
+			<notnull>true</notnull>
+		</delivery_depot_postcode>
+	</Orders>
+</data>

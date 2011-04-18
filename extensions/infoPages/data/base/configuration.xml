@@ -1,0 +1,21 @@
+<ConfigurationGroup>
+	<title>Info Pages</title>
+	<key>infoPages</key>
+	<description>Configuration Settings For The Info Pages Extension</description>
+	<Configuration>
+		<EXTENSION_INFO_PAGES_ENABLED>
+			<title>Enable Info Pages</title>
+			<value>True</value>
+			<description>Enable Or Disable The Info Pages Extension</description>
+			<sort_order>1</sort_order>
+			<set_function>tep_cfg_select_option(array('True','False'),</set_function>
+		</EXTENSION_INFO_PAGES_ENABLED>
+		<EXTENSION_INFO_PAGES_INFOBOX>
+			<title>Enable Info Pages Info Box</title>
+			<value>False</value>
+			<description>Enable Or Disable The Info Pages Info Box</description>
+			<sort_order>2</sort_order>
+			<set_function>tep_cfg_select_option(array('True','False'),</set_function>
+		</EXTENSION_INFO_PAGES_INFOBOX>
+	</Configuration>
+</ConfigurationGroup>

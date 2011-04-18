@@ -1,0 +1,58 @@
+<definition>
+	<define key="AZER_WHOSONLINE_WHOIS_URL"><![CDATA[http://www.dnsstuff.com/tools/whois.ch?ip=]]></define>
+	<define key="TEXT_NOT_AVAILABLE"><![CDATA[   <b>Note:</b> N/A = IP non available]]></define>
+	<define key="TEXT_EMPTY"><![CDATA[Empty]]></define>
+	<define key="TEXT_MY_IP_ADDRESS"><![CDATA[My IP adresss ]]></define>
+	<define key="TABLE_HEADING_COUNTRY"><![CDATA[Country]]></define>
+	<define key="HEADING_TITLE"><![CDATA[Who's Online]]></define>
+	<define key="TABLE_HEADING_ONLINE"><![CDATA[Online]]></define>
+	<define key="TABLE_HEADING_CUSTOMER_ID"><![CDATA[ID]]></define>
+	<define key="TABLE_HEADING_FULL_NAME"><![CDATA[Name]]></define>
+	<define key="TABLE_HEADING_IP_ADDRESS"><![CDATA[IP Address]]></define>
+	<define key="TABLE_HEADING_ENTRY_TIME"><![CDATA[Entry]]></define>
+	<define key="TABLE_HEADING_LAST_CLICK"><![CDATA[Last Click]]></define>
+	<define key="TABLE_HEADING_LAST_PAGE_URL"><![CDATA[Last URL]]></define>
+	<define key="TABLE_HEADING_INFO"><![CDATA[Info]]></define>
+	<define key="TABLE_HEADING_SHOPPING_CART"><![CDATA[Shopping Cart]]></define>
+	<define key="TEXT_SHOPPING_CART_SUBTOTAL"><![CDATA[Subtotal]]></define>
+	<define key="TEXT_NUMBER_OF_CUSTOMERS"><![CDATA[%s &nbsp;Visitor(s) online (Considered inactive after 5 minutes. Removed after 15 minutes)]]></define>
+	<define key="TABLE_HEADING_HTTP_REFERER"><![CDATA[Referer?]]></define>
+	<define key="TEXT_HTTP_REFERER_URL"><![CDATA[HTTP Referer URL]]></define>
+	<define key="TEXT_HTTP_REFERER_FOUND"><![CDATA[Yes]]></define>
+	<define key="TEXT_HTTP_REFERER_NOT_FOUND"><![CDATA[Not Found]]></define>
+	<define key="TEXT_STATUS_ACTIVE_CART"><![CDATA[Active with Cart]]></define>
+	<define key="TEXT_STATUS_ACTIVE_NOCART"><![CDATA[Active with no Cart]]></define>
+	<define key="TEXT_STATUS_INACTIVE_CART"><![CDATA[Inactive with Cart]]></define>
+	<define key="TEXT_STATUS_INACTIVE_NOCART"><![CDATA[Inactive with no Cart]]></define>
+	<define key="TEXT_STATUS_NO_SESSION_BOT"><![CDATA[Inactive Bot with no session?]]></define>
+	<define key="TEXT_STATUS_INACTIVE_BOT"><![CDATA[Inactive Bot with session ]]></define>
+	<define key="TEXT_STATUS_ACTIVE_BOT"><![CDATA[Active Bot with session ]]></define>
+	<define key="TABLE_HEADING_COUNTRY"><![CDATA[Country]]></define>
+	<define key="TABLE_HEADING_USER_SESSION"><![CDATA[Session?]]></define>
+	<define key="TEXT_IN_SESSION"><![CDATA[Yes]]></define>
+	<define key="TEXT_NO_SESSION"><![CDATA[No]]></define>
+	<define key="TEXT_OSCID"><![CDATA[osCsid]]></define>
+	<define key="TEXT_PROFILE_DISPLAY"><![CDATA[Profile Display]]></define>
+	<define key="TEXT_USER_AGENT"><![CDATA[User Agent]]></define>
+	<define key="TEXT_ERROR"><![CDATA[Error!]]></define>
+	<define key="TEXT_ADMIN"><![CDATA[Admin]]></define>
+	<define key="TEXT_DUPLICATE_IP"><![CDATA[Duplicate(s) IP(s)]]></define>
+	<define key="TEXT_BOTS"><![CDATA[Bot(s)]]></define>
+	<define key="TEXT_ME"><![CDATA[Myself!]]></define>
+	<define key="TEXT_ALL"><![CDATA[All]]></define>
+	<define key="TEXT_REAL_CUSTOMERS"><![CDATA[Real Customer(s)]]></define>
+	<define key="TEXT_YOUR_IP_ADDRESS"><![CDATA[Your IP Address]]></define>
+	<define key="TEXT_SET_REFRESH_RATE"><![CDATA[Set Refresh Rate]]></define>
+	<define key="TEXT_NONE_"><![CDATA[None]]></define>
+	<define key="TEXT_CUSTOMERS"><![CDATA[Customer(s)]]></define>
+
+	<define key="TEXT_INFO_FULL_NAME"><![CDATA[Full Name:]]></define>
+	<define key="TEXT_INFO_CUSTOMER_ID"><![CDATA[Customer Id:]]></define>
+	<define key="TEXT_INFO_IP_ADDRESS"><![CDATA[IP Address:]]></define>
+	<define key="TEXT_INFO_USER_AGENT"><![CDATA[User Agent:]]></define>
+	<define key="TEXT_INFO_SESSION_ID"><![CDATA[Session Id:]]></define>
+	<define key="TEXT_INFO_HTTP_REFERER"><![CDATA[Referer:]]></define>
+	<define key="TEXT_INFO_LAST_REFRESH"><![CDATA[Last Refresh:]]></define>
+	<define key="TEXT_INFO_NEXT_REFRESH"><![CDATA[Next Refresh:]]></define>
+	<define key="TEXT_INFO_CART_PRODUCTS"><![CDATA[Shopping Cart:]]></define>
+</definition>

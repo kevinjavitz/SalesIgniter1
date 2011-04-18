@@ -1,0 +1,5 @@
+<definitions>
+	<define key="INFOBOX_HEADING_ARTICLES"><![CDATA[Articles]]></define>
+	<define key="INFOBOX_ARTICLES_ALL_ARTICLES"><![CDATA[All Articles]]></define>
+	<define key="INFOBOX_ARTICLES_NEW_ARTICLES"><![CDATA[New Articles]]></define>
+</definitions>

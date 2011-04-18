@@ -1,0 +1,43 @@
+<ConfigurationGroup>
+	<title>Related Products</title>
+	<key>relatedProducts</key>
+	<description>Configuration Settings For The Related Products Extension</description>
+	<Configuration>
+		<EXTENSION_RELATED_PRODUCTS_ENABLED>
+			<title>Enable Related Products</title>
+			<value>True</value>
+			<description>Enable Or Disable The Related Products Extension</description>
+			<sort_order>1</sort_order>
+			<set_function>tep_cfg_select_option(array('True','False'),</set_function>
+		</EXTENSION_RELATED_PRODUCTS_ENABLED>
+		<EXTENSION_RELATED_PRODUCTS_LISTING_METHOD>
+			<title>Display Method</title>
+			<value>Row</value>
+			<description>Method for displaying related products</description>
+			<sort_order>2</sort_order>
+			<set_function>tep_cfg_select_option(array('Row'),</set_function>
+		</EXTENSION_RELATED_PRODUCTS_LISTING_METHOD>
+		<EXTENSION_RELATED_PRODUCTS_DISPLAY_NUMBER>
+			<title>Number of related products to display</title>
+			<value>4</value>
+			<description>Number of related products</description>
+			<sort_order>3</sort_order>
+		</EXTENSION_RELATED_PRODUCTS_DISPLAY_NUMBER>
+		<EXTENSION_RELATED_PRODUCTS_DISPLAY_TYPE>
+			<title>Use admin related products, or use other criteria</title>
+			<value>Admin</value>
+			<description>Use admin related products, or use other criteria</description>
+			<sort_order>4</sort_order>
+			<set_function>tep_cfg_select_option(array('Admin','Other Criteria'),</set_function>
+		</EXTENSION_RELATED_PRODUCTS_DISPLAY_TYPE>
+
+		<EXTENSION_RELATED_PRODUCTS_SHOPPING_CART>
+			<title>Show related products under shopping cart</title>
+			<value>True</value>
+			<description>Show related products of items in shopping cart</description>
+			<sort_order>5</sort_order>
+			<set_function>tep_cfg_select_option(array('True','False'),</set_function>
+		</EXTENSION_RELATED_PRODUCTS_SHOPPING_CART>
+
+	</Configuration>
+</ConfigurationGroup>

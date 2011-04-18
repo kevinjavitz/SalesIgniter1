@@ -1,0 +1,31 @@
+/* 
+    Document   : clipart_styles
+    Created on : Mar 12, 2010, 11:24:26 PM
+    Author     : madarcu
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+/* 
+   TODO customize this sample style
+   Syntax recommendation http://www.w3.org/TR/REC-CSS2/
+*/
+
+.theBox{
+	float:left;
+	width:130px;
+	height:130px;
+	border:1px solid #cccccc;
+	margin:.5em;
+}
+
+#allBox{
+	width:100%;
+	display:block;
+}
+
+#uploadQueue {
+	left:140px;
+	position:absolute;
+	top:45px;
+}

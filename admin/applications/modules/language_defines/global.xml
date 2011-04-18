@@ -1,0 +1,17 @@
+<definitions>
+	<define key="HEADING_TITLE_MODULES_PAYMENT"><![CDATA[Payment Modules]]></define>
+	<define key="HEADING_TITLE_MODULES_SHIPPING"><![CDATA[Shipping Modules]]></define>
+	<define key="HEADING_TITLE_MODULES_ORDER_TOTAL"><![CDATA[Order Total Modules]]></define>
+	<define key="HEADING_TITLE_MODULES_INFOBOXES"><![CDATA[Infoboxes]]></define>
+	<define key="TABLE_HEADING_MODULES"><![CDATA[Modules]]></define>
+	<define key="TABLE_HEADING_SORT_ORDER"><![CDATA[Sort Order]]></define>
+	<define key="TABLE_HEADING_INSTALLED"><![CDATA[Installed]]></define>
+	<define key="TABLE_HEADING_INFO"><![CDATA[Info]]></define>
+	<define key="TABLE_HEADING_ACTION"><![CDATA[Action]]></define>
+	<define key="TABLE_HEADING_INFOBOXES_HEADING"><![CDATA[Name]]></define>
+	<define key="TABLE_HEADING_INFOBOXES_CODE"><![CDATA[Code]]></define>
+	<define key="TABLE_HEADING_INFOBOXES_LOCATION"><![CDATA[Location]]></define>
+	<define key="TEXT_MODULE_DIRECTORY"><![CDATA[Module Directory:]]></define>
+	<define key="TEXT_INFO_HEADING_EDIT_MODULE"><![CDATA[Edit Module: %s]]></define>
+	<define key="TEXT_INFO_HEADING_EDIT"><![CDATA[Edit Module]]></define>
+</definitions>

@@ -1,0 +1,26 @@
+<ConfigurationGroup>
+	<title>Export Manager</title>
+	<key>exportManager</key>
+	<description>Configuration Settings For The Export Manager Extension</description>
+	<Configuration>
+		<EXTENSION_EXPORT_MANAGER_ENABLED>
+			<title>Enable Export Manager</title>
+			<value>True</value>
+			<description>Enable Or Disable The Info Pages Extension</description>
+			<sort_order>1</sort_order>
+			<set_function>tep_cfg_select_option(array('True','False'),</set_function>
+		</EXTENSION_EXPORT_MANAGER_ENABLED>
+		<EXTENSION_EXPORT_MANAGER_USERNAME>
+			<title>Username to login to get data</title>
+			<value>username</value>
+			<description>Username to check when getting data</description>
+			<sort_order>2</sort_order>
+		</EXTENSION_EXPORT_MANAGER_USERNAME>
+		<EXTENSION_EXPORT_MANAGER_PASSWORD>
+			<title>Password to login to get data</title>
+			<value>password</value>
+			<description>Password to check when getting data</description>
+			<sort_order>3</sort_order>
+		</EXTENSION_EXPORT_MANAGER_PASSWORD>
+	</Configuration>
+</ConfigurationGroup>

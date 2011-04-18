@@ -1,0 +1,4 @@
+<definitions>
+	<define key="MODULE_ORDER_TOTAL_SUBTOTAL_TITLE"><![CDATA[Sub-Total]]></define>
+	<define key="MODULE_ORDER_TOTAL_SUBTOTAL_DESCRIPTION"><![CDATA[Order Sub-Total]]></define>
+</definitions>

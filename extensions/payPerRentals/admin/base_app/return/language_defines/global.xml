@@ -1,0 +1,22 @@
+<definitions>
+	<define key="HEADING_TITLE"><![CDATA[Return Reservations]]></define>
+	<define key="TABLE_HEADING_RETURN"><![CDATA[Return]]></define>
+	<define key="TABLE_HEADING_CUSTOMERS_NAME"><![CDATA[Customer Name]]></define>
+	<define key="TABLE_HEADING_PRODUCTS_NAME"><![CDATA[Reservation Item Name]]></define>
+	<define key="TABLE_HEADING_INV_NUM"><![CDATA[Inventory #]]></define>
+	<define key="TABLE_HEADING_SHIP_ON"><![CDATA[Ship On]]></define>
+	<define key="TABLE_HEADING_RES_START"><![CDATA[Res Start]]></define>
+	<define key="TABLE_HEADING_RES_END"><![CDATA[Res End]]></define>
+	<define key="TABLE_HEADING_DUE_BY"><![CDATA[Due Back By]]></define>
+	<define key="TABLE_HEADING_DAYS_LATE"><![CDATA[Days Late]]></define>
+	<define key="TABLE_HEADING_ADD_LATE_FEE"><![CDATA[Add Late Fee To Order]]></define>
+	<define key="TABLE_HEADING_COMMENTS"><![CDATA[Reservation Comments]]></define>
+	<define key="TABLE_HEADING_ITEM_DMG"><![CDATA[Item Damaged]]></define>
+	<define key="TABLE_HEADING_ITEM_LOST"><![CDATA[Item Lost]]></define>
+	<define key="TEXT_NO_BARCODE_ENTERED"><![CDATA[No barcode is entered for reservation. Please check return checkbox]]></define>
+	<define key="TEXT_SUCCESS_MOVIES_RETURNED"><![CDATA[Selected reservation have been returned successfully with the comments.]]></define>
+	<define key="TEXT_INFO_LATE_FEES"><![CDATA[Note to administrator, for late fees: click the "Add Late Fee To Order" link to edit their order and add a late fee BEFORE returning an item]]></define>
+	<define key="TEXT_BUTTON_RESET_FILTER"><![CDATA[Reset Filter]]></define>
+	<define key="TEXT_INFO_CHECK_RETURNS"><![CDATA[Please checkmark the reservations you want to return, and click Return]]></define>
+	<define key="TEXT_BUTTON_RETURN_RENTALS"><![CDATA[Return]]></define>
+</definitions>

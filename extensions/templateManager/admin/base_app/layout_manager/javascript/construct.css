@@ -1,0 +1,130 @@
+html {margin:0;padding:0;border:0;}
+a img {border:none;}
+:focus {outline:0;}
+.container {}
+.container:after {}
+
+#construct-header {
+  background:#222;
+  color:#fafafa;
+}
+
+#construct-header h1 {
+  color:#fafafa;
+  font-family:Cambria, Georgia, serif;
+}
+
+#construct { border:1px dashed blue; }
+/*#construct-header { position: fixed;bottom: 0;left: 0;width: 100%;z-index: 9999; }*/
+
+.showOutline div, .showOutline li { outline: 1px dashed blue; }
+
+.container { min-height:30px;min-width:30px;line-height:1em; }
+.container.ui-state-hover { border:none;background:none;outline: 1px dashed green; }
+.container.ui-state-active { border:none;background:none;outline: 1px dashed red; }
+
+.column { display:inline-block;min-height:30px;min-width:30px;line-height:1em;vertical-align: top; }
+.column.ui-state-hover { border:none;background:none;outline: 1px dashed green; }
+.column.ui-state-active { border:none;background:none;outline: 1px dashed red; }
+.column.ui-state-highlight { border:none;background-color:#ffffff; }
+
+.ui-sortable { list-style:none;margin: 0;padding: 0;min-height:32px; }
+.ui-sortable li.widget { line-height:32px;padding-left:5px;padding-right:5px;margin: 0;position:relative; }
+.ui-sortable li.widget.ui-state-highlight { border:none;background:none;outline: 1px dashed green; }
+.ui-sortable .iconHolder { position:absolute;top:0;right:5px;outline:none; }
+.ui-sortable .iconHolder .ui-icon { display:inline-block; }
+
+#construct-actionMenu { margin:0;padding: .3em 0;list-style: none;display: block;text-align: center; }
+#construct-actionMenu li { display:inline;padding: 0 1.5em 0 0; }
+#construct-actionMenu li a { color:#ddf;font-weight:bold; }
+#construct-actionMenu li a:hover { color:#fff; }
+#construct-actionMenu .finalAction { font-weight:bold; }
+#construct-actionMenu .finalAction a { margin-left:0; }
+
+#templateSwitcherDiv { text-align:right;padding-right:1em; }
+
+#saveLayoutText { text-align:center;background-color:#333;border:1px solid red;padding:5px;margin-bottom:5px; }
+#saveLayoutText .changedText { color:#d02323;font-size:2em;font-variant: small-caps;line-height:1.3em; }
+#saveLayoutText button { float:right; }
+
+.inside { padding: 1em; }
+.inside table {  }
+.inside table td { line-height:1em;padding:.1em;margin:0; }
+.inside table td input, .inside table td select, .inside table td textarea { padding:0;margin:0; }
+
+.adjustPopup {  }
+.widthSlider { display:block;margin-left:2em;margin-right:2em;margin-bottom: 2em; }
+
+.makeColorPicker_RGBA { border:1px solid #cccccc; }
+
+.pickerHolder { width:400px; }
+.gradientStops { border: 1px solid #cccccc;width:355px; }
+
+.gradientImagesBefore, .gradientImagesAfter { border: 1px solid #cccccc;width:355px;margin-top:5px; }
+
+.colorpicker { z-index:99999; }
+.closeWindow { float:right;margin-top:10px;margin-right:10px; }
+
+.ui-icon, .ui-state-highlight .ui-icon, .ui-state-hover .ui-icon, .ui-state-active .ui-icon { background-image: url(<?php echo jqueryIconsPath('2e83ff');?>); }
+.containerBreadcrumb { padding: .3em 0; }
+.containerBreadcrumb .ui-icon { background-image: url(<?php echo jqueryIconsPath('ffffff');?>); }
+
+#hideLayoutButtons{
+	background-image: url(<?php echo sysConfig::getDirWsAdmin();?>template/fallback/images/button_close_32.png);
+	width:22px;
+	height:22px;
+	position:relative;
+	top:-220px;
+	left:330px;
+	text-indent:-9999px;
+	background-repeat:no-repeat;
+	padding:20px;
+	cursor:pointer;
+	display:none;
+}
+
+#hideTemplateButtons{
+	background-image: url(<?php echo sysConfig::getDirWsAdmin();?>template/fallback/images/button_close_32.png);
+	width:22px;
+	height:22px;
+	position:relative;
+	top:-100px;
+	left:330px;
+	text-indent:-9999px;
+	background-repeat:no-repeat;
+	padding:20px;
+	cursor:pointer;
+	display:none;
+}
+#hideTemplatePages{
+	background-image: url(<?php echo sysConfig::getDirWsAdmin();?>template/fallback/images/button_close_32.png);
+	width:22px;
+	height:22px;
+	position:relative;
+	top:15px;
+	left:570px;
+	text-indent:-9999px;
+	background-repeat:no-repeat;
+	padding:20px;
+	cursor:pointer;
+	display:none;
+}
+#hideWidgets{
+/*background-image: url(images/button_close_32.png);*/
+	width:15px;
+	height:15px;
+	position:relative;
+	top:2px;
+	left:98%;
+	z-index:1000;
+	text-indent:-9999px;
+	background-repeat:no-repeat;
+	cursor:pointer;
+}
+#widgetsForm{
+	width:90%;
+	margin:0 auto;
+}
+.hiddenTextBox{
+	display:none;
+}

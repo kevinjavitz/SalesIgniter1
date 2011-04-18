@@ -1,0 +1,32 @@
+<data>
+	<Stores>
+		<designer_light_primary_color>
+			<type>string</type>
+			<length>12</length>
+			<primary>false</primary>
+			<notnull>false</notnull>
+			<default>000000</default>
+		</designer_light_primary_color>
+		<designer_light_secondary_color>
+			<type>string</type>
+			<length>12</length>
+			<primary>false</primary>
+			<notnull>false</notnull>
+			<default>000000</default>
+		</designer_light_secondary_color>
+		<designer_dark_primary_color>
+			<type>string</type>
+			<length>12</length>
+			<primary>false</primary>
+			<notnull>false</notnull>
+			<default>FFFFFF</default>
+		</designer_dark_primary_color>
+		<designer_dark_secondary_color>
+			<type>string</type>
+			<length>12</length>
+			<primary>false</primary>
+			<notnull>false</notnull>
+			<default>FFFFFF</default>
+		</designer_dark_secondary_color>
+	</Stores>
+</data>

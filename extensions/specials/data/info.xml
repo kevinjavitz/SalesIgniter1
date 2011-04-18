@@ -1,0 +1,8 @@
+<data>
+	<name>Product Specials</name>
+	<key>specials</key>
+	<version>1.0</version>
+	<author>Stephen Walker ( http://www.itwebexperts.com )</author>
+	<tables>Specials</tables>
+	<status_key>EXTENSION_SPECIALS_ENABLED</status_key>
+</data>

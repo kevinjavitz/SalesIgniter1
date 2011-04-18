@@ -1,0 +1,37 @@
+<definitions>
+	<define key="HEADING_TITLE"><![CDATA[Admin Account]]></define>
+	<define key="TABLE_HEADING_ACCOUNT"><![CDATA[My Account]]></define>
+	<define key="TEXT_INFO_FULLNAME"><![CDATA[<b>Name: </b>]]></define>
+	<define key="TEXT_INFO_FIRSTNAME"><![CDATA[<b>Firstname: </b>]]></define>
+	<define key="TEXT_INFO_LASTNAME"><![CDATA[<b>Lastname: </b>]]></define>
+	<define key="TEXT_INFO_EMAIL"><![CDATA[<b>Email Address: </b>]]></define>
+	<define key="TEXT_INFO_PASSWORD"><![CDATA[<b>Password: </b>]]></define>
+	<define key="TEXT_INFO_PASSWORD_HIDDEN"><![CDATA[-Hidden-]]></define>
+	<define key="TEXT_INFO_PASSWORD_CONFIRM"><![CDATA[<b>Confirm Password: </b>]]></define>
+	<define key="TEXT_INFO_CREATED"><![CDATA[<b>Account Created: </b>]]></define>
+	<define key="TEXT_INFO_LOGDATE"><![CDATA[<b>Last Access: </b>]]></define>
+	<define key="TEXT_INFO_LOGNUM"><![CDATA[<b>Log Number: </b>]]></define>
+	<define key="TEXT_INFO_GROUP"><![CDATA[<b>Group Level: </b>]]></define>
+	<define key="TEXT_INFO_ERROR"><![CDATA[<font color="red">Email address has already been used! Please try again.</font>]]></define>
+	<define key="TEXT_INFO_MODIFIED"><![CDATA[Modified: ]]></define>
+	<define key="TEXT_INFO_HEADING_DEFAULT"><![CDATA[Edit Account ]]></define>
+	<define key="TEXT_INFO_HEADING_CONFIRM_PASSWORD"><![CDATA[Password Confirmation ]]></define>
+	<define key="TEXT_INFO_INTRO_CONFIRM_PASSWORD"><![CDATA[Password:]]></define>
+	<define key="TEXT_INFO_INTRO_CONFIRM_PASSWORD_ERROR"><![CDATA[<font color="red"><b>ERROR:</b> wrong password!</font>]]></define>
+	<define key="TEXT_INFO_INTRO_DEFAULT"><![CDATA[Click <b>edit button</b> below to change your account.]]></define>
+	<define key="TEXT_INFO_INTRO_DEFAULT_FIRST_TIME"><![CDATA[<br><b>WARNING:</b><br>Hello <b>%s</b>, you just come here for the first time. We recommend you to change your password!]]></define>
+	<define key="TEXT_INFO_INTRO_DEFAULT_FIRST"><![CDATA[<br><b>WARNING:</b><br>Hello <b>%s</b>, we recommend you to change your email (<font color="red">admin@localhost</font>) and password!]]></define>
+	<define key="TEXT_INFO_INTRO_EDIT_PROCESS"><![CDATA[All fields are required. Click save to submit.]]></define>
+	<define key="JS_ALERT_FIRSTNAME"><![CDATA[- Required: Firstname \n]]></define>
+	<define key="JS_ALERT_LASTNAME"><![CDATA[- Required: Lastname \n]]></define>
+	<define key="JS_ALERT_EMAIL"><![CDATA[- Required: Email address \n]]></define>
+	<define key="JS_ALERT_PASSWORD"><![CDATA[- Required: Password \n]]></define>
+	<define key="JS_ALERT_FIRSTNAME_LENGTH"><![CDATA[- Firstname length must over ]]></define>
+	<define key="JS_ALERT_LASTNAME_LENGTH"><![CDATA[- Lastname length must over ]]></define>
+	<define key="JS_ALERT_PASSWORD_LENGTH"><![CDATA[- Password length must over ]]></define>
+	<define key="JS_ALERT_EMAIL_FORMAT"><![CDATA[- Email address format is invalid! \n]]></define>
+	<define key="JS_ALERT_EMAIL_USED"><![CDATA[- Email address has already been used! \n]]></define>
+	<define key="JS_ALERT_PASSWORD_CONFIRM"><![CDATA[- Miss typing in Password Confirmation field! \n]]></define>
+	<define key="ADMIN_EMAIL_SUBJECT"><![CDATA[Personal Information Change]]></define>
+	<define key="ADMIN_EMAIL_TEXT"><![CDATA[Hi %s,\n\nYour personal information, perhaps including your password, has been changed.  If this was done without your knowledge or consent please contact the administrator immediatly!\n\nWebsite : %s\nUsername: %s\nPassword: %s\n\nThanks!\n%s\n\nThis is an automated response, please do not reply!]]></define> 
+</definitions>

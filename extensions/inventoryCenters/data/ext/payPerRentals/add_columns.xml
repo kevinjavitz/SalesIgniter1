@@ -1,0 +1,18 @@
+<data>
+	<OrdersProductsReservation>
+		<inventory_center_pickup>
+			<type>integer</type>
+			<length>4</length>
+			<unsigned>0</unsigned>
+			<primary>false</primary>
+			<notnull>false</notnull>
+		</inventory_center_pickup>
+		<inventory_center_dropoff>
+			<type>integer</type>
+			<length>4</length>
+			<unsigned>0</unsigned>
+			<primary>false</primary>
+			<notnull>false</notnull>
+		</inventory_center_dropoff>
+	</OrdersProductsReservation>
+</data>

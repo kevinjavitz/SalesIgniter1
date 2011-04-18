@@ -1,0 +1,14 @@
+<ConfigurationGroup>
+	<title>Customer Groups</title>
+	<key>customerGroups</key>
+	<description>Configuration Settings For The Customer Groups Extension</description>
+	<Configuration>
+		<EXTENSION_CUSTOMER_GROUPS_ENABLED>
+			<title>Enable Customer Groups</title>
+			<value>True</value>
+			<description>Enable Or Disable The Customer Groups Extension</description>
+			<sort_order>1</sort_order>
+			<set_function>tep_cfg_select_option(array('True','False'),</set_function>
+		</EXTENSION_CUSTOMER_GROUPS_ENABLED>
+	</Configuration>
+</ConfigurationGroup>

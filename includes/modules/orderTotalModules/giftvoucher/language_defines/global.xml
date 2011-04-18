@@ -1,0 +1,9 @@
+<definitions>
+	<define key="MODULE_ORDER_TOTAL_GV_TITLE"><![CDATA[Gift Vouchers (-) ]]></define>
+	<define key="MODULE_ORDER_TOTAL_GV_HEADER"><![CDATA[Enter code below if you have any gift certificates or coupons you have not redeemed yet.]]></define>
+	<define key="MODULE_ORDER_TOTAL_GV_DESCRIPTION"><![CDATA[Gift Vouchers]]></define>
+	<define key="MODULE_ORDER_TOTAL_GV_USER_PROMPT"><![CDATA[ <b>to be used from Gift Vouchers</td><td align=right>]]></define>
+	<define key="TEXT_ENTER_GV_CODE"><![CDATA[Enter Redeem Code  ]]></define>
+	<define key="MODULE_ORDER_TOTAL_GV_REDEEM_BOX"><![CDATA[Redeem]]></define>
+	<define key="MODULE_ORDER_TOTAL_GV_TEXT_ERROR"><![CDATA[Gift Voucher/Discount coupon]]></define>
+</definitions>

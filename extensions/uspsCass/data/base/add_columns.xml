@@ -1,0 +1,9 @@
+<data>
+	<AddressBook>
+		<cass_validated>
+			<type>integer</type>
+			<length>1</length>
+			<primary>false</primary>
+		</cass_validated>
+	</AddressBook>
+</data>

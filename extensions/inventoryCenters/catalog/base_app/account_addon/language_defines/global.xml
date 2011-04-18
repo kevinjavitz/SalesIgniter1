@@ -1,0 +1,201 @@
+<definitions>
+	<define key="NAVBAR_TITLE_DEFAULT"><![CDATA[My Account]]></define>
+	<define key="NAVBAR_TITLE_DOWNLOADS"><![CDATA[My Downloads]]></define>
+	<define key="NAVBAR_TITLE_EDIT"><![CDATA[Edit]]></define>
+	<define key="NAVBAR_TITLE_HISTORY"><![CDATA[History]]></define>
+	<define key="NAVBAR_TITLE_HISTORY_INFO"><![CDATA[Order #%s]]></define>
+	<define key="NAVBAR_TITLE_MEMBERSHIP_CANCEL"><![CDATA[Cancel Membership]]></define>
+	<define key="NAVBAR_TITLE_MEMBERSHIP_UPGRADE"><![CDATA[Upgrade Membership]]></define>
+	<define key="NAVBAR_TITLE_NEWSLETTERS"><![CDATA[Newsletter Subscriptions]]></define>
+	<define key="NAVBAR_TITLE_PASSWORD"><![CDATA[Change Password]]></define>
+	<define key="NAVBAR_TITLE_PASSWORD_FORGOTTEN"><![CDATA[Password Forgotten]]></define>
+	<define key="NAVBAR_TITLE_ADDRESS_BOOK"><![CDATA[Address Book]]></define>
+	<define key="NAVBAR_TITLE_ADDRESS_BOOK_PROCESS"><![CDATA[Address Book]]></define>
+	<define key="NAVBAR_TITLE_ADDRESS_BOOK_PROCESS_ADD_ENTRY"><![CDATA[New Entry]]></define>
+	<define key="NAVBAR_TITLE_ADDRESS_BOOK_PROCESS_MODIFY_ENTRY"><![CDATA[Update Entry]]></define>
+	<define key="NAVBAR_TITLE_ADDRESS_BOOK_PROCESS_DELETE_ENTRY"><![CDATA[Delete Entry]]></define>
+	<define key="NAVBAR_TITLE_CREATE_ACCOUNT"><![CDATA[Create an Account]]></define>
+	<define key="NAVBAR_TITLE_CREATE_ACCOUNT_SUCCESS"><![CDATA[Success]]></define>
+	<define key="NAVBAR_TITLE_LOGIN"><![CDATA[Login]]></define>
+	<define key="NAVBAR_TITLE_LOGOFF"><![CDATA[Log Off]]></define>
+
+	<define key="HEADING_TITLE_DEFAULT"><![CDATA[My Account Information]]></define>
+	<define key="HEADING_TITLE_DOWNLOADS"><![CDATA[My Downloads]]></define>
+	<define key="HEADING_TITLE_EDIT"><![CDATA[My Account Information]]></define>
+	<define key="HEADING_TITLE_HISTORY"><![CDATA[My Order History]]></define>
+	<define key="HEADING_TITLE_HISTORY_INFO"><![CDATA[Order Information]]></define>
+	<define key="HEADING_TITLE_MEMBERSHIP_CANCEL"><![CDATA[My Account Membership]]></define>
+	<define key="HEADING_TITLE_MEMBERSHIP_UPGRADE"><![CDATA[My Account Membership]]></define>
+	<define key="HEADING_TITLE_NEWSLETTERS"><![CDATA[Newsletter Subscriptions]]></define>
+	<define key="HEADING_TITLE_PASSWORD"><![CDATA[My Password]]></define>
+	<define key="HEADING_TITLE_PASSWORD_FORGOTTEN"><![CDATA[I've Forgotten My Password!]]></define>
+	<define key="HEADING_TITLE_ADDRESS_BOOK"><![CDATA[My Personal Address Book]]></define>
+	<define key="HEADING_TITLE_ADDRESS_BOOK_PROCESS_ADD_ENTRY"><![CDATA[New Address Book Entry]]></define>
+	<define key="HEADING_TITLE_ADDRESS_BOOK_PROCESS_MODIFY_ENTRY"><![CDATA[Update Address Book Entry]]></define>
+	<define key="HEADING_TITLE_ADDRESS_BOOK_PROCESS_DELETE_ENTRY"><![CDATA[Delete Address Book Entry]]></define>
+	<define key="HEADING_TITLE_CREATE"><![CDATA[My Account Information]]></define>
+	<define key="HEADING_TITLE_CREATE_SUCCESS"><![CDATA[Your Account Has Been Created!]]></define>
+	<define key="HEADING_TITLE_LOGIN"><![CDATA[Welcome, Please Sign In]]></define>
+	<define key="HEADING_TITLE_LOGOFF"><![CDATA[Log Off]]></define>
+	
+	<define key="OVERVIEW_TITLE"><![CDATA[Overview]]></define>
+	<define key="OVERVIEW_SHOW_ALL_ORDERS"><![CDATA[(show all orders)]]></define>
+	<define key="OVERVIEW_PREVIOUS_ORDERS"><![CDATA[Previous Orders]]></define>
+	
+	<define key="MY_ACCOUNT_TITLE"><![CDATA[My Account]]></define>
+	<define key="MY_ACCOUNT_INFORMATION"><![CDATA[View or change my account information.]]></define>
+	<define key="MY_ACCOUNT_ADDRESS_BOOK"><![CDATA[View or change entries in my address book.]]></define>
+	<define key="MY_ACCOUNT_PASSWORD"><![CDATA[Change my account password.]]></define>
+	
+	<define key="MY_ACCOUNT_MEMBERSHIP_UPGRADE"><![CDATA[Upgrade/Downgrade my Membership.]]></define>
+	<define key="MY_ACCOUNT_MEMBERSHIP_UPGRADE_EX"><![CDATA[<br><span style="background-color: rgb(255, 255, 204);">Note: You have a pending Membership change to the '%s' plan that will take effect on your next billing date: '%s' </span>]]></define>
+	<define key="MY_ACCOUNT_MEMBERSHIP_CANCEL"><![CDATA[ Cancel my  Membership.]]></define>
+	<define key="MY_ACCOUNT_MEMBERSHIP_BILLING_INFO"><![CDATA[Membership Billing Info]]></define>
+	<define key="MY_ACCOUNT_MEMBERSHIP_BILLING_INFO_EDIT"><![CDATA[Update Rental Account Credit Card and Billing Address]]></define>
+	<define key="MY_PASSWORD_TITLE"><![CDATA[My Password]]></define>
+
+	<define key="MY_ORDERS_TITLE"><![CDATA[My Orders]]></define>
+	<define key="MY_ORDERS_VIEW"><![CDATA[View the orders I have made.]]></define>
+	
+	<define key="MY_NEWSLETTERS_TITLE"><![CDATA[My Newsletter Subscriptions]]></define>
+	<define key="MY_NEWSLETTERS_GENERAL_NEWSLETTER"><![CDATA[General Newsletter]]></define>
+	<define key="MY_NEWSLETTERS_GENERAL_NEWSLETTER_DESCRIPTION"><![CDATA[Including store news, new products, special offers, and other promotional announcements.]]></define>
+
+	<define key="EMAIL_SUBJECT"><![CDATA[Membership Reactivation Request]]></define>
+	<define key="EMAIL_NOTIFICATIONS_TITLE"><![CDATA[E-Mail Notifications]]></define>
+	<define key="EMAIL_NOTIFICATIONS_NEWSLETTERS"><![CDATA[Subscribe or unsubscribe from newsletters.]]></define>
+	<define key="EMAIL_NOTIFICATIONS_PRODUCTS"><![CDATA[View or change my product notification list.]]></define>
+	
+	<define key="TEXT_ACCOUNT_RENTAL_ADDRESS"><![CDATA[Rental Membership Shipping Address]]></define>
+	<define key="TEXT_INFO_PACKAGE_CANCELED"><![CDATA[Your rental package has been canceled. You can continue to use your membership until the end of this billing cycle.]]></define>
+	<define key="TEXT_INFO_RENEW_ACCOUNT"><![CDATA[Please <a href="%s">click here</a> to renew your account.]]></define>
+	<define key="TEXT_CLICK_HERE"><![CDATA[click here]]></define>
+	<define key="TEXT_LOGGED_IN_AS"><![CDATA[You are Logged in as %s, <a href="%s" style="color:red;text-decoration:none"><u>Logoff</u></a>?]]></define>
+	
+	<define key="DOWNLOADS_TITLE"><![CDATA[Downloads/Streams]]></define>
+	<define key="RENTALS_TITLE"><![CDATA[Rentals]]></define>
+	
+	<define key="TABLE_HEADING_PRODUCTS_NAME"><![CDATA[Product Name]]></define>
+	<define key="TABLE_HEADING_FILENAME"><![CDATA[File Name]]></define>
+	<define key="TABLE_HEADING_DATE_PURCHASED"><![CDATA[Purchase Date]]></define>
+	<define key="TABLE_HEADING_DATE_EXPIRES"><![CDATA[Expires]]></define>
+	<define key="TABLE_HEADING_ACTION"><![CDATA[Download/Stream]]></define>
+	<define key="TABLE_HEADING_ORDER_DETAILS"><![CDATA[Order Details]]></define>
+	<define key="TABLE_HEADING_DOWNLOAD_DATE"><![CDATA[Link expires: ]]></define>
+	<define key="TABLE_HEADING_DOWNLOAD_COUNT"><![CDATA[ downloads remaining]]></define>
+
+	<define key="TEXT_INFO_PAYPAL"><![CDATA[You have subscribed using paypal. To unsubscribe, click the continue button below, on the paypal page there will be a cancel subscription button after you login. When done, close the window, and on this web site click my account, you should see that you have a pending account cancellation.]]></define>
+	
+	<define key="TEXT_MEMBERSHIP_PERIOD"><![CDATA[Membership Period]]></define>
+	
+	<define key="TEXT_ORDER_DETAILS"><![CDATA[View Order]]></define>
+	<define key="TEXT_ORDER_NUMBER"><![CDATA[Order Number:]]></define>
+	<define key="TEXT_ORDER_STATUS"><![CDATA[Order Status:]]></define>
+	<define key="TEXT_ORDER_DATE"><![CDATA[Order Date:]]></define>
+	<define key="TEXT_ORDER_SHIPPED_TO"><![CDATA[Shipped To:]]></define>
+	<define key="TEXT_ORDER_BILLED_TO"><![CDATA[Billed To:]]></define>
+	<define key="TEXT_ORDER_PRODUCTS"><![CDATA[Products:]]></define>
+	<define key="TEXT_ORDER_COST"><![CDATA[Order Cost:]]></define>
+
+	<define key="TEXT_VIEW_ORDER"><![CDATA[View Order]]></define>
+	<define key="TEXT_VIEW_DETAILS"><![CDATA[View Details]]></define>
+	<define key="TEXT_VIEW_CANCEL"><![CDATA[Cancel Membership]]></define>
+	
+	<define key="HEADING_ORDER_NUMBER"><![CDATA[Order #%s]]></define>
+	<define key="HEADING_ORDER_DATE"><![CDATA[Order Date:]]></define>
+	<define key="HEADING_ORDER_TOTAL"><![CDATA[Order Total:]]></define>
+	<define key="HEADING_BILLING_ADDRESS"><![CDATA[Billing Address]]></define>
+	<define key="HEADING_DELIVERY_ADDRESS"><![CDATA[Delivery Address]]></define>
+	<define key="HEADING_PAYMENT_METHOD"><![CDATA[Payment Method]]></define>
+	<define key="HEADING_SHIPPING_METHOD"><![CDATA[Shipping Method]]></define>
+	<define key="HEADING_PRODUCTS"><![CDATA[Products]]></define>
+	<define key="HEADING_TAX"><![CDATA[Tax]]></define>
+	<define key="HEADING_TOTAL"><![CDATA[Total]]></define>
+	<define key="HEADING_BILLING_INFORMATION"><![CDATA[Billing Information]]></define>
+	<define key="HEADING_ORDER_HISTORY"><![CDATA[Order History]]></define>
+	<define key="HEADING_COMMENT"><![CDATA[Comments]]></define>
+	<define key="HEADING_DOWNLOAD"><![CDATA[Download links]]></define>
+	<define key="HEADING_TRACKING"><![CDATA[Order Tracking]]></define>
+	<define key="HEADING_NEW_CUSTOMER"><![CDATA[New Customer]]></define>
+	<define key="HEADING_NEW_RENTAL_CUSTOMER"><![CDATA[New Rental Customer]]></define>
+	<define key="HEADING_RETURNING_CUSTOMER"><![CDATA[Returning Customer]]></define>
+	
+	<define key="TEXT_NO_PURCHASES"><![CDATA[You have not yet made any purchases.]]></define>
+	<define key="TEXT_NO_COMMENTS_AVAILABLE"><![CDATA[No comments available.]]></define>
+	<define key="TEXT_NO_TRACKING_AVAILABLE"><![CDATA[No tracking numbers are available yet.]]></define>
+
+	<define key="SUCCESS_NEWSLETTER_UPDATED"><![CDATA[Your newsletter subscriptions have been successfully updated.]]></define>
+	<define key="SUCCESS_ACCOUNT_UPDATED"><![CDATA[Your account has been successfully updated.]]></define>
+	<define key="SUCCESS_ADDRESS_BOOK_ENTRY_DELETED"><![CDATA[The selected address has been successfully removed from your address book.]]></define>
+	<define key="SUCCESS_ADDRESS_BOOK_ENTRY_UPDATED"><![CDATA[Your address book has been successfully updated.]]></define>
+	<define key="SUCCESS_PASSWORD_UPDATED"><![CDATA[Your password has been successfully updated.]]></define>
+	
+	<define key="WARNING_PRIMARY_ADDRESS_DELETION"><![CDATA[The primary address cannot be deleted. Please set another address as the primary address and try again.]]></define>
+
+	<define key="ERROR_CURRENT_PASSWORD_NOT_MATCHING"><![CDATA[Your Current Password did not match the password in our records. Please try again.]]></define>
+	<define key="ERROR_NONEXISTING_ADDRESS_BOOK_ENTRY"><![CDATA[The address book entry does not exist.]]></define>
+	<define key="ERROR_ADDRESS_BOOK_FULL"><![CDATA[Your address book is full. Please delete an unneeded address to save a new one.]]></define>
+	
+	<define key="CANCELLATION_EMAIL_SENT"><![CDATA[The request for cancellation of your membership is sent to admin]]></define>
+
+	<define key="PRIMARY_ADDRESS_TITLE"><![CDATA[Primary Address]]></define>
+	<define key="PRIMARY_ADDRESS_DESCRIPTION"><![CDATA[This address is used as the pre-selected shipping and billing address for orders placed on this store.<br><br>This address is also used as the base for product and service tax calculations.]]></define>
+	<define key="ADDRESS_BOOK_TITLE"><![CDATA[Address Book Entries]]></define>
+	<define key="PRIMARY_ADDRESS"><![CDATA[(primary address)]]></define>
+	<define key="TEXT_MAXIMUM_ENTRIES"><![CDATA[<font color="#ff0000"><b>NOTE:</b></font> A maximum of %s address book entries allowed.]]></define>
+	<define key="TEXT_BUTTON_ADD_ADDRESS"><![CDATA[Add Address]]></define>
+	
+	<define key="DELETE_ADDRESS_TITLE"><![CDATA[Delete Address]]></define>
+	<define key="DELETE_ADDRESS_DESCRIPTION"><![CDATA[Are you sure you would like to delete the selected address from your address book?]]></define>
+
+	<define key="NEW_ADDRESS_TITLE"><![CDATA[New Address Book Entry]]></define>
+
+	<define key="SELECTED_ADDRESS"><![CDATA[Selected Address]]></define>
+	<define key="SET_AS_PRIMARY"><![CDATA[Set as primary address.]]></define>
+
+	<define key="TEXT_ORIGIN_LOGIN"><![CDATA[<font color="#FF0000"><small><b>NOTE:</b></font></small> If you already have an account with us, please login at the <a href="%s"><u>login page</u></a>.]]></define>
+	<define key="ENTRY_PRIVACY_AGREEMENT"><![CDATA[I have read the terms and I agree to it:]]></define>
+	<define key="ENTRY_PRIVACY_AGREEMENT_ERROR"><![CDATA[Please read our terms & conditions and agree to it. If you do not do so, we can not register you.]]></define>
+	
+	<define key="TEXT_ACCOUNT_CREATED"><![CDATA[Congratulations! Your new account has been successfully created! You can now take advantage of member priviledges to enhance your online shopping experience with us. If you have <small><b>ANY</b></small> questions about the operation of this online shop, please email the <a href="%s">store owner</a>.<br><br>A confirmation has been sent to the provided email address. If you have not received it within the hour, please <a href="%s">contact us</a>.]]></define>
+	
+	<define key="TEXT_NEW_CUSTOMER"><![CDATA[I am a new customer.]]></define>
+	<define key="TEXT_NEW_RENTAL_CUSTOMER"><![CDATA[I am a new membership customer.]]></define>
+	<define key="TEXT_NEW_CUSTOMER_INTRODUCTION"><![CDATA[By creating an account at %s you will be able to shop faster, be up to date on an orders status, and keep track of the orders you have previously made.]]></define>
+	<define key="TEXT_NEW_RENTAL_CUSTOMER_INTRODUCTION"><![CDATA[By creating a membership account at %s you will be able to do the online renting process faster, be up to date on the rental items, and keep track of rental orders you have previously made.]]></define>
+
+	<define key="TEXT_RETURNING_CUSTOMER"><![CDATA[I am a returning customer.]]></define>
+	<define key="TEXT_PASSWORD_FORGOTTEN"><![CDATA[Password forgotten? Click here.]]></define>
+
+	<define key="TEXT_LOGIN_ERROR"><![CDATA[Error: No match for E-Mail Address and/or Password.]]></define>
+	<define key="TEXT_VISITORS_CART"><![CDATA[<font color="#ff0000"><b>Note:</b></font> Your &quot;Visitors Cart&quot; contents will be merged with your &quot;Members Cart&quot; contents once you have logged on. <a href="javascript:session_win();">[More Info]</a>]]></define>
+	
+	<define key="TEXT_MAIN_LOGOFF"><![CDATA[You have been logged off your account. It is now safe to leave the computer.<br><br>Your shopping cart has been saved, the items inside it will be restored whenever you log back into your account.]]></define>
+	<define key="TEXT_MAIN_PASSWORD_FORGOTTEN"><![CDATA[If you've forgotten your password, enter your e-mail address below and we'll send you an e-mail message containing your new password.]]></define>
+	
+	<define key="TEXT_NO_EMAIL_ADDRESS_FOUND"><![CDATA[Error: The E-Mail Address was not found in our records, please try again.]]></define>
+	<define key="SUCCESS_PASSWORD_SENT"><![CDATA[Success: A new password has been sent to your e-mail address.]]></define>
+
+	<define key="TEXT_BUTTON_CHANGE_STATUS_APPROVED"><![CDATA[Approve]]></define>
+	<define key="TEXT_BUTTON_CHANGE_STATUS_CANCELLED"><![CDATA[Cancel]]></define>
+	<define key="TABLE_HEADING_ACTION"><![CDATA[Action]]></define>
+	<define key="TABLE_HEADING_CUSTOMERS"><![CDATA[Customers]]></define>
+	<define key="TABLE_HEADING_ORDER_TOTAL"><![CDATA[Order Total]]></define>
+	<define key="TABLE_HEADING_DATE_PURCHASED"><![CDATA[Date Purchased]]></define>
+	<define key="TABLE_HEADING_STATUS"><![CDATA[Status]]></define>
+	<define key="HEADING_TITLE_SEARCH"><![CDATA[Order ID:]]></define>
+	<define key="HEADING_TITLE_STATUS"><![CDATA[Status:]]></define>
+	<define key="TABLE_HEADING_COMMENTS"><![CDATA[Comments]]></define>
+	<define key="TABLE_HEADING_QUANTITY"><![CDATA[Qty.]]></define>
+	<define key="TABLE_HEADING_PRODUCTS_MODEL"><![CDATA[Model]]></define>
+	<define key="TABLE_HEADING_PRODUCTS"><![CDATA[Products]]></define>
+	<define key="TABLE_HEADING_TAX"><![CDATA[Tax]]></define>
+	<define key="TABLE_HEADING_TOTAL"><![CDATA[Total]]></define>
+	<define key="TABLE_HEADING_PRICE_EXCLUDING_TAX"><![CDATA[Price (ex)]]></define>
+	<define key="TABLE_HEADING_PRICE_INCLUDING_TAX"><![CDATA[Price (inc)]]></define>
+	<define key="TABLE_HEADING_TOTAL_EXCLUDING_TAX"><![CDATA[Total (ex)]]></define>
+	<define key="TABLE_HEADING_TOTAL_INCLUDING_TAX"><![CDATA[Total (inc)]]></define>
+	<define key="TABLE_HEADING_CUSTOMER_NOTIFIED"><![CDATA[Customer Notified]]></define>
+	<define key="TABLE_HEADING_DATE_ADDED"><![CDATA[Date Added]]></define>
+
+</definitions>

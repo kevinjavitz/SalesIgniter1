@@ -1,0 +1,16 @@
+.fc-event-time{
+	display:none !important;
+}
+.fc-event{
+	width:600px !important;
+}
+.ui-datepicker-status { margin:.5em;text-align:center;font-weight:bold; }
+.fc-minor{
+
+}
+#calendarTime{
+	width:540px;
+}
+.fc-agenda-body td.ui-state-default{
+	cursor:pointer;
+}

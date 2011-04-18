@@ -1,0 +1,11 @@
+<definitions>
+	<define key="TAB_STREAMS"><![CDATA[Streaming]]></define>
+	
+	<define key="TABLE_HEADING_STREAM_PREVIEW"><![CDATA[Preview]]></define>
+	<define key="TABLE_HEADING_STREAM_PROVIDER"><![CDATA[Stream Provider]]></define>
+	<define key="TABLE_HEADING_STREAM_TYPE"><![CDATA[Stream Type]]></define>
+	<define key="TABLE_HEADING_STREAM_FILE"><![CDATA[Stream File]]></define>
+	<define key="TABLE_HEADING_STREAM_DISPLAY_NAME"><![CDATA[Display Name]]></define>
+	
+	<define key="TEXT_PLEASE_SELECT_PROVIDER"><![CDATA[Please Select A Provider]]></define>
+</definitions>

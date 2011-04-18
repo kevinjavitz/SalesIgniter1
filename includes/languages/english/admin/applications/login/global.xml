@@ -1,0 +1,5 @@
+<?xml version="1.0"?>
+<definitions>
+	<define key="HEADING_RETURNING_ADMIN"><![CDATA[Login to Admin]]></define>
+	<define key="ENTRY_LOGIN_EMAIL_ADDRESS"><![CDATA[Email Address:]]></define>
+</definitions>

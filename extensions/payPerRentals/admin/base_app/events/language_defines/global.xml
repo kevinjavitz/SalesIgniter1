@@ -1,0 +1,10 @@
+<definitions>
+	<define key="HEADING_TITLE"><![CDATA[Events]]></define>
+	<define key="TABLE_HEADING_EVENTS"><![CDATA[Event]]></define>
+	<define key="TABLE_HEADING_ACTION"><![CDATA[Action]]></define>
+	<define key="TAB_DESCRIPTION"><![CDATA[Description]]></define>
+	<define key="TEXT_EVENTS_NAME"><![CDATA[Event Name: ]]></define>
+	<define key="TEXT_EVENTS_DATE"><![CDATA[Event Date: ]]></define>
+	<define key="TEXT_EVENTS_DETAILS"><![CDATA[Event Details: ]]></define>
+	<define key="TEXT_EVENTS_SHIPPING"><![CDATA[Event Shipping: ]]></define>	
+</definitions>

@@ -1,0 +1,451 @@
+<?xml version="1.0"?>
+<definitions>
+	<define key="TITLE"><![CDATA[Sales Igniter E-Commerce System]]></define>
+	<!-- Header -->
+	<define key="HEADER_TITLE_CATALOG"><![CDATA[You Are Here:]]></define>
+	<define key="HEADER_LINK_SHOPPING_CART"><![CDATA[My Cart ]]></define>
+	<define key="HEADER_LINK_ORDERS"><![CDATA[My Orders]]></define>
+	<define key="HEADER_LINK_RENTAL_QUEUE"><![CDATA[Rental Queue]]></define>
+	<define key="HEADER_LINK_MY_ACCOUNT"><![CDATA[My Account]]></define>
+	<define key="HEADER_LINK_HELP"><![CDATA[Help]]></define>
+	<define key="HEADER_LINK_HOME"><![CDATA[Home]]></define>
+	<define key="HEADER_LINK_WHEELS"><![CDATA[Wheels]]></define>
+	<define key="HEADER_LINK_EVENTS"><![CDATA[Events]]></define>
+	<define key="HEADER_LINK_CONTACT"><![CDATA[Contact us]]></define>
+	<define key="HEADER_LINK_FAQ"><![CDATA[Faq]]></define>
+	<define key="HEADER_LINK_WISHLIST"><![CDATA[Wishlist]]></define>
+	<define key="HEADER_LINK_LOGIN"><![CDATA[My Account]]></define>
+	<!-- Header Navigation Menu -->
+	<define key="HEADER_NAV_LINK_HOME"><![CDATA[Home]]></define>
+	<define key="HEADER_NAV_LINK_FAQ"><![CDATA[Faq]]></define>
+	<define key="HEADER_NAV_LINK_HELP"><![CDATA[Help]]></define>
+	<define key="HEADER_NAV_LINK_WISHLIST"><![CDATA[Wishlist]]></define>
+	<define key="HEADER_NAV_LINK_SPECIALS"><![CDATA[Specials]]></define>
+	<define key="HEADER_NAV_LINK_REVIEWS"><![CDATA[Reviews]]></define>
+	<define key="HEADER_NAV_LINK_FEATURED"><![CDATA[Featured]]></define>
+	<define key="HEADER_NAV_LINK_BEST_SELLERS"><![CDATA[Best Sellers]]></define>
+	<define key="HEADER_NAV_LINK_MY_DOWNLOADS"><![CDATA[My Downloads]]></define>
+	<define key="HEADER_NAV_TEXT_SEARCH"><![CDATA[Product Search]]></define>
+	<define key="HEADER_NAV_GIFT_SUBSCRIPTION"><![CDATA[Gift Subscription]]></define>
+	<define key="HEADER_NAV_TERMS"><![CDATA[Terms]]></define>
+	<define key="HEADER_NAV_LINK_WHEELS"><![CDATA[WHEELS]]></define>
+	<define key="HEADER_NAV_WHEELS"><![CDATA[WHEELS]]></define>
+	<define key="HEADER_NAV_BARS"><![CDATA[BARS]]></define>
+	<define key="HEADER_NAV_STEMS"><![CDATA[STEMS]]></define>
+	<define key="HEADER_NAV_CRANKS"><![CDATA[CRANKS]]></define>
+	<define key="HEADER_NAV_ACCESORIES"><![CDATA[ACCESORIES]]></define>
+	<define key="HEADER_NAV_TECHNOLOGIES"><![CDATA[TECHNOLOGIES]]></define>
+	<define key="HEADER_NAV_ATHLETES"><![CDATA[ATHLETES]]></define>
+	<define key="HEADER_NAV_NEW_RELEASES"><![CDATA[Browse Movies]]></define>
+	<define key="HEADER_NAV_LOGIN"><![CDATA[Login]]></define>
+	<define key="HEADER_NAV_CONTACT"><![CDATA[Contact Us]]></define>
+	<define key="HEADER_NAV_ABOUT_US"><![CDATA[About Us]]></define>
+	<define key="HEADER_NAV_WISHLIST"><![CDATA[Wish List]]></define>
+	<!-- Footer -->
+	<define key="FOOTER_LINK_HOME"><![CDATA[Home]]></define>
+	<define key="FOOTER_LINK_FEATURED"><![CDATA[Featured Items]]></define>
+	<define key="FOOTER_LINK_SPECIALS"><![CDATA[Specials]]></define>
+	<define key="FOOTER_LINK_CONDITIONS"><![CDATA[Terms &amp; Conditions]]></define>
+	<define key="FOOTER_LINK_CONTACT_US"><![CDATA[Contact Us]]></define>
+	<define key="FOOTER_TEXT_BODY"><![CDATA[Copyright &copy; %s %s All Rights Reserved]]></define>
+	<!-- Gender -->
+	<define key="MALE"><![CDATA[Male]]></define>
+	<define key="FEMALE"><![CDATA[Female]]></define>
+	<define key="MALE_ADDRESS"><![CDATA[Mr.]]></define>
+	<define key="FEMALE_ADDRESS"><![CDATA[Ms.]]></define>
+	<!-- Date Of Birth Example -->
+	<define key="DOB_FORMAT_STRING"><![CDATA[mm/dd/yyyy]]></define>
+	<!-- Checkout Procedure -->
+	<define key="CHECKOUT_BAR_DELIVERY"><![CDATA[Delivery Information]]></define>
+	<define key="CHECKOUT_BAR_PAYMENT"><![CDATA[Payment Information]]></define>
+	<define key="CHECKOUT_BAR_CONFIRMATION"><![CDATA[Confirmation]]></define>
+	<define key="CHECKOUT_BAR_FINISHED"><![CDATA[Finished!]]></define>
+	<!-- Pull Down Menus -->
+	<define key="PULL_DOWN_DEFAULT"><![CDATA[Please Select]]></define>
+	<define key="TYPE_BELOW"><![CDATA[Type Below]]></define>
+	<define key="PULL_DOWN_OTHER"><![CDATA[Other - (please specifiy)]]></define>
+	<!-- Javascript Error Messages -->
+	<define key="JS_ERROR"><![CDATA[Errors have occured during the process of your form.\n\nPlease make the following corrections:\n\n]]></define>
+	<define key="JS_REVIEW_TEXT"><![CDATA[* The 'Review Text' must have at least %s characters.\n]]></define>
+	<define key="JS_REVIEW_RATING"><![CDATA[* You must rate the product for your review.\n]]></define>
+	<define key="JS_ERROR_NO_PAYMENT_MODULE_SELECTED"><![CDATA[* Please select a payment method for your order.\n]]></define>
+	<define key="JS_ERROR_SUBMITTED"><![CDATA[This form has already been submitted. Please press Ok and wait for this process to be completed.]]></define>
+	<define key="ERROR_NO_PAYMENT_MODULE_SELECTED"><![CDATA[Please select a payment method for your order.]]></define>
+	<define key="CATEGORY_COMPANY"><![CDATA[Company Details]]></define>
+	<define key="CATEGORY_PERSONAL"><![CDATA[Your Personal Details]]></define>
+	<define key="CATEGORY_ADDRESS"><![CDATA[Your Address]]></define>
+	<define key="CATEGORY_CONTACT"><![CDATA[Your Contact Information]]></define>
+	<define key="CATEGORY_OPTIONS"><![CDATA[Options]]></define>
+	<define key="CATEGORY_PASSWORD"><![CDATA[Your Password]]></define>
+	<define key="CATEGORY_SOURCE"><![CDATA[Referral Source]]></define>
+	<define key="ENTRY_COMPANY"><![CDATA[Company Name:]]></define>
+	<define key="ENTRY_GENDER"><![CDATA[Gender:]]></define>
+	<define key="ENTRY_FIRST_NAME"><![CDATA[First Name:]]></define>
+	<define key="ENTRY_LAST_NAME"><![CDATA[Last Name:]]></define>
+	<define key="ENTRY_DATE_OF_BIRTH"><![CDATA[Date of Birth:]]></define>
+	<define key="ENTRY_EMAIL_ADDRESS"><![CDATA[E-Mail Address:]]></define>
+	<define key="ENTRY_STREET_ADDRESS"><![CDATA[Street Address:]]></define>
+	<define key="ENTRY_SUBURB"><![CDATA[Suburb:]]></define>
+	<define key="ENTRY_POST_CODE"><![CDATA[Postal Code:]]></define>
+	<define key="ENTRY_CITY"><![CDATA[City:]]></define>
+	<define key="ENTRY_STATE"><![CDATA[State/Province:]]></define>
+	<define key="ENTRY_COMPANY_ERROR"><![CDATA[]]></define>
+	<define key="ENTRY_COUNTRY"><![CDATA[Country:]]></define>
+	<define key="ENTRY_TELEPHONE_NUMBER"><![CDATA[Telephone Number:]]></define>
+	<define key="ENTRY_FAX_NUMBER"><![CDATA[Fax Number:]]></define>
+	<define key="ENTRY_NEWSLETTER"><![CDATA[Newsletter:]]></define>
+	<define key="ENTRY_NEWSLETTER_YES"><![CDATA[Subscribed]]></define>
+	<define key="ENTRY_NEWSLETTER_NO"><![CDATA[Unsubscribed]]></define>
+	<define key="ENTRY_PASSWORD"><![CDATA[Password:]]></define>
+	<define key="ENTRY_PASSWORD_CONFIRMATION"><![CDATA[Password Confirmation:]]></define>
+	<define key="ENTRY_PASSWORD_CURRENT"><![CDATA[Current Password:]]></define>
+	<define key="ENTRY_PASSWORD_NEW"><![CDATA[New Password:]]></define>
+	<define key="PASSWORD_HIDDEN"><![CDATA[--HIDDEN--]]></define>
+	<define key="ENTRY_SOURCE"><![CDATA[How did you hear about us:]]></define>
+	<define key="ENTRY_SOURCE_ERROR"><![CDATA[Please select how you first heard about us.]]></define>
+	<define key="ENTRY_SOURCE_OTHER"><![CDATA[(if "Other" please specify)]]></define>
+	<define key="ENTRY_SOURCE_OTHER_ERROR"><![CDATA[Please enter how you first heard about us.]]></define>
+	<define key="FORM_REQUIRED_INFORMATION"><![CDATA[* Required information]]></define>
+	<define key="TEXT_RESULT_PAGE"><![CDATA[Result Pages:]]></define>
+	<define key="TEXT_DISPLAY_NUMBER_OF_PRODUCTS"><![CDATA[Displaying <b>%d</b> to <b>%d</b> (of <b>%d</b> products)]]></define>
+	<define key="TEXT_DISPLAY_NUMBER_OF_ORDERS"><![CDATA[Displaying <b>%d</b> to <b>%d</b> (of <b>%d</b> orders)]]></define>
+	<define key="TEXT_DISPLAY_NUMBER_OF_REVIEWS"><![CDATA[Displaying <b>%d</b> to <b>%d</b> (of <b>%d</b> reviews)]]></define>
+	<define key="TEXT_DISPLAY_NUMBER_OF_PRODUCTS_NEW"><![CDATA[Displaying <b>%d</b> to <b>%d</b> (of <b>%d</b> new products)]]></define>
+	<define key="TEXT_DISPLAY_NUMBER_OF_SPECIALS"><![CDATA[Displaying <b>%d</b> to <b>%d</b> (of <b>%d</b> specials)]]></define>
+	<define key="PREVNEXT_TITLE_FIRST_PAGE"><![CDATA[First Page]]></define>
+	<define key="PREVNEXT_TITLE_PREVIOUS_PAGE"><![CDATA[Previous Page]]></define>
+	<define key="PREVNEXT_TITLE_NEXT_PAGE"><![CDATA[Next Page]]></define>
+	<define key="PREVNEXT_TITLE_LAST_PAGE"><![CDATA[Last Page]]></define>
+	<define key="PREVNEXT_TITLE_PAGE_NO"><![CDATA[Page %d]]></define>
+	<define key="PREVNEXT_TITLE_PREV_SET_OF_NO_PAGE"><![CDATA[Previous Set of %d Pages]]></define>
+	<define key="PREVNEXT_TITLE_NEXT_SET_OF_NO_PAGE"><![CDATA[Next Set of %d Pages]]></define>
+	<define key="PREVNEXT_BUTTON_FIRST"><![CDATA[&lt;&lt;FIRST]]></define>
+	<define key="PREVNEXT_BUTTON_PREV"><![CDATA[[&lt;&lt; Prev]]]></define>
+	<define key="PREVNEXT_BUTTON_NEXT"><![CDATA[[Next &gt;&gt;]]]></define>
+	<define key="PREVNEXT_BUTTON_LAST"><![CDATA[LAST&gt;&gt;]]></define>
+	<define key="IMAGE_BUTTON_ADD_ADDRESS"><![CDATA[Add Address]]></define>
+	<define key="IMAGE_BUTTON_ADDRESS_BOOK"><![CDATA[Address Book]]></define>
+	<define key="IMAGE_BUTTON_BACK"><![CDATA[Back]]></define>
+	<define key="IMAGE_BUTTON_BUY_NOW"><![CDATA[Buy Now]]></define>
+	<define key="IMAGE_BUTTON_CHANGE_ADDRESS"><![CDATA[Change Address]]></define>
+	<define key="IMAGE_BUTTON_CHECKOUT"><![CDATA[Checkout]]></define>
+	<define key="IMAGE_BUTTON_CONFIRM_ORDER"><![CDATA[Confirm Order]]></define>
+	<define key="IMAGE_BUTTON_CONTINUE"><![CDATA[Continue]]></define>
+	<define key="IMAGE_BUTTON_CONTINUE_SHOPPING"><![CDATA[Continue Shopping]]></define>
+	<define key="IMAGE_BUTTON_DELETE"><![CDATA[Delete]]></define>
+	<define key="IMAGE_BUTTON_EDIT_ACCOUNT"><![CDATA[Edit Account]]></define>
+	<define key="IMAGE_BUTTON_HISTORY"><![CDATA[Order History]]></define>
+	<define key="IMAGE_BUTTON_LOGIN"><![CDATA[Sign In]]></define>
+	<define key="IMAGE_BUTTON_IN_CART"><![CDATA[Add to Cart]]></define>
+	<define key="IMAGE_BUTTON_NOTIFICATIONS"><![CDATA[Notifications]]></define>
+	<define key="IMAGE_BUTTON_QUICK_FIND"><![CDATA[Quick Find]]></define>
+	<define key="IMAGE_BUTTON_REMOVE_NOTIFICATIONS"><![CDATA[Remove Notifications]]></define>
+	<define key="IMAGE_BUTTON_REVIEWS"><![CDATA[Reviews]]></define>
+	<define key="IMAGE_BUTTON_SEARCH"><![CDATA[Search]]></define>
+	<define key="IMAGE_BUTTON_SHIPPING_OPTIONS"><![CDATA[Shipping Options]]></define>
+	<define key="IMAGE_BUTTON_TELL_A_FRIEND"><![CDATA[Tell a Friend]]></define>
+	<define key="IMAGE_BUTTON_UPDATE"><![CDATA[Update]]></define>
+	<define key="IMAGE_BUTTON_UPDATE_CART"><![CDATA[Update Cart]]></define>
+	<define key="IMAGE_BUTTON_WRITE_REVIEW"><![CDATA[Write Review]]></define>
+	<define key="SMALL_IMAGE_BUTTON_DELETE"><![CDATA[Delete]]></define>
+	<define key="SMALL_IMAGE_BUTTON_EDIT"><![CDATA[Edit]]></define>
+	<define key="SMALL_IMAGE_BUTTON_VIEW"><![CDATA[View]]></define>
+	<define key="ICON_ARROW_RIGHT"><![CDATA[more]]></define>
+	<define key="ICON_CART"><![CDATA[In Cart]]></define>
+	<define key="ICON_ERROR"><![CDATA[Error]]></define>
+	<define key="ICON_SUCCESS"><![CDATA[Success]]></define>
+	<define key="ICON_WARNING"><![CDATA[Warning]]></define>
+	<define key="TEXT_GREETING_PERSONAL"><![CDATA[Welcome back <span class="greetUser">%s!</span> Would you like to see what <a href="%s"><u>new products</u></a> are available?]]></define>
+	<define key="TEXT_GREETING_PERSONAL_RELOGON"><![CDATA[<small>If you are not %s, please <a href="%s"><u>log yourself in</u></a> with your account information.</small>]]></define>
+	<define key="TEXT_GREETING_GUEST"><![CDATA[Welcome <span class="greetUser">Guest!</span> Would you like to <a href="%s"><u>log yourself in</u></a>? Or would you prefer to <a href="%s"><u>create an account</u></a>?]]></define>
+	<define key="TEXT_SORT_PRODUCTS"><![CDATA[Sort products ]]></define>
+	<define key="TEXT_DESCENDINGLY"><![CDATA[descendingly]]></define>
+	<define key="TEXT_ASCENDINGLY"><![CDATA[ascendingly]]></define>
+	<define key="TEXT_BY"><![CDATA[ by ]]></define>
+	<define key="TEXT_REVIEW_BY"><![CDATA[by %s]]></define>
+	<define key="TEXT_REVIEW_WORD_COUNT"><![CDATA[%s words]]></define>
+	<define key="TEXT_REVIEW_RATING"><![CDATA[Rating: %s [%s]]]></define>
+	<define key="TEXT_REVIEW_DATE_ADDED"><![CDATA[Date Added: %s]]></define>
+	<define key="TEXT_NO_REVIEWS"><![CDATA[There are currently no product reviews.]]></define>
+	<define key="TEXT_NO_NEW_PRODUCTS"><![CDATA[There are currently no products.]]></define>
+	<define key="TEXT_UNKNOWN_TAX_RATE"><![CDATA[Unknown tax rate]]></define>
+	<define key="TEXT_REQUIRED"><![CDATA[<span class="errorText">Required</span>]]></define>
+	<define key="ERROR_TEP_MAIL"><![CDATA[<font face="Verdana, Arial" size="2" color="#ff0000"><b><small>TEP ERROR:</small> Cannot send the email through the specified SMTP server. Please check your php.ini setting and correct the SMTP server if necessary.</b></font>]]></define>
+	<define key="WARNING_INSTALL_DIRECTORY_EXISTS"><![CDATA[Warning: Installation directory exists at: %s/install. Please remove this directory for security reasons.]]></define>
+	<define key="WARNING_CONFIG_FILE_WRITEABLE"><![CDATA[Warning: I am able to write to the configuration file: %s/includes/configure.php. This is a potential security risk - please set the right user permissions on this file.]]></define>
+	<define key="WARNING_SESSION_DIRECTORY_NON_EXISTENT"><![CDATA[Warning: The sessions directory does not exist: %s. Sessions will not work until this directory is created.]]></define>
+	<define key="WARNING_SESSION_DIRECTORY_NOT_WRITEABLE"><![CDATA[Warning: I am not able to write to the sessions directory: %s. Sessions will not work until the right user permissions are set.]]></define>
+	<define key="WARNING_SESSION_AUTO_START"><![CDATA[Warning: session.auto_start is enabled - please disable this php feature in php.ini and restart the web server.]]></define>
+	<define key="WARNING_DOWNLOAD_DIRECTORY_NON_EXISTENT"><![CDATA[Warning: The downloadable products directory does not exist: %s. Downloadable products will not work until this directory is valid.]]></define>
+	<define key="TEXT_CCVAL_ERROR_INVALID_DATE"><![CDATA[The expiry date entered for the credit card is invalid.<br>Please check the date and try again.]]></define>
+	<define key="TEXT_CCVAL_ERROR_INVALID_NUMBER"><![CDATA[The credit card number entered is invalid.<br>Please check the number and try again.]]></define>
+	<define key="TEXT_CCVAL_ERROR_UNKNOWN_CARD"><![CDATA[The first four digits of the number entered are: %s<br>If that number is correct, we do not accept that type of credit card. If it is wrong, please try again.]]></define>
+	<define key="IMAGE_BUTTON_UPGRADE"><![CDATA[Upgrade]]></define>
+	<define key="IMAGE_BUTTON_CANCEL"><![CDATA[Cancel]]></define>
+	<define key="IMAGE_BUTTON_RENT_NOW"><![CDATA[Rent Now]]></define>
+	<define key="MEMBERSHIP_OPTIONS"><![CDATA[Membership Package]]></define>
+	<define key="ENTRY_MEMBER"><![CDATA[Membership Plan:]]></define>
+	<define key="ENTRY_MEMBER_TEXT"><![CDATA[]]></define>
+	<define key="IMAGE_BUTTON_IN_QUEUE"><![CDATA[Add to Queue]]></define>
+	<define key="IMAGE_BUTTON_IN_QUEUE_SERIES"><![CDATA[Add Series to Queue]]></define>
+	<define key="TEXT_PRODUCT_MESSAGE"><![CDATA[You cannot add recurring and non-recurring products in the same cart.]]></define>
+	<define key="ENTRY_REMEMBER_ME"><![CDATA[Remember me]]></define>
+	<define key="IMAGE_BUTTON_CREATE_ACCOUNT"><![CDATA[Create Account]]></define>
+	<define key="NAV_ORDER_INFO"><![CDATA[Order Info]]></define>
+	<define key="TEXT_INDEX_NOT_RENTAL_CUSTOMER"><![CDATA[You are not a Registered Member! Please <a href="%s" style="color:#95201b;"><u>REGISTER</u></a> for a membership plan or <a href="%s" style="color:#95201b;"><u>LOGIN</u></a> to your account.]]></define>
+	<define key="TEXT_NOT_RENTAL_CUSTOMER"><![CDATA[You are not a Registered Member! Please <a href="%s" style="color:#95201b;"><u>REGISTER</u></a> for a membership plan or <a href="%s" style="color:#95201b;"><u>LOGIN</u></a> to your account.]]></define>
+	<define key="TEXT_NOT_ACTIVE_CUSTOMER"><![CDATA[Your membership is inactive! Please <a style="color:red;" href="%s">Click here</a> to renew your membership.]]></define>
+	<define key="TEXT_DISPLAY_NUMBER_OF_ARTICLES"><![CDATA[Displaying <b>%d</b> to <b>%d</b> (of <b>%d</b> articles)]]></define>
+	<define key="TEXT_DISPLAY_NUMBER_OF_ARTICLES_NEW"><![CDATA[Displaying <b>%d</b> to <b>%d</b> (of <b>%d</b> new articles)]]></define>
+	<define key="TABLE_HEADING_AUTHOR"><![CDATA[Author]]></define>
+	<define key="TABLE_HEADING_ABSTRACT"><![CDATA[Abstract]]></define>
+	<define key="NAVBAR_TITLE_DEFAULT"><![CDATA[Articles]]></define>
+	<define key="TEXT_INFO_RESERVATION_INFO"><![CDATA[Reservation Info]]></define>
+	<define key="TEXT_INFO_START_DATE"><![CDATA[Start Date:]]></define>
+	<define key="TEXT_INFO_END_DATE"><![CDATA[End Date:]]></define>
+	<define key="TEXT_INFO_INSURANCE"><![CDATA[Insurance:]]></define>
+	<define key="TEXT_INFO_SHIPPING_METHOD"><![CDATA[Shipping Method:]]></define>
+	<define key="TEXT_INFO_DEPOSIT_AMOUNT"><![CDATA[Deposit Amount:]]></define>
+	<define key="TEXT_INFO_TRACKING_USPS1"><![CDATA[USPS(1):]]></define>
+	<define key="TEXT_INFO_TRACKING_USPS2"><![CDATA[USPS(2):]]></define>
+	<define key="TEXT_INFO_TRACKING_UPS1"><![CDATA[UPS(1):]]></define>
+	<define key="TEXT_INFO_TRACKING_UPS2"><![CDATA[UPS(2):]]></define>
+	<define key="TEXT_INFO_TRACKING_FEDEX1"><![CDATA[FedEx(1):]]></define>
+	<define key="TEXT_INFO_TRACKING_FEDEX2"><![CDATA[FedEx(2):]]></define>
+	<define key="TEXT_INFO_TRACKING_DHL1"><![CDATA[DHL(1):]]></define>
+	<define key="TEXT_INFO_TRACKING_DHL2"><![CDATA[DHL(2):]]></define>
+	<define key="PAGE_HEADING_FEATURED"><![CDATA[Featured]]></define>
+	<define key="CONTENTBOX_HEADING_FEATURED"><![CDATA[FEATURED PRODUCTS]]></define>
+	<define key="TEXT_CLICK_IMAGE"><![CDATA[Click on image to check details]]></define>
+	<define key="TEXT_RESULTS_PER_PAGE"><![CDATA[Results Per Page:]]></define>
+	<define key="TEXT_TOP"><![CDATA[TOP]]></define>
+	<define key="TEXT_NO"><![CDATA[No]]></define>
+	<define key="TEXT_YES"><![CDATA[Yes]]></define>
+	<define key="HEADER_TITLE_ALLPRODS"><![CDATA[All Products]]></define>
+	<define key="TEXT_NO_SHIPPING_REQUIRED"><![CDATA[No Shipping Method Required]]></define>
+	<define key="BOX_HEADING_HOW_IT_WORKS"><![CDATA[How It Works]]></define>
+	<define key="TEXT_STEP_ONE"><![CDATA[Step 1]]></define>
+	<define key="TEXT_STEP_ONE_DESCRIPTION"><![CDATA[Choose The product(s) You Want]]></define>
+	<define key="TEXT_STEP_TWO"><![CDATA[Step 2]]></define>
+	<define key="TEXT_STEP_TWO_DESCRIPTION"><![CDATA[We ship you your requested titles]]></define>
+	<define key="TEXT_STEP_THREE"><![CDATA[Step 3]]></define>
+	<define key="TEXT_STEP_THREE_DESCRIPTION"><![CDATA[Watch your product(s) and keep them as long as you want]]></define>
+	<define key="TEXT_STEP_FOUR"><![CDATA[Step 4]]></define>
+	<define key="TEXT_STEP_FOUR_DESCRIPTION"><![CDATA[When you are done return your items, and we'll ship you your next selections]]></define>
+	<define key="BOX_HEADING_MY_DOWNLOADS"><![CDATA[My Downloads/Streams Page]]></define>
+	<define key="TEXT_BUY"><![CDATA[Purchase: ]]></define>
+	<define key="TEXT_BUY_STREAM"><![CDATA[Stream: ]]></define>
+	<define key="TEXT_BUY_DOWNLOAD"><![CDATA[Download: ]]></define>
+	<define key="TEXT_PLEASE_SELECT"><![CDATA[Please Select]]></define>
+	<define key="IMAGE_BUTTON_ADD_WISHLIST"><![CDATA[Add To Wishlist]]></define>
+	<define key="IMAGE_IN_CART"><![CDATA[Add To Cart]]></define>
+	<!-- Common Buttons Used In Most Application -->
+	<define key="TEXT_BUTTON_ADD"><![CDATA[Add]]></define>
+	<define key="TEXT_BUTTON_INSERT"><![CDATA[Insert]]></define>
+	<define key="TEXT_BUTTON_MOVE"><![CDATA[Move]]></define>
+	<define key="TEXT_BUTTON_PRINT"><![CDATA[Print]]></define>
+	<define key="TEXT_BUTTON_UPDATE"><![CDATA[Update]]></define>
+	<define key="TEXT_BUTTON_BUY"><![CDATA[Buy]]></define>
+	<define key="TEXT_BUTTON_BUY_NOW"><![CDATA[Buy Now]]></define>
+	<define key="TEXT_BUTTON_IN_CART"><![CDATA[Add To Cart]]></define>
+	<define key="TEXT_BUTTON_RESERVE"><![CDATA[Reserve]]></define>
+	<define key="TEXT_BUTTON_PAY_PER_RENTAL"><![CDATA[Pay Per Rental]]></define>
+	<define key="TEXT_BUTTON_RENT_NOW"><![CDATA[Rent Now]]></define>
+	<define key="TEXT_BUTTON_IN_QUEUE"><![CDATA[Add To Queue]]></define>
+	<define key="TEXT_BUTTON_IN_QUEUE_SERIES"><![CDATA[Add All To Queue]]></define>
+	<define key="TEXT_BUTTON_UPDATE_QUEUE"><![CDATA[Update Queue]]></define>
+	<define key="TEXT_BUTTON_VIEW"><![CDATA[View]]></define>
+	<define key="TEXT_BUTTON_VIEW_STREAM"><![CDATA[View Stream]]></define>
+	<define key="TEXT_BUTTON_WRITE_REVIEW"><![CDATA[Write Review]]></define>
+	<define key="TEXT_BUTTON_REVIEWS"><![CDATA[Reviews]]></define>
+	<define key="TEXT_BUTTON_CHECKOUT"><![CDATA[Checkout]]></define>
+	<define key="TEXT_BUTTON_CONTINUE_SHOPPING"><![CDATA[Continue Shopping]]></define>
+	<!-- Buttons used for presets in the button class, so they have to be loaded -->
+	<define key="TEXT_BUTTON_BACK"><![CDATA[Back]]></define>
+	<define key="TEXT_BUTTON_CANCEL"><![CDATA[Cancel]]></define>
+	<define key="TEXT_BUTTON_CONTINUE"><![CDATA[Continue]]></define>
+	<define key="TEXT_BUTTON_DELETE"><![CDATA[Delete]]></define>
+	<define key="TEXT_BUTTON_EDIT"><![CDATA[Edit]]></define>
+	<define key="TEXT_BUTTON_INSTALL"><![CDATA[Install]]></define>
+	<define key="TEXT_BUTTON_LOGIN"><![CDATA[Login]]></define>
+	<define key="TEXT_BUTTON_NEW"><![CDATA[New]]></define>
+	<define key="TEXT_BUTTON_NEXT"><![CDATA[Next]]></define>
+	<define key="TEXT_BUTTON_SAVE"><![CDATA[Save]]></define>
+	<define key="TEXT_BUTTON_UNINSTALL"><![CDATA[Uninstall]]></define>
+	<!-- Membership Upgrade Application -->
+	<define key="TEXT_BUTTON_UPGRADE"><![CDATA[Upgrade]]></define>
+	<!-- Order tracking -->
+	<define key="TEXT_BUTTON_TRACK_PACKAGE"><![CDATA[Track Package]]></define>
+	<!-- Validation Error Messages -->
+	<define key="ENTRY_FIRST_NAME_ERROR_MIN_LENGTH"><![CDATA[Your First Name must contain a minimum of %s characters.]]></define>
+	<define key="ENTRY_FIRST_NAME_ERROR_ALPHA"><![CDATA[Your First Name can only contain letters.]]></define>
+	<define key="ENTRY_LAST_NAME_ERROR_MIN_LENGTH"><![CDATA[Your Last Name must contain a minimum of %s characters.]]></define>
+	<define key="ENTRY_LAST_NAME_ERROR_ALPHA"><![CDATA[Your Last Name can only contain letters.]]></define>
+	<define key="ENTRY_TELEPHONE_ERROR_MIN_LENGTH"><![CDATA[Your Telephone Number must contain a minimum of %s characters.]]></define>
+	<define key="ENTRY_TELEPHONE_ERROR_PHONE"><![CDATA[Your Telephone number must be in this format: 555-444-2222]]></define>
+	<define key="ENTRY_EMAIL_ADDRESS_ERROR_MIN_LENGTH"><![CDATA[Your E-Mail Address must contain a minimum of %s characters.]]></define>
+	<define key="ENTRY_EMAIL_ADDRESS_ERROR_EMAIL"><![CDATA[Your E-Mail Address does not appear to be valid - please make any necessary corrections.]]></define>
+	<define key="ENTRY_EMAIL_ADDRESS_ERROR_EXISTS"><![CDATA[Your E-Mail Address already exists in our records - please log in with the e-mail address or create an account with a different address.]]></define>
+	<define key="ENTRY_TERMS_ERROR_CHECKBOX"><![CDATA[You must agree to our terms and conditions.]]></define>
+	<define key="ENTRY_PASSWORD_ERROR_MIN_LENGTH"><![CDATA[Your Password must contain a minimum of %s characters.]]></define>
+	<define key="ENTRY_PASSWORD_CONFIRM_ERROR_MIN_LENGTH"><![CDATA[Your Password Confirmation must contain a minimum of %s characters.]]></define>
+	<define key="ENTRY_PASSWORD_ERROR_NOT_MATCHING"><![CDATA[The Password Confirmation must match your Password.]]></define>
+	<define key="ENTRY_PASSWORD_ERROR_CURRENT_MIN_LENGTH"><![CDATA[Your Password must contain a minimum of %s characters.]]></define>
+	<define key="ENTRY_PASSWORD_ERROR_NEW_MIN_LENGTH"><![CDATA[Your new Password must contain a minimum of %s characters.]]></define>
+	<define key="ENTRY_PASSWORD_ERROR_NEW_NOT_MATCHING"><![CDATA[The Password Confirmation must match your new Password.]]></define>
+	<define key="ENTRY_GENDER_ERROR_RADIO"><![CDATA[Please select your Gender.]]></define>
+	<define key="ENTRY_DATE_OF_BIRTH_ERROR_DATE"><![CDATA[Your Date of Birth must be in this format: MM/DD/YYYY (eg 05/21/1970)]]></define>
+	<define key="ENTRY_STREET_ADDRESS_ERROR_MIN_LENGTH"><![CDATA[Your Street Address must contain a minimum of %s characters.]]></define>
+	<define key="ENTRY_STREET_ADDRESS_ERROR_ALPHANUMERIC"><![CDATA[Your Street Address can only contain letters and numbers.]]></define>
+	<define key="ENTRY_POST_CODE_ERROR_MIN_LENGTH"><![CDATA[Your Postal Code must contain a minimum of %s characters.]]></define>
+	<define key="ENTRY_CITY_ERROR_MIN_LENGTH"><![CDATA[Your City must contain a minimum of %s characters.]]></define>
+	<define key="ENTRY_CITY_ERROR_ALPHA"><![CDATA[Your City can only contain letters.]]></define>
+	<define key="ENTRY_SUBURB_ERROR_MIN_LENGTH"><![CDATA[Your Suburb must contain a minimum of %s characters.]]></define>
+	<define key="ENTRY_SUBURB_ERROR_ALPHA"><![CDATA[Your Suburb can only contain letters.]]></define>
+	<define key="ENTRY_STATE_ERROR_MIN_LENGTH"><![CDATA[Your State must contain a minimum of %s characters.]]></define>
+	<define key="ENTRY_STATE_ERROR_ALPHA"><![CDATA[Your State can only contain letters.]]></define>
+	<define key="ENTRY_COUNTRY_ERROR_NUMERIC"><![CDATA[You must select a country from the Countries pull down menu.]]></define>
+	<define key="ENTRY_FAX_ERROR_MIN_LENGTH"><![CDATA[Your Fax number must contain a minimum of %s characters.]]></define>
+	<define key="ENTRY_FAX_ERROR_PHONE"><![CDATA[Your Fax number must be in this format: 555-444-2222]]></define>
+	<define key="ENTRY_NEWSLETTER_ERROR"><![CDATA[]]></define>
+	<define key="TEXT_BS_SERIES"><![CDATA[This is product %d of %d in "%s" series]]></define>
+	<define key="TEXT_BS_OTHER_DISCS"><![CDATA[Other products in the series: ]]></define>
+	<define key="TEXT_BS_DISC"><![CDATA[ Disc ]]></define>
+	<!-- Affiliate System -->
+	<define key="TEXT_PAYMENT_ID"><![CDATA[Shows the ID Number, of payments.]]></define>
+	<define key="TEXT_SALES_PAYMENT_DATE"><![CDATA[Shows the date, of payments.]]></define>
+	<define key="TEXT_SALES_PAYMENT_Ammount"><![CDATA[Affiliate Earnings represents the commission due on the sale]]></define>
+	<define key="TEXT_PAYMENT_STATUS"><![CDATA[Sale Status represents the status the sale.]]></define>
+	<define key="ENTRY_AFFILIATE_PAYMENT_DETAILS"><![CDATA[Payable to:]]></define>
+	<define key="ENTRY_AFFILIATE_ACCEPT_AGB"><![CDATA[Check here to indicate that you have read and agree to the ]]></define>
+	<define key="ENTRY_AFFILIATE_ACCEPT_AGB_TEXT"><![CDATA[Affiliate Program Terms and Conditions ]]></define>
+	<define key="ENTRY_AFFILIATE_AGB_ERROR"><![CDATA[ <small><font color="#FF0000">You must accept our Affiliate Program Terms & Conditions</font></small>]]></define>
+	<define key="ENTRY_AFFILIATE_PAYMENT_CHECK"><![CDATA[Check Payee Name:]]></define>
+	<define key="ENTRY_AFFILIATE_PAYMENT_CHECK_TEXT"><![CDATA[]]></define>
+	<define key="ENTRY_AFFILIATE_PAYMENT_CHECK_ERROR"><![CDATA[ <small><font color="#FF0000">required</font></small>]]></define>
+	<define key="ENTRY_AFFILIATE_PAYMENT_PAYPAL"><![CDATA[PayPal Account Email:]]></define>
+	<define key="ENTRY_AFFILIATE_PAYMENT_PAYPAL_TEXT"><![CDATA[]]></define>
+	<define key="ENTRY_AFFILIATE_PAYMENT_PAYPAL_ERROR"><![CDATA[ <small><font color="#FF0000">required</font></small>]]></define>
+	<define key="ENTRY_AFFILIATE_PAYMENT_BANK_NAME"><![CDATA[Bank Name:]]></define>
+	<define key="ENTRY_AFFILIATE_PAYMENT_BANK_NAME_TEXT"><![CDATA[]]></define>
+	<define key="ENTRY_AFFILIATE_PAYMENT_BANK_NAME_ERROR"><![CDATA[ <small><font color="#FF0000">required</font></small>]]></define>
+	<define key="ENTRY_AFFILIATE_PAYMENT_BANK_ACCOUNT_NAME"><![CDATA[Account Name:]]></define>
+	<define key="ENTRY_AFFILIATE_PAYMENT_BANK_ACCOUNT_NAME_TEXT"><![CDATA[]]></define>
+	<define key="ENTRY_AFFILIATE_PAYMENT_BANK_ACCOUNT_NAME_ERROR"><![CDATA[ <small><font color="#FF0000">required</font></small>]]></define>
+	<define key="ENTRY_AFFILIATE_PAYMENT_BANK_ACCOUNT_NUMBER"><![CDATA[Account Number:]]></define>
+	<define key="ENTRY_AFFILIATE_PAYMENT_BANK_ACCOUNT_NUMBER_TEXT"><![CDATA[]]></define>
+	<define key="ENTRY_AFFILIATE_PAYMENT_BANK_ACCOUNT_NUMBER_ERROR"><![CDATA[ <small><font color="#FF0000">required</font></small>]]></define>
+	<define key="ENTRY_AFFILIATE_PAYMENT_BANK_BRANCH_NUMBER"><![CDATA[ABA/BSB number (branch number):]]></define>
+	<define key="ENTRY_AFFILIATE_PAYMENT_BANK_BRANCH_NUMBER_TEXT"><![CDATA[]]></define>
+	<define key="ENTRY_AFFILIATE_PAYMENT_BANK_BRANCH_NUMBER_ERROR"><![CDATA[ <small><font color="#FF0000">required</font></small>]]></define>
+	<define key="ENTRY_AFFILIATE_PAYMENT_BANK_SWIFT_CODE"><![CDATA[SWIFT Code:]]></define>
+	<define key="ENTRY_AFFILIATE_PAYMENT_BANK_SWIFT_CODE_TEXT"><![CDATA[]]></define>
+	<define key="ENTRY_AFFILIATE_PAYMENT_BANK_SWIFT_CODE_ERROR"><![CDATA[ <small><font color="#FF0000">required</font></small>]]></define>
+	<define key="ENTRY_AFFILIATE_COMPANY"><![CDATA[Company]]></define>
+	<define key="ENTRY_AFFILIATE_COMPANY_TEXT"><![CDATA[]]></define>
+	<define key="ENTRY_AFFILIATE_COMPANY_ERROR"><![CDATA[ <small><font color="#FF0000">required</font></small>]]></define>
+	<define key="ENTRY_AFFILIATE_COMPANY_TAXID"><![CDATA[TAX ID.:]]></define>
+	<define key="ENTRY_AFFILIATE_COMPANY_TAXID_TEXT"><![CDATA[]]></define>
+	<define key="ENTRY_AFFILIATE_COMPANY_TAXID_ERROR"><![CDATA[ <small><font color="#FF0000">required</font></small>]]></define>
+	<define key="ENTRY_AFFILIATE_HOMEPAGE"><![CDATA[Homepage]]></define>
+	<define key="ENTRY_AFFILIATE_HOMEPAGE_TEXT"><![CDATA[ <small><font color="#AABBDD">required (http://)</font></small>]]></define>
+	<define key="ENTRY_AFFILIATE_HOMEPAGE_ERROR"><![CDATA[ <small><font color="#FF0000">required (http://)</font></small>]]></define>
+	<define key="ENTRY_AFFILIATE_NEWSLETTER"><![CDATA[Affiliate Newsletter]]></define>
+	<define key="ENTRY_AFFILIATE_NEWSLETTER_TEXT"><![CDATA[]]></define>
+	<define key="ENTRY_AFFILIATE_NEWSLETTER_ERROR"><![CDATA[ <small><font color="#FF0000">required</font></small>]]></define>
+	<define key="CATEGORY_PAYMENT_DETAILS"><![CDATA[You get your money by:]]></define>
+	<!-- Gift Voucher System -->
+	<define key="BOX_INFORMATION_GV"><![CDATA[Gift Voucher FAQ]]></define>
+	<define key="BOX_HEADING_GIFT_VOUCHER"><![CDATA[Gift Voucher Account]]></define>
+	<define key="ERROR_REDEEMED_AMOUNT"><![CDATA[The coupon has been successfully applied for ]]></define>
+	<define key="ERROR_NO_REDEEM_CODE"><![CDATA[You did not enter a redeem code.]]></define>
+	<define key="ERROR_NO_INVALID_REDEEM_GV"><![CDATA[Invalid Gift Voucher Code]]></define>
+	<define key="TABLE_HEADING_CREDIT"><![CDATA[Gift Vouchers &amp; Coupons]]></define>
+	<define key="GV_HAS_VOUCHERA"><![CDATA[You have funds in your Gift Voucher Account. If you want <br>you can send those funds by <a class="pageResults" href="]]></define>
+	<define key="GV_HAS_VOUCHERB"><![CDATA["><b>email</b></a> to someone]]></define>
+	<define key="ENTRY_AMOUNT_CHECK_ERROR"><![CDATA[You do not have enough funds to send this amount.]]></define>
+	<define key="CART_COUPON_INFO"><![CDATA[more info]]></define>
+
+	<define key="CATALOG_HOME_FEATURED"><![CDATA[Featured]]></define>
+	<define key="CATALOG_HOME_NEW_PRODUCTS"><![CDATA[New Products]]></define>
+	<define key="CATALOG_HOME_BEST_SELLERS"><![CDATA[Best Sellers]]></define>
+
+	<define key="PPR_DAILY_PRICE"><![CDATA[Daily Rental Price]]></define>
+	<define key="PPR_WEEKLY_PRICE"><![CDATA[Weekly Rental Price]]></define>
+	<define key="PPR_MONTHLY_PRICE"><![CDATA[Monthly Rental Price]]></define>
+	<define key="PPR_6_MONTHS_PRICE"><![CDATA[6 Month Rental Price]]></define>
+	<define key="PPR_1_YEAR_PRICE"><![CDATA[1 Year Rental Price]]></define>
+	<define key="PPR_3_YEAR_PRICE"><![CDATA[3 Year Rental Price]]></define>
+	<define key="PPR_SHIPPING_COST"><![CDATA[Shipping Cost]]></define>
+	<define key="PPR_VIEW_PRODUCTS"><![CDATA[View Products]]></define>
+
+	<define key="PPR_SHIPPING_SELECT"><![CDATA[Select A Shipping Method]]></define>
+
+	<define key="PRODUCT_LISTING_PRICE_NEW"><![CDATA[Price New]]></define>
+	<define key="PRODUCT_LISTING_PRICE_USED"><![CDATA[Price Used]]></define>
+	<define key="PRODUCT_LISTING_PRICE_STREAM"><![CDATA[Price Stream]]></define>
+	<define key="PRODUCT_LISTING_PRICE_DOWNLOAD"><![CDATA[Price Download]]></define>
+
+	<define key="PRODUCT_LISTING_NO_PRODUCTS"><![CDATA[There are no products to display]]></define>
+	<define key="PRODUCT_LISTING_NAME"><![CDATA[Products name]]></define>
+	<define key="PRODUCT_LISTING_PRODUCT_MODEL"><![CDATA[Product Model]]></define>
+	<define key="PRODUCT_LISTING_PRODUCT_WEIGHT"><![CDATA[Product Weight]]></define>
+	<define key="PRODUCT_LISTING_MANUFACTURERES"><![CDATA[Manufacturers Name]]></define>
+
+	<define key="PRODUCT_LISTING_ASC"><![CDATA[Ascending]]></define>
+	<define key="PRODUCT_LISTING_DESC"><![CDATA[Descending]]></define>
+	<define key="PRODUCT_LISTING_SELECT_SORT_OPTION"><![CDATA[Select Sort Option]]></define>
+	<define key="PRODUCT_LISTING_OF"><![CDATA[of]]></define>
+	<define key="PRODUCT_LISTING_RECORDS"><![CDATA[records]]></define>
+
+	<define key="PRODUCT_LISTING_SORT_BY"><![CDATA[Sort Results By]]></define>
+	<define key="PRODUCT_LISTING_RESULTS_PER_PAGE"><![CDATA[Results Per Page]]></define>
+	<define key="PRODUCT_LISTING_PAGE"><![CDATA[Page]]></define>
+	<define key="PRODUCT_LISTING_ALL"><![CDATA[All]]></define>
+
+	<define key="PRODUCT_LISTING_RELATED"><![CDATA[Related Products]]></define>
+
+	<define key="PURCHASE_TYPE_MEMEBER_NAME"><![CDATA[Membership Streaming]]></define>
+	<define key="PURCHASE_TYPE_MEMEBER_SHOW"><![CDATA[MemberShip Stream]]></define>
+
+	<define key="PURCHASE_TYPE_DOWNLOAD_NAME"><![CDATA[Purchase (Download)]]></define>
+	<define key="PURCHASE_TYPE_DOWNLOAD_SHOW"><![CDATA[Download]]></define>
+
+	<define key="PURCHASE_TYPE_NEW_NAME"><![CDATA[Purchase (New)]]></define>
+	<define key="PURCHASE_TYPE_NEW_SHOW"><![CDATA[New]]></define>
+
+	<define key="PURCHASE_TYPE_RENTAL_NAME"><![CDATA[Membership Rental]]></define>
+	<define key="PURCHASE_TYPE_RENTAL_SHOW"><![CDATA[Member Rental]]></define>
+
+	<define key="PURCHASE_TYPE_STREAM_NAME"><![CDATA[Purchase (Stream)]]></define>
+	<define key="PURCHASE_TYPE_STREAM_SHOW"><![CDATA[Stream]]></define>
+
+	<define key="PURCHASE_TYPE_USED_NAME"><![CDATA[Purchase (Used)]]></define>
+	<define key="PURCHASE_TYPE_USED_SHOW"><![CDATA[Used]]></define>
+
+	<define key="PURCHASE_TYPE_BUY"><![CDATA[Buy]]></define>
+
+
+    <define key="TEXT_PAYMENT_HISTORY_AMOUNT_PAID"><![CDATA[Amount Paid]]></define>
+    <define key="TEXT_PAYMENT_HISTORY_MESSAGE"><![CDATA[Message]]></define>
+    <define key="TEXT_PAYMENT_HISTORY_PAYMENT_METHOD"><![CDATA[Payment Method]]></define>
+    <define key="TEXT_PAYMENT_HISTORY_DATE_ADDED"><![CDATA[Date Added]]></define>
+    <define key="TEXT_ACCEPTED_PAYMENT_METHODS"><![CDATA[Accepted Payment Methods]]></define>
+    <define key="TO_ADD_TO_QUEUE_MESSAGE"><![CDATA[To add to queue you need to login to your rental account or create one here]]></define>
+    <define key="TEXT_PAGER_TYPE"><![CDATA[products]]></define>
+    <define key="TEXT_PAGER_OF"><![CDATA[of]]></define>
+    <define key="TEXT_EMAIL_DO_NOT_MATCH"><![CDATA[The email address or password do not match our records]]></define>
+    <define key="TEXT_INFO_SEMESTER"><![CDATA[Semester Name:]]></define>
+    
+    <define key="HEADER_TEXT_SHOPPING_CART_ITEMS"><![CDATA[%s Items in your shopping cart]]></define>
+    <define key="HEADER_TEXT_RENTAL_QUEUE_ITEMS"><![CDATA[%s Items in your rental queue]]></define>
+    <define key="TEXT_ENTRY_PICKUP_TIME"><![CDATA[Pickup Up Time:]]></define>
+    <define key="TEXT_ENTRY_RETURN_TIME"><![CDATA[Drop Off Time:]]></define>
+    <define key="HEADER_TEXT_PRODUCT_SEARCH"><![CDATA[Product Search:]]></define>
+
+    <define key="TEXT_DUPLICATION"><![CDATA[Duplication: product(s) already has been added to the rental queue:]]></define>
+    <define key="TEXT_UPGRADE_PLAN"><![CDATA[You do not qualify to rent this product, If you would like to upgrade please <a href="%s" style="color:red">Contact</a> store admin?]]></define>
+    <define key="TEXT_NOT_ALLOWED_STREAMING"><![CDATA[Your account is not allowed streaming videos. Please <a href="%s">click here</a> to upgrade you memebership ]]></define>
+    <define key="TEXT_EXCEEDED_VIEWS"><![CDATA[You have exceed the number of views for your account]]></define>
+
+</definitions>

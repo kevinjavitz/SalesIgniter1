@@ -1,0 +1,34 @@
+<ConfigurationGroup>
+	<title>Download Products</title>
+	<key>downloadProducts</key>
+	<description>Configuration Settings For The Download Products Extension</description>
+	<Configuration>
+		<EXTENSION_DOWNLOADPRODUCTS_ENABLED>
+			<title>Enable Download Products</title>
+			<value>True</value>
+			<description>Enable Or Disable The Download Products Extension</description>
+			<sort_order>1</sort_order>
+			<set_function>tep_cfg_select_option(array('True','False'),</set_function>
+		</EXTENSION_DOWNLOADPRODUCTS_ENABLED>
+		<EXTENSION_DOWNLOADPRODUCTS_ORDERS_STATUS>
+			<title>Allowed Order Statuses</title>
+			<value>True</value>
+			<description>Allow download with the following order statuses</description>
+			<sort_order>2</sort_order>
+			<set_function>tep_cfg_pull_multi_order_statuses(</set_function>
+			<use_function>tep_translate_order_statuses</use_function>
+		</EXTENSION_DOWNLOADPRODUCTS_ORDERS_STATUS>
+		<EXTENSION_DOWNLOADPRODUCTS_MAX_DAYS>
+			<title>Maximum Days To Download</title>
+			<value>0</value>
+			<description>Set number of days before the download link expires. 0 means no limit.</description>
+			<sort_order>4</sort_order>
+		</EXTENSION_DOWNLOADPRODUCTS_MAX_DAYS>
+		<EXTENSION_DOWNLOADPRODUCTS_MAX_COUNT>
+			<title>Maximum Number Of Downloads</title>
+			<value>2</value>
+			<description>Set the maximum number of downloads. 0 means no limit.</description>
+			<sort_order>5</sort_order>
+		</EXTENSION_DOWNLOADPRODUCTS_MAX_COUNT>
+	</Configuration>
+</ConfigurationGroup>

@@ -1,0 +1,5 @@
+<definitions>
+	<define key="MODULE_ORDER_SHIPPING_FLAT_TITLE"><![CDATA[Flat Rate]]></define>
+	<define key="MODULE_ORDER_SHIPPING_FLAT_DESCRIPTION"><![CDATA[Flat Rate]]></define>
+	<define key="MODULE_ORDER_SHIPPING_FLAT_TEXT_WAY"><![CDATA[Best Way]]></define>
+</definitions>

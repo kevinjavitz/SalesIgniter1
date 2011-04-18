@@ -1,0 +1,8 @@
+<data>
+	<OrdersProducts>
+		<orders_products_notes>
+			<type>text</type>
+			<notnull>true</notnull>
+		</orders_products_notes>
+	</OrdersProducts>
+</data>
