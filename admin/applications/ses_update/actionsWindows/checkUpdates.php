@@ -15,7 +15,7 @@
 		$infoBox->addButton($installButton)->addButton($cancelButton);
 	}
 	
-	if (sysConfig::exists('SYSTEM_LAST_UPDATE') === false){
+	if (sysConfig::exists('SYSTEM_LAST_UPDATE', true) === false){
 		$Config = new Configuration();
 		$Config->configuration_group_id = 6;
 		$Config->configuration_title = 'Last Update';
@@ -27,7 +27,7 @@
 		sysConfig::set('SYSTEM_LAST_UPDATE', sysConfig::get('SYSTEM_INSTALL_DATE'));
 	}
 	
-	if (sysConfig::exists('SYSTEM_UPDATER_LAST_UPDATE') === false){
+	if (sysConfig::exists('SYSTEM_UPDATER_LAST_UPDATE', true) === false){
 		$Config = new Configuration();
 		$Config->configuration_group_id = 6;
 		$Config->configuration_title = 'Last Updater Update';

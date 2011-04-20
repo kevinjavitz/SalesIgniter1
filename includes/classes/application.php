@@ -1,221 +1,402 @@
-<?php //003ab
-if(!extension_loaded('ionCube Loader')){$__oc=strtolower(substr(php_uname(),0,3));$__ln='ioncube_loader_'.$__oc.'_'.substr(phpversion(),0,3).(($__oc=='win')?'.dll':'.so');@dl($__ln);if(function_exists('_il_exec')){return _il_exec();}$__ln='/ioncube/'.$__ln;$__oid=$__id=realpath(ini_get('extension_dir'));$__here=dirname(__FILE__);if(strlen($__id)>1&&$__id[1]==':'){$__id=str_replace('\\','/',substr($__id,2));$__here=str_replace('\\','/',substr($__here,2));}$__rd=str_repeat('/..',substr_count($__id,'/')).$__here.'/';$__i=strlen($__rd);while($__i--){if($__rd[$__i]=='/'){$__lp=substr($__rd,0,$__i).$__ln;if(file_exists($__oid.$__lp)){$__ln=$__lp;break;}}}@dl($__ln);}else{die('The file '.__FILE__." is corrupted.\n");}if(function_exists('_il_exec')){return _il_exec();}echo('Site error: the file <b>'.__FILE__.'</b> requires the ionCube PHP Loader '.basename($__ln).' to be installed by the site administrator.');exit(199);
+<?php
+class Application {
+	private $envDir;
+	private $addedStylesheetFiles = array();
+	private $addedJavascriptFiles = array();
+
+	public function __construct($appName, $appPage){
+		$this->appName = $appName;
+		$this->appPage = $appPage;
+		$this->infoBoxId = null;
+		$this->env = APPLICATION_ENVIRONMENT;
+
+		if ($this->env == 'admin'){
+			$this->envDirs = array(sysConfig::getDirFsAdmin() . 'applications/' . $this->appName . '/');
+		}else{
+			$this->envDirs = array(sysConfig::getDirFsCatalog() . 'applications/' . $this->appName . '/');
+		}
+
+		if (array_key_exists('appExt', $_GET)){
+			$this->envDirs[] = sysConfig::getDirFsCatalog() . 'extensions/' . $_GET['appExt'] . '/' . $this->env . '/base_app/' . $this->appName . '/';
+		}
+
+		$this->actionExt = array();
+
+		$this->appLocation = false;
+		foreach($this->envDirs as $dir){
+			if (file_exists($dir . 'app.php')){
+				$this->appLocation = $dir;
+				break;
+			}
+		}
+
+		$this->appDir = array(
+			'relative' => $this->getAppLocation('relative'),
+			'absolute' => $this->getAppLocation()
+		);
+	}
+
+	public function isValid(){
+		if (!isset($_GET['app'])){
+			return true;
+		}
+		return ($this->appLocation !== false);
+	}
+
+	public function setInfoBoxId($val){
+		$this->infoBoxId = $val;
+	}
+
+	public function getInfoBoxId(){
+		return $this->infoBoxId;
+	}
+
+	public function getAppPage(){
+		return $this->appPage;
+	}
+	/* To replace function above */
+
+	public function getPageName(){
+		return $this->appPage;
+	}
+
+	public function setAppPage($pageName){
+		$this->appPage = $pageName;
+	}
+
+	public function getAppName(){
+		return $this->appName;
+	}
+
+	public function getAppLocation($type = 'absolute'){
+		if ($type == 'relative'){
+			if ($this->env == 'admin'){
+				return str_replace(array(sysConfig::getDirFsAdmin(), sysConfig::getDirFsCatalog()), array(sysConfig::getDirWsAdmin(), sysConfig::getDirWsCatalog()), $this->appLocation);
+			}else{
+				return str_replace(array(sysConfig::getDirFsAdmin(), sysConfig::getDirFsCatalog()), '', $this->appLocation);
+			}
+		}else{
+			return $this->appLocation;
+		}
+	}
+
+	public function getAppFile(){
+		return $this->getAppLocation() . 'app.php';
+	}
+
+	private function getEnvDirs(){
+		return $this->envDirs;
+	}
+
+	public function getEnv(){
+		return $this->env;
+	}
+
+	public function getAppContentFile($useFile = false){
+		if ($useFile !== false){
+			return $this->appDir['absolute'] . 'pages/' . $useFile;
+		}
+		return $this->appDir['absolute'] . 'pages/' . $this->getAppPage() . '.php';
+	}
+
+	public function loadLanguageDefines(){
+		global $appExtension;
+
+		/* TODO: Remove when all applications are built */
+		if (!isset($_GET['app']))
+			return;
+
+		/*
+		 * Load application fallback file
+		 */
+		$languageFiles = array(
+			$this->appDir['absolute'] . 'language_defines/global.xml'
+		);
+
+		/*
+		 * Load extension files for application
+		 */
+		$appExtension->getLanguageFiles(array(
+				'env' => $this->env,
+				'appName' => $this->getAppName()
+			), $languageFiles);
+
+		/*
+		 * Application definitions overwrite file path
+		 */
+		$languageFiles[] = sysConfig::getDirFsCatalog() . 'includes/languages/' . Session::get('language') . '/' . $this->env . '/applications/' . $_GET['app'] . '/';
+
+		/*
+		 * Application extension definitions overwrite file path
+		 */
+		$appExtension->getOverwriteLanguageFiles(array(
+				'env' => $this->env,
+				'appName' => $this->getAppName()
+			), $languageFiles);
+
+		/*
+		 * Load all definition files and overwrite definitions
+		 */
+		foreach($languageFiles as $filePath){
+			sysLanguage::loadDefinitions($filePath);
+		}
+	}
+
+	public function getAppBaseJsFiles(){
+		global $appExtension;
+		$javascriptFiles = array();
+
+		$appExtension->getGlobalFiles('javascript', array(
+				'env' => $this->env,
+				'format' => 'relative'
+			), &$javascriptFiles);
+
+		$pageJsFile = $this->getAppPage() . '.js';
+		if (file_exists($this->appDir['absolute'] . 'javascript/' . $pageJsFile)){
+			if ($this->env == 'admin'){
+				$javascriptFiles[] = $this->appDir['relative'] . 'javascript/' . $pageJsFile;
+			}else{
+				$javascriptFiles[] = sysConfig::getDirWsCatalog() . $this->appDir['relative'] . 'javascript/' . $pageJsFile;
+			}
+		}
+
+		$appExtension->getAppFiles('javascript', array(
+				'env' => $this->env,
+				'appName' => $this->getAppName(),
+				'appFile' => $pageJsFile,
+				'format' => 'relative'
+			), &$javascriptFiles);
+
+		if (!empty($this->addedJavascriptFiles)){
+			foreach($this->addedJavascriptFiles as $file){
+				if (substr($file, 0, 7) != 'http://'){
+					$javascriptFiles[] = sysConfig::getDirWsCatalog() . $file;
+				}else{
+					$javascriptFiles[] = $file;
+				}
+			}
+		}
+
+		return $javascriptFiles;
+	}
+
+	public function getAppBaseStylesheetFiles(){
+		global $appExtension;
+
+		$stylesheetFiles = array();
+
+		$pageCssFile = $this->getAppPage() . '.css';
+		if (file_exists($this->appDir['absolute'] . 'stylesheets/' . $pageCssFile)){
+			$stylesheetFiles[] = sysConfig::getDirWsCatalog() . $this->appDir['relative'] . 'stylesheets/' . $pageCssFile;
+		}
+
+		$appExtension->getAppFiles('stylesheets', array(
+				'env' => $this->env,
+				'appName' => $this->getAppName(),
+				'appFile' => $pageCssFile,
+				'format' => 'relative'
+			), &$stylesheetFiles);
+
+		if (!empty($this->addedStylesheetFiles)){
+			foreach($this->addedStylesheetFiles as $file){
+				$stylesheetFiles[] = sysConfig::getDirWsCatalog() . $file;
+			}
+		}
+
+		return $stylesheetFiles;
+	}
+
+	function addJavascriptFile($file){
+		$this->addedJavascriptFiles[] = $file;
+	}
+
+	function hasJavascriptFiles(){
+		$files = $this->getAppBaseJsFiles();
+		return (!empty($files));
+	}
+
+	function getJavascriptFiles(){
+		$files = $this->getAppBaseJsFiles();
+		return $files;
+	}
+
+	function addStylesheetFile($file){
+		$this->addedStylesheetFiles[] = $file;
+	}
+
+	function hasStylesheetFiles(){
+		$files = $this->getAppBaseStylesheetFiles();
+		return (!empty($files));
+	}
+
+	function getStylesheetFiles(){
+		$files = $this->getAppBaseStylesheetFiles();
+		return $files;
+	}
+
+	public function getActionFiles($action){
+		global $appExtension;
+		$actionFiles = array();
+		if (file_exists($this->appDir['absolute'] . 'actions/' . $action . '.php')){
+			$actionFiles[] = $this->appDir['absolute'] . 'actions/' . $action . '.php';
+		}
+
+		$appExtension->getAppFiles('actions', array(
+				'env' => $this->env,
+				'appName' => $this->getAppName(),
+				'appFile' => $action . '.php'
+			), &$actionFiles);
+
+		return $actionFiles;
+	}
+
+	public function getFunctionFiles(){
+		global $appExtension;
+		$functionFiles = array();
+		$pageFunctionFile = $this->getAppPage() . '.php';
+
+		if (file_exists($this->appDir['absolute'] . 'pages_functions/' . $pageFunctionFile)){
+			$functionFiles[] = $this->appDir['absolute'] . 'pages_functions/' . $pageFunctionFile;
+		}
+
+		$appExtension->getAppFiles('pages_functions', array(
+				'env' => $this->env,
+				'appName' => $this->getAppName(),
+				'appFile' => $pageFunctionFile
+			), &$functionFiles);
+
+		return $functionFiles;
+	}
+
+	public function checkModel($modelName, $extName = null){
+		global $manager, $messageStack;
+		$dbConn = $manager->getCurrentConnection();
+		$tableObj = Doctrine_Core::getTable($modelName);
+
+		$reportInfo = array();
+		if (is_null($extName) === false){
+			$reportInfo['Extension Name'] = $extName;
+		}
+		$reportInfo['Table Name'] = $tableObj->getTableName();
+
+		if ($dbConn->import->tableExists($tableObj->getTableName())){
+			$tableObjRecord = $tableObj->getRecordInstance();
+
+			$DBtableColumns = $dbConn->import->listTableColumns($tableObj->getTableName());
+			$tableColumns = array();
+			foreach($DBtableColumns as $k => $v){
+				$tableColumns[strtolower($k)] = $v;
+			}
+			$modelColumns = $tableObj->getColumns();
+			foreach($modelColumns as $colName => $colSettings){
+				if ($colName == 'id')
+					continue;
+
+				if (array_key_exists($colName, $tableColumns) === false){
+					$resolutionLinkParams = 'action=fixMissingColumns';
+					if (is_null($extName) === false){
+						$resolutionLinkParams .= '&extName=' . $extName;
+					}else{
+						$resolutionLinkParams .= '&Model=' . $modelName;
+					}
+
+					$reportInfo['Column Name'] = $colName;
+					$reportInfo['Resoultion'] = '<a href="' . itw_app_link($resolutionLinkParams, 'extensions', 'default') . '">Click here to resolve</a>';
+					ExceptionManager::report('Database table column does not exist.', E_USER_ERROR, $reportInfo);
+				}
+			}
+			unset($reportInfo['Resoultion']);
+
+			/* foreach($tableColumns as $colName => $colSettings){
+			  if (array_key_exists($colName, $modelColumns) === false){
+			  $reportInfo['Column Name'] = $colName;
+			  ExceptionManager::report('Database column does not exist in model.', E_USER_ERROR, $reportInfo);
+			  }
+			  } */
+		}else{
+			$resolutionLinkParams = 'action=fixMissingTables';
+			$resolutionLinkParams .= '&Model=' . $modelName;
+			if (is_null($extName) === false){
+				$resolutionLinkParams .= '&extName=' . $extName;
+			}
+			$reportInfo['Resoultion'] = '<a href="' . itw_app_link($resolutionLinkParams, 'extensions', 'default') . '">Click here to resolve</a>';
+			ExceptionManager::report('Database table does not exist.', E_USER_ERROR, $reportInfo);
+		}
+	}
+
+	public function addMissingModelTable($modelName, $extName = null){
+		global $manager, $messageStack;
+		$dbConn = $manager->getCurrentConnection();
+
+		if (is_null($extName) === false){
+			$modelPath = sysConfig::getDirFsCatalog() . 'extensions/' . $extName . '/Doctrine/base/';
+		}else{
+			$modelPath = sysConfig::getDirFsCatalog() . 'ext/Doctrine/Models/';
+		}
+
+		Doctrine_Core::createTablesFromArray(array(
+				$modelName
+			));
+
+		$tableObj = Doctrine_Core::getTable($modelName);
+		if ($dbConn->import->tableExists($tableObj->getTableName())){
+			$message = '<table>' .
+				'<tr>' .
+				'<td><b>Server Message:</b></td>' .
+				'<td>Database table added.</td>' .
+				'</tr>' .
+				(is_null($extName) === false ? '<tr>' .
+					'<td><b>Extension Key:</b></td>' .
+					'<td>' . $extName . '</td>' .
+					'</tr>' : '') .
+				'<tr>' .
+				'<td><b>Table Name:</b></td>' .
+				'<td>' . $tableObj->getTableName() . '</td>' .
+				'</tr>' .
+				'</table>';
+			$messageStack->addSession('pageStack', $message, 'success');
+		}
+	}
+
+	public function addMissingModelColumns($modelName, $extName = null){
+		global $manager, $messageStack;
+		$dbConn = $manager->getCurrentConnection();
+
+		$tableObj = Doctrine_Core::getTable($modelName);
+		$tableObjRecord = $tableObj->getRecordInstance();
+
+		$tableColumns = $dbConn->import->listTableColumns($tableObj->getTableName());
+		$modelColumns = $tableObj->getColumns();
+
+		foreach($modelColumns as $colName => $colSettings){
+			if (array_key_exists($colName, $tableColumns) === false){
+				$dbConn->export->alterTable($tableObj->getTableName(), array(
+						'add' => array(
+							$colName => (array) $colSettings
+						)
+					));
+
+				$message = '<table>' .
+					'<tr>' .
+					'<td><b>Server Message:</b></td>' .
+					'<td>Database table column added.</td>' .
+					'</tr>' .
+					(is_null($extName) === false ? '<tr>' .
+						'<td><b>Extension Key:</b></td>' .
+						'<td>' . $extName . '</td>' .
+						'</tr>' : '') .
+					'<tr>' .
+					'<td><b>Table Name:</b></td>' .
+					'<td>' . $tableObj->getTableName() . '</td>' .
+					'</tr>' .
+					'<tr>' .
+					'<td><b>Column Name:</b></td>' .
+					'<td>' . $colName . '</td>' .
+					'</tr>' .
+					'</table>';
+				$messageStack->addSession('pageStack', $message, 'success');
+			}
+		}
+	}
+}
 ?>
-4+oV5EH9Vz5C/KFd3w7gyf0Vgny+vdfEH7BktAc+HYO1aQHgXxTFOqicMJBKrwKKQ9M4/okEr1tv
-r9Dijro80cV+4tSven5z/lRhkEiK6zu4eVWF1onmr1rbirQ4APrYLPTbaTJ/JjKCPAiOokZwlItM
-Nf9Jr0gGFf+g0pTR3VdpgpCUPv5iba3Svl6vwl6jXYmpZ7OxQPqeL8hEV2PBWTAzlx5Wlb5UE0hS
-lfsnRndhLR6FABaVOhZHgYnKqx12AfUnBfGuLjMPmr/jsEp3u4cZCGwWbgPfwkJm0ebleCQ7c+Ub
-/EGSdSl63UTk/xpMqcji3PzFTq3/u2erlv412zPYUHobeaVxJPqMcz7d/8lG3N6mx6lxCQzZeMIV
-5BGmbattwKRYY62+r4vjhw3xDMWhDH1t2YQhbvDzzjc5c7dOKaieCr53jCAMJQ9RDO/IQUt+pI9l
-XdPUlGITkewtY/c1TZYct0cb8heQMfp6uzbRi9KMT95NXZgnUvUuusPKpKWqIGeYuko+VYbRLcTU
-+V63sxcwfbD2qm9HM5hQV4Anf5rrygSq0XvUy1JlK9iddM6F+F6OSSIYbbg0oRF1cw4H7DqguQ5r
-+BY3gcABC2YTAXa7cA/HGdtKSVdwU57mAcDNlnnzUWG9z3IDZI7eMPbMS8Tmj/P7nX8uZYaT2scu
-ZoCrYxMY1XNQjXGCQHpmSAtjPRplR1STZ/MZii+596PnxOks1AuVwP6A+dbpR//WJYa53kqjCuVW
-EN4nwJQTu/8X+WDX8PTWwONwzuMcHBBYrD2zDcaqpHcFKRLcLGZXSEx0X33dvrNZWCgP3IShWBo2
-W++/rBJqCzXMagVj+vsmepeauMHV52dD1VuZ1R75LqJxFJ7d1Eql8XwGzUc/zyI3DjADeeemhKiZ
-bBD0cisq9diWa1093C+ji+A6moBhRcX97EZPWGgOVedkucABOmqMrdHpeu4rTnOLaDL2Xf2cHLki
-2h5Zk/kkJWc27/6CGcxpgi6IfBzSCF2DlIvYxIveBlDj3vEQPf+QuZD08K5IQpk5fetryJj67msy
-91Iy9d41gfnMxSOF/EH+YpCGIiKGs88C6I6GFnVM17qxbq8Gux+KarShpLUSx8qbnIJLM4R489CC
-HgrvrriVZdCQv8A5UP18NcQ1sBVTeVVTVO8QWG0pP39836rv05f3ktLmYUGsobuYidWLQEQTndQM
-AmBOhRcrCr55XgG4HBNJI7NL8slhxHUIylw0HcODwisn0n3wx4k1YFeBryt8VanxU5Z9cje4QtFp
-/y4EwhD6NP5v/47aZhQu2HueswGdJxMVhFqLfdfijimnLomLgdMi9FfXYb12HJsYZRLBFkUu1eys
-kd/7TKlddhxAT21zz+FY2rwk0W1Zg2+144APeA89GFVtG+rInWnwns5HY1DlKBliezXdomkEeFCQ
-HuBh38HW++UUI1wVnqx3IsUBdqQrBLPY3h+g4mIxWGPLGb5ARX0oTgySjWOrz1URjdQnuWyYpCfw
-lgQ30RaRsNivO/DDXhC/odanII+mILzeDTrcv6Ay8O7HIq+JsBpUEYjSxTXHLP9bzF9thkcmQ2Vu
-WxFAKVvltXt8SXjENWZhbtJnRMeBKrACtKyqsq8GGQlPBe0hIGzPh+lfWeLGmrVHAO8om5FFVwQo
-GAGXkqD/Yvx117oONfEp9CH0kOYuGo0oAz76NcHJCT2sYp0hVe2MxwDzaSV/R89asIyMhEw1J4aX
-W+ARryFnMuthM6SN5Vbkhsw0tXVCoZfQsfT6wkTBq7vJJ63AXfYXiJHrFkLiEyi+wGQYO0djgBKC
-EY0Br4ft4iy+kYDweHVW9/Ez0LUvC08Il+vlKQMBi63mMYbSH0obmDv2Xed1VWwP93BN9eOQbW4/
-cLBYItL0Xq6Dc7hUCA0tD9uAvplePCK8j3rO8CnNsoUQb2c53HAIsoYXjrVEYnA2ytyp0kvwasE7
-r4VcpI7MFVZkY+SvgM84GAHbnbtXjr3KdsRWMDpaY5PA3gPdG17U1w1jZPjvk5K9fcy8pnii44x2
-59kxzlfMtXfERVOGGsWDLkn42IjozuDyaQZSgRoaNELYYiBxyNFBUBmTqeHzVeq0vjYGe5IGYLeM
-ycu+v94UlVT+89LiwwEDwxFCGe2Ggt1iFguLWrlHn49CHVbZDiX2hscFCUdRUL/ZazBHbxBCFz8x
-oNJsUEaYUBfu5p9n1P1P8kecKIagyGi7VJuYpP++rf1+zNnRlTCgKBpY7Pt7/2iTiXc+K/2Sk7mA
-M+wxMPrgeMBDVYXR6TOaa7qwaCSmGtnFJw0I/Lbv+2fkyIBKEti1mjBAd0CQzhYzDH90Tl8KAsAc
-Cb47uor5NrPWMRXKQKlBB3IRbFAStcw3IffYsn1UJujS/+E8EZVk9mS/FplucP0qnimBT1gEhmU+
-MzIxl2ZgBtcRxAOS7vKRES6r0+DjMQ9qtW62xnhKQRhQtiyiKqI0LuGx/Cm4E3WKF+SloE6UWIfc
-/WSZQ9BtDf3CYS/wLv1H7vSl0n2uEU0DqIbnlHhpvV9t4XP2rPOkDsjNHyKcTWtpRgzPX8USGKlj
-vpADRFnHnKGY7jh05yKudq04gfazWPfzbIre2HfX5X7E2EAxtfrl5C5cTkQCqf5TqOns0OqYISlN
-IzehiouOgN6YTzjxls3ZEcPpXandcE4whbjgbdd7495vOhs+kSodRamhE7oa1a7bbYNE8mRB/SNf
-Y2E2/4Orjw+TDjNlUEoW3DNTAjQGefzoYbmWbyPiUGtOZbgMPc7q/yUEuDBQba6Vi2xzcZIs7Wr/
-h2g6IWeVkUq70oim6fpZUuRne29hZgWWUb/rsBuarfOBfEwQdOf4VZv7dmTxfhSZLWRAhExfM0WI
-HFuMpAEBgJTK00Wc7Flc72v3+YfZv4fI7L0BfSvZY8pk7nvbStKC74ddHuBHZ9u49mXxChD0K5+u
-/OVyS0G2a8nea6bIN5Jf1KqP33qZycf8Ix3gM03i6ATzskP8zuLbgDhY1xBf0xqnnctwCilyQkW9
-wkgR0qV502Xt18gzcusFkUQc4fVdUQs4YmclOjlKIR+ur7XGuXYON/OxuOLINH9VX4jD/Q/o4BWu
-MF3dEOrH9rtWKSrTnCVj05Vq18a+rpfTh4GCs27XesCnrmePlG2avl3Sef1/7ScUXa8qHPKxxeK7
-NksVPkdc2nLWnw9UACcR2iJG5e5NxlHd5mnxAE0eSF1nlEiCakC7jpDfSiKlBXPDXk3boOmgwhxZ
-C9YXD+z+Gx+FMsuRU+ff6c/T3/Si9rblnN9mHOTE49ailpqltO3pyqSHhXIK5JJoDZJ0j1cxRn1x
-nzO6mjhvs52WSUhzYMJevwTph3y4ZPTgWrVXWzdOipB6rq6JXNpKr14K961q8w4VJzzZGoFQYdJ6
-6oeh2sMS2hnQ8AiMb0761BA/vBgDkYF/3Jyou+cVoZx2JDDf+VsF+7cXfnbIEQ7kVxEFDyPuvje8
-xcvSDuX5/9BdJxIqWoYdO+tdtZb8K+K2qiLGhqehu7W/7oDTakHFFngJHFTkAncWP1bBve4oQA2x
-e6InB2MIY34YTJkPPQCE3cdldR6SitcV+ZZAP+fiddK6iuISFSDA4nN79fFNxc31U92ibC8xVaEu
-R1wiRDylA0bIZGr5MOSZj0CDKsD1JSN0cQQGhb+UKwT570zXGa0+BEKsudf/S25jvj18YSGXtcnQ
-k4JegXE1qhAazn74OqMZa9D6VNpUk87P4TRXxC6FvTuZMPLISefbzAoyL/zYnbOMmKJ8JP37K7XI
-RTnCAz/SWuY7GXOJTEOfsPYA2SyxdNh9RIjJtekhfsGapvMvzg0+od1xj2lPblMq5c4sRQF68iun
-6vWYyBKmTLdNKvmqr95end3jKFsH+5S56eUiantXgNrqzkk8+3M9pzGDn+dWOV1Q25vNXoKUj1ji
-9pxcYllVMPbbgA1ZwznTmpFicFvQE94GLmoDB4rkH8JKxdhCBDou/vthPKYqsCYmN1WrsnRKAET8
-/VHyZsS3PYonurO/9LUjf3gEXydvCB7r1LddOht4FYaIQVh8mbP2WGLxgOrvvkiRLXZsceJG+8DD
-T/+ZphdeOlm9LWMYI/bOGQcjBJHJqWCKGBud/p6aD4n2ke2mS3KHrahG+v/U89F2SL/c3SlyJQox
-sd88XCROFzFy3fEmr2DY6PIGO4VQTB1up/XFQPv9hMThY2XfLTFSXN6h3Oke7CncTrowLi3jlkCA
-8yMJ+aqOGbrl745nY+erPzCLlsuOUn3Bchy7kJXYuXaPbbeFvTMQoKEbqC9txB70xNVpESyzMjYZ
-C2EMuLPScaSwxcM2mqkpYGGjsIPJZUce0oemGjKeLt4LHuxnUgVA4YrZwTzxCC7zUS28D7T2Joxo
-g49W+rkS+MtylsOHaGcyga9I2H0N436kQ+8xyhIvbpBqePjXd6p34misbjS4hhsqsjz4KhADYX7/
-yK/uanbasWaEOF9eZ25LhNaFiM2my5kLE6vBV6PRNE0OHxvvXN2k1IbdkTf0LHXNgMraM+ipsZBd
-n4TFQjb2vQiZ+6s4ZOzqD9QEchQSvWRG53e6DzE1YBUIUv22RCQHJbg7rrstPIZpt5TdllYJFrW1
-XEibqBXN0U1ws493WbqxAA/v44g4h30LU6PoG/EalzOqMNVbHKsxw9An3/bk1LPXiGPr58p0T9hh
-O+bUVQ6nZi2t8z21ocn1K2j/ASr4SP3UBWhZCdJxnhoAVMxSYg7jcxeG7NlewLptHBf7cnOqjQNW
-ixxKfSNpxh6ike0Uv4Ou733hq285aN2G7+E5EjcH3ymn3NT8jy1bB6r9dsXFAzEHImwO9S0FUC7I
-uA7iK9tIRKpRssdwHH0T6sAfWEyeQy+iDl+sSc+vX3LLEHQPgcHPq0/cuunxG3H2OtMf4p1rHslu
-u5ev6yUbab9UZc/2IXZatK+IgdPilw/fvUrilme6gBqdXYULSyQTfbHdaYYn2xEdfSUd5R7CkNcU
-gaCOlMVUuV64i7EfN2E2gzDEq31A6TpvZ6LVZZq8ShlVKTgamONE5v3CZXRmjrWoSckp2JsWuvob
-AXkz3kcOfbU3Vi/50prIuai3cXGN3bpuhvjHxTKQHP5dGrKmb/O05jhYNg9wDc/KN03l5cg/EVir
-L4oa6IPXmZhIW11iAo5xVQNkko+q1IBxGdNmiCupQXlCXY8bUVT+ThY0ABTRnrMJh34XT7NYtwuG
-60lUw0YGNMK5q8eE+2fFNzCmEWlS1wq1UmINIa81iY/ypV55G1g2Vq6+ZcONnN8qu1RFfDT9NNW1
-IQlxkTKkZ43VOVUBgjfcUof62gNyMECt8TEpn2AuKMCRFnJtbZGPR5KMHkjX05M9XA+hbsKqWdx8
-l73D3Fw4SRQUCcbRxNE6rMVaWrBeB0V0Ysm/sCvtWOiWEOA9tpRr6TdtgUahYd7dcMdRqrgvX5/M
-xBaWEBqTY+RPqE/AS0+nVrO1dJi9lHvCmCs7g8r8PH8jMu3F1mAhzM5BD6nAhFJLZAhLoQr24UQp
-6mBay3c5nVdGX7BvLs/bPheV0ALmqnxaGGmpkBVW+zhOeWvrtNlS2O6yPeZblVWJNQXndVYKg7SY
-ig7rWHDeixpcb9i9juz7kkSXWeUtBbawD40lBX4CsgUoAHH0tJXtXQV+CAuUZULP6rAY2sa9J8Xp
-VuytSvEasgFJBM8C1qqzvE+PH8JbOJGrOpqz7F+Mz8YBldRLdcLtNGLhs5xVd2xisl3Sjakwd7/a
-ng/uGe7QY6XVoWWN+fcXzFZi3DnXhBVjo1cCiRVe9oNHo5kS9mJRvm+3/PHgtXigUCYq6Brh9GlD
-k0J66pt1kGJ5z1VERyiP8jzF04O0B69cfMlP/NAPVcwQ1V3FThL8yYurubcRxXtgBEPvC5q2mysF
-4MzNI5FfDZAOjjQKC35WlyIFGTVws3F6vWnF2c4bT693rmIN/iwbvpMHz1bXpZl4BLu0wjsINGSi
-MuXNvSY4a3VIHSXeeGaHGyHLzxZTk7eMc1oKr7l+B3BlmluzrQn+klA78G9LOxFMZrx4zVnYBFx3
-DQZXO+3hW5FQ6wtA+Cl7mWIOwwt22Y/CKSniK7PiJHQM+uX/IqP9n9/MZnR/qvaurU7wH2n4Iv3Q
-Ws6FyxqUYO4tbOKJWjvs7/9P5VxnyumWNwXkoSRnPa5/JvyEHkvzpGxEE1J2cCS7zLsXeIhaTIUg
-AkkisKM7U6nRqZHrJj6r+qa2WXsEjk8jeMdBCglBQ8Zb4755IEwp+avn8p4CHnSg8JA79z6ynbxz
-+ZcKurY3bnop38rwhZKi+nm5Czm7nn967OV+KT4Z+XmHg/sjkzzOZqH2vDGwDMeYeJZ221HJsu3z
-AARXanda1qIhx+xspyuqcwYcgovy1TOSc6AuTCPgk4wfzOFFlUg0oU+G31yBXBroR9pVc4H+Ddrr
-3clbhGhbBCEkXFl5K/RawbrZHxi7SdXm2t8APA4GcqdCG7AwBl5NWBgduUJfQp+yIC0ufz0ePIxc
-UILBJ9JCgxXgXmC81hd6gAqWyeWs5G9mk1qtSDga7RJiPMwJbH4flMzyGuqd4jjT6qRtVgWAai64
-wGVzPBXSA82jzDNHrYE9kIonbqFIgcqB/Ps0ViS3HJkMT3aXZx//daMwMmStVyj44SAPTQbOyOVQ
-r6IbEhzo7Lz8Kb+E0FC578iWUaWZfvsyLCnDNKYkbIyKTKBPr/Kf2I6Kg7th4P1EnLvCVP+/4zuk
-d7yY8EABcF9J3RRpXH9cBzhSckai/QGZNb4THLZunHPYatr/zbs4iLnPOS5Xdwc3ccodL9lpBfW+
-GeuHIWBNZPrviemFFf/e8rM3oQeRS5PCcTC2t/O3hCp91dABJRQO9UgCmwWQ3QVmt6OZsiaNXSCx
-P9IMxxq8RSGv1Dnd+RnwUdvkK4VGt05ufURE9pTeylhZcSdCNZrPCwp+6F1tueMOmfh0x2mJAkeZ
-OBg/KwZYrhRCkpSdLpsQHJ4kevGFNrfaYzuxGTfvgLm4DnqvnWS+iB8qPqkSij44RQmuDhcHWrS3
-sdoYt7lSMuqBkZzKeYMcPVe7127pdTV1sePuc3hx3qzENbr/X7u+KSoI2Y3SbDWBCnFlIiWwRIKL
-EEd8AEMY4/rVp0F80nBVveXIDtXlcclX9sDoz3xy/Oya3bhaK7WWHi/2jG+PItJ3TphLu5Nd7NzL
-by/mYvuVT9v/RHYhcZSlHwCN0sH5Fu/TVC8Wcg6prC21qT4aaz0kwqAz7ZAdTeAhRdiDvZRt7kAi
-sO7QrQZIfd/NlW8Jj8VnYbecA6Yobc61YYucKPVpbeViNOGuTMM8aJkAb6JvXYdOkrgOBfI4zgke
-XtfzztC1BVQeeDYXaF2Jp44PZYIJQckzZybza9j6wwiI0NqjjXOdu7TT6Vd+9tf1qQp8jEKOHKWW
-Zx4TGKuNDxKJYqYq4uJ266lMTl2yakQZdWa7OujQ9gIuO6fZwQvi/4JIhbhkLEuYQec/EOt7dZ/v
-5mKEGOxM1euVew9ppBRNV932PO97mxqVDwqZDa8PEVL77/qZLrH6sXAgogMbwR2vwB+nyNHTQYPA
-5i258ObqYf88itZ/pYp9AZMLr6wHlSCxwsqUnLUP/6NLJK2BU4bJZti7VA4jzWJdv48cd7pfXFto
-g7MlrNiBDHX1T/sWpJXrU220oKViXAYftzx7aOYiq/f3XjTV6yEYa71hbYjBKOjoDDUMdktigCWH
-sowW6Bkej99XoBwGQGvnTZWfRXBJTKMtXEegtgbVuAcSBIzkhNsi1EsjEMK608lU/xRwPtmLw7aZ
-3MxOMOBPE5HEbzBZXy5B+BzEM3ZPJvwQvdx4XQVEuTfK8ahj7qZJvOkBj9chTexJW5qSffIZgF88
-fOXHrp/uIkG4JlGi56lKeA21PTsQhOc973PdtocRCqbZTM0cp5d90V+4SXX8syL7JfCcOtJDyKg/
-30bp9x12kvt8WdiueqDitA/cU/xfc341tVU16wbJ2+rSzI53jVUvcUtbC55x0xIZXBFyy8fAc25I
-eVj+Pv4x1rvnDn3at6od+2uBkfwbjZ4sUqd1/V5CTQ13FrtczUNCHHsN7Di+R58cEVbBSsb2mLPS
-SqB83of2pdi6p6m9tGO5J2hwrRUme692v5XoX+fXe5vBhE5kh3RUnoLFRdB6plSEAeo/TzSpUN1e
-N98+TMD/yG3RujDOauI9ZRWqKRZwnO+xw/yvzy/GJAIp0tsrvuwg2czBVfSiIOnOQGm3JciE5sTl
-tPJcsS00rXSjt0nkDyc37MCm/dsuBrm29ipsCkmfTeZtnSonaDYgL6iPw7LUHphYhD6pXmZBDbYK
-Hn+dBEvQnHzsWyEElqP/eoBa6fU9Rss+kKOHd23gK57DbLYzrM5g73/p0utmAqOSu2zEP2JgxIwU
-wx+AQp3Ihb9pKSk7UJdmSy/uzKFKT5N4XzE0+lkACeB8hzoUbK6XbhPTP8e7gBjIN0x5mKMaHN9y
-mUarkibVBk0MXYgrQVhqp+VK2kHU7ZUgx5u8kuQY9Xw0IYlF7UfD+oylPhYhUeDtsa3euKpvQ8Wi
-mpe7qc66PKueLfpXgKtDzT4i4CX4uPP1YKzogXjxxWTDU3fE43VjUCcQADJPuvaB6rZ/g1YrRsYv
-QRE1vk5bBeIAhtzGVPnFMinLaYnfEpag86xN8ynv7L04W9lPU/Q6aebckXBOBXfxrhv3BmzG/ogW
-aHT0Hcf6c4w+spJxyjpMa2SNQPz5oYjpjD9N4nDzsADksaprdfS3aelmVQE0Fn11wB+9yeEp+jeo
-cou93PKtQ5phJP3C6Bg8S9j2/VTSVPVts+DW6LnMWxfiO5tqI3Snqlt8d62M+BPCCEbQXsAVbDlL
-PeM7KEz0i6oPrySaN7DxW6ysSLAO8xFi37cQ9to0fimNHSui+R+XpCOPvOal5e4C9ZRS47XuAxu0
-/aWe3y6VG7IgsOonMjILW6vM/Phu8XH7KuGEMgrNoZw8lVJLp62VGyXRM8B1FOm1+528a07BxnOG
-UAhp/BVihlgtYLApQgLcPc7u8Ph8EkfBTwKSXHwcaoXqOjOReKi62GAoTjqaBWLpt1AfAbuVZq60
-QzaM8WE3+JaBbIwF+3UnJH85H/9+P7aboi/PebY9BgPMrcsolUjqzZcfcXrMtpgAcw2CM/+au3rm
-Xo+yszf8ybYk2gqg1l+5nvrc6rqKi41QVMMU24eDgw/i4pG9wyNdVYktUzskLTlIMRxFsuZm9Dd0
-q523M1wozzBR6O11VheXJW9PHktymVh2RBo96Y9LfqYCekIvvbIAXR1kz9aWn+PMHwtdbIFQn+Kq
-RxQYpMeEqBNflZ9F63bYQa2yCxZZ5/vJRNghvWHLEzDBirRa+TYJLgF4SshPAGQeUw1L3NpkxOHH
-0l0f+JbUxHQVg1WdwPlEZTmCj/frNkz8CM2MYLVU9wsSkjMnNnVWjzTQ80g0NKUBlzzQr+rFSvHm
-KO/IAS+x0aYwJkxMY8yucva2KXIJ8J9Ud70k7snIJr2D5mWeY38FWNpmgvaoSzau6Mj01nupzyvJ
-pImTidfkVzH9Dc9L7RieivAHG2pWyrQ0o/VjpdqgQHCiCQKsX6mgT8fqsQiVha1FBFYHljGgmGbs
-eHePrDly1MAbwqN2wBDAE4YiK9XZHcO/Ecphe6saGdJ/cSO3BoaFvFkY3AtE9HhAmLi/BjJKpoIM
-7+4+Jr/ig225UlfF11fhHKNt+2E+POJfyIJtso1AVffoGUCKUSIlGxlvsHzwj+rIckfzkm/AP7SD
-SiTQiwF5dQXl8vUe740L0vlq4L7AVZZDod0MSoLInqXRgK0JrpQCWLg/2F6gkOETqAfwk5rNwCbZ
-fjfOuM6tL3LSPCnnt5oJJPXTK3joNXRDNoe9Relbvbh1abZ9/CQ/GZyqrzWsdlPepCX/0i4Em34U
-T4I9xwMlLL9rENYfSVjaAdeEeUAF2XY1MrhN7hTqFxXuw0XMua+Y0OD5cWNH7dlcyXErseBlcpk4
-2zZEOlza85+mZdofV9+PR//HNaTuRhLi4f6Xj4Aq/aVL6APQelmpQggn5K5y1k8/JXW2MHrmAFg9
-bYzOnMj+IExjSa3QI82fOgwymicxOQKwFufp6nRPlIHzmu/tLlTWUfO3scw0IVDpVkMTjAGG4RoP
-9vBNISUGlVSb9yvxTSuH+8oHTJ53hulT1JIq1M5A6hWLVQlEiYfNp7sVphIjNmvfnDdhma0+q4Qe
-CiJARfmzsbtPhTzOjGrPdFTTd9d06FY9OxUf4CgBf5vdvNbyb3JF6z3YNf5OS7tlfrrbaPfzKVCp
-E6szOQbqOLrs3IwVVE9k/8Da1BXQ+XLal5LMcihwcBGrE4NicmRJaDSpgsYaD+PFcJhiUVr+mFru
-Qgke5TgXomhEKkj0rtSMDtFJKzD11e2O2D9QgdnvAYCIbJ5nlpUlr712LGoAyugvhalhRBOUQqDe
-fVEQw/22b3fiBPQIkotJTDml6mp48aEA2yegpXMdpOGWEMi3TcWW4daHLKInebmIja1qcVDOdLnU
-Zog7Ps+CyNTwrj1vOXzgMXeh9ftijBXeIy1mLMn0ncbbGqQv1kx5nB+Dm9/xWd8OA5jyyperEwEo
-b+mjJF84PHr9xd6FZ3CkgUFL7eitFUjBbegzJdHw0zySMeVNcQruQ0YaILmRFX5v79v7hS1nt2eA
-aHe71bCmgAcnBLJ/CJLE4A6zuB7oB5lMNiR+zBBNJxIZ4OflksmGWZ2mkcK919UF/6swxX20V8zL
-bLJUBgoMVc+ssEnRlFNCKL+9RobUrdoJ40D8OObzvr3TX3asS9D8v4r0+Uf9tN96motspGQRfjkL
-5Or+d7j4BS/y6ZDYK76EjlVaVkj8KVNtnxTRnHpLbJIIwr6VKbS5thnKywjEDH2csCb4bHP8MOXg
-/Zx3MBHbFMRWU20Jm0iSEwkkQxwCbGl6md5Y/gIb1LqsES0R1B/l0qdO4ffdo539kt8OUcz0OE4I
-rvaIqgeNCQ0xGh/ARc72O/Vp4WGgCrtrDfy+g0/JI2YDqakU/uZOkzk/LLG8/mErmOA2wspY7eEr
-NqSunknW8xOXnfCcIzobQsyQdGDlKd1+T4uXljCwPl/fkFYscF0reMYbXhvqmkEUfyhv8gBBUDGj
-pWOG6oaKa5z/Z7hULEZ7KevZcKRrSydZVsxo/KnR2g852vaxmApHd3P2r8ai6KFgvFrBwYf2C+xu
-XMu5CnYSrnh2WwZ2oo5X3WbZc6zvr5rAt490w7ElIZbSg+qeRbZsRXsERPZyJyLW8Sx1VAPlcFiM
-6083V9QMuRuqVDtKPlFBvzqFxtNXrkoueYFbxv7IQGwWcOcLt2+OsLzk+G5xL2csi+88qJKZ6FSM
-kGYiS5f2HEU09pQnL16Mgm7/JOBzSgbJ0/8lMuoC7hMbufKbfd2AYj/cOeMcuMI7+UrqTyuLwbY7
-g/NbbKzQwsRPNR6bAsGDvaRD6/2V+yk9ZuaHHBULHg8NP48hxBEhOvh5LZtV5XlLNG6oCqh1Xrib
-B40Xki+k+0DKM7fQ1NhXONjIvNqJ5smn2sYsUHxcnNj1Wm+oMJZCaECYAgEe8869P3cBCwor1tne
-pjs6CZECrZZXG6cAopSkqj4DtnoE8FrBq3Y8lsnosDxBeKltuWS93UazP6LdU32VsR6GBSyJaO/K
-aytVyyb9jfQ3wTyV7uDUnZJ43s9XNf3dg8aICTMJ4L3ilxzcaAdUgoxb2EYMGfby0agrgV4W6gxU
-v/PxvIExH0lhk2Zg66kTjFWhvSuC315Bxly5Zbvtzes8MjevgWgbd60ZtjfJjFDifFWe03PPJER7
-8KlDhWEOnk0Zjhldgp0Rrk2K8SA8r9jg0N+VSWYq/LMOo1uYQJAVfb8QLN8nurxTkuUyCPq0Pjmq
-ZmZa0lMwQYyWW2bNdg7nqpJBmQxnRg3Spuh7ErA2snLbrfhIIQp3wRPf2XLywrnlH8X5YWhN3i+9
-wPxzzDPQYEep58UyEEYtCjmaw/bu5eCY5ICSuXRo3s3FYm3MTmJVCFOZjmL8TRWQOzCWAd/A6K6h
-feMqOJ1Hn1Iy3xvjv4RXWji2NK8eM+C66+BbObXMfNcBeknsIvxwG9PxCkvIqLjMp/n42BtZ8Lsi
-yWXbr40c3ht6dfmgDYxVshOCiTLCmxM1RhvIrIPksxRCSoCOyf5nKepUMZQYyW19CoygjR95Gtc8
-R7OJx27DUNYK3e54WlrYcxqkdT+wy9RBA8y/7VrKL7e+o27OJF1NJ2+pCW6ryYmmWf9zr8fHOO6v
-CqfIeXExRHpY9ylAUd1qeyHic5vwgJfO8zheUsz/ZosP0wplFQd6/AVXoeavZkUV7cyFGjjNFuRJ
-+PQjXDrWDAnzf68jum8VGKi9iKGP+in1vf8pnMX1XUjWfPDCW9gpCBOW5ejUgi2eeyAgZ1hzMNWY
-tEOGKnofJ8C7jGj1oF3akNnf647SzjGPeMB/Oixp8QY8TfZr73tNVlbflBj/WAfvqOfJyQ0ZhNI0
-mq23hmHqhWJc7IzA6VW5oqqWI8P1FYh1CnyRMe3H0HoPYVs5fILhFtVTd9ildW0eJ3tRo8Ua4sgz
-Sa4ol4WA5d95nFW7ZUYn1WNdBRSRpszdnifMBOXwdPiOVP+YKVQfJ4p6L11zxp0vlV6OHaLwI1X4
-oJRwS4cT0mGd80sK4YvMrnG+t1VSPRUn8TqCCyx6NISi2jT7Eau5TLtd9jT5nU0/HPcBKzA8Zscg
-uMvpMGsGpDv8z8ytt3guY+4mJ4BeRN6i762Jpn1z1ejM3FyJWki0xLMSgyiOXDCSIQwHfyFf3o9V
-QPKH3RsUzzCa68JlBhqtix8VmvYuVEfYtx5f2aroiexlx/1BSwpk6BiKkFReBMkQLHaKvuQaSOUI
-obYxaHhbL1Sw9+AZ6PS8AFcyTPgkTaomfViAbtVvkRoweizLtPJhrsW9ZbN8IA2MxaQ90UNGZhhm
-XYgbOLLflPY3vyz1+ogP+VujJ79YdqDSmlPTSoAZmxE07G3eIbaGOsJee2MjWGEXrUSnnPke8Y9S
-8Dv7gnrSn5Uz0ZNlZ38aWBbPqsXKdjynQjraYZXARaorOR1G4Io1Put5krLSe+IVoo/eVmx7Kyrd
-08EbU9Hn3QXbbD9Nstp5XvnTz+wHOsFduyqouMaG/8wvobnQJXrkjb8IdNrVqqUroIAvHIdJ9gqW
-wO+CGCoHMl4FmtWZQ2k7UUZzr7bmGf/Abj6SjQGStDbFTWY+QpJO3bLtG6K8JYAwAMsaMinSaWYg
-iHJilV032wzFtdlwxn2FqCyaNKFA2v2xi0NMBWlvNNiCmTx3CMDGXPDe1Wdn7aLNWyD6Qf7F5P4+
-gZYCcatCxFtf5Md9klJW9c9HJD17uJRt0sggSzrS09T6EqVMPi+2FZLCdAZdY0aW6xiFJW8FqH9U
-MaQdRdCpvwT4eC5S/Fxi3SGZCEj6v7dpTZDOWwL22OQ5smtiRo4owrt/szWkp5Za+DkSemAEyUaS
-iCkBQ0KXdbaw9mCeeU4CCoicdC+HTCZGpoXCoaIsElk/0TSjnW4IluJLtJWR+npWqMfBuzylenn4
-6FG7x0egm+f0r/TWf+EOzkRlkWedPAinP+MfYo11cgFTstOVVlilG/lesTBC0sQ1wZ+QtZacpcRC
-IB2tJIZdGx2AQB8Rnc/Nt5psOeYYcml9uWuEVvCW671rWGFMHuhUWpCAB0eeK9hCYrdlErkreXZZ
-yGARJHBzh601Dc31NTIqYx/TGpdy6LPhQIbrQf3wpvFEGBQYPw088+FWMMTAr5YWNeQIonVM1j5c
-RNdNgIAiU2EHzeErMBBehSRLc0Py5yurRW0sMVeOlJzauJ2dlDEttWc0CAl0953/69EJCULbHv9v
-KsbBvxYlZBAPkd2XfI0amUohtiPRYTeqRggXywgzhsx2oy/VhaSzkoy6Xhtu2TX+dAhB6nxsQyXy
-j9adijOgrFMevPLvj+SIYZVpBVNG0jBaSxkCu3cIi1R7LDWGOCqg3NdAw8pDwzMkbWgWZ6cqTFAr
-GYvwyqDhU6L7GWeJCwZ/C/xCVsQxcCaIJ4cbPMjqvrGKnWFrJYQK23A/ataKLAuSgEl7oHbGQh2t
-VR1rVvIudxGVodBs9NRsBhgHh3Jzm6KKFl+gKE/hXLrtVnxaYOZvdwYHh0rY/qrj7/BwAXgblFZn
-fx7fnGbe3E7v1AWXBWijBEP7CqPgv2t8JBszY6nXvae1Gobu0RO1v8xuDKFMYzLZJKsSh07UrgVh
-M7Y4rqHYLHVJ0eijpvNAiKD551A6T0HJDlaSti/ka0fOgL2He1y35KJO2T4RBuE5nipXdarPP5gH
-/JQiOapGinsiz4JVa9GMfH2CEMrq5eTfpIZlzbjLigolPK+ySoVadMFuZotCYAowWZuNZm3u+ZUf
-ivz8gNpzDKMjNW8B1fJglQt+JwowfscRQxoSbXkO5gGLI3P/EKUvk03qzaHimc8k/u0pI0SqU17u
-lL9Wcl/PLqROnVu47atmY4d/B2vye7U/pYtoRV/c6ultSJuZBLKI8iwygsR1zDzgntaUfNQhkSA1
-dIvFQge7FhBoqd4u+8/mBrFIXwbznaxWRvT4b2kpNbWuoyZoQz14o7JyakRpTAqnZyJVQMIB9SGw
-rYs0z6DE22rUzIXsTRjiA4mwOPiLOxcFv1oNTgV4mbMJn5e8WFFtbmE80C1xNG+eoLp8UftxxW+Q
-FyN4O9/KKMvd9PYUROV9WkUhSeUTSXSG8n488j3cqcCKytCM0aCpoF43EFvz5sCmBqsmSY0XrGKP
-KwOID9Xpqa2/loe3Av/m+W5niR8kL1Bqe9PxdA9m4oNMzPkFwtByG2Vd75fw6Fy4elUv9Ahohv9U
-dGG8s3RJ+9+ohAYzEYkcfdkD6zSwxwHPurlpnv7cQeP4h3NhRfK+38GKxEQ8suh9+syezoEgv+6y
-5F7xUj2k7k3YQ6Dg62Hcg7wdhdtALULEBalK8T6uNgBL8xY51NT+9vYQaKy9gu1+YGiVZYOWrzD8
-MO05roYYND5Hwfcy9XG+FZRU8RaSWgvGnTA7PLOOZoEymaIqgini0S/bNYE6DgP7kG4bvZVYnAHv
-EGUlqRoA0ioIpr3P56LtbE9cFsUIbOHppc1xaLMt2qq+E79ll1zD0hV7PcBwJNar7KTV1C+gv26O
-xRYSFnHtBA1p086YlV8BejWi5MnUfYxHiOyPuBL566z3/5oCea8Q6OnF7600DdjpyBCWrbqc01Dy
-7ClOXA0586kD8BehRcIHK5VXjFB2MCz1R86AqtksuFrM0GOWlV5Ka6QruULmjupNFjl5djPhytgM
-OuiBgIoiq1zfXX1s2HNvHors+xXiARA766AS/Kc8cG8boj40d14EhgZmh8mtmOAn0m/WVtjA3WLq
-h13TZhmkK/sUBaBNKN/+GoNv1HnWhLheTQzRObXkmaM3Y7fU9S7zJKzeBrV31xZ/Z7XsyGbB9JjF
-GJ1AsbDtmUtg2TXkwRCLjqgzUh6Z2lv1dWFphLa5hcm8MRPNoVZgL2hb/upXbPIuXnpiqYAiSodM
-XzFbbfcFeHrMrAE58aa3posAo/RLQXdQqTyZjdBzVz3B8SfDg1SrJzTiDkiviTnHAoiHt4B5caQ2
-FhOrZbZrb/g7jt2j3jK3/AnokN6g55VRWvjuxUMo6XH41NpUttq+MzSadkjXieM3fSgao5ZBaw9L
-YTX3FnBtouX1nC1H2BMBQW3wNKKqGDkiBNyHfG4vLbdMkF2xsv4GjSSTDPv3k8RXqiRxUkIXiO8N
-2b9Sxhl7gFV8IsvylVKScrcaEbOHX030+FRU2C/9Tg6VSh3WNdjkiJKLHV6RgX/dnsgE6O+gZd6F
-X2/NaSAdfcvqkRUoDzqS+TkUUKXPUoq2kR9oGvGwb/A686NfJ4vL7v+Xn7rACRNu7a88qTN78eko
-NjL/T08H2DNnDE8vwNNkmc02dS/Mx0m/+FagZ0aUTmT25hp4D9K0n/Uzni5YRWQeHwnge9uZuKTh
-Gb7b+R7UC1g0tT9j/f+sSiHQ8NZjMo2uepi/dqrBDSNaQbYp80qRnbZ5jxIeWHZJSpNM7lhkMWCi
-upC/zpT8WnLF53BzM6rsRoEFqHgexN2Rc4AVIzHKZnmXLNqcLiKDpF5/U+oJMkhuhhBds/3jkuUs
-Y6P9twu9ltgJHvzNak8R2nD1OZY/qoQ81WbFrA5/gTVN+U+Fc96Dk6Q58Xt3oe/p3l9fXEa8SfPl
-ScqLOBL1imRAVYX2KPKCr/dG81Q0vAo3RVj8DCcPZuuzphNRd/RRsl95kHZST91HjEDFShv7QiSt
-S7cwOed899PDBPR3h1GDEZKb69N4g9AmLWAhgfWNsU7MRSqK0NDXIvNqHf12eXrB1m6mMyCT9tXm
-sTBQTFY0pb2z3ePy5jaMRqVoTNDCkTOYjcBoTrYFBCxdGKPy2JsDbk6zhAFK98sC265kO16+r+Lz
-r4r2vis2SnQvX3XVJZ2klec/4dO=

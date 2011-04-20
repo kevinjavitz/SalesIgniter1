@@ -23,12 +23,14 @@
       }
       
       function rentalAllowed($cID){
-          $Qcheck = dataAccess::setQuery('select activate from {customers_membership} where ismember="M" and customers_id = {customer_id}');
-          $Qcheck->setTable('{customers_membership}', 'customers_membership');
-          $Qcheck->setValue('{customer_id}', $cID);
-          $Qcheck->runQuery();
-          if ($Qcheck->numberOfRows() > 0){
-              if ($Qcheck->getVal('activate') == 'Y'){
+	      $Qcheck = Doctrine_Query::create()
+		      ->select('activate')
+		      ->from('CustomersMembership')
+		      ->where('ismember = ?', 'M')
+		      ->andWhere('customers_id = ?', $cID)
+		      ->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+          if ($Qcheck){
+              if ($Qcheck[0]['activate'] == 'Y'){
                   return true;
               }else{
                   return 'inactive';
@@ -71,12 +73,13 @@
               $messageStack->addSession('pageStack', sysLanguage::get('TEXT_DUPLICATION'), 'warning');
               tep_redirect( itw_app_link(null,'rentals','queue'));
           } else {
-              $QmaxPty = dataAccess::setQuery('select max(priority) as lastPriority from {queue} where customers_id = {customer_id}');
-              $QmaxPty->setTable('{queue}', TABLE_RENTAL_QUEUE);
-              $QmaxPty->setValue('{customer_id}', $this->userAccount->getCustomerId());
-              $QmaxPty->runQuery();
-              
-              $lastPriority = $QmaxPty->getVal('lastPriority');
+	          $QmaxPty = Doctrine_Query::create()
+		          ->select('MAX(priority) as lastPriority')
+		          ->from('RentalQueue')
+		          ->where('customers_id = ?', $this->userAccount->getCustomerId())
+		          ->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+
+              $lastPriority = $QmaxPty[0]['lastPriority'];
               if ($lastPriority > 0) {
                   $priority = $lastPriority + 1;
               } else {
@@ -90,29 +93,32 @@
       }
       
       function addBoxSet($boxID){
-          $Qdisc = dataAccess::setQuery('select products_id from {table} where box_id = {box_id}');
-          $Qdisc->setTable('{table}', TABLE_PRODUCTS_TO_BOX);
-          $Qdisc->setValue('{box_id}', $boxID);
-          $Qdisc->runQuery();
-          if ($Qdisc->numberOfRows() <= 0){
-              $Qcheck = dataAccess::setQuery('select box_id from {table} where products_id = {box_id} limit 1');
-              $Qcheck->setTable('{table}', TABLE_PRODUCTS_TO_BOX);
-              $Qcheck->setTable('{box_id}', $boxID);
-              $Qcheck->runQuery();
-              if ($Qcheck->numberOfRows() <= 0){
+	      $Qdisc = Doctrine_Query::create()
+		      ->select('products_id')
+		      ->from('ProductsToBox')
+		      ->where('box_id = ?', $boxID)
+		      ->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+          if (!$Qdisc){
+	          $Qcheck = Doctrine_Query::create()
+		          ->select('box_id')
+		          ->from('ProductsToBox')
+		          ->where('products_id = ?', $boxID)
+		          ->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+              if (!$Qcheck){
                   tep_redirect(itw_app_link('products_id=' . $boxID . '&msg=noboxset', 'product', 'info'));
               }else{
-                  $Qdisc = dataAccess::setQuery('select products_id from {table} where box_id = {box_id}');
-                  $Qdisc->setTable('{table}', TABLE_PRODUCTS_TO_BOX);
-                  $Qdisc->setValue('{box_id}', $Qcheck->getVal('box_id'));
-                  $Qdisc->runQuery();
+	              $Qdisc = Doctrine_Query::create()
+		              ->select('products_id')
+		              ->from('ProductsToBox')
+		              ->where('box_id = ?', $Qcheck[0]['box_id'])
+		              ->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
               }
           }
           
-          while ($Qdisc->next() !== false){
-              $product = new product($Qdisc->getVal('products_id'));
+          foreach($Qdisc as $disc){
+              $product = new product($disc[0]['products_id']);
               if ($product->isActive() === true){
-                  $this->addToQueue($Qdisc->getVal('products_id'));
+                  $this->addToQueue($disc[0]['products_id']);
               }
           }
       }

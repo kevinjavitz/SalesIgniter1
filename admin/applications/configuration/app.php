@@ -1,4 +1,7 @@
 <?php
+	require(sysConfig::getDirFsCatalog() . 'includes/classes/fileSystemBrowser.php');
+	require(sysConfig::getDirFsAdmin() . 'includes/classes/upload.php');
+
 	$appContent = $App->getAppContentFile();
 	$App->addJavascriptFile('ext/jQuery/ui/jquery.ui.tabs.js');
 

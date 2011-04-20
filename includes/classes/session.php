@@ -1,6 +1,8 @@
 <?php
 class Session {
 	private static $sessionLife = 43200; /* in seconds - 60(seconds in a minute)*60(minutes in an hour) = 3600 seconds */
+	private static $cookiePath;
+	private static $cookieDomain;
 
 	public function __construct(){
 		global $request_type;
@@ -15,9 +17,22 @@ class Session {
 		
 		self::setSavePath(sysConfig::get('SESSION_WRITE_DIRECTORY'));
 
-		// set the session cookie parameters
-		session_set_cookie_params(0, '/', '.' . str_replace('www.', '', $_SERVER['HTTP_HOST']));
-		
+		// set the session name and save path
+		if ($_SERVER['HTTP_HOST'] == 'localhost'){
+			self::$cookieDomain = '';
+		}else{
+			self::$cookieDomain = str_replace('www.', '.', $_SERVER['HTTP_HOST']);
+		}
+
+		if (APPLICATION_ENVIRONMENT == 'admin'){
+			self::$cookiePath = sysConfig::getDirWsAdmin();
+			self::setSessionName('osCAdminID');
+		}else{
+			self::$cookiePath = '/';
+			self::setSessionName('osCID');
+		}
+		session_set_cookie_params(0, self::$cookiePath, self::$cookieDomain);
+
 		// set the session ID if it exists
 		$sessionName = self::getSessionName();
 		if (isset($_POST[$sessionName])){

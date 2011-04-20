@@ -118,7 +118,7 @@ if (!empty($contents)){
 		if (strstr($boxFileName, '/') || strstr($boxFileName, '\\')){
 			require($boxFileName);
 		}else{
-			require(DIR_WS_BOXES . $boxFileName);
+			require(sysConfig::get('DIR_WS_BOXES') . $boxFileName);
 		}
 		echo parseMenuItem($contents, true, (!isset($boxes[$boxIdx + 1])));
 	}

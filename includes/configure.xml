@@ -10,11 +10,11 @@
 	</config>
 	<config protected="false">
 		<key>DIR_WS_CATALOG</key>
-		<value>/SalesIgniter/</value>
+		<value>/SalesIgniter1/</value>
 	</config>
 	<config protected="true">
 		<key>DIR_FS_DOCUMENT_ROOT</key>
-		<value>D:\phpStormProjects</value>
+		<value>D:/phpStormProjects</value>
 	</config>
 	<config protected="true">
 		<key>DB_SERVER</key>

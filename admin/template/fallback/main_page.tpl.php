@@ -4,7 +4,7 @@
 		<meta http-equiv="Content-Type" content="text/html; charset=<?php echo sysLanguage::getCharset(); ?>">
 		<title><?php echo sprintf(sysLanguage::get('TITLE'), sysConfig::get('STORE_NAME')); ?></title>
 		<base href="<?php echo (($request_type == 'SSL') ? sysConfig::get('HTTPS_SERVER') : sysConfig::get('HTTP_SERVER')) . sysConfig::get('DIR_WS_ADMIN'); ?>">
-		<link rel="stylesheet" type="text/css" href="<?php echo sysConfig::getDirWsCatalog();?>extensions/templateManager/catalog/globalFiles/stylesheet.php?import=<?php echo implode(',', $App->getStylesheetFiles());?>" />
+		<link rel="stylesheet" type="text/css" href="<?php echo sysConfig::getDirWsCatalog();?>extensions/templateManager/catalog/globalFiles/stylesheet.php?import=<?php echo implode(',', $App->getStylesheetFiles());?>&env=admin&<?php echo Session::getSessionName() . '=' . Session::getSessionId();?>" />
 		<script type="text/javascript">
 			var CKEDITOR_BASEPATH = '<?php echo sysConfig::getDirWsAdmin() . 'rental_wysiwyg/';?>';
 			var allGetParams = '<?php echo substr(tep_get_all_get_params(), 0, -1);?>';
@@ -23,7 +23,7 @@
 			var thisAppExt = '<?php echo (isset($_GET['appExt']) && !empty($_GET['appExt']) ? $_GET['appExt'] : null);?>';
 			var productID = '<?php echo (int)(isset($_GET['pID']) ? $_GET['pID'] : '0');?>';
 		</script>
-		<script type="text/javascript" src="<?php echo sysConfig::getDirWsCatalog();?>extensions/templateManager/catalog/globalFiles/javascript.php?import=<?php echo implode(',', $App->getJavascriptFiles());?>"></script>
+		<script type="text/javascript" src="<?php echo sysConfig::getDirWsCatalog();?>extensions/templateManager/catalog/globalFiles/javascript.php?import=<?php echo implode(',', $App->getJavascriptFiles());?>&env=admin&<?php echo Session::getSessionName() . '=' . Session::getSessionId();?>"></script>
 <?php
 if (isset($_GET['oError'])){
 	echo '		<script type="text/javascript">alert(\'Onetime rentals has been disabled. If you would like to enable it, please contact www.itwebexperts.com\');</script>' . "\n";

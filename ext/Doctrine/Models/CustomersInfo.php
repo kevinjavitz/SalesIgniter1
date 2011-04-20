@@ -12,20 +12,6 @@
  */
 class CustomersInfo extends Doctrine_Record {
 	
-	public function setUp(){
-		$this->setUpParent();
-	}
-	
-	public function setUpParent(){
-		$Customers = Doctrine::getTable('Customers')->getRecordInstance();
-		
-		$Customers->hasOne('CustomersInfo', array(
-			'local' => 'customers_id',
-			'foreign' => 'customers_info_id',
-			'cascade' => array('delete')
-		));
-	}
-
 	public function preInsert($event){
 		$this->customers_info_date_account_created = date('Y-m-d H:i:s');
 	}

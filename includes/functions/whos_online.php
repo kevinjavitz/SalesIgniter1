@@ -61,30 +61,25 @@
       }
     
       // remove entries that have expired
-      $Qdelete = dataAccess::setQuery('delete from {whos_online} where time_last_click < {last_click}');  
-      $Qdelete->setTable('{whos_online}', TABLE_WHOS_ONLINE);
-      $Qdelete->setValue('{last_click}', $xx_mins_ago);
-      $Qdelete->runQuery();
-    
-      $Qcustomer = dataAccess::setQuery('select count(*) as count from {whos_online} where session_id = {session_id}');
-      $Qcustomer->setTable('{whos_online}', TABLE_WHOS_ONLINE);
-      $Qcustomer->setValue('{session_id}', $wo_session_id);
-      $Qcustomer->runQuery();
-      if ($Qcustomer->getVal('count') > 0){
-          $Qaction = dataAccess::setQuery('update {whos_online} set customer_id = {customer_id}, full_name = {full_name}, ip_address = {ip_address}, time_last_click = {last_click}, last_page_url = {last_page} where session_id = {session_id}');
-      } else {
-          $Qaction = dataAccess::setQuery('insert into {whos_online} (customer_id, full_name, session_id, ip_address, time_entry, time_last_click, last_page_url, http_referer, user_agent) values ({customer_id}, {full_name}, {session_id}, {ip_address}, {time_entry}, {last_click}, {last_page}, {referrer}, {user_agent})');
-      }
-      $Qaction->setTable('{whos_online}', TABLE_WHOS_ONLINE);
-      $Qaction->setValue('{customer_id}', (int)$wo_customer_id);
-      $Qaction->setValue('{full_name}', $wo_full_name);
-      $Qaction->setValue('{session_id}', $wo_session_id);
-      $Qaction->setValue('{ip_address}', $wo_ip_address);
-      $Qaction->setValue('{time_entry}', $current_time);
-      $Qaction->setValue('{last_click}', $current_time);
-      $Qaction->setValue('{last_page}', $wo_last_page_url);
-      $Qaction->setValue('{referrer}', (isset($_SERVER['HTTP_REFERER']) ? tep_db_input($_SERVER['HTTP_REFERER']) : ''));
-      $Qaction->setValue('{user_agent}', $user_agent);
-      $Qaction->runQuery();
+	  Doctrine_Query::create()
+		  ->delete('WhosOnline')
+		  ->where('time_last_click < ?', $xx_mins_ago)
+		  ->execute();
+
+	  $WhosOnline = Doctrine_Core::getTable('WhosOnline');
+	  $Entry = $WhosOnline->findBySessionId($wo_session_id);
+	  if (!$Entry){
+		  $Entry = $WhosOnline->create();
+		  $Entry->session_id = $wo_session_id;
+	  }
+	  $Entry->customer_id = (int)$wo_customer_id;
+	  $Entry->full_name = $wo_full_name;
+	  $Entry->ip_address = $wo_ip_address;
+	  $Entry->time_entry = $current_time;
+	  $Entry->time_last_click = $current_time;
+	  $Entry->last_page_url = $wo_last_page_url;
+	  $Entry->http_referer = (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '');
+	  $Entry->user_agent = $user_agent;
+	  $Entry->save();
   }
 ?>

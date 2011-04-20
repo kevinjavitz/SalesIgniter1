@@ -3,9 +3,9 @@
 		$cID = $_GET['cID'];
 	}
 	
-	include('../includes/functions/crypt.php');
+	include(sysConfig::getDirFsCatalog() . 'includes/functions/crypt.php');
 	
-	require('includes/classes/currencies.php');
+	require(sysConfig::getDirFsCatalog() . 'includes/classes/currencies.php');
 	$currencies = new currencies();
 
 	$appContent = $App->getAppContentFile();

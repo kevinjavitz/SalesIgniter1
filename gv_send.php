@@ -116,7 +116,11 @@ if (!empty($action)){
 $breadcrumb->add(sysLanguage::get('NAVBAR_TITLE'));
 
 $content = CONTENT_GV_SEND;
-include (bts_select('main'));
+if (isset($_GET['dialog']) && $_GET['dialog'] == 'true'){
+	require(sysConfig::getDirFsCatalog() . 'templates/' . Session::get('tplDir') . '/popup.tpl.php');
+}else{
+	require(sysConfig::getDirFsCatalog() . 'templates/' . Session::get('tplDir') . '/main_page.tpl.php');
+}
 
 require(DIR_WS_INCLUDES . 'application_bottom.php');
 ?>

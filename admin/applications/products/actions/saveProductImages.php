@@ -10,10 +10,6 @@
 	This script and it's source is not redistributable
 */
 
-	if (!class_exists('upload')){
-		require (DIR_WS_CLASSES . 'upload.php');
-	}
-
 	$newImage = new upload();
 	$newImage->set_destination($_GET['folder']);
 	$newImage->set_permissions('777');

@@ -1,5 +1,5 @@
 <?php
-require(DIR_FS_CATALOG . 'includes/classes/formValidation.php');
+require(sysConfig::getDirFsCatalog() . 'includes/classes/formValidation.php');
 
 class RentalStoreUser implements Serializable {
 	protected $customerInfo;

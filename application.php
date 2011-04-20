@@ -15,7 +15,7 @@
 	require($App->getAppFile());
 		
 	if (!empty($action)){
-		EventManager::notify('ApplicationActionsBeforeExecute', &$action);
+		EventManager::notify('ApplicationActionsBeforeExecute', $action);
 		
 		$actionFiles = $App->getActionFiles($action);
 		foreach($actionFiles as $file){

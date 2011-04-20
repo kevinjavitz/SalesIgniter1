@@ -5,9 +5,6 @@
 
  	$uploaded = false;
 	if (isset($_FILES['usrfl'])){
-		if (!class_exists('upload')){
-			require(DIR_WS_CLASSES . 'upload.php');
-		}
 		$upload = new upload('usrfl');
 		$upload->set_extensions(array('txt', 'xls', 'csv'));
 		$upload->set_destination($dataExport->tempDir);

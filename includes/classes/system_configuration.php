@@ -71,6 +71,8 @@
 					(isset($cInfo['protected']) && (string) $cInfo['protected'] == 'true')
 				);
 			}
+			$xmlData = null;
+			unset($xmlData);
 
 			$httpDomainName = self::get('HTTP_DOMAIN_NAME');
 			if (substr($_SERVER['HTTP_HOST'], 0, 4) == 'www.' && substr($httpDomainName, 0, 4) != 'www.'){
@@ -240,13 +242,13 @@
 		 */
 		public static function getDirFsCatalog($forceType = false){
 			if ($forceType == 'NONSSL' || ($forceType === false && getenv('HTTPS') != 'on')){
-				if (self::exists('DIR_FS_HTTP_CATALOG') === true){
+				if (self::exists('DIR_FS_HTTP_CATALOG', false) === true){
 					$returnDir = self::get('DIR_FS_HTTP_CATALOG');
 				}else{
 					$returnDir = self::get('DIR_FS_CATALOG');
 				}
 			}elseif ($forceType == 'SSL' || ($forceType === false && getenv('HTTPS') == 'on')){
-				if (self::exists('DIR_FS_HTTPS_CATALOG') === true){
+				if (self::exists('DIR_FS_HTTPS_CATALOG', false) === true){
 					$returnDir = self::get('DIR_FS_HTTPS_CATALOG');
 				}else{
 					$returnDir = self::get('DIR_FS_CATALOG');
@@ -264,21 +266,15 @@
 		 * @return void
 		 */
 		public static function load(){
-			$Qconfig = Doctrine_Query::create()
+			/*$Qconfig = Doctrine_Query::create()
 			->select('configuration_key, configuration_value')
 			->from('Configuration')
-			->execute();
+			->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 			foreach($Qconfig as $cfg){
-				/* 
-				 * @TODO: Remove when ALL defines are upgraded
-				 */
-				if (!defined($cfg->configuration_key)){
-					define($cfg->configuration_key, $cfg->configuration_value);
-				}
-				
-				self::set($cfg->configuration_key, $cfg->configuration_value);
+				self::set($cfg['configuration_key'], $cfg['configuration_value']);
 			}
-			$Qconfig->free();
+			$Qconfig = null;
+			unset($Qconfig);*/
 		}
 		
 		/**
@@ -331,10 +327,24 @@
 		 * @param string $k The key to use to find the configuration value
 		 * @return string
 		 */
-		public static function get($k){
-			if (self::exists($k)){
-				return self::$config[$k];
+		public static function get($k, $load = true){
+			$return = '';
+			if (array_key_exists($k, self::$config)){
+				$return = self::$config[$k];
+			}elseif ($load === true){
+				$Qconfig = Doctrine_Query::create()
+					->select('configuration_value')
+					->from('Configuration')
+					->where('configuration_key = ?', $k)
+					->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+				if ($Qconfig){
+					$return = $Qconfig[0]['configuration_value'];
+					$Qconfig = null;
+					unset($Qconfig);
+					self::set($k, $return);
+				}
 			}
+			return $return;
 		}
 		
 		/**
@@ -344,8 +354,13 @@
 		 * @param string $k The key to use to find the configuration value
 		 * @return bool
 		 */
-		public static function exists($k){
-			return array_key_exists($k, self::$config);
+		public static function exists($k, $load = true){
+			$exists = array_key_exists($k, self::$config);
+			if ($exists === false && $load === true){
+				self::get($k, true);
+				$exists = array_key_exists($k, self::$config);
+			}
+			return $exists;
 		}
 		
 		/**

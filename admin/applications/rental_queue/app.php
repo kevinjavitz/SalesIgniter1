@@ -1,8 +1,12 @@
 <?php
+	require(sysConfig::getDirFsAdmin() . 'includes/classes/table_block.php');
+	require(sysConfig::getDirFsAdmin() . 'includes/classes/box.php');
+	require(sysConfig::getDirFsAdmin() . 'includes/classes/split_page_results.php');
+
 	$appContent = $App->getAppContentFile();
 
 	if (isset($_GET['cID'])){
-		require('../includes/classes/product.php');
+		require(sysConfig::getDirFsCatalog() . 'includes/classes/product.php');
 		
 		$Qproducts = tep_db_query('select distinct products_id from ' . TABLE_RENTAL_QUEUE);
 		if (tep_db_num_rows($Qproducts) > 0){
@@ -23,7 +27,7 @@
 		$membership =& $userAccount->plugins['membership'];
 		$addressBook =& $userAccount->plugins['addressBook'];
 		
-		require('includes/classes/rental_queue.php');
+		require(sysConfig::getDirFsAdmin() . 'includes/classes/rental_queue.php');
 		$rentalQueue = new rentalQueue_admin($_GET['cID']);
 	}
 ?>

@@ -6,7 +6,7 @@
 	Session::set('currency', (USE_DEFAULT_LANGUAGE_CURRENCY == 'true' ? LANGUAGE_CURRENCY : DEFAULT_CURRENCY));
 
 /* Include all classes required, order DOES matter -- BEGIN -- */
-	require(DIR_FS_CATALOG . DIR_WS_CLASSES . 'currencies.php');
+	require(sysConfig::getDirFsCatalog() . 'includes/classes/currencies.php');
 	require(DIR_FS_CATALOG . DIR_WS_CLASSES . 'product.php');
 	require(DIR_FS_CATALOG . DIR_WS_FUNCTIONS . 'crypt.php');
 	require(DIR_FS_CATALOG . DIR_WS_CLASSES . 'http_client.php');

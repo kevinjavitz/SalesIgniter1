@@ -7,11 +7,6 @@
 	$products_date_available = tep_db_prepare_input($_POST['products_date_available']);
 	$products_date_available = (date('Y-m-d') < $products_date_available) ? $products_date_available : 'null';
 
-	// copy image only if modified
-	if (!class_exists('upload')){
-		require(DIR_WS_CLASSES . 'upload.php');
-	}
-
 	$Products = Doctrine_Core::getTable('Products');
 	if (isset($_GET['pID'])){
 		$Product = $Products->findOneByProductsId((int)$_GET['pID']);

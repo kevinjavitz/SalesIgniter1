@@ -492,12 +492,19 @@ class Doctrine_Core
      */
     private static $_validators = array();
 
-    /**
-     * Path to the models directory
-     *
-     * @var string
-     */
-    private static $_modelsDirectory;
+	/**
+	 * Path to the models directory
+	 *
+	 * @var string
+	 */
+	private static $_modelsDirectory;
+
+	/**
+	 * Path to the models directory
+	 *
+	 * @var string
+	 */
+	private static $_extModelsDirectory = array();
 
     /**
      * __construct
@@ -598,10 +605,15 @@ class Doctrine_Core
      * @param string $directory 
      * @return void
      */
-    public static function setModelsDirectory($directory)
-    {
-        self::$_modelsDirectory = $directory;
-    }
+	public static function setModelsDirectory($directory)
+	{
+		self::$_modelsDirectory = $directory;
+	}
+
+	public static function addExtModelsDirectory($directory)
+	{
+		self::$_extModelsDirectory[] = $directory;
+	}
 
     /**
      * Get the directory where your models are located for PEAR style naming
@@ -1151,6 +1163,18 @@ class Doctrine_Core
                 require $class;
 
                 return true;
+            }
+
+            if (!empty(self::$_extModelsDirectory)){
+	            foreach(self::$_extModelsDirectory as $dir){
+		            $class = $dir . DIRECTORY_SEPARATOR . str_replace('_', DIRECTORY_SEPARATOR, $className) . '.php';
+
+		            if (file_exists($class)) {
+			            require $class;
+
+			            return true;
+		            }
+	            }
             }
         }
 

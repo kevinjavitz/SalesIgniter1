@@ -36,7 +36,7 @@
 	 * Load system path/database settings
 	 */
 	sysConfig::init();
-	
+
 /* Use sysConfig from here on */
 	include(sysConfig::getDirFsCatalog() . 'includes/conversionArrays.php');
 
@@ -51,20 +51,14 @@
 	define('LOCAL_EXE_ZIP', '/usr/local/bin/zip');
 	define('LOCAL_EXE_UNZIP', '/usr/local/bin/unzip');
 
-// include the list of project filenames
-	require(sysConfig::getDirFsAdmin() . 'includes/filenames.php');
-
-// include the list of project database tables
-	require(sysConfig::getDirFsAdmin() . 'includes/database_tables.php');
-
 	require(sysConfig::getDirFsCatalog() . 'ext/Doctrine.php');
 	spl_autoload_register(array('Doctrine_Core', 'autoload'));
 	spl_autoload_register(array('Doctrine_Core', 'modelsAutoload'));
 	$manager = Doctrine_Manager::getInstance();
 	$manager->setAttribute(Doctrine_Core::ATTR_AUTOLOAD_TABLE_CLASSES, true);
-	//$manager->setAttribute(Doctrine_Core::ATTR_MODEL_LOADING, Doctrine_Core::MODEL_LOADING_CONSERVATIVE);
+	$manager->setAttribute(Doctrine_Core::ATTR_MODEL_LOADING, Doctrine_Core::MODEL_LOADING_CONSERVATIVE);
 	Doctrine_Core::setModelsDirectory(sysConfig::getDirFsCatalog() . 'ext/Doctrine/Models'); 
-	Doctrine_Core::loadModels(sysConfig::getDirFsCatalog() . 'ext/Doctrine/Models');
+	//Doctrine_Core::loadModels(sysConfig::getDirFsCatalog() . 'ext/Doctrine/Models');
 
 	$profiler = new Doctrine_Connection_Profiler();
 	
@@ -89,17 +83,11 @@
 	define('CURRENCY_SERVER_PRIMARY', 'oanda');
 	define('CURRENCY_SERVER_BACKUP', 'xe');
 
-	require(sysConfig::getDirFsCatalog() . 'includes/classes/dataAccess.php');
-	new dataAccess(); /* Establish Database Connection */
-
-// include the database functions
-	require(sysConfig::getDirFsCatalog() . 'includes/functions/database.php');
-
 // set application wide parameters
 	sysConfig::load();
 
 	require(sysConfig::getDirFsCatalog() . 'includes/classes/Profiler/Base.php');
-	require(sysConfig::getDirFsCatalog() . 'includes/classes/html/dom/phpQuery.php');
+	//require(sysConfig::getDirFsCatalog() . 'includes/classes/html/dom/phpQuery.php');
 	require(sysConfig::getDirFsCatalog() . 'includes/classes/htmlBase.php');
 	require(sysConfig::getDirFsCatalog() . 'includes/classes/exceptionManager.php');
 	$ExceptionManager = new ExceptionManager;
@@ -122,8 +110,6 @@
 // initialize the logger class
 	require(sysConfig::getDirFsAdmin() . 'includes/classes/logger.php');
 
-	require(sysConfig::getDirFsCatalog() . 'includes/classes/fileSystemBrowser.php');
-
 // include shopping cart class
 	/*
 	 * Include all classes that could be included in a session variable --BEGIN--
@@ -137,7 +123,7 @@
 	
 	require(sysConfig::getDirFsCatalog() . 'includes/classes/application.php');
 	require(sysConfig::getDirFsCatalog() . 'includes/classes/extension.php');
-	
+
 	$App = new Application((isset($_GET['app']) ? $_GET['app'] : ''), (isset($_GET['appPage']) ? $_GET['appPage'] : ''));
 	if ($App->isValid() === false) die('No valid application found.');
 
@@ -147,15 +133,15 @@
 	require(sysConfig::getDirFsCatalog() . 'includes/classes/session.php');
 	new Session(); /* Initialize the session */
 
-// set the session name and save path
-	Session::setSessionName('osCAdminID');
-	Session::setSavePath(sysConfig::get('SESSION_WRITE_DIRECTORY'));
-
-// set the session cookie parameters
-	session_set_cookie_params(0, sysConfig::getDirWsAdmin());
-
 // lets start our session
 	Session::start();
+
+require(sysConfig::getDirFsCatalog() . 'includes/classes/message_stack.php');
+$messageStack = new messageStack;
+
+require(sysConfig::getDirFsCatalog() . 'includes/classes/eventManager/Manager.php');
+require(sysConfig::getDirFsCatalog() . 'includes/classes/eventManager/Event.php');
+require(sysConfig::getDirFsCatalog() . 'includes/classes/eventManager/EventActionResponse.php');
 
 	$appExtension->postSessionInit();
 
@@ -173,13 +159,6 @@
 	}
 
 // initialize the message stack for output messages
-	require(sysConfig::getDirFsCatalog() . 'includes/classes/message_stack.php');
-	$messageStack = new messageStack;
-
-	require(sysConfig::getDirFsCatalog() . 'includes/classes/eventManager/Manager.php');
-	require(sysConfig::getDirFsCatalog() . 'includes/classes/eventManager/Event.php');
-	require(sysConfig::getDirFsCatalog() . 'includes/classes/eventManager/EventActionResponse.php');
-
 	require(sysConfig::getDirFsCatalog() . 'includes/classes/system_modules_loader.php');
 	require(sysConfig::getDirFsCatalog() . 'includes/modules/infoboxes/InfoBoxAbstract.php');
 	require(sysConfig::getDirFsCatalog() . 'includes/modules/orderShippingModules/modules.php');
@@ -188,7 +167,7 @@
 
 	$appExtension->loadExtensions();
 
-	Doctrine_Core::initializeModels(Doctrine_Core::getLoadedModels());
+	//Doctrine_Core::initializeModels(Doctrine_Core::getLoadedModels());
 
 	if (isset($_GET['verifyModels'])){
 		$dirObj = new DirectoryIterator(sysConfig::getDirFsCatalog() . 'ext/Doctrine/Models/');
@@ -199,19 +178,6 @@
 	}
 
 	$App->loadLanguageDefines();
-	
-// define our localization functions
-	require(sysConfig::getDirFsAdmin() . 'includes/functions/localization.php');
-
-// Include validation functions (right now only email address)
-	require(sysConfig::getDirFsAdmin() . 'includes/functions/validations.php');
-
-// setup our boxes
-	require(sysConfig::getDirFsAdmin() . 'includes/classes/table_block.php');
-	require(sysConfig::getDirFsAdmin() . 'includes/classes/box.php');
-
-// split-page-results
-	require(sysConfig::getDirFsAdmin() . 'includes/classes/split_page_results.php');
 
 // entry/item info classes
 	require(sysConfig::getDirFsAdmin() . 'includes/classes/object_info.php');
@@ -220,26 +186,9 @@
 	require(sysConfig::getDirFsAdmin() . 'includes/classes/mime.php');
 	require(sysConfig::getDirFsAdmin() . 'includes/classes/email.php');
 
-// file uploading class
-	require(sysConfig::getDirFsAdmin() . 'includes/classes/upload.php');
-
-// calculate category path
-	if (isset($_GET['cPath'])) {
-		$cPath = $_GET['cPath'];
-	} else {
-		$cPath = '';
-	}
-
-	if (tep_not_null($cPath)) {
-		$cPath_array = tep_parse_category_path($cPath);
-		$cPath = implode('_', $cPath_array);
-		$current_category_id = $cPath_array[(sizeof($cPath_array)-1)];
-	} else {
-		$current_category_id = 0;
-	}
 
 // check if a default currency is set
-	if (sysConfig::exists('DEFAULT_CURRENCY') === false){
+	if (sysConfig::exists('DEFAULT_CURRENCY', true) === false){
 		$messageStack->add('footerStack', sysLanguage::get('ERROR_NO_DEFAULT_CURRENCY_DEFINED'), 'error');
 	}
 
@@ -256,8 +205,8 @@
 	require(sysConfig::getDirFsAdmin() . 'includes/add_ccgvdc_application_top.php');  // ICW CREDIT CLASS Gift Voucher Addittion
 
 	require(sysConfig::getDirFsCatalog() . 'includes/classes/system_permissions.php');
-	
-	if ($App->getAppName() != 'login') {
+
+	if ($App->getAppName() != 'login' && basename($_SERVER['PHP_SELF']) != 'stylesheet.php' && basename($_SERVER['PHP_SELF']) != 'javascript.php') {
 		sysPermissions::loadPermissions();
 		tep_admin_check_login();
 		

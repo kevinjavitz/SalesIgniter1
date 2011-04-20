@@ -24,12 +24,23 @@ class Customers extends Doctrine_Record {
 			'foreign' => 'customers_id',
 			'cascade' => array('delete')
 		));
-		
+
 		$this->hasOne('CustomersMembership', array(
-			'local' => 'customers_id',
-			'foreign' => 'customers_id',
-			'cascade' => array('delete')
-		));
+				'local' => 'customers_id',
+				'foreign' => 'customers_id',
+				'cascade' => array('delete')
+			));
+
+		$this->hasMany('MembershipBillingReport', array(
+				'local' => 'customers_id',
+				'foreign' => 'customers_id'
+			));
+
+		$this->hasOne('CustomersInfo', array(
+				'local' => 'customers_id',
+				'foreign' => 'customers_info_id',
+				'cascade' => array('delete')
+			));
 	}
 	
 	public function setTableDefinition(){

@@ -349,7 +349,7 @@ require(sysConfig::getDirFsCatalog() . 'includes/classes/Profiler/Base.php');
 	if (isset($_POST['cust_order']))           $action = 'cust_order';
 	if (isset($_POST['checkout']))             $action = 'update_product';
 
-	EventManager::notify('ApplicationTopActionCheckPost', &$action);
+	EventManager::notify('ApplicationTopActionCheckPost', $action);
 
 	if (!empty($action)) {
 		// redirect the customer to a friendly cookie-must-be-enabled page if cookies are disabled
@@ -656,7 +656,7 @@ require(sysConfig::getDirFsCatalog() . 'includes/classes/Profiler/Base.php');
 	require(sysConfig::getDirFsCatalog() . 'includes/add_ccgvdc_application_top.php');  // ICW CREDIT CLASS Gift Voucher Addittion
 
 	// BOF BTS
-	require(sysConfig::getDirFsCatalog() . 'includes/configure_bts.php');
+	//require(sysConfig::getDirFsCatalog() . 'includes/configure_bts.php');
 	// EOF BTS
 	include(sysConfig::getDirFsCatalog() . 'includes/functions/drawrating.php');
 

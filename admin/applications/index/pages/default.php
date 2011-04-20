@@ -76,7 +76,7 @@
      $Qcustomers = Doctrine_Query::create()
 	->from('Customers c')
 	->leftJoin('c.CustomersMembership cm')
-	->leftJoin('c.MembershipBillingReport mu on (mu.customers_id = c.customers_id and mu.date = "' . LAST_CRON_DATE . '")')
+	->leftJoin('c.MembershipBillingReport mu ON (mu.customers_id = c.customers_id AND mu.date = "' . sysConfig::get('LAST_CRON_DATE') . '")')
 	->leftJoin('c.CustomersInfo i')
 	->leftJoin('c.AddressBook a on (c.customers_id = a.customers_id and c.customers_default_address_id = a.address_book_id)')
 	->leftJoin('a.Countries co')

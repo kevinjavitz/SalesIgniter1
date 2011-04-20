@@ -20,17 +20,16 @@
 
       if (RENTAL_UPGRADE_CYCLE == 'true'){
           if (Session::get('account_action') == 'upgrade'){ /* Yes it can only be this, but i don't wanna take it out */
-              $Qdelete = dataAccess::setQuery('delete from {membership_update} where customers_id={customer_id}');
-              $Qdelete->setTable('{membership_update}', TABLE_MEMBERSHIP_UPDATE);
-              $Qdelete->setValue('{customer_id}', $userAccount->getCustomerId());
-              $Qdelete->runQuery();
+	          Doctrine_Query::create()
+		          ->delete('MembershipUpdate')
+		          ->where('customers_id = ?', $userAccount->getCustomerId())
+		          ->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 
-              $Qinsert = dataAccess::setQuery('insert into {membership_update} (customers_id, plan_id, upgrade_date) values ({customer_id}, {plan_id}, {upgrade_date})');
-              $Qinsert->setTable('{membership_update}', TABLE_MEMBERSHIP_UPDATE);
-              $Qinsert->setValue('{customer_id}', $userAccount->getCustomerId());
-              $Qinsert->setValue('{plan_id}', (int)$_POST['plan_id']);
-              $Qinsert->setValue('{upgrade_date}', date('Y-m-d', $membership->membershipInfo['next_bill_date']));
-              $Qinsert->runQuery();
+              $Qinsert = new MembershipUpdate();
+              $Qinsert->customers_id = $userAccount->getCustomerId();
+              $Qinsert->plan_id = (int)$_POST['plan_id'];
+              $Qinsert->upgrade_date = date('Y-m-d', $membership->membershipInfo['next_bill_date']);
+              $Qinsert->save();
 
               $messageStack->addSession('pageStack', 'Your new membership will take effect on "' . tep_date_short(date('Y-m-d', $membership->membershipInfo['next_bill_date'])) . '"', 'success');
               tep_redirect(itw_app_link(null, 'account', 'default', 'SSL'));
@@ -131,11 +130,14 @@
 
    $currentPlan = $userAccount->plugins['membership']->getPlanId();
 
-   $Qplans = dataAccess::setQuery('select m.*, md.name as package_name from {memberships} m left join {membershipdescription} md on md.plan_id=m.plan_id where md.language_id='.Session::get('languages_id').' order by sort_order asc');
-   $Qplans->setTable('{memberships}', TABLE_MEMBER);
-   $Qplans->setTable('{membershipsdescription}', 'membership_plan_description');
+   $Qplans = Doctrine_Query::create()
+	   ->from('Membership m')
+	   ->leftJoin('m.MembershipDescription md')
+	   ->where('md.language_id = ?', Session::get('languages_id'))
+	   ->orderBy('m.sort_order')
+	   ->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
    $i = 0;
-   while($Qplans->next() !== false){
+   foreach($Qplans as $plan){
        if (($i/2) == floor($i/2)) {
            $info_box_contents[] = array('params' => 'class="productListing-even"');
        } else {
@@ -146,7 +148,7 @@
        $style = '';
        $adnl = '';
        $checked = false;
-       if ($Qplans->getVal('plan_id') == $currentPlan){
+       if ($plan['plan_id'] == $currentPlan){
            $style = ' style="background:#ffffd7"';
            $adnl = '&nbsp;&nbsp;<span style="color:red">' . sysLanguage::get('TEXT_CURRENT') . '</span>';
            $checked = true;
@@ -154,31 +156,31 @@
 
        $info_box_contents[$cur_row][] = array(
            'params' => 'class="productListing-data"' . $style,
-           'text'   => tep_draw_radio_field('plan_id', $Qplans->getVal('plan_id'), $checked)
+           'text'   => tep_draw_radio_field('plan_id', $plan['plan_id'], $checked)
        );
 
        $info_box_contents[$cur_row][] = array(
            'params' => 'class="productListing-data"' . $style,
-           'text'   => $Qplans->getVal('package_name') . $adnl
-       );
-
-       $info_box_contents[$cur_row][] = array(
-           'align'  => 'center',
-           'params' => 'class="productListing-data"' . $style,
-           'text'   => ($Qplans->getVal('membership_months') > 0 ? $Qplans->getVal('membership_months') . ' Month(s)' : '') .
-                       ($Qplans->getVal('membership_days') > 0 ? $Qplans->getVal('membership_days') . ' Days' : '')
+           'text'   => $plan['MembershipDescription'][0]['package_name'] . $adnl
        );
 
        $info_box_contents[$cur_row][] = array(
            'align'  => 'center',
            'params' => 'class="productListing-data"' . $style,
-           'text'   => $Qplans->getVal('no_of_titles')
+           'text'   => ($plan['membership_months'] > 0 ? $plan['membership_months'] . ' Month(s)' : '') .
+                       ($plan['membership_days'] > 0 ? $plan['membership_days'] . ' Days' : '')
+       );
+
+       $info_box_contents[$cur_row][] = array(
+           'align'  => 'center',
+           'params' => 'class="productListing-data"' . $style,
+           'text'   => $plan['no_of_titles']
        );
 
        $info_box_contents[$cur_row][] = array(
            'align'  => 'right',
            'params' => 'class="productListing-data"' . $style,
-           'text'   => $currencies->format($Qplans->getVal('price'))
+           'text'   => $currencies->format($plan['price'])
        );
 
        $i++;

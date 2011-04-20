@@ -14,10 +14,6 @@
 
 
 if (isset($_FILES['usrfl'])){
-	if (!class_exists('upload')){
-		require('includes/classes/upload.php');
-	}
-
 	$upload = new upload('usrfl');
 	$upload->set_extensions(array('txt', 'xls', 'csv'));
 	$upload->set_destination($BP->tempDir);

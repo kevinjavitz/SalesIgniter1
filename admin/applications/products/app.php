@@ -1,4 +1,5 @@
 <?php
+	require(sysConfig::getDirFsAdmin() . 'includes/classes/upload.php');
 	$appContent = $App->getAppContentFile();
     $infoBoxId = null;
 		if (isset($_GET['pID'])){
@@ -27,7 +28,7 @@
 			$App->addStylesheetFile('ext/jQuery/external/fancybox/jquery.fancybox.css');
 		}
 	
-		require(DIR_WS_CLASSES . 'currencies.php');
+		require(sysConfig::getDirFsCatalog() . 'includes/classes/currencies.php');
 		$currencies = new currencies();
 	
 		// Ultimate SEO URLs v2.1

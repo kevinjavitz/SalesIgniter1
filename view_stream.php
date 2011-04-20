@@ -89,8 +89,12 @@
          $canView = true;
      }
  }
- 
-  include (bts_select('main'));
+
+if (isset($_GET['dialog']) && $_GET['dialog'] == 'true'){
+	require(sysConfig::getDirFsCatalog() . 'templates/' . Session::get('tplDir') . '/popup.tpl.php');
+}else{
+	require(sysConfig::getDirFsCatalog() . 'templates/' . Session::get('tplDir') . '/main_page.tpl.php');
+}
   
  include('includes/application_bottom.php');
 ?>

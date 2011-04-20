@@ -1600,13 +1600,15 @@ function tep_cfg_textarea($text) {
 }
 
 function tep_cfg_get_zone_name($zone_id) {
-	$zone_query = tep_db_query("select zone_name from " . TABLE_ZONES . " where zone_id = '" . (int)$zone_id . "'");
-
-	if (!tep_db_num_rows($zone_query)) {
+	$Qzone = Doctrine_Query::create()
+		->select('zone_name')
+		->from('Zones')
+		->where('zone_id = ?', (int)$zone_id)
+		->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+	if (!$Qzone) {
 		return $zone_id;
 	} else {
-		$zone = tep_db_fetch_array($zone_query);
-		return $zone['zone_name'];
+		return $Qzone[0]['zone_name'];
 	}
 }
 ////
@@ -1929,13 +1931,15 @@ function tep_cfg_pull_down_inventorycenter_shipping($method, $key = '') {
 	}
 
 function tep_get_country_name($country_id) {
-	$country_query = tep_db_query("select countries_name from " . TABLE_COUNTRIES . " where countries_id = '" . (int)$country_id . "'");
-
-	if (!tep_db_num_rows($country_query)) {
+	$Qcountry = Doctrine_Query::create()
+		->select('countries_name')
+		->from('Countries')
+		->where('countries_id = ?', (int)$country_id)
+		->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+	if (!$Qcountry) {
 		return $country_id;
 	} else {
-		$country = tep_db_fetch_array($country_query);
-		return $country['countries_name'];
+		return $Qcountry[0]['countries_name'];
 	}
 }
 
