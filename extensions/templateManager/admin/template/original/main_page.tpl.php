@@ -166,8 +166,8 @@ $pageContent = new Template('pageContent.tpl', sysConfig::getDirFsCatalog() . 'e
 $checkFiles = array(
 	$templateDir . '/applications/' . $App->getAppName() . '/' . $App->getPageName() . '.php',
 	sysConfig::getDirFsCatalog() . '/applications/' . $App->getAppName() . '/pages/' . $App->getPageName() . '.php',
-	(isset($appContent) ? $appContent : false),
-	bts_select('content')
+	sysConfig::getDirFsCatalog() . 'applications/' . $appContent,
+	(isset($appContent) ? $appContent : false)
 );
 
 $requireFile = false;

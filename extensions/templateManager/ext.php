@@ -16,6 +16,29 @@ class Extension_templateManager extends ExtensionBase {
 	}
 
 	public function postSessionInit(){
+		if (isset($_GET['tplDir']) && is_dir(sysConfig::getDirFsCatalog() . 'templates/' . basename($_GET['tplDir']))) {
+			Session::set('tplDir', basename($_GET['tplDir']));
+		} else {
+			if (Session::exists('tplDir') === true && is_dir(sysConfig::getDirFsCatalog() . 'templates/' . Session::get('tplDir'))){
+			}else{
+				if (APPLICATION_ENVIRONMENT == 'admin'){
+					Session::set('tplDir', 'fallback');
+				}else{
+					Session::set('tplDir', sysConfig::get('DIR_WS_TEMPLATES_DEFAULT'));
+				}
+			}
+		}
+
+		EventManager::notify('SetTemplateName');
+
+		$tplDir = Session::get('tplDir');
+		if ((preg_match('/^[[:alnum:]|_|-]+$/', $tplDir)) && (is_dir(sysConfig::getDirFsCatalog() . 'templates/' . $tplDir))){
+			// 'Input Validated' only allow alfanumeric characters and underscores in template name
+			sysConfig::set('DIR_WS_TEMPLATES', sysConfig::getDirFsCatalog() . 'templates/' . $tplDir . '/' );
+		} else {
+			echo strip_tags($tplDir) . '<br>';
+			exit('Illegal template directory!');
+		}
 		/*if (basename($_SERVER['PHP_SELF']) == 'stylesheet.php'){
 			$templateDir = Session::get('tplDir');
 			$layoutId = $_GET['layout_id'];

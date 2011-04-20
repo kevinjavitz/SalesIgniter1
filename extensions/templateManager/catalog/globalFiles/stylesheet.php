@@ -1,5 +1,14 @@
 <?php
+if (isset($_GET['env'])){
+	if ($_GET['env'] == 'admin'){
+		chdir('../../../../');
+		chdir('admin');
+	}else{
+		chdir('../../../../');
+	}
+}else{
 	chdir('../../../../');
+}
 include('includes/application_top.php');
 
 header('Content-Type: text/css');

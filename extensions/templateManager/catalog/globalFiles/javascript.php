@@ -1,5 +1,14 @@
 <?php
+if (isset($_GET['env'])){
+	if ($_GET['env'] == 'admin'){
+		chdir('../../../../');
+		chdir('admin');
+	}else{
+		chdir('../../../../');
+	}
+}else{
 	chdir('../../../../');
+}
 include('includes/application_top.php');
 
 header('Content-Type: text/javascript');
@@ -127,15 +136,15 @@ Minify::setCache(new Minify_Cache_File()); // guesses a temp directory
 
 // setup sources
 $sources = array(
-	sysConfig::getDirFsCatalog() . 'ext/jQuery/jQuery.js',
-	sysConfig::getDirFsCatalog() . 'ext/jQuery/ui/jquery.ui.core.js',
-	sysConfig::getDirFsCatalog() . 'ext/jQuery/ui/jquery.ui.widget.js',
-	sysConfig::getDirFsCatalog() . 'ext/jQuery/ui/jquery.ui.mouse.js',
-	sysConfig::getDirFsCatalog() . 'ext/jQuery/ui/jquery.ui.position.js',
-	sysConfig::getDirFsCatalog() . 'ext/jQuery/ui/jquery.ui.draggable.js',
-	sysConfig::getDirFsCatalog() . 'ext/jQuery/ui/jquery.ui.droppable.js',
-	sysConfig::getDirFsCatalog() . 'ext/jQuery/ui/jquery.ui.sortable.js',
-	sysConfig::getDirFsCatalog() . 'ext/jQuery/ui/jquery.ui.resizable.js',
+	sysConfig::getDirFsCatalog() . 'ext/jQuery/jQuery-min.js',
+	sysConfig::getDirFsCatalog() . 'ext/jQuery/ui/minified/jquery.ui.core.min.js',
+	sysConfig::getDirFsCatalog() . 'ext/jQuery/ui/minified/jquery.ui.widget.min.js',
+	sysConfig::getDirFsCatalog() . 'ext/jQuery/ui/minified/jquery.ui.mouse.min.js',
+	sysConfig::getDirFsCatalog() . 'ext/jQuery/ui/minified/jquery.ui.position.min.js',
+	sysConfig::getDirFsCatalog() . 'ext/jQuery/ui/minified/jquery.ui.draggable.min.js',
+	sysConfig::getDirFsCatalog() . 'ext/jQuery/ui/minified/jquery.ui.droppable.min.js',
+	sysConfig::getDirFsCatalog() . 'ext/jQuery/ui/minified/jquery.ui.sortable.min.js',
+	sysConfig::getDirFsCatalog() . 'ext/jQuery/ui/minified/jquery.ui.resizable.min.js',
 	sysConfig::getDirFsCatalog() . 'ext/jQuery/ui/jquery.ui.button.js',
 	sysConfig::getDirFsCatalog() . 'ext/jQuery/ui/jquery.ui.dialog.js',
 	sysConfig::getDirFsCatalog() . 'ext/jQuery/ui/jquery.ui.accordion.js',

@@ -47,32 +47,25 @@ $(document).ready(function (){
  	$theBox = 'pageContent';
     EventManager::notify('PageCreateWidgets', &$Template, $layout_id, &$pageContent, &$theBox);
 	EventManager::notify('PageContentLoad', &$pageContent);*/
-    $theBox = 'pageContent';
-     if (file_exists(dirname(__FILE__) . '/applications/' . $App->getAppName() . '/' . $App->getPageName() . '.php')){
-		ob_start();
-		require(dirname(__FILE__) . '/applications/' . $App->getAppName() . '/' . $App->getPageName() . '.php');
-		$contents = ob_get_contents();
-		ob_end_clean();
-		$Template->set($theBox, $contents);
-    }elseif (file_exists(sysConfig::getDirFsCatalog() . '/applications/' . $App->getAppName() . '/pages/' . $App->getPageName() . '.php')){
-		ob_start();
-		require(sysConfig::getDirFsCatalog() . '/applications/' . $App->getAppName() . '/pages/' . $App->getPageName() . '.php');
-		$contents = ob_get_contents();
-		ob_end_clean();
-		$Template->set($theBox, $contents);
-    }elseif (isset($appContent) && file_exists($appContent)){
-		ob_start();
-    	require($appContent);
-		$contents = ob_get_contents();
-		ob_end_clean();
-		$Template->set($theBox, $contents);
-    }elseif (file_exists(bts_select('content'))){
-		ob_start();
-		require(bts_select('content'));
-		$contents = ob_get_contents();
-		ob_end_clean();
-		$Template->set($theBox, $contents);
+$checkFiles = array(
+	$thisDir . '/applications/' . $App->getAppName() . '/' . $App->getPageName() . '.php',
+	sysConfig::getDirFsCatalog() . '/applications/' . $App->getAppName() . '/pages/' . $App->getPageName() . '.php',
+	sysConfig::getDirFsCatalog() . 'applications/' . $appContent,
+	(isset($appContent) ? $appContent : false)
+);
+
+$requireFile = false;
+foreach($checkFiles as $filePath){
+	if (file_exists($filePath)){
+		$requireFile = $filePath;
+		break;
 	}
+}
+
+if ($requireFile !== false){
+	require($requireFile);
+}
+$Template->set('pageContent', $pageContent);
 
 	echo $Template->parse();
 ?>
