@@ -33,7 +33,7 @@
 			 * @TODO: Move product review info into the product application, since it only deals with that product 
 			 *        and can be more easily dealt with for adding reviews of other things
 			 */
-			$infoLink = itw_app_link('appExt=reviews&products_id=' . $rInfo['products_id'] . '&reviews_id=' . $rInfo['reviews_id'], 'product', 'details');
+			$infoLink = itw_app_link('appExt=reviews&products_id=' . $rInfo['products_id'] . '&reviews_id=' . $rInfo['reviews_id'], 'product_review', 'details');
 			$productName = $rInfo['Products'][0]['ProductsDescription'][0]['products_name'];			
 			$customersName = sprintf(sysLanguage::get('TEXT_REVIEW_BY'), $rInfo['customers_name']);
 			$dateAdded = sprintf(sysLanguage::get('TEXT_REVIEW_DATE_ADDED'), tep_date_long($rInfo['date_added']));
