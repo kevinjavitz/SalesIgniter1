@@ -101,9 +101,9 @@ foreach($sources as $filePath){
 .ui-corner-left { <?php echo buildBorderRadius('4px', '0px', '4px', '0px'); ?> }
 
 .ui-button {  }
-.ui-button.ui-state-default { border-color: #f8ef24;<?php echo buildSimpleGradient('#e2e2e2', '#cccccc'); ?> }
-.ui-button.ui-state-hover { border-color: #ffffff;<?php echo buildSimpleGradient('#e2e2e2', '#cccccc'); ?> }
-.ui-button.ui-state-active { border-color: #ffffff;<?php echo buildSimpleGradient('#e2e2e2', '#cccccc'); ?> }
+.ui-button.ui-state-default { border-color: #f8ef24; }
+.ui-button.ui-state-hover { border-color: #ffffff; }
+.ui-button.ui-state-active { border-color: #ffffff; }
 .ui-button .ui-button-icon-primary, .ui-button-text-icon .ui-button-icon-primary, .ui-button-text-icons .ui-button-icon-primary, .ui-button-icons-only .ui-button-icon-primary{ left:0.3em; }
 
 .ui-widget-header { border-color: #cccccc;color:#222222;line-height: 1.35em;vertical-align: top; }
