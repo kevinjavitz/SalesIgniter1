@@ -11,7 +11,7 @@
 			<set_function>tep_cfg_select_option(array('True','False'),</set_function>
 		</EXTENSION_PAY_PER_RENTALS_ENABLED>
         <EXTENSION_PAY_PER_RENTALS_SHOW_CALENDAR_PRODUCT_INFO>
-			<value>True</value>
+			<value>False</value>
 			<title>Show reservation calendar on product Info page</title>
 			<description>If false it will show the reservation calendar on a separate page.</description>
 			<sort_order>2</sort_order>
