@@ -610,9 +610,9 @@ class Doctrine_Core
 		self::$_modelsDirectory = $directory;
 	}
 
-	public static function addExtModelsDirectory($directory)
+	public static function addExtModelsDirectory($className, $directory)
 	{
-		self::$_extModelsDirectory[] = $directory;
+		self::$_extModelsDirectory[$className] = $directory;
 	}
 
     /**
@@ -1158,7 +1158,6 @@ class Doctrine_Core
             }
         } else {
             $class = self::$_modelsDirectory . DIRECTORY_SEPARATOR . str_replace('_', DIRECTORY_SEPARATOR, $className) . '.php';
-
             if (file_exists($class)) {
                 require $class;
 
@@ -1166,15 +1165,11 @@ class Doctrine_Core
             }
 
             if (!empty(self::$_extModelsDirectory)){
-	            foreach(self::$_extModelsDirectory as $dir){
-		            $class = $dir . DIRECTORY_SEPARATOR . str_replace('_', DIRECTORY_SEPARATOR, $className) . '.php';
+            	if (isset(self::$_extModelsDirectory[$className])){
+		            require self::$_extModelsDirectory[$className] . $className . '.php';
 
-		            if (file_exists($class)) {
-			            require $class;
-
-			            return true;
-		            }
-	            }
+		            return true;
+            	}
             }
         }
 

@@ -36,6 +36,7 @@ class Product {
 			EventManager::notify('ProductQueryAfterExecute', &$this->productInfo);
 		}
 		$productQuery->free();
+		$productQuery = null;
 		unset($productQuery);
 	}
 	
@@ -43,7 +44,7 @@ class Product {
 		global $appExtension;
 		$className = 'PurchaseType_' . $typeName;
 
-		if (!class_exists($className)){
+		if (!class_exists($className, false)){
 			$purchaseTypesPath = 'classes/product/purchase_types/';
 			$baseFilePath = sysConfig::getDirFsCatalog() . 'includes/' . $purchaseTypesPath;
 			if (file_exists($baseFilePath . $typeName . '.php')){
@@ -61,7 +62,7 @@ class Product {
 		}
 				
 		$purchaseType = null;
-		if (class_exists($className)){
+		if (class_exists($className, false)){
 			$purchaseType = new $className($this, $forceEnable);
 		}
 		return $purchaseType;
@@ -76,7 +77,7 @@ class Product {
 			}
 			$pluginName = $fileObj->getBasename();
 			$className = 'productPlugin_' . $pluginName;
-			if (!class_exists($className)){
+			if (!class_exists($className, false)){
 				require($fileObj->getPathname() . '/base.php');
 			}
 			

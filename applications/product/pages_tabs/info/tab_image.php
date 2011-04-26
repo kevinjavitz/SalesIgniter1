@@ -168,7 +168,7 @@ EventManager::notify('ProductInfoProductsImageShow', &$image, &$product);
 	if ($product->isBox()){
 		$discs = $product->getDiscs(false, true);
 		$totalDiscs = $product->getTotalDiscs();
-		$pageContents .= '<br><div><h4>This product is part of a set (click product name to view details):</h4></div>';
+		$pageContent .= '<br><div><h4>This product is part of a set (click product name to view details):</h4></div>';
 		$hasRentals = false;
 	}elseif ($product->isInBox()){
 		$discNumber = $product->getDiscNumber($product->getID());

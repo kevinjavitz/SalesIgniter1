@@ -13,11 +13,12 @@ class productPlugin_specials {
 	}
 
 	function isSpecial(){
-		$Qspecial = dataAccess::setQuery('select * from {specials} where products_id = {product_id} and status = "1"')
-		->setTable('{specials}', TABLE_SPECIALS)
-		->setValue('{product_id}', $this->productId)
-		->runQuery();
-		if ($Qspecial->numberOfRows() > 0){
+		$Qspecial = Doctrine_Query::create()
+		->from('Specials')
+		->where('products_id = ?', $this->productId)
+		->andWhere('status = ?', '1')
+		->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+		if ($Qspecial){
 			$this->special = $Qspecial;
 			return true;
 		}
@@ -30,7 +31,7 @@ class productPlugin_specials {
 				return false;
 			}
 		}
-		return $this->special->getVal('specials_new_products_price');
+		return $this->special[0]['specials_new_products_price'];
 	}
 
 	function displayPrice($priceOrig){

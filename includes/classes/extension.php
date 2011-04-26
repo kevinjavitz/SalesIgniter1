@@ -151,7 +151,11 @@ class ExtensionBase {
 	public function setUpDoctrine(){
 		global $App;
 		if ($this->hasDoctrine()){
-			Doctrine_Core::addExtModelsDirectory(sysConfig::getDirFsCatalog() . 'extensions/' . $this->extName . '/Doctrine/base/');
+			$extObj = new DirectoryIterator(sysConfig::getDirFsCatalog() . 'extensions/' . $this->extName . '/Doctrine/base/');
+			foreach($extObj as $eInfo){
+				if ($eInfo->isDot() || $eInfo->isDir()) continue;
+				Doctrine_Core::addExtModelsDirectory($eInfo->getBasename('.php'), sysConfig::getDirFsCatalog() . 'extensions/' . $this->extName . '/Doctrine/base/');
+			}
 			//Doctrine_Core::loadModels(sysConfig::getDirFsCatalog() . 'extensions/' . $this->extName . '/Doctrine/base/', Doctrine_Core::MODEL_LOADING_CONSERVATIVE);
 
 			if (isset($_GET['verifyModels'])){
@@ -174,7 +178,11 @@ class ExtensionBase {
 			$extCheck = $appExtension->getExtension($eInfo->getBasename());
 			if ($extCheck !== false && $extCheck->isInstalled() === true){
 				if (is_dir($eInfo->getPathname() . '/Doctrine/ext/' . $this->extName)){
-					Doctrine_Core::addExtModelsDirectory($eInfo->getPathname() . '/Doctrine/ext/' . $this->extName);
+					foreach($extObj as $eeInfo){
+						if ($eeInfo->isDot() || $eeInfo->isDir()) continue;
+						
+						Doctrine_Core::addExtModelsDirectory($eeInfo->getBasename('.php'), $eInfo->getPathname() . '/Doctrine/ext/' . $this->extName);
+					}
 					//Doctrine_Core::loadModels($eInfo->getPathname() . '/Doctrine/ext/' . $this->extName, Doctrine_Core::MODEL_LOADING_CONSERVATIVE);
 
 					if (isset($_GET['verifyModels'])){

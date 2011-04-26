@@ -20,6 +20,21 @@ class EventTest{
 	private $totalTime = 0;
 
 	/**
+	 * @var null The start memory usage for the event
+	 */
+	private $startedMemory;
+
+	/**
+	 * @var null The end memory usage for the event
+	 */
+	private $endedMemory;
+
+	/**
+	 * @var int The calculated memory usage of the event
+	 */
+	private $memoryUsage = 0;
+
+	/**
 	 * @var string Event name for the event
 	 */
 	private $eventName;
@@ -47,6 +62,9 @@ class EventTest{
 		$this->startedMicrotime = null;
 		$this->endedMicrotime = null;
 		$this->totalTime = 0;
+		$this->startedMemory = null;
+		$this->endedMemory = null;
+		$this->memoryUsage = 0;
 	}
 
 	/**
@@ -55,6 +73,7 @@ class EventTest{
 	 */
 	public function start(){
 		$this->startedMicrotime = microtime(true);
+		$this->startedMemory = memory_get_usage();
 	}
 
 	/**
@@ -64,6 +83,9 @@ class EventTest{
 	public function end(){
 		$this->endedMicrotime = microtime(true);
 		$this->totalTime += ($this->endedMicrotime - $this->startedMicrotime);
+		
+		$this->endedMemory = memory_get_usage();
+		$this->memoryUsage = ($this->endedMemory - $this->startedMemory);
 	}
 
 	/**
@@ -72,6 +94,14 @@ class EventTest{
 	 */
 	public function getElapsedSecs(){
 		return $this->totalTime;
+	}
+
+	/**
+	 * Get the total memory usage for the event
+	 * @return int
+	 */
+	public function getMemoryUsage(){
+		return $this->memoryUsage;
 	}
 
 	/**

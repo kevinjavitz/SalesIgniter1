@@ -83,9 +83,21 @@ if (isset($_GET['showStats'])){
 	$profilesList = '<ul style="list-style:none;margin:0;padding:0;">';
 	foreach(SES_Profiler::getAll() as $profile){
 		if ($profile->getElapsedSecs() > 0){
-			$profilesList .= '<li>' .
-				$profile->getName() . ' ( ' . number_format($profile->getElapsedSecs(), 4) . ' sec )' .
-			'</li>';
+			$profilesList .= '<li><table cellpadding="2" cellspacing="0" border="0">' .
+				'<tr>' . 
+					'<td valign="top">' . $profile->getName() . '</td>' . 
+					'<td><table cellpadding="2" cellspacing="0" border="0">' . 
+						'<tr>' . 
+							'<td>Time:</td>' . 
+							'<td>' . number_format($profile->getElapsedSecs(), 4) . ' Seconds</td>' .
+						'</tr>' . 
+						'<tr>' . 
+							'<td>Memory:</td>' . 
+							'<td>' . number_format($profile->getMemoryUsage()/1024, 2) . ' Kilobytes<td>' . 
+						'</tr>' . 
+					'</table></td>' . 
+				'</tr>' . 
+			'</table></li>';
 		}
 	}
 	$profilesList .= '</ul>';

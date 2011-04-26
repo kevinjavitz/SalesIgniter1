@@ -998,6 +998,8 @@ class Doctrine_Table extends Doctrine_Configurable implements Countable
      */
     public function getRelation($alias, $recursive = true)
     {
+    	Doctrine_Core::loadModel($alias);
+    	Doctrine_Core::initializeModels(array($alias));
         return $this->_parser->getRelation($alias, $recursive);
     }
 

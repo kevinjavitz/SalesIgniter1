@@ -198,7 +198,7 @@ class ExceptionManager {
 	 */
 	private function requireClass($type){
 		$className = 'Exception' . ucfirst($type);
-		if (!class_exists($className)){
+		if (!class_exists($className, false)){
 			$dir = sysConfig::getDirFsCatalog() . 'includes/classes/exceptionManager/';
 			if (file_exists($dir . ucfirst($type) . '.php')){
 				require($dir . ucfirst($type) . '.php');

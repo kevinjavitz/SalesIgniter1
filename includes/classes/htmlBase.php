@@ -20,12 +20,12 @@ class htmlBase {
 		$widgetDir = sysConfig::getDirFsCatalog() . 'includes/classes/html/widgets/';
 
   		if (file_exists($elementDir . $elementType . '.php')){
- 	 		if (!class_exists($elementClassName)){
+ 	 		if (!class_exists($elementClassName, false)){
  	 			require($elementDir . $elementType . '.php');
 	  		}
 	  		$element = new $elementClassName($html);
    		}elseif (file_exists($widgetDir . $elementType . '.php')){
- 	 		if (!class_exists($widgetClassName)){
+ 	 		if (!class_exists($widgetClassName, false)){
  	 			require($widgetDir . $elementType . '.php');
 	  		}
 	  		$element = new $widgetClassName($html);

@@ -1065,11 +1065,20 @@ function tep_get_tax_rate($class_id, $country_id = -1, $zone_id = -1) {
 		}
 	}
 
-	$tax_query = tep_db_query("select SUM(tax_rate) as tax_rate from " . TABLE_TAX_RATES . " tr left join " . TABLE_ZONES_TO_GEO_ZONES . " za ON tr.tax_zone_id = za.geo_zone_id left join " . TABLE_GEO_ZONES . " tz ON tz.geo_zone_id = tr.tax_zone_id WHERE (za.zone_country_id IS NULL OR za.zone_country_id = '0' OR za.zone_country_id = '" . (int)$country_id . "') AND (za.zone_id IS NULL OR za.zone_id = '0' OR za.zone_id = '" . (int)$zone_id . "') AND tr.tax_class_id = '" . (int)$class_id . "' GROUP BY tr.tax_priority");
-	if (tep_db_num_rows($tax_query)) {
+	$Qtax = Doctrine_Query::create()
+	->select('SUM(tax_rate) as tax_rate')
+	->from('TaxRates tr')
+	->leftJoin('ZonesToGeoZones za')
+	->leftJoin('GeoZones tz')
+	->where('(za.zone_country_id IS NULL OR za.zone_country_id = 0 OR za.zone_country_id = ?) AND TRUE', (int)$country_id)
+	->andWhere('(za.zone_id IS NULL OR za.zone_id = 0 OR za.zone_id = ?) AND TRUE', (int)$zone_id)
+	->andWhere('tr.tax_class_id = ?', (int) $class_id)
+	->groupBy('tr.tax_priority')
+	->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+	if ($Qtax) {
 		$tax_multiplier = 0;
-		while ($tax = tep_db_fetch_array($tax_query)) {
-			$tax_multiplier += $tax['tax_rate'];
+		foreach($Qtax as $tInfo){
+			$tax_multiplier += $tInfo['tax_rate'];
 		}
 		return $tax_multiplier;
 	} else {

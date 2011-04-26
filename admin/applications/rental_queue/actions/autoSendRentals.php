@@ -1,5 +1,5 @@
 <?php
-	require(DIR_WS_CLASSES . 'rental_queue.php');//
+	require(DIR_WS_CLASSES . 'rental_queue.php');
 	require('../includes/classes/product.php');
 	$processed = array(
 		'noneInQueue' => array(),

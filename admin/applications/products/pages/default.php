@@ -7,8 +7,12 @@
 		$productModel = $productClass->getModel();
 		$productName = $productClass->getName();
 
-		$reviews_query = tep_db_query("select (avg(reviews_rating) / 5 * 100) as average_rating from " . TABLE_REVIEWS . " where products_id = '" . $productId . "'");
-		$reviews = tep_db_fetch_array($reviews_query);
+		$Qreviews = Doctrine_Query::create()
+		->select('(avg(reviews_rating) / 5 * 100) as average_rating')
+		->from('Reviews r')
+		->where('r.products_id = ?', $productId)
+		->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+		$reviews = $Qreviews[0];
 
 		$arrowIcon = htmlBase::newElement('icon')->setType('info')
 		->setHref(itw_app_link($allGetParams . 'pID=' . $productId));
@@ -166,6 +170,7 @@
 	EventManager::notify('ProductListingQueryBeforeExecute', &$Qproducts);
 
     /*update pay per rentals with the new fields this can be removed after update*/
+    /*
     $QproductsUpdate = Doctrine_Query::create()
 	->from('ProductsPayPerRental ppr')
 	->execute();
@@ -281,6 +286,7 @@
 		$iProducts->save();
 
 	}
+	*/
     /*end of update*/
 	$tableGrid = htmlBase::newElement('grid')
 	->usePagination(true)
