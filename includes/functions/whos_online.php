@@ -66,6 +66,10 @@
 		  ->where('time_last_click < ?', $xx_mins_ago)
 		  ->execute();
 
+	  /**
+	   * @TODO: Fix This
+	   */
+	  /*
 	  $WhosOnline = Doctrine_Core::getTable('WhosOnline');
 	  $Entry = $WhosOnline->findBySessionId($wo_session_id);
 	  if (!$Entry){
@@ -81,5 +85,6 @@
 	  $Entry->http_referer = (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '');
 	  $Entry->user_agent = $user_agent;
 	  $Entry->save();
+	  */
   }
 ?>

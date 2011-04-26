@@ -50,7 +50,7 @@ class ExtensionBase {
 	}
 
 	public function isInstalled(){
-		return defined((string) $this->info->status_key);
+		return sysConfig::exists((string) $this->info->status_key);
 	}
 
 	public function isEnabled(){

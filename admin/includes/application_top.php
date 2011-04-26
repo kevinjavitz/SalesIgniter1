@@ -51,6 +51,12 @@
 	define('LOCAL_EXE_ZIP', '/usr/local/bin/zip');
 	define('LOCAL_EXE_UNZIP', '/usr/local/bin/unzip');
 
+// include the list of project filenames
+	require(sysConfig::getDirFsAdmin() . 'includes/filenames.php');
+
+// include the list of project database tables
+	require(sysConfig::getDirFsAdmin() . 'includes/database_tables.php');
+
 	require(sysConfig::getDirFsCatalog() . 'ext/Doctrine.php');
 	spl_autoload_register(array('Doctrine_Core', 'autoload'));
 	spl_autoload_register(array('Doctrine_Core', 'modelsAutoload'));
@@ -82,6 +88,12 @@
 // Possible values are 'oanda' 'xe' or ''
 	define('CURRENCY_SERVER_PRIMARY', 'oanda');
 	define('CURRENCY_SERVER_BACKUP', 'xe');
+
+	require(sysConfig::getDirFsCatalog() . 'includes/classes/dataAccess.php');
+	new dataAccess(); /* Establish Database Connection */
+
+// include the database functions
+	require(sysConfig::getDirFsCatalog() . 'includes/functions/database.php');
 
 // set application wide parameters
 	sysConfig::load();

@@ -149,9 +149,9 @@
 			$request_type = (getenv('HTTPS') == 'on') ? 'SSL' : 'NONSSL';
 
 			if ($request_type == 'NONSSL') {
-				self::set('DIR_WS_CATALOG', self::get('DIR_WS_HTTP_CATALOG'));
+				self::set('DIR_WS_CATALOG', self::get('DIR_WS_HTTP_CATALOG', false));
 			}else{
-				self::set('DIR_WS_CATALOG', self::get('DIR_WS_HTTPS_CATALOG'));
+				self::set('DIR_WS_CATALOG', self::get('DIR_WS_HTTPS_CATALOG', false));
 			}
 		}
 
@@ -164,16 +164,16 @@
 		 */
 		public static function getDirWsCatalog($forceType = false){
 			if ($forceType == 'NONSSL' || ($forceType === false && getenv('HTTPS') != 'on')){
-				if (self::exists('DIR_WS_HTTP_CATALOG') === true){
-					$returnDir = self::get('DIR_WS_HTTP_CATALOG');
+				if (self::exists('DIR_WS_HTTP_CATALOG', false) === true){
+					$returnDir = self::get('DIR_WS_HTTP_CATALOG', false);
 				}else{
-					$returnDir = self::get('DIR_WS_CATALOG');
+					$returnDir = self::get('DIR_WS_CATALOG', false);
 				}
 			}elseif ($forceType == 'SSL' || ($forceType === false && getenv('HTTPS') == 'on')){
-				if (self::exists('DIR_WS_HTTPS_CATALOG') === true){
-					$returnDir = self::get('DIR_WS_HTTPS_CATALOG');
+				if (self::exists('DIR_WS_HTTPS_CATALOG', false) === true){
+					$returnDir = self::get('DIR_WS_HTTPS_CATALOG', false);
 				}else{
-					$returnDir = self::get('DIR_WS_CATALOG');
+					$returnDir = self::get('DIR_WS_CATALOG', false);
 				}
 			}else{
 				die('ERROR: Unable to determine connection type (' . __FILE__ . '::' . __LINE__ . ')');
@@ -190,16 +190,16 @@
 		 */
 		public static function getDirWsAdmin($forceType = false){
 			if ($forceType == 'NONSSL' || ($forceType === false && getenv('HTTPS') != 'on')){
-				if (self::exists('DIR_WS_HTTP_ADMIN') === true){
-					$returnDir = self::get('DIR_WS_HTTP_ADMIN');
+				if (self::exists('DIR_WS_HTTP_ADMIN', false) === true){
+					$returnDir = self::get('DIR_WS_HTTP_ADMIN', false);
 				}else{
-					$returnDir = self::get('DIR_WS_ADMIN');
+					$returnDir = self::get('DIR_WS_ADMIN', false);
 				}
 			}elseif ($forceType == 'SSL' || ($forceType === false && getenv('HTTPS') == 'on')){
-				if (self::exists('DIR_WS_HTTPS_ADMIN') === true){
-					$returnDir = self::get('DIR_WS_HTTPS_ADMIN');
+				if (self::exists('DIR_WS_HTTPS_ADMIN', false) === true){
+					$returnDir = self::get('DIR_WS_HTTPS_ADMIN', false);
 				}else{
-					$returnDir = self::get('DIR_WS_ADMIN');
+					$returnDir = self::get('DIR_WS_ADMIN', false);
 				}
 			}else{
 				die('ERROR: Unable to determine connection type (' . __FILE__ . '::' . __LINE__ . ')');
@@ -216,16 +216,16 @@
 		 */
 		public static function getDirFsAdmin($forceType = false){
 			if ($forceType == 'NONSSL' || ($forceType === false && getenv('HTTPS') != 'on')){
-				if (self::exists('DIR_FS_HTTP_ADMIN') === true){
-					$returnDir = self::get('DIR_FS_HTTP_ADMIN');
+				if (self::exists('DIR_FS_HTTP_ADMIN', false) === true){
+					$returnDir = self::get('DIR_FS_HTTP_ADMIN', false);
 				}else{
-					$returnDir = self::get('DIR_FS_ADMIN');
+					$returnDir = self::get('DIR_FS_ADMIN', false);
 				}
 			}elseif ($forceType == 'SSL' || ($forceType === false && getenv('HTTPS') == 'on')){
-				if (self::exists('DIR_FS_HTTPS_ADMIN') === true){
-					$returnDir = self::get('DIR_FS_HTTPS_ADMIN');
+				if (self::exists('DIR_FS_HTTPS_ADMIN', false) === true){
+					$returnDir = self::get('DIR_FS_HTTPS_ADMIN', false);
 				}else{
-					$returnDir = self::get('DIR_FS_ADMIN');
+					$returnDir = self::get('DIR_FS_ADMIN', false);
 				}
 			}else{
 				die('ERROR: Unable to determine connection type (' . __FILE__ . '::' . __LINE__ . ')');
@@ -243,15 +243,15 @@
 		public static function getDirFsCatalog($forceType = false){
 			if ($forceType == 'NONSSL' || ($forceType === false && getenv('HTTPS') != 'on')){
 				if (self::exists('DIR_FS_HTTP_CATALOG', false) === true){
-					$returnDir = self::get('DIR_FS_HTTP_CATALOG');
+					$returnDir = self::get('DIR_FS_HTTP_CATALOG', false);
 				}else{
-					$returnDir = self::get('DIR_FS_CATALOG');
+					$returnDir = self::get('DIR_FS_CATALOG', false);
 				}
 			}elseif ($forceType == 'SSL' || ($forceType === false && getenv('HTTPS') == 'on')){
 				if (self::exists('DIR_FS_HTTPS_CATALOG', false) === true){
-					$returnDir = self::get('DIR_FS_HTTPS_CATALOG');
+					$returnDir = self::get('DIR_FS_HTTPS_CATALOG', false);
 				}else{
-					$returnDir = self::get('DIR_FS_CATALOG');
+					$returnDir = self::get('DIR_FS_CATALOG', false);
 				}
 			}else{
 				die('ERROR: Unable to determine connection type (' . __FILE__ . '::' . __LINE__ . ')');

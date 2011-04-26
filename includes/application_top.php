@@ -47,12 +47,6 @@
 		}
 	}
 
-	// include the list of project filenames
-	require(sysConfig::getDirFsCatalog() . 'includes/filenames.php');
-
-	// include the list of project database tables
-	require(sysConfig::getDirFsCatalog() . 'includes/database_tables.php');
-
 	require(sysConfig::getDirFsCatalog() . 'ext/Doctrine.php');
 	spl_autoload_register(array('Doctrine_Core', 'autoload'));
 	spl_autoload_register(array('Doctrine_Core', 'modelsAutoload'));
@@ -83,6 +77,12 @@
 	$conn->setAttribute(Doctrine_Core::ATTR_RESULT_CACHE_LIFESPAN, 3600);*/
 
 	$manager->setCurrentConnection('mainConnection');
+
+	// include the list of project filenames
+	require(sysConfig::getDirFsCatalog() . 'includes/filenames.php');
+
+	// include the list of project database tables
+	require(sysConfig::getDirFsCatalog() . 'includes/database_tables.php');
 
 	// customization for the design layout
 	define('BOX_WIDTH', 195); // how wide the boxes should be in pixels (default: 125)
@@ -126,7 +126,7 @@ require(sysConfig::getDirFsCatalog() . 'includes/classes/Profiler/Base.php');
 
 	require(sysConfig::getDirFsCatalog() . 'includes/classes/extension.php');
 	$appExtension = new Extension;
-	//$appExtension->preSessionInit();
+	$appExtension->preSessionInit();
 
 	// define general functions used application-wide
 	require(sysConfig::getDirFsCatalog() . 'includes/functions/general.php');
@@ -250,7 +250,7 @@ require(sysConfig::getDirFsCatalog() . 'includes/classes/Profiler/Base.php');
 			tep_redirect(itw_app_link(null, 'account', 'login'));
 		}
 	}
-	//$appExtension->postSessionInit();
+	$appExtension->postSessionInit();
 
 	$ExceptionManager->initSessionMessages();
 
@@ -274,7 +274,7 @@ require(sysConfig::getDirFsCatalog() . 'includes/classes/Profiler/Base.php');
 
 	$appExtension->loadExtensions();
 
-	Doctrine_Core::initializeModels(Doctrine_Core::getLoadedModels());
+	//Doctrine_Core::initializeModels(Doctrine_Core::getLoadedModels());
 
 	$App->loadLanguageDefines();
 
