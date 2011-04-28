@@ -18,8 +18,14 @@ class InfoBoxPayPerRental extends InfoBoxAbstract {
 	
 	public function show(){
 		if ($this->enabled === false) return;
-		
-		$this->setBoxContent("");
+
+		$javascript = '<script type="text/javascript">' .
+			'$(document).ready(function (){' .
+			'   $(\'.rentbbut .ui-button-text\').html(\'Submit\');' .
+			'});' .
+		'</script>';
+
+		$this->setBoxContent($javascript . ReservationInfoBoxUtil::showInfoboxBefore());
 		
 		return $this->draw();
 	}
