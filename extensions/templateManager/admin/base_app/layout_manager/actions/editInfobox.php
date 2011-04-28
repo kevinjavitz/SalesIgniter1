@@ -1,4 +1,5 @@
 <?php
+require(sysConfig::getDirFsCatalog() . 'includes/classes/fileSystemBrowser.php');
 $Qwidget = Doctrine_Query::create()
 	->from('TemplatesInfoboxes')
 	->where('box_code = ?', $_GET['widgetCode'])

@@ -1,18 +1,18 @@
 <?php
 class Extension_templateManager extends ExtensionBase {
-			  
+
 	public function __construct(){
 		parent::__construct('templateManager');
 	}
-	
+
 	public function init(){
 		global $appExtension;
 		if ($this->enabled === false) return;
-		
+
 		EventManager::attachEvents(array(
-		'PageCreateWidgets',
-		'PageLayoutAfterCss'
-		), null, $this);
+				'PageCreateWidgets',
+				'PageLayoutAfterCss'
+			), null, $this);
 	}
 
 	public function postSessionInit(){
@@ -250,7 +250,7 @@ function buildBackgroundAlpha($r, $g, $b, $a, &$styleObj = false){
 function buildSimpleGradient($start, $end, &$styleObj = false){
 	return buildLinearGradient(270, array(
 			array($start, 0),
-			array($end, 100)
+			array($end, 1)
 		), $styleObj);
 }
 
@@ -353,7 +353,20 @@ function buildLinearGradient($deg, $colorStops, $images = false, &$styleObj = fa
 					break;
 			}
 
-			$cssData['background'][] = $prefix . 'linear-gradient(' . $deg . 'deg, ' . implode(', ', $stops) . ')';
+			$angle = $deg . 'deg';
+			switch($deg){
+				case 0: $angle = 'left'; break;
+				case 45: $angle = 'bottom left'; break;
+				case 90: $angle = 'bottom'; break;
+				case 135: $angle = 'bottom right'; break;
+				case 190: $angle = 'right'; break;
+				case 235: $angle = 'top right'; break;
+				case 270: $angle = 'top'; break;
+				case 315: $angle = 'top left'; break;
+				case 360: $angle = 'left'; break;
+			}
+
+			$cssData['background'][] = $prefix . 'linear-gradient(' . $angle . ', ' . implode(', ', $stops) . ')';
 			$cssData['background-repeat'][] = 'no-repeat';
 			$cssData['background-attachment'][] = (isset($iInfo['attachment']) ? $iInfo['attachment'] : 'scroll');
 			$cssData['background-position'][] = '0% 0%';

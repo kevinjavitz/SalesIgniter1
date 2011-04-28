@@ -895,6 +895,7 @@ $(document).ready(function() {
 		var $wrapper = $(wrapperEl);
 		$wrapper.data('styles', {});
 		$wrapper.data('inputs', {});
+		$wrapper.attr('tmid', new Date().getTime());
 
 		var Container = getLastParent($(this).data('element'));
 		Container.wrap($wrapper);
