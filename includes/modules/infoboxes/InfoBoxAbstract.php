@@ -26,7 +26,7 @@ abstract class InfoBoxAbstract {
 	public function init($boxCode, $extName = null){
 		global $App;
 		$this->boxCode = $boxCode;
-		$this->boxTemplateDefaultDir = sysConfig::getDirFsCatalog() . 'templates/fallback/boxes/';
+		$this->boxTemplateDefaultDir = sysConfig::getDirFsCatalog() . 'extensions/templateManager/widgetTemplates/';
 		$this->boxCurrentTemplateDir = sysConfig::getDirFsCatalog() . 'templates/' . (Session::exists('tplDir') ? Session::get('tplDir') : 'fallback') . '/boxes/';
 		
 		$Qinfobox = Doctrine_Query::create()
@@ -140,7 +140,7 @@ abstract class InfoBoxAbstract {
 			$templateFile = $WidgetSettings->template_file;
 		}
 		
-		$boxTemplate = new Template($templateFile, sysConfig::getDirFsCatalog() . 'extensions/templateManager/widgetTemplates');
+		$boxTemplate = new Template($templateFile, $this->boxTemplateDefaultDir);
 
 		$this->templateVars['boxHeading'] = $this->boxHeadingText;
 		$this->templateVars['boxContent'] = $this->boxContent;
