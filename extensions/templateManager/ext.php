@@ -136,62 +136,55 @@ function jqueryIconsPath($color){
 	return $jqueryThemeIcons . '/ui-icons_' . $color . '_256x240.png';
 }
 
-function matchEngineVersion($engine, $v){
-	$u_agent = $_SERVER['HTTP_USER_AGENT'];
-	$matched = false;
-	$vInfo = array();
-	preg_match_all('/' . $engine . '\/(.*)\)/', $u_agent, $vInfo);
-	if ((int) $vInfo[1][0] == $v){
-		$matched = true;
-	}
-	return $matched;
-}
-
-function matchUserAgent($toMatch){
+function isIE(){
 	$u_agent = $_SERVER['HTTP_USER_AGENT'];
 	$ub = false;
-	if (preg_match('/' . $toMatch . '/i',$u_agent)){
+	if (preg_match('/MSIE/i',$u_agent)){
+		$ub = true;
+		$vInfo = array();
+		preg_match_all('/Trident\/(.*)\)/', $u_agent, $vInfo);
+		if ($vInfo[1][0] > 4){
+			$ub = false;
+		}
+	}
+	return $ub;
+}
+
+function isIE9(){
+	$u_agent = $_SERVER['HTTP_USER_AGENT'];
+	$ub = false;
+	if (preg_match('/MSIE/i',$u_agent)){
+		$vInfo = array();
+		preg_match_all('/Trident\/(.*)\)/', $u_agent, $vInfo);
+		if ($vInfo[1][0] > 4){
+			$ub = true;
+		}
+	}
+	return $ub;
+}
+
+function isMoz(){
+	$u_agent = $_SERVER['HTTP_USER_AGENT'];
+	$ub = false;
+	if (preg_match('/Mozilla/i',$u_agent) && !preg_match('/AppleWebKit/i',$u_agent)){
 		$ub = true;
 	}
 	return $ub;
 }
 
-function isIE(){
-	return matchUserAgent('MSIE');
-}
-
-/* Trident/3.0 */
-function isIE7(){
-	return (isIE() ? matchEngineVersion('Trident', 3) : false);
-}
-
-/* Trident/4.0 */
-function isIE8(){
-	return (isIE() ? matchEngineVersion('Trident', 4) : false);
-}
-
-/* Trident/5.0 */
-function isIE9(){
-	return (isIE() ? matchEngineVersion('Trident', 5) : false);
-}
-
-/* Trident/6.0 */
-function isIE10(){
-	return (isIE() ? matchEngineVersion('Trident', 6) : false);
-}
-
-function isMoz(){
-	return (matchUserAgent('Mozilla') && !matchUserAgent('AppleWebKit'));
-}
-
 function isWebkit(){
-	return matchUserAgent('AppleWebKit');
+	$u_agent = $_SERVER['HTTP_USER_AGENT'];
+	$ub = false;
+	if (preg_match('/AppleWebKit/i',$u_agent)){
+		$ub = true;
+	}
+	return $ub;
 }
 
 function isPresto(){
 	$u_agent = $_SERVER['HTTP_USER_AGENT'];
 	$ub = false;
-	if (matchUserAgent('Presto')){
+	if (preg_match('/Presto/i',$u_agent)){
 		$vInfo = array();
 		preg_match_all('/Presto\/(.*) Version/', $u_agent, $vInfo);
 		if ($vInfo[1][0] > 2.7){
@@ -201,69 +194,76 @@ function isPresto(){
 	return $ub;
 }
 
-function buildBackgroundAlpha($r, $g, $b, $a, &$styleObj = false){
-	$cssData = array();
-	if (isIE8() === true){
-		$cssData['-pie-background'] = 'rgba(' . $r . ', ' . $g . ', ' . $b . ', ' . $a . ')';
-		$cssData['behavior'] = 'url(' . sysConfig::getDirWsCatalog() . 'ext/ie_behave/PIE.htc)';
-	}else{
-		$cssData['background-color'] = 'rgba(' . $r . ', ' . $g . ', ' . $b . ', ' . $a . ')';
-	}
-
+function buildBackgroundAlpha($r, $g, $b, $a){
 	$css = '';
-	foreach($cssData as $bgKey => $bgInfo){
-		if ($styleObj !== false){
-			$styleObj->addRule($bgKey, $bgInfo);
-		}else{
-			$css .= $bgKey . ': ' . $bgInfo . ';';
-		}
+	if (isIE() === true){
+		$css .= '-pie-background: rgba(' . $r . ', ' . $g . ', ' . $b . ', ' . $a . ');' .
+			'behavior: url(' . sysConfig::getDirWsCatalog() . 'ext/ie_behave/PIE.htc);';
+	}elseif (isIE9() === true){
+		$css .= 'background-color: rgba(' . $r . ', ' . $g . ', ' . $b . ', ' . $a . ');';
+	}elseif (isPresto() === true){
+		$css .= 'background-color: rgba(' . $r . ', ' . $g . ', ' . $b . ', ' . $a . ');';
+	}elseif (isMoz() === true){
+		$css .= 'background-color: rgba(' . $r . ', ' . $g . ', ' . $b . ', ' . $a . ');';
+	}elseif (isWebkit() === true){
+		$css .= 'background-color: rgba(' . $r . ', ' . $g . ', ' . $b . ', ' . $a . ');';
 	}
 	return $css;
 }
 
-function buildSimpleGradient($start, $end, &$styleObj = false){
-	return buildLinearGradient(270, array(
-			array($start, 0),
-			array($end, 100)
-		), $styleObj);
+function buildSimpleGradient($start, $end){
+	$css = '';
+	if (isIE() === true){
+		$css .= '-pie-background: linear-gradient(' . $start . ' 0%, ' . $end . ' 100%);' .
+			'behavior: url(' . sysConfig::getDirWsCatalog() . 'ext/ie_behave/PIE.htc);';
+	}elseif (isIE9() === true){
+		$css .= 'background-image: url(/extensions/templateManager/catalog/globalFiles/IE9_gradient.php?start_pos_x=0&start_pos_y=0&end_pos_x=0&end_pos_y=100&colorStops=' . urlencode(json_encode(array(
+			array(
+				'pos' => '0',
+				'color' => $start,
+				'opacity' => '1'
+			),
+			array(
+				'pos' => '100',
+				'color' => $end,
+				'opacity' => '1'
+			)
+		))) . ');';
+	}elseif (isPresto() === true){
+		$css .= 'background-image: -o-linear-gradient(top, ' . $start . ' 0%, ' . $end . ' 100%);';
+	}elseif (isMoz() === true){
+		$css .= 'background-image: -moz-linear-gradient(center top, ' . $start . ' 0%, ' . $end . ' 100%);';
+	}elseif (isWebkit() === true){
+		$css .= 'background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, ' . $start . '), color-stop(1, ' . $end . '));';
+	}
+	return $css;
 }
 
-function buildLinearGradient($deg, $colorStops, $images = false, &$styleObj = false) {
-	$cssData = array();
-	if (isIE7() === true){
+function buildComplexGradient($gradientType, $xStart, $yStart, $xEnd, $yEnd, $colorStops, $images = false){
+	$css = '';
+
+	$prependBgImages = '';
+	if ($images !== false){
+		foreach($images as $iInfo){
+			if (isset($iInfo['css_placement']) && $iInfo['css_placement'] == 'after') continue;
+
+			$cssData['background'][] = 'url(' . $iInfo['image'] . ')';
+			$cssData['background-repeat'][] = $iInfo['repeat'];
+			$cssData['background-attachment'][] = (isset($iInfo['attachment']) ? $iInfo['attachment'] : 'scroll');
+			$cssData['background-position'][] = $iInfo['pos_x'] . '% ' . $iInfo['pos_y'] . '%';
+
+			//$prependBgImages .= 'url(' . $iInfo['image'] . ') ' . $iInfo['repeat'] . '' . (isset($iInfo['attachment']) ? ' ' . $iInfo['attachment'] : '') . ' ' . $iInfo['pos_x'] . '% ' . $iInfo['pos_y'] . '%, ';
+		}
+	}
+
+	if (isIE() === true){
 		$stops = array();
 		foreach($colorStops as $cInfo){
 			$stops[] = $cInfo[0] . ' ' . ($cInfo[1] * 100) . '%';
 		}
-
-		if ($images !== false){
-			foreach($images as $iInfo){
-				if (isset($iInfo['css_placement']) && $iInfo['css_placement'] == 'after') {
-					continue;
-				}
-
-				$cssData['-pie-background'][] = 'url(' . $iInfo['image'] . ') ' .
-					$iInfo['repeat'] . ' ' .
-					(isset($iInfo['attachment']) ? $iInfo['attachment'] . ' ' : 'scroll ') .
-					$iInfo['pos_x'] . ' ' . $iInfo['pos_y'];
-			}
-		}
-		$cssData['-pie-background'][] = 'linear-gradient(' . $deg . 'deg, ' . implode(', ', $stops) . ')';
-		if ($images !== false){
-			foreach($images as $iInfo){
-				if (isset($iInfo['css_placement']) && $iInfo['css_placement'] == 'before') {
-					continue;
-				}
-
-				$cssData['-pie-background'][] = 'url(' . $iInfo['image'] . ') ' .
-					$iInfo['repeat'] . ' ' .
-					(isset($iInfo['attachment']) ? $iInfo['attachment'] . ' ' : 'scroll ') .
-					$iInfo['pos_x'] . ' ' . $iInfo['pos_y'];
-			}
-		}
-		$cssData['behavior'][] = 'url(' . sysConfig::getDirWsCatalog() . 'ext/ie_behave/PIE.htc)';
-	}
-	elseif (isIE8() === true){
+		return '-pie-background: ' . $gradientType . '-gradient(' . implode(', ', $stops) . ');' .
+			'behavior: url(' . sysConfig::getDirWsCatalog() . 'ext/ie_behave/PIE.htc);';
+	}elseif (isIE9() === true){
 		$stops = array();
 		foreach($colorStops as $cInfo){
 			$stops[] = array(
@@ -272,120 +272,88 @@ function buildLinearGradient($deg, $colorStops, $images = false, &$styleObj = fa
 				'opacity' => 100
 			);
 		}
-		$cssData['background'][] = 'url(/extensions/templateManager/catalog/globalFiles/IE8_gradient.php?angle=' . $deg . '&colorStops=' . urlencode(json_encode($stops)) . ')';
-		$cssData['background-repeat'][] = 'repeat-x';
+		$cssData['background'][] = 'url(/extensions/templateManager/catalog/globalFiles/IE9_gradient.php?start_pos_x=0&start_pos_y=0&end_pos_x=0&end_pos_y=100&colorStops=' . urlencode(json_encode($stops)) . ')';
+		$cssData['background-repeat'][] = 'repeat';
 		$cssData['background-attachment'][] = (isset($iInfo['attachment']) ? $iInfo['attachment'] : 'scroll');
-		$cssData['background-position'][] = '0% 50%';
-	}
-	else {
-		if ($images !== false){
-			foreach($images as $iInfo){
-				if (isset($iInfo['css_placement']) && $iInfo['css_placement'] == 'after') {
-					continue;
-				}
-
-				$cssData['background'][] = 'url(' . $iInfo['image'] . ')';
-				$cssData['background-repeat'][] = $iInfo['repeat'];
-				$cssData['background-attachment'][] = (isset($iInfo['attachment']) ? $iInfo['attachment'] : 'scroll');
-				$cssData['background-position'][] = $iInfo['pos_x'] . ' ' . $iInfo['pos_y'];
+		$cssData['background-position'][] = '0% 0%';
+		//$css .= 'background: ' . $prependBgImages . 'url(/extensions/templateManager/catalog/globalFiles/IE9_gradient.php?start_pos_x=0&start_pos_y=0&end_pos_x=0&end_pos_y=100&colorStops=' . urlencode(json_encode($stops)) . ')' . $appendBgImages . ';';
+	}elseif (isPresto() === true){
+		$stops = array();
+		foreach($colorStops as $cInfo){
+			$stops[] = $cInfo[0] . ' ' . ($cInfo[1] * 100) . '%';
+		}
+		$cssData['background'][] = '-o-' . $gradientType . '-gradient(top, ' . implode(', ', $stops) . ')';
+		$cssData['background-repeat'][] = 'repeat';
+		$cssData['background-attachment'][] = (isset($iInfo['attachment']) ? $iInfo['attachment'] : 'scroll');
+		$cssData['background-position'][] = '0% 0%';
+		//$css .= 'background: ' . $prependBgImages . '-o-' . $gradientType . '-gradient(top, ' . implode(', ', $stops) . ')' . $appendBgImages . ';';
+	}elseif (isMoz() === true){
+		$stops = array();
+		foreach($colorStops as $cInfo){
+			$stops[] = $cInfo[0] . ' ' . ($cInfo[1] * 100) . '%';
+		}
+		$cssData['background'][] = '-moz-' . $gradientType . '-gradient(top, ' . implode(', ', $stops) . ')';
+		$cssData['background-repeat'][] = 'repeat';
+		$cssData['background-attachment'][] = (isset($iInfo['attachment']) ? $iInfo['attachment'] : 'scroll');
+		$cssData['background-position'][] = '0% 0%';
+		//$css .= 'background: ' . $prependBgImages . '-moz-' . $gradientType . '-gradient(top, ' . implode(', ', $stops) . ')' . $appendBgImages . ';';
+	}elseif (isWebkit() === true){
+		$stops = array();
+		foreach($colorStops as $k => $cInfo){
+			if ($k == 0){
+				$from = 'from(' . $cInfo[0] . ')';
+			}elseif (!isset($colorStops[$k + 1])){
+				$to = 'to(' . $cInfo[0] . ')';
+			}else{
+				$stops[] = 'color-stop(' . $cInfo[1] . ', ' . $cInfo[0] . ')';
 			}
 		}
+		$cssData['background'][] = '-webkit-gradient(' . $gradientType . ', ' . $xStart . ' ' . $yStart . ', ' . $xEnd . ' ' . $yEnd . ', ' . $from . ', ' . $to . (!empty($stops) ? ', ' . implode(', ', $stops) : '') . ')';
+		$cssData['background-repeat'][] = 'repeat';
+		$cssData['background-attachment'][] = (isset($iInfo['attachment']) ? $iInfo['attachment'] : 'scroll');
+		$cssData['background-position'][] = '0% 0%';
+		//$css .= 'background: ' . $prependBgImages . '-webkit-gradient(' . $gradientType . ', ' . $xStart . ' ' . $yStart . ', ' . $xEnd . ' ' . $yEnd . ', ' . $from . ', ' . $to . (!empty($stops) ? ', ' . implode(', ', $stops) : '') . ')' . $appendBgImages . ';';
+	}
 
-		if (isIE9() === true){
-			$stops = array();
-			foreach($colorStops as $cInfo){
-				$stops[] = array(
-					'pos' => ($cInfo[1] * 100),
-					'color' => $cInfo[0],
-					'opacity' => 100
-				);
-			}
-			$cssData['background'][] = 'url(/extensions/templateManager/catalog/globalFiles/IE9_gradient.php?angle=' . $deg . '&colorStops=' . urlencode(json_encode($stops)) . ')';
-			$cssData['background-repeat'][] = 'no-repeat';
+	$appendBgImages = '';
+	if ($images !== false){
+		foreach($images as $iInfo){
+			if (!isset($iInfo['css_placement']) || $iInfo['css_placement'] == 'before') continue;
+
+			$cssData['background'][] = 'url(' . $iInfo['image'] . ')';
+			$cssData['background-repeat'][] = $iInfo['repeat'];
 			$cssData['background-attachment'][] = (isset($iInfo['attachment']) ? $iInfo['attachment'] : 'scroll');
-			$cssData['background-position'][] = '0% 0%';
+			$cssData['background-position'][] = $iInfo['pos_x'] . '% ' . $iInfo['pos_y'] . '%';
+			//$appendBgImages .= ', url(' . $iInfo['image'] . ') ' . $iInfo['repeat'] . '' . (isset($iInfo['attachment']) ? ' ' . $iInfo['attachment'] : '') . ' ' . $iInfo['pos_x'] . '% ' . $iInfo['pos_y'] . '%';
 		}
-		else {
-			$stops = array();
-			foreach($colorStops as $cInfo){
-				$stops[] = $cInfo[0] . ' ' . ($cInfo[1] * 100) . '%';
-			}
-
-			$prefix = '';
-			switch(true){
-				case (isIE10() === true):
-					$prefix = '-ms-';
-					break;
-				case (isPresto() === true):
-					$prefix = '-o-';
-					break;
-				case (isMoz() === true):
-					$prefix = '-moz-';
-					break;
-				case (isWebkit() === true):
-					$prefix = '-webkit-';
-					break;
-			}
-
-			$cssData['background'][] = $prefix . 'linear-gradient(' . $deg . 'deg, ' . implode(', ', $stops) . ')';
-			$cssData['background-repeat'][] = 'no-repeat';
-			$cssData['background-attachment'][] = (isset($iInfo['attachment']) ? $iInfo['attachment'] : 'scroll');
-			$cssData['background-position'][] = '0% 0%';
-		}
-
-		if ($images !== false){
-			foreach($images as $iInfo){
-				if (!isset($iInfo['css_placement']) || $iInfo['css_placement'] == 'before') {
-					continue;
-				}
-
-				$cssData['background'][] = 'url(' . $iInfo['image'] . ')';
-				$cssData['background-repeat'][] = $iInfo['repeat'];
-				$cssData['background-attachment'][] = (isset($iInfo['attachment']) ? $iInfo['attachment'] : 'scroll');
-				$cssData['background-position'][] = $iInfo['pos_x'] . ' ' . $iInfo['pos_y'];
-			}
-		}
-	}
-	$css = '';
-	foreach($cssData as $bgKey => $bgInfo){
-		if ($styleObj !== false){
-			$styleObj->addRule($bgKey, implode(', ', $bgInfo));
-		}else{
-			$css .= $bgKey . ': ' . implode(', ', $bgInfo) . ';';
-		}
-	}
-	return $css;
-}
-
-function buildBorderRadius($tl = 0, $tr = 0, $br = 0, $bl = 0, &$styleObj = false){
-	$cssData = array();
-	$prefix = '';
-	switch(true){
-		case (isIE() === false && isMoz() === true):
-			$prefix = '-moz-';
-			break;
-		case (isWebkit() === true):
-			$prefix = '-webkit-';
-			break;
-	}
-	$cssData[$prefix . 'border-radius'] = $tl . ' ' . $tr . ' ' . $br . ' ' . $bl;
-	if (isIE8() === true){
-		$cssData['behavior'] = 'url(' . sysConfig::getDirWsCatalog() . 'ext/ie_behave/PIE.htc)';
 	}
 
 	$css = '';
 	foreach($cssData as $bgKey => $bgInfo){
-		if ($styleObj !== false){
-			$styleObj->addRule($bgKey, $bgInfo);
-		}else{
-			$css .= $bgKey . ': ' . $bgInfo . ';';
-		}
+		$css .= $bgKey . ': ' . implode(', ', $bgInfo) . ';';
 	}
 	return $css;
 }
 
-function buildBoxShadow($shadows, &$styleObj = false){
-	$cssData = array();
+function buildBorderRadius($tl = 0, $tr = 0, $br = 0, $bl = 0){
+	$css = '';
+	if (isIE() === true){
+		$css .= 'border-radius: ' . $tl . ' ' . $tr . ' ' . $br . ' ' . $bl . ';' .
+			'behavior: url(' . sysConfig::getDirWsCatalog() . 'ext/ie_behave/PIE.htc);';
+	}elseif (isIE9() === true){
+		$css .= 'border-radius: ' . $tl . ' ' . $tr . ' ' . $br . ' ' . $bl . ';';
+	}elseif (isPresto() === true){
+		$css .= 'border-radius: ' . $tl . ' ' . $tr . ' ' . $br . ' ' . $bl . ';';
+	}elseif (isMoz() === true){
+		$css .= '-moz-border-radius: ' . $tl . ' ' . $tr . ' ' . $br . ' ' . $bl . ';';
+	}elseif (isWebkit()){
+		$css .= '-webkit-border-radius: ' . $tl . ' ' . $tr . ' ' . $br . ' ' . $bl . ';';
+	}
+	return $css;
+}
+
+function buildBoxShadow($shadows){
+	$css = '';
 
 	$allShadows = array();
 	foreach($shadows as $sInfo){
@@ -397,27 +365,17 @@ function buildBoxShadow($shadows, &$styleObj = false){
 			$sInfo[4];
 	}
 
-	$prefix = '';
-	switch(true){
-		case (isMoz() === true):
-			$prefix = '-moz-';
-			break;
-		case (isWebkit() === true):
-			$prefix = '-webkit-';
-			break;
-	}
-	$cssData[$prefix . 'box-shadow'] = implode(', ', $allShadows);
-	if (isIE8() === true){
-		$cssData['behavior'] = 'url(' . sysConfig::getDirWsCatalog() . 'ext/ie_behave/PIE.htc)';
-	}
-
-	$css = '';
-	foreach($cssData as $bgKey => $bgInfo){
-		if ($styleObj !== false){
-			$styleObj->addRule($bgKey, $bgInfo);
-		}else{
-			$css .= $bgKey . ': ' . $bgInfo . ';';
-		}
+	if (isIE() === true){
+		$css .= 'box-shadow: ' . implode(', ', $allShadows) . ';' .
+			'behavior: url(' . sysConfig::getDirWsCatalog() . 'ext/ie_behave/PIE.htc);';
+	}elseif (isIE9() === true){
+		$css .= 'box-shadow: ' . implode(', ', $allShadows) . ';';
+	}elseif (isPresto() === true){
+		$css .= 'box-shadow: ' . implode(', ', $allShadows) . ';';
+	}elseif (isMoz() === true){
+		$css .= '-moz-box-shadow:' . implode(', ', $allShadows) . ';';
+	}elseif (isWebkit()){
+		$css .= '-webkit-box-shadow:' . implode(', ', $allShadows) . ';';
 	}
 	return $css;
 }

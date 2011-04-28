@@ -159,7 +159,7 @@ class htmlElement
 				if (is_object($v) || substr($v, 0, 1) == '{' || substr($v, 0, 1) == '[') {
 					$Style = new StyleBuilder();
 					$Style->addRule($k, $v);
-					$this->styles = array_merge($this->styles, $Style->getArray());
+					$this->styles[] = $Style->outputInline();
 				}
 				else {
 					$this->styles[$k] = $v;
@@ -170,9 +170,7 @@ class htmlElement
 			if (is_object($val) || substr($val, 0, 1) == '{' || substr($val, 0, 1) == '[') {
 				$Style = new StyleBuilder();
 				$Style->addRule($key, $val);
-				foreach($Style->getArray() as $k => $v){
-					$this->styles[$k] = $v;
-				}
+				$this->styles[] = $Style->outputInline();
 			}
 			else {
 				$this->styles[$key] = $val;
@@ -628,7 +626,7 @@ class StyleBuilder {
 			$ruleVal = json_decode($ruleVal);
 			$this->parseJsonRule($ruleName, $ruleVal);
 		}else{
-			$this->definitions[$ruleName] = $ruleVal;
+			$this->definitions[] = $ruleName . ':' . $ruleVal;
 		}
 	}
 
@@ -636,108 +634,115 @@ class StyleBuilder {
 		switch($key){
 			case 'font':
 				if (isset($val->family)) {
-					$this->addRule('font-family', $val->family);
+					$this->definitions[] = 'font-family: ' . $val->family;
 				}
 
 				if (isset($val->style)) {
-					$this->addRule('font-style', $val->style);
+					$this->definitions[] = 'font-style: ' . $val->style;
 				}
 
 				if (isset($val->variant)) {
-					$this->addRule('font-variant', $val->variant);
+					$this->definitions[] = 'font-variant: ' . $val->variant;
 				}
 
 				if (isset($val->weight)) {
-					$this->addRule('font-weight', $val->weight);
+					$this->definitions[] = 'font-weight: ' . $val->weight;
 				}
 
 				if (isset($val->size)){
-					$fontSize = $val->size . $val->size_unit;
 					if ($val->size_unit == 'inherit'){
-						$fontSize = $val->size_unit;
+						$this->definitions[] = 'font-size: ' . $val->size_unit;
 					}
-					$this->addRule('font-size', $fontSize);
+					else {
+						$this->definitions[] = 'font-size: ' . $val->size . $val->size_unit;
+					}
 				}
 				break;
 			case 'text':
-				$textIndent = $val->indent . $val->indent_unit;
+				$this->definitions[] = 'color: ' . $val->color;
+				$this->definitions[] = 'text-align: ' . $val->align;
+				$this->definitions[] = 'text-decoration: ' . $val->decoration;
+				$this->definitions[] = 'text-transform: ' . $val->transform;
+				$this->definitions[] = 'vertical-align: ' . $val->vertical_align;
+				$this->definitions[] = 'white-space: ' . $val->white_space;
+
 				if ($val->indent_unit == 'inherit'){
-					$textIndent = $val->indent_unit;
+					$this->definitions[] = 'text-indent: ' . $val->indent_unit;
+				}
+				else {
+					$this->definitions[] = 'text-indent: ' . $val->indent . $val->indent_unit;
 				}
 
-				$lineHeight = $val->line_height . $val->line_height_unit;
 				if ($val->line_height_unit == 'inherit'){
-					$lineHeight = $val->line_height_unit;
+					$this->definitions[] = 'line-height: ' . $val->line_height_unit;
+				}
+				else {
+					$this->definitions[] = 'line-height: ' . $val->line_height . $val->line_height_unit;
 				}
 
-				$letterSpacing = $val->letter_spacing . $val->letter_spacing_unit;
 				if ($val->letter_spacing_unit == 'normal' || $val->letter_spacing_unit == 'inherit'){
-					$letterSpacing = $val->letter_spacing_unit;
+					$this->definitions[] = 'letter-spacing: ' . $val->letter_spacing_unit;
+				}
+				else {
+					$this->definitions[] = 'letter-spacing: ' . $val->letter_spacing . $val->letter_spacing_unit;
 				}
 
-				$wordSpacing = $val->word_spacing . $val->word_spacing_unit;
 				if ($val->word_spacing_unit == 'normal' || $val->word_spacing_unit == 'inherit'){
-					$wordSpacing = $val->word_spacing_unit;
+					$this->definitions[] = 'word-spacing: ' . $val->word_spacing_unit;
 				}
-
-				$this->addRule('color', $val->color);
-				$this->addRule('text-align', $val->align);
-				$this->addRule('text-decoration', $val->decoration);
-				$this->addRule('text-transform', $val->transform);
-				$this->addRule('vertical-align', $val->vertical_align);
-				$this->addRule('white-space', $val->white_space);
-				$this->addRule('text-indent', $textIndent);
-				$this->addRule('line-height', $lineHeight);
-				$this->addRule('letter-spacing', $letterSpacing);
-				$this->addRule('word-spacing', $wordSpacing);
+				else {
+					$this->definitions[] = 'word-spacing: ' . $val->word_spacing . $val->word_spacing_unit;
+				}
 				break;
 			case 'border':
 				$keys = array('top', 'right', 'bottom', 'left');
 				foreach($keys as $k){
-					$this->addRule('border-' . $k . '-width', $val->$k->width . $val->$k->width_unit);
-					$this->addRule('border-' . $k . '-color', $val->$k->color);
-					$this->addRule('border-' . $k . '-style', $val->$k->style);
+					$this->definitions[] = 'border-' . $k . '-width: ' . $val->$k->width . $val->$k->width_unit;
+					$this->definitions[] = 'border-' . $k . '-color: ' . $val->$k->color;
+					$this->definitions[] = 'border-' . $k . '-style: ' . $val->$k->style;
 				}
 				break;
 			case 'padding':
 				$keys = array('top', 'right', 'bottom', 'left');
 				foreach($keys as $k){
-					$paddingVal = $val->$k . $val->{$k . '_unit'};
 					if ($val->{$k . '_unit'} == 'auto'){
-						$paddingVal = $val->{$k . '_unit'};
+						$this->definitions[] = 'padding-' . $k . ': ' . $val->{$k . '_unit'};
 					}
-					$this->addRule('padding-' . $k, $paddingVal);
+					else {
+						$this->definitions[] = 'padding-' . $k . ': ' . $val->$k . $val->{$k . '_unit'};
+					}
 				}
 				break;
 			case 'margin':
 				$keys = array('top', 'right', 'bottom', 'left');
 				foreach($keys as $k){
-					$marginVal = $val->$k . $val->{$k . '_unit'};
 					if ($val->{$k . '_unit'} == 'auto'){
-						$marginVal = $val->{$k . '_unit'};
+						$this->definitions[] = 'margin-' . $k . ': ' . $val->{$k . '_unit'};
 					}
-					$this->addRule('margin-' . $k, $marginVal);
+					else {
+						$this->definitions[] = 'margin-' . $k . ': ' . $val->$k . $val->{$k . '_unit'};
+					}
 				}
 				break;
 			case 'background_solid':
-				buildBackgroundAlpha(
+				$css = buildBackgroundAlpha(
 					$val->background_r,
 					$val->background_g,
 					$val->background_b,
-					$val->background_a,
-					$this
+					$val->background_a
 				);
+				$this->definitions[] = $css;
 				break;
 			case 'border_radius':
-				buildBorderRadius(
+				$css = buildBorderRadius(
 					$val->border_top_left_radius . $val->border_top_left_radius_unit,
 					$val->border_top_right_radius . $val->border_top_right_radius_unit,
 					$val->border_bottom_right_radius . $val->border_bottom_right_radius_unit,
-					$val->border_bottom_left_radius . $val->border_bottom_left_radius_unit,
-					$this
+					$val->border_bottom_left_radius . $val->border_bottom_left_radius_unit
 				);
+				$this->definitions[] = $css;
 				break;
-			case 'background_linear_gradient':
+			case 'background_complex_gradient':
 				$colorStops = array();
 				foreach($val->colorStops as $sInfo){
 					$colorStops[] = array(
@@ -760,39 +765,47 @@ class StyleBuilder {
 					}
 				}
 
-				buildLinearGradient(
-					$val->angle,
+				$css = buildComplexGradient(
+					$val->type,
+					$val->h_pos_start . $val->h_pos_start_unit,
+					$val->v_pos_start . $val->v_pos_start_unit,
+					$val->h_pos_end . $val->h_pos_end_unit,
+					$val->v_pos_end . $val->v_pos_end_unit,
 					$colorStops,
-					$images,
-					$this
+					$images
 				);
+				$this->definitions[] = $css;
 				break;
 			case 'box_shadow':
+				$css = '';
+
 				$allShadows = array();
 				foreach($val as $sInfo){
-					$allShadows[] = array(
-						$sInfo->shadow_offset_x,
-						$sInfo->shadow_offset_y,
-						$sInfo->shadow_blur,
-						$sInfo->shadow_spread,
-						$sInfo->shadow_color,
-						(isset($sInfo->shadow_inset) ? $sInfo->shadow_inset : false)
-					);
+					$allShadows[] = (isset($sInfo->shadow_inset) && $sInfo->shadow_inset === true ? 'inset ' : '') .
+						$sInfo->shadow_offset_x . ' ' .
+						$sInfo->shadow_offset_y . ' ' .
+						$sInfo->shadow_blur . ' ' .
+						$sInfo->shadow_spread . ' ' .
+						$sInfo->shadow_color;
 				}
 
-				buildBoxShadow($allShadows, $this);
+				if ($this->isIE() === true){
+					$css .= 'box-shadow: ' . implode(', ', $allShadows) . ';' .
+						'behavior: url(' . sysConfig::getDirWsCatalog() . 'ext/ie_behave/PIE.htc)';
+				}elseif ($this->isMoz() === true){
+					$css .= '-moz-box-shadow:' . implode(', ', $allShadows);
+				}elseif ($this->isWebkit()){
+					$css .= '-webkit-box-shadow:' . implode(', ', $allShadows);
+				}
+				$this->definitions[] = $css;
 				break;
 		}
 	}
 
-	public function getArray(){
-		return $this->definitions;
-	}
-
 	public function outputInline(){
 		$output = '';
-		foreach($this->definitions as $k => $v){
-			$output .= $k . ': ' . $v . ';';
+		foreach($this->definitions as $d){
+			$output .= $d . ';';
 		}
 		$output .= '';
 		return $output;
@@ -800,8 +813,8 @@ class StyleBuilder {
 
 	public function outputCss(){
 		$output = $this->selector . ' { ';
-		foreach($this->definitions as $k => $v){
-			$output .= $k . ': ' . $v . ';';
+		foreach($this->definitions as $d){
+			$output .= $d . ';';
 		}
 		$output .= ' }' . "\n";
 		return $output;

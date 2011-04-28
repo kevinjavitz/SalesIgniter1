@@ -1115,39 +1115,16 @@ var LayoutDesigner = {
 		var o = $.extend(defaults, options);
 
 		$el.slider({
-				max: 100,
-				min: 0,
-				step: 1,
-				value: o.value,
-				create: o.create,
-				change: o.change,
-				start: o.start,
-				stop: o.stop,
-				slide: o.slide
-			});
-	},
-	createAngleSlider: function ($el, options) {
-		var defaults = {
-			value: 0,
-			slide: function () { },
-			create: function () { },
-			change: function () { },
-			stop: function () { },
-			start: function () { }
-		};
-		var o = $.extend(defaults, options);
-
-		$el.slider({
-				max: 360,
-				min: 0,
-				step: 45,
-				value: o.value,
-				create: o.create,
-				change: o.change,
-				start: o.start,
-				stop: o.stop,
-				slide: o.slide
-			});
+			max: 100,
+			min: 0,
+			step: 1,
+			value: o.value,
+			create: o.create,
+			change: o.change,
+			start: o.start,
+			stop: o.stop,
+			slide: o.slide
+		});
 	},
 	buildBackgroundColorPicker_RGBA: function($el, o) {
 		$el.each(function () {

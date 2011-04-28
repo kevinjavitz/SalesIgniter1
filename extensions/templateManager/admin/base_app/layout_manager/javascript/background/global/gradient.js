@@ -53,7 +53,7 @@
 
 			$.fn.backgroundBuilder.setupGradientRGBA(self, $(this.sCont).find('.makeColorPicker_RGBA'), inputVals.config);
 
-			$(this.sCont).find('input[name=angle]').each(function (){
+			$(this.sCont).find('input[name=start_horizontal_pos], input[name=start_vertical_pos], input[name=end_horizontal_pos], input[name=end_vertical_pos]').each(function (){
 				var inputEl = this;
 
 				$(inputEl).keyup(function (){
@@ -65,7 +65,7 @@
 					$(this).val(inputVals.config[$(this).attr('name')]);
 				}
 
-				self.layoutBuilder.createAngleSlider($(self.sCont).find('#' + $(this).attr('name') + 'Slider'), {
+				self.layoutBuilder.createPercentSlider($(self.sCont).find('#' + $(this).attr('name') + 'Slider'), {
 					value: parseInt($(this).val()),
 					slide: function (e, ui){
 						$(inputEl).val(ui.value);
@@ -118,8 +118,8 @@
 				$sCont = $(this.sCont),
 				applyBackground = true;
 
-			if (userBrowser.engine == 'trident' && userBrowser.version < 10){
-				$(this.sCont).find('.gradientPreview').html('Preview Not Available In Internet Explorer Versions Less Than 10');
+			if (userBrowser.engine == 'trident'){
+				$(this.sCont).find('.gradientPreview').html('Preview Not Available In Internet Explorer Versions Less Than ??');
 				return;
 			}else if (userBrowser.engine == 'presto' && userBrowser.version < 11.10){
 				$(this.sCont).find('.gradientPreview').html('Preview Not Available In Opera Versions Less Than 11.10');
@@ -134,38 +134,56 @@
 				backgroundArr.push($.fn.backgroundBuilder.backgroundUrlStringFromCollection($(this), 'noColor'));
 			});
 
-			var colorStopsArr = [];
+			var colorStopsStr = '';
 			var startColorCollection = $sCont.find('input[name=start_color_r], input[name=start_color_g], input[name=start_color_b], input[name=start_color_a]');
 			var endColorCollection = $sCont.find('input[name=end_color_r], input[name=end_color_g], input[name=end_color_b], input[name=end_color_a]');
 
-			colorStopsArr.push($.fn.backgroundBuilder.rgbStringFromCollection(startColorCollection, true) + ' 0%');
-			colorStops.each(function (){
-				colorStopsArr.push(
-					$.fn.backgroundBuilder.rgbStringFromCollection($(this), true) + ' ' +
-					parseInt($(this).find('input[name=color_stop_pos]').val()) + '%'
-				);
-			});
-			colorStopsArr.push($.fn.backgroundBuilder.rgbStringFromCollection(endColorCollection, true) + ' 100%');
-
-			var cssPrefix = '';
-			switch(true){
-				case (userBrowser.engine == 'trident' && userBrowser.version >= 10):
-					cssPrefix = '-ms-';
+			switch(userBrowser.engine){
+				case 'presto':
+					$(this.sCont).find('.gradientPreview').html('Preview Coming Soon');
+					return;
 					break;
-				case (userBrowser.engine == 'presto' && userBrowser.version >= 11.10):
-					cssPrefix = '-o-';
+				case 'webkit':
+					colorStops.each(function (){
+						colorStopsStr += 'color-stop(' +
+							(parseInt($(this).find('input[name=color_stop_pos]').val()) / 100) + ', ' +
+							$.fn.backgroundBuilder.rgbStringFromCollection($(this), true) +
+							'), ';
+					});
+					backgroundArr.push(
+						'-webkit-gradient(' +
+							$sCont.find('select[name=gradient_type]').val() + ', ' +
+							$sCont.find('input[name=start_horizontal_pos]').val() + '% ' +
+							$sCont.find('input[name=start_vertical_pos]').val() + '%, ' +
+							$sCont.find('input[name=end_horizontal_pos]').val() + '% ' +
+							$sCont.find('input[name=end_vertical_pos]').val() + '%, ' +
+							'from(' +
+							$.fn.backgroundBuilder.rgbStringFromCollection(startColorCollection, true) +
+							'), ' +
+							colorStopsStr +
+							'to(' +
+							$.fn.backgroundBuilder.rgbStringFromCollection(endColorCollection, true) +
+							')' +
+							')'
+						);
 					break;
-				case (userBrowser.engine == 'gecko'):
-					cssPrefix = '-moz-';
-					break;
-				case (userBrowser.engine == 'webkit'):
-					cssPrefix = '-webkit-';
+				case 'gecko':
+					colorStops.each(function (){
+						colorStopsStr += $.fn.backgroundBuilder.rgbStringFromCollection($(this), true) + ' ' +
+							parseInt($(this).find('input[name=color_stop_pos]').val()) + '%, ';
+					});
+					backgroundArr.push(
+						'-moz-' + $sCont.find('select[name=gradient_type]').val() + '-gradient(' +
+							$sCont.find('input[name=start_horizontal_pos]').val() + '% ' +
+							$sCont.find('input[name=start_vertical_pos]').val() + '% ' +
+							'270deg, ' +
+							$.fn.backgroundBuilder.rgbStringFromCollection(startColorCollection, true) + ', ' +
+							colorStopsStr +
+							$.fn.backgroundBuilder.rgbStringFromCollection(endColorCollection, true) +
+							')'
+						);
 					break;
 			}
-
-			var angle = $(this.sCont).find('input[name=angle]').val();
-
-			backgroundArr.push(cssPrefix + 'linear-gradient(' + angle + 'deg, ' + colorStopsArr.join(', ') + ')');
 
 			$(this.sCont).find('.gradientImagesAfter .gradientImage').each(function (){
 				backgroundKey = 'background';
@@ -185,16 +203,19 @@
 			self.updatePreview();
 
 			inputVals.background.global.gradient.config = {
-				gradient_type : $sCont.find('select[name=gradient_type]').val(),
-				angle         : $sCont.find('input[name=angle]').val(),
-				start_color_r : $sCont.find('input[name=start_color_r]').val(),
-				start_color_g : $sCont.find('input[name=start_color_g]').val(),
-				start_color_b : $sCont.find('input[name=start_color_b]').val(),
-				start_color_a : $sCont.find('input[name=start_color_a]').val(),
-				end_color_r   : $sCont.find('input[name=end_color_r]').val(),
-				end_color_g   : $sCont.find('input[name=end_color_g]').val(),
-				end_color_b   : $sCont.find('input[name=end_color_b]').val(),
-				end_color_a   : $sCont.find('input[name=end_color_a]').val()
+				gradient_type        : $sCont.find('select[name=gradient_type]').val(),
+				start_horizontal_pos : $sCont.find('input[name=start_horizontal_pos]').val(),
+				start_vertical_pos   : $sCont.find('input[name=start_vertical_pos]').val(),
+				end_horizontal_pos   : $sCont.find('input[name=end_horizontal_pos]').val(),
+				end_vertical_pos     : $sCont.find('input[name=end_vertical_pos]').val(),
+				start_color_r        : $sCont.find('input[name=start_color_r]').val(),
+				start_color_g        : $sCont.find('input[name=start_color_g]').val(),
+				start_color_b        : $sCont.find('input[name=start_color_b]').val(),
+				start_color_a        : $sCont.find('input[name=start_color_a]').val(),
+				end_color_r          : $sCont.find('input[name=end_color_r]').val(),
+				end_color_g          : $sCont.find('input[name=end_color_g]').val(),
+				end_color_b          : $sCont.find('input[name=end_color_b]').val(),
+				end_color_a          : $sCont.find('input[name=end_color_a]').val()
 			};
 
 			inputVals.background.global.gradient.colorStops = [];
@@ -365,21 +386,24 @@
 			'<tr>' +
 			'<th></th>' +
 			'<th style="text-align:center" colspan="4">Color</th>' +
-			'<th style="text-align:center">Angle</th>' +
+			'<th style="text-align:center">Horizonal Pos</th>' +
+			'<th style="text-align:center">Vertical Pos</th>' +
 			'</tr>' +
 			'</thead>' +
 			'<tbody>' +
 			'<tr>' +
 			'<td rowspan="3" valign="top"><b>Start</b></td>' +
 			'<td style="border:1px solid #cccccc;" class="makeColorPicker_RGBA" colspan="4" align="center">Click Here For Color Picker</td>' +
-			'<td><div id="angleSlider"></div></td>' +
+			'<td><div id="start_horizontal_posSlider"></div></td>' +
+			'<td><div id="start_vertical_posSlider"></div></td>' +
 			'</tr>' +
 			'<tr id="start">' +
 			'<td style="text-align:center"><input type="text" size="4" class="colorPickerRGBA_Red" name="start_color_r" value="255"></td>' +
 			'<td style="text-align:center"><input type="text" size="4" class="colorPickerRGBA_Green" name="start_color_g" value="255"></td>' +
 			'<td style="text-align:center"><input type="text" size="4" class="colorPickerRGBA_Blue" name="start_color_b" value="255"></td>' +
 			'<td style="text-align:center"><input type="text" size="4" class="colorPickerRGBA_Alpha" name="start_color_a" value="100">%</td>' +
-			'<td style="text-align:center"><input type="text" value="270" size="4" name="angle">%</td>' +
+			'<td style="text-align:center"><input type="text" value="0" size="4" name="start_horizontal_pos">%</td>' +
+			'<td style="text-align:center"><input type="text" value="0" size="4" name="start_vertical_pos">%</td>' +
 			'</tr>' +
 			'<tr>' +
 			'<td style="text-align:center">Red</td>' +
@@ -390,12 +414,16 @@
 			'<tr>' +
 			'<td rowspan="3" valign="top"><b>End</b></td>' +
 			'<td style="border:1px solid #cccccc;" class="makeColorPicker_RGBA" colspan="4" align="center">Click Here For Color Picker</td>' +
+			'<td><div id="end_horizontal_posSlider"></div></td>' +
+			'<td><div id="end_vertical_posSlider"></div></td>' +
 			'</tr>' +
 			'<tr id="end">' +
 			'<td style="text-align:center"><input type="text" size="4" class="colorPickerRGBA_Red" name="end_color_r" value="255"></td>' +
 			'<td style="text-align:center"><input type="text" size="4" class="colorPickerRGBA_Green" name="end_color_g" value="255"></td>' +
 			'<td style="text-align:center"><input type="text" size="4" class="colorPickerRGBA_Blue" name="end_color_b" value="255"></td>' +
 			'<td style="text-align:center"><input type="text" size="4" class="colorPickerRGBA_Alpha" name="end_color_a" value="100">%</td>' +
+			'<td style="text-align:center"><input type="text" value="0" size="4" name="end_horizontal_pos">%</td>' +
+			'<td style="text-align:center"><input type="text" value="100" size="4" name="end_vertical_pos">%</td>' +
 			'</tr>' +
 			'<tr>' +
 			'<td style="text-align:center">Red</td>' +
