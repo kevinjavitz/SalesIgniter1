@@ -57,9 +57,9 @@
 	 * KNOWN ISSUES
 	 1: causes the extension installer to not install doctrine tables
 	*/
-	//$manager->setAttribute(Doctrine_Core::ATTR_MODEL_LOADING, Doctrine_Core::MODEL_LOADING_CONSERVATIVE);
+	$manager->setAttribute(Doctrine_Core::ATTR_MODEL_LOADING, Doctrine_Core::MODEL_LOADING_CONSERVATIVE);
 	Doctrine_Core::setModelsDirectory(sysConfig::getDirFsCatalog() . 'ext/Doctrine/Models');
-	Doctrine_Core::loadModels(sysConfig::getDirFsCatalog() . 'ext/Doctrine/Models');
+	//Doctrine_Core::loadModels(sysConfig::getDirFsCatalog() . 'ext/Doctrine/Models');
 
 	$profiler = new Doctrine_Connection_Profiler();
 
@@ -98,13 +98,14 @@
 
 require(sysConfig::getDirFsCatalog() . 'includes/classes/cache.php');
 require(sysConfig::getDirFsCatalog() . 'includes/classes/Profiler/Base.php');
+require(sysConfig::getDirFsCatalog() . 'includes/classes/htmlBase.php');
 	require(sysConfig::getDirFsCatalog() . 'includes/classes/exceptionManager.php');
 	$ExceptionManager = new ExceptionManager;
 	set_error_handler(array($ExceptionManager, 'addError'));
 	set_exception_handler(array($ExceptionManager, 'add'));
 
 	// if gzip_compression is enabled, start to buffer the output
-	if ( (GZIP_COMPRESSION == 'true') && ($ext_zlib_loaded = extension_loaded('zlib')) && (PHP_VERSION >= '4') ) {
+	if ( (sysConfig::get('GZIP_COMPRESSION') == 'true') && ($ext_zlib_loaded = extension_loaded('zlib')) && (PHP_VERSION >= '4') ) {
 		if (($ini_zlib_output_compression = (int)ini_get('zlib.output_compression')) < 1) {
 			if (PHP_VERSION >= '4.0.4') {
 				ob_start('ob_gzhandler');
@@ -114,7 +115,6 @@ require(sysConfig::getDirFsCatalog() . 'includes/classes/Profiler/Base.php');
 		}
 	}
 
-	require(sysConfig::getDirFsCatalog() . 'includes/classes/htmlBase.php');
 	require(sysConfig::getDirFsCatalog() . 'includes/classes/eventManager/Manager.php');
 	require(sysConfig::getDirFsCatalog() . 'includes/classes/eventManager/Event.php');
 	require(sysConfig::getDirFsCatalog() . 'includes/classes/eventManager/EventActionResponse.php');
@@ -139,7 +139,7 @@ require(sysConfig::getDirFsCatalog() . 'includes/classes/Profiler/Base.php');
 	//Email Template Manager End
 
 	// include cache functions if enabled
-	if (USE_CACHE == 'true') include(sysConfig::getDirFsCatalog() . 'includes/functions/cache.php');
+	if (sysConfig::get('USE_CACHE') == 'true') include(sysConfig::getDirFsCatalog() . 'includes/functions/cache.php');
 
 	/*
 	* All Classes that will be registered in sessions must go here -- BEGIN

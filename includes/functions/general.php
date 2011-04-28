@@ -405,8 +405,8 @@ function tep_get_all_get_params($exclude_array = '') {
     $userAccount = &Session::getReference('userAccount');
     if ( ($country_id == -1) && ($zone_id == -1) ) {
       if ($userAccount->isLoggedIn() === false) {
-        $country_id = STORE_COUNTRY;
-        $zone_id = STORE_ZONE;
+        $country_id = sysConfig::get('STORE_COUNTRY');
+        $zone_id = sysConfig::get('STORE_ZONE');
       } else {
         $cInfo = $userAccount->getCustomerInfo();
         $country_id = $cInfo['countryId'];
@@ -490,10 +490,10 @@ function tep_get_all_get_params($exclude_array = '') {
     global $currencies;
     //die(DISPLAY_PRICE_WITH_TAX);
 
-    if ( (DISPLAY_PRICE_WITH_TAX == 'true') && ($tax > 0) ) {
-      return tep_round($price, $currencies->currencies[DEFAULT_CURRENCY]['decimal_places']) + tep_calculate_tax($price, $tax);
+    if ( (sysConfig::get('DISPLAY_PRICE_WITH_TAX') == 'true') && ($tax > 0) ) {
+      return tep_round($price, $currencies->currencies[sysConfig::get('DEFAULT_CURRENCY')]['decimal_places']) + tep_calculate_tax($price, $tax);
     } else {
-      return tep_round($price, $currencies->currencies[DEFAULT_CURRENCY]['decimal_places']);
+      return tep_round($price, $currencies->currencies[sysConfig::get('DEFAULT_CURRENCY')]['decimal_places']);
     }
   }
 
@@ -501,7 +501,7 @@ function tep_get_all_get_params($exclude_array = '') {
   function tep_calculate_tax($price, $tax) {
     global $currencies;
 
-    return tep_round($price * $tax / 100, $currencies->currencies[DEFAULT_CURRENCY]['decimal_places']);
+    return tep_round($price * $tax / 100, $currencies->currencies[sysConfig::get('DEFAULT_CURRENCY')]['decimal_places']);
   }
 
 ////
