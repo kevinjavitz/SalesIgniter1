@@ -1,4 +1,8 @@
 <?php
+if (!class_exists('phpQuery')){
+	require(sysConfig::getDirFsCatalog() . '/includes/classes/html/dom/phpQuery.php');
+}
+
 if (!class_exists('CurlRequest')){
 	require(sysConfig::getDirFsCatalog() . '/includes/classes/curl/Request.php');
 }
