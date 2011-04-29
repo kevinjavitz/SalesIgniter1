@@ -83,7 +83,14 @@ function parseElementSettings($el, &$Container) {
 
 							$gradientObj = array(
 								'type' => $gInfo->config->gradient_type,
-								'angle' => $gInfo->config->angle
+								'h_pos_start' => $gInfo->config->start_horizontal_pos,
+								'v_pos_start' => $gInfo->config->start_vertical_pos,
+								'h_pos_end' => $gInfo->config->end_horizontal_pos,
+								'v_pos_end' => $gInfo->config->end_vertical_pos,
+								'h_pos_start_unit' => '%',
+								'v_pos_start_unit' => '%',
+								'h_pos_end_unit' => '%',
+								'v_pos_end_unit' => '%'
 							);
 
 							$gradientObj['colorStops'][] = array(
@@ -144,7 +151,7 @@ function parseElementSettings($el, &$Container) {
 								}
 							}
 
-							$Container->Styles['background_linear_gradient']->definition_value = json_encode($gradientObj);
+							$Container->Styles['background_complex_gradient']->definition_value = json_encode($gradientObj);
 						}
 					}
 				}
