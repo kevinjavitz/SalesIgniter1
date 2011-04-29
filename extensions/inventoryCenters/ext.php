@@ -310,12 +310,16 @@ class Extension_inventoryCenters extends ExtensionBase {
 	public function ParseReservationInfo(&$return, &$resInfo){
 		if (sysConfig::get('EXTENSION_PAY_PER_RENTALS_CHOOSE_PICKUP') == 'True'){
 			$pickup = $this->getInventoryCenters($resInfo['inventory_center_pickup']);
-			$return .= '<br /><small><i> - ' .  'Inventory Center pickup zone: ' . $pickup[0]['inventory_center_name'] . '</i></small>';
+			if(isset($pickup[0]) && $pickup[0]['inventory_center_name'] != ''){
+				$return .= '<br /><small><i> - ' .  'Inventory Center pickup zone: ' . $pickup[0]['inventory_center_name'] . '</i></small>';
+			}
 		}
 
 		if (sysConfig::get('EXTENSION_PAY_PER_RENTALS_CHOOSE_DROPOFF') == 'True'){
 			$dropoff = $this->getInventoryCenters($resInfo['inventory_center_dropoff']);
-			$return .= '<br /><small><i> - ' .  'Inventory Center dropoff zone: ' . $dropoff[0]['inventory_center_name']  . '</i></small>';
+			if(isset($dropoff[0]) && $dropoff[0]['inventory_center_name'] != ''){
+				$return .= '<br /><small><i> - ' .  'Inventory Center dropoff zone: ' . $dropoff[0]['inventory_center_name']  . '</i></small>';
+			}
 		}
 	}
 
@@ -336,7 +340,7 @@ class Extension_inventoryCenters extends ExtensionBase {
 		if (sysConfig::get('EXTENSION_PAY_PER_RENTALS_CHOOSE_PICKUP') == 'True'){
 			$reservationInfo['inventory_center_pickup'] = $_POST['pickup'];
 		}
-		
+
 		if (sysConfig::get('EXTENSION_PAY_PER_RENTALS_CHOOSE_DROPOFF') == 'True'){
 			$reservationInfo['inventory_center_dropoff'] = $_POST['dropoff'];
 		}
@@ -364,7 +368,7 @@ class Extension_inventoryCenters extends ExtensionBase {
 		if (sysConfig::get('EXTENSION_PAY_PER_RENTALS_CHOOSE_PICKUP') == 'True'){
 			$Reservation->inventory_center_pickup = $resInfo['inventory_center_pickup'];
 		}
-		
+
 		if (sysConfig::get('EXTENSION_PAY_PER_RENTALS_CHOOSE_DROPOFF') == 'True'){
 			$Reservation->inventory_center_dropoff = $resInfo['inventory_center_dropoff'];
 		}
