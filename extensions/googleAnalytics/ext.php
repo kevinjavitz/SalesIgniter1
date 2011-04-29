@@ -20,18 +20,14 @@ class Extension_googleAnalytics extends ExtensionBase {
 		if ($this->enabled === false) return;
 		
 		EventManager::attachEvents(array(
-			'PageLayoutFooterAfterDraw',
 			'PageLayoutHeaderCustomMeta'
 
 		), null, $this);
 	}
 
-	public function PageLayoutFooterAfterDraw(){
-		return sysConfig::get('EXTENSION_GOOGLE_ANALYTICS_TRACKING_GENERAL');
-	}
-
 	public function PageLayoutHeaderCustomMeta(){
-		return '<meta name="google-site-verification" content="'.sysConfig::get('EXTENSION_GOOGLE_ANALYTICS_META_VERIFICATION').'">';
+		return '<meta name="google-site-verification" content="'.sysConfig::get('EXTENSION_GOOGLE_ANALYTICS_META_VERIFICATION').'">'. "\n" .
+			    sysConfig::get('EXTENSION_GOOGLE_ANALYTICS_TRACKING_GENERAL');
 	}
 }
 ?>
