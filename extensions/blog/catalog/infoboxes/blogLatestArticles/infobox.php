@@ -19,11 +19,11 @@ class InfoBoxBlogLatestArticles extends InfoBoxAbstract {
 	public function show(){
 		global $appExtension;
 		$boxWidgetProperties = $this->getWidgetProperties();
-		$nr_art = $boxWidgetProperties['nr_art'];
-		$showImage = (isset($boxWidgetProperties['showImage'])&& $boxWidgetProperties['showImage']=='showImage')?true:false;
-		$showDate = (isset($boxWidgetProperties['showDate']) && $boxWidgetProperties['showDate']=='showDate')?true:false;
-		$showReadMore = (isset($boxWidgetProperties['showReadMore'])&& $boxWidgetProperties['showReadMore']=='showReadMore')?true:false;
-		$descLength = $boxWidgetProperties['descLength'];
+		$nr_art = $boxWidgetProperties->nr_art;
+		$showImage = (isset($boxWidgetProperties->showImage)&& $boxWidgetProperties->showImage=='showImage')?true:false;
+		$showDate = (isset($boxWidgetProperties->showDate) && $boxWidgetProperties->showDate=='showDate')?true:false;
+		$showReadMore = (isset($boxWidgetProperties->showReadMore)&& $boxWidgetProperties->showReadMore=='showReadMore')?true:false;
+		$descLength = $boxWidgetProperties->descLength;
 		$blog = $appExtension->getExtension('blog');
 
 
