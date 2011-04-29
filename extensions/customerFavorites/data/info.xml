@@ -1,0 +1,8 @@
+<data>
+	<name>Customer Favorites</name>
+	<key>customerFavorites</key>
+	<version>1.0</version>
+	<author>Cristian Arcu ( http://www.itwebexperts.com )</author>
+	<tables></tables>
+	<status_key>EXTENSION_CUSTOMER_FAVORITES_ENABLED</status_key>
+</data>
