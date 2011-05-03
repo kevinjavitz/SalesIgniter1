@@ -24,29 +24,9 @@
 			global $messageStack;
 			$pID = attributesUtil::getProductId($pID_strings[0]['id']);
 			$purchaseType = $pID_strings[0]['purchaseType'];
-			
 			if (array_key_exists($this->inputKey, $_POST) && array_key_exists($purchaseType, $_POST[$this->inputKey])){
-				if (array_key_exists(3, $_POST[$this->inputKey][$purchaseType])){
-					$old_pID_string = $pID_strings[0];
-					$pID_strings = array();
-				
 					$Attributes = $_POST[$this->inputKey][$purchaseType];
-					foreach($_POST[$this->inputKey][$purchaseType][3] as $valueId => $qty){
-						if ($qty[0] > 0){
-							$Attributes[3] = $valueId;
-							$pID_strings[] = array(
-								'id'           => attributesUtil::getProductIdString($pID, $Attributes),
-								'purchaseType' => $purchaseType,
-								'qty'          => $qty[0],
-								'attributes'   => $Attributes
-							);
-						}
-					}
-				}else{
-					$postAttribs = $_POST[$this->inputKey][$purchaseType];
-					$pID_strings[0]['id'] = attributesUtil::getProductIdString($pID, $postAttribs);
-					$pID_strings[0]['attributes'] = $_POST['id'][$purchaseType];
-				}
+					$pID_strings[0]['attributes'] = $Attributes;
 			}else{
 				if (attributesUtil::productHasAttributes($pID, $purchaseType)){
 					$messageStack->addSession('pageStack', 'You must select the options in the box.', 'warning');
