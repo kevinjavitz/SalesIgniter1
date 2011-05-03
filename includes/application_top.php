@@ -312,8 +312,8 @@ require(sysConfig::getDirFsCatalog() . 'includes/classes/htmlBase.php');
 	require(sysConfig::getDirFsCatalog() . 'includes/classes/email.php');
 
 	// Ultimate SEO URLs v2.1
-	include_once(sysConfig::getDirFsCatalog() . 'includes/classes/seo.class.php');
-	$seo_urls = new SEO_URL(Session::get('languages_id'));
+	//include_once(sysConfig::getDirFsCatalog() . 'includes/classes/seo.class.php');
+	//$seo_urls = new SEO_URL(Session::get('languages_id'));
 
 	// currency
 	if (Session::exists('currency') === false || isset($_GET['currency']) || ( (sysConfig::get('USE_DEFAULT_LANGUAGE_CURRENCY') == 'true') && (LANGUAGE_CURRENCY != Session::get('currency')) ) ) {
@@ -360,7 +360,7 @@ require(sysConfig::getDirFsCatalog() . 'includes/classes/htmlBase.php');
 		if (isset($_POST['checkout'])){
 			$parameters = array('action', 'cPath', 'products_id', 'pid');
 			$goto = itw_app_link(tep_get_all_get_params($parameters), 'checkout', 'default', 'SSL');
-		}elseif (DISPLAY_CART == 'true') {
+		}elseif (sysConfig::get('DISPLAY_CART') == 'true') {
 			$parameters = array('action', 'cPath', 'products_id', 'pid');
 			$goto = itw_app_link(tep_get_all_get_params($parameters), 'shoppingCart', 'default');
 			$gotologin =  FILENAME_LOGIN;
@@ -369,11 +369,11 @@ require(sysConfig::getDirFsCatalog() . 'includes/classes/htmlBase.php');
 			if (isset($_GET['seoTag'])){
 				$goto = itw_app_link('products_id=' . $_GET['products_id'], 'product', 'info');
 			}else{
-				if (isset($_GET['app'])){
-					tep_redirect(itw_app_link(tep_get_all_get_params($parameters)));
-				}else{
+				//if (isset($_GET['app'])){
+					//tep_redirect(itw_app_link(tep_get_all_get_params($parameters)));
+				//}else{
 					$goto = itw_app_link(tep_get_all_get_params($parameters));
-				}
+				//}
 			}
 		}
 

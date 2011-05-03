@@ -1,9 +1,13 @@
 <?php
-	header('Pragma: public'); // required 
-	header('Expires: 0'); 
-	header('Cache-Control: must-revalidate, post-check=0, pre-check=0'); 
-	header('Cache-Control: private', false); // required for certain browsers 
-	
+header("Cache-Control: private, max-age=10800, pre-check=10800");
+header("Pragma: private");
+header("Expires: " . date(DATE_RFC822,strtotime(" 2 day")));
+if (isset($_SERVER['HTTP_IF_MODIFIED_SINCE'])){
+	// if the browser has a cached version of this image, send 304
+	header('Last-Modified: '.$_SERVER['HTTP_IF_MODIFIED_SINCE'],true,304);
+	exit;
+}
+
 	if (!empty($_GET['imgSrc'])){
 		if (isset($_GET['path']) && $_GET['path'] == 'rel'){
 			if (substr($_GET['imgSrc'], 0, 1) == DIRECTORY_SEPARATOR){

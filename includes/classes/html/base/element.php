@@ -159,7 +159,9 @@ class htmlElement
 				if (is_object($v) || substr($v, 0, 1) == '{' || substr($v, 0, 1) == '[') {
 					$Style = new StyleBuilder();
 					$Style->addRule($k, $v);
-					$this->styles = array_merge($this->styles, $Style->getArray());
+					foreach($Style->getArray() as $k => $v){
+						$this->styles[$k] = $v;
+					}
 				}
 				else {
 					$this->styles[$k] = $v;
@@ -621,15 +623,15 @@ class StyleBuilder {
 			$ruleVal = json_decode(json_encode($ruleVal));
 			$this->parseJsonRule($ruleName, $ruleVal);
 		}else
-		if (is_object($ruleVal)){
-			$this->parseJsonRule($ruleName, $ruleVal);
-		}else
-		if (substr($ruleVal, 0, 1) == '{' || substr($ruleVal, 0, 1) == '['){
-			$ruleVal = json_decode($ruleVal);
-			$this->parseJsonRule($ruleName, $ruleVal);
-		}else{
-			$this->definitions[$ruleName] = $ruleVal;
-		}
+			if (is_object($ruleVal)){
+				$this->parseJsonRule($ruleName, $ruleVal);
+			}else
+				if (substr($ruleVal, 0, 1) == '{' || substr($ruleVal, 0, 1) == '['){
+					$ruleVal = json_decode($ruleVal);
+					$this->parseJsonRule($ruleName, $ruleVal);
+				}else{
+					$this->definitions[$ruleName] = $ruleVal;
+				}
 	}
 
 	public function parseJsonRule($key, $val){
