@@ -298,10 +298,16 @@ function buildLinearGradient($deg, $colorStops, $images = false, &$styleObj = fa
 				'opacity' => 100
 			);
 		}
-		$cssData['background'][] = 'url(/extensions/templateManager/catalog/globalFiles/IE8_gradient.php?angle=' . $deg . '&colorStops=' . urlencode(json_encode($stops)) . ')';
+
+		$imageName = md5('browser=ie8&angle=' . $deg . '&colorStops=' . json_encode($stops));
+		if (file_exists(sysConfig::getDirFsCatalog() . 'cache/' . $imageName . '.png')){
+			$cssData['background-image'][] = 'url(' . sysConfig::getDirWsCatalog() . 'cache/' . $imageName . '.png)';
+		}else{
+			$cssData['-jquery'][] = '$(this).css(\'background-image\', \'url(/extensions/templateManager/catalog/globalFiles/IE8_gradient.php?width=\' + $(this).width() + \'&height=\' + $(this).height() + \'&angle=' . $deg . '&colorStops=' . urlencode(json_encode($stops)) . ')\')';
+		}
 		$cssData['background-repeat'][] = 'repeat-x';
 		$cssData['background-attachment'][] = (isset($iInfo['attachment']) ? $iInfo['attachment'] : 'scroll');
-		$cssData['background-position'][] = '0% 50%';
+		$cssData['background-position'][] = '0% 0%';
 	}
 	else {
 		if ($images !== false){
@@ -446,15 +452,13 @@ function buildBoxShadow($shadows, &$styleObj = false){
 			break;
 	}
 	$cssData[$prefix . 'box-shadow'] = implode(', ', $allShadows);
-	if (isIE8() === true){
-		$cssData['behavior'] = 'url(' . sysConfig::getDirWsCatalog() . 'ext/ie_behave/PIE.htc)';
-	}
 
 	$css = '';
 	foreach($cssData as $bgKey => $bgInfo){
 		if ($styleObj !== false){
 			$styleObj->addRule($bgKey, $bgInfo);
-		}else{
+		}
+		else {
 			$css .= $bgKey . ': ' . $bgInfo . ';';
 		}
 	}

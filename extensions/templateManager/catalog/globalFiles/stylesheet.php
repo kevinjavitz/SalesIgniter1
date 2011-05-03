@@ -1,44 +1,56 @@
 <?php
-if (isset($_GET['env'])){
-	if ($_GET['env'] == 'admin'){
-		chdir('../../../../');
-		chdir('admin');
-	}else{
-		chdir('../../../../');
-	}
-}else{
-	chdir('../../../../');
+chdir('../../../../');
+if (isset($_GET['layout_id'])){
+	$env = 'catalog';
+	$layoutId = $_GET['layout_id'];
+	$templateDir = $_GET['tplDir'];
 }
-include('includes/application_top.php');
-
-header('Content-Type: text/css');
-
-$sources = array(
-	sysConfig::getDirFsCatalog() . 'templates/' . Session::get('tplDir') . '/blueprint/screen.css',
-	sysConfig::getDirFsCatalog() . 'ext/jQuery/themes/smoothness/ui.core.css',
-	sysConfig::getDirFsCatalog() . 'ext/jQuery/themes/smoothness/ui.theme.css'
-);
-
-ob_start();
-
-foreach($sources as $filePath){
-	if (file_exists($filePath)){
-		echo '/*' . "\n" .
-			' * Required File' . "\n" .
-			' * Path: ' . $filePath . "\n" .
-			' * --BEGIN--' . "\n" .
-			' */' . "\n";
-		require($filePath);
-		echo '/*' . "\n" .
-			' * Required File' . "\n" .
-			' * Path: ' . $filePath . "\n" .
-			' * --END--' . "\n" .
-			' */' . "\n";
-	}
+else {
+	$env = 'admin';
+	$layoutId = '9999';
+	$templateDir = 'administration';
 }
+$import = 'noimport';
+if (isset($_GET['import']) && !empty($_GET['import'])){
+	$import = $_GET['import'];
+}
+$cacheKey = $env . '-stylesheet-' . $templateDir . '-' . md5($_SERVER['HTTP_USER_AGENT'] . '-' . $layoutId . '-' . $import);
 
-/* Overwrites for the core css framework --BEGIN-- */
-?>
+require('includes/classes/system_cache.php');
+$StylesheetCache = new SystemCache($cacheKey);
+if ($StylesheetCache->loadData() === true){
+	$StylesheetCache->output(false, true);
+	exit;
+}
+else {
+	include('includes/application_top.php');
+
+	$sources = array(
+		sysConfig::getDirFsCatalog() . 'templates/' . Session::get('tplDir') . '/blueprint/screen.css',
+		sysConfig::getDirFsCatalog() . 'ext/jQuery/themes/smoothness/ui.core.css',
+		sysConfig::getDirFsCatalog() . 'ext/jQuery/themes/smoothness/ui.theme.css'
+	);
+
+	ob_start();
+
+	foreach($sources as $filePath){
+		if (file_exists($filePath)){
+			echo '/*' . "\n" .
+				' * Required File' . "\n" .
+				' * Path: ' . $filePath . "\n" .
+				' * --BEGIN--' . "\n" .
+				' */' . "\n";
+			require($filePath);
+			echo '/*' . "\n" .
+				' * Required File' . "\n" .
+				' * Path: ' . $filePath . "\n" .
+				' * --END--' . "\n" .
+				' */' . "\n";
+		}
+	}
+
+	/* Overwrites for the core css framework --BEGIN-- */
+	?>
 body, div, td { font-family: Verdana, Arial, sans-serif;font-size: 12px; }
 div {  }
 a { text-decoration: none;color: #626262; }
@@ -58,38 +70,38 @@ h4 { font-size: 13px;color: #c30;margin: 10px;font-weight: bold; }
 <?php
  /* Overwrites for the core css framework --END-- */
 
-$sources = array(
-	sysConfig::getDirFsCatalog() . 'ext/jQuery/themes/smoothness/ui.accordion.css',
-	sysConfig::getDirFsCatalog() . 'ext/jQuery/themes/smoothness/ui.datepicker.css',
-	sysConfig::getDirFsCatalog() . 'ext/jQuery/themes/smoothness/ui.dialog.css',
-	sysConfig::getDirFsCatalog() . 'ext/jQuery/themes/smoothness/ui.progressbar.css',
-	sysConfig::getDirFsCatalog() . 'ext/jQuery/themes/smoothness/ui.resizable.css',
-	sysConfig::getDirFsCatalog() . 'ext/jQuery/themes/smoothness/ui.slider.css',
-	sysConfig::getDirFsCatalog() . 'ext/jQuery/themes/smoothness/ui.tabs.css',
-	sysConfig::getDirFsCatalog() . 'ext/jQuery/themes/smoothness/ui.tooltip.css',
-	sysConfig::getDirFsCatalog() . 'ext/jQuery/themes/smoothness/ui.autocomplete.css',
-	sysConfig::getDirFsCatalog() . 'ext/jQuery/themes/smoothness/ui.button.css',
-	sysConfig::getDirFsCatalog() . 'ext/jQuery/themes/smoothness/ui.stars.css',
-	sysConfig::getDirFsCatalog() . 'ext/jQuery/themes/smoothness/ui.menu.css'
-);
+	$sources = array(
+		sysConfig::getDirFsCatalog() . 'ext/jQuery/themes/smoothness/ui.accordion.css',
+		sysConfig::getDirFsCatalog() . 'ext/jQuery/themes/smoothness/ui.datepicker.css',
+		sysConfig::getDirFsCatalog() . 'ext/jQuery/themes/smoothness/ui.dialog.css',
+		sysConfig::getDirFsCatalog() . 'ext/jQuery/themes/smoothness/ui.progressbar.css',
+		sysConfig::getDirFsCatalog() . 'ext/jQuery/themes/smoothness/ui.resizable.css',
+		sysConfig::getDirFsCatalog() . 'ext/jQuery/themes/smoothness/ui.slider.css',
+		sysConfig::getDirFsCatalog() . 'ext/jQuery/themes/smoothness/ui.tabs.css',
+		sysConfig::getDirFsCatalog() . 'ext/jQuery/themes/smoothness/ui.tooltip.css',
+		sysConfig::getDirFsCatalog() . 'ext/jQuery/themes/smoothness/ui.autocomplete.css',
+		sysConfig::getDirFsCatalog() . 'ext/jQuery/themes/smoothness/ui.button.css',
+		sysConfig::getDirFsCatalog() . 'ext/jQuery/themes/smoothness/ui.stars.css',
+		sysConfig::getDirFsCatalog() . 'ext/jQuery/themes/smoothness/ui.menu.css'
+	);
 
-foreach($sources as $filePath){
-	if (file_exists($filePath)){
-		echo '/*' . "\n" .
-			' * Required File' . "\n" .
-			' * Path: ' . $filePath . "\n" .
-			' * --BEGIN--' . "\n" .
-			' */' . "\n";
-		require($filePath);
-		echo '/*' . "\n" .
-			' * Required File' . "\n" .
-			' * Path: ' . $filePath . "\n" .
-			' * --END--' . "\n" .
-			' */' . "\n";
+	foreach($sources as $filePath){
+		if (file_exists($filePath)){
+			echo '/*' . "\n" .
+				' * Required File' . "\n" .
+				' * Path: ' . $filePath . "\n" .
+				' * --BEGIN--' . "\n" .
+				' */' . "\n";
+			require($filePath);
+			echo '/*' . "\n" .
+				' * Required File' . "\n" .
+				' * Path: ' . $filePath . "\n" .
+				' * --END--' . "\n" .
+				' */' . "\n";
+		}
 	}
-}
-/* Overwrites for jQuery UI Settings --BEGIN-- */
-?>
+	/* Overwrites for jQuery UI Settings --BEGIN-- */
+	?>
 /*
 * Border Radius
 * top-left top-right bottom-right bottom-left
@@ -126,8 +138,8 @@ foreach($sources as $filePath){
 <?php
  /* Overwrites for jQuery UI Settinge --END-- */
 
-/* Our core managed css --BEGIN-- */
-?>
+	/* Our core managed css --BEGIN-- */
+	?>
 .errorReport { margin:.5em;padding: 0.7em;border:none;border: 1px solid #000000; }
 .errorReport .ui-icon { float: left; margin-right: 0.3em; }
 .errorReport .ui-state-error { border-color:#fdcfcf;<?php echo buildSimpleGradient('#fea4a4', '#fc7373'); ?> }
@@ -201,256 +213,254 @@ a.productListingRowPagerLink:hover { text-decoration:none; }
  /*
 	 * @TODO: Move to pay per rentals infobox buildStylesheet function
 	 */
-if ($appExtension->isInstalled('payPerRentals')){
-	?>
-.ui-datepicker-reserved { background: #FF0000; }
-.ui-datepicker-reserved span.ui-state-default { background: #FF0000; }
+	if ($appExtension->isInstalled('payPerRentals')){
+		?>
+	.ui-datepicker-reserved { background: #FF0000; }
+	.ui-datepicker-reserved span.ui-state-default { background: #FF0000; }
 
-<?php
+	<?php
 
-}
+	}
 
-/*
-	 * @TODO: Move to blog infobox buildStylesheet function
-	 */
-if ($appExtension->isInstalled('blog')){
-	?>
-#blogcategoriesModuleMenu h3{ margin:0;padding:0; }
-#blogcategoriesModuleMenu ul{ list-style-type:none; }
-#blogcategoriesModuleMenu ul li{ margin:0;padding:0;background:transparent; }
-#blogarchivesModuleMenu ul{ list-style-type:none; margin:0; padding:0; }
-#blogarchivesModuleMenu ul li{ margin:0;padding:0;background:transparent; }
-.blogInfoboxLink{ border-color:transparent; }
-.blogInfoboxLink:hover{ text-decoration:none !important; }
-.comf, .captcha_img{ display:block;margin-bottom:10px; }
-#cke_comment_text{ width:80%; }
-<?php
+	/*
+		 * @TODO: Move to blog infobox buildStylesheet function
+		 */
+	if ($appExtension->isInstalled('blog')){
+		?>
+	#blogcategoriesModuleMenu h3{ margin:0;padding:0; }
+	#blogcategoriesModuleMenu ul{ list-style-type:none; }
+	#blogcategoriesModuleMenu ul li{ margin:0;padding:0;background:transparent; }
+	#blogarchivesModuleMenu ul{ list-style-type:none; margin:0; padding:0; }
+	#blogarchivesModuleMenu ul li{ margin:0;padding:0;background:transparent; }
+	.blogInfoboxLink{ border-color:transparent; }
+	.blogInfoboxLink:hover{ text-decoration:none !important; }
+	.comf, .captcha_img{ display:block;margin-bottom:10px; }
+	#cke_comment_text{ width:80%; }
+	<?php
 
-}
-/* Our core managed css --END-- */
+	}
+	/* Our core managed css --END-- */
 
-if (isset($_GET['import']) && !empty($_GET['import'])){
-	foreach(explode(',', $_GET['import']) as $filePath){
-		if (substr($filePath, -4) != '.css') {
-			continue;
+	if (isset($_GET['import']) && !empty($_GET['import'])){
+		foreach(explode(',', $_GET['import']) as $filePath){
+			if (substr($filePath, -4) != '.css'){
+				continue;
+			}
+
+			$requireFile = false;
+			if (file_exists($filePath)){
+				$requireFile = $filePath;
+			}
+			elseif (file_exists(sysConfig::get('DIR_FS_DOCUMENT_ROOT') . $filePath)) {
+				$requireFile = sysConfig::get('DIR_FS_DOCUMENT_ROOT') . $filePath;
+			}
+			elseif (file_exists(sysConfig::getDirFsCatalog() . $filePath)) {
+				$requireFile = sysConfig::getDirFsCatalog() . $filePath;
+			}
+			elseif (file_exists(sysConfig::getDirFsAdmin() . $filePath)) {
+				$requireFile = sysConfig::getDirFsAdmin() . $filePath;
+			}
+
+			if ($requireFile !== false){
+				echo '/*' . "\n" .
+					' * Imported File' . "\n" .
+					' * Path: ' . $requireFile . "\n" .
+					' * --BEGIN--' . "\n" .
+					' */' . "\n";
+				require($requireFile);
+				echo '/*' . "\n" .
+					' * Imported File' . "\n" .
+					' * Path: ' . $requireFile . "\n" .
+					' * --END--' . "\n" .
+					' */' . "\n";
+			}
+		}
+	}
+
+	if (isset($_GET['layout_id'])){
+		$boxStylesEntered = array();
+		$addCss = '';
+		function parseContainer($Container) {
+			global $boxStylesEntered, $addCss;
+
+			if ($Container->Configuration['id'] && $Container->Configuration['id']->configuration_value != ''){
+				$Style = new StyleBuilder();
+				$Style->setSelector('#' . $Container->Configuration['id']->configuration_value);
+				foreach($Container->Styles as $sInfo){
+					$Style->addRule($sInfo->definition_key, $sInfo->definition_value);
+				}
+				$addCss .= $Style->outputCss();
+			}
+
+			if ($Container->Children->count() > 0){
+				foreach($Container->Children as $ChildObj){
+					parseContainer($ChildObj);
+				}
+			}
+			else {
+				foreach($Container->Columns as $colInfo){
+					if ($colInfo->Configuration['id'] && $colInfo->Configuration['id']->configuration_value != ''){
+						$Style = new StyleBuilder();
+						$Style->setSelector('#' . $colInfo->Configuration['id']->configuration_value);
+						foreach($colInfo->Styles as $sInfo){
+							$Style->addRule($sInfo->definition_key, $sInfo->definition_value);
+						}
+						$addCss .= $Style->outputCss();
+					}
+
+					foreach($colInfo->Widgets as $wInfo){
+						foreach($wInfo->Configuration as $config){
+							if ($config->configuration_key == 'widget_settings'){
+								$WidgetSettings = json_decode($config->configuration_value);
+								break;
+							}
+						}
+						$className = 'InfoBox' . ucfirst($wInfo->identifier);
+						if (!class_exists($className)){
+							$Qbox = Doctrine_Query::create()
+								->select('box_path')
+								->from('TemplatesInfoboxes')
+								->where('box_code = ?', $wInfo->identifier)
+								->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+
+							require($Qbox[0]['box_path'] . 'infobox.php');
+						}
+
+						$Box = new $className();
+						if (method_exists($className, 'buildStylesheet')){
+							if ($Box->buildStylesheetMultiple === true || !in_array($className, $boxStylesEntered)){
+								if (isset($WidgetSettings->id) && !empty($WidgetSettings->id)){
+									$Box->setBoxId($WidgetSettings->id);
+								}
+								$Box->setWidgetProperties($WidgetSettings);
+
+								echo $Box->buildStylesheet();
+
+								$boxStylesEntered[] = $className;
+							}
+						}
+					}
+				}
+			}
 		}
 
-		$requireFile = false;
-		if (file_exists($filePath)){
-			$requireFile = $filePath;
-		}
-		elseif (file_exists(sysConfig::get('DIR_FS_DOCUMENT_ROOT') . $filePath)) {
-			$requireFile = sysConfig::get('DIR_FS_DOCUMENT_ROOT') . $filePath;
-		}
-		elseif (file_exists(sysConfig::getDirFsCatalog() . $filePath)) {
-			$requireFile = sysConfig::getDirFsCatalog() . $filePath;
-		}
-		elseif (file_exists(sysConfig::getDirFsAdmin() . $filePath)) {
-			$requireFile = sysConfig::getDirFsAdmin() . $filePath;
-		}
-
-		if ($requireFile !== false){
+		$Layout = Doctrine_Core::getTable('TemplateManagerLayouts')->find((int)$_GET['layout_id']);
+		if ($Layout){
 			echo '/*' . "\n" .
-				' * Imported File' . "\n" .
-				' * Path: ' . $requireFile . "\n" .
+				' * Layout Manager Generated Styles' . "\n" .
 				' * --BEGIN--' . "\n" .
 				' */' . "\n";
-			require($requireFile);
+			$Template = $Layout->Template;
+
+			if ($Layout->Styles->count() > 0){
+				$StyleBuilder = new StyleBuilder();
+				$StyleBuilder->setSelector('body');
+				$rules = array();
+				foreach($Layout->Styles as $sInfo){
+					$StyleBuilder->addRule($sInfo->definition_key, $sInfo->definition_value);
+				}
+				echo $StyleBuilder->outputCss();
+			}
+
+			foreach($Layout->Containers as $Container){
+				parseContainer($Container);
+			}
+
+			echo $addCss;
 			echo '/*' . "\n" .
-				' * Imported File' . "\n" .
-				' * Path: ' . $requireFile . "\n" .
+				' * Layout Manager Generated Styles' . "\n" .
 				' * --END--' . "\n" .
 				' */' . "\n";
 		}
-	}
-}
 
-if (isset($_GET['layout_id'])){
-	$boxStylesEntered = array();
-	$addCss = '';
-	function parseContainer($Container) {
-		global $boxStylesEntered, $addCss;
-
-		if ($Container->Configuration['id'] && $Container->Configuration['id']->configuration_value != ''){
-			$Style = new StyleBuilder();
-			$Style->setSelector('#' . $Container->Configuration['id']->configuration_value);
-			foreach($Container->Styles as $sInfo){
-				$Style->addRule($sInfo->definition_key, $sInfo->definition_value);
-			}
-			$addCss .= $Style->outputCss();
-		}
-
-		if ($Container->Children->count() > 0){
-			foreach($Container->Children as $ChildObj){
-				parseContainer($ChildObj);
-			}
-		}
-		else {
-			foreach($Container->Columns as $colInfo){
-				if ($colInfo->Configuration['id'] && $colInfo->Configuration['id']->configuration_value != ''){
-					$Style = new StyleBuilder();
-					$Style->setSelector('#' . $colInfo->Configuration['id']->configuration_value);
-					foreach($colInfo->Styles as $sInfo){
-						$Style->addRule($sInfo->definition_key, $sInfo->definition_value);
-					}
-					$addCss .= $Style->outputCss();
-				}
-
-				foreach($colInfo->Widgets as $wInfo){
-					foreach($wInfo->Configuration as $config){
-						if ($config->configuration_key == 'widget_settings'){
-							$WidgetSettings = json_decode($config->configuration_value);
-							break;
-						}
-					}
-					$className = 'InfoBox' . ucfirst($wInfo->identifier);
-					if (!class_exists($className)){
-						$Qbox = Doctrine_Query::create()
-							->select('box_path')
-							->from('TemplatesInfoboxes')
-							->where('box_code = ?', $wInfo->identifier)
-							->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
-
-						require($Qbox[0]['box_path'] . 'infobox.php');
-					}
-
-					$Box = new $className();
-					if (method_exists($className, 'buildStylesheet')){
-						if ($Box->buildStylesheetMultiple === true || !in_array($className, $boxStylesEntered)){
-							if (isset($WidgetSettings->id) && !empty($WidgetSettings->id)){
-								$Box->setBoxId($WidgetSettings->id);
-							}
-							$Box->setWidgetProperties($WidgetSettings);
-
-							echo $Box->buildStylesheet();
-
-							$boxStylesEntered[] = $className;
-						}
-					}
-				}
-			}
-		}
-	}
-
-	$Layout = Doctrine_Core::getTable('TemplateManagerLayouts')->find((int)$_GET['layout_id']);
-	if ($Layout){
 		echo '/*' . "\n" .
-			' * Layout Manager Generated Styles' . "\n" .
+			' * Template Stylesheet' . "\n" .
+			' * Path: ' . sysConfig::getDirFsCatalog() . 'templates/' . Session::get('tplDir') . '/stylesheet.css' . "\n" .
 			' * --BEGIN--' . "\n" .
 			' */' . "\n";
-		$Template = $Layout->Template;
-
-		if ($Layout->Styles->count() > 0){
-			$StyleBuilder = new StyleBuilder();
-			$StyleBuilder->setSelector('body');
-			$rules = array();
-			foreach($Layout->Styles as $sInfo){
-				$StyleBuilder->addRule($sInfo->definition_key, $sInfo->definition_value);
-			}
-			echo $StyleBuilder->outputCss();
-		}
-		
-		foreach($Layout->Containers as $Container){
-			parseContainer($Container);
-		}
-
-		echo $addCss;
+		require(sysConfig::getDirFsCatalog() . 'templates/' . Session::get('tplDir') . '/stylesheet.css');
 		echo '/*' . "\n" .
-			' * Layout Manager Generated Styles' . "\n" .
+			' * Template Stylesheet' . "\n" .
+			' * Path: ' . sysConfig::getDirFsCatalog() . 'templates/' . Session::get('tplDir') . '/stylesheet.css' . "\n" .
+			' * --END--' . "\n" .
+			' */' . "\n";
+	}
+	else {
+		echo '/*' . "\n" .
+			' * Template Stylesheet' . "\n" .
+			' * Path: ' . sysConfig::getDirFsAdmin() . 'template/fallback/stylesheet.css' . "\n" .
+			' * --BEGIN--' . "\n" .
+			' */' . "\n";
+		require(sysConfig::getDirFsAdmin() . 'template/fallback/stylesheet.css');
+		echo '/*' . "\n" .
+			' * Template Stylesheet' . "\n" .
+			' * Path: ' . sysConfig::getDirFsAdmin() . 'template/fallback/stylesheet.css' . "\n" .
 			' * --END--' . "\n" .
 			' */' . "\n";
 	}
 
-	echo '/*' . "\n" .
-		' * Template Stylesheet' . "\n" .
-		' * Path: ' . sysConfig::getDirFsCatalog() . 'templates/' . Session::get('tplDir') . '/stylesheet.css' . "\n" .
-		' * --BEGIN--' . "\n" .
-		' */' . "\n";
-	require(sysConfig::getDirFsCatalog() . 'templates/' . Session::get('tplDir') . '/stylesheet.css');
-	echo '/*' . "\n" .
-		' * Template Stylesheet' . "\n" .
-		' * Path: ' . sysConfig::getDirFsCatalog() . 'templates/' . Session::get('tplDir') . '/stylesheet.css' . "\n" .
-		' * --END--' . "\n" .
-		' */' . "\n";
-}
-else {
-	echo '/*' . "\n" .
-		' * Template Stylesheet' . "\n" .
-		' * Path: ' . sysConfig::getDirFsAdmin() . 'template/fallback/stylesheet.css' . "\n" .
-		' * --BEGIN--' . "\n" .
-		' */' . "\n";
-	require(sysConfig::getDirFsAdmin() . 'template/fallback/stylesheet.css');
-	echo '/*' . "\n" .
-		' * Template Stylesheet' . "\n" .
-		' * Path: ' . sysConfig::getDirFsAdmin() . 'template/fallback/stylesheet.css' . "\n" .
-		' * --END--' . "\n" .
-		' */' . "\n";
-}
+	$fileContent = ob_get_contents();
+	ob_end_clean();
 
-$fileContent = ob_get_contents();
-ob_end_clean();
-
-function src1_fetch() {
-	global $fileContent;
-	return $fileContent;
-}
-
-define('MINIFY_MIN_DIR', sysConfig::getDirFsCatalog() . 'min');
-
-/*
-	 * This script implements a Minify server for a single set of sources.
-	 * If you don't want '.php' in the URL, use mod_rewrite...
-	 */
-
-// setup Minify
-set_include_path(MINIFY_MIN_DIR . '/lib' . PATH_SEPARATOR . get_include_path());
-require 'Minify.php';
-require 'Minify/Cache/File.php';
-Minify::setCache(new Minify_Cache_File()); // guesses a temp directory
-
-// setup sources
-$sources = new Minify_Source(array(
-	'id' => 'source1',
-	'getContentFunc' => 'src1_fetch',
-	'contentType' => Minify::TYPE_CSS,
-	'lastModified' => ($_SERVER['REQUEST_TIME'] - $_SERVER['REQUEST_TIME'] % 86400)
-));
-
-// handle request
-$serveArr = array(
-	'files' => $sources,
-	'maxAge' => 86400,
-	//'quiet' => true,
-	'debug' => true
-);
-
-if (isset($Template) && is_object($Template)){
-	switch($Template->Configuration['STYLESHEET_COMPRESSION']->configuration_value){
-		case 'gzip':
-			//ob_start("ob_gzhandler");
-			break;
-		case 'min':
-			$serveArr['debug'] = false;
-			break;
-		case 'min_gzip':
-			//ob_start("ob_gzhandler");
-			$serveArr['debug'] = false;
-			break;
+	function src1_fetch() {
+		global $fileContent;
+		return $fileContent;
 	}
-}
-/*
-$templateDir = Session::get('tplDir');
-$layoutId = $_GET['layout_id'];
-$import = '';
-if (isset($_GET['import']) && !empty($_GET['import'])){
-	$import = $_GET['import'];
-}
-$cacheKey = 'stylesheet_' . $templateDir . '_' . $layoutId . '_' . $import;
 
-$Result = Minify::serve('Files', $serveArr);
-FileCache::save($cacheKey, $Result['content']);
-FileCache::serve($cacheKey);
-*/
-Minify::serve('Files', $serveArr);
-include('includes/application_bottom.php');
-?>
+	define('MINIFY_MIN_DIR', sysConfig::getDirFsCatalog() . 'min');
+
+	/*
+		 * This script implements a Minify server for a single set of sources.
+		 * If you don't want '.php' in the URL, use mod_rewrite...
+		 */
+	header('Content-Type: text/css');
+
+	// setup Minify
+	set_include_path(MINIFY_MIN_DIR . '/lib' . PATH_SEPARATOR . get_include_path());
+	require 'Minify.php';
+	require 'Minify/Cache/File.php';
+	Minify::setCache(new Minify_Cache_File()); // guesses a temp directory
+
+	// setup sources
+	$sources = new Minify_Source(array(
+			'id' => 'source1',
+			'getContentFunc' => 'src1_fetch',
+			'contentType' => Minify::TYPE_CSS,
+			'lastModified' => ($_SERVER['REQUEST_TIME'] - $_SERVER['REQUEST_TIME'] % 86400)
+		));
+
+	// handle request
+	$serveArr = array(
+		'files' => $sources,
+		'maxAge' => 86400,
+		'quiet' => true,
+		'debug' => true
+	);
+
+	if (isset($Template) && is_object($Template)){
+		switch($Template->Configuration['STYLESHEET_COMPRESSION']->configuration_value){
+			case 'gzip':
+				//ob_start("ob_gzhandler");
+				break;
+			case 'min':
+				$serveArr['debug'] = false;
+				break;
+			case 'min_gzip':
+				//ob_start("ob_gzhandler");
+				$serveArr['debug'] = false;
+				break;
+		}
+	}
+	$Result = Minify::serve('Files', $serveArr);
+
+	$StylesheetCache->setAddedHeaders($Result['headers']);
+	//$StylesheetCache->setContentType('text/css');
+	$StylesheetCache->setContent($Result['content']);
+	$StylesheetCache->setExpires(time() + (60 * 60 * 24 * 2));
+	//$StylesheetCache->setLastModified(time());
+	$StylesheetCache->store();
+
+	$StylesheetCache->output(false, true);
+
+	include('includes/application_bottom.php');
+}
