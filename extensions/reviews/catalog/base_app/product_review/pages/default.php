@@ -42,7 +42,7 @@
 			/*
 			 * @TODO: Change to html class "image"
 			 */
-			$productImage = '<img src="imagick_thumb.php?width=150&height=150&path=rel&imgSrc=' . sysConfig::getDirWsCatalog() . 'images/' . $rInfo['Products'][0]['products_image'] . '" alt="' . $productName . '"/>';
+			$productImage = '<img src="imagick_thumb.php?width=150&height=150&path=rel&imgSrc=' .  'images/' . $rInfo['Products'][0]['products_image'] . '" alt="' . $productName . '"/>';
 			$reviewText = nl2br(tep_break_string(htmlspecialchars($rInfo['ReviewsDescription'][0]['reviews_text']), 60, '-<br>') . ((strlen($rInfo['reviews_text']) >= 100) ? '..' : ''));
 			$reviewRating = sprintf(TEXT_REVIEW_RATING, tep_image(sysConfig::get('DIR_WS_IMAGES') . 'stars_' . $rating . '.gif', sprintf(TEXT_OF_5_STARS, $rating)), sprintf(TEXT_OF_5_STARS, $rating));
 
