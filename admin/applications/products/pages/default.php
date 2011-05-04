@@ -167,10 +167,13 @@
 		$Qproducts->andWhere('pd.products_name LIKE ?', '%' . $search . '%');
 	}
 
-	EventManager::notify('ProductListingQueryBeforeExecute', &$Qproducts);
+	if(isset($_GET['categorySelect']) && $_GET['categorySelect'] != -1){
+		$Qproducts->andWhere('p2c.categories_id=?', $_GET['categorySelect']);
+	}
 
-    /*update pay per rentals with the new fields this can be removed after update*/
-    /*
+	EventManager::notify('AdminProductListingQueryBeforeExecute', &$Qproducts);
+
+    /*update pay per rentals with the new fields this can be removed after update
     $QproductsUpdate = Doctrine_Query::create()
 	->from('ProductsPayPerRental ppr')
 	->execute();
@@ -286,8 +289,7 @@
 		$iProducts->save();
 
 	}
-	*/
-    /*end of update*/
+    end of update*/
 	$tableGrid = htmlBase::newElement('grid')
 	->usePagination(true)
 	->setPageLimit((isset($_GET['limit']) ? (int)$_GET['limit']: 25))
@@ -345,21 +347,55 @@
    ->attr('action', itw_app_link(null, null, null, 'SSL'))
    ->attr('method', 'get');
 
+	$submitb = htmlBase::newElement('button')
+	->setType('submit')
+	->setText('GO')
+	->setName('submitb');
+
+    $categorySelect = htmlBase::newElement('selectbox')
+	->setName('categorySelect')
+	->setLabel(sysLanguage::get('TEXT_SELECT_CATEGORY'))
+    ->setLabelPosition('before');
+
+   	function addCategoryTreeToGrid($parentId, &$categorySelect, $namePrefix = ''){
+		global $lID, $allGetParams, $cInfo;
+		$Qcategories = Doctrine_Query::create()
+		->select('c.*, cd.categories_name')
+		->from('Categories c')
+		->leftJoin('c.CategoriesDescription cd')
+		->where('cd.language_id = ?', $lID)
+		->andWhere('c.parent_id = ?', $parentId)
+		->orderBy('c.sort_order, cd.categories_name');
+
+		EventManager::notify('CategoryListingQueryBeforeExecute', &$Qcategories);
+
+		$ResultC = $Qcategories->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+		if (count($ResultC) > 0){
+			foreach($ResultC as $Category){
+
+				$categorySelect->addOption($Category['categories_id'], $namePrefix. $Category['CategoriesDescription'][0]['categories_name']);
+				addCategoryTreeToGrid($Category['categories_id'], &$categorySelect, '&nbsp;&nbsp;&nbsp;' . $namePrefix);
+			}
+		}
+	}
+    $categorySelect->addOption('-1', sysLanguage::get('TEXT_PLEASE_SELECT'));
+	addCategoryTreeToGrid(0, $categorySelect,'');
+    if(isset($_GET['categorySelect']) && $_GET['categorySelect'] != -1){
+	    $categorySelect->selectOptionByValue($_GET['categorySelect']);
+    }
+
    $searchField = htmlBase::newElement('input')->setName('search')
    ->setLabel(sysLanguage::get('HEADING_TITLE_SEARCH'))->setLabelPosition('before');
    if (isset($_GET['search'])){
    	$searchField->setValue($_GET['search']);
    }
 
-   $searchForm->append($searchField);
-   echo $searchForm->draw();
+   $searchForm->append($searchField)->append($categorySelect);
 
-   $contents = EventManager::notifyWithReturn('ProductsDefaultAddFilterOptions');
-   if (!empty($contents)){
-   	foreach($contents as $html){
-		echo $html;
-	}
-   }
+   $contents = EventManager::notify('ProductsDefaultAddFilterOptions', &$searchForm);
+   $searchForm->append($submitb);
+
+   echo $searchForm->draw();
    ?></td>
   </tr>
  </table>

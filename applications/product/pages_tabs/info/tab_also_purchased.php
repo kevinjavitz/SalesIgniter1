@@ -46,7 +46,7 @@
 
         $orders['products_name'] = tep_get_products_name($orders['products_id']);
         $link = itw_app_link('products_id=' . $orders['products_id'], 'product', 'info');
-		$imageLink = '<img src="' . 'imagick_thumb.php?path=rel&width=150&height=150&imgSrc='. sysConfig::getDirWsCatalog() .'images/'.$orders['products_image'] .'"/>';
+		$imageLink = '<img src="' . 'imagick_thumb.php?path=rel&width=150&height=150&imgSrc='. 'images/'.$orders['products_image'] .'"/>';
         $info_box_contents[$row][$col] = array('align' => 'center',
                                                'params' => 'class="smallText" width="33%" valign="top"',
                                                'text' => '<a href="' . $link . '">' . $imageLink . '</a><br><a href="' . $link . '">' . $orders['products_name'] . '</a>'.$products_series);

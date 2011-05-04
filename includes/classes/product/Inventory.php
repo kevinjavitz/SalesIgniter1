@@ -13,8 +13,8 @@
 			$Result = $Qcheck->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 			$this->invData = null;
 			$this->invMethod = null;
-			if ($Result){
-				$this->invData = $Result[0];
+			if (count($Result) > 0){
+				$this->invData = $Result[count($Result)-1];
 				$invController = $this->invData['controller'];
 				$controllerDir = sysConfig::getDirFsCatalog() . 'includes/classes/product/inventory/controller/';
 

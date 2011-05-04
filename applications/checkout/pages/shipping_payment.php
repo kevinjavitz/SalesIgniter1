@@ -282,7 +282,7 @@
 
 						$checked = (isset($onePageCheckout->onePage['info']['shipping']['id']) && $quotes[$i]['id'] . '_' . $quotes[$i]['methods'][$j]['id'] == $onePageCheckout->onePage['info']['shipping']['id'] ? true : false);
 
-						$addClass = ' ui-state-default';
+						$addClass = ' ';
 						if (isset($onePageCheckout->onePage['info']['shipping']['id']) && $quotes[$i]['id'] . '_' . $quotes[$i]['methods'][$j]['id'] == $onePageCheckout->onePage['info']['shipping']['id']){
 							$addClass = ' ui-state-active';
 						}
