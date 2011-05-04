@@ -19,16 +19,19 @@ class InfoBoxSocialNetworks extends InfoBoxAbstract {
 
 	public function show(){
 
+		$boxWidgetProperties = $this->getWidgetProperties();
+		$facebook = isset($boxWidgetProperties->facebook)?$boxWidgetProperties->facebook:'';
+		$twitter = isset($boxWidgetProperties->twitter)?$boxWidgetProperties->twitter:'';
+		$email = isset($boxWidgetProperties->email)?$boxWidgetProperties->email:'';
+		$htmlText = htmlBase::newElement('div')
+		->addClass('socialNetworks')
+		->html('<a target="_blank" href="'.$facebook.'"><img src="'. sysConfig::getDirWsCatalog() .'images/facebookSocial.png" /></a>
+			<a href="'.$twitter.'" target="_blank"><img src="'. sysConfig::getDirWsCatalog() .'images/twitterSocial.png" /></a>
+			<a href="'.$email.'" target="_blank"><img src="'. sysConfig::getDirWsCatalog() .'images/emailSocial.png" /></a>'
+		);
 
-			$htmlText = htmlBase::newElement('p')
-						->html('Follow Ironman Wheel Rentals on Twitter and Facebook, click the icons below<br/><br/><a target="_blank" href="http://www.facebook.com/?ref=home#!/pages/Boulder-CO/Ironman-Wheel-Rentals/117693644956058?ref=ts"><img style="margin-right:8px;margin-left:15px;"  src="'. sysConfig::getDirWsCatalog() .'images/facebook.png" /></a><a href="http://twitter.com/ironmanwheels" target="_blank"><img src="'. sysConfig::getDirWsCatalog() .'images/twitter.png" /></a>');
-
-
-			$this->setBoxContent($htmlText->draw());
-
-			return $this->draw();
-
-			return false;
+		$this->setBoxContent($htmlText->draw());
+		return $this->draw();
 	}
 }
 ?>
