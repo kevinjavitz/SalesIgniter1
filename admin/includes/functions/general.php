@@ -2011,4 +2011,8 @@ function tep_draw_products_pull_down($name, $parameters = '', $exclude = '') {
 	return $select_string;
 }
 
+	function getJsDateFormat(){
+		echo 'mm/dd/yy';
+	}
+
 ?>
