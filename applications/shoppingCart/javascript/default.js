@@ -16,7 +16,7 @@ function popupWindowInitials(url, initials, w, h) {
 				$(e.target).html('<div id="termsText"></div>');
 			}
 			showAjaxLoader($('#initials'), 'xlarge');
-
+			var pos = ui.position;
 			$.ajax({
 				cache: false,
 				url: url,
@@ -26,6 +26,10 @@ function popupWindowInitials(url, initials, w, h) {
 				success: function (data){
 					hideAjaxLoader($('#initials'));
 					$('#termsText').html(data.html);
+
+
+					$('#initials').dialog( "option", "width", 330 );
+
 				}
 			});
 		},
