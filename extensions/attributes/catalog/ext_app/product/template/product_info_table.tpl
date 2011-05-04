@@ -50,7 +50,7 @@
 								}
 								
 								$liObj = htmlBase::newElement('li')
-								->attr('imgSrc', 'product_thumb.php?w=280&img=' . DIR_WS_IMAGES . $viewInfo['view_image'])
+								->attr('imgSrc', 'product_thumb.php?w=280&img=' . 'images/' . $viewInfo['view_image'])
 								->attr('bigImgSrc', DIR_WS_IMAGES . $viewInfo['view_image'])
 								->html($viewInfo['view_name']);
 								
