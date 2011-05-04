@@ -109,9 +109,9 @@ setInterval(function(){$.ajax({
 		}else{
 
 			if(tep_not_null($banners['banners_url']))
-				echo "<a id='".$bannerG[0]['banner_group_name']."chtml".$k1."' href='".itw_app_link('appExt=bannerManager&action=clickBanner&bid='.$banners['banners_id']."&url=".$banners['banners_url'],'banner_actions','default')."'><img src='imagick_thumb.php?path=rel&imgSrc=". sysConfig::getDirWsCatalog().'extensions/bannerManager/images/'.$banners['banners_body']."&width=".$bannerG[0]['banner_group_width']."&height=".$bannerG[0]['banner_group_height']."'/><span>".$banners['banners_small_description']."</span></a>";
+				echo "<a id='".$bannerG[0]['banner_group_name']."chtml".$k1."' href='".itw_app_link('appExt=bannerManager&action=clickBanner&bid='.$banners['banners_id']."&url=".$banners['banners_url'],'banner_actions','default')."'><img src='imagick_thumb.php?path=rel&imgSrc=". 'extensions/bannerManager/images/'.$banners['banners_body']."&width=".$bannerG[0]['banner_group_width']."&height=".$bannerG[0]['banner_group_height']."'/><span>".$banners['banners_small_description']."</span></a>";
 			else
-				echo "<a id='".$bannerG[0]['banner_group_name']."chtml".$k1."' onClick='return false;' style='cursor:default;' href='".itw_app_link('appExt=bannerManager&action=clickBanner&bid='.$banners['banners_id']."&url=".$banners['banners_url'],'banner_actions','default')."'><img src='imagick_thumb.php?path=rel&imgSrc=". sysConfig::getDirWsCatalog().'extensions/bannerManager/images/'.$banners['banners_body']."&width=".$bannerG[0]['banner_group_width']."&height=".$bannerG[0]['banner_group_height']."'/><span>".$banners['banners_small_description']."</span></a>";
+				echo "<a id='".$bannerG[0]['banner_group_name']."chtml".$k1."' onClick='return false;' style='cursor:default;' href='".itw_app_link('appExt=bannerManager&action=clickBanner&bid='.$banners['banners_id']."&url=".$banners['banners_url'],'banner_actions','default')."'><img src='imagick_thumb.php?path=rel&imgSrc=". 'extensions/bannerManager/images/'.$banners['banners_body']."&width=".$bannerG[0]['banner_group_width']."&height=".$bannerG[0]['banner_group_height']."'/><span>".$banners['banners_small_description']."</span></a>";
 		}
 		$k1++;
 		}
