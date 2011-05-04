@@ -1,0 +1,1 @@
+<div id="copyr"><?php echo $boxContent;?></div>
