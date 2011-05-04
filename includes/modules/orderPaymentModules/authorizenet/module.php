@@ -26,6 +26,7 @@
 				$this->removeOrderOnFail = false;
 				$this->requireCvv = true;
 				$this->testMode = ($this->getConfigData('MODULE_PAYMENT_AUTHORIZENET_TESTMODE') == 'Test' || $this->getConfigData('MODULE_PAYMENT_AUTHORIZENET_TESTMODE') == 'Test And Debug');
+				$this->cim_mode = ($this->getConfigData('MODULE_PAYMENT_AUTHORIZENET_CIM') == 'True');
 				$this->curlCompiled = ($this->getConfigData('MODULE_PAYMENT_AUTHORIZENET_CURL') != 'Not Compiled');
 
 				$this->allowedTypes = array();
@@ -42,7 +43,16 @@
 					$subDomain = 'secure';
 				}
 				$this->gatewayUrl = 'https://' . $subDomain . '.authorize.net/gateway/transact.dll';
+				$this->login    = trim($this->getConfigData('MODULE_PAYMENT_AUTHORIZENET_LOGIN'));//'55tZyWtL9629';
+				$this->transkey = trim($this->getConfigData('MODULE_PAYMENT_AUTHORIZENET_TRANSKEY'));//'2h6t5Vh8n8Xd5EVZ';
 
+				$subdomain  = ($this->testMode) ? 'apitest' : 'api';
+				$this->urlCIM = 'https://' . $subdomain . '.authorize.net/xml/v1/request.api';
+
+				$this->params['customerType']     = 'individual';
+				$this->params['validationMode']   = 'liveMode';
+				$this->params['taxExempt']        = 'false';
+				$this->params['recurringBilling'] = 'false';
 				/*
 				 * Use Authorize.net's param dump to show what they are recieving from the server
 				 */
@@ -50,34 +60,170 @@
 			}
 		}
 
+		public function getCreatorRow($Editor, &$headerPaymentCols){
+			parent::getCreatorRow($Editor, &$headerPaymentCols);
+
+			$paymentCards = array();
+			$paymentProfiles = array();
+			if($this->cim_mode ===true){
+				$this->setParameter('email', $Editor->getEmailAddress());
+				$this->setParameter('description', 'description'); // Optional
+				$this->setParameter('merchantCustomerId', $Editor->getCustomerId());
+				$this->createCustomerProfile();
+				$profileID = '';
+				if(strpos($this->getResponse(), 'A duplicate record with ID') !== false){
+					$profileID = substr($this->getResponse(),strlen('A duplicate record with ID '), strpos($this->getResponse(),' already') - strlen('A duplicate record with ID '));
+					$this->profileId = $profileID;
+					$this->setParameter('customerProfileId', $profileID);
+				}
+				if($profileID != ''){
+					$this->getCustomerProfile();
+					if(isset($this->paymentProfiles)){
+						foreach($this->paymentProfiles as $profile){
+	                    	$paymentCards[] = (string)$profile->payment->creditCard->cardNumber;
+							$paymentProfiles[] = (string)$profile->customerPaymentProfileId;
+						}
+					}
+				}
+			}
+
+			if($this->cim_mode === true && count($paymentCards) > 0){
+				$htmlSelect = htmlBase::newElement('selectbox')
+				->setName('payment_profile');
+				$htmlSelect->addOption('-1', sysLanguage::get('TEXT_PLEASE_SELECT_PAYMENT_PROFILE'));
+				foreach($paymentCards as $key => $card){
+					$htmlSelect->addOption($paymentProfiles[$key], $paymentCards[$key]);
+				}
+				$headerPaymentCols[count($headerPaymentCols)-4] = '<td class="ui-widget-content ui-state-hover" align="left" style="border-top:none;border-left:none;"><table><tr>'.$headerPaymentCols[count($headerPaymentCols)-4].'<td>'.$htmlSelect->draw().'</td></tr></table></td>';
+			}
+
+		}
+
+		private function getCustomerProfileId(){
+			$userAccount = OrderPaymentModules::getUserAccount();
+			$this->setParameter('email', $userAccount->getEmailAddress());
+			$this->setParameter('description', 'description'); // Optional
+			$this->setParameter('merchantCustomerId', $userAccount->getCustomerId());
+			$this->createCustomerProfile();
+			if(strpos($this->getResponse(), 'A duplicate record with ID') !== false){
+				$profile_id = substr($this->getResponse(),strlen('A duplicate record with ID '), strpos($this->getResponse(),' already') - strlen('A duplicate record with ID '));
+				$this->profileId = $profile_id;
+				$this->setParameter('customerProfileId', $profile_id);
+				return $profile_id;
+			}else{
+
+			}
+			return '';
+		}
+		public function validatePost(){
+			if(!isset($_POST['payment_profile']) || $_POST['payment_profile'] == -1){
+				return parent::validatePost();
+			}
+			return true;
+		}
+
 		public function onSelect(){
+			global $onePageCheckout;
 			$fieldsArray = array();
+			$paymentCards = array();
+			$paymentProfiles = array();
+			if($this->cim_mode ===true){
+				//$this->getCustomerProfileIds();//this is not very efficient because can be hundreds of clients and is better to keep localy the ids
+				$profileID = $this->getCustomerProfileId();
+				if($profileID != ''){
+					$this->getCustomerProfile();
+					if(isset($this->paymentProfiles)){
+						foreach($this->paymentProfiles as $profile){
+	                    	$paymentCards[] = (string)$profile->payment->creditCard->cardNumber;
+							$paymentProfiles[] = (string)$profile->customerPaymentProfileId;
+						}
+					}
+				}
+			}
 
-			$fieldsArray[] = array(
-				'title' => sysLanguage::get('MODULE_PAYMENT_AUTHORIZENET_TEXT_CREDIT_CARD_TYPE'),
-				'field' => $this->getCreditCardTypeField()
-			);
+			if($this->cim_mode === true && count($paymentCards) > 0){
+				$htmlSelect = htmlBase::newElement('selectbox')
+				->setName('payment_profile');
+				$htmlSelect->addOption('-1', sysLanguage::get('TEXT_PLEASE_SELECT_PAYMENT_PROFILE'));
+				foreach($paymentCards as $key => $card){
+					$htmlSelect->addOption($paymentProfiles[$key], $paymentCards[$key]);
+				}
 
-			$fieldsArray[] = array(
-				'title' => sysLanguage::get('MODULE_PAYMENT_AUTHORIZENET_TEXT_CREDIT_CARD_OWNER'),
-				'field' => $this->getCreditCardOwnerField()
-			);
-
-			$fieldsArray[] = array(
-				'title' => sysLanguage::get('MODULE_PAYMENT_AUTHORIZENET_TEXT_CREDIT_CARD_NUMBER'),
-				'field' => $this->getCreditCardNumber()
-			);
-
-			$fieldsArray[] = array(
-				'title' => sysLanguage::get('MODULE_PAYMENT_AUTHORIZENET_TEXT_CREDIT_CARD_EXPIRES'),
-				'field' => $this->getCreditCardExpMonthField() . '&nbsp;' . $this->getCreditCardExpYearField()
-			);
-
-			if ($this->requireCvv === true){
 				$fieldsArray[] = array(
-					'title' => 'CVV number ' . ' ' .'<a href="#" onclick="popupWindow(\'' . itw_app_link('rType=ajax&appExt=infoPages&dialog=true', 'show_page', 'cvv_help') . '\', 400, 300);return false">' . '<u><i>' . '(' . sysLanguage::get('MODULE_PAYMENT_AUTHORIZENET_TEXT_CVV_LINK') . ')' . '</i></u></a>',
-					'field' => $this->getCreditCardCvvField()
+					'title' => sysLanguage::get('MODULE_PAYMENT_AUTHORIZENET_SELECT_PAYMENT_PROFILE'),
+					'field' => $htmlSelect->draw()
 				);
+				$fieldsArray[] = array(
+					'title' => sysLanguage::get('MODULE_PAYMENT_AUTHORIZENET_CREATE_NEW_PROFILE'),
+					'field' => ''
+				);
+				$fieldsArray[] = array(
+					'title' => sysLanguage::get('MODULE_PAYMENT_AUTHORIZENET_TEXT_CREDIT_CARD_TYPE'),
+					'field' => $this->getCreditCardTypeField()
+				);
+
+				$fieldsArray[] = array(
+					'title' => sysLanguage::get('MODULE_PAYMENT_AUTHORIZENET_TEXT_CREDIT_CARD_OWNER'),
+					'field' => $this->getCreditCardOwnerField()
+				);
+
+				$fieldsArray[] = array(
+					'title' => sysLanguage::get('MODULE_PAYMENT_AUTHORIZENET_TEXT_CREDIT_CARD_NUMBER'),
+					'field' => $this->getCreditCardNumber()
+				);
+
+				$fieldsArray[] = array(
+					'title' => sysLanguage::get('MODULE_PAYMENT_AUTHORIZENET_TEXT_CREDIT_CARD_EXPIRES'),
+					'field' => $this->getCreditCardExpMonthField() . '&nbsp;' . $this->getCreditCardExpYearField()
+				);
+
+				if ($this->requireCvv === true){
+					$fieldsArray[] = array(
+						'title' => 'CVV number ' . ' ' .'<a href="#" onclick="popupWindow(\'' . itw_app_link('rType=ajax&appExt=infoPages&dialog=true', 'show_page', 'cvv_help') . '\', 400, 300);return false">' . '<u><i>' . '(' . sysLanguage::get('MODULE_PAYMENT_AUTHORIZENET_TEXT_CVV_LINK') . ')' . '</i></u></a>',
+						'field' => $this->getCreditCardCvvField()
+					);
+				}
+				//get all payment profiles for customer based on the profile id retrivid from cim only if cim is enabled.
+			}else{
+				$fieldsArray[] = array(
+					'title' => sysLanguage::get('MODULE_PAYMENT_AUTHORIZENET_TEXT_CREDIT_CARD_TYPE'),
+					'field' => $this->getCreditCardTypeField()
+				);
+
+				$fieldsArray[] = array(
+					'title' => sysLanguage::get('MODULE_PAYMENT_AUTHORIZENET_TEXT_CREDIT_CARD_OWNER'),
+					'field' => $this->getCreditCardOwnerField()
+				);
+
+				$fieldsArray[] = array(
+					'title' => sysLanguage::get('MODULE_PAYMENT_AUTHORIZENET_TEXT_CREDIT_CARD_NUMBER'),
+					'field' => $this->getCreditCardNumber()
+				);
+
+				$fieldsArray[] = array(
+					'title' => sysLanguage::get('MODULE_PAYMENT_AUTHORIZENET_TEXT_CREDIT_CARD_EXPIRES'),
+					'field' => $this->getCreditCardExpMonthField() . '&nbsp;' . $this->getCreditCardExpYearField()
+				);
+
+				if ($this->requireCvv === true){
+					$fieldsArray[] = array(
+						'title' => 'CVV number ' . ' ' .'<a href="#" onclick="popupWindow(\'' . itw_app_link('rType=ajax&appExt=infoPages&dialog=true', 'show_page', 'cvv_help') . '\', 400, 300);return false">' . '<u><i>' . '(' . sysLanguage::get('MODULE_PAYMENT_AUTHORIZENET_TEXT_CVV_LINK') . ')' . '</i></u></a>',
+						'field' => $this->getCreditCardCvvField()
+					);
+				}
+
+				/*if($this->cim_mode === true){
+					$htmlCheck = htmlBase::newElement('checkbox')
+					->setName('canReuse');
+					if(isset($onePageCheckout->onePage['info']['payment']['cardDetails']['canReuse'])){
+						$htmlCheck->setChecked(true);
+					}
+					$fieldsArray[] = array(
+						'title' => sysLanguage::get('MODULE_PAYMENT_AUTHORIZENET_CAN_REUSE'),
+						'field' => $htmlCheck->draw()
+					);
+
+				}*/
 			}
 
 			$return = parent::onSelect();
@@ -87,10 +233,45 @@
 			return $return;
 		}
 
+		public function refundPayment($requestData){
+			if($this->cim_mode == false){
+				$dataArray = array(
+					'x_login'          => $this->login,
+					'x_tran_key'       => $this->transkey,
+					'x_relay_response' => 'FALSE',
+					'x_delim_data'     => 'TRUE',
+					'x_version'        => '3.1',
+					'x_type'           => 'CREDIT',
+					'x_card_num'       => trim($requestData['cardDetails']['cardNumber']),
+					'x_amount'         => number_format($requestData['amount'], 2),
+					'x_trans_id'       => trim($requestData['cardDetails']['transId'])
+				);
+				$CurlRequest = new CurlRequest($this->gatewayUrl);
+				$CurlRequest->setData($dataArray);
+				$CurlResponse = $CurlRequest->execute();
+
+				return $this->onResponse($CurlResponse);
+			}else{
+
+				$this->refundTransaction($requestData);
+				$message = $this->getResponse();
+				if($message == 'Successful.'){
+						$info['message'] = 'Refunded Transaction success. Amount';
+						return $this->CIMSuccess($info);
+				}else{
+						$info['message'] = 'Refunded Transaction Fail. Response Code:'.$this->getResponse();
+						return $this->CIMFail($info);
+				}
+			}
+		}
+
 		public function processPayment(){
 			global $order, $onePageCheckout;
 
 			$this->removeOrderOnFail = true;
+			if(isset($_POST['canReuse'])){
+				$onePageCheckout->onePage['info']['payment']['cardDetails']['canReuse'] = true;
+			}
 
 			$paymentAmount = $order->info['total'];
 			if ($this->getConfigData('MODULE_PAYMENT_AUTHORIZENET_CCMODE') == 'AUTH_ONLY'){
@@ -117,7 +298,7 @@
 			$countryInfo = $userAccount->plugins['addressBook']->getCountryInfo($billingAddress['entry_country_id']);
 
 			$xExpDate = $paymentInfo['cardDetails']['cardExpMonth'] . $paymentInfo['cardDetails']['cardExpYear'];
-
+			$expirationDate = $paymentInfo['cardDetails']['cardExpYear'].'-'. $paymentInfo['cardDetails']['cardExpMonth'];
 			return $this->sendPaymentRequest(array(
 				'amount' => $paymentAmount,
 				'currencyCode' => $order->info['currency'],
@@ -125,6 +306,7 @@
 				'description' => 'description',
 				'cardNum' => $paymentInfo['cardDetails']['cardNumber'],
 				'cardExpDate' => $xExpDate,
+				'cardExpDateCIM' => $expirationDate,
 				'customerId' => $userAccount->getCustomerId(),
 				'customerEmail' => $userAccount->getEmailAddress(),
 				'customerIp' => $_SERVER['REMOTE_ADDR'],
@@ -185,14 +367,21 @@
 		}
 
 		public function sendPaymentRequest($requestParams){
-			$xType = $this->getConfigData('MODULE_PAYMENT_AUTHORIZENET_CCMODE') == 'Authorize Only' ? 'AUTH_ONLY' : 'AUTH_CAPTURE';
+			global $messageStack;
+			if($this->getConfigData('MODULE_PAYMENT_AUTHORIZENET_CCMODE') == 'Authorize Only'){
+				$xType = 'AUTH_ONLY';
+			}elseif($this->getConfigData('MODULE_PAYMENT_AUTHORIZENET_CCMODE') == 'Authorize And Capture'){
+				$xType = 'AUTH_CAPTURE';
+			}else{
+				$xType = 'PRIOR_AUTH_CAPTURE';
+			}
 			$xMethod = $this->getConfigData('MODULE_PAYMENT_AUTHORIZENET_METHOD') == 'Credit Card' ? 'CC' : 'ECHECK';
 			$xEmailCustomer = $this->getConfigData('MODULE_PAYMENT_AUTHORIZENET_EMAIL_CUSTOMER') == 'True' ? 'TRUE': 'FALSE';
 			$xEmailMerchant = $this->getConfigData('MODULE_PAYMENT_AUTHORIZENET_EMAIL_MERCHANT') == 'True' ? 'TRUE': 'FALSE';
 
 			$dataArray = array(
-				'x_login'          => $this->getConfigData('MODULE_PAYMENT_AUTHORIZENET_LOGIN'),
-				'x_tran_key'       => $this->getConfigData('MODULE_PAYMENT_AUTHORIZENET_TRANSKEY'),
+				'x_login'          => $this->login,
+				'x_tran_key'       => $this->transkey,
 				'x_relay_response' => 'FALSE',
 				'x_delim_data'     => 'TRUE',
 				'x_version'        => '3.1',
@@ -208,37 +397,210 @@
 				$dataArray['x_test_request'] = 'TRUE';
 			}
 			
-			if (isset($requestParams['orderID'])) $dataArray['x_invoice_num'] = $requestParams['orderID'];
-			if (isset($requestParams['description'])) $dataArray['x_description'] = $requestParams['description'];
-			if (isset($requestParams['amount'])) $dataArray['x_amount'] = $requestParams['amount'];
-			if (isset($requestParams['currencyCode'])) $dataArray['x_currency_code'] = $requestParams['currencyCode'];
-			if (isset($requestParams['customerId'])) $dataArray['x_cust_id'] = $requestParams['customerId'];
-			if (isset($requestParams['customerEmail'])) $dataArray['x_email'] = $requestParams['customerEmail'];
-			if (isset($requestParams['customerIp'])) $dataArray['x_customer_ip'] = $requestParams['customerIp'];
-			if (isset($requestParams['customerFirstName'])) $dataArray['x_first_name'] = $requestParams['customerFirstName'];
-			if (isset($requestParams['customerLastName'])) $dataArray['x_last_name'] = $requestParams['customerLastName'];
-			if (isset($requestParams['customerCompany'])) $dataArray['x_company'] = $requestParams['customerCompany'];
-			if (isset($requestParams['customerStreetAddress'])) $dataArray['x_address'] = $requestParams['customerStreetAddress'];
-			if (isset($requestParams['customerPostcode'])) $dataArray['x_zip'] = $requestParams['customerPostcode'];
-			if (isset($requestParams['customerCity'])) $dataArray['x_city'] = $requestParams['customerCity'];
-			if (isset($requestParams['customerState'])) $dataArray['x_state'] = $requestParams['customerState'];
-			if (isset($requestParams['customerTelephone'])) $dataArray['x_phone'] = $requestParams['customerTelephone'];
-			if (isset($requestParams['customerFax'])) $dataArray['x_fax'] = $requestParams['customerFax'];
-			if (isset($requestParams['customerCountry'])) $dataArray['x_country'] = $requestParams['customerCountry'];
-			if (isset($requestParams['cardNum'])) $dataArray['x_card_num'] = $requestParams['cardNum'];
-			if (isset($requestParams['cardExpDate'])) $dataArray['x_exp_date'] = $requestParams['cardExpDate'];
-			if (isset($requestParams['cardCvv'])) $dataArray['x_card_code'] = $requestParams['cardCvv'];
+			if (isset($requestParams['orderID'])) {
+				$dataArray['x_invoice_num'] = $requestParams['orderID'];
+				$this->setParameter('orderInvoiceNumber', $requestParams['orderID']);
+			}
+			if (isset($requestParams['description'])) {
+				$dataArray['x_description'] = $requestParams['description'];
+				$this->setParameter('description', 'description');
+			}
+			if (isset($requestParams['amount'])) {
+				$dataArray['x_amount'] = $requestParams['amount'];
+				$this->setParameter('amount', $requestParams['amount']);
+			}
+			if (isset($requestParams['currencyCode'])) {
+				$dataArray['x_currency_code'] = $requestParams['currencyCode'];
+			}
+			if (isset($requestParams['customerId'])) {
+				$dataArray['x_cust_id'] = $requestParams['customerId'];
+				$this->setParameter('merchantCustomerId', $requestParams['customerId']);
+			}
+			if (isset($requestParams['customerEmail'])) {
+				$dataArray['x_email'] = $requestParams['customerEmail'];
+				$this->setParameter('email', $requestParams['customerEmail']);
+			}
+			if (isset($requestParams['customerIp'])){
+				$dataArray['x_customer_ip'] = $requestParams['customerIp'];
+			}
+			if (isset($requestParams['customerFirstName'])){
+				$dataArray['x_first_name'] = $requestParams['customerFirstName'];
+				$this->setParameter('billToFirstName', $requestParams['customerFirstName']);
+			}
+			if (isset($requestParams['customerLastName'])){
+				$dataArray['x_last_name'] = $requestParams['customerLastName'];
+				$this->setParameter('billToLastName', $requestParams['customerLastName']);
+			}
 
-			$CurlRequest = new CurlRequest($this->gatewayUrl);
-			$CurlRequest->setData($dataArray);
-			$CurlResponse = $CurlRequest->execute();
+			if (isset($requestParams['customerCompany'])){
+				$dataArray['x_company'] = $requestParams['customerCompany'];
+			}
+			if (isset($requestParams['customerStreetAddress'])){
+				$dataArray['x_address'] = $requestParams['customerStreetAddress'];
+				$this->setParameter('billToAddress', $requestParams['customerStreetAddress']);
+			}
+			if (isset($requestParams['customerPostcode'])){
+				$dataArray['x_zip'] = $requestParams['customerPostcode'];
+				$this->setParameter('billToZip', $requestParams['customerPostcode']);
+			}
+			if (isset($requestParams['customerCity'])){
+				$dataArray['x_city'] = $requestParams['customerCity'];
+				$this->setParameter('billToCity', $requestParams['customerCity']);
+			}
+			if (isset($requestParams['customerState'])){
+				$dataArray['x_state'] = $requestParams['customerState'];
+				$this->setParameter('billToState', $requestParams['customerState']);
+			}
+			if (isset($requestParams['customerTelephone'])){
+				$dataArray['x_phone'] = $requestParams['customerTelephone'];
+				$this->setParameter('billToPhoneNumber', $requestParams['customerTelephone']);
+			}
+			if (isset($requestParams['customerFax'])){
+				$dataArray['x_fax'] = $requestParams['customerFax'];
+				$this->setParameter('billToFaxNumber', $requestParams['customerFax']);
+			}
+			if (isset($requestParams['customerCountry'])){
+				$dataArray['x_country'] = $requestParams['customerCountry'];
+				$this->setParameter('billToCountry', $requestParams['customerCountry']);
+			}
+			if (isset($requestParams['cardNum'])){
+				$dataArray['x_card_num'] = $requestParams['cardNum'];
+				$this->setParameter('cardNumber', $requestParams['cardNum']);
+			}
+			if (isset($requestParams['cardExpDate'])){
+				$dataArray['x_exp_date'] = $requestParams['cardExpDate'];
+				$this->setParameter('expirationDate', $requestParams['cardExpDateCIM']);
+			}
+			if (isset($requestParams['cardCvv'])){
+				$dataArray['x_card_code'] = $requestParams['cardCvv'];
+				$this->setParameter('cardCode', $requestParams['cardCvv']);
+			}
 
-			return $this->onResponse($CurlResponse);
+			if($this->cim_mode == true ){
+				if(!isset($_POST['payment_profile']) || $_POST['payment_profile'] == -1){
+
+					$this->createCustomerProfile();
+					if(strpos($this->getResponse(), 'A duplicate record with ID') !== false){
+						$profile_id = substr($this->getResponse(),strlen('A duplicate record with ID '), strpos($this->getResponse(),' already') - strlen('A duplicate record with ID '));
+						if(!isset($this->profileId) && !empty($profile_id)){
+							$this->profileId = $profile_id;
+							$this->setParameter('customerProfileId', $profile_id);
+						}else{
+							$this->createCustomerProfile();
+							$profile_id = substr($this->getResponse(),strlen('A duplicate record with ID '), strpos($this->getResponse(),' already') - strlen('A duplicate record with ID '));
+							$this->setParameter('customerProfileId', $profile_id);
+						}
+					}else{
+						$this->createCustomerProfile();
+						$profile_id = substr($this->getResponse(),strlen('A duplicate record with ID '), strpos($this->getResponse(),' already') - strlen('A duplicate record with ID '));
+						$this->setParameter('customerProfileId', $profile_id);
+					}
+
+					$this->createCustomerPaymentProfile();
+					if(strpos($this->getResponse(), 'A duplicate customer payment profile already exists') !== false){
+					 	$this->setErrorMessage('Payment Profile already exists');
+						$messageStack->addSession('pageStack', 'Payment Profile already exists', 'error');
+						return false;
+					}
+					$payment_profile_id = $this->getPaymentProfileId();
+
+					$this->setParameter('customerPaymentProfileId', $payment_profile_id);
+					//$this->setParameter('customerShippingAddressId', $shipping_profile_id);
+					$this->createCustomerProfileTransaction();
+					$message = $this->getResponse();
+					//echo 'gs'.$message;
+					if(isset($this->params['orderInvoiceNumber'])){
+						$info['orderID'] = $this->params['orderInvoiceNumber'];
+					}else{
+						$info['orderID'] = '';
+					}
+
+					if(isset($this->params['customerProfileId'])){
+						$info['profileID'] = $this->params['customerProfileId'];
+					}else{
+						$info['profileID'] = '';
+					}
+
+					if(isset($this->params['customerPaymentProfileId'])){
+						$info['paymentProfile'] = $this->params['customerPaymentProfileId'];
+					}else{
+						$info['paymentProfile'] = '';
+					}
+
+					if(isset($this->params['amount'])){
+						$info['amount'] = $this->params['amount'];
+					}else{
+						$info['amount'] = '';
+					}
+
+					if($message == 'Successful.'){
+						$info['message'] = 'Approval Code:'.$this->getAuthCode();
+						$info['transId'] = (isset($this->transactionId)?$this->transactionId:'');
+						return $this->CIMSuccess($info);
+					}else{
+						$info['message'] = $this->getResponse();
+						return $this->CIMFail($info);
+					}
+
+				}else{
+					$profile_id = '';
+					$this->createCustomerProfile();
+					if(strpos($this->getResponse(), 'A duplicate record with ID') !== false){
+						$profile_id = substr($this->getResponse(),strlen('A duplicate record with ID '), strpos($this->getResponse(),' already') - strlen('A duplicate record with ID '));
+						$this->profileId = $profile_id;
+						$this->setParameter('customerProfileId', $profile_id);
+					}
+					$payment_profile_id = $_POST['payment_profile'];
+					$this->setParameter('customerProfileId', $profile_id);
+					$this->setParameter('customerPaymentProfileId', $payment_profile_id);
+					//$this->setParameter('customerShippingAddressId', $shipping_profile_id);
+					$this->createCustomerProfileTransaction();
+					$message = $this->getResponse();
+
+					if(isset($this->params['orderInvoiceNumber'])){
+						$info['orderID'] = $this->params['orderInvoiceNumber'];
+					}else{
+						$info['orderID'] = '';
+					}
+
+					if(isset($this->params['customerProfileId'])){
+						$info['profileID'] = $this->params['customerProfileId'];
+					}else{
+						$info['profileID'] = '';
+					}
+
+					if(isset($this->params['customerPaymentProfileId'])){
+						$info['paymentProfile'] = $this->params['customerPaymentProfileId'];
+					}else{
+						$info['paymentProfile'] = '';
+					}
+
+					if(isset($this->params['amount'])){
+						$info['amount'] = $this->params['amount'];
+					}else{
+						$info['amount'] = '';
+					}
+
+					if($message == 'Successful.'){
+						$info['message'] = 'Approval Code:'.$this->getAuthCode();
+						$info['transId'] = (isset($this->transactionId)?$this->transactionId:'');
+						return $this->CIMSuccess($info);
+					}else{
+						$info['message'] = $this->getResponse();
+						return $this->CIMFail($info);
+					}
+				}
+			}else{
+				$CurlRequest = new CurlRequest($this->gatewayUrl);
+				$CurlRequest->setData($dataArray);
+				$CurlResponse = $CurlRequest->execute();
+
+				return $this->onResponse($CurlResponse);
+			}
 		}
 
 		private function onResponse($CurlResponse, $isCron = false){
 			$response = $CurlResponse->getResponse();
-
 			$response = explode(',', $response);
 
 			$code = $response[0];
@@ -246,6 +608,7 @@
 			$reasonCode = $response[2];
 			$reasonText = $response[3];
 
+			$this->transactionId = $response[6];
 			$success = true;
 			$errMsg = $reasonText;
 			if ($code != 1){
@@ -284,20 +647,69 @@
 			return $success;
 		}
 
+		private function CIMSuccess($info){
+			$cardDetails = array(
+					'customerProfile'    => $info['profileID'],
+					'paymentProfile'     => $info['paymentProfile'],
+					'transId'            => $info['transId']
+			);
+
+			$this->logPayment(array(
+				'orderID' => $info['orderID'],
+				'amount'  => $info['amount'],
+				'message' => $info['message'],
+				'success' => 1,
+				'can_reuse' => (isset($_POST['canReuse'])?1:0),
+				'cardDetails' => $cardDetails
+			));
+			return true;
+		}
+
+		private function CIMFail($info){
+			global $messageStack;
+			$this->setErrorMessage($this->getTitle() . ' : ' . $info['message']);
+			$orderId = $info['orderID'];
+			if ($this->removeOrderOnFail === true){
+				$Order = Doctrine_Core::getTable('Orders')->find($orderId);
+				if ($Order){
+					$Order->delete();
+				}
+
+				$messageStack->addSession('pageStack', $info['message'], 'error');
+			}else{
+				$this->logPayment(array(
+					'orderID' => $orderId,
+					'amount'  => $info['amount'],
+					'message' => $info['message'],
+					'success' => 0,
+					'cardDetails' => array(
+						'customerProfile'    => $info['profileID'],
+						'paymentProfile'     => $info['paymentProfile']
+					)
+				));
+			}
+			return false;
+		}
+
 		private function onSuccess($info){
 			$RequestData = $info['curlResponse']->getDataRaw();
 			$orderId = $RequestData['x_invoice_num'];
+
+			$cardDetails = array(
+					'cardOwner'    => $RequestData['x_first_name'] . ' ' . $RequestData['x_last_name'],
+					'cardNumber'   => $RequestData['x_card_num'],
+					'cardExpMonth' => substr($RequestData['x_exp_date'], 0, 2),
+					'cardExpYear'  => substr($RequestData['x_exp_date'], 2),
+					'transId'      => (isset($this->transactionId)?$this->transactionId:'')
+			);
+
 			$this->logPayment(array(
 				'orderID' => $orderId,
 				'amount'  => $RequestData['x_amount'],
 				'message' => $info['message'],
 				'success' => 1,
-				'cardDetails' => array(
-					'cardOwner'    => $RequestData['x_first_name'] . ' ' . $RequestData['x_last_name'],
-					'cardNumber'   => $RequestData['x_card_num'],
-					'cardExpMonth' => substr($RequestData['x_exp_date'], 0, 2),
-					'cardExpYear'  => substr($RequestData['x_exp_date'], 2)
-				)
+				'can_reuse' => (isset($_POST['canReuse'])?1:0),
+				'cardDetails' => $cardDetails
 			));
 		}
 
@@ -313,14 +725,13 @@
 				}
 
 				$messageStack->addSession('pageStack', $info['message'], 'error');
-				//tep_redirect(itw_app_link('payment_error=1', 'checkout', 'default', 'SSL'));
 			}else{
 				$this->logPayment(array(
 					'orderID' => $orderId,
 					'amount'  => $RequestData['x_amount'],
 					'message' => $info['message'],
 					'success' => 0,
-					'CardDetails' => array(
+					'cardDetails' => array(
 						'cardOwner'    => $RequestData['x_first_name'] . ' ' . $RequestData['x_last_name'],
 						'cardNumber'   => $RequestData['x_card_num'],
 						'cardExpMonth' => $RequestData['x_exp_date'],
@@ -329,5 +740,618 @@
 				));
 			}
 		}
+	private function processCIM(){
+        $this->ch = curl_init();
+        curl_setopt($this->ch, CURLOPT_URL, $this->urlCIM);
+    	curl_setopt($this->ch, CURLOPT_RETURNTRANSFER, 1);
+    	curl_setopt($this->ch, CURLOPT_HTTPHEADER, Array("Content-Type: text/xml"));
+    	curl_setopt($this->ch, CURLOPT_HEADER, 0);
+    	curl_setopt($this->ch, CURLOPT_POSTFIELDS, $this->xml);
+    	curl_setopt($this->ch, CURLOPT_POST, 1);
+    	curl_setopt($this->ch, CURLOPT_SSL_VERIFYPEER, 0);
+        $this->response = curl_exec($this->ch);
+        if($this->response){
+//	        echo $this->response.'----';
+            $this->parseResults();
+            if ($this->resultCode === 'Ok'){
+                $this->success = true;
+                $this->error   = false;
+            }
+            else{
+                $this->success = false;
+                $this->error   = true;
+            }
+            curl_close($this->ch);
+            unset($this->ch);
+        }
+        else{
+            throw new AuthnetCIMException('Connection error: ' . curl_error($this->ch) . ' (' . curl_errno($this->ch) . ')', self::EXCEPTION_CURL);
+        }
+    }
+
+    public function createCustomerProfile($use_profiles = false, $type = 'credit'){
+	    //$this->getCustomerProfileIds();
+
+        $this->xml = '<?xml version="1.0" encoding="utf-8"?>
+                      <createCustomerProfileRequest xmlns="AnetApi/xml/v1/schema/AnetApiSchema.xsd">
+                          <merchantAuthentication>
+                              <name>' . $this->login . '</name>
+                              <transactionKey>' . $this->transkey . '</transactionKey>
+                          </merchantAuthentication>';
+        if (isset($this->params['refId']) && !empty($this->params['refId'])){
+            $this->xml .= '
+                          <refId>'. $this->params['refId'] .'</refId>';
+        }
+            $this->xml .= '
+                          <profile>
+                              <merchantCustomerId>'. $this->params['merchantCustomerId'].'</merchantCustomerId>
+                              <description>'. $this->params['description'].'</description>
+                              <email>'. $this->params['email'] .'</email>';
+
+        if ($use_profiles == true){
+            $this->xml .= '
+                              <paymentProfiles>
+                                  <customerType>'. $this->params['customerType'].'</customerType>
+                                  <billTo>
+                                      <firstName>'. $this->params['billToFirstName'].'</firstName>
+                                      <lastName>'.$this->params['billToLastName'].'</lastName>
+                                      <company>'. (isset($this->params['billToCompany'])?$this->params['billToCompany']:'') .'</company>
+                                      <address>'. $this->params['billToAddress'] .'</address>
+                                      <city>'. $this->params['billToCity'] .'</city>
+                                      <state>'. $this->params['billToState'] .'</state>
+                                      <zip>'. $this->params['billToZip'] .'</zip>
+                                      <country>'. $this->params['billToCountry'] .'</country>
+                                      <phoneNumber>'. (isset($this->params['billToPhoneNumber'])?$this->params['billToPhoneNumber']:'').'</phoneNumber>
+                                      <faxNumber>'. (isset($this->params['billToFaxNumber'])?$this->params['billToFaxNumber']:'').'</faxNumber>
+                                  </billTo>
+                                  <payment>';
+            if ($type === 'credit'){
+                $this->xml .= '
+                                      <creditCard>
+                                          <cardNumber>'. $this->params['cardNumber'].'</cardNumber>
+                                          <expirationDate>'.$this->params['expirationDate'].'</expirationDate>
+                                      </creditCard>';
+            }
+            else if ($type === 'check'){
+                $this->xml .= '
+                                      <bankAccount>
+                                          <accountType>'.$this->params['accountType'].'</accountType>
+                                          <nameOnAccount>'.$this->params['nameOnAccount'].'</nameOnAccount>
+                                          <echeckType>'. $this->params['echeckType'].'</echeckType>
+                                          <bankName>'. $this->params['bankName'].'</bankName>
+                                          <routingNumber>'.$this->params['routingNumber'].'</routingNumber>
+                                          <accountNumber>'.$this->params['accountNumber'].'</accountNumber>
+                                      </bankAccount>
+                                      <driversLicense>
+                                          <dlState>'. $this->params['dlState'].'</dlState>
+                                          <dlNumber>'. $this->params['dlNumber'].'</dlNumber>
+                                          <dlDateOfBirth>'.$this->params['dlDateOfBirth'].'</dlDateOfBirth>
+                                      </driversLicense>';
+            }
+            $this->xml .= '
+                                  </payment>
+                              </paymentProfiles>
+                              <shipToList>
+                                  <firstName>'. $this->params['shipToFirstName'].'</firstName>
+                                  <lastName>'. $this->params['shipToLastName'].'</lastName>
+                                  <company>'. $this->params['shipToCompany'] .'</company>
+                                  <address>'. $this->params['shipToAddress'] .'</address>
+                                  <city>'. $this->params['shipToCity'] .'</city>
+                                  <state>'. $this->params['shipToState'] .'</state>
+                                  <zip>'. $this->params['shipToZip'] .'</zip>
+                                  <country>'. $this->params['shipToCountry'] .'</country>
+                                  <phoneNumber>'. $this->params['shipToPhoneNumber'].'</phoneNumber>
+                                  <faxNumber>'. $this->params['shipToFaxNumber'].'</faxNumber>
+                              </shipToList>';
+        }
+            $this->xml .= '
+                          </profile>
+                      </createCustomerProfileRequest>';
+
+        $this->processCIM();
+    }
+
+    public function createCustomerPaymentProfile($type = 'credit'){
+        $this->xml = '<?xml version="1.0" encoding="utf-8"?>
+                      <createCustomerPaymentProfileRequest xmlns="AnetApi/xml/v1/schema/AnetApiSchema.xsd">
+                          <merchantAuthentication>
+                              <name>' . $this->login . '</name>
+                              <transactionKey>' . $this->transkey . '</transactionKey>
+                          </merchantAuthentication>
+                          <refId>'. (isset($this->params['refId'])?$this->params['refId']:'') .'</refId>
+                          <customerProfileId>'. $this->params['customerProfileId'].'</customerProfileId>
+                          <paymentProfile>
+                              <customerType>'. $this->params['customerType'].'</customerType>
+                              <billTo>
+                                  <firstName>'. $this->params['billToFirstName'].'</firstName>
+                                  <lastName>'. $this->params['billToLastName'].'</lastName>
+                                  <company>'. (isset($this->params['billToCompany'])?$this->params['billToCompany']:'') .'</company>
+                                  <address>'. $this->params['billToAddress'] .'</address>
+                                  <city>'. $this->params['billToCity'] .'</city>
+                                  <state>'. $this->params['billToState'] .'</state>
+                                  <zip>'. $this->params['billToZip'] .'</zip>
+                                  <country>'. $this->params['billToCountry'] .'</country>
+                                  <phoneNumber>'. (isset($this->params['billToPhoneNumber'])?$this->params['billToPhoneNumber']:'').'</phoneNumber>
+                                  <faxNumber>'. (isset($this->params['billToFaxNumber'])?$this->params['billToFaxNumber']:'').'</faxNumber>
+                              </billTo>
+                              <payment>';
+        if ($type === 'credit'){
+            $this->xml .= '
+                                  <creditCard>
+                                      <cardNumber>'. $this->params['cardNumber'].'</cardNumber>
+                                      <expirationDate>'.$this->params['expirationDate'].'</expirationDate>
+                                  </creditCard>';
+        }
+        else if ($type === 'check'){
+            $this->xml .= '
+                                  <bankAccount>
+                                      <accountType>'. $this->params['accountType'].'</accountType>
+                                      <nameOnAccount>'.$this->params['nameOnAccount'].'</nameOnAccount>
+                                      <echeckType>'. $this->params['echeckType'].'</echeckType>
+                                      <bankName>'. $this->params['bankName'].'</bankName>
+                                      <routingNumber>'.$this->params['routingNumber'].'</routingNumber>
+                                      <accountNumber>'.$this->params['accountNumber'].'</accountNumber>
+                                  </bankAccount>
+                                  <driversLicense>
+                                      <dlState>'. $this->params['dlState'] .'</dlState>
+                                      <dlNumber>'. $this->params['dlNumber'].'</dlNumber>
+                                      <dlDateOfBirth>'.$this->params['dlDateOfBirth'].'</dlDateOfBirth>
+                                  </driversLicense>';
+        }
+        $this->xml .= '
+                              </payment>
+                          </paymentProfile>
+                          <validationMode>'. $this->params['validationMode'].'</validationMode>
+                      </createCustomerPaymentProfileRequest>';
+        $this->processCIM();
+    }
+
+    public function createCustomerShippingAddress(){
+        $this->xml = '<?xml version="1.0" encoding="utf-8"?>
+                      <createCustomerShippingAddressRequest xmlns="AnetApi/xml/v1/schema/AnetApiSchema.xsd">
+                          <merchantAuthentication>
+                              <name>' . $this->login . '</name>
+                              <transactionKey>' . $this->transkey . '</transactionKey>
+                          </merchantAuthentication>
+                          <refId>'. $this->params['refId'] .'</refId>
+                          <customerProfileId>'. $this->params['customerProfileId'].'</customerProfileId>
+                          <address>
+                              <firstName>'. $this->params['shipToFirstName'].'</firstName>
+                              <lastName>'. $this->params['shipToLastName'].'</lastName>
+                              <company>'. $this->params['shipToCompany'] .'</company>
+                              <address>'. $this->params['shipToAddress'] .'</address>
+                              <city>'. $this->params['shipToCity'] .'</city>
+                              <state>'. $this->params['shipToState'] .'</state>
+                              <zip>'. $this->params['shipToZip'] .'</zip>
+                              <country>'. $this->params['shipToCountry'] .'</country>
+                              <phoneNumber>'. $this->params['shipToPhoneNumber'].'</phoneNumber>
+                              <faxNumber>'. $this->params['shipToFaxNumber'].'</faxNumber>
+                          </address>
+                      </createCustomerShippingAddressRequest>';
+        $this->processCIM();
+    }
+
+    public function createCustomerProfileTransaction($type = 'profileTransAuthCapture'){
+        $this->xml = '<?xml version="1.0" encoding="utf-8"?>
+                      <createCustomerProfileTransactionRequest xmlns="AnetApi/xml/v1/schema/AnetApiSchema.xsd">
+                          <merchantAuthentication>
+                              <name>' . $this->login . '</name>
+                              <transactionKey>' . $this->transkey . '</transactionKey>
+                          </merchantAuthentication>
+                          <refId>'. (isset($this->params['refId'])?$this->params['refId']:'') .'</refId>
+                          <transaction>
+                              <' . $type . '>
+                                  <amount>'. number_format($this->params['amount'],2) .'</amount>';
+        if (isset($this->params['taxAmount'])){
+            $this->xml .= '
+                                  <tax>
+                                       <amount>'. $this->params['taxAmount'].'</amount>
+                                       <name>'. $this->params['taxName'] .'</name>
+                                       <description>'.$this->params['taxDescription'].'</description>
+                                  </tax>';
+        }
+        if (isset($this->params['shipAmount'])){
+            $this->xml .= '
+                                  <shipping>
+                                       <amount>'. $this->params['shipAmount'].'</amount>
+                                       <name>'. $this->params['shipName'] .'</name>
+                                       <description>'.$this->params['shipDescription'].'</description>
+                                  </shipping>';
+        }
+        if (isset($this->params['dutyAmount'])){
+            $this->xml .= '
+                                  <duty>
+                                       <amount>'. $this->params['dutyAmount'].'</amount>
+                                       <name>'. $this->params['dutyName'] .'</name>
+                                       <description>'.$this->params['dutyDescription'].'</description>
+                                  </duty>';
+        }
+        $this->xml .= '
+
+                                  <customerProfileId>'.$this->params['customerProfileId'].'</customerProfileId>
+                                  <customerPaymentProfileId>'.$this->params['customerPaymentProfileId'].'</customerPaymentProfileId> ';
+
+        if (isset($this->params['orderInvoiceNumber'])){
+            $this->xml .= '
+                                  <order>
+                                       <invoiceNumber>'.$this->params['orderInvoiceNumber'].'</invoiceNumber>
+                                  </order>';
+        }
+        $this->xml .= '
+                                  <taxExempt>'. $this->params['taxExempt'].'</taxExempt>
+                                  <recurringBilling>'.$this->params['recurringBilling'].'</recurringBilling>';
+	    if(isset($this->params['cardCode'])){
+            $this->xml .= '<cardCode>'. $this->params['cardCode'].'</cardCode>';
+        }
+       /* if (isset($this->params['orderInvoiceNumber'])){
+            $this->xml .= '
+                                  <approvalCode>'. $this->params['approvalCode'].'</approvalCode>';
+        }*/
+        $this->xml .= '
+                              </' . $type . '>
+                          </transaction>
+                      </createCustomerProfileTransactionRequest>';
+        $this->processCIM();
+    }
+
+    public function deleteCustomerProfile(){
+        $this->xml = '<?xml version="1.0" encoding="utf-8"?>
+                      <deleteCustomerProfileRequest xmlns="AnetApi/xml/v1/schema/AnetApiSchema.xsd">
+                          <merchantAuthentication>
+                              <name>' . $this->login . '</name>
+                              <transactionKey>' . $this->transkey . '</transactionKey>
+                          </merchantAuthentication>
+                          <refId>'. $this->params['refId'] .'</refId>
+                          <customerProfileId>'. $this->params['customerProfileId'].'</customerProfileId>
+                      </deleteCustomerProfileRequest>';
+        $this->processCIM();
+    }
+
+    public function deleteCustomerPaymentProfile(){
+        $this->xml = '<?xml version="1.0" encoding="utf-8"?>
+                      <deleteCustomerPaymentProfileRequest xmlns="AnetApi/xml/v1/schema/AnetApiSchema.xsd">
+                          <merchantAuthentication>
+                              <name>' . $this->login . '</name>
+                              <transactionKey>' . $this->transkey . '</transactionKey>
+                          </merchantAuthentication>
+                          <refId>'. $this->params['refId'] .'</refId>
+                          <customerProfileId>'. $this->params['customerProfileId'].'</customerProfileId>
+                          <customerPaymentProfileId>'.$this->params['customerPaymentProfileId'].'</customerPaymentProfileId>
+                      </deleteCustomerPaymentProfileRequest>';
+        $this->processCIM();
+    }
+
+    public function deleteCustomerShippingAddress(){
+        $this->xml = '<?xml version="1.0" encoding="utf-8"?>
+                      <deleteCustomerShippingAddressRequest xmlns="AnetApi/xml/v1/schema/AnetApiSchema.xsd">
+                          <merchantAuthentication>
+                              <name>' . $this->login . '</name>
+                              <transactionKey>' . $this->transkey . '</transactionKey>
+                          </merchantAuthentication>
+                          <refId>'. $this->params['refId'] .'</refId>
+                          <customerProfileId>'. $this->params['customerProfileId'].'</customerProfileId>
+                          <customerAddressId>'. $this->params['customerAddressId'].'</customerAddressId>
+                      </deleteCustomerShippingAddressRequest>';
+        $this->processCIM();
+    }
+
+	public function getCustomerProfileIds(){
+		    $this->xml = '<?xml version="1.0" encoding="utf-8"?>
+		                  <getCustomerProfileIdsRequest xmlns="AnetApi/xml/v1/schema/AnetApiSchema.xsd">
+		                      <merchantAuthentication>
+		                          <name>' . $this->login . '</name>
+		                          <transactionKey>' . $this->transkey . '</transactionKey>
+		                      </merchantAuthentication>
+		                  </getCustomerProfileIdsRequest>';
+		    $this->processCIM();
+	}
+
+
+    public function getCustomerProfile(){
+        $this->xml = '<?xml version="1.0" encoding="utf-8"?>
+                      <getCustomerProfileRequest xmlns="AnetApi/xml/v1/schema/AnetApiSchema.xsd">
+                          <merchantAuthentication>
+                              <name>' . $this->login . '</name>
+                              <transactionKey>' . $this->transkey . '</transactionKey>
+                          </merchantAuthentication>
+                          <customerProfileId>'. $this->params['customerProfileId'].'</customerProfileId>
+                      </getCustomerProfileRequest>';
+        $this->processCIM();
+    }
+
+    public function getCustomerPaymentProfile(){
+        $this->xml = '<?xml version="1.0" encoding="utf-8"?>
+                      <getCustomerPaymentProfileRequest xmlns="AnetApi/xml/v1/schema/AnetApiSchema.xsd">
+                          <merchantAuthentication>
+                              <name>' . $this->login . '</name>
+                              <transactionKey>' . $this->transkey . '</transactionKey>
+                          </merchantAuthentication>
+                          <customerProfileId>'. $this->params['customerProfileId'].'</customerProfileId>
+                          <customerPaymentProfileId>'.$this->params['customerPaymentProfileId'].'</customerPaymentProfileId>
+                      </getCustomerPaymentProfileRequest>';
+        $this->processCIM();
+    }
+
+    public function getCustomerShippingAddress(){
+        $this->xml = '<?xml version="1.0" encoding="utf-8"?>
+                      <getCustomerShippingAddressRequest xmlns="AnetApi/xml/v1/schema/AnetApiSchema.xsd">
+                          <merchantAuthentication>
+                              <name>' . $this->login . '</name>
+                              <transactionKey>' . $this->transkey . '</transactionKey>
+                          </merchantAuthentication>
+                              <customerProfileId>'.$this->params['customerProfileId'].'</customerProfileId>
+                              <customerAddressId>'.$this->params['customerAddressId'].'</customerAddressId>
+                      </getCustomerShippingAddressRequest>';
+        $this->processCIM();
+    }
+
+    public function updateCustomerProfile(){
+        $this->xml = '<?xml version="1.0" encoding="utf-8"?>
+                      <updateCustomerProfileRequest xmlns="AnetApi/xml/v1/schema/AnetApiSchema.xsd">
+                          <merchantAuthentication>
+                              <name>' . $this->login . '</name>
+                              <transactionKey>' . $this->transkey . '</transactionKey>
+                          </merchantAuthentication>
+                          <refId>'. $this->params['refId'] .'</refId>
+                          <profile>
+                              <merchantCustomerId>'.$this->params['merchantCustomerId'].'</merchantCustomerId>
+                              <description>'. $this->params['description'].'</description>
+                              <email>'. $this->params['email'] .'</email>
+                              <customerProfileId>'.$this->params['customerProfileId'].'</customerProfileId>
+                          </profile>
+                      </updateCustomerProfileRequest>';
+        $this->processCIM();
+    }
+
+    public function updateCustomerPaymentProfile($type = 'credit'){
+        $this->xml = '<?xml version="1.0" encoding="utf-8"?>
+                      <updateCustomerPaymentProfileRequest xmlns="AnetApi/xml/v1/schema/AnetApiSchema.xsd">
+                          <merchantAuthentication>
+                              <name>' . $this->login . '</name>
+                              <transactionKey>' . $this->transkey . '</transactionKey>
+                          </merchantAuthentication>
+                          <refId>'. $this->params['refId'] .'</refId>
+                          <customerProfileId>'. $this->params['customerProfileId'].'</customerProfileId>
+                          <paymentProfile>
+                              <customerType>'. $this->params['customerType'].'</customerType>
+                              <billTo>
+                                  <firstName>'. $this->params['firstName'].'</firstName>
+                                  <lastName>'. $this->params['lastName'] .'</lastName>
+                                  <company>'. $this->params['company'] .'</company>
+                                  <address>'. $this->params['address'] .'</address>
+                                  <city>'. $this->params['city'] .'</city>
+                                  <state>'. $this->params['state'] .'</state>
+                                  <zip>'. $this->params['zip'] .'</zip>
+                                  <country>'. $this->params['country'] .'</country>
+                                  <phoneNumber>'. $this->params['phoneNumber'].'</phoneNumber>
+                                  <faxNumber>'. $this->params['faxNumber'].'</faxNumber>
+                              </billTo>
+                              <payment>';
+        if ($type === 'credit'){
+            $this->xml .= '
+                                  <creditCard>
+                                      <cardNumber>'. $this->params['cardNumber'].'</cardNumber>
+                                      <expirationDate>'.$this->params['expirationDate'].'</expirationDate>
+                                  </creditCard>';
+        }
+        else if ($type === 'check'){
+            $this->xml .= '
+                                  <bankAccount>
+                                      <accountType>'.$this->params['accountType'].'</accountType>
+                                      <nameOnAccount>'.$this->params['nameOnAccount'].'</nameOnAccount>
+                                      <echeckType>'. $this->params['echeckType'].'</echeckType>
+                                      <bankName>'. $this->params['bankName'].'</bankName>
+                                      <routingNumber>'.$this->params['routingNumber'].'</routingNumber>
+                                      <accountNumber>'.$this->params['accountNumber'].'</accountNumber>
+                                  </bankAccount>
+                                  <driversLicense>
+                                      <dlState>'. $this->params['dlState'].'</dlState>
+                                      <dlNumber>'. $this->params['dlNumber'].'</dlNumber>
+                                      <dlDateOfBirth>'.$this->params['dlDateOfBirth'].'</dlDateOfBirth>
+                                  </driversLicense>';
+        }
+        $this->xml .= '
+                              </payment>
+                              <customerPaymentProfileId>'.$this->params['customerPaymentProfileId'].'</customerPaymentProfileId>
+                          </paymentProfile>
+                      </updateCustomerPaymentProfileRequest>';
+        $this->processCIM();
+    }
+
+    public function updateCustomerShippingAddress(){
+        $this->xml = '<?xml version="1.0" encoding="utf-8"?>
+                      <updateCustomerShippingAddressRequest xmlns="AnetApi/xml/v1/schema/AnetApiSchema.xsd">
+                          <merchantAuthentication>
+                              <name>' . $this->login . '</name>
+                              <transactionKey>' . $this->transkey . '</transactionKey>
+                          </merchantAuthentication>
+                          <refId>'. $this->params['refId'] .'</refId>
+                          <customerProfileId>'. $this->params['customerProfileId'].'</customerProfileId>
+                          <address>
+                              <firstName>'. $this->params['firstName'] .'</firstName>
+                              <lastName>'. $this->params['lastName'] .'</lastName>
+                              <company>'. $this->params['company'] .'</company>
+                              <address>'. $this->params['address'] .'</address>
+                              <city>'. $this->params['city'] .'</city>
+                              <state>'. $this->params['state'] .'</state>
+                              <zip>'. $this->params['zip'] .'</zip>
+                              <country>'. $this->params['country'] .'</country>
+                              <phoneNumber>'. $this->params['phoneNumber'].'</phoneNumber>
+                              <faxNumber>'. $this->params['faxNumber'] .'</faxNumber>
+                              <customerAddressId>'.$this->params['customerAddressId'].'</customerAddressId>
+                          </address>
+                      </updateCustomerShippingAddressRequest>';
+        $this->processCIM();
+    }
+
+    public function validateCustomerPaymentProfile(){
+        $this->xml = '<?xml version="1.0" encoding="utf-8"?>
+                      <validateCustomerPaymentProfileRequest xmlns="AnetApi/xml/v1/schema/AnetApiSchema.xsd">
+                          <merchantAuthentication>
+                              <name>' . $this->login . '</name>
+                              <transactionKey>' . $this->transkey . '</transactionKey>
+                          </merchantAuthentication>
+                          <customerProfileId>'. $this->params['customerProfileId'].'</customerProfileId>
+                          <customerPaymentProfileId>'.$this->params['customerPaymentProfileId'].'</customerPaymentProfileId>
+                          <customerAddressId>'. $this->params['customerAddressId'].'</customerAddressId>
+                          <validationMode>'. $this->params['validationMode'].'</validationMode>
+                      </validateCustomerPaymentProfileRequest>';
+        $this->processCIM();
+    }
+
+	public function refundTransaction($requestData){
+		$this->xml ='<?xml version="1.0" encoding="utf-8"?>
+                      <createCustomerProfileTransactionRequest xmlns="AnetApi/xml/v1/schema/AnetApiSchema.xsd">
+                          <merchantAuthentication>
+                              <name>' . $this->login . '</name>
+                              <transactionKey>' . $this->transkey . '</transactionKey>
+                          </merchantAuthentication>
+                          <transaction>
+                              <profileTransRefund>
+								  <amount>'. number_format($requestData['amount'],2).'</amount>
+								  <customerProfileId>'.$requestData['cardDetails']['customerProfile'].'</customerProfileId>
+								  <customerPaymentProfileId>'.$requestData['cardDetails']['paymentProfile'].'</customerPaymentProfileId>
+								  <transId>'.$requestData['transId'].'</transId>
+                              </profileTransRefund>
+                          </transaction>
+                      </createCustomerProfileTransactionRequest>';
+        $this->processCIM();
+	}
+
+    private function getLineItems(){
+        $tempXml = '';
+        foreach ($this->items as $item)
+        {
+            foreach ($item as $key => $value)
+            {
+                $tempXml .= "\t" . '<' . $key . '>' . $value . '</' . $key . '>' . "\n";
+            }
+        }
+        return $tempXml;
+    }
+
+    public function setLineItem($itemId, $name, $description, $quantity, $unitprice,$taxable = 'false'){
+        $this->items[] = array('itemId' => $itemId, 'name' => $name, 'description' => $description, 'quantity' => $quantity, 'unitPrice' => $unitprice, 'taxable' => $taxable);
+    }
+
+    public function setParameter($field = '', $value = null){
+	    if(!empty($value)){
+			$field = (is_string($field)) ? trim($field) : $field;
+			$value = (is_string($value)) ? trim($value) : $value;
+			$this->params[$field] = $value;
+	    }
+    }
+
+    private function parseResults(){
+        $response = str_replace('xmlns="AnetApi/xml/v1/schema/AnetApiSchema.xsd"', '', $this->response);
+        $xml = new SimpleXMLElement($response);
+	    //echo 'kkk'.print_r($xml);
+	    if(isset($xml->ids)){
+		    $this->ids[] = array();
+		    //echo $xml->ids .'--'.print_r($xml->ids);
+			foreach($xml->ids->numericString as $id){
+				$this->ids[] = (string)$id;
+			}
+		    // echo print_r($this->ids).'eee';
+	    }
+
+	    if(isset($xml->profile->paymentProfiles)){
+		    $this->paymentProfiles = array();
+		    //echo $xml->profile->paymentProfiles .'--'.print_r($xml->paymentProfiles);
+			foreach($xml->profile->paymentProfiles as $payment){
+				$this->paymentProfiles[] = $payment;
+			}
+		    // echo print_r($this->ids).'eee';
+	    }
+
+
+        $this->resultCode       = (string) $xml->messages->resultCode;
+        $this->rCode             = (string) $xml->messages->message->code;
+        $this->text             = (string) $xml->messages->message->text;
+        $this->validation       = (string) $xml->validationDirectResponse;
+        $this->directResponse   = (string) $xml->directResponse;
+	    if(isset($xml->profile->customerProfileId)){
+            $this->profileId        = (int) $xml->profile->customerProfileId;
+        }
+	    if(isset($xml->transId)){
+		    $this->transactionId = (string)$xml->transId;
+	    }
+	    if(isset($xml->customerPaymentProfileId)){
+            $this->paymentProfileId = (int) $xml->customerPaymentProfileId;
+	    }
+        $this->results          = explode(',', $this->directResponse);
+    }
+
+    public function isSuccessful(){
+        return $this->success;
+    }
+
+    public function isError(){
+        return $this->error;
+    }
+
+    public function getResponseSummary(){
+        return 'Response code: ' . $this->getRCode() . ' Message: ' . $this->getResponse();
+    }
+
+    public function getResponse(){
+        return strip_tags($this->text);
+    }
+
+    public function getRCode(){
+        return $this->rCode;
+    }
+
+    public function getProfileID(){
+        return $this->profileId;
+    }
+
+    public function validationDirectResponse(){
+        return $this->validation;
+    }
+
+    public function getCustomerAddressId(){
+        return $this->addressId;
+    }
+
+    public function getDirectResponse(){
+        return $this->directResponse;
+    }
+
+    public function getPaymentProfileId(){
+        return $this->paymentProfileId;
+    }
+
+    public function getResponseSubcode(){
+        return $this->results[1];
+    }
+
+    public function getResponseCode(){
+        return $this->results[2];
+    }
+
+    public function getResponseText(){
+        return $this->results[3];
+    }
+
+    public function getAuthCode(){
+        return $this->results[4];
+    }
+
+    public function getAVSResponse(){
+        return $this->results[5];
+    }
+
+    public function getTransactionID(){
+        return $this->results[6];
+    }
+
+    public function getCVVResponse(){
+        return $this->results[38];
+    }
+
+    public function getCAVVResponse(){
+        return $this->results[39];
+    }
 	}
 ?>
