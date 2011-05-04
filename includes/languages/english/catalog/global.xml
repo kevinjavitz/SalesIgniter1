@@ -447,5 +447,9 @@
     <define key="TEXT_UPGRADE_PLAN"><![CDATA[You do not qualify to rent this product, If you would like to upgrade please <a href="%s" style="color:red">Contact</a> store admin?]]></define>
     <define key="TEXT_NOT_ALLOWED_STREAMING"><![CDATA[Your account is not allowed streaming videos. Please <a href="%s">click here</a> to upgrade you memebership ]]></define>
     <define key="TEXT_EXCEEDED_VIEWS"><![CDATA[You have exceed the number of views for your account]]></define>
+    <define key="INFOBOX_CATEGORIES_ALL_PRODUCTS"><![CDATA[View All Surfboards]]></define>
+    <define key="INFOBOX_CATEGORIES_ALL_PRODUCTS_STORE2"><![CDATA[View All Surf Lessons]]></define>
+    <define key="TEXT_PLEASE_SELECT_ALL_CONTINENTS"><![CDATA[Any Continent]]></define>
+    <define key="TEXT_CHOOSE_INVENTORY"><![CDATA[Choose Inventory]]></define>
 
 </definitions>

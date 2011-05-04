@@ -31,13 +31,13 @@
 	<define key="TEXT_INFO_YEAR_MADE"><![CDATA[Year Made:]]></define>
 	<define key="TEXT_NON_RENTAL_PRODUCT"><![CDATA[non-rental product]]></define>
 	<define key="TEXT_OF_5_STARS"><![CDATA[%s of 5 Stars!]]></define>
-    <define key="TEXT_EMAIL_SUCCESSFUL_SENT"><![CDATA[Email Sent Successfully!]]></define>    
+	<define key="TEXT_EMAIL_SUCCESSFUL_SENT"><![CDATA[Email Sent Successfully!]]></define>    
 
 	<define key="PRODUCT_ADDED_TO_WISHLIST"><![CDATA[Product has been successfully added to your wishlist]]></define>
 
-    <define key="TAB_OVERVIEW"><![CDATA[Overview]]></define>
-    <define key="TAB_PREVIEW"><![CDATA[Preview]]></define>
-    <define key="TAB_ALSO_PURCHASED"><![CDATA[Also purchased]]></define>
-
+    	<define key="TAB_OVERVIEW"><![CDATA[Overview]]></define>
+    	<define key="TAB_PREVIEW"><![CDATA[Preview]]></define>
+    	<define key="TAB_ALSO_PURCHASED"><![CDATA[Also purchased]]></define>
+    	<define key="TEXT_MANUFACTURER"><![CDATA[<b>Manufacturer: </b>]]></define>
 
 </definitions>
