@@ -311,6 +311,7 @@
 			$newStatus->payment_method = $this->title;
 			$newStatus->payment_amount = $info['amount'];
 			$newStatus->success = (int) $info['success'];
+			$newStatus->can_reuse = (int) (isset($info['can_reuse'])?$info['can_reuse']:0);
 			
 			if (isset($info['message'])){
 				$newStatus->gateway_message = $info['message'];
