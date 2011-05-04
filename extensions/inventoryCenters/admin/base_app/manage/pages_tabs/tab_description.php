@@ -24,8 +24,12 @@
 		$minRentalDays = $Inventory->inventory_center_min_rental_days;
 		$provider = $Inventory->inventory_center_customer;
 		$delivery_instructions = $Inventory->inventory_center_delivery_instructions;
+		$continent = $Inventory->inventory_center_continent;
+		$country = $Inventory->inventory_center_country;
+		$state = $Inventory->inventory_center_state;
+		$city = $Inventory->inventory_center_city;
 		$content_selectbox->selectOptionByValue($provider);
-
+		$sortOrder = $Inventory->inventory_center_sort_order;
 		if (tep_not_null($Inventory->gmaps_polygon)){
 			$polygon = unserialize($Inventory->gmaps_polygon);
 			$script = '<script>$(document).ready(function (){';
@@ -35,13 +39,18 @@
 			$script .= '});</script>';
 		}
 	}else{
-		$name = "";
-		$details = "";
-		$comission = "0";
-		$minRentalDays = "0";
+		$name = '';
+		$details = '';
+		$comission = '0';
+		$minRentalDays = '0';
 		$delivery_instructions = '';
+		$continent = '';
+		$country = sysConfig::get('STORE_COUNTRY');
+		$state = '';
+		$city = '';
+		$sortOrder = '0';
 		$saddress = '';
-		$address = STORE_NAME_ADDRESS;
+		$address = sysConfig::get('STORE_NAME_ADDRESS');
 		$script = '<script>$(document).ready(function (){';
 		$script .= '});</script>';
 	}
@@ -71,8 +80,6 @@
 	}
 
 ?>
-
-
 
  <table cellpadding="3" cellspacing="0" border="0">
   <tr>
@@ -183,11 +190,70 @@
 
 <?php
  }
- ?>
+?>
+  <tr>
+   <td class="main"><?php echo sysLanguage::get('TEXT_INVENTORY_SORT_ORDER'); ?></td>
+   <td class="main"><?php echo tep_draw_input_field('inventory_center_sort_order', $sortOrder); ?></td>
+  </tr>
+  <tr>
+   <td colspan="2"><?php echo tep_draw_separator('pixel_trans.gif', '1', '10'); ?></td>
+  </tr>
+	 <?php
+  $htmlContinent = htmlBase::newElement('selectbox')
+  ->setName('continent');
+  $htmlContinent->selectOptionByValue($continent);
+
+  $htmlContinent->addOption('Africa', 'Africa');
+  $htmlContinent->addOption('Asia', 'Asia');
+  $htmlContinent->addOption('Australasia', 'Australasia');
+  $htmlContinent->addOption('Central America', 'Central America');
+  $htmlContinent->addOption('Europe', 'Europe');
+  $htmlContinent->addOption('North America', 'North America');
+  $htmlContinent->addOption('Pacific Islands', 'Pacific Islands');
+  $htmlContinent->addOption('South America', 'South America');
+
+  $countries = tep_get_countriesArray();
+  $htmlCountries = htmlBase::newElement('selectbox')
+  ->setName('country')
+  ->attr('id','countryDrop');
+  $htmlCountries->selectOptionByValue($country);
+  for ($i = 0, $n = sizeof($countries); $i < $n; $i++){
+	$htmlCountries->addOption($countries[$i]['countries_id'], $countries[$i]['countries_name']);
+  }
+
+  echo  '<tr>' .
+			'<td>' . sysLanguage::get('ENTRY_CITY') . '</td>' .
+			'<td>' . tep_draw_input_field('city', $city) . '</td>' .
+		'</tr>' .
+		'<tr>' .
+			'<td>' . sysLanguage::get('ENTRY_STATE') . '</td>' .
+			'<td id="stateCol">' . tep_draw_input_field('state', $state) . '</td>' .
+		'</tr>' .
+		'<tr>' .
+			'<td>' . sysLanguage::get('ENTRY_COUNTRY') . '</td>' .
+			'<td>' .$htmlCountries->draw() . '</td>' .
+		'</tr>'.
+		 '<tr>' .
+			'<td>' . sysLanguage::get('ENTRY_CONTINENT') . '</td>' .
+			'<td>' . $htmlContinent->draw() . '</td>' .
+		'</tr>';
+?>
+
+	 <?php
+	$contents = EventManager::notifyWithReturn('InventoryCentersAfterDescription', (isset($Inventory)?$Inventory:null));
+	if (!empty($contents)){
+		foreach($contents as $content){
+			echo $content;
+		}
+	}
+	 ?>
+
+
  <tr>
    <td class="main" valign="top"><?php echo sysLanguage::get('TEXT_INVENTORY_MAP'); ?></td>
 	<td class="main"><?php echo $script;?><div id="mapHolder"><div id="googleMap" style="width:100%;height:750px;"></div></div></td>
   </tr>
+
 	 
  </table>
 

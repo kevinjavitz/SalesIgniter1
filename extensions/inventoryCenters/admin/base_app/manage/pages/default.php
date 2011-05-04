@@ -2,7 +2,8 @@
 	$Qcenters = Doctrine_Query::create()
 	->from('ProductsInventoryCenters')
 	->orderBy('inventory_center_name asc');
-	
+	EventManager::notify('AdminInventoryCentersListingQueryBeforeExecute', &$Qcenters);
+
 	$tableGrid = htmlBase::newElement('grid')
 	->usePagination(true)
 	->setPageLimit((isset($_GET['limit']) ? (int)$_GET['limit']: 25))

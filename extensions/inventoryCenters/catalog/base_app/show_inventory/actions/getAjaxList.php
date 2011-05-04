@@ -26,7 +26,7 @@
 	}
 
 	$invcent = $invcent->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
-	$contentHtml = '<div id="gMap"></div><br/><br/><div class="main_list">';
+	$contentHtml = '<div class="main_list">';
 	foreach($invcent as $invInfo){
 		$store = explode(';',$invInfo['inventory_center_stores']);
 		if(in_array(Session::get('current_store_id'), $store)){
@@ -38,33 +38,11 @@
 		//$script = "<script type='text/javascript' src='http://maps.google.com/maps?file=api&v=2&sensor=false&key=". EXTENSION_INVENTORY_CENTERS_GOOGLE_MAPS_API_KEY."'></script>";
 	}
     $contentHtml .= '</div>';
+
 	$contentHtml = stripslashes($contentHtml);
-	/*$continueButton = htmlBase::newElement('button')->usePreset('continue')
-	->setHref(itw_app_link(null, 'index', 'default'));*/
-    $contentHeading = sysLanguage::get('EXTENSION_INVENTORY_CENTERS_LIST_OF_CENTERS');
-	$pageTitle = $contentHeading;
-	$pageContents = $contentHtml;
 
-	//$pageButtons = htmlBase::newElement('button')
-	//->usePreset('continue')
-	//->setHref(itw_app_link(null, 'index', 'default'))
-	//->draw();
-
-	$pageContent->set('pageTitle', $pageTitle);
-	$pageContent->set('pageContent', $pageContents);
-	//$pageContent->set('pageButtons', $pageButtons);
-
-	if (isset($_GET['dialog'])){
-		$Template->setPopupMode(true);
-	}
-	/*$pageContent->setVars(array(
-		'pageHeader'     => "",
-		'continueButton' => $continueButton->draw(),
-		'pageContent'    => $contentHtml
-	));
-
-
-	$pageContent->setTemplateFile('default_list.tpl', DIR_FS_CATALOG . 'extensions/inventoryCenters/catalog/base_app/show_inventory/templates/');
-
-	echo $pageContent->parse();*/
+	EventManager::attachActionResponse(array(
+				'success' => true,
+				'data'     => $contentHtml
+	), 'json');
 ?>

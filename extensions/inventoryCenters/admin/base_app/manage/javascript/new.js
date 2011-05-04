@@ -114,8 +114,24 @@ $(document).ready(function (){
 			CKEDITOR.replace(this, {
 				filebrowserBrowseUrl: DIR_WS_ADMIN + 'rentalwysiwyg/editor/filemanager/browser/default/browser.php'
 			});
-		});
+	});
+	$('#countryDrop').change(function (){
+		var $stateColumn = $('#stateCol');
+		showAjaxLoader($stateColumn, 'icon', 'append');
 
+		$.ajax({
+			cache: true,
+			url: js_app_link('appExt=inventoryCenters&app=manage&appPage=new&rType=ajax&action=getCountryZones'),
+			data: 'cID=' + $(this).val() + '&zName='+$('#stateCol input').val(),
+			dataType: 'html',
+			success: function (data){
+				removeAjaxLoader($stateColumn);
+				$('#stateCol').html(data);
+			}
+		});
+	});
+
+	$('#countryDrop').trigger('change');
 	map = new GMap2(document.getElementById('googleMap'));
 	//     map.setCenter(new GLatLng(37.4419, -122.1419), 13);
 	map.setUIToDefault();

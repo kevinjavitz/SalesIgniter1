@@ -11,8 +11,23 @@
 	$contentHeading = stripslashes($contentHeading);
 	$contentHtml = stripslashes($contentHtml);
 
+	$pageTitle = $contentHeading;
+	$pageContents = $contentHtml;
+
+	//$pageButtons = htmlBase::newElement('button')
+	//->usePreset('continue')
+	//->setHref(itw_app_link(null, 'index', 'default'))
+	//->draw();
+
+	$pageContent->set('pageTitle', $pageTitle);
+	$pageContent->set('pageContent', $pageContents);
+	//$pageContent->set('pageButtons', $pageButtons);
+
+	if (isset($_GET['dialog'])){
+		$Template->setPopupMode(true);
+	}
 		
-	$continueButton = htmlBase::newElement('button')->usePreset('continue')
+	/*$continueButton = htmlBase::newElement('button')->usePreset('continue')
 	->setHref(itw_app_link(null, 'index', 'default'));
 		
 	$pageContent->setVars(array(
@@ -27,5 +42,5 @@
 
 		//$pageContent->setTemplateFile('default.tpl', DIR_FS_CATALOG . 'extensions/payPerRentals/catalog/base_app/show_shipping/templates/');
 	
-	echo $pageContent->parse();
+	echo $pageContent->parse();*/
 ?>

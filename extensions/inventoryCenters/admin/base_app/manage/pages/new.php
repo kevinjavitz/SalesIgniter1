@@ -31,3 +31,5 @@
    echo $saveButton->draw() . $cancelButton->draw();
 ?></div>
 </form>
+	<script type="text/javascript" src="http://maps.google.com/maps?file=api&amp;v=2&amp;sensor=false&amp;key=<?php echo Session::get('google_key');?>">
+	</script>

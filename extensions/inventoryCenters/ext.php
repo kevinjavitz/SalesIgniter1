@@ -60,14 +60,33 @@ class Extension_inventoryCenters extends ExtensionBase {
 	}
 	
 	public function ProductListingQueryBeforeExecute(&$Qproducts){
-		if (Session::exists('isppr_inventory_pickup') === true){
-			$Qproducts->leftJoin('p.ProductsInventory i')
+		$Qproducts->leftJoin('p.ProductsInventory i')
 			->leftJoin('i.ProductsInventoryBarcodes b')
 			->leftJoin('b.ProductsInventoryBarcodesToInventoryCenters b2c')
-			->leftJoin('b2c.ProductsInventoryCenters ic')
-			->andWhere('ic.inventory_center_id = ?', Session::get('isppr_inventory_pickup'))
-			->andWhere('i.use_center = ?', '1');
+			->leftJoin('b2c.ProductsInventoryCenters ic');
+		if (Session::exists('isppr_inventory_pickup') === true && Session::get('isppr_inventory_pickup') != ''){
+			$Qproducts->andWhere('ic.inventory_center_id = ?', Session::get('isppr_inventory_pickup'));
 		}
+		$Qproducts->andWhere('i.use_center = ?', '1');
+		if (Session::exists('isppr_continent') === true && Session::get('isppr_continent') != ''){
+			$Qproducts->andWhere('ic.inventory_center_continent = ?', Session::get('isppr_continent'));
+		}
+		if (Session::exists('isppr_country') === true && Session::get('isppr_country') != ''){
+			$Qproducts->andWhere('ic.inventory_center_country = ?', Session::get('isppr_country'));
+		}
+		if (Session::exists('isppr_state') === true && Session::get('isppr_state') != ''){
+			$Qproducts->andWhere('ic.inventory_center_state = ?', Session::get('isppr_state'));
+		}
+		if (Session::exists('isppr_city') === true && Session::get('isppr_city') != ''){
+			$Qproducts->andWhere('ic.inventory_center_city = ?', Session::get('isppr_city'));
+		}
+	}
+
+	public function ProductSearchQueryBeforeExecute(&$Qproducts){
+		$Qproducts->leftJoin('p.ProductsInventory i')
+		->leftJoin('i.ProductsInventoryBarcodes b')
+		->leftJoin('b.ProductsInventoryBarcodesToInventoryCenters b2c')
+		->leftJoin('b2c.ProductsInventoryCenters ic');
 	}
 
 	public function BoxMarketingAddLink(&$contents){
