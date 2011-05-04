@@ -5,6 +5,31 @@ function number_format(number){
 }
 
 $(document).ready(function (){
+
+	$('select[name=payment_method]').change(function(){
+		var $self = $(this);
+		showAjaxLoader($self, 'small');
+
+		$.ajax({
+			url: js_app_link('appExt=orderCreator&app=default&appPage=new&action=changePaymentMethod'),
+			cache: false,
+			dataType: 'json',
+			data: 'payment_method=' + $self.val(),
+			type: 'post',
+			success: function (data){
+				if (data.success == true){
+					$self.parent().parent().replaceWith(data.tableRow);
+					$('.paymentProcessButton').button();
+				}else if (typeof data.success == 'object'){
+					alert(data.success.error_message);
+				}else{
+					//alert('Payment Failed');
+				}
+				//removeAjaxLoader($self);
+			}
+		});
+	});
+
 	$('input[name=customer_search]').autocomplete({
 		source: js_app_link('appExt=orderCreator&app=default&appPage=new&action=findCustomer'),
 		select: function (e, ui){
@@ -25,6 +50,30 @@ $(document).ready(function (){
 					$('input[name=account_password]').attr('disabled', 'disabled');
 					
 					$('.productSection, .totalSection, .paymentSection, .commentSection').show();
+					$('select[name=payment_method]').change(function(){
+						var $self = $(this);
+						showAjaxLoader($self, 'small');
+
+						$.ajax({
+							url: js_app_link('appExt=orderCreator&app=default&appPage=new&action=changePaymentMethod'),
+							cache: false,
+							dataType: 'json',
+							data: 'payment_method=' + $self.val(),
+							type: 'post',
+							success: function (data){
+								if (data.success == true){
+									$self.parent().parent().replaceWith(data.tableRow);
+									$('.paymentProcessButton').button();
+								}else if (typeof data.success == 'object'){
+									alert(data.success.error_message);
+								}else{
+									//alert('Payment Failed');
+								}
+								//removeAjaxLoader($self);
+							}
+						});
+					});
+					$('select[name=payment_method]').trigger('change');
 				}
 			});
 			$('input[name=customer_search]').val(ui.item.label);
@@ -204,7 +253,7 @@ $(document).ready(function (){
 		});
 	});
 	
-	$('.paymentProcessButton').click(function (){
+	$('.paymentProcessButton').live('click',function (){
 		var $self = $(this);
 		showAjaxLoader($self, 'small');
 		
@@ -216,7 +265,7 @@ $(document).ready(function (){
 			type: 'post',
 			success: function (data){
 				if (data.success == true){
-					$('.paymentsTable tbody').append(data.tableRow);
+					$('.paymentsTable tbody:nth-child(2)').append(data.tableRow);
 				}else if (typeof data.success == 'object'){
 					alert(data.success.error_message);
 				}else{
@@ -227,27 +276,54 @@ $(document).ready(function (){
 		});
 	});
 
+	$('select[name=payment_method]').trigger('change');
 	$('.paymentRefundButton').click(function (){
 		var $self = $(this);
 		showAjaxLoader($self, 'small');
 
-		$.ajax({
-			url: js_app_link('appExt=orderCreator&app=default&appPage=new&action=refundPayment'),
-			cache: false,
-			dataType: 'json',
-			data: 'payment_module=' + $(this).data('payment_module') + '&payment_history_id=' + $(this).data('payment_history_id'),
-			type: 'post',
-			success: function (data){
-				if (data.success == true){
-					$('.paymentsTable tbody').append(data.tableRow);
-				}else if (typeof data.success == 'object'){
-					alert(data.success.error_message);
-				}else{
-					alert('Payment Failed');
+
+		$('<div id="popupRefund"></div>').dialog({
+		autoOpen: true,
+		width: 300,
+		height: 150,
+		close: function (e, ui){
+			$(this).dialog('destroy').remove();
+			removeAjaxLoader($self);
+		},
+		open: function (e, ui){
+			$(e.target).html('Refund Amount: <input id="refundedAmount" name="refundedAmount">');
+
+		},
+		buttons: {
+				'Save': function() {
+					 //ajax call to save comment on success
+						dialog = $(this);
+					   $.ajax({
+						url: js_app_link('appExt=orderCreator&app=default&appPage=new&action=refundPayment'),
+						cache: false,
+						dataType: 'json',
+						data: 'payment_module=' + $self.data('payment_module') + '&payment_history_id=' + $self.data('payment_history_id')+'&amount='+$('#refundedAmount').val(),
+						type: 'post',
+						success: function (data){
+							if (data.success == true){
+								$('.paymentsTable tbody').append(data.tableRow);
+							}else if (typeof data.success == 'object'){
+								alert(data.success.error_message);
+							}else{
+								alert('Payment Failed');
+							}
+							removeAjaxLoader($self);
+							dialog.dialog('close');
+						}
+					});
+				},
+				Cancel: function() {
+					$(this).dialog('close');
+					removeAjaxLoader($self);
 				}
-				removeAjaxLoader($self);
 			}
-		});
+	});
+
 	});
 	
 	$('.orderTotalType').live('change', function (){

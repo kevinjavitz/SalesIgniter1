@@ -43,9 +43,15 @@ class OrderCreatorPaymentManager extends OrderPaymentManager implements Serializ
 			'customerCountry' => $BillingAddress->getCountry()
 		);
 		
-		if (isset($_POST['payment_cc_number'])){
+		if (isset($_POST['payment_cc_number']) && $_POST['payment_cc_number']!='' && $_POST['payment_cc_number']!='' && $_POST['payment_cc_expires']!='' && $_POST['payment_cc_cvv']!=''){
 			$RequestData['cardNum'] = $_POST['payment_cc_number'];
 			$RequestData['cardExpDate'] = $_POST['payment_cc_expires'];
+			$expDate[0] = substr(date('Y'),0,2).substr($_POST['payment_cc_expires'],0,2);
+			$expDate[1] = substr($_POST['payment_cc_expires'],2,2);
+			if(count($expDate) == 2){
+				$RequestData['cardExpDateCIM'] = $expDate[0].'-'.$expDate[1];
+			}
+
 			$RequestData['cardCvv'] = $_POST['payment_cc_cvv'];
 		}
 		
@@ -59,7 +65,7 @@ class OrderCreatorPaymentManager extends OrderPaymentManager implements Serializ
 		}
 	}
 
-	public function refundPayment($moduleName, $history_id, &$CollectionObj = null){
+	public function refundPayment($moduleName, $history_id, $amount, &$CollectionObj = null){
 		global $Editor;
 		$Module = OrderPaymentModules::getModule($moduleName);
 		if (is_null($CollectionObj) === false){
@@ -75,7 +81,7 @@ class OrderCreatorPaymentManager extends OrderPaymentManager implements Serializ
 		$paymentHistory = $Qhistory[0];
 
 		$requestData = array(
-			'amount' => $paymentHistory['payment_amount'],
+			'amount' => (isset($amount)?$amount:$paymentHistory['payment_amount']),
 			'orderID' => $paymentHistory['orders_id'],
 			'transactionID' => $paymentHistory['gateway_message'],
 			'cardDetails' => unserialize(cc_decrypt($paymentHistory['card_details']))
@@ -92,7 +98,7 @@ class OrderCreatorPaymentManager extends OrderPaymentManager implements Serializ
 	}
 	
 	public function edit(){
-		global $currencies;
+		global $currencies, $Editor;
 		$paymentHistoryTable = htmlBase::newElement('table')
 		->setCellPadding(3)
 		->setCellSpacing(0)
@@ -169,7 +175,7 @@ class OrderCreatorPaymentManager extends OrderPaymentManager implements Serializ
 						'border-top' => 'none',
 						'border-left' => 'none'
 					),
-					'text' => (is_array($cardInfo) ? $cardInfo['cardNumber'] : '')
+					'text' => (isset($cardInfo) && is_array($cardInfo) ? $cardInfo['cardNumber'] : '')
 				);
 				$rowColumns[] = array(
 					'addCls' => 'ui-widget-content',
@@ -177,7 +183,7 @@ class OrderCreatorPaymentManager extends OrderPaymentManager implements Serializ
 						'border-top' => 'none',
 						'border-left' => 'none'
 					),
-					'text' => (is_array($cardInfo) ? $cardInfo['cardExpMonth'] . ' / ' . $cardInfo['cardExpYear'] : '')
+					'text' => (isset($cardInfo) && is_array($cardInfo) ? $cardInfo['cardExpMonth'] . ' / ' . $cardInfo['cardExpYear'] : '')
 				);
 				$rowColumns[] = array(
 					'addCls' => 'ui-widget-content',
@@ -185,7 +191,7 @@ class OrderCreatorPaymentManager extends OrderPaymentManager implements Serializ
 						'border-top' => 'none',
 						'border-left' => 'none'
 					),
-					'text' => (is_array($cardInfo) && isset($cardInfo['cardCvvNumber']) ? $cardInfo['cardCvvNumber'] : 'N/A')
+					'text' => (isset($cardInfo) && is_array($cardInfo) && isset($cardInfo['cardCvvNumber']) ? $cardInfo['cardCvvNumber'] : 'N/A')
 				);
 				$rowColumns[] = array(
 					'addCls' => 'ui-widget-content',
@@ -269,7 +275,7 @@ class OrderCreatorPaymentManager extends OrderPaymentManager implements Serializ
 				'align' => 'left',
 				'text' => 'CVV Code'
 			);
-		//}
+
 		
 		$headerColumns[] = array(
 			'addCls' => 'main ui-widget-header',

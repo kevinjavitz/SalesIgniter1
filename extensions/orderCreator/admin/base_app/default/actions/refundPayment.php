@@ -1,5 +1,5 @@
 <?php
-	$success = $Editor->PaymentManager->refundPayment($_POST['payment_module'], $_POST['payment_history_id']);
+	$success = $Editor->PaymentManager->refundPayment($_POST['payment_module'], $_POST['payment_history_id'], $_POST['amount']);
 	
 	$html = '';
 	if ($success === true){
