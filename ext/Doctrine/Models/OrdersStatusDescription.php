@@ -14,6 +14,10 @@ class OrdersStatusDescription extends Doctrine_Record {
 
 	public function setUp(){
 		$this->setAttribute(Doctrine::ATTR_COLL_KEY, 'language_id');
+		$this->hasOne('OrdersStatus', array(
+			'local' => 'orders_status_id',
+			'foreign' => 'orders_status_id'
+		));
 	}
 	
 	public function setTableDefinition(){

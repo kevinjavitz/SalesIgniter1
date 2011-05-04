@@ -13,6 +13,12 @@
 class ProductsInventory extends Doctrine_Record {
 
 	public function setUp(){
+
+		$this->hasMany('Products', array(
+			'local' => 'products_id',
+			'foreign' => 'products_id',
+			'cascade' => array('delete')
+		));
 		$this->setUpParent();
 	}
 	
