@@ -324,13 +324,16 @@ class Extension_inventoryCenters extends ExtensionBase {
 	}
 
 	public function ReservationProcessAddToOrder(&$reservationInfo){
+		global $appExtension;
 
-		if (sysConfig::get('EXTENSION_PAY_PER_RENTALS_CHOOSE_PICKUP') == 'True'){
-			$reservationInfo['reservationInfo']['inventory_center_pickup'] = $reservationInfo['OrdersProductsReservation'][0]['inventory_center_pickup'];
-		}
+		if ($appExtension->isCatalog()){
+			if (sysConfig::get('EXTENSION_PAY_PER_RENTALS_CHOOSE_PICKUP') == 'True'){
+				$reservationInfo['reservationInfo']['inventory_center_pickup'] = $reservationInfo['OrdersProductsReservation'][0]['inventory_center_pickup'];
+			}
 
-		if (sysConfig::get('EXTENSION_PAY_PER_RENTALS_CHOOSE_DROPOFF') == 'True'){
-			$reservationInfo['reservationInfo']['inventory_center_dropoff'] = $reservationInfo['OrdersProductsReservation'][0]['inventory_center_dropoff'];
+			if (sysConfig::get('EXTENSION_PAY_PER_RENTALS_CHOOSE_DROPOFF') == 'True'){
+				$reservationInfo['reservationInfo']['inventory_center_dropoff'] = $reservationInfo['OrdersProductsReservation'][0]['inventory_center_dropoff'];
+			}
 		}
 	}
 
