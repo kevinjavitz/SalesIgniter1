@@ -1,0 +1,22 @@
+<ConfigurationGroup>
+	<title>iDevAffiliate</title>
+	<description>idevaffiliate Integration</description>
+	<key>idevAffiliate</key>
+	<Configuration>
+
+		<EXTENSION_IDEVAFFILIATE_ENABLED>
+			<title>Enable iDevAffiliate</title>
+			<value>True</value>
+			<description>Enable Or Disable The idevAffiliate Extension</description>
+			<sort_order>1</sort_order>
+			<set_function>tep_cfg_select_option(array('True','False'),</set_function>
+		</EXTENSION_IDEVAFFILIATE_ENABLED>
+		<EXTENSION_IDEVAFFILIATE_URL>
+			<title>iDevAffiliate Code</title>
+			<value>http://www.site.com/idevaffiliate/sale.php?profile=72198</value>
+			<description>This is the code from the idevAffiliate script for custom integration</description>
+			<sort_order>1</sort_order>
+		</EXTENSION_IDEVAFFILIATE_URL>
+
+	</Configuration>
+</ConfigurationGroup>
