@@ -134,17 +134,19 @@ class OrderShippingUpsReservation extends OrderShippingModule {
 				$qsize = sizeof($upsQuote);
 				for ($i=0; $i<$qsize; $i++) {
 					list($type, $cost) = each($upsQuote[$i]);
-					foreach($this->methods as $methodId => $mInfo){
-						if ($mInfo['status'] == 'True' && ($method == 'method' . $methodId || $method == '')){
-							if ($type == $mInfo['upscode']){
-								$this->quotes['methods'][] = array(
-									'id'      => 'method' . $methodId,
-									'title'   => $mInfo['text'],
-									'default' => $mInfo['default'],
-									'cost'    => ($cost + $this->handlingCost) * $numBoxes + ($cost + $this->handlingCost) * $numBoxes * ($mInfo['markup'] / 100),
-									'days_before'    => $mInfo['days_before'],
-									'days_after'    => $mInfo['days_after']
-								);
+					if(isset($this->methods)){
+						foreach($this->methods as $methodId => $mInfo){
+							if ($mInfo['status'] == 'True' && ($method == 'method' . $methodId || $method == '')){
+								if ($type == $mInfo['upscode']){
+									$this->quotes['methods'][] = array(
+										'id'      => 'method' . $methodId,
+										'title'   => $mInfo['text'],
+										'default' => $mInfo['default'],
+										'cost'    => ($cost + $this->handlingCost) * $numBoxes + ($cost + $this->handlingCost) * $numBoxes * ($mInfo['markup'] / 100),
+										'days_before'    => $mInfo['days_before'],
+										'days_after'    => $mInfo['days_after']
+									);
+								}
 							}
 						}
 					}
