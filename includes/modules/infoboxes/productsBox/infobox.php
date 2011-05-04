@@ -21,10 +21,10 @@ class InfoBoxProductsBox extends InfoBoxAbstract {
 	public function show(){
 		$boxWidgetProperties = $this->getWidgetProperties();
 
-		$this->setBoxId($boxWidgetProperties['id']);
+		$this->setBoxId($boxWidgetProperties->id);
 
-		$cInfo = $boxWidgetProperties['config'];
-		$Results = $this->getQueryResults($cInfo['query'], $cInfo['query_limit']);
+		$cInfo = $boxWidgetProperties->config;
+		$Results = $this->getQueryResults($cInfo->query, $cInfo->query_limit);
 		$ProductsList = $this->buildList($Results, $cInfo);
 		
 		$this->setBoxContent($ProductsList->draw());
@@ -37,13 +37,13 @@ class InfoBoxProductsBox extends InfoBoxAbstract {
 		foreach($products as $pInfo){
 			$ListItemImage = htmlBase::newElement('image')
 			->setSource(sysConfig::getDirWsCatalog().'images/' . $pInfo['products_image'])
-			->setWidth($cInfo['block_width'])
-			->setHeight($cInfo['block_height'])
+			->setWidth($cInfo->block_width)
+			->setHeight($cInfo->block_height)
 			->thumbnailImage(true);
 			
 			$productLink = itw_app_link('products_id=' . $pInfo['products_id'], 'product', 'info');
 			
-			if ($cInfo['reflect_blocks'] === true){
+			if ($cInfo->reflect_blocks === true){
 				$ListItemImage->addClass('productsBoxReflectImage');
 			}
 			
@@ -60,7 +60,7 @@ class InfoBoxProductsBox extends InfoBoxAbstract {
 			
 			$Block->append($ImageBlock);
 			
-			if ($cInfo['reflect_blocks'] === false){
+			if ($cInfo->reflect_blocks === false){
 				$ListItemNameLink = htmlBase::newElement('a')
 				->setHref($productLink)
 				->html($pInfo['ProductsDescription'][0]['products_name']);
@@ -74,8 +74,8 @@ class InfoBoxProductsBox extends InfoBoxAbstract {
 			
 			$ListItem = htmlBase::newElement('li')
 			->css(array(
-				'height' => $cInfo['block_height'] . 'px',
-				'width' => $cInfo['block_width'] . 'px'
+				'height' => $cInfo->block_height . 'px',
+				'width' => $cInfo->block_width . 'px'
 			))
 			->append($Block);
 			

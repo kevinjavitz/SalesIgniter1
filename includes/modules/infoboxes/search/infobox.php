@@ -23,6 +23,7 @@ class InfoBoxSearch extends InfoBoxAbstract {
 	}
 
 	public function show(){
+
 		$boxContent = tep_draw_form('quick_find', itw_app_link(null, 'products', 'search_result'), 'get') .
 		tep_draw_input_field('keywords', '', 'size="10" maxlength="30" style="width: ' . (BOX_WIDTH-30) . 'px"') .
 		'&nbsp;' .
@@ -32,38 +33,39 @@ class InfoBoxSearch extends InfoBoxAbstract {
 		sysLanguage::get('INFOBOX_SEARCH_TEXT') .
 		'<br><a href="' . itw_app_link(null, 'products', 'search') . '"><b>' . sysLanguage::get('INFOBOX_SEARCH_ADVANCED_SEARCH') . '</b></a>' .
 		'</form>';
-		
-		$QsearchGuided = Doctrine_Query::create()
-		->from('TemplatesInfoboxSearchGuided s')
-		->leftJoin('s.TemplatesInfoboxSearchGuidedDescription sd')
-		->where('sd.language_id = ?', Session::get('languages_id'))
-		->andWhere('s.template_name = ?', Session::get('tplDir'))
-		->orderBy('s.option_sort')
-		->execute();
-		if ($QsearchGuided){
+
+		$boxWidgetProperties = $this->getWidgetProperties();
+		$Qitems = (array)$boxWidgetProperties->searchOptions;
+
+		if (isset($Qitems)){
 			$boxContent .= '<div class="ui-widget-header ui-infobox-header guidedHeader" ><div class="ui-infobox-header-text">Guided Search</div></div><form name="guided_search" action="' . itw_app_link(null, 'products', 'search_result') . '" method="get">';
 			$this->searchItemDisplay = 4;
-			foreach($QsearchGuided->toArray(true) as $sInfo){
-				$boxContent .= '<br /><b>' . $sInfo['TemplatesInfoboxSearchGuidedDescription'][Session::get('languages_id')]['search_title'] . '</b><ul style="list-style:none;margin:.5em;padding:0;">';
-				
-				switch($sInfo['option_type']){
-					case 'attribute':
-						$this->guidedSearchAttribute(&$boxContent, $sInfo['option_id']);
-						break;
-					case 'custom_field':
-						$this->guidedSearchCustomField(&$boxContent, $sInfo['option_id']);
-						break;
-					case 'purchase_type':
-						$this->guidedSearchPurchaseType(&$boxContent);
-						break;
-					case 'price':
-						$this->guidedSearchPrice(&$boxContent);
-						break;
-					case 'manufacturer':
-						$this->guidedSearchManufacturer(&$boxContent);
-						break;
+			foreach($Qitems as $type){
+				$type = (array)$type;
+				foreach($type as $sInfo){
+					$sInfo = (array)$sInfo;
+					$sInfo['search_title'] = (array)$sInfo['search_title'];
+					$boxContent .= '<br /><b>' . $sInfo['search_title'][Session::get('languages_id')] . '</b><ul style="list-style:none;margin:.5em;padding:0;">';
+
+					switch($sInfo['option_type']){
+						case 'attribute':
+							$this->guidedSearchAttribute(&$boxContent, $sInfo['option_id']);
+							break;
+						case 'custom_field':
+							$this->guidedSearchCustomField(&$boxContent, $sInfo['option_id']);
+							break;
+						case 'purchase_type':
+							$this->guidedSearchPurchaseType(&$boxContent);
+							break;
+						case 'price':
+							$this->guidedSearchPrice(&$boxContent);
+							break;
+						case 'manufacturer':
+							$this->guidedSearchManufacturer(&$boxContent);
+							break;
+					}
+					$boxContent .= '</ul>';
 				}
-				$boxContent .= '</ul>';
 			}
 			$boxContent .= '</form>';
 		}
