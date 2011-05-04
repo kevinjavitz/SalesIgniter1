@@ -23,7 +23,7 @@
               'lng' => 'false',
               'lat' => 'false'
           );
-          $address = "http://maps.google.com/maps/geo?q=" . $addressStr . "&key=" . GOOGLE_MAPS_API_KEY . "&output=json";
+          $address = "http://maps.google.com/maps/geo?q=" . $addressStr . "&key=" . Session::get('google_key') . "&output=json";
           $page = file_get_contents($address);
 
           if (tep_not_null($page)){
