@@ -13,7 +13,7 @@ if (isset($_SERVER['HTTP_IF_MODIFIED_SINCE'])){
 			if (substr($_GET['imgSrc'], 0, 1) == DIRECTORY_SEPARATOR){
 				$_GET['imgSrc'] = substr($_GET['imgSrc'], 1);
 			}
-			$_GET['imgSrc'] = realpath(dirname(__FILE__)) . DIRECTORY_SEPARATOR . $_GET['imgSrc'];
+			$_GET['imgSrc'] = dirname(__FILE__) . DIRECTORY_SEPARATOR . $_GET['imgSrc'];
 		}
 		
 		if (file_exists($_GET['imgSrc'])){

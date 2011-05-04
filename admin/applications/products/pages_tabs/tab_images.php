@@ -26,8 +26,8 @@
 	if (isset($Product)){
 		$zoomIcon = htmlBase::newElement('icon')->setType('zoomIn');
 		$deleteIcon = htmlBase::newElement('icon')->setType('closeThick')->addClass('deleteImage');
-		$imgSrc = sysConfig::getDirWsCatalog() . 'images/';
-		$thumbSrc = 'imagick_thumb.php?width=80&height=80&imgSrc=' . sysConfig::getDirFsCatalog() . 'images/';
+		$imgSrc =  'images/';
+		$thumbSrc = 'imagick_thumb.php?width=80&height=80&imgSrc=' . 'images/';
 	}
 ?>
  <table cellpadding="3" cellspacing="0" border="0">
