@@ -1749,8 +1749,8 @@ class PurchaseType_reservation extends PurchaseTypeAbstract {
 		} */
 
 		$myKeys = array_keys($minutesArray);
+		$message = 'Price based on: ';
 		if(count($myKeys) > 1) {
-			$message = 'Price based on: ';
 			$is_bigger = true;
 			for ($i=0; $i<count($myKeys); $i++){
 				if ($myKeys[$i] > $nMinutes){
