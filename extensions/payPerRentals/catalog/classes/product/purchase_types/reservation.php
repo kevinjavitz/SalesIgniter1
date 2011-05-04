@@ -252,14 +252,6 @@ class PurchaseType_reservation extends PurchaseTypeAbstract {
 	public function parse_reservation_info($pID_string, $resInfo, $showEdit = true){
 		global $currencies;
 		$return = '';
-		/*
-		 * @TODO: Allow Editing
-		  if (EXTENSION_PAY_PER_RENTALS_DATE_SELECTION == 'After' || $showEdit === false){
-		  $return .= '<br /><small><b><i><u>' . sysLanguage::get('TEXT_INFO_RESERVATION_INFO') . '</u></i></b></small>';
-		  }else{
-		  $return .= '<br /><small><b><i><u>' . sysLanguage::get('TEXT_INFO_RESERVATION_INFO') . '</u>&nbsp;(<a href="' . itw_app_link('action=editReservation&products_id=' . $pID_string, 'product', 'info') . '">edit</a>)</i></b></small>';
-		  } */
-
 		$return .= '<br /><small><b><i><u>' . sysLanguage::get('TEXT_INFO_RESERVATION_INFO') . '</u></i></b></small>';
 
 		$start = date_parse($resInfo['start_date']);
@@ -311,6 +303,10 @@ class PurchaseType_reservation extends PurchaseTypeAbstract {
 		if (is_null($this->inventoryCls)) return true;
 		$invItems = $this->inventoryCls->getInventoryItems();
 		$hasInv = false;
+		if (sysConfig::get('EXTENSION_PAY_PER_RENTALS_DATE_SELECTION') != 'Using calendar after browsing products and clicking Reserve' && Session::exists('isppr_inventory_pickup') === false){
+			return false;
+		}
+
 		if(isset($invItems) && ($invItems != false)){
 			foreach($invItems as $invInfo){
 				$bookingInfo = array(
@@ -347,6 +343,8 @@ class PurchaseType_reservation extends PurchaseTypeAbstract {
 					if (!empty($pickupCheck)){
 						$bookingInfo['inventory_center_pickup'] = $pickupCheck;
 					}
+				}else{
+					//check here if the invInfo has a specific inventory. If there are two or more
 				}
 				if (Session::exists('isppr_product_qty')){
 					$bookingInfo['quantity'] = (int)Session::get('isppr_product_qty');
@@ -487,7 +485,6 @@ class PurchaseType_reservation extends PurchaseTypeAbstract {
 		if (isset($_POST['rental_shipping']) && $_POST['rental_shipping'] !== false){
 			$shippingInfo = explode('_', $_POST['rental_shipping']);
 		}
-		 //echo 'dd'. print_r($pInfo);
 		$reservationInfo = array(
 			'shipping_module' => $shippingInfo[0],
 			'shipping_method' => $shippingInfo[1],
@@ -940,7 +937,40 @@ class PurchaseType_reservation extends PurchaseTypeAbstract {
 					->setCellPadding(3)
 					->setCellSpacing(0)
 					->attr('align', 'center');
+					if(Session::exists('isppr_inventory_pickup') === false && Session::exists('isppr_city') === true && Session::get('isppr_city') != ''){
+						$Qproducts = Doctrine_Query::create()
+						->from('ProductsInventoryBarcodes b')
+						->leftJoin('b.ProductsInventory i')
+						->leftJoin('i.Products p')
+						->leftJoin('b.ProductsInventoryBarcodesToInventoryCenters b2c')
+						->leftJoin('b2c.ProductsInventoryCenters ic');
 
+						$Qproducts->where('p.products_id=?',  $_GET['products_id']);
+						$Qproducts->andWhere('i.use_center = ?', '1');
+
+						if (Session::exists('isppr_continent') === true && Session::get('isppr_continent') != '') {
+							$Qproducts->andWhere('ic.inventory_center_continent = ?', Session::get('isppr_continent'));
+						}
+						if (Session::exists('isppr_country') === true && Session::get('isppr_country') != '') {
+							$Qproducts->andWhere('ic.inventory_center_country = ?', Session::get('isppr_country'));
+						}
+						if (Session::exists('isppr_state') === true && Session::get('isppr_state') != '') {
+							$Qproducts->andWhere('ic.inventory_center_state = ?', Session::get('isppr_state'));
+						}
+						if (Session::exists('isppr_city') === true && Session::get('isppr_city') != '') {
+							$Qproducts->andWhere('ic.inventory_center_city = ?', Session::get('isppr_city'));
+						}
+						$Qproducts = $Qproducts->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+						$deleteS = false;
+						$isdouble = false;
+						if (count($Qproducts) > 1) {
+							$isdouble = true;
+						} else {
+							Session::set('isppr_inventory_pickup', $Qproducts[0]['ProductsInventoryBarcodesToInventoryCenters']['ProductsInventoryCenters']['inventory_center_id']);
+							$deleteS = true;
+
+						}
+					}
 
 					if (Session::exists('isppr_selected') && Session::get('isppr_selected') == true){
 						$start_date = '';
@@ -1573,12 +1603,6 @@ class PurchaseType_reservation extends PurchaseTypeAbstract {
 			$prodBarcodes[] = $iBarcode['id'];
 		}
 
-		////foreach $bookedTimes I add allday barcodes from bookedDates
-
-		//print_r($prodBarcodes);
-		//echo '------------';
-		//print_r($bookedTimes);
-		//itwExit();
 		foreach($bookedTimes as $dateFormated => $iBook){
 			if ($this->getTrackMethod() == 'barcode'){
 				$myqty = 0;
@@ -1596,7 +1620,7 @@ class PurchaseType_reservation extends PurchaseTypeAbstract {
 				}
 			}
 		}
-		//print_r($bookingsArr);
+
 		return $bookingsArr;
 	}
 
@@ -1681,13 +1705,11 @@ class PurchaseType_reservation extends PurchaseTypeAbstract {
 
 	public function findBestPrice($dateArray){
 		global $currencies;
-        //$dateArray['end'] = $this->addDays($dateArray['end']);
+        $dateArray['end'] = $this->addDays($dateArray['end']);
 
         $price = 0;
         $start = date_parse($dateArray['start']);
         $end = date_parse($dateArray['end']);
-		//print_r($start);
-		//print_r($end);
         $startTime = mktime($start['hour'], $start['minute'], $start['second'], $start['month'], $start['day'], $start['year']);
         $endTime = mktime($end['hour'], $end['minute'], $end['second'], $end['month'], $end['day'], $end['year']);
 
@@ -1714,40 +1736,11 @@ class PurchaseType_reservation extends PurchaseTypeAbstract {
 			$minutesArray[$iPrices['number_of']*$pprTypes[$iPrices['pay_per_rental_types_id']]] = $iPrices['price'];
 			$messArr[$iPrices['number_of']*$pprTypes[$iPrices['pay_per_rental_types_id']]] = $iPrices['number_of'].' '.$pprTypesDesc[$iPrices['pay_per_rental_types_id']];
 		}
-		  ksort($minutesArray);
-		  ksort($messArr);
+		ksort($minutesArray);
+		ksort($messArr);
 
-		//print_r($minutesArray);
-		//print_r($messArr);
-		//echo $nMinutes.'kkk';
 		$firstMinUnity = $messArr[key($messArr)];
 		$firstMinMinutes = key($messArr);
-
-		/*if (isset($productPricing['daily']) && $productPricing['daily'] >0){
-			$minutesArray[1] = $productPricing['daily'];
-			$messArr[1] = 'days';
-		}
-		if (isset($productPricing['weekly']) && $productPricing['weekly'] >0){
-			$minutesArray[7] = $productPricing['weekly'];
-			$messArr[7] = 'weeks';
-		}
-		if (isset($productPricing['monthly']) && $productPricing['monthly'] >0){
-			$minutesArray[30] = $productPricing['monthly'];
-			$messArr[30] = 'months';
-		}
-		if (isset($productPricing['six_month']) && $productPricing['six_month'] >0){
-			$minutesArray[180] = $productPricing['six_month'];
-			$messArr[180] = 'six months';
-		}
-		if (isset($productPricing['year']) && $productPricing['year'] >0){
-			$minutesArray[365] = $productPricing['year'];
-			$messArr[365] = 'years';
-		}
-		if (isset($productPricing['three_year']) && $productPricing['three_year'] >0){
-			$minutesArray[1095] = $productPricing['three_year'];
-			$messArr[1095] = 'three years';
-		} */
-
 		$myKeys = array_keys($minutesArray);
 
 		$message = 'Price based on: ';
@@ -1794,16 +1787,16 @@ class PurchaseType_reservation extends PurchaseTypeAbstract {
 		switch(sysConfig::get('EXTENSION_PAY_PER_RENTALS_LENGTH_METHOD')){
 			case 'First':
 			case 'Last':
-				$days++;
+				$days = 0;
 				break;
 			case 'Both':
-				$days+=2;
+				$days+=1;
 				break;
 			default:
 				$days = ($days <= 0 ? 1 : $days);
 				break;
 		}
-		$date = date('Y-m-d', strtotime('+' . $days .' days', strtotime($date)));
+		$date = date('Y-m-d H:i:s', strtotime('+' . $days .' days', strtotime($date)));
 		return $date;
 	}
 

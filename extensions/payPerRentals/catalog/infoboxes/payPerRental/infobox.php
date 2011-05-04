@@ -6,7 +6,7 @@ class InfoBoxPayPerRental extends InfoBoxAbstract {
 		$this->init('payPerRental', 'payPerRentals');
 
 		$this->enabled = ((sysConfig::get('EXTENSION_PAY_PER_RENTALS_DATE_SELECTION') != 'Using calendar after browsing products and clicking Reserve') ? true:false);
-		if ($_GET['app'] == 'checkout'){
+		if (isset($_GET['app']) && $_GET['app'] == 'checkout'){
 			$this->enabled = false;
 		}
 		$this->setBoxHeading(sysLanguage::get('INFOBOX_HEADING_PAYPERRENTAL'));
@@ -18,14 +18,8 @@ class InfoBoxPayPerRental extends InfoBoxAbstract {
 	
 	public function show(){
 		if ($this->enabled === false) return;
-
-		$javascript = '<script type="text/javascript">' .
-			'$(document).ready(function (){' .
-			'   $(\'.rentbbut .ui-button-text\').html(\'Submit\');' .
-			'});' .
-		'</script>';
-
-		$this->setBoxContent($javascript . ReservationInfoBoxUtil::showInfoboxBefore());
+		
+		$this->setBoxContent("");
 		
 		return $this->draw();
 	}
@@ -108,7 +102,7 @@ class InfoBoxPayPerRental extends InfoBoxAbstract {
 			'margin-right: .3em;' . 
 		' }' . "\n" . 
 		'#categoriesPPRBoxMenu .ui-accordion-content li a:hover, ' . 
-		'#categoriesInfoBox .ui-accordion .ui-accordion-content li a.selected { ' . 
+		'#categoriesPPRBoxMenu .ui-accordion .ui-accordion-content li a.selected { ' .
 			'background: #e6e6e6;' . 
 		' }' . "\n" . 
 		'#headPPRBoxMenu { ' . 

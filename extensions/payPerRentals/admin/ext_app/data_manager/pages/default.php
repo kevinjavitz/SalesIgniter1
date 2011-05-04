@@ -25,6 +25,7 @@ class payPerRentals_admin_data_manager_default extends Extension_payPerRentals {
 			'DataExportFullQueryFileLayoutHeader',
 			'DataExportBeforeFileLineCommit',
 			'DataImportBeforeSave',
+			'DataImportAfterSave',
 			'DataImportProductLogBeforeExecute',
 		), null, $this);
 	}
@@ -69,6 +70,28 @@ class payPerRentals_admin_data_manager_default extends Extension_payPerRentals {
 	
 	public function DataExportFullQueryFileLayoutHeader(&$dataExport){
 
+		/*export hidden dates*/
+		$QHiddenDatesMAX = Doctrine_Query::create()
+			->select('COUNT(*) as hiddenmax')
+			->from('PayPerRentalHiddenDates')
+			->groupby('products_id')
+			//->where('pay_per_rental_id =?',$Product['ProductsPayPerRental']['pay_per_rental_id'])
+			//->orderBy('price_per_rental_per_products_id')
+			->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+		$maxVal = -1;
+		foreach($QHiddenDatesMAX as $iMax){
+			if($iMax['hiddenmax'] > $maxVal){
+				$maxVal = $iMax['hiddenmax'];
+			}
+		}
+
+		for($j=0;$j<$maxVal;$j++){
+			$dataExport->setHeaders(array(
+				'v_pay_per_rental_hidden_start_date_'. $j,
+				'v_pay_per_rental_hidden_end_date_'. $j
+			));
+		}
+		/*end of export*/
 
 		$QPricePerRentalProductsMAX = Doctrine_Query::create()
 			->select('COUNT(*) as pprmax')
@@ -134,6 +157,21 @@ class payPerRentals_admin_data_manager_default extends Extension_payPerRentals {
 			$productRow['v_pay_per_rental_overbooking'] = 'Yes';
 		}
 		$product_id = $productRow['products_id'];
+
+		/*export hidden dates*/
+		$QHiddsenDates = Doctrine_Query::create()
+		->from('PayPerRentalHiddenDates')
+		->where('products_id=?', $product_id)
+		->execute(array(),  Doctrine_Core::HYDRATE_ARRAY);
+		$j = 0;
+		foreach($QHiddsenDates as $iHidden){
+			$productRow['v_pay_per_rental_hidden_start_date_'.$j] = $iHidden['hidden_start_date'];
+			$productRow['v_pay_per_rental_hidden_end_date_'.$j] = $iHidden['hidden_end_date'];
+			$j++;
+		}
+
+		/*end export hidden dates*/
+
 		$QPPR = Doctrine_Query::create()
 		->from('ProductsPayPerRental pprp')
 		->where('products_id=?', $product_id)
@@ -196,68 +234,110 @@ class payPerRentals_admin_data_manager_default extends Extension_payPerRentals {
 	}
 	
 	public function DataImportBeforeSave(&$items, &$Product){
-		//$priceDaily = (isset($items['v_pay_per_rental_price_daily']) ? $items['v_pay_per_rental_price_daily'] : false);
-		//$priceWeekly = (isset($items['v_pay_per_rental_price_weekly']) ? $items['v_pay_per_rental_price_weekly'] : false);
-		//$priceMonthly = (isset($items['v_pay_per_rental_price_monthly']) ? $items['v_pay_per_rental_price_monthly'] : false);
-		//$priceSixMonth = (isset($items['v_pay_per_rental_price_six_month']) ? $items['v_pay_per_rental_price_six_month'] : false);
-		//$priceYear = (isset($items['v_pay_per_rental_price_year']) ? $items['v_pay_per_rental_price_year'] : false);
-		//$priceThreeYear = (isset($items['v_pay_per_rental_price_three_year']) ? $items['v_pay_per_rental_price_three_year'] : false);
 		$depositAmount = (isset($items['v_pay_per_rental_deposit_amount']) ? $items['v_pay_per_rental_deposit_amount'] : false);
 		$insurance = (isset($items['v_pay_per_rental_insurance']) ? $items['v_pay_per_rental_insurance'] : false);
 		$shippingMethods = (isset($items['v_pay_per_rental_shipping']) ? $items['v_pay_per_rental_shipping'] : false);
 
-			$PayPerRental = $Product->ProductsPayPerRental;
-			if (isset($items['v_pay_per_rental_overbooking'])){
-				if ($items['v_pay_per_rental_overbooking'] == 'No'){
-					$PayPerRental->overbooking = '0';
-				}else{
-					$PayPerRental->overbooking = '1';
+		$PayPerRental =& $Product->ProductsPayPerRental;
+		if (isset($items['v_pay_per_rental_overbooking'])) {
+			if ($items['v_pay_per_rental_overbooking'] == 'No') {
+				$PayPerRental->overbooking = '0';
+			} else {
+				$PayPerRental->overbooking = '1';
+			}
+		} else {
+			$PayPerRental->overbooking = '0';
+		}
+
+		$Product->products_auth_method = (
+		isset($items['v_pay_per_rental_auth_method'])
+				? $items['v_pay_per_rental_auth_method']
+				: 'auth'
+		);
+
+		$Product->products_auth_charge = (
+		isset($items['v_pay_per_rental_auth_charge'])
+				? $items['v_pay_per_rental_auth_charge']
+				: '0.0000'
+		);
+
+		$PayPerRental->deposit_amount = (float) ($depositAmount !== false ? $depositAmount : '0');
+		$PayPerRental->insurance = (float) ($insurance !== false ? $insurance : '0');
+		$PayPerRental->shipping = $shippingMethods !== false ? $shippingMethods : '';
+		$PayPerRental->save();
+
+		/*import hidden dates*/
+		Doctrine_Query::create()
+		->delete('PayPerRentalHiddenDates')
+		->andWhere('products_id =?', $Product->products_id)
+		->execute();
+		$j = 0;
+		$PayPerRentalHiddenDatesTable = Doctrine_Core::getTable('PayPerRentalHiddenDates');
+		while(true){
+			if(isset($items['v_pay_per_rental_hidden_start_date_'.$j])){
+				if(!empty($items['v_pay_per_rental_hidden_start_date_'.$j])){
+					$PayPerRentalHiddenDates = $PayPerRentalHiddenDatesTable->create();
+					$PayPerRentalHiddenDates->hidden_start_date = date('Y-m-d', strtotime($items['v_pay_per_rental_hidden_start_date_'.$j]));
+					$PayPerRentalHiddenDates->hidden_end_date = date('Y-m-d', strtotime($items['v_pay_per_rental_hidden_end_date_'.$j]));
+					$PayPerRentalHiddenDates->products_id = $Product->products_id;
+					$PayPerRentalHiddenDates->save();
 				}
 			}else{
-				$PayPerRental->overbooking = '0';
+				break;
 			}
+			$j++;
+		}
+		/*end import hidden dates*/
+	    $i = 0;
+		while (true) {
 
-			$Product->products_auth_method = (
-				isset($items['v_pay_per_rental_auth_method'])
-				 ? $items['v_pay_per_rental_auth_method']
-				 : 'auth'
-			);
-		
-			$Product->products_auth_charge = (
-				isset($items['v_pay_per_rental_auth_charge'])
-				 ? $items['v_pay_per_rental_auth_charge']
-				 : '0.0000'
-			);
-		
-			//$PayPerRental->price_daily = (float)($priceDaily !== false ? $priceDaily : '0');
-			//$PayPerRental->price_weekly = (float)($priceWeekly !== false ? $priceWeekly : '0');
-			//$PayPerRental->price_monthly = (float)($priceMonthly !== false ? $priceMonthly : '0');
-			//$PayPerRental->price_six_month = (float)($priceSixMonth !== false ? $priceSixMonth : '0');
-			//$PayPerRental->price_year = (float)($priceYear !== false ? $priceYear : '0');
-			//$PayPerRental->price_three_year = (float)($priceThreeYear !== false ? $priceThreeYear : '0');
-			$PayPerRental->deposit_amount = (float)($depositAmount !== false ? $depositAmount : '0');
-			$PayPerRental->insurance = (float)($insurance !== false ? $insurance : '0');
-			$PayPerRental->shipping = $shippingMethods !== false ? $shippingMethods : '';
+			if (isset($items['v_pay_per_rental_period_' . $i])) {
+				if (!empty($items['v_pay_per_rental_period_' . $i])) {
+					$Periods = Doctrine_Core::getTable('PayPerRentalPeriods');
+					$PeriodPrices = Doctrine_Core::getTable('ProductsPayPerPeriods');
+					$Period = $Periods->findOneByPeriodName($items['v_pay_per_rental_period_' . $i]);
+					if (!$Period) {
+						$Period = $Periods->getRecord();
+						$Period->period_name = $items['v_pay_per_rental_period_' . $i];
+						$Period->save();
+						$PeriodPrice = $PeriodPrices->getRecord();
+					} else {
+						$PeriodPrice = $PeriodPrices->findOneByPeriodIdAndProductsId($Period->period_id, $Product->products_id);
+						if (!$PeriodPrice) {
+							$PeriodPrice = $PeriodPrices->getRecord();
+						}
+					}
+					$PeriodPrice->products_id = $Product->products_id;
+					$PeriodPrice->period_id = $Period->period_id;
+					$PeriodPrice->price = $items['v_pay_per_rental_period_price_' . $i];
+					$PeriodPrice->save();
+				}
+			} else {
+				break;
+			}
+			$i++;
+		}
 
+
+	}
+	public function DataImportAfterSave(&$items, &$PayPerRental){
 		$j=0;
 		$PricePerRentalPerProducts = Doctrine_Core::getTable('PricePerRentalPerProducts');
-
 		Doctrine_Query::create()
 		->delete('PricePerRentalPerProducts')
-		//->whereNotIn('price_per_rental_per_products_id', $saveArray)
-		->andWhere('pay_per_rental_id =?',$PayPerRental->pay_per_rental_id)
+		->andWhere('pay_per_rental_id =?', $PayPerRental->pay_per_rental_id)
 		->execute();
 		$QPayPerRentalTypes = Doctrine_Query::create()
 		->from('PayPerRentalTypes')
 		->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 		$htypes = array();
-		foreach($QPayPerRentalTypes as $iType){
+		foreach ($QPayPerRentalTypes as $iType) {
 			$htypes[$iType['pay_per_rental_types_id']] = $iType['pay_per_rental_types_name'];
 		}
 
-		while(true){
-			if(isset($items['v_pay_per_rental_time_period_number_of_'.$j])){
-				if(!empty($items['v_pay_per_rental_time_period_number_of_'.$j])){
+		while (true) {
+			if (isset($items['v_pay_per_rental_time_period_number_of_' . $j])) {
+				if (!empty($items['v_pay_per_rental_time_period_number_of_' . $j])) {
 
 					$PricePerProduct = $PricePerRentalPerProducts->create();
 					$Description = $PricePerProduct->PricePayPerRentalPerProductsDescription;
@@ -270,9 +350,9 @@ class payPerRentals_admin_data_manager_default extends Extension_payPerRentals {
 						}
 					}
 
-					$type ='';
-					foreach($htypes as $itypeID => $itypeName){
-						if($itypeName == $items['v_pay_per_rental_time_period_type_name_' . $j]){
+					$type = '';
+					foreach ($htypes as $itypeID => $itypeName) {
+						if ($itypeName == $items['v_pay_per_rental_time_period_type_name_' . $j]) {
 							$type = $itypeID;
 							break;
 						}
@@ -284,40 +364,10 @@ class payPerRentals_admin_data_manager_default extends Extension_payPerRentals {
 					$PricePerProduct->pay_per_rental_id = $PayPerRental->pay_per_rental_id;
 					$PricePerProduct->save();
 				}
-			}else{
+			} else {
 				break;
 			}
 			$j++;
-		}
-
-		$i = 0;
-		while(true){
-
-			if(isset($items['v_pay_per_rental_period_'.$i])){
-				if(!empty($items['v_pay_per_rental_period_'.$i])){
-					$Periods = Doctrine_Core::getTable('PayPerRentalPeriods');
-					$PeriodPrices = Doctrine_Core::getTable('ProductsPayPerPeriods');
-					$Period = $Periods->findOneByPeriodName($items['v_pay_per_rental_period_'.$i]);
-					if(!$Period){
-						$Period = $Periods->getRecord();
-						$Period->period_name = $items['v_pay_per_rental_period_'.$i];
-						$Period->save();
-						$PeriodPrice = $PeriodPrices->getRecord();
-					}else{
-						$PeriodPrice = $PeriodPrices->findOneByPeriodIdAndProductsId($Period->period_id, $Product->products_id);
-						if(!$PeriodPrice){
-							$PeriodPrice = $PeriodPrices->getRecord();
-						}
-					}
-					$PeriodPrice->products_id = $Product->products_id;
-					$PeriodPrice->period_id = $Period->period_id;
-					$PeriodPrice->price = $items['v_pay_per_rental_period_price_'.$i];
-					$PeriodPrice->save();
-				}
-			}else{
-				break;
-			}
-			$i++;
 		}
 
 	}

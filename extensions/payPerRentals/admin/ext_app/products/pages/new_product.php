@@ -71,14 +71,14 @@ class payPerRentals_admin_products_new_product extends Extension_payPerRentals {
 		->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 
 		$Table = htmlBase::newElement('table')
-			->setCellPadding(3)
-			->setCellSpacing(0)
-			->addClass('ui-widget ui-widget-content pprPriceTable')
-			->css(array(
-				'width' => '100%'
-			))
-			->attr('data-next_id', $Qcheck[0]['nextId'] + 1)
-			->attr('language_id', Session::get('languages_id'));
+		->setCellPadding(3)
+		->setCellSpacing(0)
+		->addClass('ui-widget ui-widget-content pprPriceTable')
+		->css(array(
+			'width' => '100%'
+		))
+		->attr('data-next_id', $Qcheck[0]['nextId'] + 1)
+		->attr('language_id', Session::get('languages_id'));
 
 		$Table->addHeaderRow(array(
 				'addCls' => 'ui-state-hover pprPriceTableHeader',
@@ -87,100 +87,96 @@ class payPerRentals_admin_products_new_product extends Extension_payPerRentals {
 				)
 		));
 
-			$deleteIcon = htmlBase::newElement('icon')->setType('delete')->addClass('deleteIcon')->draw();
-			$QPricePerRentalProducts = Doctrine_Query::create()
-			->from('PricePerRentalPerProducts pprp')
-			->leftJoin('pprp.PricePayPerRentalPerProductsDescription pprpd')
-			->where('pay_per_rental_id =?',$Product['ProductsPayPerRental']['pay_per_rental_id'])
-			->orderBy('price_per_rental_per_products_id')
-			->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+		$deleteIcon = htmlBase::newElement('icon')->setType('delete')->addClass('deleteIcon')->draw();
 
-			$htype = htmlBase::newElement('selectbox')
-			->attr('id','types_select');
-		    foreach($QPayPerRentalTypes as $iType){
-					$htype->addOption($iType['pay_per_rental_types_id'], $iType['pay_per_rental_types_name']);
-			}
-			$sortableList = htmlBase::newElement('sortable_list');
-			foreach($QPricePerRentalProducts as $iPrice){
-				$pprid = $iPrice['price_per_rental_per_products_id'];
-				$Text = htmlBase::newElement('div');
-				$br = htmlBase::newElement('br');
-				foreach(sysLanguage::getLanguages() as $lInfo){
-					$Textl = htmlBase::newElement('input')
-					->addClass('ui-widget-content')
-					->setLabel($lInfo['showName']())
-					->setLabelPosition('before')
-					->setName('pprp[' . $pprid . '][details]['.$lInfo['id'].']')
-					->css(array(
-						'width' => '100%'
-					));
-					foreach($iPrice['PricePayPerRentalPerProductsDescription'] as $desc){
-						if($lInfo['id'] == $desc['language_id']){
-							$Textl->val($desc['price_per_rental_per_products_name']);
-							break;
-						}
+		$QPricePerRentalProducts = Doctrine_Query::create()
+		->from('PricePerRentalPerProducts pprp')
+		->leftJoin('pprp.PricePayPerRentalPerProductsDescription pprpd')
+		->where('pay_per_rental_id =?',$Product['ProductsPayPerRental']['pay_per_rental_id'])
+		->orderBy('price_per_rental_per_products_id')
+		->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+
+		$htype = htmlBase::newElement('selectbox')
+		->attr('id','types_select');
+		foreach($QPayPerRentalTypes as $iType){
+			$htype->addOption($iType['pay_per_rental_types_id'], $iType['pay_per_rental_types_name']);
+		}
+		$sortableList = htmlBase::newElement('sortable_list');
+		foreach($QPricePerRentalProducts as $iPrice){
+			$pprid = $iPrice['price_per_rental_per_products_id'];
+			$Text = htmlBase::newElement('div');
+			$br = htmlBase::newElement('br');
+			foreach(sysLanguage::getLanguages() as $lInfo){
+				$Textl = htmlBase::newElement('input')
+				->addClass('ui-widget-content')
+				->setLabel($lInfo['showName']())
+				->setLabelPosition('before')
+				->setName('pprp[' . $pprid . '][details]['.$lInfo['id'].']')
+				->css(array(
+					'width' => '100%'
+				));
+				foreach($iPrice['PricePayPerRentalPerProductsDescription'] as $desc){
+					if($lInfo['id'] == $desc['language_id']){
+						$Textl->val($desc['price_per_rental_per_products_name']);
+						break;
 					}
-
-					$Text->append($Textl)->append($br);
 				}
 
-				$numberOf = htmlBase::newElement('input')
-				->addClass('ui-widget-content')
-				->setName('pprp[' . $pprid . '][number_of]')
-				->attr('size', '8')
-				->val($iPrice['number_of']);
+				$Text->append($Textl)->append($br);
+			}
 
+			$numberOf = htmlBase::newElement('input')
+			->addClass('ui-widget-content')
+			->setName('pprp[' . $pprid . '][number_of]')
+			->attr('size', '8')
+			->val($iPrice['number_of']);
 
-				$price = htmlBase::newElement('input')
-				->addClass('ui-widget-content')
-				->setName('pprp[' . $pprid . '][price]')
-				->attr('size', '6')
-				->val($iPrice['price']);
+			$price = htmlBase::newElement('input')
+			->addClass('ui-widget-content')
+			->setName('pprp[' . $pprid . '][price]')
+			->attr('size', '6')
+			->val($iPrice['price']);
 
-				$type = htmlBase::newElement('selectbox')
-				->addClass('ui-widget-content')
-				->setName('pprp[' . $pprid . '][type]')
-				->selectOptionByValue($iPrice['pay_per_rental_types_id']);
+			$type = htmlBase::newElement('selectbox')
+			->addClass('ui-widget-content')
+			->setName('pprp[' . $pprid . '][type]')
+			->selectOptionByValue($iPrice['pay_per_rental_types_id']);
 
-				foreach($QPayPerRentalTypes as $iType){
-					$type->addOption($iType['pay_per_rental_types_id'], $iType['pay_per_rental_types_name']);
-				}
+			foreach($QPayPerRentalTypes as $iType){
+				$type->addOption($iType['pay_per_rental_types_id'], $iType['pay_per_rental_types_name']);
+			}
 
-				$divLi1 = '<div style="float:left;width:80px;">'.$numberOf->draw().'</div>';
-				$divLi2 = '<div style="float:left;width:100px;">'.$type->draw().'</div>';
-				$divLi3 = '<div style="float:left;width:80px;">'.$price->draw().'</div>';
-				$divLi4 = '<div style="float:left;width:150px;">'.$Text->draw().'</div>';
-				$divLi5 = '<div style="float:left;width:40px;">'.$deleteIcon.'</div>';
+			$divLi1 = '<div style="float:left;width:80px;">'.$numberOf->draw().'</div>';
+			$divLi2 = '<div style="float:left;width:100px;">'.$type->draw().'</div>';
+			$divLi3 = '<div style="float:left;width:80px;">'.$price->draw().'</div>';
+			$divLi4 = '<div style="float:left;width:150px;">'.$Text->draw().'</div>';
+			$divLi5 = '<div style="float:left;width:40px;">'.$deleteIcon.'</div>';
 
-				$liObj = new htmlElement('li');
-					$liObj->css(array(
-						'font-size' => '.8em',
-						'line-height' => '1.1em',
-						'border-bottom' => '1px solid #cccccc',
-						'cursor' => 'crosshair'
-					))
-
-				->html($divLi1.$divLi2.$divLi3.$divLi4.$divLi5.'<br style="clear:both;"/>');//<input name="sortvprice[]" type="hidden">
-				$sortableList->addItemObj($liObj);
-
+			$liObj = new htmlElement('li');
+			$liObj->css(array(
+				'font-size' => '.8em',
+				'line-height' => '1.1em',
+				'border-bottom' => '1px solid #cccccc',
+				'cursor' => 'crosshair'
+			))
+			->html($divLi1.$divLi2.$divLi3.$divLi4.$divLi5.'<br style="clear:both;"/>');//<input name="sortvprice[]" type="hidden">
+			$sortableList->addItemObj($liObj);
 
 				/*array('align' => 'center', 'text' => $numberOf->draw(),'addCls' => 'pricePPR'),
 						array('align' => 'center', 'text' => $type->draw(),'addCls' => 'pricePPR'),
 						array('align' => 'center', 'text' => $price->draw(),'addCls' => 'pricePPR'),
 						array('align' => 'center', 'text' => $Text->draw(),'addCls' => 'pricePPR'),
 						array('align' => 'center', 'text' => $deleteIcon)*/
-
-			}
+		}
 
 		$Table->addBodyRow(array(
-					'columns' => array(
-						array('align' => 'center', 'text' => $sortableList->draw(),'addCls' => 'pricePPR')
-					)
-				));
+				'columns' => array(
+					array('align' => 'center', 'text' => $sortableList->draw(),'addCls' => 'pricePPR')
+				)
+		));
 
 
 		/*End Metrics*/
-
 
 		/*time periods*/
 		$Qperiods = Doctrine_Query::create()
@@ -226,6 +222,80 @@ class payPerRentals_admin_products_new_product extends Extension_payPerRentals {
 			}
 		}
 		/*end time periods*/
+
+		/*Start Hidden Dates*/
+
+		$Qcheck = Doctrine_Query::create()
+		->select('MAX(hidden_dates_id) as nextId')
+		->from('PayPerRentalHiddenDates')
+		->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+
+		$TableHidden = htmlBase::newElement('table')
+		->setCellPadding(3)
+		->setCellSpacing(0)
+		->addClass('ui-widget ui-widget-content pprHiddenTable')
+		->css(array(
+			'width' => '100%'
+		))
+		->attr('data-next_id', $Qcheck[0]['nextId'] + 1)
+		->attr('language_id', Session::get('languages_id'));
+
+		$TableHidden->addHeaderRow(array(
+				'addCls' => 'ui-state-hover pprHiddenTableHeader',
+				'columns' => array(
+					array('text' => '<div style="float:left;width:80px;">' .sysLanguage::get('TABLE_HEADING_HIDDEN_START_DATE').'</div>'.
+						  '<div style="float:left;width:150px;">'.sysLanguage::get('TABLE_HEADING_HIDDEN_END_DATE').'</div>'.
+						  '<div style="float:left;width:40px;">'.htmlBase::newElement('icon')->setType('insert')->addClass('insertIconHidden')->draw().
+						  '</div><br style="clear:both"/>'
+					)
+				)
+		));
+
+		$deleteIcon = htmlBase::newElement('icon')->setType('delete')->addClass('deleteIconHidden')->draw();
+		$QhiddenDates = Doctrine_Query::create()
+		->from('PayPerRentalHiddenDates')
+		->where('products_id=?', $Product['products_id'])
+		->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+
+		$hiddenList = htmlBase::newElement('list')
+		->addClass('hiddenList');
+
+		foreach($QhiddenDates as $iHidden){
+			$hiddenid = $iHidden['hidden_dates_id'];
+			$hiddenStartDate = htmlBase::newElement('input')
+			->addClass('ui-widget-content date_hidden')
+			->setName('pprhidden[' . $hiddenid . '][start_date]')
+			->attr('size', '15')
+			->val(strftime('%Y-%m-%d', strtotime($iHidden['hidden_start_date'])));
+
+			$hiddenEndDate = htmlBase::newElement('input')
+			->addClass('ui-widget-content date_hidden')
+			->setName('pprhidden[' . $hiddenid . '][end_date]')
+			->attr('size', '15')
+			->val(strftime('%Y-%m-%d', strtotime($iHidden['hidden_end_date'])));
+
+			$divLi1 = '<div style="float:left;width:80px;">'.$hiddenStartDate->draw().'</div>';
+			$divLi2 = '<div style="float:left;width:80px;">'.$hiddenEndDate->draw().'</div>';
+			$divLi5 = '<div style="float:left;width:40px;">'.$deleteIcon.'</div>';
+
+			$liObj = new htmlElement('li');
+			$liObj->css(array(
+				'font-size' => '.8em',
+				'list-style' => 'none',
+				'line-height' => '1.1em',
+				'border-bottom' => '1px solid #cccccc',
+				'cursor' => 'crosshair'
+			))
+			->html($divLi1.$divLi2.$divLi5.'<br style="clear:both;"/>');
+			$hiddenList->addItemObj($liObj);
+		}
+		$TableHidden->addBodyRow(array(
+				'columns' => array(
+					array('align' => 'center', 'text' => $hiddenList->draw(),'addCls' => 'hiddenDatesPPR')
+				)
+		));
+
+		/*End Hidden Dates*/
 
 		if (isset($payPerRental)){
 			$overbookingInput->setChecked(($payPerRental['overbooking'] == 1));
@@ -335,12 +405,12 @@ class payPerRentals_admin_products_new_product extends Extension_payPerRentals {
 			)
 		));
 		
-		/*$mainTable->addBodyRow(array(
+		$mainTable->addBodyRow(array(
 			'columns' => array(
-				array('addCls' => 'main', 'text' => sysLanguage::get('TEXT_PAY_PER_RENTAL_MAX_MONTHS')),
-				array('addCls' => 'main', 'text' => $monthsInput)
+				array('addCls' => 'main', 'text' => sysLanguage::get('TEXT_PAY_PER_RENTAL_HIDDEN_DATES')),
+				array('addCls' => 'main', 'text' => $TableHidden)
 			)
-		));*/
+		));
 		
 		$mainTable->addBodyRow(array(
 			'columns' => array(

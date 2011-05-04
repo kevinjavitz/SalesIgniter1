@@ -44,7 +44,7 @@
 				$invExt = $appExtension->getExtension('inventoryCenters');
 			}
 			$inventoryPickupMinDays = 0;
-			if (isset($_POST['pickup']) && ($_POST['pickup'] != 'undefined') && $invExt){
+			if (isset($_POST['pickup']) && ($_POST['pickup'] != 'select') && $invExt){
 				$invCenter = $invExt->getInventoryCenters($_POST['pickup']);
 				$inventoryPickupMinDays = (int)$invCenter[0]['inventory_center_min_rental_days'];
 			}
@@ -64,17 +64,17 @@
 			if (isset($_POST['hend'])){
 				Session::set('isppr_hour_ends', $_POST['hend']);
 			}
-			if (isset($_POST['pickup']) &&($_POST['pickup'] != 'undefined')){
+			if (isset($_POST['pickup']) &&($_POST['pickup'] != 'select')){
 				Session::set('isppr_inventory_pickup', $_POST['pickup']);
 			}else{
 				Session::remove('isppr_inventory_pickup');
 			}
 
 			Session::set('isppr_selected', true);
-			if (isset($_POST['dropoff']) && $_POST['dropoff'] != 0 && $_POST['dropoff'] != 'undefined'){
+			if (isset($_POST['dropoff']) && $_POST['dropoff'] != 0 && $_POST['dropoff'] != 'select'){
 				Session::set('isppr_inventory_dropoff', $_POST['dropoff']);
 			}else{
-				if (isset($_POST['pickup']) &&($_POST['pickup'] != 'undefined')){
+				if (isset($_POST['pickup']) &&($_POST['pickup'] != 'select')){
 					Session::set('isppr_inventory_dropoff', $_POST['pickup']);
 				}else{
 					Session::remove('isppr_inventory_pickup');
@@ -186,6 +186,84 @@
 			EventManager::attachActionResponse(array(
 				'success' => true,
 				'nr'	=> $nr,
+				'data'     => $html
+			), 'json');
+		}else{
+			//echo 'kk';
+			if (isset($_POST['pickup']) &&($_POST['pickup'] != 'select')){
+				//echo 'll';
+				    Session::set('isppr_continent', '');
+					Session::set('isppr_country', '');
+					Session::set('isppr_state', '');
+					Session::set('isppr_city', '');
+					Session::remove('isppr_inventory_pickup');
+
+					$inventory_centers = $appExtension->getExtension('inventoryCenters');
+					$invInfo = $inventory_centers->getInventoryCenters((int)$_POST['pickup']);
+					$invInfo = $invInfo[0];
+					//print_r($invInfo);
+				   // echo $invInfo['inventory_center_state'].'---'.$invInfo['inventory_center_country'];
+					/*Select in PPRBox*/
+					Session::set('isppr_city', $invInfo['inventory_center_city']);
+					Session::set('isppr_state', $invInfo['inventory_center_state']);
+					Session::set('isppr_country', $invInfo['inventory_center_country']);
+					Session::set('isppr_continent', $invInfo['inventory_center_continent']);
+
+					$_POST['isInv'] = 1;
+			}
+			//here I return the filtered contry-state-etc..the same has to be done in infoboxutil
+			if(!isset($_POST['isInv'])){
+				//echo 'uu';
+				if(isset($_POST['continent']) && $_POST['continent'] != 'select'){
+					Session::set('isppr_continent', $_POST['continent']);
+
+					if(isset($_POST['country']) && $_POST['country'] != 'select'){
+						Session::set('isppr_country', $_POST['country']);
+						if(isset($_POST['state']) && $_POST['state'] != 'select'){
+							Session::set('isppr_state', $_POST['state']);
+							if(isset($_POST['city']) && $_POST['city'] != 'select'){
+								Session::set('isppr_city', $_POST['city']);
+								Session::set('isppr_selected', true);
+							}else{
+								Session::set('isppr_city', '');
+								Session::remove('isppr_selected');
+								Session::remove('isppr_inventory_pickup');
+							}
+						}else{
+							Session::set('isppr_state', '');
+							Session::set('isppr_city', '');
+							Session::remove('isppr_inventory_pickup');
+						}
+					}else{
+						Session::set('isppr_country', '');
+						Session::set('isppr_state', '');
+						Session::set('isppr_city', '');
+						Session::remove('isppr_inventory_pickup');
+					}
+				}else{
+					Session::set('isppr_continent', '');
+					Session::set('isppr_country', '');
+					Session::set('isppr_state', '');
+					Session::set('isppr_city', '');
+					Session::remove('isppr_inventory_pickup');
+				}
+
+				/*if(isset($_POST['pickup']) && $_POST['pickup'] != 'select' && isset($_POST['pick']) && ($_POST['pick'] == 'true')){
+					Session::set('isppr_selected_pickup', $_POST['pickup']);
+					Session::set('isppr_selected', true);
+				}else{
+					Session::set('isppr_selected_pickup', '');
+				}*/
+			}
+
+			if (isset($_POST['hasHeaders']) && $_POST['hasHeaders'] == false){
+				$isHome = false;
+			}else{
+				$isHome = true;
+			}
+			$html = ReservationInfoBoxUtil::inventoryCenterAddon($isHome)->draw();
+			EventManager::attachActionResponse(array(
+				'success' => true,
 				'data'     => $html
 			), 'json');
 		}

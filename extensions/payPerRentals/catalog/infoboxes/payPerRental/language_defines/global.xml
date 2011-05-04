@@ -1,14 +1,28 @@
 <definitions>
 	<define key="INFOBOX_HEADING_PAYPERRENTAL"><![CDATA[Start Here]]></define>
-    <define key="INFOBOX_CATEGORIES_ALL_PRODUCTS"><![CDATA[All Products]]></define>
-    <define key="TEXT_ENTRY_PICKUP_DATE"><![CDATA[Pickup Date: ]]></define>
-	<define key="TEXT_ENTRY_RETURN_DATE"><![CDATA[Return Date: ]]></define>
-	<define key="TEXT_BUTTON_UPDATE"><![CDATA[Update]]></define>
+    <define key="INFOBOX_CATEGORIES_ALL_PRODUCTS"><![CDATA[View All]]></define>
+    <define key="TEXT_ENTRY_PICKUP_DATE"><![CDATA[Start: ]]></define>
+	<define key="TEXT_ENTRY_RETURN_DATE"><![CDATA[End: ]]></define>
+	<define key="TEXT_INFOBOX_PAY_PER_RENTAL_BUTTON_UPDATE"><![CDATA[Update]]></define>
 	<define key="TEXT_BUTTON_SUBMIT"><![CDATA[Submit]]></define>
     <define key="EXTENSION_PAY_PER_RENTALS_ERROR_RESERVE"><![CDATA[Please select a pickup date and return date using the schedule your adventure box on the top right and click submit, then click reserve again]]></define>
+
+	<define key="EXTENSION_PAY_PER_RENTALS_ERROR_NO_INVENTORY_FOR_SELECTED_DATES"><![CDATA[There is no inventory for the selected dates.]]></define>
     <define key="EXTENSION_PAY_PER_RENTALS_ERROR_MIN_DAYS"><![CDATA[You must have a minimum of %s days for reservation.]]></define>
 
     <define key="EXTENSION_PAY_PER_RENTALS_NOW_PLEASE_CLICK"><![CDATA[Now please click %s button]]></define>
     <define key="EXTENSION_PAY_PER_RENTALS_DELIVERY_PASSED"><![CDATA[The delivery deadline for this event has passed; please call us for options]]></define>
 	<define key="TEXT_QTY"><![CDATA[Quantity: ]]></define>
+	<define key="INFOBOX_CATEGORIES_VIEW_PRODUCTS"><![CDATA[View All Surfboards]]></define>
+
+	<define key="TEXT_PICKUP_ZONE"><![CDATA[Pickup Zone: ]]></define>
+	<define key="TEXT_DROPOFF_ZONE"><![CDATA[Drop off Zone: ]]></define>
+	<define key="TEXT_SAME_AS_ABOVE"><![CDATA[Same as above]]></define>
+	<define key="TEXT_CONTINENT"><![CDATA[Continent: ]]></define>
+	<define key="TEXT_STATE"><![CDATA[State: ]]></define>
+	<define key="TEXT_COUNTRY"><![CDATA[Country: ]]></define>
+	<define key="TEXT_CITY"><![CDATA[City: ]]></define>
+	<define key="TEXT_SELECT_DESTINATION"><![CDATA[1. Select Destinations ]]></define>
+
+
 </definitions>

@@ -46,37 +46,53 @@
 
 	/*Period Metrics*/
 	    $PricePerRentalPerProducts = Doctrine_Core::getTable('PricePerRentalPerProducts');
+		$saveArray = array();
+		if (isset($_POST['pprp'])){
 
-	$saveArray = array();
-	if (isset($_POST['pprp'])){
+			Doctrine_Query::create()
+			->delete('PricePerRentalPerProducts')
+			//->whereNotIn('price_per_rental_per_products_id', $saveArray)
+			->andWhere('pay_per_rental_id =?',$Product->ProductsPayPerRental->pay_per_rental_id)
+			->execute();
+			foreach($_POST['pprp'] as $pprid => $iPrice){
 
-		Doctrine_Query::create()
-		->delete('PricePerRentalPerProducts')
-		//->whereNotIn('price_per_rental_per_products_id', $saveArray)
-		->andWhere('pay_per_rental_id =?',$Product->ProductsPayPerRental->pay_per_rental_id)
-		->execute();
-		foreach($_POST['pprp'] as $pprid => $iPrice){
-
-			$PricePerProduct = $PricePerRentalPerProducts->create();
-			$Description = $PricePerProduct->PricePayPerRentalPerProductsDescription;
-			if(isset($iPrice['details'])){
-				foreach($iPrice['details'] as $langId => $Name){
-					if (isset($Name) && !empty($Name)){
-						$Description[$langId]->language_id = $langId;
-						$Description[$langId]->price_per_rental_per_products_name = $Name;
+				$PricePerProduct = $PricePerRentalPerProducts->create();
+				$Description = $PricePerProduct->PricePayPerRentalPerProductsDescription;
+				if(isset($iPrice['details'])){
+					foreach($iPrice['details'] as $langId => $Name){
+						if (isset($Name) && !empty($Name)){
+							$Description[$langId]->language_id = $langId;
+							$Description[$langId]->price_per_rental_per_products_name = $Name;
+						}
 					}
 				}
+
+				$PricePerProduct->price = $iPrice['price'];
+				$PricePerProduct->number_of = $iPrice['number_of'];
+				$PricePerProduct->pay_per_rental_types_id = $iPrice['type'];
+				$PricePerProduct->pay_per_rental_id = $Product->ProductsPayPerRental->pay_per_rental_id;
+				$PricePerProduct->save();
 			}
-
-			$PricePerProduct->price = $iPrice['price'];
-			$PricePerProduct->number_of = $iPrice['number_of'];
-			$PricePerProduct->pay_per_rental_types_id = $iPrice['type'];
-			$PricePerProduct->pay_per_rental_id = $Product->ProductsPayPerRental->pay_per_rental_id;
-			$PricePerProduct->save();
 		}
-	}
+		/*End Period Metrics*/
 
+	    /*Hidden dates*/
+		$PayPerRentalHiddenDatesTable = Doctrine_Core::getTable('PayPerRentalHiddenDates');
+	    Doctrine_Query::create()
+		->delete('PayPerRentalHiddenDates')
+			//->whereNotIn('price_per_rental_per_products_id', $saveArray)
+		->andWhere('products_id =?', $Product->products_id)
+		->execute();
 
-	    /*End Period Metrics*/
+		if(isset($_POST['pprhidden'])){
+			foreach($_POST['pprhidden'] as $hiddenid => $iHidden){
+				$PayPerRentalHiddenDates = $PayPerRentalHiddenDatesTable->create();
+				$PayPerRentalHiddenDates->hidden_start_date = $iHidden['start_date'];
+				$PayPerRentalHiddenDates->hidden_end_date = $iHidden['end_date'];
+				$PayPerRentalHiddenDates->products_id = $Product->products_id;
+				$PayPerRentalHiddenDates->save();
+			}
+		}
+		/*End Hidden Dates*/
 	}
 ?>

@@ -290,6 +290,19 @@
                     <description>This is the maximum amount of money to be discounted</description>
                     <sort_order>32</sort_order>
         </EXTENSION_PAY_PER_RENTALS_DISCOUNT_MAX_AMOUNT>
+		<EXTENSION_PAY_PER_RENTALS_FILTER_TIME_INFOBOX>
+			<value>False</value>
+			<title>Filter Infobox times to show only the current times</title>
+			<description>Filter Infobox times to show only the current times</description>
+			<sort_order>31</sort_order>
+			<set_function>tep_cfg_select_option(array('True','False'),</set_function>
+		</EXTENSION_PAY_PER_RENTALS_FILTER_TIME_INFOBOX>
+		<EXTENSION_PAY_PER_RENTALS_GOOGLE_MAPS_API_KEY>
+			<value>ABQIAAAAJfeNSDfdlXtgf6gjHMTzDBT0_i__oM-cAYP-svDeQzBBv_RytBShCDbtJySULQi-i9FDwsHX8pK4aQ</value>
+			<title>Google Maps API Key</title>
+			<description>This is the key that google maps gives you for your domain.</description>
+			<sort_order>7</sort_order>
+		</EXTENSION_PAY_PER_RENTALS_GOOGLE_MAPS_API_KEY>
 		<EXTENSION_PAY_PER_RENTALS_GMT>
 			<value>GMT +0</value>
 			<title>Store Timezone</title>
