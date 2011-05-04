@@ -8,5 +8,5 @@ foreach($_POST['option'] as $type => $oInfo){
 		$SearchOption[$type][$oID]['search_title'][Session::get('languages_id')] = $_POST['option_heading'][$type][$oID];;
 	}
 }
-$WidgetProperties['searchOptions'] = serialize($SearchOption);
+$WidgetProperties['searchOptions'] = $SearchOption;
 ?>

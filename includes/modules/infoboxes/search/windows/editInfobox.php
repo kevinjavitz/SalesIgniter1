@@ -181,11 +181,14 @@
 	
 	$liItems = '';
 
-	$Qitems = unserialize($WidgetSettings->searchOptions);
+	$Qitems = (array)$WidgetSettings->searchOptions;
 
 	if (isset($Qitems)){
 		foreach($Qitems as $type){
+			$type = (array)$type;
 			foreach($type as $iInfo){
+				$iInfo = (array)$iInfo;
+				$iInfo['search_title'] = (array)$iInfo['search_title'];
 				$optionId = $iInfo['option_id'];
 				$optionType = $iInfo['option_type'];
 				$optionSort = $iInfo['option_sort'];
