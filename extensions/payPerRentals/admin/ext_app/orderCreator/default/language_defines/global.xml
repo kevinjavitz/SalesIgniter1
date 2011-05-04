@@ -1,3 +1,69 @@
 <definitions>
 	<define key="TEXT_INFO_DEPOSIT_AMOUNT"><![CDATA[Deposit Amount:]]></define>
+	<define key="TEXT_ONETIME_INTRO"><![CDATA[Please select your shipping speed, then your rental start date. You must first select shipping speed because it affects when your rental can begin (to allow for shipping time)]]></define>
+		<define key="TEXT_RESET_SELECTION"><![CDATA[Reset Selections: ]]></define>
+		<define key="TEXT_BUTTON_RESET_SELECTIONS"><![CDATA[Reset Selections]]></define>
+		<define key="TEXT_MAX"><![CDATA[Max ]]></define>
+		<define key="TEXT_DAYS"><![CDATA[Days]]></define>
+		<define key="TEXT_MONTHS"><![CDATA[Months]]></define>
+		<define key="ENTRY_QUANTITY"><![CDATA[Quantity: ]]></define>
+		<define key="ENTRY_RENTAL_START_DATE"><![CDATA[Select Rental Start Date:]]></define>
+		<define key="ENTRY_RENTAL_END_DATE"><![CDATA[Select Rental End Date:]]></define>
+		<define key="ERROR_SELECT_START_DATE"><![CDATA[Please Select A Start Date First]]></define>
+		<define key="ENTRY_RENTAL_DATES_SELECTED"><![CDATA[Dates Selected: ]]></define>
+		<define key="ENTRY_RENTAL_INSURANCE"><![CDATA[Add Optional Insurance:]]></define>
+		<define key="TEXT_ESTIMATED_PRICING"><![CDATA[Estimated Pricing: ]]></define>
+		<define key="TEXT_BUTTON_CHECK_AVAIL"><![CDATA[Check Availability]]></define>
+		<define key="TEXT_CHANGE_ADDRESS"><![CDATA[Change Address]]></define>
+		<define key="TEXT_MIN"><![CDATA[Min rental ]]></define>
+
+		<define key="TEXT_BUTTON_GET_QUOTES"><![CDATA[Get Quotes]]></define>
+
+	    <define key="TEXT_MORE_INFO_SEM"><![CDATA[More Info]]></define>
+	    <define key="TEXT_USE_DAILY"><![CDATA[Show Daily]]></define>
+	    <define key="TEXT_USE_HOURLY"><![CDATA[Show Hourly]]></define>
+	    <define key="TEXT_USE_CALENDAR"><![CDATA[Show Calendar]]></define>
+	    <define key="TEXT_USE_SEMESTER"><![CDATA[Show Semester]]></define>
+	    <define key="TEXT_SELECT_PERIOD"><![CDATA[Select A Period]]></define>
+	    <define key="TEXT_SELECT_SEMESTER"><![CDATA[Select Semester]]></define>
+
+		<define key="PPR_DEPOSIT_AMOUNT"><![CDATA[Deposit Amount]]></define>
+		<define key="PPR_PREV_MONTH"><![CDATA[Go To Previous Month]]></define>
+		<define key="PPR_NEXT_MONTH"><![CDATA[Go To Next Month]]></define>
+		<define key="PPR_RESET"><![CDATA[Reset]]></define>
+		<define key="PPR_RESET_SELECTED"><![CDATA[Reset selected dates]]></define>
+		<define key="PPR_DISABLED_BY_ADMIN"><![CDATA[Disabled By Admin]]></define>
+		<define key="PPR_AVAILABLE"><![CDATA[Available]]></define>
+
+		<define key="PPR_SELECT_END_DATE"><![CDATA[Please select an end date]]></define>
+		<define key="PPR_SELECT_START_DATE"><![CDATA[Please select a start date]]></define>
+
+		<define key="PPR_SHIPPING_METHOD"><![CDATA[A Shipping Method]]></define>
+		<define key="PPR_START_METHOD"><![CDATA[A Start Date]]></define>
+		<define key="PPR_END_METHOD"><![CDATA[An End Date]]></define>
+		<define key="PPR_ERR_CHOOSE"><![CDATA[Error: Please Choose]]></define>
+
+		<define key="PPR_DATES_SELECTED"><![CDATA[Both dates have been selected]]></define>
+		<define key="PPR_CLICK_RESTART_PROCESS"><![CDATA[Clicking again will restart the selection process]]></define>
+
+		<define key="PPR_ERR_DAYS_RESERVED"><![CDATA[days reserved]]></define>
+		<define key="PPR_ERR_AT_LEAST"><![CDATA[Error: the date you selected is not available because you must have at least]]></define>
+		<define key="PPR_ERR_MAXIMUM"><![CDATA[Error: the date you selected is not available because you must have maximum]]></define>
+		<define key="PPR_ERR_RESERVATION_BETWEEN"><![CDATA[Error: the date you selected is not available because there are reservation in between your selected dates]]></define>
+		<define key="PPR_ERR_SHIP_METHOD"><![CDATA[Error: the date you selected is not available because with the selected ship method of]]></define>
+		<define key="PPR_ERR_NEED_TO_ALLOW"><![CDATA[you need to allow]]></define>
+		<define key="PPR_ERR_SHIP_DAYS_BEFORE_RESERVATION"><![CDATA[ship day(s) before your reservation]]></define>
+		<define key="PPR_ERR_SHIP_DAYS_AFTER_RESERVATION"><![CDATA[ship day(s) after your reservation]]></define>
+
+		<define key="PPR_NOTICE_RESERVATION_NOT_AVAILABLE"><![CDATA[Reservation Not Available, Please Select Another Date]]></define>
+
+		<define key="PPR_UNAVAILABLE_DAYS"><![CDATA[unavailable days]]></define>
+		<define key="PPR_SHIPPING_DAYS"><![CDATA[shipping days]]></define>
+		<define key="PPR_CALENDAR_EXPLAIN1"><![CDATA[You need to click on a date where]]></define>
+		<define key="PPR_CALENDAR_EXPLAIN2"><![CDATA[your reservation date + shipping days (color)]]></define>
+		<define key="PPR_CALENDAR_EXPLAIN3"><![CDATA[fit within an available date period]]></define>
+		<define key="PPR_CALENDAR_RESET"><![CDATA[Reset Calendar]]></define>
+		<define key="TEXT_INSURANCE"><![CDATA[Insurance Price:]]></define>
+
+		<define key="TEXT_BUTTON_IN_CART"><![CDATA[Add To Cart]]></define>
 </definitions>

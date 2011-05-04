@@ -16,7 +16,7 @@
 	}
 	ob_start();
 ?>
-  <table border="0" width="100%" cellspacing="1" cellpadding="2" class="infoBox reservationTable">
+  <table border="0" width="100%" cellspacing="1" cellpadding="2" class="infoBox">
    <tr class="infoBoxContents">
     <td><table cellpadding="3" cellspacing="0" border="0" width="100%">
      <tr>
@@ -77,7 +77,7 @@ if ($insurancePrice > 0){
        <tr>
 	       <td colspan="2">
 			<?php
-				echo ReservationUtilities::getCalendar($_GET['products_id']);
+				echo ReservationUtilities::getCalendar($_GET['products_id'],$product, $purchaseTypeClass);
 			?>
 	       </td>
        </tr>

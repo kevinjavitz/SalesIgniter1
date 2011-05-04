@@ -82,12 +82,11 @@ class ReservationUtilities {
 		return '';
 	}
 
-	public static function getCalendar($productsId)
+	public static function getCalendar($productsId, $product, $purchaseTypeClass, $showShipping = true)
 	{
 
 		$pID_string = $productsId;
-		$product = new product((int)$pID_string);
-		$purchaseTypeClass = $product->getPurchaseType('reservation');
+
 		$pprTable = Doctrine_Core::getTable('ProductsPayPerRental')->findOneByProductsId($pID_string);
 		$total_weight = $product->getWeight();
 		OrderShippingModules::calculateWeight();
@@ -149,8 +148,11 @@ class ReservationUtilities {
 		$timeBookings = $purchaseTypeClass->getBookedTimeDaysArray(date('Y-m-d', $startTime), 1, $minTime, $reservArr, $barcodesBooked);
 		//here I have to add an array for Times Booked
 		$maxShippingDays = -1;
+		$shippingTable = '';
 		if ($purchaseTypeClass->shippingIsNone() === false && $purchaseTypeClass->shippingIsStore() === false) {
-			$shippingTable = $purchaseTypeClass->buildShippingTable(true, false);
+			if($showShipping){
+				$shippingTable = $purchaseTypeClass->buildShippingTable(true, false);
+			}
 			$maxShippingDays = $purchaseTypeClass->getMaxShippingDays(date('Y-m-d', $startTime));
 		}
 		/**
@@ -642,7 +644,7 @@ class ReservationUtilities {
 							cache: false,
 							dataType: 'json',
 							type: 'post',
-							url: js_app_link('rType=ajax&appExt=payPerRentals&app=build_reservation&appPage=default'),
+							url: js_catalog_app_link('rType=ajax&appExt=payPerRentals&app=build_reservation&appPage=default'),
 							data: 'action=checkRes&pID=' + productsID + '&' + $('.reservationTable *, .ui-widget-footer-box *').serialize(),
 							success: function (data) {
 								if (data.success == true) {
@@ -782,7 +784,7 @@ class ReservationUtilities {
 					cache: false,
 					dataType: 'json',
 					type: 'post',
-					url: js_app_link('rType=ajax&appExt=payPerRentals&app=build_reservation&appPage=default'),
+					url: js_catalog_app_link('rType=ajax&appExt=payPerRentals&app=build_reservation&appPage=default'),
 					data: 'action=checkRes&pID=' + productsID + '&' + $('.reservationTable *, .ui-widget-footer-box *').serialize(),
 					success: function (data) {
 						if (data.success == true) {
@@ -807,7 +809,7 @@ class ReservationUtilities {
 				cache: false,
 				dataType: 'json',
 				type: 'post',
-				url: js_app_link('rType=ajax&appExt=payPerRentals&app=build_reservation&appPage=default'),
+				url: js_catalog_app_link('rType=ajax&appExt=payPerRentals&app=build_reservation&appPage=default'),
 				data: 'action=getReservedDates&pID=' + productsID + '&' + $('.reservationTable *, .ui-widget-footer-box *').serialize(),
 				success: function (data) {
 					if (data.success == true) {
@@ -843,7 +845,7 @@ class ReservationUtilities {
 					cache: false,
 					dataType: 'json',
 					type: 'post',
-					url: js_app_link('rType=ajax&appExt=payPerRentals&app=build_reservation&appPage=default'),
+					url: js_catalog_app_link('rType=ajax&appExt=payPerRentals&app=build_reservation&appPage=default'),
 					data: 'action=checkRes&pID=' + productsID + '&' + $('.reservationTable *, .ui-widget-footer-box *').serialize(),//+'&price='+price,//isSemester=1&
 					success: function (data) {
 						if (data.success == true) {
@@ -989,7 +991,7 @@ class ReservationUtilities {
 							cache: false,
 							dataType: 'json',
 							type: 'post',
-							url: js_app_link('rType=ajax&appExt=payPerRentals&app=build_reservation&appPage=default'),
+							url: js_catalog_app_link('rType=ajax&appExt=payPerRentals&app=build_reservation&appPage=default'),
 							data: 'action=checkRes&pID=' + productsID + '&' + $('.reservationTable *, .ui-widget-footer-box *').serialize(),
 							success: function (data) {
 								if (data.success == true) {
@@ -1027,6 +1029,24 @@ class ReservationUtilities {
 			$(this).parent().parent().submit();
 			return false;
 		});
+
+        $('#semRow').hide();
+
+        $('input[name="cal_or_semester"]').change(function(){
+			if($(this).val() == '1'){
+				$('#dateRow').show();
+				$('#semRow').hide();
+				$('#dateSelectedCalendar').show();
+				$('#selected_period').attr('name','sem');
+			}else{
+				$('#dateRow').hide();
+				$('#dateSelectedCalendar').hide();
+				$('#semRow').show();
+				$('#selected_period').attr('name','semester_name');
+			}
+        });
+
+        $('#calendarTime').hide();
 	});
 	</script>
 	<style>
@@ -1091,7 +1111,7 @@ class ReservationUtilities {
 			background: #CACEE6;
 		}
 	</style>
-	<table>
+	<table class="reservationTable">
 	 <tr>
       <td class="main"><?php echo sysLanguage::get('ENTRY_QUANTITY');?></td>
       <td><input type="text" size="3" id="rental_qty" name="rental_qty" value="<?php echo (isset($rInfo) ? $rInfo['reservationInfo']['quantity'] : '1');?>"></td>
@@ -1104,7 +1124,7 @@ class ReservationUtilities {
 		<?php
 			$QPeriods = Doctrine_Query::create()
 			->from('ProductsPayPerPeriods')
-			->where('products_id=?', $_GET['products_id'])
+			->where('products_id=?', $productsId)
 			->andWhere('price > 0')
 			->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 		if(count($QPeriods) > 0){
