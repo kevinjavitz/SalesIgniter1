@@ -21,6 +21,9 @@
 	$_REQUEST['osCID'] = $textArr[0];
 	$_POST['osCID'] = $textArr[0];
 	$customerTextId = $textArr[1];
+	if(isset($textArr[2])){
+		$customerIp = $textArr[2];
+	}
 	chdir('../../../../');
 	require('includes/application_top.php');
 	require('includes/classes/order.php');
@@ -214,6 +217,8 @@
 							->execute();
 
 						}
+						
+						EventManager::notify('CheckoutSuccessRemoteFinish',$orderID, $_POST['mc_gross'], $customerIp);
 						$order_status_id = OrderPaymentModules::getModule('paypalipn')->getConfigData('MODULE_PAYMENT_PAYPALIPN_COMP_ORDER_STATUS_ID');
 						$newStatus = new OrdersPaymentsHistory();
 						$newStatus->orders_id = $orderID;

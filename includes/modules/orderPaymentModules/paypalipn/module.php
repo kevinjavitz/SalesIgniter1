@@ -291,7 +291,7 @@ class OrderPaymentPaypalipn extends StandardPaymentModule {
 
 		$parameters['currency_code'] = $my_currency;
 		$parameters['invoice'] = substr(Session::get('cart_PayPal_IPN_ID'), strpos(Session::get('cart_PayPal_IPN_ID'), '-') + 1);
-		$parameters['custom'] = Session::getSessionId().';'.$userAccount->getCustomerId();
+		$parameters['custom'] = Session::getSessionId().';'.$userAccount->getCustomerId().';'.$_SERVER['REMOTE_ADDR'];
 		//$parameters['custom'] = $userAccount->getCustomerId();
 		$parameters['no_note'] = '1';
 		//$parameters['notify_url'] = sysConfig::get('HTTP_SERVER') . sysConfig::getDirWsCatalog(). 'gateway_response.php';
@@ -364,7 +364,7 @@ class OrderPaymentPaypalipn extends StandardPaymentModule {
 					}
 
 					$parameters['cmd'] = '_xclick-subscriptions';
-					$parameters['custom'] = Session::getSessionId().';'.$userAccount->getCustomerId();
+					$parameters['custom'] = Session::getSessionId().';'.$userAccount->getCustomerId().';'.$_SERVER['REMOTE_ADDR'];
 					$parameters['item_name'] = $planInfo['MembershipPlanDescription'][0]['name'];
 					$parameters['no_note'] = '1';
 					$parameters['a3'] = $packagePrice;
