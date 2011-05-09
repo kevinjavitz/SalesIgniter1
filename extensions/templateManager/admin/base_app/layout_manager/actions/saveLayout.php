@@ -76,8 +76,12 @@ function parseElementSettings($el, &$Container) {
 
 						$Container->Styles['background_solid']->definition_value = json_encode($bInfo);
 					}
-					else
-					{
+					elseif ($backgroundType == 'image'){
+						$bInfo = $InputVals->background->global->$backgroundType->config;
+
+						$Container->Styles['background_image']->definition_value = json_encode($bInfo);
+					}
+					else{
 						if ($backgroundType == 'gradient'){
 							$gInfo = $InputVals->background->global->$backgroundType;
 
