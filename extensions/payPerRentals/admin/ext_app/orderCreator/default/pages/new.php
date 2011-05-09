@@ -34,24 +34,28 @@ class payPerRentals_admin_orderCreator_default_new extends Extension_payPerRenta
 	public function OrderCreatorAddProductToEmail($opInfo, &$products_ordered){
 		global $currencies;
 		if (isset($opInfo->OrdersProductsReservation)){
+			$lastOrderId = -1;
 			foreach($opInfo->OrdersProductsReservation as $rInfo){
-				if (sysConfig::get('EXTENSION_PAY_PER_RENTALS_USE_EVENTS') == 'False'){
-					$products_ordered .= 'Reservation Info' .
-						"\n\t" . 'Start Date: ' . strftime(sysLanguage::getDateFormat('long'), strtotime($rInfo->start_date)) .
-						"\n\t" . 'End Date: ' . strftime(sysLanguage::getDateFormat('long'), strtotime($rInfo->end_date))
-						;
-				}else{
-					$products_ordered .= 'Reservation Info' .
-						"\n\t" . 'Event Date: ' . strftime(sysLanguage::getDateFormat('long'), strtotime($rInfo->event_date)) .
-						"\n\t" . 'Event Name: ' . $rInfo->event_name
-						;
-				}
+				if($rInfo->orders_products_id != $lastOrderId){
+					if (sysConfig::get('EXTENSION_PAY_PER_RENTALS_USE_EVENTS') == 'False'){
+						$products_ordered .= 'Reservation Info' .
+							"\n\t" . 'Start Date: ' . strftime(sysLanguage::getDateFormat('long'), strtotime($rInfo->start_date)) .
+							"\n\t" . 'End Date: ' . strftime(sysLanguage::getDateFormat('long'), strtotime($rInfo->end_date))
+							;
+					}else{
+						$products_ordered .= 'Reservation Info' .
+							"\n\t" . 'Event Date: ' . strftime(sysLanguage::getDateFormat('long'), strtotime($rInfo->event_date)) .
+							"\n\t" . 'Event Name: ' . $rInfo->event_name
+							;
+					}
 
-				if (!empty($rInfo->shipping_method_title)){
-					$products_ordered .= "\n\t" . 'Shipping Method: ' . $rInfo->shipping_method_title . ' (' . $currencies->format($rInfo->shipping_cost) . ')';
+					if (!empty($rInfo->shipping_method_title)){
+						$products_ordered .= "\n\t" . 'Shipping Method: ' . $rInfo->shipping_method_title . ' (' . $currencies->format($rInfo->shipping_cost) . ')';
+					}
+					$products_ordered .= "\n\t" . 'Insurance: ' . $currencies->format($rInfo->insurance);
+					$products_ordered .= "\n";
+					$lastOrderId = $rInfo->orders_products_id;
 				}
-				$products_ordered .= "\n\t" . 'Insurance: ' . $currencies->format($rInfo->insurance);
-				$products_ordered .= "\n";
 			}
 		}
 	}

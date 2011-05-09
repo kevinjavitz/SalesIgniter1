@@ -82,14 +82,23 @@ class ReservationUtilities {
 		return '';
 	}
 
-	public static function getCalendar($productsId, $product, $purchaseTypeClass, $showShipping = true)
+	public static function getCalendar($productsId, $product, $purchaseTypeClass, $rQty = 1, $showShipping = true, $callType = 'catalog')
 	{
+		if($callType == 'catalog'){
+			$callLink = 'js_catalog_app_link(\'rType=ajax&appExt=payPerRentals&app=build_reservation&appPage=default\')';
+			$callAction = 'getReservedDates';
+		} else {
+			$callLink = 'js_app_link(\'rType=ajax&appExt=orderCreator&app=default&appPage=new&action=loadReservationData\')';
+			$callAction = '';
+		}
 
 		$pID_string = $productsId;
 
 		$pprTable = Doctrine_Core::getTable('ProductsPayPerRental')->findOneByProductsId($pID_string);
 		$total_weight = $product->getWeight();
 		OrderShippingModules::calculateWeight();
+
+		//this part under a for.. I don't care for min max. but I have to care which product has the date reserved.maybe an array with counts and product name.
 
 		/*periods*/
 		$QPeriods = Doctrine_Query::create()
@@ -142,11 +151,19 @@ class ReservationUtilities {
 
 		$startTime = mktime(0, 0, 0, date('m'), date('d'), date('Y'));
 		//$endTime = mktime(0,0,0,date('m'), 1, date('Y')+3);
+
+		//this part under a for i merge array
 		$reservArr = array();
 		$barcodesBooked = array();
-		$bookings = $purchaseTypeClass->getBookedDaysArray(date('Y-m-d', $startTime), 1, &$reservArr, &$barcodesBooked);
-		$timeBookings = $purchaseTypeClass->getBookedTimeDaysArray(date('Y-m-d', $startTime), 1, $minTime, $reservArr, $barcodesBooked);
-		//here I have to add an array for Times Booked
+		$bookings = $purchaseTypeClass->getBookedDaysArray(date('Y-m-d', $startTime), $rQty, &$reservArr, &$barcodesBooked);
+		$isDisabled = false;
+		if($bookings === false){
+			$isDisabled = true;
+			$bookings = array();
+		}
+
+		$timeBookings = $purchaseTypeClass->getBookedTimeDaysArray(date('Y-m-d', $startTime), $rQty, $minTime, $reservArr, $barcodesBooked);
+
 		$maxShippingDays = -1;
 		$shippingTable = '';
 		if ($purchaseTypeClass->shippingIsNone() === false && $purchaseTypeClass->shippingIsStore() === false) {
@@ -343,12 +360,14 @@ class ReservationUtilities {
 	var isStart = false;
 	//var autoChanged = false;
 	var isHour = false;
+	var isDisabled = <?php echo (($isDisabled === true)?'true':'false');?>;
 
 
 	$(document).ready(function () {
-		$('#inCart').hide();
-		$('#checkAvail').hide();
-		$('#refreshCal').click(function() {
+		var $selfID = $('#reserv<?php echo $pID_string; ?>');
+		$selfID.parent().find('.inCart').hide();
+
+		$selfID.find('.refreshCal').live('click', function() {
 			if (selectedStartTimeTd != null) {
 				selectedStartTimeTd.data('element').remove();
 			}
@@ -363,7 +382,7 @@ class ReservationUtilities {
 			<?php
 	if (sysConfig::get('EXTENSION_PAY_PER_RENTALS_FORCE_START_DATE') == 'True') {
 				?>
-				$('#datePicker').datepick('setDate', -1);
+				$selfID.find('.datePicker').datepick('setDate', -1);
 				var todayDate = new Date();
 				selected = 'start';
 				selectedDate = todayDate;
@@ -383,20 +402,18 @@ class ReservationUtilities {
 					today_month = todayDate.getMonth();
 				}
 
-				$('#start_date').val(today_month + '/' + today_day + '/' + todayDate.getFullYear());
-				$('#end_date').val('');
-				//$('#datePicker').datepick('setDate', new Date(), new Date());
-				//$('#datePicker')._selectDay(d);
+				$selfID.find('.start_date').val(today_month + '/' + today_day + '/' + todayDate.getFullYear());
+				$selfID.find('.end_date').val('');
+
 				<?php
 
 			} else {
 				?>
 				if (selected == 'start') {
-					$('#datePicker').datepick('setDate', 0);
+					$selfID.find('.datePicker').datepick('setDate', 0);
 				} else {
-					$('#datePicker').datepick('setDate', -1);
+					$selfID.find('.datePicker').datepick('setDate', -1);
 				}
-				//$('#datePicker').datepick('setDate');
 				selected = '';
 				selectedDate = '';
 				isStart = false;
@@ -405,9 +422,9 @@ class ReservationUtilities {
 				allowSelection = true;
 				allowSelectionMin = true;
 				allowSelectionMax = true;
-				$('#start_date').val('');
-				$('#end_date').val('');
-				$('#calendarTime').hide();
+				$selfID.find('.start_date').val('');
+				$selfID.find('.end_date').val('');
+				$selfID.find('.calendarTime').hide();
 				<?php
 
 			}
@@ -415,13 +432,13 @@ class ReservationUtilities {
 
 		});
 
-		if ($('input[name=rental_shipping]').size() > 0 && $('input[name=rental_shipping]:checked').size() == 0) {
-			$('input[name=rental_shipping]').each(function () {
+		if ($selfID.find('input[name=rental_shipping]').size() > 0 && $selfID.find('input[name=rental_shipping]:checked').size() == 0) {
+			$selfID.find('input[name=rental_shipping]').each(function () {
 				$(this).trigger('click');
 			});
 		}
 
-		$('#datePicker').datepick({
+		$selfID.find('.datePicker').datepick({
 			useThemeRoller: true,
 			minDate: '+1',
 			dateFormat: '<?php echo getJsDateFormat();?>',
@@ -443,7 +460,7 @@ class ReservationUtilities {
 				var dateFormatted = $.datepick.formatDate('yy-m-d', dateObj);
 				if ($.inArray(dayShortNames[dateObj.getDay()], disabledDays) > -1) {
 					return [false, 'ui-datepicker-disabled ui-datepicker-shipable', 'Disabled By Admin'];
-				} else if ($.inArray(dateFormatted, bookedDates) > -1) {
+				} else if ($.inArray(dateFormatted, bookedDates) > -1 || isDisabled == true) {
 					return [false, 'ui-datepicker-reserved', 'Reserved'];
 				} else if ($.inArray(dateFormatted, disabledDatesPadding) > -1) {
 					return [false, 'ui-datepicker-disabled', 'Disabled by Admin'];
@@ -482,8 +499,8 @@ class ReservationUtilities {
 					$(curTd).removeClass('ui-datepicker-start_date');
 				} else {
 					$(curTd).addClass('ui-datepicker-start_date');
-					var shippingDaysBefore = $('input[name=rental_shipping]:checked').attr('days_before');
-					var shippingDaysAfter = $('input[name=rental_shipping]:checked').attr('days_after');
+					var shippingDaysBefore = $selfID.find('input[name=rental_shipping]:checked').attr('days_before');
+					var shippingDaysAfter = $selfID.find('input[name=rental_shipping]:checked').attr('days_after');
 					var prevTD = $(curTd);
 					var nextTD = $(curTd);
 
@@ -541,8 +558,8 @@ class ReservationUtilities {
 				var sDay = 0;
 				var words;
 				var sDaysArr;
-				var shippingDaysBefore = $('input[name=rental_shipping]:checked').attr('days_before');
-				var shippingDaysAfter = $('input[name=rental_shipping]:checked').attr('days_after');
+				var shippingDaysBefore = $selfID.find('input[name=rental_shipping]:checked').attr('days_before');
+				var shippingDaysAfter = $selfID.find('input[name=rental_shipping]:checked').attr('days_after');
 				myclass = $(td).attr('class');
 				if (myclass) {
 					words = myclass.split(' ');
@@ -599,14 +616,14 @@ class ReservationUtilities {
 					return false;
 				}
 				if (allowSelectionBefore == false) {
-					var shippingDaysBefore = $('input[name=rental_shipping]:checked').attr('days_before');
-					shippingLabel = $('input[name=rental_shipping]:checked').parent().parent().find('td').first().html();
+					var shippingDaysBefore = $selfID.find('input[name=rental_shipping]:checked').attr('days_before');
+					shippingLabel = $selfID.find('input[name=rental_shipping]:checked').parent().parent().find('td').first().html();
 					alert('<?php echo sysLanguage::get('PPR_ERR_SHIP_METHOD'); ?> ' + shippingLabel + ', <?php echo sysLanguage::get('PPR_ERR_NEED_TO_ALLOW'); ?> ' + shippingDaysBefore + ' <?php echo sysLanguage::get('PPR_ERR_SHIP_DAYS_BEFORE_RESERVATION'); ?>');
 					return false;
 				}
 				if (allowSelectionAfter == false) {
-					var shippingDaysAfter = $('input[name=rental_shipping]:checked').attr('days_after');
-					shippingLabel = $('input[name=rental_shipping]:checked').parent().parent().find('td').first().html();
+					var shippingDaysAfter = $selfID.find('input[name=rental_shipping]:checked').attr('days_after');
+					shippingLabel = $selfID.find('input[name=rental_shipping]:checked').parent().parent().find('td').first().html();
 					alert('<?php echo sysLanguage::get('PPR_ERR_SHIP_METHOD'); ?> ' + shippingLabel + ', <?php echo sysLanguage::get('PPR_ERR_NEED_TO_ALLOW'); ?> ' + shippingDaysBefore + ' <?php echo sysLanguage::get('PPR_ERR_SHIP_DAYS_AFTER_RESERVATION'); ?>');
 					return false;
 				}
@@ -615,10 +632,10 @@ class ReservationUtilities {
 
 				if (selected == 'start') {
 					selectedDate = date;
-					$('#datePicker').datepick('option', 'initStatus', '<?php echo sysLanguage::get('PPR_SELECT_END_DATE'); ?>');
-					$('#inCart').hide();
+					$selfID.find('.datePicker').datepick('option', 'initStatus', '<?php echo sysLanguage::get('PPR_SELECT_END_DATE'); ?>');
+					$selfID.parent().find('.inCart').hide();
 				} else if (selected == 'end') {
-					$('#datePicker').datepick('option', 'initStatus', '<?php echo sysLanguage::get('PPR_DATES_SELECTED'); ?>.<br /><?php echo sysLanguage::get('PPR_CLICK_RESTART_PROCESS'); ?>');
+					$selfID.find('.datePicker').datepick('option', 'initStatus', '<?php echo sysLanguage::get('PPR_DATES_SELECTED'); ?>.<br /><?php echo sysLanguage::get('PPR_CLICK_RESTART_PROCESS'); ?>');
 					var monthT = date.getMonth() + 1;
 					var daysT = date.getDate();
 					var daysTs = '';
@@ -633,10 +650,10 @@ class ReservationUtilities {
 					} else {
 						monthTs = monthT + '';
 					}
-					$('#end_date').val(monthTs + '/' + daysTs + '/' + date.getFullYear());
-					var $this = $('#datePicker');
-					$sDate = new Date($('#start_date').val());
-					$eDate = new Date($('#end_date').val());
+					$selfID.find('.end_date').val(monthTs + '/' + daysTs + '/' + date.getFullYear());
+					var $this = $selfID.find('.datePicker');
+					$sDate = new Date($selfID.find('.start_date').val());
+					$eDate = new Date($selfID.find('.end_date').val());
 					//alert($sDate + '   '+$eDate +' '+$('#start_date').val()+'  '+$('#end_date').val());
 					if ($sDate.getTime() != $eDate.getTime()) {
 						showAjaxLoader($this, 'xlarge');
@@ -648,12 +665,12 @@ class ReservationUtilities {
 							data: 'action=checkRes&pID=' + productsID + '&' + $('.reservationTable *, .ui-widget-footer-box *').serialize(),
 							success: function (data) {
 								if (data.success == true) {
-									$('#priceQuote').html(data.price + ' ' + data.message);
-									$('#inCart').show();
-									$('#inCart').button();
+									$selfID.parent().find('.priceQuote').html(data.price + ' ' + data.message);
+									$selfID.parent().find('.inCart').show();
+									$selfID.parent().find('.inCart').button();
 									//$('#checkAvail').hide();
 								} else if (data.success == 'not_supported') {
-									$('#priceQuote').html(data.price);
+									$selfID.parent().find('.priceQuote').html(data.price);
 								} else {
 									alert('<?php echo sysLanguage::get('PPR_NOTICE_RESERVATION_NOT_AVAILABLE'); ?>.');
 								}
@@ -662,15 +679,15 @@ class ReservationUtilities {
 						});
 					}
 				} else {
-					$('#datePicker').datepick('option', 'initStatus', '<?php echo sysLanguage::get('PPR_SELECT_START_DATE'); ?>');
+					$selfID.find('.datePicker').datepick('option', 'initStatus', '<?php echo sysLanguage::get('PPR_SELECT_START_DATE'); ?>');
 				}
 			<?php
    		if ($allowHourly) {
 					?>
-					$('#calendarTime').show();
-					$('#calendarTime').fullCalendar('gotoDate', date);
-					$sDate = new Date($('#start_date').val());
-					$eDate = new Date($('#end_date').val());
+					$selfID.find('.calendarTime').show();
+					$selfID.find('.calendarTime').fullCalendar('gotoDate', date);
+					$sDate = new Date($selfID.find('.start_date').val());
+					$eDate = new Date($selfID.find('.end_date').val());
 
 					if ($sDate.getTime() != $eDate.getTime() || selected == 'end') {
 						if (selectedStartTimeTd != null) {
@@ -681,7 +698,7 @@ class ReservationUtilities {
 						}
 					}
 					if ($sDate.getTime() != $eDate.getTime()) {
-						$('#calendarTime').hide();
+						$selfID.find('.calendarTime').hide();
 					}
 					<?php
 
@@ -693,18 +710,18 @@ class ReservationUtilities {
 			<?php
    	if (sysConfig::get('EXTENSION_PAY_PER_RENTALS_FORCE_START_DATE') == 'True') {
 					?>
-					if ($('#start_date').val() == '' && isStart) {
-						$('#start_date').val(dates[0]);
-						$('#end_date').val(dates[1]);
+					if ($selfID.find('.start_date').val() == '' && isStart) {
+						$selfID.find('.start_date').val(dates[0]);
+						$selfID.find('.end_date').val(dates[1]);
 						isStart = false;
 						if (dates[0] != dates[1]) {
-							$('#datePicker').datepick('option', 'maxDate', null);
+							$selfID.find('.datePicker').datepick('option', 'maxDate', null);
 						} else {
 							isStart = true;
 						}
 					} else {
 						var todayDate = new Date();
-						$('#end_date').val(dates[0]);
+						$selfID.find('.end_date').val(dates[0]);
 						selected = 'start';
 						selectedDate = todayDate;
 						isStart = true;
@@ -715,11 +732,11 @@ class ReservationUtilities {
 				} else {
 					?>
 					var dates = value.split(',');
-					$('#start_date').val(dates[0]);
-					$('#end_date').val(dates[1]);
+					$selfID.find('.start_date').val(dates[0]);
+					$selfID.find('.end_date').val(dates[1]);
 					isStart = false;
 					if (dates[0] != dates[1]) {
-						$('#datePicker').datepick('option', 'maxDate', null);
+						$selfID.find('.datePicker').datepick('option', 'maxDate', null);
 					} else {
 						isStart = true;
 					}
@@ -750,96 +767,35 @@ class ReservationUtilities {
 				today_month = todayDate.getMonth() + 1;
 			}
 
-			$('#start_date').val(today_month + '/' + today_day + '/' + todayDate.getFullYear());
-			//$('#datePicker').datepick('setDate', new Date(), new Date());
-			//$('#datePicker')._selectDay(d);
+			$selfID.find('.start_date').val(today_month + '/' + today_day + '/' + todayDate.getFullYear());
 			<?php
 
 		}
 		?>
-		$('#checkAvail').click(function () {
-			var $this = $(this);
-			showAjaxLoader($this, 'small');
-			if (
-					($('#start_date').val() == '')
-							||
-							($('#end_date').val() == '')
-							||
-							($('input[name=rental_shipping]').size() > 0 && $('input[name=rental_shipping]:checked').size() <= 0)
-					) {
-				var errorMsg = '';
-				if ($('input[name=rental_shipping]').size() > 0 && $('input[name=rental_shipping]:checked').size() <= 0) {
-					errorMsg += "\n" + '<?php echo sysLanguage::get('PPR_SHIPPING_METHOD'); ?>';
-				}
-				if ($('#start_date').val() == '') {
-					errorMsg += "\n" + '<?php echo sysLanguage::get('PPR_START_METHOD'); ?>';
-				}
-				if ($('#end_date').val() == '') {
-					errorMsg += "\n" + '<?php echo sysLanguage::get('PPR_END_METHOD'); ?>';
-				}
-				alert('<?php echo sysLanguage::get('PPR_ERR_CHOOSE'); ?> ' + errorMsg);
-				hideAjaxLoader($this);
-			} else {
-				$.ajax({
-					cache: false,
-					dataType: 'json',
-					type: 'post',
-					url: js_catalog_app_link('rType=ajax&appExt=payPerRentals&app=build_reservation&appPage=default'),
-					data: 'action=checkRes&pID=' + productsID + '&' + $('.reservationTable *, .ui-widget-footer-box *').serialize(),
-					success: function (data) {
-						if (data.success == true) {
-							$('#priceQuote').html(data.price + ' ' + data.message);
-							$('#inCart').show();
-							$('#inCart').button();
-							$('#checkAvail').hide();
-						} else if (data.success == 'not_supported') {
-							$('#priceQuote').html(data.price);
-						} else {
-							alert('<?php echo sysLanguage::get('PPR_NOTICE_RESERVATION_NOT_AVAILABLE'); ?>.');
-						}
-						hideAjaxLoader($this);
-					}
-				});
-			}
-		});
 
-		$('#rental_qty').blur(function () {
-			showAjaxLoader($('#datePicker'), 'xlarge');
+		$selfID.find('.rental_qty').blur(function () {
+			showAjaxLoader($selfID.find('.datePicker'), 'xlarge');
 			$.ajax({
 				cache: false,
 				dataType: 'json',
 				type: 'post',
-				url: js_catalog_app_link('rType=ajax&appExt=payPerRentals&app=build_reservation&appPage=default'),
-				data: 'action=getReservedDates&pID=' + productsID + '&' + $('.reservationTable *, .ui-widget-footer-box *').serialize(),
+				url: <?php echo $callLink; ?>,
+				data: 'action=<?php echo $callAction;?>&pID=' + productsID + '&' + $('.reservationTable *, .ui-widget-footer-box *').serialize(),
 				success: function (data) {
 					if (data.success == true) {
-						bookedDates = data.bookedDates;
-						shippingDaysPadding = data.shippingDaysPadding;
-						shippingDaysArray = data.shippingDaysArray;
-						disabledDatesPadding = data.disabledDatesPadding;
-						disabledDays = data.disabledDays;
-						if ($('#selected_period')) {
-							$('#selected_period').html(data.semData);
-						}
-						$('#start_date, #end_date').val('');
-						//$('#datePicker').datepick('setDate', new Date(), new Date());
-						$('#datePicker').datepick('refresh');
-
-						$('#inCart').hide();
+						$selfID.parent().html(data.calendar);
 					}
-					hideAjaxLoader($('#datePicker'));
 				}
 			});
 		});
-
-		$('#selected_period').change(function() {
+		/*this part down will need some testing*/
+		$selfID.find('.selected_period').change(function() {
 			if ($(this).val() != '') {
 				var selectedPeriod = $(this);
-				var startDateString = $("#selected_period option:selected").attr('start_date');
-				var endDateString = $("#selected_period option:selected").attr('end_date');
-				$('#start_date').val(startDateString.substr(0, startDateString.length - 9));
-				$('#end_date').val(endDateString.substr(0, endDateString.length - 9));
-				//var price = $("#selected_period option:selected").attr('price');
+				var startDateString = $selfID.find('.selected_period option:selected').attr('start_date');
+				var endDateString = $selfID.find('.selected_period option:selected').attr('end_date');
+				$selfID.find('.start_date').val(startDateString.substr(0, startDateString.length - 9));
+				$selfID.find('.end_date').val(endDateString.substr(0, endDateString.length - 9));
 				showAjaxLoader(selectedPeriod, 'xlarge');
 				$.ajax({
 					cache: false,
@@ -849,12 +805,11 @@ class ReservationUtilities {
 					data: 'action=checkRes&pID=' + productsID + '&' + $('.reservationTable *, .ui-widget-footer-box *').serialize(),//+'&price='+price,//isSemester=1&
 					success: function (data) {
 						if (data.success == true) {
-							$('#priceQuote').html(data.price + ' ' + data.message);
-							$('#inCart').show();
-							$('#inCart').button();
-							//$('#checkAvail').hide();
+							$selfID.parent().find('.priceQuote').html(data.price + ' ' + data.message);
+							$selfID.parent().find('.inCart').show();
+							$selfID.parent().find('.inCart').button();
 						} else if (data.success == 'not_supported') {
-							$('#priceQuote').html(data.price);
+							$selfID.parent().find('.priceQuote').html(data.price);
 						} else {
 							alert('<?php echo sysLanguage::get('PPR_NOTICE_RESERVATION_NOT_AVAILABLE'); ?>.');
 						}
@@ -862,8 +817,8 @@ class ReservationUtilities {
 					}
 				});
 			} else {
-				$('#priceQuote').html('');
-				$('#inCart').hide();
+				$selfID.parent().find('.priceQuote').html('');
+				$selfID.parent().find('.inCart').hide();
 			}
 		});
 		var isTimeStart = false;
@@ -871,7 +826,8 @@ class ReservationUtilities {
 		var selectedEndTimeTd = null;
 		var selectedStartTime = null;
 		var selectedEndTime = null;
-		$('#calendarTime').fullCalendar({
+
+		$selfID.find('.calendarTime').fullCalendar({
 			header: {
 				left:   '',
 				center: '',
@@ -879,8 +835,7 @@ class ReservationUtilities {
 			},
 			theme: true,
 			allDaySlot:false,
-			slotMinutes:'<?php echo $minTime;?>',
-			//axisFormat:'h:mm',
+			slotMinutes:<?php echo $minTime;?>,
 			editable: false,
 			disableDragging: true,
 			disableResizing: true,
@@ -922,14 +877,12 @@ class ReservationUtilities {
 						today_month = selectedStartTime.getMonth() + 1;
 					}
 
-					$('#start_date').val(today_month + '/' + today_day + '/' + selectedStartTime.getFullYear() + ' ' + selectedStartTime.getHours() + ':' + selectedStartTime.getMinutes() + ':00');
+					$selfID.find('.start_date').val(today_month + '/' + today_day + '/' + selectedStartTime.getFullYear() + ' ' + selectedStartTime.getHours() + ':' + selectedStartTime.getMinutes() + ':00');
 				} else {
 					if (selectedStartTime < new Date(date)) {
 
 						var allowSelectionTime = true;
 						for (var k = 0; k < bookedTimesArr.length; k++) {
-							//bDateArr = bookedDates[k].split('-');
-							//bDate = new Date(parseInt(bDateArr[0]),parseInt(bDateArr[1])-1, parseInt(bDateArr[2]));
 							if (selectedStartTime.getTime() <= bookedTimesArr[k].getTime() && date.getTime() >= bookedTimesArr[k].getTime()) {
 								allowSelectionTime = false;
 							}
@@ -981,10 +934,8 @@ class ReservationUtilities {
 							today_month = selectedEndTime.getMonth() + 1;
 						}
 
-						$('#end_date').val(today_month + '/' + today_day + '/' + selectedEndTime.getFullYear() + ' ' + selectedEndTime.getHours() + ':' + selectedEndTime.getMinutes() + ':00');
-
-
-						var $this = $('#datePicker');
+						$selfID.find('.end_date').val(today_month + '/' + today_day + '/' + selectedEndTime.getFullYear() + ' ' + selectedEndTime.getHours() + ':' + selectedEndTime.getMinutes() + ':00');
+						var $this = $selfID.find('.datePicker');
 
 						showAjaxLoader($this, 'xlarge');
 						$.ajax({
@@ -995,12 +946,11 @@ class ReservationUtilities {
 							data: 'action=checkRes&pID=' + productsID + '&' + $('.reservationTable *, .ui-widget-footer-box *').serialize(),
 							success: function (data) {
 								if (data.success == true) {
-									$('#priceQuote').html(data.price + ' ' + data.message);
-									$('#inCart').show();
-									$('#inCart').button();
-									//$('#checkAvail').hide();
+									$selfID.parent().find('.priceQuote').html(data.price + ' ' + data.message);
+									$selfID.parent().find('.inCart').show();
+									$selfID.parent().find('.inCart').button();
 								} else if (data.success == 'not_supported') {
-									$('#priceQuote').html(data.price);
+									$selfID.parent().find('.priceQuote').html(data.price);
 								} else {
 									alert('<?php echo sysLanguage::get('PPR_NOTICE_RESERVATION_NOT_AVAILABLE'); ?>.');
 								}
@@ -1010,8 +960,6 @@ class ReservationUtilities {
 					}
 					//reset selected td;
 				}
-				// change the day's background color just for fun
-				//$(this).css('background-color', 'red');
 
 			}
 		});
@@ -1019,34 +967,29 @@ class ReservationUtilities {
 			<?php
    		if (sysConfig::get('EXTENSION_PAY_PER_RENTALS_USE_UPS_RESERVATION') == 'True') {
 			?>
-			showOverlay($('#datePicker'));
+			showOverlay($selfID.find('.datePicker'));
 			<?php
 
 		}
 		?>
-		$('#inCart').click(function() {
-			$(this).parent().parent().append('<input type="hidden" name="add_reservation_product">');
-			$(this).parent().parent().submit();
-			return false;
-		});
 
-        $('#semRow').hide();
+        $selfID.find('.semRow').hide();
 
-        $('input[name="cal_or_semester"]').change(function(){
+        $selfID.find('input[name="cal_or_semester"]').change(function(){
 			if($(this).val() == '1'){
-				$('#dateRow').show();
-				$('#semRow').hide();
-				$('#dateSelectedCalendar').show();
-				$('#selected_period').attr('name','sem');
+				$selfID.find('.dateRow').show();
+				$selfID.find('.semRow').hide();
+				$selfID.find('.dateSelectedCalendar').show();
+				$selfID.find('.selected_period').attr('name','sem');
 			}else{
-				$('#dateRow').hide();
-				$('#dateSelectedCalendar').hide();
-				$('#semRow').show();
-				$('#selected_period').attr('name','semester_name');
+				$selfID.find('.dateRow').hide();
+				$selfID.find('.dateSelectedCalendar').hide();
+				$selfID.find('.semRow').show();
+				$selfID.find('.selected_period').attr('name','semester_name');
 			}
         });
 
-        $('#calendarTime').hide();
+        $selfID.find('.calendarTime').hide();
 	});
 	</script>
 	<style>
@@ -1085,7 +1028,7 @@ class ReservationUtilities {
 
 		}
 
-		#calendarTime {
+		.calendarTime {
 			width: 540px;
 		}
 
@@ -1093,28 +1036,25 @@ class ReservationUtilities {
 			cursor: pointer;
 		}
 
-		#datePicker {
+		.datePicker {
 		}
 
 		.ui-datepicker {
 			display: block;
 		}
 
-			/*#datePicker { font-size: 1.25em; }
-			#datePicker .ui-datepicker-calendar td { font-size: 1.25em; }
-			#datePicker .ui-datepicker-start_date { background: #00FF00; }*/
 		.ui-datepicker-shipping-day-hover, .ui-datepicker-shipping-day-hover-info {
 			background: #F7C8D3;
 		}
 
-		#datePicker .ui-state-active {
+		.datePicker .ui-state-active {
 			background: #CACEE6;
 		}
 	</style>
-	<table class="reservationTable">
+	<table id="reserv<?php echo $pID_string; ?>" class="reservationTable">
 	 <tr>
       <td class="main"><?php echo sysLanguage::get('ENTRY_QUANTITY');?></td>
-      <td><input type="text" size="3" id="rental_qty" name="rental_qty" value="<?php echo (isset($rInfo) ? $rInfo['reservationInfo']['quantity'] : '1');?>"></td>
+      <td><input type="text" size="3" class="rental_qty" name="rental_qty" value="<?php echo $rQty;?>"></td>
      </tr>
      <?php
      if ($purchaseTypeClass->shippingIsNone() === false && $purchaseTypeClass->shippingIsStore() === false){
@@ -1155,7 +1095,7 @@ class ReservationUtilities {
 
       </td>
      </tr>
-	<tr id="semRow">
+	<tr class="semRow">
       <td class="main" colspan="2">
 		  <?php
 		  	$selectSem = htmlBase::newElement('selectbox')
@@ -1168,10 +1108,6 @@ class ReservationUtilities {
 			foreach($semDates as $sDate){
 
 				$attr = array(
-							/*array(
-								'name' => 'price',
-								'value' => $sDate['price']
-							)*/
 						array(
 							'name' => 'start_date',
 							'value' => $sDate['start_date']
@@ -1182,8 +1118,6 @@ class ReservationUtilities {
 						)
 					);
 				$selectSem->addOptionWithAttributes($sDate['period_name'], $sDate['period_name'],$attr);
-
-				//$selectSem->addOption($sDate['period_name'], $sDate['period_name']);
 			}
 			$moreInfo = htmlBase::newElement('a')
 			->attr('id','moreInfoSem')
@@ -1196,7 +1130,7 @@ class ReservationUtilities {
 			<?php
 			}
 			?>
-	 <tr id="dateRow">
+	 <tr class="dateRow">
       <td colspan="2"><table cellpadding="0" cellspacing="3" border="0" width="100%">
        <tr>
         <td width="20%"><table cellpadding="0" cellspacing="3" border="0">
@@ -1219,8 +1153,8 @@ class ReservationUtilities {
        </tr>
       </table><table cellpadding="3" cellspacing="0" border="0" width="100%">
        <tr>
-        <td valign="top"><div type="text" id="datePicker"></div>
-		<div id="calendarTime">
+        <td valign="top"><div type="text" class="datePicker"></div>
+		<div class="calendarTime">
 
 		</div>
 
@@ -1229,12 +1163,12 @@ class ReservationUtilities {
       </table></td>
      </tr>
 
-     <tr id="dateSelectedCalendar">
+     <tr class="dateSelectedCalendar">
       <td class="main"><?php echo sysLanguage::get('ENTRY_RENTAL_DATES_SELECTED');?></td>
-      <td><input type="text" name="start_date" id="start_date" value="<?php echo (isset($rInfo) ? $rInfo['reservationInfo']['start_date'] : '');?>" readonly="readonly"> To <input type="text" name="end_date" id="end_date" value="<?php echo (isset($rInfo) ? $rInfo['reservationInfo']['end_date'] : '');?>" readonly="readonly">
+      <td><input type="text" name="start_date" class="start_date" value="<?php echo (isset($rInfo) ? $rInfo['reservationInfo']['start_date'] : '');?>" readonly="readonly"> To <input type="text" name="end_date" class="end_date" value="<?php echo (isset($rInfo) ? $rInfo['reservationInfo']['end_date'] : '');?>" readonly="readonly">
       <?php
         echo htmlBase::newElement('button')
-             ->setId('refreshCal')
+             ->addClass('refreshCal')
              ->setName('refreshCal')
              ->setText(sysLanguage::get('PPR_CALENDAR_RESET'))
              ->draw();
@@ -1243,6 +1177,25 @@ class ReservationUtilities {
       </td>
      </tr>
 		</table>
+		<div class="pprButttons">
+			<?php
+	   $pprButtons = sysLanguage::get('TEXT_ESTIMATED_PRICING') . '<span class="priceQuote"></span>'.'&nbsp;&nbsp;&nbsp;';
+	   $pprButtons .= '<input type="hidden" name="products_id" id="pID" value="' . $product->getID() . '">';
+	   $pprButtons .= $purchaseTypeClass->getHiddenFields($pID_string);
+
+
+	   $pprButtons .= htmlBase::newElement('div')
+	   ->addClass('inCart')
+	   ->css(array(
+		   'display'   => 'inline-block',
+		   'width' => '150px'
+	   ))
+	   ->html(sysLanguage::get('TEXT_BUTTON_IN_CART'))
+	   ->draw();
+
+		echo $pprButtons;
+			?>
+		</div>
 			<?php
    		$calendar = ob_get_contents();
 		ob_end_clean();

@@ -22,45 +22,11 @@ function removeOverlay($elem){
 }
 
 $(document).ready(function (){
-    $('#semRow').hide();
-    //$('#hourRow').hide();
-    $('input[name="cal_or_semester"]').change(function(){
-        if($(this).val() == '1'){
-            $('#dateRow').show();
-            $('#semRow').hide();
-            $('#dateSelectedCalendar').show();
-            $('#selected_period').attr('name','sem');
-        }else{
-            $('#dateRow').hide();
-            $('#dateSelectedCalendar').hide();
-            $('#semRow').show();
-            $('#selected_period').attr('name','semester_name');
-        }
-    });
-    /*$('input[name="hour_or_day"]').each(function(){
-       if($(this).val() == '1'){
-            $(this).attr('checked','checked');
-       }
-    });*/
-
-    $('#calendarTime').hide();
-    //$('#start_time_input').attr('readonly','readonly');
-    //$('#end_time_input').attr('readonly','readonly');
-   /*$('input[name="hour_or_day"]').change(function(){
-        if($(this).val() == '1'){
-            $('#dateRow').show();
-            $('#hourRow').hide();
-            $('#calendarTime').hide();
-            $('#dateSelectedCalendar').show();
-            isHour = false;
-        }else{
-            //$('#dateRow').hide();
-            //$('#dateSelectedCalendar').hide();
-            isHour = true;
-            $('#hourRow').show();
-            $('#calendarTime').show();
-        }
-    });*/
+	$('.inCart').live('click', function() {
+			$(this).parent().parent().append('<input type="hidden" name="add_reservation_product">');
+			$(this).closest('form').submit();
+			return false;
+	});
 
 	$('#getQuotes').click(function(){
 		 showAjaxLoader($('#getQuotes'), 'xlarge');

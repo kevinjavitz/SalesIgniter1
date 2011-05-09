@@ -174,9 +174,9 @@ class PurchaseType_reservation extends PurchaseTypeAbstract {
 					$end = date_parse($resInfo['end_date']);
 					$startTime = mktime($start['hour'], $start['minute'], $start['second'], $start['month'], $start['day'], $start['year']);
 					$endTime = mktime($end['hour'], $end['minute'], $end['second'], $end['month'], $end['day'], $end['year']);
-					$return .= '<br /><small><i> - Dates ( Start,End ) <input type="text" class="ui-widget-content reservationDates" name="product[' . $id . '][reservation][dates]" value="' . date('m/d/Y H:i:s', $startTime) . ',' . date('m/d/Y H:i:s', $endTime) . '"></i></small><div class="selectDialog"><div class="refreshCal">Reset Calendar</div><div class="datePicker"></div><div class="calendarTime"></div></div>';
+					$return .= '<br /><small><i> - Dates ( Start,End ) <input type="text" class="ui-widget-content reservationDates" name="product[' . $id . '][reservation][dates]" value="' . date('m/d/Y H:i:s', $startTime) . ',' . date('m/d/Y H:i:s', $endTime) . '"></i></small><div class="selectDialog"></div>';
 				}else{
-					$return .= '<br /><small><i> - Dates ( Start,End ) <input type="text" class="ui-widget-content reservationDates" name="product[' . $id . '][reservation][dates]" value=""></i></small><div class="selectDialog"><div class="refreshCal">Reset Calendar</div><div class="datePicker"></div><div class="calendarTime"></div></div>';
+					$return .= '<br /><small><i> - Dates ( Start,End ) <input type="text" class="ui-widget-content reservationDates" name="product[' . $id . '][reservation][dates]" value=""></i></small><div class="selectDialog"></div>';
 				}
 			}else{
 			$Qevent = Doctrine_Query::create()
@@ -213,12 +213,13 @@ class PurchaseType_reservation extends PurchaseTypeAbstract {
 		}
 
 
-		$selectBox = htmlBase::newElement('selectbox')
-				->addClass('ui-widget-content reservationShipping')
-				->setName('product[' . $id . '][reservation][shipping]');
-
+		$selectBox = htmlBase::newElement('input')
+		->setType('hidden')
+		->addClass('ui-widget-content reservationShipping')
+		->setName('product[' . $id . '][reservation][shipping]');
+		$shipInput = '';
 		if ($this->shippingIsNone() === false && $this->shippingIsStore() === false){
-			if (isset($Module) && is_object($Module)){
+			/*if (isset($Module) && is_object($Module)){
 				$quotes = $Module->quote();
 				foreach($quotes['methods'] as $method){
 					$selectBox->addOption(
@@ -231,13 +232,14 @@ class PurchaseType_reservation extends PurchaseTypeAbstract {
 						)
 					);
 				}
-			}
+			} */
 
 			if (is_null($resInfo) === false && isset($resInfo['shipping']) && $resInfo['shipping'] !== false && isset($resInfo['shipping']['title']) && !empty($resInfo['shipping']['title']) && isset($resInfo['shipping']['cost']) && !empty($resInfo['shipping']['cost'])){
-				$selectBox->selectOptionByValue($resInfo['shipping']['id']);
+				$selectBox->setValue($resInfo['shipping']['id']);
+				$shipInput = '<span class="reservationShippingText">'.$resInfo['shipping']['title'].'</span>';
 			}
 
-			$return .= '<br /><small><i> - ' . sysLanguage::get('TEXT_INFO_SHIPPING_METHOD') . ' ' . $selectBox->draw() . '</i></small>';
+			$return .= '<br /><small><i> - ' . sysLanguage::get('TEXT_INFO_SHIPPING_METHOD') . ' ' . $selectBox->draw() . $shipInput . '</i></small>';
 		}
 		//if (is_null($resInfo) === false && isset($resInfo['deposit_amount']) && $resInfo['deposit_amount'] > 0){
 		if ($this->getDepositAmount() > 0){
@@ -1315,18 +1317,10 @@ class PurchaseType_reservation extends PurchaseTypeAbstract {
 	}
 
 	public function parseQuotes($quotes, $includeSelect){
-		global $currencies, $pID_string, $ShoppingCart;
+		global $currencies, $pID_string;
 		$table = '';
 		if ($this->enabledShipping !== false){
 			$table = '<table cellpadding="0" cellspacing="0" border="0">';
-
-			if ($ShoppingCart->inCart($pID_string, 'reservation')){
-				$cartProduct = $ShoppingCart->getProduct($pID_string, 'reservation');
-				$res = $cartProduct->getInfo('reservationInfo');
-
-				$this->shippingMethod = $this->shipModuleCode . '_' . $res['shipping']['id'];
-			}
-			$shippingMethod = (isset($this->shippingMethod) ? $this->shippingMethod : '');
 
 			$newMethods = array();
 
@@ -1360,16 +1354,13 @@ class PurchaseType_reservation extends PurchaseTypeAbstract {
 
 				for ($j=0, $n2=sizeof($quotes[$i]['methods']); $j<$n2; $j++) {
 
-					if (!empty($shippingMethod)){
-						$checked = ($shippingMethod == $quotes[$i]['id'] . '_' . $quotes[$i]['methods'][$j]['id'] ? true : false);
-					}else{
 
-						if($quotes[$i]['methods'][$j]['default'] == 1){
-							$checked = true;
-						}else{
-							$checked = false;
-						}
+					if ($quotes[$i]['methods'][$j]['default'] == 1) {
+						$checked = true;
+					} else {
+						$checked = false;
 					}
+
 
 					if ($this->getMaxShippingDays < $quotes[$i]['methods'][$j]['days_before']) {
 						$this->getMaxShippingDays = (int) $quotes[$i]['methods'][$j]['days_before'];
@@ -1378,15 +1369,19 @@ class PurchaseType_reservation extends PurchaseTypeAbstract {
 						$this->getMaxShippingDays = (int) $quotes[$i]['methods'][$j]['days_after'];
 					}
 
-					$table .= '<tr id="row_'.$quotes[$i]['methods'][$j]['id'].'">' .
+					$table .= '<tr class="row_'.$quotes[$i]['methods'][$j]['id'].'">' .
 					'<td class="main" width="75%">' . $quotes[$i]['methods'][$j]['title'] . '</td>';
 
 					if ( ($n > 1) || ($n2 > 1) ) {
-						$table .= '<td class="main" id="cost_'.$quotes[$i]['methods'][$j]['id'].'">' . $currencies->format(tep_add_tax($quotes[$i]['methods'][$j]['cost'], (isset($quotes[$i]['tax']) ? $quotes[$i]['tax'] : 0))) . '</td>' .
-						'<td class="main" align="right">' . ($includeSelect === true ? tep_draw_radio_field('rental_shipping', $quotes[$i]['id'] . '_' . $quotes[$i]['methods'][$j]['id'], $checked, 'days_before="' . $quotes[$i]['methods'][$j]['days_before'] . '" days_after="' . $quotes[$i]['methods'][$j]['days_after'] . '" id="rental_shipping"') : '') . '</td>';
+						//$radioShipping = tep_draw_radio_field('rental_shipping', $quotes[$i]['id'] . '_' . $quotes[$i]['methods'][$j]['id'], $checked, 'days_before="' . $quotes[$i]['methods'][$j]['days_before'] . '" days_after="' . $quotes[$i]['methods'][$j]['days_after'] . '"');
+						$radioShipping = '<input type="radio" checked="'.(($checked==true)?'checked':'').'" name="rental_shipping" value="'. $quotes[$i]['id'] . '_' . $quotes[$i]['methods'][$j]['id'].'" days_before="' . $quotes[$i]['methods'][$j]['days_before'] . '" days_after="' . $quotes[$i]['methods'][$j]['days_after'] . '">';
+
+						$table .= '<td class="main" class="cost_'.$quotes[$i]['methods'][$j]['id'].'">' . $currencies->format(tep_add_tax($quotes[$i]['methods'][$j]['cost'], (isset($quotes[$i]['tax']) ? $quotes[$i]['tax'] : 0))) . '</td>' .
+						'<td class="main" align="right">' . ($includeSelect === true ? $radioShipping  : '') . '</td>';
 					} else {
-						$table .= '<td class="main" id="cost_'.$quotes[$i]['methods'][$j]['id'].'">' . $currencies->format(tep_add_tax($quotes[$i]['methods'][$j]['cost'], (isset($quotes[$i]['tax']) ? $quotes[$i]['tax'] : 0))) . '</td>' .
-						'<td class="main" align="right">' . ($includeSelect === true ? tep_draw_radio_field('rental_shipping', $quotes[$i]['id'] . '_' . $quotes[$i]['methods'][$j]['id'], true, 'days_before="' . $quotes[$i]['methods'][$j]['days_before'] . '" days_after="' . $quotes[$i]['methods'][$j]['days_after'] .  '" id="rental_shipping"') : '') . '</td>';
+						$radioShipping = '<input type="radio" checked="checked" name="rental_shipping" value="'. $quotes[$i]['id'] . '_' . $quotes[$i]['methods'][$j]['id'].'" days_before="' . $quotes[$i]['methods'][$j]['days_before'] . '" days_after="' . $quotes[$i]['methods'][$j]['days_after'] . '">';
+						$table .= '<td class="main" class="cost_'.$quotes[$i]['methods'][$j]['id'].'">' . $currencies->format(tep_add_tax($quotes[$i]['methods'][$j]['cost'], (isset($quotes[$i]['tax']) ? $quotes[$i]['tax'] : 0))) . '</td>' .
+						'<td class="main" align="right">' . ($includeSelect === true ? $radioShipping : '') . '</td>';
 					}
 
 					$table .= '</tr>';
@@ -1504,22 +1499,27 @@ class PurchaseType_reservation extends PurchaseTypeAbstract {
 			$prodBarcodes[] = $iBarcode['id'];
 		}
 		//print_r($prodBarcodes);
-		//echo '------------';
+		//echo '------------'.$qty;
 		//print_r($bookedDates);
-		foreach($bookedDates as $dateFormated => $iBook){
-			if ($this->getTrackMethod() == 'barcode'){
-				$myqty = 0;
-				foreach($iBook['barcode'] as $barcode){
-					if(in_array($barcode,$prodBarcodes)){
-						$myqty ++;
+
+		if(count($prodBarcodes) < $qty){
+			return false;
+		}else{
+			foreach($bookedDates as $dateFormated => $iBook){
+				if ($this->getTrackMethod() == 'barcode'){
+					$myqty = 0;
+					foreach($iBook['barcode'] as $barcode){
+						if(in_array($barcode,$prodBarcodes)){
+							$myqty ++;
+						}
 					}
-				}
-				if(count($prodBarcodes) - $myqty<$qty){
-					$bookingsArr[] = $dateFormated;
-				}
-			}else{
-				if($prodBarcodes['available'] - $iBook['qty'] < $qty){
-					$bookingsArr[] = $dateFormated;
+					if(count($prodBarcodes) - $myqty<$qty){
+						$bookingsArr[] = $dateFormated;
+					}
+				}else{
+					if($prodBarcodes['available'] - $iBook['qty'] < $qty){
+						$bookingsArr[] = $dateFormated;
+					}
 				}
 			}
 		}

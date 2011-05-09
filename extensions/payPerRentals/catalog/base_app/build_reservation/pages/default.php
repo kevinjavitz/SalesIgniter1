@@ -16,12 +16,7 @@
 	}
 	ob_start();
 ?>
-  <table border="0" width="100%" cellspacing="1" cellpadding="2" class="infoBox">
-   <tr class="infoBoxContents">
-    <td><table cellpadding="3" cellspacing="0" border="0" width="100%">
-     <tr>
-      <td colspan="2" class="main" id="daysMsg" style="display:none;"><b><?php echo sysLanguage::get('TEXT_ONETIME_INTRO');?></b></td>
-     </tr>
+
 	<?php
       if ($purchaseTypeClass->getDepositAmount() > 0){
 		$infoIcon = htmlBase::newElement('icon')
@@ -32,60 +27,53 @@
 			'cursor' => 'pointer'
 		));
 	?>
-	<tr>
-
-      <td colspan="2" class="main"><?php echo sysLanguage::get('PPR_DEPOSIT_AMOUNT') . ' - '. $currencies->format($purchaseTypeClass->getDepositAmount()) . $infoIcon->draw();?></td>
-     </tr>
+	 <div class="depositText" style="display:block;">
+        <?php echo sysLanguage::get('PPR_DEPOSIT_AMOUNT') . ' - '. $currencies->format($purchaseTypeClass->getDepositAmount()) . $infoIcon->draw();?>
+	 </div>
 		<?php
 	}
 		?>
-     <tr>
-
-      <td class="main" colspan="2"><?php echo $purchaseTypeClass->getPricingTable(false, false, false);?></td>
-     </tr>
+	<div class="pricingTable" style="display:block;">
+        <?php echo $purchaseTypeClass->getPricingTable(false, false, false);?>
+	</div>
 <?php
 	//this part needs redone
 	 if ($maxRentalPeriod > 0){
 ?>
-     <tr>
-      <td class="main"><?php echo sysLanguage::get('TEXT_MAX') . ' ' . ReservationUtilities::getPeriodType($pprTable->max_type);?>: </td>
-      <td class="main" id="maxPeriod"><?php echo $pprTable->max_period. ' '.ReservationUtilities::getPeriodType($pprTable->max_type);?></td>
-     </tr>
+	<div class="maxPeriod" style="display:block;">
+        <?php echo sysLanguage::get('TEXT_MAX') . ' ' . ReservationUtilities::getPeriodType($pprTable->max_type);?>:
+        <?php echo $pprTable->max_period . ' '.ReservationUtilities::getPeriodType($pprTable->max_type);?>
+	</div>
 <?php
 }
 ?>
 		<?php
 if ($minRentalPeriod > 0){
 ?>
-     <tr>
-      <td class="main"><?php echo sysLanguage::get('TEXT_MIN') . ' ' . ReservationUtilities::getPeriodType($pprTable->min_type);?>: </td>
-      <td class="main" id="minPeriod"><?php echo $pprTable->min_period.' '.ReservationUtilities::getPeriodType($pprTable->min_type);?></td>
-     </tr>
+	<div class="minPeriod" style="display:block;">
+        <?php echo sysLanguage::get('TEXT_MIN') . ' ' . ReservationUtilities::getPeriodType($pprTable->min_type);?>:
+		<?php echo $pprTable->min_period.' '.ReservationUtilities::getPeriodType($pprTable->min_type);?>
+	</div>
+
 <?php
 }
 ?>
 	<?php
 if ($insurancePrice > 0){
 ?>
-     <tr>
-      <td class="main"><?php echo sysLanguage::get('TEXT_INSURANCE') . ' ' ;?>: </td>
-      <td class="main" id="insurance_price"><?php echo $currencies->format($insurancePrice) ;?></td>
-     </tr>
+	<div class="insurancePrice" style="display:block;">
+        <?php echo sysLanguage::get('TEXT_INSURANCE') . ' ' ;?>:
+        <?php echo $currencies->format($insurancePrice) ;?>
+	</div>
 <?php
 }
 ?>
-       <tr>
-	       <td colspan="2">
-			<?php
-				echo ReservationUtilities::getCalendar($_GET['products_id'],$product, $purchaseTypeClass);
-			?>
-	       </td>
-       </tr>
+    <div class="calendarTable" style="display:block;">
+		<?php
+				echo ReservationUtilities::getCalendar($_GET['products_id'],$product, $purchaseTypeClass, 1, true);
+		?>
+	</div>
 
-    </table></td>
-
-      </tr>
-     </table>
    <?php
 	   $pageContents = ob_get_contents();
 	   ob_end_clean();
@@ -100,24 +88,6 @@ if ($insurancePrice > 0){
 		    ->draw();
 	   }
 
-	   $pageButtons .= sysLanguage::get('TEXT_ESTIMATED_PRICING') . '<span id="priceQuote"></span>';
-	   $pageButtons .= '<input type="hidden" name="products_id" id="pID" value="' . $product->getID() . '">';
-	   $pageButtons .= $purchaseTypeClass->getHiddenFields($pID_string);
-
-	   $pageButtons .= htmlBase::newElement('button')
-	   ->setId('checkAvail')
-	   ->setName('checkAvail')
-	   ->setText(sysLanguage::get('TEXT_BUTTON_CHECK_AVAIL'))
-	   ->draw();
-
-	   $pageButtons .= htmlBase::newElement('div')
-	   ->attr('id','inCart')
-	   ->css(array(
-		   'display'   => 'inline-block',
-		   'width' => '150px'
-	   ))
-	   ->html(sysLanguage::get('TEXT_BUTTON_IN_CART'))
-	   ->draw();
 
 	   $pageContent->set('pageForm', array(
 		   'name' => 'build_reservation',
