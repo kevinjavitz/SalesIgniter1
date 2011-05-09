@@ -308,7 +308,7 @@ class OrderCreator extends Order implements Serializable {
 				$opInfo->products_name,
 				$opInfo->products_model,
 				$currencies->display_price(
-				 	$opInfo->final_price,
+				 	$opInfo->products_price,
 				 	$opInfo->products_tax,
 				 	$opInfo->products_quantity
 				)
