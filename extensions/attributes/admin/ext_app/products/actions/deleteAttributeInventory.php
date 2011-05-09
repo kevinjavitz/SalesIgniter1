@@ -10,7 +10,7 @@
 	->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 	if ($Qinventory){
 		$extAttributes = $appExtension->getExtension('attributes');
-		$attributePermutations = $extAttributes->permutateAttributesFromString($_GET['aID_string']);
+		$attributePermutations = attributesUtil::permutateAttributesFromString($_GET['aID_string']);
 		if ($_GET['trackMethod'] == 'barcode'){
 			$Qcheck = Doctrine_Query::create()
 			->select('inventory_id')
