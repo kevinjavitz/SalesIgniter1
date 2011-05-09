@@ -36,7 +36,7 @@ class Extension_relatedProducts extends ExtensionBase {
 			->whereIn('products_id', $productsArr)
 			->limit((int)sysConfig::get('EXTENSION_RELATED_PRODUCTS_DISPLAY_NUMBER'));
 
-			if (EXTENSION_RELATED_PRODUCTS_LISTING_METHOD == 'Column'){
+			if (sysConfig::get('EXTENSION_RELATED_PRODUCTS_LISTING_METHOD') == 'Column'){
 				$productListing = new productListing_col();
 			}else{
 				$productListing = new productListing_row();
@@ -89,7 +89,7 @@ class Extension_relatedProducts extends ExtensionBase {
 		$listing = $this->getListing($productArr);
 		$contentRelated .= $listing->draw();
 		if (!empty($contentRelated)){
-			$boxTemplate = new Template('module.tpl', 'modules');
+			$boxTemplate = new Template('box.tpl', sysConfig::getDirFsCatalog() . 'extensions/templateManager/widgetTemplates');
 
 			$boxTemplate->setVars(array(
 				'box_id'     => 'relatedProducts',
