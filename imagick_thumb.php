@@ -1,13 +1,13 @@
 <?php
-header("Cache-Control: private, max-age=10800, pre-check=10800");
-header("Pragma: private");
-header("Expires: " . date(DATE_RFC822,strtotime(" 2 day")));
-if (isset($_SERVER['HTTP_IF_MODIFIED_SINCE'])){
-	// if the browser has a cached version of this image, send 304
-	header('Last-Modified: '.$_SERVER['HTTP_IF_MODIFIED_SINCE'],true,304);
+$cacheKey = 'image-' . md5($_GET['path'] . '-' . $_GET['imgSrc'] . '-' . $_GET['width'] . '-' . $_GET['height']);
+
+	require('includes/classes/system_cache.php');
+	$ImageCache = new SystemCache($cacheKey);
+if ($ImageCache->loadData() === true){
+	$ImageCache->output(false, true);
 	exit;
 }
-
+else {
 	if (!empty($_GET['imgSrc'])){
 		if (isset($_GET['path']) && $_GET['path'] == 'rel'){
 			if (substr($_GET['imgSrc'], 0, 1) == DIRECTORY_SEPARATOR){
@@ -42,17 +42,17 @@ if (isset($_SERVER['HTTP_IF_MODIFIED_SINCE'])){
 			// Determine Content Type
 			switch($ext){
 				case 'gif':
-					header('Content-Type: image/gif');
+					$ContentType = 'image/gif';
 					break;
 				case 'png':
-					header('Content-Type: image/png');
+					$ContentType = 'image/png';
 					break;
 				case 'jpeg':
 				case 'jpg':
-					header('Content-Type: image/jpeg');
+					$ContentType = 'image/jpeg';
 					break;
 				case 'bmp':
-					header('Content-Type: image/bmp');
+					$ContentType = 'image/bmp';
 					break;
 				default:
 					header('Status: 404 Not Found');
@@ -60,12 +60,24 @@ if (isset($_SERVER['HTTP_IF_MODIFIED_SINCE'])){
 					break;
 			}
 			//header('Content-Transfer-Encoding: binary');
-			//header('Content-Length: ' . filesize($_GET['imgSrc'])); 
+			//header('Content-Length: ' . filesize($_GET['imgSrc']));
+			ob_start();
 			echo $img;
+			$imgContent = ob_get_contents();
+			ob_end_clean();
+
+			$ImageCache->setContentType($ContentType);
+			$ImageCache->setContent($imgContent);
+			$ImageCache->setExpires(time() + (60 * 60 * 24 * 2));
+			$ImageCache->setLastModified(date(DATE_RSS, time()));
+			$ImageCache->store();
+
+			$ImageCache->output(false, true);
 		}else{
 			header('HTTP/1.0 404 Not Found');
 		}
 	}else{
 		header('HTTP/1.0 404 Not Found');
 	}
+}
 ?>

@@ -114,7 +114,7 @@ class InfoBoxNavigationMenu extends InfoBoxAbstract
 
 		if (isset($application) && $App->getAppName() == $application && $App->getPageName() == $item->link->page){
 			$addCls .= ' ui-state-active';
-		}elseif (isset($_GET['appPage']) && $_GET['appPage'] == $item->link->page){
+		}elseif (isset($application) && $App->getAppName() == $application && isset($_GET['appPage']) && $_GET['appPage'] == $item->link->page){
 			$addCls .= ' ui-state-active';
 		}
 
