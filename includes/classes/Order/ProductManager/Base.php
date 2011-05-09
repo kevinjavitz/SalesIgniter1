@@ -100,8 +100,8 @@ class OrderProductManager {
 		foreach($this->getContents() as $orderedProduct){
 			$orderedProductId = $orderedProduct->getOrderedProductId();
 			$purchaseType = $orderedProduct->getPurchaseType();
-			$finalPrice = $orderedProduct->getFinalPrice();
-			$finalPriceWithTax = $orderedProduct->getFinalPrice(false, true);
+			$finalPrice = $orderedProduct->getPrice();
+			$finalPriceWithTax = $orderedProduct->getPrice(true);
 			$taxRate = $orderedProduct->getTaxRate();
 			$productQty = $orderedProduct->getQuantity();
 			$productModel = $orderedProduct->getModel();

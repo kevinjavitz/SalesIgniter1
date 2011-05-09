@@ -453,9 +453,12 @@
 			$attributesContainer = htmlBase::newElement('div')
 			->addClass('main');
 			
-			$ProductsAttributes = attributesUtil::getAttributes((int)$_GET['pID'], null, null, $purchaseType, true);
+			$ProductsAttributes = attributesUtil::getAttributes((int)$_GET['pID'], null, null, $purchaseType, null);
+			//print_r($ProductsAttributes);
 			$Attributes = attributesUtil::organizeAttributeArray($ProductsAttributes);
-		
+		    //echo 'ooo'.print_r($Attributes);
+			//itwExit();
+			$hasOptions = false;
 			foreach($Attributes as $optionId => $aInfo){
 				$input = htmlBase::newElement('selectbox')
 				->css('margin-right', '.75em')
@@ -467,8 +470,10 @@
 			
 				foreach($aInfo['ProductsOptionsValues'] as $options){
 					$input->addOption($options['options_values_id'], $options['options_values_name']);
+					$hasOptions = true;
 				}
 				$attributesContainer->append($input);
+
 			}
 			
 			$addButton = htmlBase::newElement('button')
@@ -476,7 +481,9 @@
 			->usePreset('install')
 			->setText('Add')
 			->addClass('attributeStockAddButton');
-			$attributesContainer->append($addButton);
+			if($hasOptions){
+				$attributesContainer->append($addButton);
+			}
 		}
 		
 		if (isset($attributesContainer)){

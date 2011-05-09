@@ -101,6 +101,15 @@ class OrderProduct {
 		return $price;
 	}
 
+	public function getPrice($wTax = false){
+		$price = $this->pInfo['products_price'];
+
+		if ($wTax === true){
+			$price = tep_add_tax($price, $this->getTaxRate());
+		}
+		return $price;
+	}
+
 	public function getWeight(){
 		return $this->pInfo['products_weight'] * $this->getQuantity();
 	}
