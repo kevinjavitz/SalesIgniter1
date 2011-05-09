@@ -1,5 +1,5 @@
 <div><?php
- echo sysLanguage::get('TEXT_NEW_CUSTOMER') . '<br><br>' . sprintf(sysLanguage::get('TEXT_NEW_CUSTOMER_INTRODUCTION'), STORE_NAME) . '<br>';
+ echo sysLanguage::get('TEXT_NEW_CUSTOMER') . '<br><br>' . sprintf(sysLanguage::get('TEXT_NEW_CUSTOMER_INTRODUCTION'), sysConfig::get('STORE_NAME')) . '<br>';
 ?></div>
 <div style="text-align:right"><br /><?php
  $newAccountButton = htmlBase::newElement('button')

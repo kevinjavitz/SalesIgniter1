@@ -262,7 +262,7 @@ class HTTP_ConditionalGet {
      */
     public static function gmtDate($time)
     {
-        return gmdate('D, d M Y H:i:s \G\M\T', $time);
+        return date('D, d M Y H:i:s \G\M\T', $time);
     }
     
     protected $_headers = array();

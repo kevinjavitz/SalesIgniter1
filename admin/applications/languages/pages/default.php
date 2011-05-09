@@ -43,8 +43,8 @@
 		htmlBase::newElement('button')->setText('Edit')->addClass('editButton')->disable(),
 		htmlBase::newElement('button')->setText('Delete')->addClass('deleteButton')->disable(),
 		htmlBase::newElement('button')->setText('Definitions')->addClass('defineButton')->disable(),
-		htmlBase::newElement('button')->setText('Create New')->addClass('newLanguageButton'),
-		htmlBase::newElement('button')->setText('Clean')->addClass('cleanButton')
+		htmlBase::newElement('button')->setText('Create New')->addClass('newLanguageButton')/*,
+		htmlBase::newElement('button')->setText('Clean')->addClass('cleanButton')*/
 	));
 	
 	$tableGrid->addHeaderRow(array(

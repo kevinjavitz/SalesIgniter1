@@ -200,10 +200,18 @@ class SystemCache {
 		}
 
 		if (isset($_SERVER['HTTP_IF_MODIFIED_SINCE'])){
-			header('Last-Modified: ' . $_SERVER['HTTP_IF_MODIFIED_SINCE'], true, 304);
-			exit;
+		//echo $_SERVER['HTTP_IF_MODIFIED_SINCE'] . ' :: ' . strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE']) . '<br>';
+			if ($this->CacheClass->hasData('lastModified')){
+				//echo $this->CacheClass->getData('lastModified') . ' :: ' . strtotime($this->CacheClass->getData('lastModified'));
+				$lastModified = strtotime($this->CacheClass->getData('lastModified'));
+				if (strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE']) >= $lastModified){
+					header('Last-Modified: ' . $_SERVER['HTTP_IF_MODIFIED_SINCE'], true, 304);
+					exit;
+				}
+			}
 		}
-		elseif ($this->CacheClass->hasData('lastModified')){
+
+		if ($this->CacheClass->hasData('lastModified')){
 			header('Last-Modified: ' . $this->CacheClass->getData('lastModified'));
 		}
 

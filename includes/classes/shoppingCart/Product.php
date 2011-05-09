@@ -192,8 +192,8 @@
 		
 			$imageHtml = htmlBase::newElement('image')
 			->setSource($image)
-			->setWidth(SMALL_IMAGE_WIDTH)
-			->setHeight(SMALL_IMAGE_HEIGHT)
+			->setWidth(sysConfig::get('SMALL_IMAGE_WIDTH'))
+			->setHeight(sysConfig::get('SMALL_IMAGE_HEIGHT'))
 			->thumbnailImage(true);
 			
 			$imageHref = htmlBase::newElement('a')
