@@ -23,7 +23,7 @@
 		
 		public function install(){
 			if ($this->moduleCls->isInstalled() === false){
-				if (is_dir(sysConfig::getDirFsCatalog() . 'includes/modules/orderShippingModules/' . $this->moduleCls->getCode() . '/Doctrine/')){
+				if (is_dir(sysConfig::getDirFsCatalog() . 'includes/modules/orderShippingModules/' . $this->moduleCls->getCode() . '/Doctrine')){
 					Doctrine_Core::createTablesFromModels(sysConfig::getDirFsCatalog() . 'includes/modules/orderShippingModules/' . $this->moduleCls->getCode() . '/Doctrine/');
 				}
 				
