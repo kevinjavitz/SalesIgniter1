@@ -54,7 +54,7 @@ if($payment_method = "paypal" || $payment_method = "paypal_ipn") {
 		->usePreset('continue')
 		->setType('submit')
 		->setName('continue')
-		->setText('Cancel')
+		->setText(sysLanguage::get('TEXT_BUTTON_CANCEL'))
 		->draw();
 	}else{
 		$pageContent->set('pageForm', array(
