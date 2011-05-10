@@ -91,7 +91,7 @@
 														->where('b2s.barcode_id = ?',$barcodeId)
 														->fetchOne();
 									if($Qinvbs)
-										$inventoryCenterName = $Qinvbs->Stores->store_name;
+										$inventoryCenterName = $Qinvbs->Stores->stores_name;
 
 								}else{
 									$Qinvbs = Doctrine_Query::create()

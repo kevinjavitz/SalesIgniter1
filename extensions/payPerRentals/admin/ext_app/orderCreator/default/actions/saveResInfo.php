@@ -96,7 +96,7 @@
 	}
 	if (isset($resInfo['start_date']) && isset($resInfo['end_date'])){
 		if(isset($_GET['shipping']) && $_GET['shipping'] != 'undefined'){
-			$resInfo['rental_shipping'] = 'zonereservation_'.$_GET['shipping'];
+			$resInfo['rental_shipping'] = $_GET['shipping'];
 		}else{
 			$resInfo['rental_shipping'] = false;
 		}
@@ -125,12 +125,12 @@
 		$OrderProduct->setPInfo($reservationInfo);
 		EventManager::attachActionResponse(array(
 		'success' => true,
-		'price'	=> (isset($reservationInfo['final_price'])?$reservationInfo['final_price']:0)
+		'price'	=> (isset($reservationInfo['price'])?$reservationInfo['price']:0)
 	), 'json');
 	}else{
 		EventManager::attachActionResponse(array(
 		'success' => false,
-		'price'	=> (isset($reservationInfo['final_price'])?$reservationInfo['final_price']:0)
+		'price'	=> (isset($reservationInfo['price'])?$reservationInfo['price']:0)
 	), 'json');
 	}
 

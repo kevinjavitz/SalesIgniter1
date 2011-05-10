@@ -276,28 +276,6 @@ class productDesigner_admin_products_new_product extends Extension_productDesign
 		 * Inputs for allowing image entry on the customer side product designer --END--
 		 */
 
-		if (isset($payPerRental)){
-			$overbookingInput->setChecked(($payPerRental['overbooking'] == 1));
-			$monthsInput->setValue($payPerRental['max_months']);
-			$daysInput->setValue($payPerRental['max_days']);
-			//$authMethodInput->selectOptionByValue($Product['products_auth_method']);
-			//$authChargeInput->setValue($Product['products_auth_charge']);
-			
-			$dailyPrice->setValue($payPerRental['price_daily']);
-			$weeklyPrice->setValue($payPerRental['price_weekly']);
-			$monthlyPrice->setValue($payPerRental['price_monthly']);
-			$sixMonthPrice->setValue($payPerRental['price_six_month']);
-			$yearPrice->setValue($payPerRental['price_year']);
-			$threeYearPrice->setValue($payPerRental['price_three_year']);
-			
-			$dailyPriceGross->setValue($payPerRental['price_daily']);
-			$weeklyPriceGross->setValue($payPerRental['price_weekly']);
-			$monthlyPriceGross->setValue($payPerRental['price_monthly']);
-			$sixMonthPriceGross->setValue($payPerRental['price_six_month']);
-			$yearPriceGross->setValue($payPerRental['price_year']);
-			$threeYearPriceGross->setValue($payPerRental['price_three_year']);
-		}
-
 		$Qclasses = Doctrine_Query::create()
 		->from('ProductDesignerPredesignClasses')
 		->orderBy('class_name')
@@ -331,7 +309,8 @@ class productDesigner_admin_products_new_product extends Extension_productDesign
 		if ($infoPages !== false && $infoPages->isEnabled() === true){
 			$sizingTableInput = htmlBase::newElement('selectbox')->setName('product_designer_size_chart_id');
 			$pages = $infoPages->getInfoPage();
-			foreach($pages->toArray() as $pInfo){
+
+			foreach($pages as $pInfo){
 				$sizingTableInput->addOption($pInfo['pages_id'], $pInfo['PagesDescription'][Session::get('languages_id')]['pages_title']);
 			}
 			$sizingTableInput->selectOptionByValue($Product['product_designer_size_chart_id']);

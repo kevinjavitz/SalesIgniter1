@@ -45,6 +45,8 @@ $(document).ready(function (){
 	
 	$('.purchaseType').live('change', function (){
 		var $Row = $(this).parent().parent().parent().parent().parent();
+		var prType = $(this).val();
+
 		showAjaxLoader($Row, 'normal');
 		$.ajax({
 			url: js_app_link('rType=ajax&appExt=orderCreator&app=default&appPage=new&action=updateOrderProduct&id=' + $Row.attr('data-id') + '&purchase_type=' + $(this).val()),
@@ -53,6 +55,11 @@ $(document).ready(function (){
 			success: function (data){
 				$Row.find('td:eq(1)').html(data.name);
 				$Row.find('.priceEx').val(data.price).trigger('keyup');
+
+				if(prType == 'reservation'){
+					$('.reservationShipping').attr('readonly','readonly');
+					$('.productQty').attr('readonly','readonly');
+				}
 				removeAjaxLoader($Row);
 			}
 		})
@@ -159,9 +166,9 @@ $(document).ready(function (){
 						removeAjaxLoader($Row);
 						$(html).insertAfter($Row);
 						/*change for single purchaseType*/
-						$('.purchaseType').first().trigger('change');
 						$(html).find('.priceEx').trigger('keyup');
 						$Row.remove();
+						$('.purchaseType').first().trigger('change');
 					}
 				});
 			}

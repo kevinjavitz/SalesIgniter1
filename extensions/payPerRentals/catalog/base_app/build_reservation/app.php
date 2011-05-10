@@ -12,7 +12,7 @@
 
 	$appContent = $App->getAppContentFile();
 
-	$App->addJavascriptFile('ext/jQuery/external/fullcalendar/fullcalendar.min.js');
+	$App->addJavascriptFile('ext/jQuery/external/fullcalendar/fullcalendar.js');
 	$App->addJavascriptFile('ext/jQuery/external/datepick/jquery.datepick.js');
 
 	$App->addStylesheetFile('ext/jQuery/external/fullcalendar/fullcalendar.css');

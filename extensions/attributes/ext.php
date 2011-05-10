@@ -275,15 +275,49 @@ class Extension_attributes extends ExtensionBase {
 			$attributes = $orderedProduct->getInfo('OrdersProductsAttributes');
 			if (sizeof($attributes) > 0){
 				$langId = Session::get('languages_id');
-				foreach($attributes as $aInfo){
-					$html .= '<br />' .
-						'<small>&nbsp;<i> - ' .
-						$aInfo['products_options'] .
-						': ' .
-						'<input type="text" class="ui-widget-content" name="product[' . $orderedProduct->getId() . '][attributes][' . $aInfo['options_id'] . '][value]" value="' . $aInfo['products_options_values'] . '">';
+				foreach($attributes as $aInfo1){
 
+						//$aInfo['products_options'] .
+						//': ' .
+						//'<input type="text" class="ui-widget-content" name="product[' . $orderedProduct->getId() . '][attributes][' . $aInfo['options_id'] . '][value]" value="' . $aInfo['products_options_values'] . '">';
+					   $pInfo = $orderedProduct->getPInfo();
+					   //$html .= $pInfo['products_id'].'oooo'.$orderedProduct->getPurchaseType();
+					   $ProductsAttributes = attributesUtil::getAttributes(
+							$pInfo['products_id'],
+							null,
+							null,
+							$orderedProduct->getPurchaseType()
+						);
+						if ($ProductsAttributes){
+							$Attributes = attributesUtil::organizeAttributeArray($ProductsAttributes);
+							//print_r($Attributes);
+							foreach($Attributes as $optionId => $aInfo){
+
+								$valuesDrop = htmlBase::newElement('selectbox')
+								->setName('product[' . $orderedProduct->getId() . '][attributes][' . $optionId . '][value]')
+								->attr('attrval',$optionId)
+								->addClass('ui-widget-content productAttribute');
+
+								foreach($aInfo['ProductsOptionsValues'] as $vInfo){
+									if (!isset($selectedPrefix)){
+										$selectedPrefix = $vInfo['price_prefix'];
+										$selectedPrice = $vInfo['options_values_price'];
+									}
+									$valuesDrop->addOption(
+										$vInfo['options_values_id'],
+										$vInfo['options_values_name']
+									);
+								}
+								$valuesDrop->selectOptionByValue($aInfo1['options_id']);
+							}
+
+						}
+
+					$html .= '<br />' .
+						'<small>&nbsp;<i> - ' . $aInfo1['products_options'] .
+						': ' . (isset($valuesDrop)?$valuesDrop->draw():'');
 					//if ($aInfo['price'] != '0'){
-					$html .= ' ( ' . '<select class="ui-widget-content" name="product[' . $orderedProduct->getId() . '][attributes][' . $aInfo['options_id'] . '][prefix]"><option value="+"' . ($aInfo['price_prefix'] == '+' ? ' selected="selected"' : '') . '>+</option><option value="-"' . ($aInfo['price_prefix'] == '-' ? ' selected="selected"' : '') . '>-</option></select> <input type="text" class="ui-widget-content" size="4" name="product[' . $orderedProduct->getId() . '][attributes][' . $aInfo['options_id'] . '][price]" value="' . ($aInfo['options_values_price'] * $orderedProduct->getQuantity()) . '"> )';
+					$html .= ' ( ' . '<select class="ui-widget-content" name="product[' . $orderedProduct->getId() . '][attributes][' . $aInfo1['options_id'] . '][prefix]"><option value="+"' . ($aInfo1['price_prefix'] == '+' ? ' selected="selected"' : '') . '>+</option><option value="-"' . ($aInfo1['price_prefix'] == '-' ? ' selected="selected"' : '') . '>-</option></select> <input type="text" class="ui-widget-content" size="4" name="product[' . $orderedProduct->getId() . '][attributes][' . $aInfo1['options_id'] . '][price]" value="' . ($aInfo1['options_values_price'] * $orderedProduct->getQuantity()) . '"> )';
 					//}
 					$html .= '</i></small>';
 				}
