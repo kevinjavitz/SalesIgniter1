@@ -674,7 +674,7 @@ class ReservationUtilities {
 								} else {
 									alert('<?php echo sysLanguage::get('PPR_NOTICE_RESERVATION_NOT_AVAILABLE'); ?>.');
 								}
-								hideAjaxLoader($this);
+								removeAjaxLoader($this);
 							}
 						});
 					}
@@ -774,7 +774,8 @@ class ReservationUtilities {
 		?>
 
 		$selfID.find('.rental_qty').blur(function () {
-			showAjaxLoader($selfID.find('.datePicker'), 'xlarge');
+			var $calLoader = $selfID.find('.datePicker');
+			showAjaxLoader($calLoader, 'xlarge');
 			$.ajax({
 				cache: false,
 				dataType: 'json',
@@ -783,6 +784,7 @@ class ReservationUtilities {
 				data: 'action=<?php echo $callAction;?>&pID=' + productsID + '&' + $('.reservationTable *, .ui-widget-footer-box *, .pprButttons *').serialize(),
 				success: function (data) {
 					if (data.success == true) {
+						removeAjaxLoader($calLoader);
 						$selfID.parent().html(data.calendar);
 					}
 				}
@@ -813,7 +815,7 @@ class ReservationUtilities {
 						} else {
 							alert('<?php echo sysLanguage::get('PPR_NOTICE_RESERVATION_NOT_AVAILABLE'); ?>.');
 						}
-						hideAjaxLoader(selectedPeriod);
+						removeAjaxLoader(selectedPeriod);
 					}
 				});
 			} else {
@@ -946,6 +948,7 @@ class ReservationUtilities {
 							data: 'action=checkRes&pID=' + productsID + '&' + $('.reservationTable *, .ui-widget-footer-box *').serialize(),
 							success: function (data) {
 								if (data.success == true) {
+									removeAjaxLoader($this);
 									$selfID.parent().find('.priceQuote').html(data.price + ' ' + data.message);
 									$selfID.parent().find('.inCart').show();
 									$selfID.parent().find('.inCart').button();
@@ -954,7 +957,7 @@ class ReservationUtilities {
 								} else {
 									alert('<?php echo sysLanguage::get('PPR_NOTICE_RESERVATION_NOT_AVAILABLE'); ?>.');
 								}
-								hideAjaxLoader($this);
+
 							}
 						});
 					}

@@ -31,14 +31,14 @@ $(document).ready(function (){
 				$self.html(data.calendar);
 
 				$('.closeBut').click(function() {
+					removeAjaxLoader($selfInput);
 					$self.html('');
 					$self.hide();
 					$closeBut.hide();
-					hideAjaxLoader($selfInput);
 					return false;
 				});
 
-				$('.inCart').click(function() {
+				$('.inCart').live('click', function(event) {
 					showAjaxLoader($self, 'large');
 					$.ajax({
 						cache: false,
@@ -60,9 +60,11 @@ $(document).ready(function (){
 								$shippingText.html($shipRadio.parent().parent().find('td:eq(0)').html());
 							}
 							$Row.find('.priceEx').val(data.price).trigger('keyup');
+							removeAjaxLoader($self);
 							$('.closeBut').trigger('click');
 						}
 					});
+					event.stopImmediatePropagation();
 				});
 
 				$self.css('background-color', '#ffffff');
