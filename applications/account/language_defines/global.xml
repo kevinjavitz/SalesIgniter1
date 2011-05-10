@@ -298,6 +298,8 @@
     <define key="TEXT_PAYMENT_HISTORY_MESSAGE"><![CDATA[Message]]></define>
     <define key="TEXT_PAYMENT_HISTORY_PAYMENT_METHOD"><![CDATA[Payment Method]]></define>
     <define key="TEXT_PAYMENT_HISTORY_DATE_ADDED"><![CDATA[Date Added]]></define>
+	<define key="TEXT_BUTTON_CANCEL"><![CDATA[Cancel]]></define>
+
 
 	<define key="TEXT_ACTIVATED_MINUTES"><![CDATA[Your Account will be activated in a few minutes]]></define>
 </definitions>

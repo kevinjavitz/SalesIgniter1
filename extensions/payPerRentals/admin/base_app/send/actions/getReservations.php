@@ -135,7 +135,7 @@
 														->fetchOne();
 									if($Qinvbs){
 										$Store = Doctrine_Core::getTable('Stores')->findOneByStoreId($Qinvbs->inventory_store_id);
-										$inventoryCenterName = $Store->store_name;
+										$inventoryCenterName = $Store->stores_name;
 									}
 
 								}else{

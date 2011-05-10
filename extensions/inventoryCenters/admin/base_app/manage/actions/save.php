@@ -9,6 +9,12 @@
 	$delivery_instructions = $_POST['inventory_center_delivery_instructions'];
 	$provider = $_POST['provider'];
 
+	$continent = $_POST['continent'];
+	$country = $_POST['country'];
+	$state = $_POST['state'];
+	$city = $_POST['city'];
+	$sortOrder = $_POST['inventory_center_sort_order'];
+
 	$ProductsInventoryCenters = Doctrine_Core::getTable('ProductsInventoryCenters');
 	if (isset($_GET['cID'])){
 		$InventoryCenter = $ProductsInventoryCenters->find((int)$_GET['cID']);
@@ -25,7 +31,7 @@
 
      $addressStr = str_replace("\r\n", " ",stripslashes (htmlspecialchars($centerAddress)));
 	 $addressStr = str_replace(' ', '+', $addressStr);
-     $address = 'http://maps.google.com/maps/geo?q=' . $addressStr  . '&key=' . sysConfig::get('EXTENSION_INVENTORY_CENTERS_GOOGLE_MAPS_API_KEY') . '&output=json';
+     $address = 'http://maps.google.com/maps/geo?q=' . $addressStr  . '&key=' . Session::get('google_key') . '&output=json';
      $page = file_get_contents($address);
 
      if (tep_not_null($page)){
@@ -48,6 +54,13 @@
 	$InventoryCenter->inventory_center_min_rental_days = $minRentalDays;
 	$InventoryCenter->inventory_center_customer = $provider;
 	$InventoryCenter->inventory_center_delivery_instructions = $delivery_instructions;
+
+	$InventoryCenter->inventory_center_continent = $continent;
+	$InventoryCenter->inventory_center_country = $country;
+	$InventoryCenter->inventory_center_state = $state;
+	$InventoryCenter->inventory_center_city = $city;
+	$InventoryCenter->inventory_center_sort_order = $sortOrder;
+
 	$InventoryCenter->gmaps_polygon = $polygon;
 
 	if (is_array($_POST['inventory_center_shipping'])){

@@ -21,6 +21,8 @@ function addConfiguration($key, $group, $title, $desc, $default, $func) {
 	$Qcheck->free();
 }
 
+addConfiguration('SHOW_MANUFACTURER_ON_PRODUCT_INFO', 1, 'Show manufacturer name on product Info', 'Show manufacturer name on product Info', 'false', "tep_cfg_select_option(array('true', 'false'),");
+
 addConfiguration('ORDERS_STATUS_CANCELLED_ID', 1, 'Order Status cancel ID', 'Order Status cancel ID', '1', 'tep_cfg_pull_down_order_status_list(');
 addConfiguration('ORDERS_STATUS_WAITING_ID', 1, 'Order Status Waiting for Confirmation ID', 'Order Status Waiting for Confirmation ID', '1', 'tep_cfg_pull_down_order_status_list(');
 addConfiguration('ORDERS_STATUS_APPROVED_ID', 1, 'Order Status Order Approved ID', 'Order Status order Approved ID', '1', 'tep_cfg_pull_down_order_status_list(');

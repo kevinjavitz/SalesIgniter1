@@ -42,20 +42,27 @@ class Extension_multiStore extends ExtensionBase {
 		}
 		
 		if ($appExtension->isAdmin()){
-			if(Session::exists('current_store_id')){
-				$this->adminStoreId = Session::get('current_store_id');
+			if ($App->getAppName() == 'products' && !isset($_GET['stores_id'])){//Session::exists('current_store_id') === false){
+				$_GET['stores_id'] = 'all';
 			}
 			if (isset($_GET['stores_id']) && is_numeric($_GET['stores_id']) && $_GET['stores_id'] > 0){
 				$this->adminStoreId = $_GET['stores_id'];
+
 				Session::set('current_store_id', $_GET['stores_id']);
 				Session::remove('all_stores');
-			}else{
-				Session::set('current_store_id', '1');
+			}elseif (isset($_GET['stores_id']) && $_GET['stores_id'] == 'all'){
+				unset($this->adminStoreId);
+				Session::set('current_store_id', 'all');
 				Session::set('all_stores','true');
+			}elseif(Session::exists('current_store_id') && Session::get('current_store_id') != 'all'){
+				$this->adminStoreId = Session::get('current_store_id');
 			}
+
+
 			EventManager::attachEvents(array(
 				'BoxConfigurationAddLink',
 				'AdminHeaderRightAddContent',
+				'AdminInventoryCentersListingQueryBeforeExecute',
 				'ProductInventoryReportsListingQueryBeforeExecute'
 			), null, $this);
 			
@@ -120,10 +127,13 @@ class Extension_multiStore extends ExtensionBase {
 			}
 			$this->storeInfo = $Qstore[0];
 		}
-		
-		if (getenv('HTTPS') != 'on'){
-			Session::set('current_store_id', $this->storeInfo['stores_id']);
+
+		if(!Session::exists('current_store_id') || Session::get('current_store_id') != 'all'){
+			if (getenv('HTTPS') != 'on'){
+				Session::set('current_store_id', $this->storeInfo['stores_id']);
+			}
 		}
+
 		if(Session::exists('current_store_id')){
 			$Qconfig = Doctrine_Query::create()
 			->select('configuration_key, configuration_value')
@@ -161,8 +171,15 @@ class Extension_multiStore extends ExtensionBase {
 	}
 	
 	public function AdminProductListingQueryBeforeExecute(&$Qproducts){
-		$Qproducts->leftJoin('p.ProductsToStores p2s')
-		->andWhere('p2s.stores_id = ?', $this->adminStoreId);
+		if(isset($this->adminStoreId)){
+			$Qproducts->leftJoin('p.ProductsToStores p2s')
+			->andWhere('p2s.stores_id = ?', $this->adminStoreId);
+		}
+	}
+	public function AdminInventoryCentersListingQueryBeforeExecute(&$Qcenter){
+		if(isset($this->adminStoreId)){
+			$Qcenter->andWhere('inventory_center_stores = ?', $this->adminStoreId);
+		}
 	}
 	
 	public function CategoryListingQueryBeforeExecute(&$Qcategories){

@@ -22,20 +22,11 @@ class inventoryCenters_admin_products_default extends Extension_inventoryCenters
 
 			EventManager::attachEvents(array(
 				'ProductsDefaultAddFilterOptions',
-				'ProductListingQueryBeforeExecute'
+				'AdminProductListingQueryBeforeExecute'
 			), null, $this);
 	}
 	
-	public function ProductsDefaultAddFilterOptions(){
-		$searchForm = htmlBase::newElement('form')
-		->attr('name', 'search')
-		->attr('action', itw_app_link(null, null, null, 'SSL'))
-		->attr('method', 'get');
-		
-		$submitb = htmlBase::newElement('button')
-		->setType('submit')
-		->setText('GO')
-		->setName('submitb');
+	public function ProductsDefaultAddFilterOptions(&$searchForm){
 		
 		$searchField = htmlBase::newElement('selectbox')
 		->setName('search_inv_center');
@@ -43,6 +34,7 @@ class inventoryCenters_admin_products_default extends Extension_inventoryCenters
 
 		$Qinv = Doctrine_Query::create()
 		->from('ProductsInventoryCenters')
+		->orderBy('inventory_center_name')
 		->execute(array(),Doctrine_Core::HYDRATE_ARRAY);
 		if ($Qinv){
 			foreach($Qinv as $qi){
@@ -54,11 +46,11 @@ class inventoryCenters_admin_products_default extends Extension_inventoryCenters
 			$searchField->selectOptionByValue($_GET['search_inv_center']);
 		}
 		
-		$searchForm->append($searchField)->append($submitb);
-		return $searchForm->draw();
+		$searchForm->append($searchField);
+		//return $searchForm->draw();
 	}
 	
-	public function ProductListingQueryBeforeExecute(&$Qproducts){
+	public function AdminProductListingQueryBeforeExecute(&$Qproducts){
 		if (isset($_GET['search_inv_center'])) {
 			$search = (int)$_GET['search_inv_center'];
 			if ($search > 0){

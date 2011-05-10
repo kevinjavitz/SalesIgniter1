@@ -1,7 +1,6 @@
-<div class="pageHeading"><?php
-	echo sysLanguage::get('HEADING_TITLE_HISTORY_INFO');
-?></div>
-<br />
+<?php
+ob_start();
+?>
 <div class="ui-widget ui-widget-content ui-corner-all" style="padding:.5em;">
     <table border="0" width="100%" cellspacing="0" cellpadding="0">
       <tr>
@@ -272,3 +271,19 @@ for($i=0, $n=sizeof($trackings); $i<$n; $i++){
   </tr>
  </table>
 </div>
+	<?php
+
+	$pageContents = ob_get_contents();
+	ob_end_clean();
+	$contentHeading = sysLanguage::get('HEADING_TITLE_HISTORY_INFO');
+	$pageTitle = stripslashes($contentHeading);
+
+	$pageButtons = htmlBase::newElement('button')
+	->usePreset('continue')
+	->setHref(itw_app_link(null, 'index', 'default'))
+	->draw();
+
+	$pageContent->set('pageTitle', $pageTitle);
+	$pageContent->set('pageContent', $pageContents);
+	$pageContent->set('pageButtons', $pageButtons);
+?>

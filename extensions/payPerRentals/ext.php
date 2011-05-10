@@ -66,6 +66,18 @@ class Extension_payPerRentals extends ExtensionBase {
 
 		require(dirname(__FILE__) . '/classes/Utilities.php');
 		require(dirname(__FILE__) . '/classes/InfoBoxUtil.php');
+		/*load google api key per store*/
+		$multiStore = $appExtension->getExtension('multiStore');
+		if ($multiStore !== false && $multiStore->isEnabled() === true){
+			$QstoreInfo = Doctrine_Query::create()
+			->select('google_key')
+			->from('Stores')
+			->where('stores_id = ?', Session::get('current_store_id'))
+			->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+			Session::set('google_key', $QstoreInfo[0]['google_key']);
+		}else{
+			Session::set('google_key', sysConfig::get('EXTENSION_PAY_PER_RENTALS_GOOGLE_MAPS_API_KEY'));
+		}
 	}
 	
 	public function CouponEditPurchaseTypeBeforeOutput(&$checkbox, $name, $Coupon){
@@ -302,6 +314,28 @@ class Extension_payPerRentals extends ExtensionBase {
 	public function ProductListingQueryBeforeExecute(&$Qproducts){
 		$Qproducts->leftJoin('p.ProductsPayPerRental pppr');
 		$Qproducts->leftJoin('pppr.PricePerRentalPerProducts ppprp');
+		$Qproducts->leftJoin('p.PayPerRentalHiddenDates pprhd');
+		if(Session::exists('isppr_date_start') && (Session::get('isppr_date_start') != '') && Session::exists('isppr_date_end') && (Session::get('isppr_date_end') != '')){
+			//i update hidden_start_dates for every run
+			$QHiddenDatesUpdateStart = Doctrine_Query::create()
+			->from('PayPerRentalHiddenDates')
+			->where('hidden_start_date < ?', date('Y-m-d'))
+			->andWhere('hidden_end_date < ?', date('Y-m-d'))
+			->execute();
+			foreach($QHiddenDatesUpdateStart as $iHidden){
+				$iHidden->hidden_start_date = date('Y-m-d', strtotime('+1 year', strtotime($iHidden->hidden_start_date)));
+				$iHidden->hidden_end_date = date('Y-m-d', strtotime('+1 year', strtotime($iHidden->hidden_end_date)));
+				$iHidden->save();
+			}
+
+
+			$Qproducts->andWhere('hidden_start_date is null OR
+								  hidden_end_date is null OR
+								  hidden_start_date NOT BETWEEN CAST("'.date('Y-m-d',strtotime(Session::get('isppr_date_start'))).'" AS DATE) AND CAST("'.date('Y-m-d', strtotime(Session::get('isppr_date_end'))).'" AS DATE) AND
+								  hidden_end_date NOT BETWEEN CAST("'.date('Y-m-d',strtotime(Session::get('isppr_date_start'))).'" AS DATE) AND CAST("'.date('Y-m-d', strtotime(Session::get('isppr_date_end'))).'" AS DATE) AND
+			                      CAST("'.date('Y-m-d', strtotime(Session::get('isppr_date_end'))).'" AS DATE) NOT BETWEEN hidden_start_date AND hidden_end_date
+			');
+		}
 	}
 
 	public function ProductSearchQueryBeforeExecute(&$Qproducts){

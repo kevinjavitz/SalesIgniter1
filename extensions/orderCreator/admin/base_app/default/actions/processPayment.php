@@ -2,7 +2,9 @@
 	$success = $Editor->PaymentManager->processPayment($_POST['payment_method']);
 	
 	$html = '';
-	if ($success === true){
+
+	if ($success === true || $success['error_message'] == null){
+		$success = true;
 		$Qhistory = Doctrine_Query::create()
 		->from('OrdersPaymentsHistory')
 		->where('orders_id = ?', $Editor->getOrderId())

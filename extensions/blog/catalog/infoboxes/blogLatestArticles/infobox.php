@@ -20,12 +20,11 @@ class InfoBoxBlogLatestArticles extends InfoBoxAbstract {
 		global $appExtension;
 		$boxWidgetProperties = $this->getWidgetProperties();
 		$nr_art = $boxWidgetProperties->nr_art;
-		$showImage = (isset($boxWidgetProperties->showImage)&& $boxWidgetProperties->showImage=='showImage')?true:false;
-		$showDate = (isset($boxWidgetProperties->showDate) && $boxWidgetProperties->showDate=='showDate')?true:false;
+		$showImage = (isset($boxWidgetProperties->showImage)&& $boxWidgetProperties->showImage == 'showImage')?true:false;
+		$showDate = (isset($boxWidgetProperties->showDate) && $boxWidgetProperties->showDate == 'showDate')?true:false;
 		$showReadMore = (isset($boxWidgetProperties->showReadMore)&& $boxWidgetProperties->showReadMore=='showReadMore')?true:false;
 		$descLength = $boxWidgetProperties->descLength;
 		$blog = $appExtension->getExtension('blog');
-
 
 		$app_pg = null;
 		$pg = 1;
@@ -62,7 +61,7 @@ class InfoBoxBlogLatestArticles extends InfoBoxAbstract {
 			if($descLength > 0){
 				$contentHtml.= "<div class='blog_post_text'>" . substr(strip_tags($post['BlogPostsDescription'][Session::get('languages_id')]['blog_post_text']),0,$descLength).'... ';
 				if($showReadMore){
-					$contentHtml.= "<a style='color:red;font-weight:bold;' href='" . itw_app_link('appExt=blog', 'show_post', $post['BlogPostsDescription'][Session::get('languages_id')]['blog_post_seo_url']) . "'>". sysLanguage::get('INFOBOX_BLOGLATESTARTICLES_TEXT_READ_MORE') . "</a>";
+					$contentHtml.= "<a style='color:red;font-weight:bold;' href='" . itw_app_link('appExt=blog', 'show_post', $post['BlogPostsDescription'][Session::get('languages_id')]['blog_post_seo_url']) . "'>". 'Read More' . "</a>"; //sysLanguage::get('INFOBOX_BLOGLATESTARTICLES_TEXT_READ_MORE')
 				}
 				$contentHtml.= "</div>";
 			}

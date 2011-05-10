@@ -1,0 +1,10 @@
+<data>
+	<Stores>
+		<google_key>
+			<type>string</type>
+			<fixed>false</fixed>
+			<primary>false</primary>
+			<notnull>true</notnull>
+		</google_key>
+	</Stores>
+</data>

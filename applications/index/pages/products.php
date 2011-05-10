@@ -70,7 +70,7 @@ if ($category_depth == 'products' || isset($_GET['manufacturers_id'])) {
 			$cPath_new = tep_get_path($categoryId);
 			$width = (int)(100 / sysConfig::get('MAX_DISPLAY_CATEGORIES_PER_ROW')) . '%';
 			echo '  <td align="center" class="smallText" width="' . $width . '" valign="top"><a href="' . itw_app_link($cPath_new, 'index', 'default') . '">' .
-			'<img src="imagick_thumb.php?path=rel&imgSrc=' .sysConfig::getDirWsCatalog() .'images/'. $categoryImage . '&width=100&height=100" alt="' . $categoryName . '" />' .'<br />'. $categoryName .'</a></td>' . "\n";
+			'<img src="imagick_thumb.php?path=rel&imgSrc=' . 'images/'. $categoryImage . '&width=100&height=100" alt="' . $categoryName . '" />' .'<br />'. $categoryName .'</a></td>' . "\n";
 
 			$col++;
 			if ($col >= sysConfig::get('MAX_DISPLAY_CATEGORIES_PER_ROW')){

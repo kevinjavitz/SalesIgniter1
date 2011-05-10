@@ -1,8 +1,4 @@
 
-<div class="pageHeading"><?php
-	echo "My Received Orders";
-?></div>
-<br />
 <?php
 	$QcustomerCenter = Doctrine_Query::create()
 	->select('inventory_center_id')
@@ -24,7 +20,7 @@ $Qorders = Doctrine_Query::create()
 	->execute(array(),Doctrine_Core::HYDRATE_ARRAY);
 
 	//echo "<pre>". print_r($Qorders);
-
+	ob_start();
 	if ($Qorders){
 		foreach($Qorders as $order){
 			$orderId = $order['orders_id'];
@@ -64,3 +60,19 @@ $Qorders = Doctrine_Query::create()
 <div class="ui-widget ui-widget-content ui-corner-all pageButtonBar"><?php
  echo htmlBase::newElement('button')->usePreset('back')->setHref(itw_app_link(null, 'account', 'default', 'SSL'))->draw();
  ?></div>
+
+<?php
+    $pageContents = ob_get_contents();
+	ob_end_clean();
+	$contentHeading = 'My Received Orders';
+	$pageTitle = stripslashes($contentHeading);
+
+	$pageButtons = htmlBase::newElement('button')
+	->usePreset('continue')
+	->setHref(itw_app_link(null, 'index', 'default'))
+	->draw();
+
+	$pageContent->set('pageTitle', $pageTitle);
+	$pageContent->set('pageContent', $pageContents);
+	$pageContent->set('pageButtons', $pageButtons);
+?>

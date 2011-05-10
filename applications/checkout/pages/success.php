@@ -330,6 +330,13 @@ for($i=0, $n=sizeof($trackings); $i<$n; $i++){
 	?></div>
 </div>
 <?php
+	$contents = EventManager::notifyWithReturn('CheckoutSuccessFinish',$QlastOrder[0]);
+	if (!empty($contents)){
+		foreach($contents as $content){
+			echo $content;
+		}
+	}
+
  	Session::remove('sendto');
 	Session::remove('billto');
 	Session::remove('shipping');

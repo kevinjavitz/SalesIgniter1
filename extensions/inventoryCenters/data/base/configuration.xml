@@ -38,12 +38,6 @@
 			<sort_order>6</sort_order>
 			<set_function>tep_cfg_select_option(array('True','False'),</set_function>
 		</EXTENSION_INVENTORY_CENTERS_REQUIRE_PREREG>
-		<EXTENSION_INVENTORY_CENTERS_GOOGLE_MAPS_API_KEY>
-			<value>ABQIAAAAJfeNSDfdlXtgf6gjHMTzDBT0_i__oM-cAYP-svDeQzBBv_RytBShCDbtJySULQi-i9FDwsHX8pK4aQ</value>
-			<title>Google Maps API Key</title>
-			<description>This is the key that google maps gives you for your domain.</description>
-			<sort_order>7</sort_order>
-		</EXTENSION_INVENTORY_CENTERS_GOOGLE_MAPS_API_KEY>
 		<EXTENSION_INVENTORY_CENTERS_SHIPPING_PER_INVENTORY>
 			<value>True</value>
 			<title>Setup shipping methods per inventory center</title>
@@ -79,6 +73,40 @@
 			<sort_order>13</sort_order>
 			<set_function>tep_cfg_select_option(array('True','False'),</set_function>
 		</EXTENSION_INVENTORY_CENTERS_SHOW_DELIVERY_INSTRUCTIONS_ON_HISTORY>
+
+		<EXTENSION_INVENTORY_CENTERS_SHOW_CONTINENT_ON_PPR_INFOBOX>
+			<value>False</value>
+			<title>If set to true Continent selectbox will show on ppr infobox</title>
+			<description>Do you want Continent selectbox to show on ppr infobox?</description>
+			<sort_order>13</sort_order>
+			<set_function>tep_cfg_select_option(array('True','False'),</set_function>
+		</EXTENSION_INVENTORY_CENTERS_SHOW_CONTINENT_ON_PPR_INFOBOX>
+
+		<EXTENSION_INVENTORY_CENTERS_SHOW_COUNTRY_ON_PPR_INFOBOX>
+			<value>False</value>
+			<title>If set to true Country selectbox will show on ppr infobox</title>
+			<description>Do you want Country selectbox to show on ppr infobox?</description>
+			<sort_order>13</sort_order>
+			<set_function>tep_cfg_select_option(array('True','False'),</set_function>
+		</EXTENSION_INVENTORY_CENTERS_SHOW_COUNTRY_ON_PPR_INFOBOX>
+
+		<EXTENSION_INVENTORY_CENTERS_SHOW_CITY_ON_PPR_INFOBOX>
+			<value>False</value>
+			<title>If set to true City selectbox will show on ppr infobox</title>
+			<description>Do you want City selectbox to show on ppr infobox?</description>
+			<sort_order>13</sort_order>
+			<set_function>tep_cfg_select_option(array('True','False'),</set_function>
+		</EXTENSION_INVENTORY_CENTERS_SHOW_CITY_ON_PPR_INFOBOX>
+
+		<EXTENSION_INVENTORY_CENTERS_SHOW_STATE_ON_PPR_INFOBOX>
+			<value>False</value>
+			<title>If set to true State selectbox will show on ppr infobox</title>
+			<description>Do you want State selectbox to show on ppr infobox?</description>
+			<sort_order>13</sort_order>
+			<set_function>tep_cfg_select_option(array('True','False'),</set_function>
+		</EXTENSION_INVENTORY_CENTERS_SHOW_STATE_ON_PPR_INFOBOX>
+
+
 		
 	</Configuration>
 </ConfigurationGroup>

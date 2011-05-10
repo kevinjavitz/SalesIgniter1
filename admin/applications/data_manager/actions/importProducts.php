@@ -394,6 +394,9 @@
 			
 			//echo '<pre>';print_r($Product->toArray(true));echo '</pre>';
 			$Product->save();
+			$QPPR = Doctrine_Core::getTable('ProductsPayPerRental')->findByProductsId($Product->products_id);
+			EventManager::notify('DataImportAfterSave', &$items, &$QPPR[0]);
+
 			if (isset($items['v_status']) && $items['v_status'] == $deleteStatus){
 				$Product->delete();
 				$status = 'Deleted';

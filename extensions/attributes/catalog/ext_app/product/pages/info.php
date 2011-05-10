@@ -79,12 +79,12 @@ class attributes_catalog_product_info extends Extension_attributes {
 								foreach($optionsValues[$i]['ProductsAttributesViews'] as $idx => $viewInfo){
 									if ($idx == 0){
 										$input->attr('title', $viewInfo['view_name'])
-										->attr('imageSrc', DIR_WS_IMAGES . $viewInfo['view_image']);
+										->attr('imageSrc', sysConfig::get('DIR_WS_IMAGES') . $viewInfo['view_image']);
 									}
 								
 									$liObj = htmlBase::newElement('li')
-									->attr('imgSrc', 'product_thumb.php?w=280&img=' . DIR_WS_IMAGES . $viewInfo['view_image'])
-									->attr('bigImgSrc', DIR_WS_IMAGES . $viewInfo['view_image'])
+									->attr('imgSrc', 'product_thumb.php?w=280&img=' . sysConfig::get('DIR_WS_IMAGES') . $viewInfo['view_image'])
+									->attr('bigImgSrc', sysConfig::get('DIR_WS_IMAGES') . $viewInfo['view_image'])
 									->html($viewInfo['view_name']);
 									
 									$multiList->addItemObj($liObj);
@@ -94,7 +94,7 @@ class attributes_catalog_product_info extends Extension_attributes {
 								$list->addClass('useSingleImage');
 							
 								$input->attr('title', $optionsValues[$i]['options_values_name'])
-								->attr('imageSrc', DIR_WS_IMAGES . $optionsValues[$i]['options_values_image']);
+								->attr('imageSrc', sysConfig::get('DIR_WS_IMAGES') . $optionsValues[$i]['options_values_image']);
 							}
 						}
 					
@@ -137,7 +137,7 @@ class attributes_catalog_product_info extends Extension_attributes {
 								->css('display', 'none');
 								foreach($optionsValues[$i]['ProductsAttributesViews'] as $viewInfo){
 									$liObj = htmlBase::newElement('li')
-									->attr('imgSrc', DIR_WS_IMAGES . $viewInfo['view_image'])
+									->attr('imgSrc', sysConfig::get('DIR_WS_IMAGES') . $viewInfo['view_image'])
 									->html($viewInfo['view_name']);
 								
 									$imageList->addItemObj($liObj);
@@ -145,7 +145,7 @@ class attributes_catalog_product_info extends Extension_attributes {
 								$multiList .= $imageList->draw();
 							}else{
 								$optionEl->attr('title', $optionsValues[$i]['options_values_name'])
-								->attr('imageSrc', DIR_WS_IMAGES . $optionsValues[$i]['options_values_image']);
+								->attr('imageSrc', sysConfig::get('DIR_WS_IMAGES') . $optionsValues[$i]['options_values_image']);
 							}
 						}
 						$input->addOptionObj($optionEl);

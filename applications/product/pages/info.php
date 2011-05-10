@@ -114,6 +114,7 @@
 	}
 	
 	$pageButtons .= htmlBase::newElement('button')
+	->addClass('infoBack')
 	->usePreset('back')
 	->setHref($link)
 	->draw();

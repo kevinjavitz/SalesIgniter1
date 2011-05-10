@@ -7,6 +7,7 @@
 	->where('p.products_status = ?', '1')
 	->andWhere('p2b.products_id is null')
 	->andWhere('pd.language_id = ?', (int)Session::get('languages_id'))
+	->andWhere('date_add(p.products_date_added, INTERVAL 7 DAY) > ?',date('Y-m-d'))
 	->orderBy('p.products_date_added DESC, pd.products_name');
 
 	$productListing = new productListing_date();

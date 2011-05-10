@@ -1698,6 +1698,35 @@ function tep_cfg_select_multioption($select_array, $key_value, $key = '') {
 	return $string;
 }
 
+function tep_cfg_payment_fee($selected, $key=''){
+
+	$Qmodules = Doctrine_Query::create()
+	->from('Modules m')
+	->leftJoin('m.ModulesConfiguration mc')
+	->where('m.modules_type = ?', 'order_payment')
+	->orderBy('mc.sort_order')
+	->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+
+	$selectedPayments = explode(',', $selected);
+	array_walk($selectedPayments, 'trim');
+	$string = '';
+	foreach($Qmodules as $module){
+		$name = (($key) ? 'configuration[' . $key . '][]' : 'configuration_value[]');
+		$val = '';
+		foreach($selectedPayments as $sPayment){
+			$method_value = explode('-', $sPayment);
+			if($method_value[0] == $module['modules_code']){
+				$val = $method_value[1];
+				break;
+			}
+		}
+		$string .= '<input type="text" name="'.$name.'" value="'.$module['modules_code'].'-'.$val.'"><br/>';
+	}
+	return $string;
+}
+
+
+
 function tep_cfg_select_multioption_element($select_array, $key_value, $key = '') {
 	for ($i=0; $i<sizeof($select_array); $i++) {
 		if (is_array($select_array[$i]) && array_key_exists('id', $select_array[$i])){
@@ -1907,7 +1936,7 @@ function tep_cfg_pull_down_inventorycenter_shipping($method, $key = '') {
 	$name = (($key) ? 'configuration[' . $key . ']' : 'configuration_value');
 
 	$array = array();
-	for($i=1; $i<=MODULE_SHIPPING_INVENTORYCENTER_NUM_METHODS; $i++){
+	for($i=1; $i<=sysConfig::get('MODULE_SHIPPING_INVENTORYCENTER_NUM_METHODS'); $i++){
 		$array[] = array(
 			'id' => 'method' . $i,
 			'text' => constant('MODULE_SHIPPING_INVENTORYCENTER_METHOD_TEXT' . $i)

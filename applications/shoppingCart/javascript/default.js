@@ -16,16 +16,17 @@ function popupWindowInitials(url, initials, w, h) {
 				$(e.target).html('<div id="termsText"></div>');
 			}
 			showAjaxLoader($('#initials'), 'xlarge');
-
+			var pos = ui.position;
 			$.ajax({
 				cache: false,
 				url: url,
-				data: 'get=true',
-				type: 'post',
-				dataType: 'json',
 				success: function (data){
 					hideAjaxLoader($('#initials'));
 					$('#termsText').html(data.html);
+
+
+					$('#initials').dialog( "option", "width", 330 );
+
 				}
 			});
 		},

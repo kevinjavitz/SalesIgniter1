@@ -441,4 +441,5 @@
 	<define key="TEXT_PLEASE_SELECT"><![CDATA[Please Select]]></define>
 	
 	<define key="TEXT_ADMIN_MENU_SES_UPDATES"><![CDATA[Check Updates]]></define>
+	<define key="INVENTORY_CENTERS_SORT_ORDER"><![CDATA[Inventory Centers Sort Order:]]></define>
 </definitions>

@@ -34,6 +34,11 @@ $(document).ready(function (){
     $('.deleteIcon').live('click', function (){
 		$(this).parent().parent().remove();
 	});
+
+	$('.deleteIconHidden').live('click', function (){
+		$(this).parent().parent().remove();
+	});
+
     $('#types_select').hide();
     $(this).find('.insertIcon').click(function () {
         var nextId = $(this).parent().parent().parent().parent().parent().attr('data-next_id');
@@ -50,6 +55,28 @@ $(document).ready(function (){
         var $newTr = $('<li></li>').append($td2).append($td51).append($td5).append($td1).append($td9).append('<br style="clear:both;"/>');//<input type="hidden" name="sortvprice[]">
         $(this).parent().parent().parent().parent().parent().find('.sortableList').append($newTr);
     });
+
+	  $(this).find('.insertIconHidden').click(function () {
+        var nextId = $(this).parent().parent().parent().parent().parent().attr('data-next_id');
+        var langId = $(this).parent().parent().parent().parent().parent().attr('language_id');
+        $(this).parent().parent().parent().parent().parent().attr('data-next_id', parseInt(nextId) + 1);
+
+
+        var $td2 = $('<div style="float:left;width:80px;"></div>').attr('align', 'center').append('<input class="ui-widget-content date_hidden" size="15" type="text" name="pprhidden[' + nextId + '][start_date]">');
+        var $td5 = $('<div style="float:left;width:80px;"></div>').attr('align', 'center').append('<input class="ui-widget-content date_hidden" size="15" type="text" name="pprhidden[' + nextId + '][end_date]">');
+        var $td9 = $('<div style="float:left;width:40px;"></div>').attr('align', 'center').append('<a class="ui-icon ui-icon-closethick deleteIconHidden"></a>');
+        var $newTr = $('<li style="list-style:none"></li>').append($td2).append($td5).append($td9).append('<br style="clear:both;"/>');//<input type="hidden" name="sortvprice[]">
+        $(this).parent().parent().parent().parent().parent().find('.hiddenList').append($newTr);
+		$('.date_hidden').datepicker({
+					dateFormat: 'yy-mm-dd',
+					gotoCurrent: true
+		});
+    });
+	$('.date_hidden').datepicker({
+					dateFormat: 'yy-mm-dd',
+					gotoCurrent: true
+	});
+
     //$('.pricePPR').sortable('refresh');
     $('.sortableList').sortable();
 });

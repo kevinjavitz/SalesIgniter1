@@ -13,4 +13,7 @@
 	<define key="TEXT_INVENTORY_DELIVERY_INSTRUCTIONS"><![CDATA[Inventory Delivery Instructions: ]]></define>	
 	<define key="TEXT_INVENTORY_SHIPPING"><![CDATA[Inventory Shipping: ]]></define>
 	<define key="TEXT_INVENTORY_MAP"><![CDATA[Inventory Map: ]]></define>
+	<define key="ENTRY_CONTINENT"><![CDATA[Continent: ]]></define>
+	<define key="TEXT_INVENTORY_SORT_ORDER"><![CDATA[Sort Order: ]]></define>
+
 </definitions>

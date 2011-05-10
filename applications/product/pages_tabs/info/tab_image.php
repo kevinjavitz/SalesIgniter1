@@ -30,7 +30,7 @@ EventManager::notify('ProductInfoProductsImageShow', &$image, &$product);
 			'<div class="ui-widget ui-widget-content ui-corner-all" style="overflow:none;">' . 
 				'<a class="fancyBox ui-state-active" index="0" rel="gallery" href="' . $image . '"><img class="additionalImage" imgSrc="' . $image . '&width=250&height=250" src="' . $image . '&width=50&height=50"></a>';
 
-		$imgSrc = sysConfig::getDirWsCatalog() . sysConfig::get('DIR_WS_IMAGES');
+		$imgSrc =  'images/';
 		$ind = 0;
 		foreach($QadditionalImages as $imgInfo){
 			$addImage = $thumbUrl . $imgSrc . $imgInfo['file_name'];
@@ -58,6 +58,9 @@ EventManager::notify('ProductInfoProductsImageShow', &$image, &$product);
 		foreach($contents as $content){
 			echo $content;
 		}
+	}
+	if(sysConfig::get('SHOW_MANUFACTURER_ON_PRODUCT_INFO') == 'true'){
+		echo sysLanguage::get('TEXT_MANUFACTURER'). $product->getManufacturerName().'<br />';
 	}
 	
 	echo $product->getDescription() . '<br />';
@@ -168,7 +171,7 @@ EventManager::notify('ProductInfoProductsImageShow', &$image, &$product);
 	if ($product->isBox()){
 		$discs = $product->getDiscs(false, true);
 		$totalDiscs = $product->getTotalDiscs();
-		$pageContent .= '<br><div><h4>This product is part of a set (click product name to view details):</h4></div>';
+		$pageContents .= '<br><div><h4>This product is part of a set (click product name to view details):</h4></div>';
 		$hasRentals = false;
 	}elseif ($product->isInBox()){
 		$discNumber = $product->getDiscNumber($product->getID());

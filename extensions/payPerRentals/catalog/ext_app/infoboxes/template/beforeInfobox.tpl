@@ -28,7 +28,11 @@ if(today.getTime() <= date.getTime() - (1000 * 60 * 60 * 24 * <?php echo $datePa
             $minDays = 0;
             echo '0';
         }
-            $butText = sysLanguage::get('TEXT_BUTTON_SUBMIT');
+		if(Session::exists('button_text')){
+			$butText = Session::get('button_text');
+		}else{
+			$butText = '';
+		}
       ?>;
      var butText = '<?php echo $butText;?>';
      $('.rentbbut').text(butText);
@@ -77,27 +81,23 @@ if(today.getTime() <= date.getTime() - (1000 * 60 * 60 * 24 * <?php echo $datePa
 		});
 	});
 
-/*Tranform all the ids in classes*/
-
-			$('.cats').click(function(){
-				var inp = "<input type='hidden' name='cPath' value='"+$(this).attr('rel')+"'>";
-				$(this).parents('form[name$="selectPPR"]').append(inp);
-				$(this).parents('form[name$="selectPPR"]').submit();
-				//$('#sd').append(inp);
-				//$('#sd').submit();
-				return false;
-		    });
+	$('.cats').click(function(){
+		var inp = "<input type='hidden' name='cPath' value='"+$(this).attr('rel')+"'>";
+		$(this).parents('form[name$="selectPPR"]').append(inp);
+		$(this).parents('form[name$="selectPPR"]').submit();
+		return false;
+	});
         	 
 
-		$('button[name="no_dates_selected"]').each(function(){$(this).click(function(){alert('<?php echo sysLanguage::get('EXTENSION_PAY_PER_RENTALS_ERROR_RESERVE');?>');return false;})});
-          var selectedDateId = null;
-          var startSelectedDate;
+	$('button[name="no_dates_selected"]').each(function(){$(this).click(function(){alert('<?php echo sysLanguage::get('EXTENSION_PAY_PER_RENTALS_ERROR_RESERVE');?>');return false;})});
+	$('button[name="no_inventory"]').each(function(){$(this).click(function(){alert('<?php echo sysLanguage::get('EXTENSION_PAY_PER_RENTALS_ERROR_NO_INVENTORY_FOR_SELECTED_DATES');?>');return false;})});
+	$('button[name="double_dates_selected"]').each(function(){$(this).click(function(){alert('<?php echo sysLanguage::get('TEXT_CHOOSE_INVENTORY');?>');return false;})});
+		var selectedDateId = null;
+        var startSelectedDate;
         var dates = $('#dstart, #dend').datepicker({
                     dateFormat: '<?php echo getJsDateFormat(); ?>',
-        			
         			changeMonth: true,
         			beforeShowDay: nobeforeDays,
-        			/*numberOfMonths: 3,*/
         			onSelect: function(selectedDate) {
 
         				var option = this.id == "dstart" ? "minDate" : "maxDate";
@@ -144,44 +144,25 @@ if(today.getTime() <= date.getTime() - (1000 * 60 * 60 * 24 * <?php echo $datePa
 							}
         				}
 
-			    	if (selectedDateId != this.id && selectedDateId != null && f){                           
-		    			alert('<?php echo sprintf(sysLanguage::get('EXTENSION_PAY_PER_RENTALS_NOW_PLEASE_CLICK'), $butText);?>');
-                            		selectedDateId = null;
-                      	  	}
-                        	if (f){
- 					selectedDateId = this.id;
- 				}
-        					$.ajax({
-							 type: "post",
-							 url: js_app_link('appExt=payPerRentals&app=build_reservation&appPage=default&action=setBefore'),
-							 data: "rType=ajax&dstart="+$('#dstart').val()+"&dend="+$('#dend').val()+"&hstart="+$('#hstart').val()+"&hend="+$('#hend').val()+"&pickup="+$('#pickupz').val()+"&dropoff="+$('#dropoffz').val(),
-							 success: function() {
-							}});
+			    	    if (selectedDateId != this.id && selectedDateId != null && f){
+		    			    //alert('<?php echo sprintf(sysLanguage::get('EXTENSION_PAY_PER_RENTALS_NOW_PLEASE_CLICK'), $butText);?>');
+                            selectedDateId = null;
+                      	}
+                        if (f){
+							selectedDateId = this.id;
+						}
+        				$.ajax({
+								 type: "post",
+								 url: js_app_link('appExt=payPerRentals&app=build_reservation&appPage=default&action=setBefore'),
+								 data: $('#sd').serialize()+"&rType=ajax",
+								 success: function() {
+								 }
+						});
 
-        			}});
+        			}
+		});
 
-        	/*$('#eventz').change(function(){
-						link = js_app_link('appExt=payPerRentals&app=show_event&appPage=default&ev_id='+$(this).val());
-						$('.myev1').attr('href',link);
-						myel = $(this).parent();
-						showAjaxLoader(myel,'xlarge');
-                        $.ajax({
-							 type: "post",
-							 url: js_app_link('appExt=payPerRentals&app=build_reservation&appPage=default&action=setBefore'),
-							 data: "rType=ajax&event="+$('#eventz').val(),
-							 success: function(data) {
-
-								if(typeof data.data != undefined){									
-									$('#shipz').html(data.data);
-									$('#shipz').change();					
-								}
-								hideAjaxLoader(myel);
-									
-							}});
-
-                });*/
-
-                $('.eventf').change(function(){
+        $('.eventf').change(function(){
 						link = js_app_link('appExt=payPerRentals&app=show_event&appPage=default&ev_id='+$(this).val());
 						$('.myev1').attr('href',link);
 						myel = $(this).parent();
@@ -200,8 +181,6 @@ if(today.getTime() <= date.getTime() - (1000 * 60 * 60 * 24 * <?php echo $datePa
 									if (data.nr == 0){
 										alert('<?php echo sysLanguage::get('EXTENSION_PAY_PER_RENTALS_DELIVERY_PASSED');?>');
 									}
-									//$('#shipz').html(data.data);
-									//$('#shipz').change();
 								}
 								hideAjaxLoader(myel);
 
@@ -209,16 +188,20 @@ if(today.getTime() <= date.getTime() - (1000 * 60 * 60 * 24 * <?php echo $datePa
 
                 });
 
-			//$('#eventz').change();
+		$('.mysh1').attr('href',"#");
+		$('.mysh1').live('click', function(){
+				link = js_app_link('appExt=payPerRentals&app=show_shipping&appPage=default&sh_id='+$('#shipz').val());
+				popupWindow(link,'400','300');
+				return false;
+		});
 
-								$('.mysh1').attr('href',"#");
-								$('.mysh1').live('click', function(){
-									link = js_app_link('appExt=payPerRentals&app=show_shipping&appPage=default&sh_id='+$('#shipz').val());
-									popupWindow(link,'400','300');
-									return false;
-								});
+		$('.catsh').click(function(){
+		 	var inp = "<input type='hidden' name='cPath' value='"+$(this).attr('rel')+"'>";
+		 	$('#sd').append(inp);
+		 	$('#sd').submit();
+		});
 
-                 $('.shipf').change(function(){
+        	$('.shipf').change(function(){
 					myel1 = $(this).parent();
 					showAjaxLoader(myel1,'xlarge');
                         $.ajax({
@@ -227,22 +210,57 @@ if(today.getTime() <= date.getTime() - (1000 * 60 * 60 * 24 * <?php echo $datePa
 							 data: "rType=ajax&ship_method="+$(this).val()+'&event='+$('#eventz').val(),
 							 success: function() {
 								hideAjaxLoader(myel1);
+							 }
+						});
+        });
+		$('#sd .rentbbut').button();
+		$('#sd .rentbbut').click(function(){
+			$('#sd').submit();
+			return false;
+		});
 
-							}});
-                });
+		$('.changer').live('change',function(){
+				if($(this).attr('id') == 'pickupz'){
+					pick = true;
+				}else{
+					pick = false;
+				}
+					$ellem = $('#sd');
+					showAjaxLoader($ellem,'xlarge');
+							$.ajax({
+								type: "post",
+								url: js_app_link('appExt=payPerRentals&app=build_reservation&appPage=default&action=setBefore'),
+								data: $('#sd').serialize()+"&rType=ajax&pick="+pick,
+								success: function(data) {
+									$('#sd .invCenter').replaceWith(data.data);
+									$('#sd .rentbbut').button();
+									$('#sd .rentbbut').click(function(){
+										$('#sd').submit();
+										return false;
+									});
+									$ellem1 = $('.main_list');
+									if($ellem1){
+										 showAjaxLoader($ellem1, 'xlarge');
+										 $.ajax({
+											 type: "post",
+											 url: js_app_link('appExt=inventoryCenters&app=show_inventory&appPage=list&action=getAjaxList'),
+											 data: $('#sd').serialize() + "",
+											 success: function(data) {
+												 hideAjaxLoader($ellem1);
+												 $ellem1.replaceWith(data.data);
+												 return false;
 
-$('#dropoffz, #pickupz, #hstart, #hend').change(function(){
-			$.ajax({
-							 type: "post",
-							 url: js_app_link('appExt=payPerRentals&app=build_reservation&appPage=default&action=setBefore'),
-							 data: "rType=ajax&dstart="+$('#dstart').val()+"&dend="+$('#dend').val()+"&hstart="+$('#hstart').val()+"&hend="+$('#hend').val()+"&pickup="+$('#pickupz').val()+"&dropoff="+$('#dropoffz').val(),
-							 success: function() {
-							}});
-});
+											 }
+										 });
+									}
+									hideAjaxLoader($ellem);
+							 	}
+							});
+
+		});
 
 
 		$('.myf').change(function(){
-
 			link = js_app_link('appExt=inventoryCenters&app=show_inventory&appPage=default&inv_id='+$(this).val());			
 			$('.myf1').attr('href',link);
 
