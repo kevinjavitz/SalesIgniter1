@@ -25,8 +25,8 @@
 		$values = $aInfo['valueArray'];
 		
 		$FieldsArray = array(
-			'first_name' => array('required' => true, 'value' => (isset($values['entry_firstname'])?$values['entry_firstname']:'')),
-			'last_name' => array('required' => true, 'value' => (isset($values['entry_lastname'])?$values['entry_lastname']:'')),
+			'first_name' => array('required' => true, 'value' => $values['entry_firstname']),
+			'last_name' => array('required' => true, 'value' => $values['entry_lastname']),
 			'country' => array('required' => true, 'value' => sysConfig::get('ONEPAGE_DEFAULT_COUNTRY')),
 			'street_address' => array('required' => true, 'value' => $values['entry_street_address']),
 			'city' => array('required' => true, 'value' => $values['entry_city']),
@@ -58,7 +58,7 @@
 
 	
 			if (sysConfig::get('ACCOUNT_GENDER') == 'true'){
-				$FieldsArray['gender'] = array('value' => (isset($values['entry_gender'])?$values['entry_gender']:''));
+				$FieldsArray['gender'] = array('value' => $values['entry_gender']);
 			}
 	
 			if (sysConfig::get('ACCOUNT_DOB') == 'true'){
@@ -82,7 +82,7 @@
 		if (sysConfig::get('ACCOUNT_COMPANY') == 'true'){
 			$FieldsArray['company'] = array(
 				'required' => false,
-				'value' => (isset($values['entry_company'])?$values['entry_company']:'')
+				'value' => $values['entry_company']
 			);
 		}
 
