@@ -39,7 +39,7 @@
 			$productName = $reviews['Products'][0]['ProductsDescription'][0]['products_name'];
 			$customersName = sprintf(sysLanguage::get('TEXT_REVIEW_BY'), tep_output_string_protected($reviews['customers_name']));
 			$dateAdded = sprintf(sysLanguage::get('TEXT_REVIEW_DATE_ADDED'), tep_date_long($reviews['date_added']));
-			$productImage = '<img src="imagick_thumb.php?width=150&height=150&path=rel&imgSrc='.  'images/'. $reviews['Products'][0]['products_image'].'" alt="'.$productName.'"/>';
+			$productImage = '<img src="imagick_thumb.php?width=150&height=150&path=rel&imgSrc='.  sysConfig::get('DIR_WS_IMAGES') . $reviews['Products'][0]['products_image'].'" alt="'.$productName.'"/>';
 			$reviewText = nl2br(tep_output_string_protected($reviews['ReviewsDescription'][0]['reviews_text']));
 			$reviewRating = sprintf(TEXT_REVIEW_RATING, tep_image(sysConfig::get('DIR_WS_IMAGES') . 'stars_' . $reviews['reviews_rating'] . '.gif', sprintf(TEXT_OF_5_STARS, $reviews['reviews_rating'])), sprintf(TEXT_OF_5_STARS, $reviews['reviews_rating']));
 
