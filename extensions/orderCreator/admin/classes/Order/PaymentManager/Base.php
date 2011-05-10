@@ -43,7 +43,7 @@ class OrderCreatorPaymentManager extends OrderPaymentManager implements Serializ
 			'customerCountry' => $BillingAddress->getCountry()
 		);
 		
-		if (isset($_POST['payment_cc_number']) && $_POST['payment_cc_number']!='' && $_POST['payment_cc_number']!='' && $_POST['payment_cc_expires']!='' && $_POST['payment_cc_cvv']!=''){
+		if (isset($_POST['payment_cc_number']) && $_POST['payment_cc_number']!='' && $_POST['payment_cc_expires']!='' && $_POST['payment_cc_cvv']!=''){
 			$RequestData['cardNum'] = $_POST['payment_cc_number'];
 			$RequestData['cardExpDate'] = $_POST['payment_cc_expires'];
 			$expDate[0] = substr(date('Y'),0,2).substr($_POST['payment_cc_expires'],0,2);
