@@ -1,6 +1,14 @@
 <?php
 require('../../../../includes/classes/system_cache.php');
-$dataHash = 'browser=ie8&angle=' . $_GET['angle'] . '&colorStops=' . urldecode($_GET['colorStops']);
+
+$_GET['width'] = ($_GET['width'] > 1 ? $_GET['width'] : 1);
+$_GET['height'] = ($_GET['height'] > 1 ? $_GET['height'] : 75);
+
+$dataHash = 'browser=ie8' .
+	'&width=' . $_GET['width'] .
+	'&height=' . $_GET['height'] .
+	'&angle=' . $_GET['angle'] .
+	'&colorStops=' . urldecode($_GET['colorStops']);
 
 $ImageCache = new SystemCache('ie8-gradient-' . md5($dataHash));
 if ($ImageCache->loadData() === true){
@@ -8,15 +16,8 @@ if ($ImageCache->loadData() === true){
 	exit;
 }
 else {
-	$width = 1;
-	$height = 150;
-	if (isset($_GET['width'])){
-		$width = $_GET['width'];
-	}
-
-	if (isset($_GET['height'])){
-		$height = $_GET['height'];
-	}
+	$width = $_GET['width'];
+	$height = $_GET['height'];
 
 	$colorStops = json_decode(urldecode($_GET['colorStops']));
 	$xStart = 0;
@@ -90,7 +91,6 @@ else {
 			y1="<?php echo $yStart;?>%"
 			x2="<?php echo $xEnd;?>%"
 			y2="<?php echo $yEnd;?>%"
-			spreadMethod="pad"
 			>
 			<?php
    foreach($colorStops as $sInfo){
@@ -115,7 +115,7 @@ else {
 		</linearGradient>
 	</defs>
 
-	<rect x="0" y="0" width="<?php echo $width;?>" height="<?php echo $height;?>" style="fill:url(#<?php echo $randomId;?>);" />
+	<rect x="0" y="0" width="100%" height="100%" style="fill:url(#<?php echo $randomId;?>);" />
 </svg>
 <?php
    $svgInfo = ob_get_contents();

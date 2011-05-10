@@ -721,6 +721,108 @@ class StyleBuilder {
 					$this->addRule('margin-' . $k, $marginVal);
 				}
 				break;
+			case 'background_settings':
+				switch(true){
+					case (isIE7()): $engine = 'trident3'; break;
+					case (isIE8()): $engine = 'trident4'; break;
+					case (isIE9()): $engine = 'trident5'; break;
+					case (isIE10()): $engine = 'trident6'; break;
+					case (isWebkit()): $engine = 'webkit'; break;
+					case (isPresto()): $engine = 'presto'; break;
+					case (isMoz()): $engine = 'gecko'; break;
+					default: $engine = 'global'; break;
+				}
+
+				$backgroundType = $val->type->$engine;
+				if (
+					$backgroundType == 'global' ||
+					(!isset($val->settings->$engine) || !isset($val->settings->$engine->$backgroundType))
+				){
+					$engine = 'global';
+				}
+				$Settings = $val->settings->$engine->$backgroundType;
+				$Config = $Settings->config;
+
+				if ($backgroundType == 'solid'){
+					buildBackgroundAlpha(
+						$Config->background_r,
+						$Config->background_g,
+						$Config->background_b,
+						$Config->background_a,
+						$this
+					);
+				}elseif ($backgroundType == 'image'){
+					$this->addRule('background-color', $Config->background_color);
+					$this->addRule('background-image', 'url(' . $Config->background_image . ')');
+					$this->addRule('background-position', $Config->background_position_x . '% ' . $Config->background_position_y . '%');
+					$this->addRule('background-repeat', $Config->background_position_repeat);
+				}elseif ($backgroundType == 'gradient'){
+
+					$rgba = 'rgba(%s, %s, %s, %s)';
+					$colorStops = array();
+					$colorStops[] = array(
+						sprintf($rgba,
+							$Config->start_color_r,
+							$Config->start_color_g,
+							$Config->start_color_b,
+							($Config->start_color_a / 100)
+						),
+						'0'
+					);
+					foreach($Settings->colorStops as $stopInfo){
+						$colorStops[] = array(
+							sprintf($rgba,
+								$stopInfo->color_stop_color_r,
+								$stopInfo->color_stop_color_g,
+								$stopInfo->color_stop_color_b,
+								($stopInfo->color_stop_color_a / 100)
+							),
+							($stopInfo->color_stop_pos / 100)
+						);
+					}
+					$colorStops[] = array(
+						sprintf($rgba,
+							$Config->end_color_r,
+							$Config->end_color_g,
+							$Config->end_color_b,
+							($Config->end_color_a / 100)
+						),
+						'1'
+					);
+
+					$images = false;
+					if (isset($Settings->imagesBefore)){
+						foreach($Settings->imagesBefore as $bimageInfo){
+							$images[] = array(
+								'css_placement' => 'before',
+								'image' => $bimageInfo->image_source,
+								'repeat' => $bimageInfo->image_repeat,
+								'pos_x' => $bimageInfo->image_pos_x . '%',
+								'pos_y' => $bimageInfo->image_pos_y . '%'
+							);
+						}
+					}
+
+					if (isset($Settings->imagesAfter)){
+						foreach($Settings->imagesAfter as $aimageInfo){
+							$images[] = array(
+								'css_placement' => 'after',
+								'image' => $aimageInfo->image_source,
+								'repeat' => $aimageInfo->image_repeat,
+								'pos_x' => $aimageInfo->image_pos_x . '%',
+								'pos_y' => $aimageInfo->image_pos_y . '%'
+							);
+						}
+					}
+
+					buildLinearGradient(
+						$Config->angle,
+						$colorStops,
+						$images,
+						$this
+					);
+				}
+				break;
 			case 'background_solid':
 				buildBackgroundAlpha(
 					$val->background_r,
@@ -729,6 +831,12 @@ class StyleBuilder {
 					$val->background_a,
 					$this
 				);
+				break;
+			case 'background_image':
+				$this->addRule('background-color', $val->background_color);
+				$this->addRule('background-image', 'url(' . $val->background_image . ')');
+				$this->addRule('background-position', $val->background_position_x . '% ' . $val->background_position_y . '%');
+				$this->addRule('background-repeat', $val->background_position_repeat);
 				break;
 			case 'border_radius':
 				buildBorderRadius(

@@ -59,6 +59,9 @@ class Extension_attributes extends ExtensionBase {
 					'BoxCatalogAddLink'
 					), null, $this);
 		}
+		if($appExtension->isCatalog()){
+			EventManager::attachEvent('ProductListingProductsBeforeShowPrice', null, $this);
+		}
 	}
 
 	public function SearchBoxAddGuidedOptions(&$boxContent, $optionId){
@@ -90,21 +93,21 @@ class Extension_attributes extends ExtensionBase {
 							->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 
 					$checkIcon = '<span class="ui-icon ui-icon-check" style="display:inline-block;height:14px;background:none;"></span>';
-					$link = itw_app_link(tep_get_all_get_params(array('values[' . $count . ']', 'options[' . $count . ']')) . 'options[' . $count . ']=' . $optionId . '&values[' . $count . ']=' . $attrInfo['id'], 'products', 'search_result');
-					if (isset($_GET['options'][$count])){
+					$link = itw_app_link(tep_get_all_get_params(array('values[' . $optionId . ']', 'options[' . $optionId . ']')) . 'options[' . $optionId . ']=' . $optionId . '&values[' . $optionId . ']=' . $attrInfo['id'], 'products', 'search_result');
+					if(isset($_GET['options'][$optionId]) && isset($_GET['values'][$optionId]) && $_GET['values'][$optionId] == $attrInfo['id']){
 						$checkIcon = '<span class="ui-icon ui-icon-check" style="display:inline-block;height:14px;"></span>';
-						$link = itw_app_link(tep_get_all_get_params(array('values[' . $count . ']', 'options[' . $count . ']')), 'products', 'search_result');
+						$link = itw_app_link(tep_get_all_get_params(array('values[' . $optionId . ']', 'options[' . $optionId . ']')), 'products', 'search_result');
 					}
 					$icon = '<span class="ui-widget ui-widget-content ui-corner-all">' .
 						$checkIcon .
 						'</span>';
 
 					$boxContent .= '<li style="padding-bottom:.3em;' . ($count > $searchItemDisplay ? 'display:none;' : '') . '">' .
-						$icon .
-						' <a href="' . $link . '" data-url_param="options[' . $count . ']=' . $optionId . '&values[' . $count . ']=' . $attrInfo['id'] . '">' .
-						$attrInfo['text'] .
-						'</a> (' . $QproductCount[0]['total'] . ')' .
-						'</li>';
+					               $icon .
+					               ' <a href="' . $link . '" data-url_param="options[' . $optionId . ']=' . $optionId . '&values[' . $optionId . ']=' . $attrInfo['id'] . '">' .
+					               $attrInfo['text'] .
+					               '</a> (' . $QproductCount[0]['total'] . ')' .
+					               '</li>';
 
 					$count++;
 				}
@@ -130,14 +133,14 @@ class Extension_attributes extends ExtensionBase {
 		if (isset($_GET['options']) && isset($_GET['values'])){
 			$queryAdd = array();
 			foreach($_GET['options'] as $i => $optionId){
-				$valueId = $_GET['values'][$i];
+				$valueId = $_GET['values'][$optionId];
 				$queryAdd[] = '(pa.options_id = ' . $optionId . ' AND pa.options_values_id = ' . $valueId . ')';
 			}
 			$attributeDefined = true;
 			$Qproducts->addSelect('pa.products_id')
-				->leftJoin('p.ProductsAttributes pa')
-				->andWhere('(' . implode(' or ', $queryAdd) . ')');
-			if (isset($_GET['ptype']) && tep_not_null($_GET['ptype'])){
+					->leftJoin('p.ProductsAttributes pa')
+					->andWhere('(' . implode(' and ', $queryAdd) . ')');
+			if(isset($_GET['ptype']) && tep_not_null($_GET['ptype'])){
 				$Qproducts->andWhere('FIND_IN_SET(?, pa.purchase_types) > 0', $_GET['ptype']);
 			}else{
 				$Qproducts->andWhere('pa.purchase_types is not NULL and pa.purchase_types <> "" ');
@@ -429,6 +432,58 @@ class Extension_attributes extends ExtensionBase {
 		return $this->drawAttributes();
 	}
 
+	public function ProductListingProductsBeforeShowPrice(&$product){
+		global $appExtension, $currencies;
+		//$product = &$settings['productCls'];
+
+		$Attributes = $this->drawAttributes(array('productCls' => $product, 'return_array' => '1'));
+		$output = '';
+
+		//var_dump($AttributesOutput);
+		if(is_array($Attributes)){
+			$output = '<div class="productListingColBoxContent_attributes ui-corner-bottom-big">';
+			$table = htmlBase::newElement('table')
+					->setCellPadding(3)
+					->setCellSpacing(0);
+
+			foreach($Attributes as $optionId => $attribute)
+			{
+				$attributeName = '';
+				$attributeValuesText = '';
+				$attributeName = $attribute['options_name'];
+				if(is_array($attribute['ProductsOptionsValues'])){
+					$attributeValues = array();
+					$ctr = 0;
+					$index = 0;
+					foreach($attribute['ProductsOptionsValues'] as $attributeKey => $attributeValue)
+					{
+						$attributeValues[] = htmlBase::newElement('a')
+								->attr('href', itw_app_link('options[' . $attributeKey . ']=' . $attributeValue['options_values_id'] . '&values[' . $attributeKey . ']=' . $optionId, 'products', 'search_result'))
+								->html($attributeValue['options_values_name'])->draw();
+						if($ctr >= 7){
+							$attributeValuesText .= implode(', ', $attributeValues) . '<br>';
+							$attributeValues = array();
+							$ctr = 0;
+						}
+						$ctr++;
+					}
+					$attributeValuesText .= implode(', ', $attributeValues) . '<br>';
+				}
+				$table->addBodyRow(array(
+				                        'columns' => array(
+					                        array('addCls' => 'productListingColBoxContent_attributesName', 'text' => '<b>' . $attributeName . ': </b>'),
+					                        array('addCls' => 'productListingColBoxContent_attributesValue', 'text' => $attributeValuesText, 'align' => 'left')
+				                        )
+				                   ));
+			}
+
+			$output .= $table->draw();
+			$output .= '</div>';
+		}
+		return $output;
+
+	}
+
 	public function drawAttributes($settings = null){
 		global $appExtension, $currencies;
 		$product = &$settings['productCls'];
@@ -487,15 +542,15 @@ class Extension_attributes extends ExtensionBase {
 
 		require_once(sysConfig::getDirFsCatalog() . 'includes/classes/template.php');
 		$templateFile = 'product_info_table.tpl';
-		$templateDir = dirname(__FILE__) . '/catalog/ext_app/product_info/template/';
-		if (is_null($settings) === false && isset($settings['template_file'])){
+		$templateDir = dirname(__FILE__) . '/catalog/ext_app/product/template/';
+		if(is_null($settings) === false && isset($settings['template_file'])){
 			$templateFile = $settings['template_file'];
 		}
 		if (is_null($settings) === false && isset($settings['template_dir'])){
 			$templateDir = $settings['template_dir'];
 		}
 		$attributesTemplate = new Template($templateFile, $templateDir);
-		//$attributesTemplate->setTemplateFile($templateFile, $templateDir);
+		$attributesTemplate->setTemplateFile($templateFile, $templateDir);
 
 		$attributesTemplate->setVars(array(
 			'attributes' => $Attributes

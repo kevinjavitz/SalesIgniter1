@@ -32,7 +32,7 @@ class OrderProcessor {
 			}
 		}
 	}
-	
+
 	public function __call($function, $args){
 		return EventManager::notifyWithReturn('orderClassFunction_' . $function, $args);
 	}
@@ -48,21 +48,21 @@ class OrderProcessor {
 	public function query($order_id) {
 		global $currencies;
 		$Qorder = Doctrine_Query::create()
-		->from('Orders o')
-		->leftJoin('o.OrdersAddresses oa')
-		->leftJoin('oa.Zones z')
-		->leftJoin('oa.Countries c')
-		->leftJoin('o.OrdersTotal ot')
-		->leftJoin('o.OrdersPaymentsHistory oph')
-		->leftJoin('o.OrdersStatusHistory osh')
-		->leftJoin('osh.OrdersStatus s')
-		->leftJoin('s.OrdersStatusDescription sd')
-		->leftJoin('o.OrdersProducts op')
-		->where('o.orders_id = ?', $order_id)
-		->andWhere('sd.language_id = ?', Session::get('languages_id'));
-		
+			->from('Orders o')
+			->leftJoin('o.OrdersAddresses oa')
+			->leftJoin('oa.Zones z')
+			->leftJoin('oa.Countries c')
+			->leftJoin('o.OrdersTotal ot')
+			->leftJoin('o.OrdersPaymentsHistory oph')
+			->leftJoin('o.OrdersStatusHistory osh')
+			->leftJoin('osh.OrdersStatus s')
+			->leftJoin('s.OrdersStatusDescription sd')
+			->leftJoin('o.OrdersProducts op')
+			->where('o.orders_id = ?', $order_id)
+			->andWhere('sd.language_id = ?', Session::get('languages_id'));
+
 		EventManager::notify('OrderQueryBeforeExecute', &$Qorder);
-		
+
 		$Orders = $Qorder->execute()->toArray();
 		if(isset($Orders[0])){
 			$Order = $Orders[0];
@@ -78,10 +78,10 @@ class OrderProcessor {
 		foreach($OrdersAddresses as $address){
 			$address['entry_zone_id'] = isset($address['Zones']['zone_id'])?$address['Zones']['zone_id']:0;
 			$address['entry_country_id'] = isset($address['Countries']['countries_id'])?$address['Countries']['countries_id']:0;
-			
+
 			$addressBook->addAddressEntry($address['address_type'], $address);
 		}
-		
+
 		$OrdersTotal = $Order['OrdersTotal'];
 		foreach($OrdersTotal as $tInfo){
 			$this->totals[] = array(
@@ -173,10 +173,10 @@ class OrderProcessor {
 		$MyOrder = new Order($order_id);
 
 		$orderedProducts = '<table>';
-		 foreach($MyOrder->getProducts() as $OrderProduct){
+		foreach($MyOrder->getProducts() as $OrderProduct){
 			$orderedProducts .= '<tr>' . "\n" .
-			'<td class="main" align="right" valign="top" width="30">' . $OrderProduct->getQuantity() . '&nbsp;x</td>' . "\n" .
-			'<td class="main" valign="top">' . $OrderProduct->getNameHtml();
+				'<td class="main" align="right" valign="top" width="30">' . $OrderProduct->getQuantity() . '&nbsp;x</td>' . "\n" .
+				'<td class="main" valign="top">' . $OrderProduct->getNameHtml();
 
 			$orderedProducts .= '</td>' . "\n";
 
@@ -185,7 +185,7 @@ class OrderProcessor {
 			}
 
 			$orderedProducts .= '<td class="main" align="right" valign="top">' . $currencies->format($OrderProduct->getFinalPrice(true, true)) . '</td>' . "\n" .
-			'</tr>' . "\n";
+				'</tr>' . "\n";
 		}
 		$orderedProducts .= '</table>';
 		$this->products_ordered = $orderedProducts;
@@ -243,7 +243,7 @@ class OrderProcessor {
 		$this->taxAddress = ($this->content_type == 'virtual' ? 'billing' : 'delivery');
 
 		$this->info = array(
-			'order_status'    => DEFAULT_ORDERS_STATUS_ID,
+			'order_status'    => sysConfig::get('DEFAULT_ORDERS_STATUS_ID'),
 			'currency'        => Session::get('currency'),
 			'currency_value'  => $currencies->currencies[Session::get('currency')]['value'],
 			'shipping_method' => '',
@@ -262,7 +262,7 @@ class OrderProcessor {
 		$this->loadPaymentInfo();
 		$this->loadOrderInfo();
 	}
-	
+
 	public function loadShippingInfo(){
 		global $shippingModules, $onePageCheckout;
 		if (isset($shippingModules) && isset($onePageCheckout) && array_key_exists('module', $onePageCheckout->onePage['info']['shipping'])){
@@ -274,7 +274,7 @@ class OrderProcessor {
 			}
 		}
 	}
-	
+
 	public function loadPaymentInfo(){
 		global $paymentModules;
 		if (isset($paymentModules) && Session::exists('payment') === true){
@@ -300,9 +300,9 @@ class OrderProcessor {
 		foreach($ShoppingCart->getProducts() as $cartProduct) {
 			$shownPrice = $cartProduct->getFinalPrice(true) * $cartProduct->getQuantity();
 			$this->info['subtotal'] += $shownPrice;
-			
+
 			$tax = $cartProduct->getTaxRate();
-			$taxDesc = $cartProduct->getTaxDescription();			
+			$taxDesc = $cartProduct->getTaxDescription();
 			if (sysConfig::get('DISPLAY_PRICE_WITH_TAX') == 'true'){
 				$priceNoTax = ($shownPrice / (($tax < 10) ? "1.0" . str_replace('.', '', $tax) : "1." . str_replace('.', '', $tax)));
 				$this->info['tax'] += $shownPrice - $priceNoTax;
@@ -338,10 +338,10 @@ class OrderProcessor {
 	public function updateBillingAttempts(){
 		$this->info['bill_attempts'] += 1;
 		$Qupdate = Doctrine_Query::create()
-		->update('Orders')
-		->set('bill_attempts', 'bill_attempts+1')
-		->where('orders_id = ?', $this->orderId)
-		->execute();
+			->update('Orders')
+			->set('bill_attempts', 'bill_attempts+1')
+			->where('orders_id = ?', $this->orderId)
+			->execute();
 	}
 
 	public function createOrder($cID = false){
@@ -350,20 +350,20 @@ class OrderProcessor {
 		EventManager::notify('InsertOrderPreStart');
 
 		$userAccount = &$this->getUserAccount();
-		$customersId = ($cID !== false ? $cID : $userAccount->getCustomerId());		 
+		$customersId = ($cID !== false ? $cID : $userAccount->getCustomerId());
 		$newOrder = new Orders();
 		$newOrder->customers_id = $customersId;
 		$newOrder->customers_telephone = $userAccount->getTelephoneNumber();
 		$newOrder->customers_email_address = $userAccount->getEmailAddress();
 		$newOrder->shipping_module = (isset($this->info['shipping_module']) ? $this->info['shipping_module'] : '');
 		$newOrder->payment_module = $this->info['payment_module'];
-		$newOrder->orders_status = (int)DEFAULT_ORDERS_STATUS_ID;
+		$newOrder->orders_status = (int)sysConfig::get('DEFAULT_ORDERS_STATUS_ID');
 		$newOrder->currency = $this->info['currency'];
 		$newOrder->currency_value = (float)$this->info['currency_value'];
 		$newOrder->bill_attempts = (isset($this->info['bill_attempts']) ? $this->info['bill_attempts'] : 1);
-		
+
 		EventManager::notify('NewOrderBeforeSave', &$this, &$newOrder);
-		
+
 		$newOrder->save();
 
 		$this->newOrder['orderID'] = $newOrder->orders_id;
@@ -393,7 +393,7 @@ class OrderProcessor {
 			}else{
 				$pickupAddress = $deliveryAddress;
 			}
-		}	    
+		}
 		$this->insertOrdersAddress($customerAddress, 'customer');
 		$this->insertOrdersAddress($deliveryAddress, 'delivery');
 		$this->insertOrdersAddress($billingAddress, 'billing');
@@ -402,7 +402,7 @@ class OrderProcessor {
 
 	public function insertOrdersAddress($address, $type){
 		$userAccount = &$this->getUserAccount();
-		$countryInfo = $userAccount->plugins['addressBook']->getCountryInfo($address['entry_country_id']);		
+		$countryInfo = $userAccount->plugins['addressBook']->getCountryInfo($address['entry_country_id']);
 		$newOrderAddress = new OrdersAddresses();
 		$newOrderAddress->orders_id = $this->newOrder['orderID'];
 		if (isset($address['entry_name'])){
@@ -440,7 +440,7 @@ class OrderProcessor {
 
 	public function insertStatusHistory($historyArray = false){
 		$orders_id = $this->newOrder['orderID'];
-		$customer_notification = (SEND_EMAILS == 'true') ? '1' : '0';
+		$customer_notification = (sysConfig::get('SEND_EMAILS') == 'true') ? '1' : '0';
 		$status = $this->info['order_status'];
 		$comments = $this->info['comments'];
 
@@ -474,14 +474,14 @@ class OrderProcessor {
 		global $currencies;
 		$this->newOrder['currentOrderedProduct'] = array();
 
-		$products_ordered .= sprintf("%s x %s (%s) = %s\n", 
+		$products_ordered .= sprintf("%s x %s (%s) = %s\n",
 			$cartProduct->getQuantity(),
 			$cartProduct->getName(),
 			$cartProduct->getModel(),
 			$currencies->display_price(
-			 	$cartProduct->getFinalPrice(),
-			 	$cartProduct->getTaxRate(),
-			 	$cartProduct->getQuantity()
+				$cartProduct->getFinalPrice(),
+				$cartProduct->getTaxRate(),
+				$cartProduct->getQuantity()
 			)
 		);
 
@@ -495,30 +495,30 @@ class OrderProcessor {
 		$newOrdersProduct->products_tax = $cartProduct->getTaxRate();
 		$newOrdersProduct->products_quantity = $cartProduct->getQuantity();
 		$newOrdersProduct->purchase_type = $cartProduct->getPurchaseType();
-		
+
 		EventManager::notify('InsertOrderedProductBeforeSave', &$newOrdersProduct, &$cartProduct);
 
 		$newOrdersProduct->save();
-		
+
 		EventManager::notify('InsertOrderedProductAfterSave', &$newOrdersProduct, &$cartProduct);
-		
+
 		$cartProduct->onInsertOrderedProduct($this->newOrder['orderID'], &$newOrdersProduct, &$products_ordered);
 
 		$this->newOrder['currentOrderedProduct']['id'] = $newOrdersProduct->orders_products_id;
 		$this->updateProductsOrdered($cartProduct);
 		$this->updateProductStock(&$cartProduct);
 	}
-	
+
 	public function insertMembershipProduct($pInfo, &$products_ordered){
 		global $currencies;
-		$products_ordered .= sprintf("%s x %s (%s) = %s\n", 
+		$products_ordered .= sprintf("%s x %s (%s) = %s\n",
 			$pInfo['quantity'],
 			$pInfo['name'],
 			$pInfo['model'],
 			$currencies->display_price(
-			 	$pInfo['final_price'],
-			 	$pInfo['tax'],
-			 	$pInfo['quantity']
+				$pInfo['final_price'],
+				$pInfo['tax'],
+				$pInfo['quantity']
 			)
 		);
 
@@ -537,16 +537,16 @@ class OrderProcessor {
 
 	public function updateProductsOrdered($cartProduct){
 		Doctrine_Query::create()
-		->update('Products')
-		->set('products_ordered', 'products_ordered + ' . sprintf('%d', $cartProduct->getQuantity()))
-		->where('products_id = ?', ($cartProduct->getModel() == 'rental_package' ? 0 : (int)$cartProduct->getIdString()))
-		->execute();
+			->update('Products')
+			->set('products_ordered', 'products_ordered + ' . sprintf('%d', $cartProduct->getQuantity()))
+			->where('products_id = ?', ($cartProduct->getModel() == 'rental_package' ? 0 : (int)$cartProduct->getIdString()))
+			->execute();
 	}
 
 	public function updateProductStock(&$cartProduct){
 		global $ShoppingCart;
 		$purchaseTypeCls = $cartProduct->purchaseTypeClass;
-		
+
 		$purchaseTypeCls->updateStock(
 			$this->newOrder['orderID'],
 			(int)$this->newOrder['currentOrderedProduct']['id'],
@@ -598,9 +598,9 @@ class OrderProcessor {
 
 		$orderTotals = '';
 		if (isset($this->newOrder['orderTotals'])){
-		for ($i=0, $n=sizeof($this->newOrder['orderTotals']); $i<$n; $i++) {
-			$orderTotals .= strip_tags($this->newOrder['orderTotals'][$i]['title']) . ' ' . strip_tags($this->newOrder['orderTotals'][$i]['text']) . "\n";
-		}
+			for ($i=0, $n=sizeof($this->newOrder['orderTotals']); $i<$n; $i++) {
+				$orderTotals .= strip_tags($this->newOrder['orderTotals'][$i]['title']) . ' ' . strip_tags($this->newOrder['orderTotals'][$i]['text']) . "\n";
+			}
 		}else{
 			for ($i=0, $n=sizeof($this->totals); $i<$n; $i++) {
 				$orderTotals .= strip_tags($this->totals[$i]['title']) . ' ' . strip_tags($this->totals[$i]['text']) . "\n";
@@ -645,16 +645,16 @@ class OrderProcessor {
 
 
 		$emailEvent->sendEmail(array(
-			'email' => $userAccount->getEmailAddress(),
-			'name'  => $userAccount->getFullName()
-		));
+				'email' => $userAccount->getEmailAddress(),
+				'name'  => $userAccount->getFullName()
+			));
 
 		// send emails to other people
 		if (sysConfig::get('SEND_EXTRA_ORDER_EMAILS_TO') != '') {
 			$emailEvent->sendEmail(array(
-				'email' => sysConfig::get('SEND_EXTRA_ORDER_EMAILS_TO'),
-				'name'  => ''
-			));
+					'email' => sysConfig::get('SEND_EXTRA_ORDER_EMAILS_TO'),
+					'name'  => ''
+				));
 		}
 	}
 }

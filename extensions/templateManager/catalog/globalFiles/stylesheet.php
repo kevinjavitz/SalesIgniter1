@@ -172,9 +172,9 @@ h4 { font-size: 13px;color: #c30;margin: 10px;font-weight: bold; }
 .ui-ajax-loader-back{ background-image: url(<?php echo $templateDir; ?>images/bg_ajax.png);width:375px;height:200px; }
 .ui-ajax-loader-dialog{ margin-left:150px; margin-top:60px; }
 
-.moduleRow.ui-state-default, .moduleRow.ui-state-hover, .moduleRow.ui-state-active { color:#ffffff;border-color:#eca09a; }
-.moduleRow.ui-state-default { <?php echo buildSimpleGradient('#e4e4e4', '#cccccc'); ?> }
-.moduleRow.ui-state-hover { <?php echo buildSimpleGradient('#c4c2c2', '#a7a7a7'); ?> }
+.moduleRow.ui-state-default, .moduleRow.ui-state-hover, .moduleRow.ui-state-active { color:#ffffff; }
+.moduleRow.ui-state-default { border: 1px solid transparent; }
+.moduleRow.ui-state-hover { border-color:#background: #cccccc; }
 .moduleRow.ui-state-active { border-color:#d71a14;background-color:#ffffff; }
 
 .ui-contentbox { width: 100%;position: relative;margin-bottom: 0px; }
@@ -426,7 +426,7 @@ a.productListingRowPagerLink:hover { text-decoration:none; }
 			'id' => 'source1',
 			'getContentFunc' => 'src1_fetch',
 			'contentType' => Minify::TYPE_CSS,
-			'lastModified' => ($_SERVER['REQUEST_TIME'] - $_SERVER['REQUEST_TIME'] % 86400)
+			'lastModified' => time()
 		));
 
 	// handle request
@@ -457,7 +457,7 @@ a.productListingRowPagerLink:hover { text-decoration:none; }
 	//$StylesheetCache->setContentType('text/css');
 	$StylesheetCache->setContent($Result['content']);
 	$StylesheetCache->setExpires(time() + (60 * 60 * 24 * 2));
-	//$StylesheetCache->setLastModified(time());
+	$StylesheetCache->setLastModified($Result['headers']['Last-Modified']);
 	$StylesheetCache->store();
 
 	$StylesheetCache->output(false, true);

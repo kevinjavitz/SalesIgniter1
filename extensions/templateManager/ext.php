@@ -230,8 +230,9 @@ function isPresto(){
 function buildBackgroundAlpha($r, $g, $b, $a, &$styleObj = false){
 	$cssData = array();
 	if (isIE8() === true){
-		$cssData['-pie-background'] = 'rgba(' . $r . ', ' . $g . ', ' . $b . ', ' . $a . ')';
-		$cssData['behavior'] = 'url(' . sysConfig::getDirWsCatalog() . 'ext/ie_behave/PIE.htc)';
+		//$cssData['-pie-background'] = 'rgba(' . $r . ', ' . $g . ', ' . $b . ', ' . $a . ')';
+		//$cssData['behavior'] = 'url(' . sysConfig::getDirWsCatalog() . 'ext/ie_behave/PIE.htc)';
+		$cssData['background-color'] = 'rgb(' . $r . ', ' . $g . ', ' . $b . ')';
 	}else{
 		$cssData['background-color'] = 'rgba(' . $r . ', ' . $g . ', ' . $b . ', ' . $a . ')';
 	}
@@ -299,12 +300,8 @@ function buildLinearGradient($deg, $colorStops, $images = false, &$styleObj = fa
 			);
 		}
 
-		$imageName = md5('browser=ie8&angle=' . $deg . '&colorStops=' . json_encode($stops));
-		if (file_exists(sysConfig::getDirFsCatalog() . 'cache/' . $imageName . '.png')){
-			$cssData['background-image'][] = 'url(' . sysConfig::getDirWsCatalog() . 'cache/' . $imageName . '.png)';
-		}else{
-			$cssData['-jquery'][] = '$(this).css(\'background-image\', \'url(/extensions/templateManager/catalog/globalFiles/IE8_gradient.php?width=\' + $(this).width() + \'&height=\' + $(this).height() + \'&angle=' . $deg . '&colorStops=' . urlencode(json_encode($stops)) . ')\')';
-		}
+		$cssData['background-image'][] = 'url(/extensions/templateManager/catalog/globalFiles/IE8_gradient.php?width=0&height=0&angle=' . $deg . '&colorStops=' . urlencode(json_encode($stops)) . ')';
+		$cssData['-jquery'][] = 'if ($(this).height() > 10){ $(this).css(\'background-image\', \'url(/extensions/templateManager/catalog/globalFiles/IE8_gradient.php?width=\' + $(this).outerWidth(true) + \'&height=\' + $(this).outerHeight(true) + \'&angle=' . $deg . '&colorStops=' . urlencode(json_encode($stops)) . ')\'); }';
 		$cssData['background-repeat'][] = 'repeat-x';
 		$cssData['background-attachment'][] = (isset($iInfo['attachment']) ? $iInfo['attachment'] : 'scroll');
 		$cssData['background-position'][] = '0% 0%';

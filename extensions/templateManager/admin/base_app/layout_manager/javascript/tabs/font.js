@@ -123,33 +123,6 @@
 				var thisCls = this;
 				var ActiveEl = thisCls.getCurrentElement();
 
-				var values = {
-					font: {
-						family: 'Arial',
-						size: '1',
-						size_unit: 'em',
-						style: 'normal',
-						variant: 'normal',
-						weight: 'normal'
-					},
-					text: {
-						color: '#000000',
-						letter_spacing: '0',
-						letter_spacing_unit: 'normal',
-						line_height: '1',
-						line_height_unit: 'em',
-						align: 'left',
-						decoration: 'none',
-						indent: '0',
-						indent_unit: 'px',
-						transform: 'none',
-						vertical_align: 'baseline',
-						white_space: 'normal',
-						word_spacing: '0',
-						word_spacing_unit: 'normal'
-					}
-				};
-
 				var fontData = {
 					family    : $Tab.find('select[name=font_family]').val(),
 					size      : $Tab.find('input[name=font_size]').val(),

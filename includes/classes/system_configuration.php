@@ -266,7 +266,7 @@
 		 * @return void
 		 */
 		public static function load(){
-			/*$Qconfig = Doctrine_Query::create()
+			$Qconfig = Doctrine_Query::create()
 			->select('configuration_key, configuration_value')
 			->from('Configuration')
 			->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
@@ -274,7 +274,7 @@
 				self::set($cfg['configuration_key'], $cfg['configuration_value']);
 			}
 			$Qconfig = null;
-			unset($Qconfig);*/
+			unset($Qconfig);
 		}
 		
 		/**

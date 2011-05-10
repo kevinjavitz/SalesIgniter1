@@ -201,7 +201,7 @@ else {
 			'id' => 'source1',
 			'getContentFunc' => 'src1_fetch',
 			'contentType' => Minify::TYPE_JS,
-			'lastModified' => ($_SERVER['REQUEST_TIME'] - $_SERVER['REQUEST_TIME'] % 86400)
+			'lastModified' => time()
 		));
 
 	// handle request
@@ -232,7 +232,7 @@ else {
 	//$JavascriptCache->setContentType('text/javascript');
 	$JavascriptCache->setContent($Result['content']);
 	$JavascriptCache->setExpires(time() + (60 * 60 * 24 * 2));
-	//$JavascriptCache->setLastModified(time());
+	$JavascriptCache->setLastModified($Result['headers']['Last-Modified']);
 	$JavascriptCache->store();
 
 	$JavascriptCache->output(false, true);

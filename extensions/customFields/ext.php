@@ -126,8 +126,9 @@ class Extension_customFields extends ExtensionBase {
 		->select('search_key')
 		->from('ProductsCustomFields')
 		//->where('show_on_site = ?', '1')
-		->andWhere('input_type = ?', 'search')
-		->execute();
+				->where('search_key != ?', '')
+				->andWhere('search_key is not NULL')
+				->execute();
 		if ($Qkeys){
 			foreach($Qkeys->toArray() as $key){
 				if (!in_array($key, $validSearchKeys)){
@@ -145,10 +146,11 @@ class Extension_customFields extends ExtensionBase {
 			$this->validSearchKeys[$key] = $_GET[$key];
 		}else{
 			$Qcheck = Doctrine_Query::create()
-			->select('field_id')
-			->from('ProductsCustomFields')
-			->where('search_key = ?', $key)
-			->fetchOne();
+					->select('field_id')
+					->from('ProductsCustomFields')
+					->where('search_key != ?', '')
+					->andWhere('search_key is not NULL')
+					->fetchOne();
 			if ($Qcheck !== false){
 				if (isset($key) && empty($_GET[$key])){
 					$totalErrors++;

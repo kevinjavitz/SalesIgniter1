@@ -349,7 +349,7 @@ require(sysConfig::getDirFsCatalog() . 'includes/classes/htmlBase.php');
 	if (isset($_POST['cust_order']))           $action = 'cust_order';
 	if (isset($_POST['checkout']))             $action = 'update_product';
 
-	EventManager::notify('ApplicationTopActionCheckPost', $action);
+	EventManager::notify('ApplicationTopActionCheckPost', &$action);
 
 	if (!empty($action)) {
 		// redirect the customer to a friendly cookie-must-be-enabled page if cookies are disabled
@@ -361,7 +361,7 @@ require(sysConfig::getDirFsCatalog() . 'includes/classes/htmlBase.php');
 			$parameters = array('action', 'cPath', 'products_id', 'pid');
 			$goto = itw_app_link(tep_get_all_get_params($parameters), 'checkout', 'default', 'SSL');
 		}elseif (sysConfig::get('DISPLAY_CART') == 'true') {
-			$parameters = array('action', 'cPath', 'products_id', 'pid');
+			$parameters = array('app', 'appPage', 'action', 'cPath', 'products_id', 'pid');
 			$goto = itw_app_link(tep_get_all_get_params($parameters), 'shoppingCart', 'default');
 			$gotologin =  FILENAME_LOGIN;
 		} else {
