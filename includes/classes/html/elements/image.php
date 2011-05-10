@@ -42,7 +42,7 @@ class htmlElement_image implements htmlElementPlugin {
 			$height = (int)$this->imgElement->css('height');
 			$this->imgElement->removeCss('width')->removeCss('height');
 			
-			$this->setSource(sysConfig::getDirFsCatalog() . 'imagick_thumb.php?path=rel&width=' . $width . '&height=' . $height . '&imgSrc=' . $src.'&bestFit='. $this->useBestFit);
+			$this->setSource(sysConfig::getDirWsCatalog() . 'imagick_thumb.php?path=rel&width=' . $width . '&height=' . $height . '&imgSrc=' . $src.'&bestFit='. $this->useBestFit);
 		}
 		return $this->imgElement->draw();
 	}
