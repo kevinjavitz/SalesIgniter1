@@ -674,7 +674,7 @@ class ReservationUtilities {
 								} else {
 									alert('<?php echo sysLanguage::get('PPR_NOTICE_RESERVATION_NOT_AVAILABLE'); ?>.');
 								}
-								hideAjaxLoader($this);
+								removeAjaxLoader($this);
 							}
 						});
 					}
@@ -774,15 +774,17 @@ class ReservationUtilities {
 		?>
 
 		$selfID.find('.rental_qty').blur(function () {
-			showAjaxLoader($selfID.find('.datePicker'), 'xlarge');
+			var $calLoader = $selfID.find('.datePicker');
+			showAjaxLoader($calLoader, 'xlarge');
 			$.ajax({
 				cache: false,
 				dataType: 'json',
 				type: 'post',
 				url: <?php echo $callLink; ?>,
-				data: 'action=<?php echo $callAction;?>&pID=' + productsID + '&' + $('.reservationTable *, .ui-widget-footer-box *').serialize(),
+				data: 'action=<?php echo $callAction;?>&pID=' + productsID + '&' + $('.reservationTable *, .ui-widget-footer-box *, .pprButttons *').serialize(),
 				success: function (data) {
 					if (data.success == true) {
+						removeAjaxLoader($calLoader);
 						$selfID.parent().html(data.calendar);
 					}
 				}
@@ -813,7 +815,7 @@ class ReservationUtilities {
 						} else {
 							alert('<?php echo sysLanguage::get('PPR_NOTICE_RESERVATION_NOT_AVAILABLE'); ?>.');
 						}
-						hideAjaxLoader(selectedPeriod);
+						removeAjaxLoader(selectedPeriod);
 					}
 				});
 			} else {
@@ -946,6 +948,7 @@ class ReservationUtilities {
 							data: 'action=checkRes&pID=' + productsID + '&' + $('.reservationTable *, .ui-widget-footer-box *').serialize(),
 							success: function (data) {
 								if (data.success == true) {
+									removeAjaxLoader($this);
 									$selfID.parent().find('.priceQuote').html(data.price + ' ' + data.message);
 									$selfID.parent().find('.inCart').show();
 									$selfID.parent().find('.inCart').button();
@@ -954,7 +957,7 @@ class ReservationUtilities {
 								} else {
 									alert('<?php echo sysLanguage::get('PPR_NOTICE_RESERVATION_NOT_AVAILABLE'); ?>.');
 								}
-								hideAjaxLoader($this);
+
 							}
 						});
 					}
@@ -1296,148 +1299,7 @@ class ReservationUtilities {
 
 		return $reservArr;
 	}
-   /*
-	public static function getReservations($productId, $start, $end, $allowOverbooking = false){
-		$booked = array();
 
-		if (sysConfig::get('EXTENSION_PAY_PER_RENTALS_ALLOW_OVERBOOKING') == 'False' && $allowOverbooking === false){
-			$Qcheck = Doctrine_Query::create()
-			->from('OrdersProductsReservation opr')
-			->leftJoin('opr.ProductsInventoryBarcodes ib')
-			->leftJoin('ib.ProductsInventory i')
-			->where('i.products_id = ?', $productId)
-			->andWhereIn('opr.rental_state', array('reserved', 'out'))
-			->andWhere('opr.parent_id IS NULL')
-
-			->andWhere('(
-				(
-					(
-						start_date
-							BETWEEN
-								DATE_SUB(CAST("' . $start . '" AS DATETIME), INTERVAL shipping_days_before DAY)
-									AND
-								DATE_ADD(CAST("' . $end . '" AS DATETIME), INTERVAL shipping_days_after DAY)
-					) AND TRUE
-				) OR (
-					(
-						end_date
-							BETWEEN
-								DATE_SUB(CAST("' . $start . '" AS DATETIME), INTERVAL shipping_days_before DAY)
-									AND
-								DATE_ADD(CAST("' . $end . '" AS DATETIME), INTERVAL shipping_days_after DAY)
-					) AND TRUE
-				) OR (
-					(
-						DATE_SUB(CAST("' .  $start . '" AS DATETIME), INTERVAL shipping_days_before DAY) >= start_date
-							AND
-						DATE_ADD(CAST("' . $end . '" AS DATETIME), INTERVAL shipping_days_after DAY) <= end_date
-					) AND TRUE
-				) AND TRUE
-			) AND TRUE')
-			->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
-			//if date to check is 05.07 -- 08.07 and one reservation date from db is 04.07 -- 09.07
-			if ($Qcheck){
-				foreach($Qcheck as $oprInfo){
-					$startDateArr = date_parse($oprInfo['start_date']);
-					$endDateArr = date_parse($oprInfo['end_date']);
-//print_r($opInfo);
-//print_r($oprInfo);
-					$startTime = mktime($startDateArr['hour'],$startDateArr['minute'],$startDateArr['second'],$startDateArr['month'],$startDateArr['day']-$oprInfo['shipping_days_before'],$startDateArr['year']);
-					$endTime = mktime($endDateArr['hour'],$endDateArr['minute'],$endDateArr['second'],$endDateArr['month'],$endDateArr['day']+$oprInfo['shipping_days_after'],$endDateArr['year']);
-
-					$days = ($endTime - $startTime) / (60 * 60 * 24);
-					$date = date('Y-n-j', $startTime);
-
-					if (tep_not_null($oprInfo['barcode_id'])){
-						self::addBookedBarcode($booked, array(
-							'date'      => $date,
-							'barcodeID' => $oprInfo['barcode_id'],
-							'startTime' => $startTime,
-							'days'      => $days
-						));
-					}elseif (tep_not_null($oprInfo['quantity_id'])){
-						self::addBookedQuantity($booked, array(
-							'date'       => $date,
-							'quantityID' => $oprInfo['quantity_id'],
-							'startTime'  => $startTime,
-							'days'       => $days
-						));
-					}
-
-					$Qpackaged = Doctrine_Query::create()
-					->leftJoin('OrdersProductsReservation opr')
-					->where('opr.parent_id = ?', $oprInfo['orders_products_reservations_id'])
-					->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
-					if ($Qpackaged){
-						foreach($Qpackaged as $opprInfo){
-							if (tep_not_null($opprInfo['barcode_id'])){
-								self::addBookedBarcode($booked, array(
-									'date'      => $date,
-									'barcodeID' => $opprInfo['barcode_id'],
-									'startTime' => $startTime,
-									'days'      => $days
-								));
-							}elseif (tep_not_null($opprInfo['quantity_id'])){
-								self::addBookedQuantity($booked, array(
-									'date'       => $date,
-									'quantityID' => $opprInfo['quantity_id'],
-									'startTime'  => $startTime,
-									'days'       => $days
-								));
-							}
-						}
-					}
-				}
-			}
-		}
-		//print_r($booked);
-		return $booked;
-	}
-
-	private static function addBookedBarcode(&$booked, $dataArray){
-		$date = $dataArray['date'];
-		$barcodeID = $dataArray['barcodeID'];
-		if (!isset($booked['barcode'][$date])){
-			$booked['barcode'][$date] = array($barcodeID);
-		}else{
-			if (!in_array($barcodeID, $booked['barcode'][$date])){
-				$booked['barcode'][$date][] = $barcodeID;
-			}
-		}
-
-		for($i=0; $i<$dataArray['days']; $i++){
-			$date = date('Y-n-j', ($dataArray['startTime'] + (($i+1) * 86400)));
-			if (!isset($booked['barcode'][$date])){
-				$booked['barcode'][$date] = array($barcodeID);
-			}elseif (isset($booked['barcode'][$date]) && !in_array($barcodeID, $booked['barcode'][$date])){
-				$booked['barcode'][$date][] = $barcodeID;
-			}
-		}
-	}
-
-	private static function addBookedQuantity(&$booked, $dataArray){
-		$date = $dataArray['date'];
-		$quantityID = $dataArray['quantityID'];
-		if (!isset($booked['quantity'][$date])){
-			$booked['quantity'][$date][$quantityID] = 1;
-		}else{
-			if (!isset($booked['quantity'][$date][$quantityID])){
-				$booked['quantity'][$date][$quantityID] = 1;
-			}else{
-				$booked['quantity'][$date][$quantityID] += 1;
-			}
-		}
-
-		for($i=0; $i<$dataArray['days']; $i++){
-			$date = date('Y-n-j', ($dataArray['startTime'] + (($i+1) * 86400)));
-			if (!isset($booked['quantity'][$date][$quantityID])){
-				$booked['quantity'][$date][$quantityID] = 1;
-			}else{
-				$booked['quantity'][$date][$quantityID] += 1;
-			}
-		}
-	}
-    */
 	public static function CheckBooking($settings){
 		$returnVal = 0;
 		if(isset($settings['start_date']) && isset($settings['end_date'])){

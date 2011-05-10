@@ -13,13 +13,13 @@ $(document).ready(function (){
 		var $AttrInput = $Row.find('.productAttribute');
 		var $qtyInput = $Row.find('.productQty');
 		var $purchaseTypeSelected = $Row.find('.purchaseType option:selected');
-
 		productsID = $Row.attr('data-id');
 		var attrParams = 'pID=' + $Row.attr('data-id');
 		if ($AttrInput) {
 			attrParams = attrParams + '&id[reservation][' + $AttrInput.attr('attrval') + ']=' + $AttrInput.val();
 		}
-
+		var $closeBut = $('<div style=""><a class="closeBut" href="#"><span class="ui-icon ui-icon-closethick">close</span></a></div>');
+		$closeBut.insertBefore($self);
 		showAjaxLoader($selfInput, 'small');
 		$.ajax({
 			cache: false,
@@ -28,17 +28,17 @@ $(document).ready(function (){
 			data: attrParams,
 			url: js_app_link('appExt=orderCreator&app=default&appPage=new&action=loadReservationData'),
 			success: function (data) {
-				var $closeBut = $('<div><a class="closeBut" href="#"><span class="ui-icon ui-icon-closethick">close</span></a></div>');
-				$self.html($closeBut.html() + data.calendar);
+				$self.html(data.calendar);
 
 				$('.closeBut').click(function() {
+					removeAjaxLoader($selfInput);
 					$self.html('');
 					$self.hide();
-					hideAjaxLoader($selfInput);
+					$closeBut.hide();
 					return false;
 				});
 
-				$('.inCart').live('click', function() {
+				$('.inCart').live('click', function(event) {
 					showAjaxLoader($self, 'large');
 					$.ajax({
 						cache: false,
@@ -60,11 +60,11 @@ $(document).ready(function (){
 								$shippingText.html($shipRadio.parent().parent().find('td:eq(0)').html());
 							}
 							$Row.find('.priceEx').val(data.price).trigger('keyup');
-							hideAjaxLoader($self);
-							$self.hide();
-							hideAjaxLoader($selfInput);
+							removeAjaxLoader($self);
+							$('.closeBut').trigger('click');
 						}
 					});
+					event.stopImmediatePropagation();
 				});
 
 				$self.css('background-color', '#ffffff');
@@ -77,8 +77,9 @@ $(document).ready(function (){
 				$self.css('left', (posi.left + 100) + 'px');
 
 				$('.closeBut').css('position', 'relative');
-				$('.closeBut').css('left', '570px');
-				$('.closeBut').css('top', '10px');
+				$('.closeBut').css('z-index', '1000');
+				$('.closeBut').css('left', '800px');
+				$('.closeBut').css('top', '-120px');
 				$self.show();
 				$self.focus();
 
