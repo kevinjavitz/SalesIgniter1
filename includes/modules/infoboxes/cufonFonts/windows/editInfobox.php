@@ -5,31 +5,29 @@
 
 	$fontElements = htmlBase::newElement('input')
 	->setName('applied_elements')
-	->setLabel('Elements To apply font to elements:')
 	->setValue($selectedElements)
 	->setLabelPosition('before');
 
 	$elementFont = htmlBase::newElement('input')
 	->setName('applied_font')
-	->setLabel('Font Name(the name of js file without extension):')
 	->setValue($selectedFont)
 	->setLabelPosition('before');
 
 	$WidgetSettingsTable->addBodyRow(array(
 	'columns' => array(
-		array('colspan' => 2, 'text' => '<b>Custom PHP Block Widget Properties</b>')
+		array('colspan' => 2, 'text' => sysLanguage::get('TEXT_INFOBOX_CUFON_HEADING_NAME'))
 	)
 ));
 
 $WidgetSettingsTable->addBodyRow(array(
 	'columns' => array(
-		array('text' => 'PHP or Html Code:'),
+		array('text' => sysLanguage::get('TEXT_INFOBOX_CUFON_FONT_FILE')),
 		array('text' => $elementFont->draw())
 	)
 ));
 $WidgetSettingsTable->addBodyRow(array(
 	'columns' => array(
-		array('text' => 'PHP or Html Code:'),
+		array('text' => sysLanguage::get('TEXT_INFOBOX_CUFON_ELEMENTS')),
 		array('text' => $fontElements->draw())
 	)
 ));
