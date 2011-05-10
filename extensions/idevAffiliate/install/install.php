@@ -7,13 +7,13 @@ class idevAffiliateInstall extends extensionInstaller {
 	}
 
 	public function install(){
-		if (defined('EXTENSION_IDEVAFFILIATE_ENABLED')) return;
+		if (sysConfig::exists('EXTENSION_IDEVAFFILIATE_ENABLED') === true) return;
 
 		parent::install();
 	}
 
 	public function uninstall($remove = false){
-		if (!defined('EXTENSION_IDEVAFFILIATE_ENABLED')) return;
+		if (sysConfig::exists('EXTENSION_IDEVAFFILIATE_ENABLED') === false) return;
 
 		parent::uninstall($remove);
 	}
