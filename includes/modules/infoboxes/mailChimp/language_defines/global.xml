@@ -8,4 +8,8 @@
 	<define key="INFOBOX_MAILCHIMP_SUCCESS"><![CDATA[Success, You should check your inbox for confirmation]]></define>
 	<define key="INFOBOX_MAILCHIMP_FAIL"><![CDATA[An error occured, Please try again.The error is: ]]></define>
 
+	<define key="INFOBOX_MAILCHIMP_TITLE"><![CDATA[<b>Custom MailChimp Properties</b>]]></define>
+	<define key="TEXT_API_KEY"><![CDATA[API KEY: ]]></define>
+	<define key="TEXT_LIST_ID"><![CDATA[List ID: ]]></define>
+
 </definitions>                                                                       

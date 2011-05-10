@@ -13,20 +13,20 @@
 
 	$WidgetSettingsTable->addBodyRow(array(
 		'columns' => array(
-			array('colspan' => 2, 'text' => '<b>Custom MailChimp Properties</b>')
+			array('colspan' => 2, 'text' => sysLanguage::get('INFOBOX_MAILCHIMP_TITLE'))
 		)
 	));
 
 	$WidgetSettingsTable->addBodyRow(array(
 		'columns' => array(
-			array('text' => 'API KEY: '),
+			array('text' => sysLanguage::get('TEXT_API_KEY')),
 			array('text' => $linkApi->draw())
 		)
 	));
 
 	$WidgetSettingsTable->addBodyRow(array(
 		'columns' => array(
-			array('text' => 'List ID:'),
+			array('text' => sysLanguage::get('TEXT_LIST_ID')),
 			array('text' => $linkList->draw())
 		)
 	));
