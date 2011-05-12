@@ -265,12 +265,17 @@ $(document).ready(function (){
 	include(DIR_WS_APP . 'customers/pages_tabs/edit/membership_info.php');
 	$membershipInfoTab = ob_get_contents();
 	ob_end_clean();
-	
-	ob_start();
-	include(DIR_WS_APP . 'customers/pages_tabs/edit/billing_history.php');
-	$rentalTab1 = ob_get_contents();
-	ob_end_clean();
-	
+
+ob_start();
+include(DIR_WS_APP . 'customers/pages_tabs/edit/order_history.php');
+$orderHistoryTab = ob_get_contents();
+ob_end_clean();
+
+ob_start();
+include(DIR_WS_APP . 'customers/pages_tabs/edit/billing_history.php');
+$rentalTab1 = ob_get_contents();
+ob_end_clean();
+
 	ob_start();
 	include(DIR_WS_APP . 'customers/pages_tabs/edit/current_rentals.php');
 	$rentalTab2 = ob_get_contents();
@@ -292,6 +297,8 @@ $(document).ready(function (){
 	->addTabPage('customerTab1', array('text' => $customerInfoTab))
 	->addTabHeader('customerTab2', array('text' => 'Membership Info'))
 	->addTabPage('customerTab2', array('text' => $membershipInfoTab))
+	->addTabHeader('orderHistoryTab', array('text' => sysLanguage::get('TAB_ORDER_HISTORY')))
+	->addTabPage('orderHistoryTab', array('text' => $orderHistoryTab))
 	->addTabHeader('rentalTab1', array('text' => sysLanguage::get('HEADING_BILLING_HISTORY')))
 	->addTabPage('rentalTab1', array('text' => $rentalTab1))
 	->addTabHeader('rentalTab2', array('text' => sysLanguage::get('HEADING_CURRENT_RENTALS')))
