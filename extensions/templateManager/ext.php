@@ -296,7 +296,7 @@ function buildLinearGradient($deg, $colorStops, $images = false, &$styleObj = fa
 					$iInfo['pos_x'] . ' ' . $iInfo['pos_y'];
 			}
 		}
-		$cssData['behavior'][] = 'url(' . sysConfig::getDirWsCatalog() . 'ext/ie_behave/PIE.htc)';
+		//$cssData['behavior'][] = 'url(' . sysConfig::getDirWsCatalog() . 'ext/ie_behave/PIE.htc)';
 	}
 	elseif (isIE8() === true){
 		$stops = array();
@@ -470,7 +470,7 @@ function buildBorderRadius($tl = 0, $tr = 0, $br = 0, $bl = 0, &$styleObj = fals
 	}
 	$cssData[$prefix . 'border-radius'] = $tl . ' ' . $tr . ' ' . $br . ' ' . $bl;
 	if (isIE8() === true){
-		$cssData['behavior'] = 'url(' . sysConfig::getDirWsCatalog() . 'ext/ie_behave/PIE.htc)';
+		//$cssData['behavior'] = 'url(' . sysConfig::getDirWsCatalog() . 'ext/ie_behave/PIE.htc)';
 	}
 
 	$css = '';
