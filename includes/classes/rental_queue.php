@@ -75,7 +75,7 @@
           } else {
 	          $QmaxPty = Doctrine_Query::create()
 		          ->select('MAX(priority) as lastPriority')
-		          ->from('RentalQueue')
+		          ->from('RentalQueueTable')
 		          ->where('customers_id = ?', $this->userAccount->getCustomerId())
 		          ->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 
