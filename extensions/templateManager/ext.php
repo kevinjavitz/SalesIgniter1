@@ -210,6 +210,14 @@ function isMoz(){
 	return (matchUserAgent('Mozilla') && !matchUserAgent('AppleWebKit'));
 }
 
+function isChrome(){
+	return (isWebkit() ? matchUserAgent('Chrome') : false);
+}
+
+function isSafari(){
+	return (isWebkit() ? (!matchUserAgent('Chrome') && matchUserAgent('Safari')) : false);
+}
+
 function isWebkit(){
 	return matchUserAgent('AppleWebKit');
 }
@@ -288,7 +296,7 @@ function buildLinearGradient($deg, $colorStops, $images = false, &$styleObj = fa
 					$iInfo['pos_x'] . ' ' . $iInfo['pos_y'];
 			}
 		}
-		$cssData['behavior'][] = 'url(' . sysConfig::getDirWsCatalog() . 'ext/ie_behave/PIE.htc)';
+		//$cssData['behavior'][] = 'url(' . sysConfig::getDirWsCatalog() . 'ext/ie_behave/PIE.htc)';
 	}
 	elseif (isIE8() === true){
 		$stops = array();
@@ -305,6 +313,56 @@ function buildLinearGradient($deg, $colorStops, $images = false, &$styleObj = fa
 		$cssData['background-repeat'][] = 'repeat-x';
 		$cssData['background-attachment'][] = (isset($iInfo['attachment']) ? $iInfo['attachment'] : 'scroll');
 		$cssData['background-position'][] = '0% 0%';
+	}
+	elseif (isSafari() === true){
+		if ($images !== false){
+			foreach($images as $iInfo){
+				if (isset($iInfo['css_placement']) && $iInfo['css_placement'] == 'after') {
+					continue;
+				}
+
+				$cssData['background'][] = 'url(' . $iInfo['image'] . ')';
+				$cssData['background-repeat'][] = $iInfo['repeat'];
+				$cssData['background-attachment'][] = (isset($iInfo['attachment']) ? $iInfo['attachment'] : 'scroll');
+				$cssData['background-position'][] = $iInfo['pos_x'] . ' ' . $iInfo['pos_y'];
+			}
+		}
+		
+		$stops = array();
+		foreach($colorStops as $cInfo){
+			$stops[] = 'color-stop(' . $cInfo[1] . ', ' . $cInfo[0] . ')';
+		}
+		
+		$angle = $deg . 'deg';
+		switch($deg){
+			case 0: $angle = 'left'; break;
+			case 45: $angle = 'bottom left'; break;
+			case 90: $angle = 'bottom'; break;
+			case 135: $angle = 'bottom right'; break;
+			case 190: $angle = 'right'; break;
+			case 235: $angle = 'top right'; break;
+			case 270: $angle = 'left top, left bottom'; break;
+			case 315: $angle = 'top left'; break;
+			case 360: $angle = 'left'; break;
+		}
+
+		$cssData['background'][] = '-webkit-gradient(linear, ' . $angle . ', ' . implode(', ', $stops) . ')';
+		$cssData['background-repeat'][] = 'no-repeat';
+		$cssData['background-attachment'][] = (isset($iInfo['attachment']) ? $iInfo['attachment'] : 'scroll');
+		$cssData['background-position'][] = '0% 0%';
+
+		if ($images !== false){
+			foreach($images as $iInfo){
+				if (!isset($iInfo['css_placement']) || $iInfo['css_placement'] == 'before') {
+					continue;
+				}
+
+				$cssData['background'][] = 'url(' . $iInfo['image'] . ')';
+				$cssData['background-repeat'][] = $iInfo['repeat'];
+				$cssData['background-attachment'][] = (isset($iInfo['attachment']) ? $iInfo['attachment'] : 'scroll');
+				$cssData['background-position'][] = $iInfo['pos_x'] . ' ' . $iInfo['pos_y'];
+			}
+		}
 	}
 	else {
 		if ($images !== false){
@@ -412,7 +470,7 @@ function buildBorderRadius($tl = 0, $tr = 0, $br = 0, $bl = 0, &$styleObj = fals
 	}
 	$cssData[$prefix . 'border-radius'] = $tl . ' ' . $tr . ' ' . $br . ' ' . $bl;
 	if (isIE8() === true){
-		$cssData['behavior'] = 'url(' . sysConfig::getDirWsCatalog() . 'ext/ie_behave/PIE.htc)';
+		//$cssData['behavior'] = 'url(' . sysConfig::getDirWsCatalog() . 'ext/ie_behave/PIE.htc)';
 	}
 
 	$css = '';

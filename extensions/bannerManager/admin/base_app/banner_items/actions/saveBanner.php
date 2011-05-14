@@ -1,4 +1,5 @@
 <?php
+	require(sysConfig::getDirFsAdmin() . 'includes/classes/upload.php');
 
 	$banner_date_scheduled = tep_db_prepare_input($_POST['banners_date_scheduled']);
 	$banner_date_expires = tep_db_prepare_input($_POST['banners_expires_date']);

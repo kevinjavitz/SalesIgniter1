@@ -127,6 +127,7 @@ class Extension_multiStore extends ExtensionBase {
 			}
 			$this->storeInfo = $Qstore[0];
 		}
+		Session::set('tplDir', $this->storeInfo['stores_template']);
 
 		if(!Session::exists('current_store_id') || Session::get('current_store_id') != 'all'){
 			if (getenv('HTTPS') != 'on'){

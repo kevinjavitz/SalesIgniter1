@@ -94,5 +94,10 @@ class OrdersPaymentsHistory extends Doctrine_Record {
 			'length' => 1,
 			'unsigned' => 0
 		));
+		$this->hasColumn('can_reuse', 'integer', 1, array(
+			'type' => 'integer',
+			'length' => 1,
+			'unsigned' => 0
+		));
 	}
 }

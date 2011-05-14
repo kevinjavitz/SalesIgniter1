@@ -1092,7 +1092,7 @@ class Doctrine_Export extends Doctrine_Connection_Module
     public function exportSchema($directory = null)
     {
         if ($directory !== null) {
-            $models = Doctrine_Core::filterInvalidModels(Doctrine_Core::loadModels($directory));
+            $models = Doctrine_Core::filterInvalidModels(Doctrine_Core::loadModels($directory, Doctrine_Core::MODEL_LOADING_AGGRESSIVE));
         } else {
             $models = Doctrine_Core::getLoadedModels();
         }
