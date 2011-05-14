@@ -75,7 +75,7 @@
           } else {
 	          $QmaxPty = Doctrine_Query::create()
 		          ->select('MAX(priority) as lastPriority')
-		          ->from('RentalQueue')
+		          ->from('RentalQueueTable')
 		          ->where('customers_id = ?', $this->userAccount->getCustomerId())
 		          ->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 
@@ -114,11 +114,11 @@
 		              ->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
               }
           }
-          
+
           foreach($Qdisc as $disc){
-              $product = new product($disc[0]['products_id']);
+              $product = new product($disc['products_id']);
               if ($product->isActive() === true){
-                  $this->addToQueue($disc[0]['products_id']);
+                  $this->addToQueue($disc['products_id']);
               }
           }
       }
