@@ -70,11 +70,12 @@
 	}
 
 	$Qrented = Doctrine_Query::create()
-		->select('r.customers_queue_id, r.customers_id, r.products_id, p.products_name, r.date_added, r.products_barcode, concat(c.customers_firstname, " ", c.customers_lastname) as full_name')
+		->select('r.customers_queue_id, r.customers_id, r.products_id, p.products_id, pd.products_id, pd.products_name, r.date_added, r.products_barcode, concat(c.customers_firstname, " ", c.customers_lastname) as full_name')
 		->from('RentedQueue r')
-		->leftJoin('r.ProductsDescription p ON p.products_id = r.products_id')
-		->leftJoin('r.Customers c ON r.customers_id = c.customers_id')
-		->where('p.language_id = ?', Session::get('languages_id'));
+		->leftJoin('r.Products p')
+		->leftJoin('p.ProductsDescription pd')
+		->leftJoin('r.Customers c')
+		->where('pd.language_id = ?', Session::get('languages_id'));
 	if (isset($_GET['cID'])){
 		$Qrented->andWhere('r.customers_id = ?', (int) $_GET['cID']);
 	}
