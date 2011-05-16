@@ -172,7 +172,7 @@ else {
 		$sources[] = sysConfig::getDirFsCatalog() . 'includes/javascript/general.js';
 	}
 
-	if ($env == 'catalog'){
+	if (isset($_GET['import']) && !empty($_GET['import'])){
 		foreach(explode(',', $_GET['import']) as $filePath){
 			if (substr($filePath, -3) != '.js'){
 				continue;
