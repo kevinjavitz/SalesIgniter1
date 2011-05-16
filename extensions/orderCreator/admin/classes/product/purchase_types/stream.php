@@ -9,7 +9,7 @@
 
 	This script and it's source is not redistributable
 */
-require(sysConfig::getDirFsCatalog() . 'includes/classes/product/purchase_types/stream.php');
+require(sysConfig::getDirFsCatalog() . 'extensions/streamProducts/catalog/classes/product/purchase_types/stream.php');
 
 class OrderCreatorProductPurchaseTypeStream extends PurchaseType_stream {
 

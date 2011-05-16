@@ -11,7 +11,7 @@
 */
 require(sysConfig::getDirFsCatalog() . 'includes/classes/product/purchase_types/rental.php');
 
-class OrderCreatorProductPurchaseTypeRental extends PurchaseType_rental {
+class OrderCreatorRentalMembershipProduct extends PurchaseType_rental {
 
 	public function addToOrdersProductCollection(&$ProductObj, &$CollectionObj){
 	}
