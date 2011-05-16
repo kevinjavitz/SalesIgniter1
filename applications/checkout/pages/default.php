@@ -9,6 +9,9 @@ echo tep_get_pages_content(13);
     font-size : 10px;
 }
 </style>
+<script type="text/javascript">
+	var CONTINUE_TO_HOMEPAGE = '<?php echo sysLanguage::get('TEXT_CONTINUE_TO_HOMEPAGE')?>';
+</script>
 	<div class="checkoutContent">
 	<?php
 		ob_start();

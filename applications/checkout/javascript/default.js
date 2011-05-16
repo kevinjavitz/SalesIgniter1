@@ -66,7 +66,7 @@ $(document).ready(function (){
             dataType: 'json',
             success: function (data) {
                 removeAjaxLoader($elem);
-				$('#shoppingCart').html(data.pageHtml);
+				$('#checkoutShoppingCart').html(data.pageHtml);
                 updateTotals();
             }
         });
@@ -91,7 +91,7 @@ $(document).ready(function (){
             success: function (data) {
                 removeAjaxLoader($elem);
                 if (data.empty == false){
-				    $('#shoppingCart').html(data.pageHtml);
+				    $('#checkoutShoppingCart').html(data.pageHtml);
                     updateTotals();
                 }else{
                     js_redirect(js_app_link('app=shoppingCart&appPage=default'));
@@ -213,7 +213,7 @@ $(document).ready(function (){
 				dataType: 'json',
 				success: function (data){
 					hideAjaxLoader($tableInsure);
-                    $('#shoppingCart').html(data.pageHtml);
+                    $('#checkoutShoppingCart').html(data.pageHtml);
                     updateTotals();
                     if(data.isRemove == true){
                         $('#insuranceTextRemove').show();
@@ -273,7 +273,7 @@ $(document).ready(function (){
                     $('#bar_step1').hide();
                     $('#bar_step2').hide();
                     $('#bar_step3').show();
-                    $('#continueButton').find('.ui-button-text').html('Continue to homepage');
+                    $('#continueButton').find('.ui-button-text').html(CONTINUE_TO_HOMEPAGE);
 					$('#printOrder').button();
                     $('.breadCrumb').html('<a class="headerNavigation" href="'+js_app_link('app=index&appPage=default')+'">You Are Here: Home</a> &raquo; Checkout &raquo; Order Processed');
                 }else
