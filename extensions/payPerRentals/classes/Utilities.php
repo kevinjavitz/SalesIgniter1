@@ -1168,7 +1168,7 @@ class ReservationUtilities {
 
      <tr class="dateSelectedCalendar">
       <td class="main"><?php echo sysLanguage::get('ENTRY_RENTAL_DATES_SELECTED');?></td>
-      <td><input type="text" name="start_date" class="start_date" value="<?php echo (isset($rInfo) ? $rInfo['reservationInfo']['start_date'] : '');?>" readonly="readonly"> To <input type="text" name="end_date" class="end_date" value="<?php echo (isset($rInfo) ? $rInfo['reservationInfo']['end_date'] : '');?>" readonly="readonly">
+      <td><input type="text" name="start_date" class="start_date" value="<?php echo (isset($rInfo) ? $rInfo['reservationInfo']['start_date'] : '');?>" readonly="readonly"> <?php echo sysLanguage::get('PAYPERRENTALS_TO');?> <input type="text" name="end_date" class="end_date" value="<?php echo (isset($rInfo) ? $rInfo['reservationInfo']['end_date'] : '');?>" readonly="readonly">
       <?php
         echo htmlBase::newElement('button')
              ->addClass('refreshCal')
