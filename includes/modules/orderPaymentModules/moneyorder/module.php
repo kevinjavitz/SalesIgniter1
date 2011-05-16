@@ -24,7 +24,7 @@ class OrderPaymentMoneyorder extends StandardPaymentModule {
 		return $this->onResponse(array(
 			'orderID' => $requestData['orderID'],
 			'amount'  => $requestData['amount'],
-			'message' => 'Awaiting Payment',
+			'message' => sysLanguage::get('PAYMENT_MODULE_MO_AWAITING_PAYMENT'),
 			'success' => /*2*/1
 		));
 	}

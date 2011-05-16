@@ -452,4 +452,28 @@
     <define key="TEXT_PLEASE_SELECT_ALL_CONTINENTS"><![CDATA[Any Continent]]></define>
     <define key="TEXT_CHOOSE_INVENTORY"><![CDATA[Choose Inventory]]></define>
 
+	<define key="PURCHASE_TYPE_RESERVATION_NAME"><![CDATA[Reservation]]></define>
+	<define key="PURCHASE_TYPE_RESERVATION_SHOW"><![CDATA[Reservation]]></define>
+	<define key="PAYMENT_MODULE_COD_AWAITING_PAYMENT"><![CDATA[Awaiting Payment]]></define>
+
+	<define key="PAYMENT_MODULE_MO_AWAITING_PAYMENT"><![CDATA[Awaiting Payment]]></define>
+
+	<define key="BUY_DOWNLOAD"><![CDATA[Buy Download]]></define>
+	<define key="BUY_STREAM"><![CDATA[Buy Stream]]></define>
+	<define key="BUY_NEW"><![CDATA[Buy New]]></define>
+	<define key="BUY_USED"><![CDATA[Buy Used]]></define>
+	<define key="BUY_RENTAL"><![CDATA[Buy Rental]]></define>
+	<define key="BUY_RESERVATION"><![CDATA[Buy Reservation]]></define>
+
+	<define key="TEXT_SHOPPING_CART_PURCHASE_TYPE"><![CDATA[ Purchase Type:]]></define>
+	<define key="TEXT_SHOPPING_CART_VIEW_TYPE"><![CDATA[ View Type:]]></define>
+
+	<define key="PURCHASE_TYPE_NEW_SHOW_SHOPPING_CART"><![CDATA[ New]]></define>
+
+	<define key="PURCHASE_TYPE_RESERVATION_SHOW_SHOPPING_CART"><![CDATA[ Reservation]]></define>
+	<define key="PURCHASE_TYPE_USED_SHOW_SHOPPING_CART"><![CDATA[ Used]]></define>
+	<define key="PURCHASE_TYPE_STREAM_SHOW_SHOPPING_CART"><![CDATA[ Stream]]></define>
+	<define key="PURCHASE_TYPE_DOWNLOAD_SHOW_SHOPPING_CART"><![CDATA[ Download]]></define>
+	<define key="PPR_PRICE_BASED_ON"><![CDATA[ <br/>Price based on: ]]></define>
+	<define key="PPR_PRICE_BASED_ON_SEMESTER"><![CDATA[ <br/>Price based on semester ]]></define>
 </definitions>

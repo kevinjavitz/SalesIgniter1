@@ -55,7 +55,7 @@ class productListing_productsPriceNew {
 				$buyNowButton->setHref(itw_app_link(tep_get_all_get_params(array('action', 'products_id')) . 'action=buy_' . $pType->typeLong . '_product&products_id=' . $productClass->getID()), true);
 				if (sizeof($tableRow) <= 0){
 					$tableRow[] = '<tr>
-    	               <td class="main">Buy ' . $pType->typeShow . ':</td>
+    	               <td class="main"' .  sysLanguage::get('BUY_NEW') . ':</td>
     	               <td class="main">' . $pType->displayPrice() . '</td>
     	              </tr>
     	              <tr>

@@ -313,7 +313,7 @@ for($i=0, $n=sizeof($trackings); $i<$n; $i++){
     </table>
     		<?php
 				echo '<input type="hidden" name="currentPage" id="currentPage" value="success">';
-				echo htmlBase::newElement('a')->html('Print Order')->attr('id','printOrder')->draw();
+				echo htmlBase::newElement('a')->html(sysLanguage::get('TEXT_PRINT_ORDER'))->attr('id','printOrder')->draw();
 		
 				if (isset($htmlEventDetails) || isset($htmlTermsDetails)){
 					if (isset($htmlEventDetails) && !empty($htmlEventDetails)){
