@@ -35,7 +35,7 @@
 	$myReviews = $Qreviews->execute(array(),Doctrine_Core::HYDRATE_ARRAY);
 	if ($myReviews){
 		foreach($myReviews as $reviews){
-			$infoLink = itw_app_link('products_id=' . $reviews['products_id'], 'product', 'info');
+			$infoLink = itw_app_link('products_id=' . $reviews['products_id'] . '&reviews_id=' . $reviews['reviews_id'], 'product', 'info');
 			$productName = $reviews['Products'][0]['ProductsDescription'][0]['products_name'];
 			$customersName = sprintf(sysLanguage::get('TEXT_REVIEW_BY'), tep_output_string_protected($reviews['customers_name']));
 			$dateAdded = sprintf(sysLanguage::get('TEXT_REVIEW_DATE_ADDED'), tep_date_long($reviews['date_added']));
