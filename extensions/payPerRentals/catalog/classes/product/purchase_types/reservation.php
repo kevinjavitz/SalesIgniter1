@@ -13,17 +13,14 @@
 
 class PurchaseType_reservation extends PurchaseTypeAbstract {
 	public $typeLong = 'reservation';
-	public $typeName;
-	public $typeShow;
+	public $typeName = 'Reservation';
+	public $typeShow = 'Reservation';
 
 	private $enabledShipping = array();
 
 	public function __construct($ProductCls, $forceEnable = false){
-
 		$productInfo = $ProductCls->productInfo;
 		$this->enabled = ($forceEnable === true ? true : (in_array($this->typeLong, $productInfo['typeArr'])));
-		$this->typeName = sysLanguage::get('PURCHASE_TYPE_RESERVATION_NAME');
-		$this->typeShow = sysLanguage::get('PURCHASE_TYPE_RESERVATION_SHOW');
 
 		if ($this->enabled === true){
 			$this->productInfo = array(
@@ -1745,7 +1742,7 @@ class PurchaseType_reservation extends PurchaseTypeAbstract {
 		$firstMinUnity = $messArr[key($messArr)];
 		$firstMinMinutes = key($messArr);
 		$myKeys = array_keys($minutesArray);
-		$message = sysLanguage::get('PPR_PRICE_BASED_ON');
+		$message = 'Price based on: ';
 		//if(count($myKeys) > 1) {
 		$is_bigger = true;
 		for ($i = 0; $i < count($myKeys); $i++) {
@@ -1849,7 +1846,7 @@ class PurchaseType_reservation extends PurchaseTypeAbstract {
 				$semName = $rInfo['semester_name'];
 			}
 			$returnPrice['price'] = $this->getPriceSemester($semName);
-			$returnPrice['message'] = sysLanguage::get('PPR_PRICE_BASED_ON_SEMESTER').$semName.' ';
+			$returnPrice['message'] = 'Price based on semester '.$semName.' ';
 		}
 
 		if (is_array($returnPrice)){

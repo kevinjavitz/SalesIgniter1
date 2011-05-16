@@ -71,8 +71,4 @@
 	<define key="TEXT_COUNTRY"><![CDATA[Country: ]]></define>
 	<define key="TEXT_CITY"><![CDATA[City: ]]></define>
 	<define key="TEXT_SELECT_DESTINATION"><![CDATA[1. Select Destinations ]]></define>
-
-	<define key="TEXT_CREATE_RESERVATION"><![CDATA[Create Reservation]]></define>
-	<define key="PAYPERRENTALS_TO"><![CDATA[ To ]]></define>
-
 </definitions>

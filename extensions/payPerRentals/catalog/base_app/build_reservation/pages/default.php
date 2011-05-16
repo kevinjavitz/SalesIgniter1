@@ -78,7 +78,7 @@ if ($insurancePrice > 0){
 	   $pageContents = ob_get_contents();
 	   ob_end_clean();
 
-	   $pageTitle = sysLanguage::get('TEXT_CREATE_RESERVATION');
+	   $pageTitle = 'Create Reservation';
 
 	   $pageButtons = '';
 	   if (sysConfig::get('EXTENSION_PAY_PER_RENTALS_SHOW_CALENDAR_PRODUCT_INFO') == 'False') {
