@@ -83,7 +83,7 @@ class PurchaseType_used extends PurchaseTypeAbstract {
 					'form_action'   => itw_app_link(tep_get_all_get_params(array('action'))),
 					'purchase_type' => $this->typeLong,
 					'allowQty'      => true,
-					'header'        =>  sysLanguage::get('BUY_USED'),
+					'header'        => 'Buy ' . $this->typeShow,
 					'content'       => $content->draw(),
 					'button'        => $button
 				);

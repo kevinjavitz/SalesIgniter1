@@ -33,7 +33,7 @@ class OrderPaymentCashondelivery extends StandardPaymentModule {
 		return $this->onResponse(array(
 			'orderID' => $requestData['orderID'],
 			'amount'  => $requestData['amount'],
-			'message' => sysLanguage::get('PAYMENT_MODULE_COD_AWAITING_PAYMENT'),
+			'message' => 'Awaiting Payment',
 			'success' => /*2*/1
 		));
 	}
