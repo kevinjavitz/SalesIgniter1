@@ -8,143 +8,36 @@ class Extension_templateManager extends ExtensionBase {
 	public function init(){
 		global $appExtension;
 		if ($this->enabled === false) return;
-
-		EventManager::attachEvents(array(
-				'PageCreateWidgets',
-				'PageLayoutAfterCss'
-			), null, $this);
 	}
 
 	public function postSessionInit(){
 		global $templateDir;
-		if (isset($_GET['tplDir']) && is_dir(sysConfig::getDirFsCatalog() . 'templates/' . basename($_GET['tplDir']))) {
-			Session::set('tplDir', basename($_GET['tplDir']));
-		} else {
-			if (Session::exists('tplDir') === true && is_dir(sysConfig::getDirFsCatalog() . 'templates/' . Session::get('tplDir'))){
-			}else{
-				if (APPLICATION_ENVIRONMENT == 'admin'){
-					Session::set('tplDir', 'fallback');
+		if (APPLICATION_ENVIRONMENT == 'catalog'){
+			if (isset($_GET['tplDir']) && is_dir(sysConfig::getDirFsCatalog() . 'templates/' . basename($_GET['tplDir']))) {
+				Session::set('tplDir', basename($_GET['tplDir']));
+			} else {
+				if (Session::exists('tplDir') === true && is_dir(sysConfig::getDirFsCatalog() . 'templates/' . Session::get('tplDir'))){
 				}else{
 					Session::set('tplDir', sysConfig::get('DIR_WS_TEMPLATES_DEFAULT'));
 				}
 			}
-		}
 
-		EventManager::notify('SetTemplateName');
+			EventManager::notify('SetTemplateName');
 
-		$tplDir = Session::get('tplDir');
+			$tplDir = Session::get('tplDir');
 
-		if ((preg_match('/^[[:alnum:]|_|-]+$/', $tplDir)) && (is_dir(sysConfig::getDirFsCatalog() . 'templates/' . $tplDir))){
-			// 'Input Validated' only allow alfanumeric characters and underscores in template name
-			sysConfig::set('DIR_WS_TEMPLATES', sysConfig::getDirFsCatalog() . 'templates/' . $tplDir . '/' );
-		} else {
-			echo strip_tags($tplDir) . '<br>';
-			exit('Illegal template directory!');
-		}
-
-		if (APPLICATION_ENVIRONMENT == 'admin'){
-			$templateDir = sysConfig::getDirWsAdmin() . 'template/fallback/';
-		}else{
-			$templateDir = sysConfig::getDirWsCatalog() . 'templates/' . Session::get('tplDir') . '/';
-		}
-		/*if (basename($_SERVER['PHP_SELF']) == 'stylesheet.php'){
-			$templateDir = Session::get('tplDir');
-			$layoutId = $_GET['layout_id'];
-			$import = '';
-			if (isset($_GET['import']) && !empty($_GET['import'])){
-				$import = $_GET['import'];
+			if ((preg_match('/^[[:alnum:]|_|-]+$/', $tplDir)) && (is_dir(sysConfig::getDirFsCatalog() . 'templates/' . $tplDir))){
+				// 'Input Validated' only allow alfanumeric characters and underscores in template name
+				sysConfig::set('DIR_WS_TEMPLATES', sysConfig::getDirFsCatalog() . 'templates/' . $tplDir . '/' );
+			} else {
+				echo strip_tags($tplDir) . '<br>';
+				exit('Illegal template directory!');
 			}
 
-			$cacheKey = 'stylesheet_' . $templateDir . '_' . $layoutId . '_' . $import;
-
-			header('Content-Type:text/css; charset=utf-8');
-			FileCache::serve($cacheKey);
-		}else
-		if (basename($_SERVER['PHP_SELF']) == 'javascript.php'){
-			$templateDir = Session::get('tplDir');
-			$layoutId = $_GET['layout_id'];
-			$import = '';
-			if (isset($_GET['import']) && !empty($_GET['import'])){
-				$import = $_GET['import'];
-			}
-
-			$cacheKey = 'javascript_' . $templateDir . '_' . $layoutId . '_' . $import;
-
-			header('Content-Type:application/javascript; charset=utf-8');
-			FileCache::serve($cacheKey);
-		}*/
-	}
-
-	public function PageLayoutAfterCss(){
-		global $App;
-		$thisTemplate = Session::get('tplDir');
-		$templateData = file_get_contents(sysConfig::getDirFsCatalog(). 'templates/'.$thisTemplate.'/templateData.tms');
-		$templateArr = explode(';', $templateData);
-
-		$liquid = '';
-
-		foreach($templateArr as $eachVar){
-			if(!empty($eachVar)){
-				$myVarArr = explode(':', trim($eachVar));
-				if(is_array($myVarArr) && isset($myVarArr[1])){
-					$$myVarArr[0] = $myVarArr[1];
-				}
-			}
-		}
-		if(isset($liquid) && ($liquid == '1')){
-			return '<link rel="stylesheet" href="'.'templates/'.$thisTemplate.'/liquid.css'.'" type="text/css">';
-		}else{
-			return '';
-		}
-
-	}
-
-	public function PageCreateWidgets($Template, $layout_id, $pageContent, $theBox){
-		//here I identify the top dir(template folder)
-		//I create variables for every widget from template...If there are two the same it will get an id before the name
-		$Layout = Doctrine_Core::getTable('TemplateManagerLayouts')->find($layout_id);
-		if ($Layout){
-			foreach($Layout->Containers as $conInfo){
-				//if ($conInfo->Parent->container_id > 0) continue;
-
-				foreach($conInfo->Columns as $colInfo){
-					foreach($colInfo->Widgets as $wInfo){
-						foreach($wInfo->Configuration as $config){
-							if ($config->configuration_key == 'widget_settings'){
-								$WidgetSettings = json_decode($config->configuration_value);
-								break;
-							}
-						}
-						$className = 'InfoBox' . ucfirst($wInfo->identifier);
-						if (!class_exists($className)){
-							$Qbox = Doctrine_Query::create()
-								->select('box_path')
-								->from('TemplatesInfoboxes')
-								->where('box_code = ?', $wInfo->identifier)
-								->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
-
-							require($Qbox[0]['box_path'] . 'infobox.php');
-						}
-
-						$Box = new $className();
-
-						if (isset($WidgetSettings->template_file) && !empty($WidgetSettings->template_file)){
-							$Box->setBoxTemplateFile($WidgetSettings->template_file);
-						}
-						if (isset($WidgetSettings->id) && !empty($WidgetSettings->id)){
-							$Box->setBoxId($WidgetSettings->id);
-						}
-
-						$Box->setWidgetProperties($WidgetSettings);
-						$Box->setBoxHeading($WidgetSettings->widget_title->{Session::get('languages_id')});
-
-						if ($wInfo->identifier != 'pageContent'){
-							$Template->setReference($wInfo->identifier . '_' . $wInfo->widget_id, $Box->show());
-						}else{
-							$Template->setReference($wInfo->identifier . '_' . $wInfo->widget_id, $pageContent);
-						}
-					}
-				}
+			if (APPLICATION_ENVIRONMENT == 'admin'){
+				$templateDir = sysConfig::getDirWsAdmin() . 'template/fallback/';
+			}else{
+				$templateDir = sysConfig::getDirWsCatalog() . 'templates/' . Session::get('tplDir') . '/';
 			}
 		}
 	}

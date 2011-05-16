@@ -27,7 +27,7 @@ else {
 	include('includes/application_top.php');
 
 	ob_start();
-	if (isset($_GET['layout_id'])){
+	if ($env == 'catalog'){
 		?>
 	$(document).ready(function (){
 	$('.starRating').stars({
@@ -129,7 +129,7 @@ else {
 
 	function src1_fetch() {
 		global $fileContent;
-		if (isset($_GET['layout_id'])){
+		if ($env == 'catalog'){
 			return $fileContent;
 		}
 	}
@@ -164,7 +164,7 @@ else {
 		sysConfig::getDirFsCatalog() . 'ext/jQuery/ui/jquery.ui.stars.js'
 	);
 
-	if (!isset($_GET['layout_id'])){
+	if ($env == 'admin'){
 		$sources[] = sysConfig::getDirFsAdmin() . 'includes/javascript/main.js';
 		$sources[] = sysConfig::getDirFsAdmin() . 'includes/general.js';
 	}
@@ -172,7 +172,7 @@ else {
 		$sources[] = sysConfig::getDirFsCatalog() . 'includes/javascript/general.js';
 	}
 
-	if (isset($_GET['import']) && !empty($_GET['import'])){
+	if ($env == 'catalog'){
 		foreach(explode(',', $_GET['import']) as $filePath){
 			if (substr($filePath, -3) != '.js'){
 				continue;
