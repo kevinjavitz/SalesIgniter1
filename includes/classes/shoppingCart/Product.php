@@ -159,8 +159,27 @@
 			->css(array(
 				'font-size' => '.8em',
 				'font-style' => 'italic'
-			))
-			->html(' - Purchase Type: ' . ucfirst($this->pInfo['purchase_type']));
+			));
+			$showType = '';
+			switch($this->pInfo['purchase_type']){
+				case 'new':
+					$showType = sysLanguage::get('PURCHASE_TYPE_NEW_SHOW_SHOPPING_CART');
+					break;
+				case 'used':
+					$showType = sysLanguage::get('PURCHASE_TYPE_USED_SHOW_SHOPPING_CART');
+					break;
+				case 'reservation':
+					$showType = sysLanguage::get('PURCHASE_TYPE_RESERVATION_SHOW_SHOPPING_CART');
+					break;
+				case 'stream':
+					$showType = sysLanguage::get('PURCHASE_TYPE_STREAM_SHOW_SHOPPING_CART');
+					break;
+				case 'download':
+					$showType = sysLanguage::get('PURCHASE_TYPE_DOWNLOAD_SHOW_SHOPPING_CART');
+					break;
+
+			}
+			$purchaseTypeHtml->html(' - '. sysLanguage::get('TEXT_SHOPPING_CART_PURCHASE_TYPE'). $showType);
 			
 			$name = $nameHref->draw() . 
 					'<br />' . 
@@ -172,7 +191,7 @@
 					'font-size' => '.8em',
 					'font-style' => 'italic'
 				))
-				->html(' - View Type: ' . ucfirst(($this->pInfo['download_type'] == 'stream' ? 'Stream' : 'Download')));
+				->html(' - '. sysLanguage::get('TEXT_SHOPPING_CART_VIEW_TYPE') . $showType);
 				
 				$name .= '<br />' . $downloadTypeHtml->draw();
 			}

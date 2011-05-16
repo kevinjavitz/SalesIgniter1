@@ -91,7 +91,7 @@ class PurchaseType_new extends PurchaseTypeAbstract {
 					'form_action'   => itw_app_link(tep_get_all_get_params(array('action'))),
 					'purchase_type' => $this->typeLong,
 					'allowQty'      => true,
-					'header'        => 'Buy ' . $this->typeShow,
+					'header'        =>  sysLanguage::get('BUY_NEW'),
 					'content'       => $content->draw(),
 					'button'        => $button
 				);
