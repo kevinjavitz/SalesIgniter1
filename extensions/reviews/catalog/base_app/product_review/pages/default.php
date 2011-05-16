@@ -21,6 +21,7 @@
 	->leftJoin('p.ProductsDescription pd')
 	->andWhere('rd.languages_id = ?', $lID)
 	->andWhere('pd.language_id = ?', $lID)
+	->andWhere('p.products_id = ?', $_GET['products_id'])
 	->orderBy('r.date_added');
 
 	EventManager::notify('ReviewsQueryBeforeExecute', &$Qreviews);
