@@ -84,7 +84,7 @@
 	<define key="TABLE_HEADING_DOWNLOAD_DATE"><![CDATA[Link expires: ]]></define>
 	<define key="TABLE_HEADING_DOWNLOAD_COUNT"><![CDATA[ downloads remaining]]></define>
 
-	<define key="TEXT_INFO_PAYPAL"><![CDATA[You have subscribed using paypal. To unsubscribe, click the continue button below, on the paypal page there will be a cancel subscription button after you login. When done, close the window, and on this web site click my account, you should see that you have a pending account cancellation.]]></define>
+	<define key="TEXT_INFO_PAYPAL"><![CDATA[To cancel your membership, click cancel below.]]></define>
 	
 	<define key="TEXT_MEMBERSHIP_PERIOD"><![CDATA[Membership Period]]></define>
 	

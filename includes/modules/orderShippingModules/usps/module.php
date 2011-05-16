@@ -43,8 +43,8 @@ class OrderShippingUsps extends OrderShippingModule {
 	public function quote($method = ''){
 		global $shipping_weight, $shipping_num_boxes;
 
-		if (tep_not_null($method) && (isset($this->types[$method]) || in_array($method, $this->intl_types))){
-			$this->_setService($method);
+		if ($method != ''){
+			$this->_setService(urldecode($method));
 		}
 
 		$this->_setMachinable('False');
@@ -81,7 +81,7 @@ class OrderShippingUsps extends OrderShippingModule {
 					}
 					
 					$this->quotes['methods'][] = array(
-						'id'    => $methodName,
+						'id'    => urlencode($methodName),
 						'title' => $methodShow,
 						'cost'  => ($qInfo['cost'] + $this->handlingCost) * $shipping_num_boxes
 					);

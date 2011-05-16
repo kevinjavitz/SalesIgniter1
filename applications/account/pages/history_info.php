@@ -263,7 +263,7 @@ for($i=0, $n=sizeof($trackings); $i<$n; $i++){
 	echo '<tr>
                 <td class="main" align="left">' . $trackings[$i]['text'] . '</td>
                 <td class="main" align="left"><a target="_blank" href="' . $trackings[$i]['url'] . $trackings[$i]['number'] . '">' . $trackings[$i]['number'] . '</a></td>
-                <td class="main" align="left">' . htmlBase::newElement('button')->setText(sysLanguage::get('TEXT_BUTTON_TRACK_PACKAGE'))->setHref($trackings[$i]['url'] . $trackings[$i]['number'])->setHrefTarget('_blank')->draw() . '</td>
+                <td class="main" align="left">' . htmlBase::newElement('button')->setText(sysLanguage::get('TEXT_BUTTON_TRACK_PACKAGE'))->setHref($trackings[$i]['url'] . $trackings[$i]['number'])->attr('target','_blank')->draw() . '</td>
                </tr>';
 }
 ?>

@@ -148,7 +148,7 @@ class PurchaseType_download extends PurchaseTypeAbstract {
 					'form_action'   => itw_app_link(tep_get_all_get_params(array('action'))),
 					'purchase_type' => $this->typeLong,
 					'allowQty'      => false,
-					'header'        => $headerInfo->draw() . 'Buy ' . $this->typeShow,
+					'header'        => $headerInfo->draw() . sysLanguage::get('BUY_DOWNLOAD'),
 					'content'       => $content->draw(),
 					'button'        => $button
 				);

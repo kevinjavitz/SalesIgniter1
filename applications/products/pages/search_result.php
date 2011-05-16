@@ -164,7 +164,7 @@
 	if (isset($_GET['plural']) && ($_GET['plural'] == '1')) {
 		$pageContents .= htmlBase::newElement('div')
 		->css(array('margin-top' => '.5em'))
-		->html(sysLanguage::get('TEXT_REPLACEMENT_SEARCH_RESULTS') . ' <b><i>' . stripslashes($_GET['keywords']) . 's</i></b>')
+		->html(sysLanguage::get('TEXT_REPLACEMENT_SEARCH_RESULTS') . ' <b><i>' . stripslashes($_GET['keywords']) . '</i></b>')
 		->draw();
 	}else{
 		$searchedFor = array();
@@ -173,7 +173,7 @@
 			
 			$pageContents .= htmlBase::newElement('div')
 			->css(array('margin-top' => '.5em'))
-			->html(sysLanguage::get('TEXT_REPLACEMENT_SEARCH_RESULTS') . ' <b><i>' . implode(', ', $searchedFor) . 's</i></b>')
+			->html(sysLanguage::get('TEXT_REPLACEMENT_SEARCH_RESULTS') . ' <b><i>' . implode(', ', $searchedFor) . '</i></b>')
 			->draw();
 		}
 	}

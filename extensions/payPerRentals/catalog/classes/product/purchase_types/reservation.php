@@ -13,14 +13,17 @@
 
 class PurchaseType_reservation extends PurchaseTypeAbstract {
 	public $typeLong = 'reservation';
-	public $typeName = 'Reservation';
-	public $typeShow = 'Reservation';
+	public $typeName;
+	public $typeShow;
 
 	private $enabledShipping = array();
 
 	public function __construct($ProductCls, $forceEnable = false){
+
 		$productInfo = $ProductCls->productInfo;
 		$this->enabled = ($forceEnable === true ? true : (in_array($this->typeLong, $productInfo['typeArr'])));
+		$this->typeName = sysLanguage::get('PURCHASE_TYPE_RESERVATION_NAME');
+		$this->typeShow = sysLanguage::get('PURCHASE_TYPE_RESERVATION_SHOW');
 
 		if ($this->enabled === true){
 			$this->productInfo = array(
@@ -1742,47 +1745,47 @@ class PurchaseType_reservation extends PurchaseTypeAbstract {
 		$firstMinUnity = $messArr[key($messArr)];
 		$firstMinMinutes = key($messArr);
 		$myKeys = array_keys($minutesArray);
-		$message = 'Price based on: ';
-		if(count($myKeys) > 1) {
-			$is_bigger = true;
-			for ($i=0; $i<count($myKeys); $i++){
-				if ($myKeys[$i] > $nMinutes){
-					$biggerPrice = $minutesArray[$myKeys[$i]];
-					if ($i > 0){
-						$normalPrice = (float)($minutesArray[$myKeys[$i-1]] / $myKeys[$i-1]) * $nMinutes;
-					}else{
-						$normalPrice = -1;
-					}
-					if ($normalPrice > $biggerPrice || $normalPrice == -1){
-						$price = $biggerPrice;
-						$message .= '1X'.substr($messArr[$myKeys[$i]],0,strlen($messArr[$myKeys[$i]])-1). '@'.$currencies->format($minutesArray[$myKeys[$i]]);
-					}else{
-						$price = $normalPrice;
-						$message .= (int)($nMinutes/$myKeys[$i-1]) .'X'.$messArr[$myKeys[$i-1]]. '@'.$currencies->format($minutesArray[$myKeys[$i-1]]).'/'.substr($messArr[$myKeys[$i-1]],0,strlen($messArr[$myKeys[$i-1]])-1);
-						if ($nMinutes%$myKeys[$i-1] > 0){
-							$message .= ' + '.number_format($nMinutes%$myKeys[$i-1] / $firstMinMinutes,2).'X'.$firstMinUnity.'@'.$currencies->format((float)($minutesArray[$myKeys[$i-1]] / $myKeys[$i-1] * $firstMinMinutes)).'/'. $firstMinUnity;
-						}
-					}
-					$is_bigger = false;
-					break;
+		$message = sysLanguage::get('PPR_PRICE_BASED_ON');
+		//if(count($myKeys) > 1) {
+		$is_bigger = true;
+		for ($i = 0; $i < count($myKeys); $i++) {
+			if ($myKeys[$i] > $nMinutes) {
+				$biggerPrice = $minutesArray[$myKeys[$i]];
+				if ($i > 0) {
+					$normalPrice = (float)($minutesArray[$myKeys[$i - 1]] / $myKeys[$i - 1]) * $nMinutes;
+				} else {
+					$normalPrice = -1;
 				}
-			}
-			if ($is_bigger){
-				$i = count($myKeys) - 1;
-				$normalPrice = (float)($minutesArray[$myKeys[$i]] / $myKeys[$i]) * $nMinutes;
-				$price = $normalPrice;
-				$message .= (int)($nMinutes/$myKeys[$i]) .'X'.$messArr[$myKeys[$i]]. '@'.$currencies->format($minutesArray[$myKeys[$i]]).'/'.substr($messArr[$myKeys[$i]],0,strlen($messArr[$myKeys[$i]])-1);
-				if ($nMinutes%$myKeys[$i] > 0){
-					$message .= ' + '.number_format($nMinutes%$myKeys[$i] /$firstMinMinutes,2).' X'.$firstMinUnity.'@'.$currencies->format((float)($minutesArray[$myKeys[$i]] / $myKeys[$i] * $firstMinMinutes)).'/'.$firstMinUnity;
+				if ($normalPrice > $biggerPrice || $normalPrice == -1) {
+					$price = $biggerPrice;
+					$message .= '1X' . substr($messArr[$myKeys[$i]], 0, strlen($messArr[$myKeys[$i]]) - 1) . '@' . $currencies->format($minutesArray[$myKeys[$i]]);
+				} else {
+					$price = $normalPrice;
+					$message .= (int)($nMinutes / $myKeys[$i - 1]) . 'X' . $messArr[$myKeys[$i - 1]] . '@' . $currencies->format($minutesArray[$myKeys[$i - 1]]) . '/' . substr($messArr[$myKeys[$i - 1]], 0, strlen($messArr[$myKeys[$i - 1]]) - 1);
+					if ($nMinutes % $myKeys[$i - 1] > 0) {
+						$message .= ' + ' . number_format($nMinutes % $myKeys[$i - 1] / $firstMinMinutes, 2) . 'X' . $firstMinUnity . '@' . $currencies->format((float)($minutesArray[$myKeys[$i - 1]] / $myKeys[$i - 1] * $firstMinMinutes)) . '/' . $firstMinUnity;
+					}
 				}
+				$is_bigger = false;
+				break;
 			}
-		}else{
+		}
+		if ($is_bigger) {
+			$i = count($myKeys) - 1;
+			$normalPrice = (float)($minutesArray[$myKeys[$i]] / $myKeys[$i]) * $nMinutes;
+			$price = $normalPrice;
+			$message .= (int)($nMinutes / $myKeys[$i]) . 'X' . $messArr[$myKeys[$i]] . '@' . $currencies->format($minutesArray[$myKeys[$i]]) . '/' . substr($messArr[$myKeys[$i]], 0, strlen($messArr[$myKeys[$i]]) - 1);
+			if ($nMinutes % $myKeys[$i] > 0) {
+				$message .= ' + ' . number_format($nMinutes % $myKeys[$i] / $firstMinMinutes, 2) . ' X' . $firstMinUnity . '@' . $currencies->format((float)($minutesArray[$myKeys[$i]] / $myKeys[$i] * $firstMinMinutes)) . '/' . $firstMinUnity;
+			}
+		}
+		/*}else{
 			$price = (float)end($minutesArray) * $nMinutes;
 			$message .= (int)($nMinutes/$myKeys[0]) .'X'.$messArr[$myKeys[0]]. '@'.$currencies->format($minutesArray[$myKeys[0]]).'/'.substr($messArr[$myKeys[0]],0,strlen($messArr[$myKeys[0]])-1);
 			if ($nMinutes%$myKeys[0] > 0){
 				$message .= ' + '.number_format($nMinutes%$myKeys[0] /$firstMinMinutes,2).' X'.$firstMinUnity.'@'.$currencies->format((float)($minutesArray[$myKeys[0]] / $myKeys[0] * $firstMinMinutes)).'/'.$firstMinUnity;
 			}
-		}
+		} */
 
         $return['price'] = round($price,2);
 		$return['message'] = $message;
@@ -1846,7 +1849,7 @@ class PurchaseType_reservation extends PurchaseTypeAbstract {
 				$semName = $rInfo['semester_name'];
 			}
 			$returnPrice['price'] = $this->getPriceSemester($semName);
-			$returnPrice['message'] = 'Price based on semester '.$semName.' ';
+			$returnPrice['message'] = sysLanguage::get('PPR_PRICE_BASED_ON_SEMESTER').$semName.' ';
 		}
 
 		if (is_array($returnPrice)){
