@@ -206,6 +206,7 @@
   $htmlContinent->addOption('Africa', 'Africa');
   $htmlContinent->addOption('Asia', 'Asia');
   $htmlContinent->addOption('Australasia', 'Australasia');
+  $htmlContinent->addOption('Caribbean Islands', 'Caribbean Islands');
   $htmlContinent->addOption('Central America', 'Central America');
   $htmlContinent->addOption('Europe', 'Europe');
   $htmlContinent->addOption('North America', 'North America');
