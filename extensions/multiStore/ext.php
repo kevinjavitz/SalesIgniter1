@@ -179,7 +179,7 @@ class Extension_multiStore extends ExtensionBase {
 	}
 	public function AdminInventoryCentersListingQueryBeforeExecute(&$Qcenter){
 		if(isset($this->adminStoreId)){
-			$Qcenter->andWhere('inventory_center_stores = ?', $this->adminStoreId);
+			$Qcenter->andWhere('FIND_IN_SET(?, replace(inventory_center_stores,";",",")) > 0', $this->adminStoreId);
 		}
 	}
 	
