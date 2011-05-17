@@ -65,14 +65,13 @@ class Extension_payPerRentals extends ExtensionBase {
 		$eventClass->init();
 
 		require(dirname(__FILE__) . '/classes/Utilities.php');
-		require(dirname(__FILE__) . '/classes/InfoBoxUtil.php');
 		/*load google api key per store*/
 		$multiStore = $appExtension->getExtension('multiStore');
 		if ($multiStore !== false && $multiStore->isEnabled() === true){
 			$QstoreInfo = Doctrine_Query::create()
 			->select('google_key')
 			->from('Stores')
-			->where('stores_id = ?', Session::get('current_store_id'))
+			->where('stores_id = ?', $multiStore->getStoreId())
 			->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 			Session::set('google_key', $QstoreInfo[0]['google_key']);
 		}else{

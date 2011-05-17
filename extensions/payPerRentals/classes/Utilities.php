@@ -1527,5 +1527,280 @@ class ReservationUtilities {
 		}
 		$Reservation->save();
 	}
+	public static function inventoryCenterAddon($hasHeaders, $hasGeographic = true, $showPickup = true, $showDropoff){
+			global $appExtension;
+			$invCentExt = $appExtension->getExtension('inventoryCenters');
+			$pprform = htmlBase::newElement('div')
+			->addClass('invCenter');
+			if ($invCentExt !== false && $invCentExt->isEnabled() === true){
+				$pickupt = htmlBase::newElement('p')
+				->html(sysLanguage::get('TEXT_PICKUP_ZONE'))
+				->addClass('pickp');
+				$br = htmlBase::newElement('br');
+				$pickup = htmlBase::newElement('selectbox')
+				->setName('pickup')
+				->addClass('myf pickupz changer');
+
+				if($showPickup === false){
+					$pickup->css(array(
+						'display'   => 'none'
+					));
+				}
+
+				$pickup->addOption('select',sysLanguage::get('TEXT_PLEASE_SELECT'));
+
+
+				$dropofft = htmlBase::newElement('p')
+				->html(sysLanguage::get('TEXT_DROPOFF_ZONE'))
+				->addClass('pickp');
+
+				$dropoff = htmlBase::newElement('selectbox')
+				->setName('dropoff')
+				->addClass('myg changer dropoffz');
+				$dropoff->addOption('0', sysLanguage::get('TEXT_SAME_AS_ABOVE'));
+
+				if($showDropoff === false){
+					$dropoff->css(array(
+						'display'   => 'none'
+					));
+				}
+
+				$continentt = htmlBase::newElement('p')
+				->html(sysLanguage::get('TEXT_CONTINENT'))
+				->addClass('continent');
+				$br = htmlBase::newElement('br');
+				$continent = htmlBase::newElement('selectbox')
+				->setName('continent')
+				->addClass('changer continent');
+				$continent->addOption('select',sysLanguage::get('TEXT_PLEASE_SELECT_ALL_CONTINENTS'));
+
+				$countryt = htmlBase::newElement('p')
+				->html(sysLanguage::get('TEXT_COUNTRY'))
+				->addClass('country');
+				$br = htmlBase::newElement('br');
+				$country = htmlBase::newElement('selectbox')
+				->setName('country')
+				->addClass('changer country');
+				$country->addOption('select',sysLanguage::get('TEXT_PLEASE_SELECT'));
+
+				$statet = htmlBase::newElement('p')
+				->html(sysLanguage::get('TEXT_STATE'))
+				->addClass('state');
+				$br = htmlBase::newElement('br');
+				$state = htmlBase::newElement('selectbox')
+				->setName('state')
+				->addClass('changer state');
+				$state->addOption('select',sysLanguage::get('TEXT_PLEASE_SELECT'));
+
+				$cityt = htmlBase::newElement('p')
+				->html(sysLanguage::get('TEXT_CITY'))
+				->addClass('city');
+				$br = htmlBase::newElement('br');
+				$city = htmlBase::newElement('selectbox')
+				->setName('city')
+				->addClass('changer city');
+				$city->addOption('select',sysLanguage::get('TEXT_PLEASE_SELECT'));
+
+
+				$continentsArr = array();
+				$countriesArr = array();
+				$statesArr = array();
+				$citiesArr = array();
+				$countriesArrNames = array();
+
+				$continentsArr[] = 'Africa';
+				$continentsArr[] = 'Asia';
+				$continentsArr[] = 'Australasia';
+				$continentsArr[] = 'Caribbean Islands';
+				$continentsArr[] = 'Central America';
+				$continentsArr[] = 'Europe';
+				$continentsArr[] = 'North America';
+				$continentsArr[] = 'Pacific Islands';
+				$continentsArr[] = 'South America';
+
+				$Qinventory = Doctrine_Query::create()
+				->select('p.*')
+				->from('ProductsInventoryCenters p')
+				->orderBy('p.inventory_center_sort_order');
+
+				if (Session::exists('isppr_inventory_dropoff') && (Session::get('isppr_inventory_dropoff') != '')){
+					$dropoff->selectOptionByValue(Session::get('isppr_inventory_dropoff'));
+				}
+				/*if (Session::exists('isppr_inventory_pickup') && (Session::get('isppr_inventory_pickup') != '')){
+					$pickup->selectOptionByValue(Session::get('isppr_inventory_pickup'));
+				}*/
+
+				if (Session::exists('isppr_inventory_pickup') && (Session::get('isppr_inventory_pickup') != '')){
+					$pickup->selectOptionByValue(Session::get('isppr_inventory_pickup'));
+				}
+
+				if(Session::exists('isppr_continent') && (Session::get('isppr_continent') != '')){
+					$continent->selectOptionByValue(Session::get('isppr_continent'));
+					$QinventoryCountry = Doctrine_Query::create()
+					->select('p.*')
+					->from('ProductsInventoryCenters p')
+					->where('p.inventory_center_continent=?', Session::get('isppr_continent'))
+					->orderBy('p.inventory_center_country')
+					->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+					if(count($QinventoryCountry) > 0){
+						foreach($QinventoryCountry as $qcountry){
+							$storeArr = explode(';', $qcountry['inventory_center_stores']);
+
+							if (!in_array($qcountry['inventory_center_country'], $countriesArr) && $qcountry['inventory_center_country'] != '' && in_array(Session::get('current_store_id'), $storeArr)) {
+								$countriesArrNames[] = tep_get_country_name($qcountry['inventory_center_country']);
+								$countriesArr[] = $qcountry['inventory_center_country'];
+							}
+						}
+					}else{
+						Session::set('isppr_country', '');
+						Session::set('isppr_state', '');
+						Session::set('isppr_city', '');
+
+					}
+				}
+				if(Session::exists('isppr_country') && (Session::get('isppr_country') != '')){
+					$country->selectOptionByValue(Session::get('isppr_country'));
+					$QinventoryStates = Doctrine_Query::create()
+					->select('p.*')
+					->from('ProductsInventoryCenters p')
+					->where('p.inventory_center_country=?', Session::get('isppr_country'))
+					->orderBy('p.inventory_center_state')
+					->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+
+					if(count($QinventoryStates) > 0){
+						foreach($QinventoryStates as $qstate){
+							$storeArr = explode(';', $qstate['inventory_center_stores']);
+							if (!in_array($qstate['inventory_center_state'], $statesArr) && !empty($qstate['inventory_center_state']) && in_array(Session::get('current_store_id'), $storeArr)) {
+								$statesArr[] = $qstate['inventory_center_state'];
+							}
+						}
+					}else{
+						Session::set('isppr_state', '');
+						Session::set('isppr_city', '');
+					}
+				}
+				if(Session::exists('isppr_state') && (Session::get('isppr_state') != '')){
+					$state->selectOptionByValue(Session::get('isppr_state'));
+					$QinventoryCity = Doctrine_Query::create()
+					->select('p.*')
+					->from('ProductsInventoryCenters p')
+					->where('p.inventory_center_state=?', Session::get('isppr_state'))
+					->orderBy('p.inventory_center_city')
+					->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+					if(count($QinventoryCity) > 0){
+						foreach($QinventoryCity as $qcity){
+							$storeArr = explode(';', $qcity['inventory_center_stores']);
+							if (!in_array($qcity['inventory_center_city'], $citiesArr) && !empty($qcity['inventory_center_city']) && in_array(Session::get('current_store_id'), $storeArr)) {
+								$citiesArr[] = $qcity['inventory_center_city'];
+							}
+						}
+					}else{
+						Session::set('isppr_city', '');
+					}
+				}
+				if(Session::exists('isppr_city') && (Session::get('isppr_city') != '')){
+					$city->selectOptionByValue(Session::get('isppr_city'));
+					$Qinventory->andWhere('p.inventory_center_city=?', Session::get('isppr_city'));
+				}
+
+				$Qinventory = $Qinventory->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+				$myfinv = 0;
+				$curInv = 0;
+				foreach ($Qinventory as $qinv) {
+
+					if ($myfinv == 0) {
+						$myfinv = $qinv['inventory_center_id'];
+					}
+					$attr = array(
+						array(
+							'name' => 'days',
+							'value' => $qinv['inventory_center_min_rental_days']
+						)
+					);
+					$pickup->addOptionWithAttributes($qinv['inventory_center_id'], $qinv['inventory_center_name'], $attr);
+					$dropoff->addOption($qinv['inventory_center_id'], $qinv['inventory_center_name']);
+					$curInv++;
+				}
+
+				if ($curInv == 1) {
+					$continent->selectOptionByValue($qinv['inventory_center_continent']);
+					$country->selectOptionByValue($qinv['inventory_center_country']);
+					$city->selectOptionByValue($qinv['inventory_center_city']);
+					$state->selectOptionByValue($qinv['inventory_center_state']);
+					//$pickup->selectOptionByValue($qinv['inventory_center_id']);
+				}
+
+				foreach($continentsArr as $continentItem){
+					$continent->addOption($continentItem, $continentItem);
+				}
+				sort($statesArr);
+				foreach($statesArr as $stateItem){
+					$state->addOption($stateItem, $stateItem);
+				}
+				array_multisort($countriesArrNames, $countriesArr);
+
+				foreach($countriesArr as $k => $countryItem){
+					$country->addOption($countryItem, $countriesArrNames[$k]);
+				}
+				sort($citiesArr);
+				foreach($citiesArr as $cityItem){
+					$city->addOption($cityItem, $cityItem);
+				}
+
+				$separator1 = htmlBase::newElement('div');
+				if ($hasHeaders === true){
+					$separator1->addClass('ui-my-header ui-corner-top');
+				}
+				$separatort = htmlBase::newElement('div');
+				if ($hasHeaders === true){
+					$separatort->addClass('ui-my-header-text');
+					$separatort->html(sysLanguage::get('TEXT_SELECT_DESTINATION'));
+				}
+				$container_dest = htmlBase::newElement('div');
+				if ($hasHeaders === true){
+					$container_dest->addClass('ui-my-content');
+				}
+				$separator1->append($separatort);
+				$pickText = htmlBase::newElement('a')
+				->text('More Info')
+				->addClass('myf1')
+				->attr('href', itw_app_link('appExt=inventoryCenters&inv_id=' . $myfinv, 'show_inventory', 'default'));
+
+				$dropText = htmlBase::newElement('a')
+				->text('More Info')
+				->addClass('myg1')
+				->attr('href', itw_app_link('appExt=inventoryCenters', 'show_inventory', 'default'));
+
+				if($hasGeographic){
+					if (sysConfig::get('EXTENSION_INVENTORY_CENTERS_SHOW_CONTINENT_ON_PPR_INFOBOX') == 'True'){
+						$container_dest->append($continentt)->append($continent);
+					}
+					if (sysConfig::get('EXTENSION_INVENTORY_CENTERS_SHOW_COUNTRY_ON_PPR_INFOBOX') == 'True'){
+						$container_dest->append($countryt)->append($country);
+					}
+					if (sysConfig::get('EXTENSION_INVENTORY_CENTERS_SHOW_STATE_ON_PPR_INFOBOX') == 'True'){
+						$container_dest->append($statet)->append($state);
+					}
+					if (sysConfig::get('EXTENSION_INVENTORY_CENTERS_SHOW_CITY_ON_PPR_INFOBOX') == 'True'){
+						$container_dest->append($cityt)->append($city);
+					}
+				}
+
+				if (sysConfig::get('EXTENSION_PAY_PER_RENTALS_CHOOSE_PICKUP') == 'True'){
+					$container_dest->append($pickupt)->append($pickup)->append($pickText);
+				}
+				if (sysConfig::get('EXTENSION_PAY_PER_RENTALS_CHOOSE_DROPOFF') == 'True'){
+					$container_dest->append($dropofft)->append($dropoff)->append($dropText)->append($br);
+				}
+				$htmlHasHeaders = htmlBase::newElement('input')
+				->setType('hidden')
+				->setName('hasHeaders')
+				->setValue($hasHeaders);
+
+				$pprform->append($separator1)->append($container_dest)->append($htmlHasHeaders);
+			}
+			return $pprform;
+		}
+
 }
 ?>

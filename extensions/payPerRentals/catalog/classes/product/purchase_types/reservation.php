@@ -966,18 +966,27 @@ class PurchaseType_reservation extends PurchaseTypeAbstract {
 							$Qproducts->andWhere('ic.inventory_center_city = ?', Session::get('isppr_city'));
 						}
 						$Qproducts = $Qproducts->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
-						$deleteS = false;
+						$invCenter = -1;
 						$isdouble = false;
-						if (count($Qproducts) > 1) {
-							$isdouble = true;
-						} else {
+						foreach($Qproducts as $iProduct){
+							if($invCenter == -1){
+								$invCenter = $iProduct['ProductsInventoryBarcodesToInventoryCenters']['ProductsInventoryCenters']['inventory_center_id'];
+							}elseif($iProduct['ProductsInventoryBarcodesToInventoryCenters']['ProductsInventoryCenters']['inventory_center_id'] != $invCenter){
+								$isdouble = true;
+								break;
+							}
+
+						}
+
+
+						if(!$isdouble){
 							Session::set('isppr_inventory_pickup', $Qproducts[0]['ProductsInventoryBarcodesToInventoryCenters']['ProductsInventoryCenters']['inventory_center_id']);
 							$deleteS = true;
 
 						}
 					}
 
-					if (Session::exists('isppr_selected') && Session::get('isppr_selected') == true){
+				if(Session::exists('isppr_selected') && Session::get('isppr_selected') == true){
 						$start_date = '';
 						$end_date = '';
 						$event_date = '';
@@ -998,6 +1007,8 @@ class PurchaseType_reservation extends PurchaseTypeAbstract {
 						}
 						if (Session::exists('isppr_inventory_pickup')){
 							$pickup = Session::get('isppr_inventory_pickup');
+						}else{
+							//check the inventory center for this one...if multiple output a text to show...select specific//use continent, city for comparison
 						}
 						if (Session::exists('isppr_inventory_dropoff')){
 							$dropoff = Session::get('isppr_inventory_dropoff');
@@ -1025,10 +1036,12 @@ class PurchaseType_reservation extends PurchaseTypeAbstract {
 
 							$pageForm =  htmlBase::newElement('div');
 
-							$htmlStartDate = htmlBase::newElement('input')
-							->setType('hidden')
-							->setName('start_date')
-							->setValue($start_date);
+					if (isset($start_date)) {
+						$htmlStartDate = htmlBase::newElement('input')
+								->setType('hidden')
+								->setName('start_date')
+								->setValue($start_date);
+					}
 							if (sysConfig::get('EXTENSION_PAY_PER_RENTALS_USE_EVENTS') == 'True'){
 								$htmlEventDate = htmlBase::newElement('input')
 								->setType('hidden')
@@ -1039,14 +1052,18 @@ class PurchaseType_reservation extends PurchaseTypeAbstract {
 								->setName('event_name')
 								->setValue($event_name);
 							}
-							$htmlPickup = htmlBase::newElement('input')
-							->setType('hidden')
-							->setName('pickup')
-							->setValue($pickup);
-							$htmlDropoff = htmlBase::newElement('input')
-							->setType('hidden')
-							->setName('dropoff')
-							->setValue($dropoff);
+					if (isset($pickup)) {
+						$htmlPickup = htmlBase::newElement('input')
+								->setType('hidden')
+								->setName('pickup')
+								->setValue($pickup);
+					}
+					if (isset($dropoff)) {
+						$htmlDropoff = htmlBase::newElement('input')
+								->setType('hidden')
+								->setName('dropoff')
+								->setValue($dropoff);
+					}
 							$htmlRentalQty = htmlBase::newElement('input')
 							->setType('hidden')
 							->setName('rental_qty')
@@ -1055,18 +1072,27 @@ class PurchaseType_reservation extends PurchaseTypeAbstract {
 							->setType('hidden')
 							->setName('products_id')
 							->setValue($_GET['products_id']);
+					if (isset($end_date)) {
+						$htmlEndDate = htmlBase::newElement('input')
+								->setType('hidden')
+								->setName('end_date')
+								->setValue($end_date);
+					}
 
-							$htmlEndDate = htmlBase::newElement('input')
-							->setType('hidden')
-							->setName('end_date')
-							->setValue($end_date);
-
-							$pageForm->append($htmlStartDate)
-							 ->append($htmlEndDate)
-							 ->append($htmlPickup)
-							 ->append($htmlDropoff)
-							 ->append($htmlRentalQty)
-							 ->append($htmlProductsId);
+					if (isset($htmlStartDate)) {
+						$pageForm->append($htmlStartDate);
+					}
+					if (isset($htmlEndDate)) {
+						$pageForm->append($htmlEndDate);
+					}
+					if (isset($htmlPickup)) {
+						$pageForm->append($htmlPickup);
+					}
+					if (isset($htmlDropoff)) {
+						$pageForm->append($htmlDropoff);
+					}
+					$pageForm->append($htmlRentalQty);
+					$pageForm->append($htmlProductsId);
 
 							if (sysConfig::get('EXTENSION_PAY_PER_RENTALS_USE_EVENTS') == 'True'){
 								$pageForm->append($htmlEventDate)
