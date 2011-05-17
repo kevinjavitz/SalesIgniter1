@@ -308,7 +308,7 @@ class PurchaseType_reservation extends PurchaseTypeAbstract {
 		if (is_null($this->inventoryCls)) return true;
 		$invItems = $this->inventoryCls->getInventoryItems();
 		$hasInv = false;
-		if (sysConfig::get('EXTENSION_PAY_PER_RENTALS_DATE_SELECTION') != 'Using calendar after browsing products and clicking Reserve' && Session::exists('isppr_inventory_pickup') === false){
+		if (sysConfig::get('EXTENSION_PAY_PER_RENTALS_DATE_SELECTION') != 'Using calendar after browsing products and clicking Reserve' && Session::exists('isppr_inventory_pickup') === false && sysConfig::get('EXTENSION_PAY_PER_RENTALS_CHOOSE_PICKUP') == 'True'){
 			return false;
 		}
 
