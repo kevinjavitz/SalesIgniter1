@@ -27,7 +27,7 @@ else {
 	include('includes/application_top.php');
 
 	ob_start();
-	if (isset($_GET['layout_id'])){
+	if ($env == 'catalog'){
 		?>
 	$(document).ready(function (){
 	$('.starRating').stars({
@@ -128,8 +128,8 @@ else {
 	ob_end_clean();
 
 	function src1_fetch() {
-		global $fileContent;
-		if (isset($_GET['layout_id'])){
+		global $fileContent, $env;
+		if ($env == 'catalog'){
 			return $fileContent;
 		}
 	}
@@ -165,7 +165,7 @@ else {
 		sysConfig::getDirFsCatalog() . 'ext/jQuery/ui/jquery.ui.stars.js'
 	);
 
-	if (!isset($_GET['layout_id'])){
+	if ($env == 'admin'){
 		$sources[] = sysConfig::getDirFsAdmin() . 'includes/javascript/main.js';
 		$sources[] = sysConfig::getDirFsAdmin() . 'includes/general.js';
 	}

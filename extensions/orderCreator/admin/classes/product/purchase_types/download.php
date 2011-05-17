@@ -10,7 +10,7 @@
 	This script and it's source is not redistributable
 */
 
-require(sysConfig::getDirFsCatalog() . 'includes/classes/product/purchase_types/download.php');
+require(sysConfig::getDirFsCatalog() . 'extensions/downloadProducts/catalog/classes/product/purchase_types/download.php');
 
 class OrderCreatorProductPurchaseTypeDownload extends PurchaseType_download {
 

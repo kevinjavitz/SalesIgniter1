@@ -1,402 +1,221 @@
-<?php
-class Application {
-	private $envDir;
-	private $addedStylesheetFiles = array();
-	private $addedJavascriptFiles = array();
-
-	public function __construct($appName, $appPage){
-		$this->appName = $appName;
-		$this->appPage = $appPage;
-		$this->infoBoxId = null;
-		$this->env = APPLICATION_ENVIRONMENT;
-
-		if ($this->env == 'admin'){
-			$this->envDirs = array(sysConfig::getDirFsAdmin() . 'applications/' . $this->appName . '/');
-		}else{
-			$this->envDirs = array(sysConfig::getDirFsCatalog() . 'applications/' . $this->appName . '/');
-		}
-
-		if (array_key_exists('appExt', $_GET)){
-			$this->envDirs[] = sysConfig::getDirFsCatalog() . 'extensions/' . $_GET['appExt'] . '/' . $this->env . '/base_app/' . $this->appName . '/';
-		}
-
-		$this->actionExt = array();
-
-		$this->appLocation = false;
-		foreach($this->envDirs as $dir){
-			if (file_exists($dir . 'app.php')){
-				$this->appLocation = $dir;
-				break;
-			}
-		}
-
-		$this->appDir = array(
-			'relative' => $this->getAppLocation('relative'),
-			'absolute' => $this->getAppLocation()
-		);
-	}
-
-	public function isValid(){
-		if (!isset($_GET['app'])){
-			return true;
-		}
-		return ($this->appLocation !== false);
-	}
-
-	public function setInfoBoxId($val){
-		$this->infoBoxId = $val;
-	}
-
-	public function getInfoBoxId(){
-		return $this->infoBoxId;
-	}
-
-	public function getAppPage(){
-		return $this->appPage;
-	}
-	/* To replace function above */
-
-	public function getPageName(){
-		return $this->appPage;
-	}
-
-	public function setAppPage($pageName){
-		$this->appPage = $pageName;
-	}
-
-	public function getAppName(){
-		return $this->appName;
-	}
-
-	public function getAppLocation($type = 'absolute'){
-		if ($type == 'relative'){
-			if ($this->env == 'admin'){
-				return str_replace(array(sysConfig::getDirFsAdmin(), sysConfig::getDirFsCatalog()), array(sysConfig::getDirWsAdmin(), sysConfig::getDirWsCatalog()), $this->appLocation);
-			}else{
-				return str_replace(array(sysConfig::getDirFsAdmin(), sysConfig::getDirFsCatalog()), '', $this->appLocation);
-			}
-		}else{
-			return $this->appLocation;
-		}
-	}
-
-	public function getAppFile(){
-		return $this->getAppLocation() . 'app.php';
-	}
-
-	private function getEnvDirs(){
-		return $this->envDirs;
-	}
-
-	public function getEnv(){
-		return $this->env;
-	}
-
-	public function getAppContentFile($useFile = false){
-		if ($useFile !== false){
-			return $this->appDir['absolute'] . 'pages/' . $useFile;
-		}
-		return $this->appDir['absolute'] . 'pages/' . $this->getAppPage() . '.php';
-	}
-
-	public function loadLanguageDefines(){
-		global $appExtension;
-
-		/* TODO: Remove when all applications are built */
-		if (!isset($_GET['app']))
-			return;
-
-		/*
-		 * Load application fallback file
-		 */
-		$languageFiles = array(
-			$this->appDir['absolute'] . 'language_defines/global.xml'
-		);
-
-		/*
-		 * Load extension files for application
-		 */
-		$appExtension->getLanguageFiles(array(
-				'env' => $this->env,
-				'appName' => $this->getAppName()
-			), $languageFiles);
-
-		/*
-		 * Application definitions overwrite file path
-		 */
-		$languageFiles[] = sysConfig::getDirFsCatalog() . 'includes/languages/' . Session::get('language') . '/' . $this->env . '/applications/' . $_GET['app'] . '/';
-
-		/*
-		 * Application extension definitions overwrite file path
-		 */
-		$appExtension->getOverwriteLanguageFiles(array(
-				'env' => $this->env,
-				'appName' => $this->getAppName()
-			), $languageFiles);
-
-		/*
-		 * Load all definition files and overwrite definitions
-		 */
-		foreach($languageFiles as $filePath){
-			sysLanguage::loadDefinitions($filePath);
-		}
-	}
-
-	public function getAppBaseJsFiles(){
-		global $appExtension;
-		$javascriptFiles = array();
-
-		$appExtension->getGlobalFiles('javascript', array(
-				'env' => $this->env,
-				'format' => 'relative'
-			), &$javascriptFiles);
-
-		$pageJsFile = $this->getAppPage() . '.js';
-		if (file_exists($this->appDir['absolute'] . 'javascript/' . $pageJsFile)){
-			if ($this->env == 'admin'){
-				$javascriptFiles[] = $this->appDir['relative'] . 'javascript/' . $pageJsFile;
-			}else{
-				$javascriptFiles[] = sysConfig::getDirWsCatalog() . $this->appDir['relative'] . 'javascript/' . $pageJsFile;
-			}
-		}
-
-		$appExtension->getAppFiles('javascript', array(
-				'env' => $this->env,
-				'appName' => $this->getAppName(),
-				'appFile' => $pageJsFile,
-				'format' => 'relative'
-			), &$javascriptFiles);
-
-		if (!empty($this->addedJavascriptFiles)){
-			foreach($this->addedJavascriptFiles as $file){
-				if (substr($file, 0, 7) != 'http://'){
-					$javascriptFiles[] = sysConfig::getDirWsCatalog() . $file;
-				}else{
-					$javascriptFiles[] = $file;
-				}
-			}
-		}
-
-		return $javascriptFiles;
-	}
-
-	public function getAppBaseStylesheetFiles(){
-		global $appExtension;
-
-		$stylesheetFiles = array();
-
-		$pageCssFile = $this->getAppPage() . '.css';
-		if (file_exists($this->appDir['absolute'] . 'stylesheets/' . $pageCssFile)){
-			$stylesheetFiles[] = sysConfig::getDirWsCatalog() . $this->appDir['relative'] . 'stylesheets/' . $pageCssFile;
-		}
-
-		$appExtension->getAppFiles('stylesheets', array(
-				'env' => $this->env,
-				'appName' => $this->getAppName(),
-				'appFile' => $pageCssFile,
-				'format' => 'relative'
-			), &$stylesheetFiles);
-
-		if (!empty($this->addedStylesheetFiles)){
-			foreach($this->addedStylesheetFiles as $file){
-				$stylesheetFiles[] = sysConfig::getDirWsCatalog() . $file;
-			}
-		}
-
-		return $stylesheetFiles;
-	}
-
-	function addJavascriptFile($file){
-		$this->addedJavascriptFiles[] = $file;
-	}
-
-	function hasJavascriptFiles(){
-		$files = $this->getAppBaseJsFiles();
-		return (!empty($files));
-	}
-
-	function getJavascriptFiles(){
-		$files = $this->getAppBaseJsFiles();
-		return $files;
-	}
-
-	function addStylesheetFile($file){
-		$this->addedStylesheetFiles[] = $file;
-	}
-
-	function hasStylesheetFiles(){
-		$files = $this->getAppBaseStylesheetFiles();
-		return (!empty($files));
-	}
-
-	function getStylesheetFiles(){
-		$files = $this->getAppBaseStylesheetFiles();
-		return $files;
-	}
-
-	public function getActionFiles($action){
-		global $appExtension;
-		$actionFiles = array();
-		if (file_exists($this->appDir['absolute'] . 'actions/' . $action . '.php')){
-			$actionFiles[] = $this->appDir['absolute'] . 'actions/' . $action . '.php';
-		}
-
-		$appExtension->getAppFiles('actions', array(
-				'env' => $this->env,
-				'appName' => $this->getAppName(),
-				'appFile' => $action . '.php'
-			), &$actionFiles);
-
-		return $actionFiles;
-	}
-
-	public function getFunctionFiles(){
-		global $appExtension;
-		$functionFiles = array();
-		$pageFunctionFile = $this->getAppPage() . '.php';
-
-		if (file_exists($this->appDir['absolute'] . 'pages_functions/' . $pageFunctionFile)){
-			$functionFiles[] = $this->appDir['absolute'] . 'pages_functions/' . $pageFunctionFile;
-		}
-
-		$appExtension->getAppFiles('pages_functions', array(
-				'env' => $this->env,
-				'appName' => $this->getAppName(),
-				'appFile' => $pageFunctionFile
-			), &$functionFiles);
-
-		return $functionFiles;
-	}
-
-	public function checkModel($modelName, $extName = null){
-		global $manager, $messageStack;
-		$dbConn = $manager->getCurrentConnection();
-		$tableObj = Doctrine_Core::getTable($modelName);
-
-		$reportInfo = array();
-		if (is_null($extName) === false){
-			$reportInfo['Extension Name'] = $extName;
-		}
-		$reportInfo['Table Name'] = $tableObj->getTableName();
-
-		if ($dbConn->import->tableExists($tableObj->getTableName())){
-			$tableObjRecord = $tableObj->getRecordInstance();
-
-			$DBtableColumns = $dbConn->import->listTableColumns($tableObj->getTableName());
-			$tableColumns = array();
-			foreach($DBtableColumns as $k => $v){
-				$tableColumns[strtolower($k)] = $v;
-			}
-			$modelColumns = $tableObj->getColumns();
-			foreach($modelColumns as $colName => $colSettings){
-				if ($colName == 'id')
-					continue;
-
-				if (array_key_exists($colName, $tableColumns) === false){
-					$resolutionLinkParams = 'action=fixMissingColumns';
-					if (is_null($extName) === false){
-						$resolutionLinkParams .= '&extName=' . $extName;
-					}else{
-						$resolutionLinkParams .= '&Model=' . $modelName;
-					}
-
-					$reportInfo['Column Name'] = $colName;
-					$reportInfo['Resoultion'] = '<a href="' . itw_app_link($resolutionLinkParams, 'extensions', 'default') . '">Click here to resolve</a>';
-					ExceptionManager::report('Database table column does not exist.', E_USER_ERROR, $reportInfo);
-				}
-			}
-			unset($reportInfo['Resoultion']);
-
-			/* foreach($tableColumns as $colName => $colSettings){
-			  if (array_key_exists($colName, $modelColumns) === false){
-			  $reportInfo['Column Name'] = $colName;
-			  ExceptionManager::report('Database column does not exist in model.', E_USER_ERROR, $reportInfo);
-			  }
-			  } */
-		}else{
-			$resolutionLinkParams = 'action=fixMissingTables';
-			$resolutionLinkParams .= '&Model=' . $modelName;
-			if (is_null($extName) === false){
-				$resolutionLinkParams .= '&extName=' . $extName;
-			}
-			$reportInfo['Resoultion'] = '<a href="' . itw_app_link($resolutionLinkParams, 'extensions', 'default') . '">Click here to resolve</a>';
-			ExceptionManager::report('Database table does not exist.', E_USER_ERROR, $reportInfo);
-		}
-	}
-
-	public function addMissingModelTable($modelName, $extName = null){
-		global $manager, $messageStack;
-		$dbConn = $manager->getCurrentConnection();
-
-		if (is_null($extName) === false){
-			$modelPath = sysConfig::getDirFsCatalog() . 'extensions/' . $extName . '/Doctrine/base/';
-		}else{
-			$modelPath = sysConfig::getDirFsCatalog() . 'ext/Doctrine/Models/';
-		}
-
-		Doctrine_Core::createTablesFromArray(array(
-				$modelName
-			));
-
-		$tableObj = Doctrine_Core::getTable($modelName);
-		if ($dbConn->import->tableExists($tableObj->getTableName())){
-			$message = '<table>' .
-				'<tr>' .
-				'<td><b>Server Message:</b></td>' .
-				'<td>Database table added.</td>' .
-				'</tr>' .
-				(is_null($extName) === false ? '<tr>' .
-					'<td><b>Extension Key:</b></td>' .
-					'<td>' . $extName . '</td>' .
-					'</tr>' : '') .
-				'<tr>' .
-				'<td><b>Table Name:</b></td>' .
-				'<td>' . $tableObj->getTableName() . '</td>' .
-				'</tr>' .
-				'</table>';
-			$messageStack->addSession('pageStack', $message, 'success');
-		}
-	}
-
-	public function addMissingModelColumns($modelName, $extName = null){
-		global $manager, $messageStack;
-		$dbConn = $manager->getCurrentConnection();
-
-		$tableObj = Doctrine_Core::getTable($modelName);
-		$tableObjRecord = $tableObj->getRecordInstance();
-
-		$tableColumns = $dbConn->import->listTableColumns($tableObj->getTableName());
-		$modelColumns = $tableObj->getColumns();
-
-		foreach($modelColumns as $colName => $colSettings){
-			if (array_key_exists($colName, $tableColumns) === false){
-				$dbConn->export->alterTable($tableObj->getTableName(), array(
-						'add' => array(
-							$colName => (array) $colSettings
-						)
-					));
-
-				$message = '<table>' .
-					'<tr>' .
-					'<td><b>Server Message:</b></td>' .
-					'<td>Database table column added.</td>' .
-					'</tr>' .
-					(is_null($extName) === false ? '<tr>' .
-						'<td><b>Extension Key:</b></td>' .
-						'<td>' . $extName . '</td>' .
-						'</tr>' : '') .
-					'<tr>' .
-					'<td><b>Table Name:</b></td>' .
-					'<td>' . $tableObj->getTableName() . '</td>' .
-					'</tr>' .
-					'<tr>' .
-					'<td><b>Column Name:</b></td>' .
-					'<td>' . $colName . '</td>' .
-					'</tr>' .
-					'</table>';
-				$messageStack->addSession('pageStack', $message, 'success');
-			}
-		}
-	}
-}
+<?php //003ab
+if(!extension_loaded('ionCube Loader')){$__oc=strtolower(substr(php_uname(),0,3));$__ln='ioncube_loader_'.$__oc.'_'.substr(phpversion(),0,3).(($__oc=='win')?'.dll':'.so');@dl($__ln);if(function_exists('_il_exec')){return _il_exec();}$__ln='/ioncube/'.$__ln;$__oid=$__id=realpath(ini_get('extension_dir'));$__here=dirname(__FILE__);if(strlen($__id)>1&&$__id[1]==':'){$__id=str_replace('\\','/',substr($__id,2));$__here=str_replace('\\','/',substr($__here,2));}$__rd=str_repeat('/..',substr_count($__id,'/')).$__here.'/';$__i=strlen($__rd);while($__i--){if($__rd[$__i]=='/'){$__lp=substr($__rd,0,$__i).$__ln;if(file_exists($__oid.$__lp)){$__ln=$__lp;break;}}}@dl($__ln);}else{die('The file '.__FILE__." is corrupted.\n");}if(function_exists('_il_exec')){return _il_exec();}echo('Site error: the file <b>'.__FILE__.'</b> requires the ionCube PHP Loader '.basename($__ln).' to be installed by the site administrator.');exit(199);
 ?>
+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
+B4w2n+FWccP518mGH/6AaRnzb980

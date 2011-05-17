@@ -25,11 +25,13 @@ if ($StylesheetCache->loadData() === true){
 else {
 	include('includes/application_top.php');
 
-	$sources = array(
-		sysConfig::getDirFsCatalog() . 'templates/' . Session::get('tplDir') . '/blueprint/screen.css',
-		sysConfig::getDirFsCatalog() . 'ext/jQuery/themes/smoothness/ui.core.css',
-		sysConfig::getDirFsCatalog() . 'ext/jQuery/themes/smoothness/ui.theme.css'
-	);
+	$sources = array();
+	if ($env == 'catalog'){
+		$sources[] = sysConfig::getDirFsCatalog() . 'templates/' . Session::get('tplDir') . '/blueprint/screen.css';
+	}
+
+	$sources[] = sysConfig::getDirFsCatalog() . 'ext/jQuery/themes/smoothness/ui.core.css';
+	$sources[] = sysConfig::getDirFsCatalog() . 'ext/jQuery/themes/smoothness/ui.theme.css';
 
 	ob_start();
 
@@ -277,7 +279,7 @@ a.productListingRowPagerLink:hover { text-decoration:none; }
 		}
 	}
 
-	if (isset($_GET['layout_id'])){
+	if ($env == 'catalog'){
 		$boxStylesEntered = array();
 		$addCss = '';
 		function parseContainer($Container) {
