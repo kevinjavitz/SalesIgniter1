@@ -128,7 +128,7 @@ else {
 	ob_end_clean();
 
 	function src1_fetch() {
-		global $fileContent;
+		global $fileContent, $env;
 		if ($env == 'catalog'){
 			return $fileContent;
 		}
