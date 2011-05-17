@@ -160,6 +160,7 @@ else {
 		sysConfig::getDirFsCatalog() . 'ext/jQuery/ui/minified/jquery.ui.resizable.min.js',
 		sysConfig::getDirFsCatalog() . 'ext/jQuery/ui/jquery.ui.button.js',
 		sysConfig::getDirFsCatalog() . 'ext/jQuery/ui/jquery.ui.dialog.js',
+		sysConfig::getDirFsCatalog() . 'ext/jQuery/ui/jquery.ui.datepicker.js',
 		sysConfig::getDirFsCatalog() . 'ext/jQuery/ui/jquery.ui.accordion.js',
 		sysConfig::getDirFsCatalog() . 'ext/jQuery/ui/jquery.ui.stars.js'
 	);
