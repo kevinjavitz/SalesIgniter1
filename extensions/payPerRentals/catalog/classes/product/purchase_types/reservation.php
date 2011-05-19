@@ -387,20 +387,19 @@ class PurchaseType_reservation extends PurchaseTypeAbstract {
 	}
 
 	public function processAddToOrderOrCart($resInfo, &$pInfo){
-		global $App, $total_weight;
+		global $App;
 		$shippingMethod = $resInfo['shipping_method'];
 		$rShipping = false;
 		if (isset($shippingMethod) && !empty($shippingMethod) && ($shippingMethod != 'zonereservation') && ((sysConfig::get('EXTENSION_PAY_PER_RENTALS_USE_UPS_RESERVATION') == 'False' && $App->getEnv() == 'admin') || $App->getEnv() == 'catalog' )){
 			$shippingModule = $resInfo['shipping_module'];
 			$Module = OrderShippingModules::getModule($shippingModule);
+			$product = new product($this->productInfo['id']);
 			if(isset($resInfo['quantity'])){
-				$product = new product($this->productInfo['id']);
- 	            $total_weight = (int)$resInfo['quantity'] * $product->getWeight();
+ 	            		$total_weight = (int)$resInfo['quantity'] * $product->getWeight();
 			}else{
-				$total_weight = 1;
+				$total_weight = $product->getWeight();
 			}
-			OrderShippingModules::calculateWeight();
-			$quote = $Module->quote($shippingMethod);
+			$quote = $Module->quote($shippingMethod, $total_weight);
 
 			$rShipping = array(
 				'title'  => $quote['methods'][0]['title'],
@@ -508,21 +507,20 @@ class PurchaseType_reservation extends PurchaseTypeAbstract {
 	}
 
 	public function processUpdateCart(&$pInfo){
-		global $total_weight;
+
 		$reservationInfo =& $pInfo['reservationInfo'];
 
 
 		if (isset($_POST['rental_shipping']) && $_POST['rental_shipping'] !== false) {
 			list($module, $method) = explode('_', $_POST['rental_shipping']);
 				$shipping_modules = OrderShippingModules::getModule($module);
+				$product = new product($this->productInfo['id']);
 				if(isset($_POST['rental_qty'])){
-					$product = new product($this->productInfo['id']);
-			        $total_weight = (int)$_POST['rental_qty'] * $product->getWeight();
+			        	$total_weight = (int)$_POST['rental_qty'] * $product->getWeight();
 				}else{
-					$total_weight = 1;
+					$total_weight = $product->getWeight();
 				}
-				OrderShippingModules::calculateWeight();
-				$quotes = $shipping_modules->quote($method);
+				$quotes = $shipping_modules->quote($method, $total_weight);
 				$reservationInfo['shipping'] = array(
 					'title' => isset($quotes[0]['methods'][0]['title'])?$quotes[0]['methods'][0]['title']:$quotes['methods'][0]['title'],
 					'cost'  => isset($quotes[0]['methods'][0]['cost'])?$quotes[0]['methods'][0]['cost']:$quotes['methods'][0]['cost'],
@@ -1242,41 +1240,25 @@ class PurchaseType_reservation extends PurchaseTypeAbstract {
 		return;
 	}
 
-	public function getPricingTable($includeShipping = false, $includeSelect = false, $includeButton = false){
+	public function getPricingTable(){
 		global $currencies;
 		$table = '';
 		if ($this->inventoryCls->hasInventory($this->typeLong)){
-			$table .= '<table cellpadding="0" cellspacing="0" border="0" width="200px">';
 
-			if ($includeButton === true){
-				$table .= '<tr>' .
-				'<td colspan="2" align="center" style="padding:5px;">' . tep_draw_hidden_field('products_id', $this->productInfo['id']) . htmlBase::newElement('button')->setText(sysLanguage::get('IMAGE_BUTTON_RENT_NOW'))->setType('submit')->setName('add_onetime_product')->draw() . '</td>' .
-				'</tr>';
-			}
+			$table .= '<table cellpadding="0" cellspacing="0" border="0">';
+
 			$QPricePerRentalProducts = Doctrine_Query::create()
-				->from('PricePerRentalPerProducts pprp')
-				->leftJoin('pprp.PricePayPerRentalPerProductsDescription pprpd')
-				->where('pprp.pay_per_rental_id =?', $this->getId())
-				->andWhere('pprpd.language_id=?', Session::get('languages_id'))
-				->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+			->from('PricePerRentalPerProducts pprp')
+			->leftJoin('pprp.PricePayPerRentalPerProductsDescription pprpd')
+			->where('pprp.pay_per_rental_id =?', $this->getId())
+			->andWhere('pprpd.language_id=?', Session::get('languages_id'))
+			->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 
-				foreach($QPricePerRentalProducts as $iPrices){
-					$table .= '<tr>' .
-					'<td class="main">' . $this->displayReservePrice($iPrices['price']) . '</td>' .
-					'<td class="main" style="white-space:nowrap"> - '.$iPrices['PricePayPerRentalPerProductsDescription'][0]['price_per_rental_per_products_name'].'</td>' .
-					'</tr>';
-				}
-
-			if ($includeShipping === true && $this->enabledShipping !== false){
+			foreach($QPricePerRentalProducts as $iPrices){
 				$table .= '<tr>' .
-				'<td colspan="2"><hr></td>' .
-				'</tr>' .
-				($includeSelect === false ?
-				'<tr>' .
-				'<td class="main" align="center" colspan="2">'.sysLanguage::get('PPR_SHIPPING_COST').'</td>' .
-				'</tr>' : '') .
-				'<tr>' .
-				'<td colspan="2">' . $this->buildShippingTable($includeSelect) . '</td>' .
+				'<td class="main">'.$iPrices['PricePayPerRentalPerProductsDescription'][0]['price_per_rental_per_products_name'].': </td>' .
+				'<td class="main">' . $this->displayReservePrice($iPrices['price']) . '</td>' .
+
 				'</tr>';
 			}
 
@@ -1285,7 +1267,85 @@ class PurchaseType_reservation extends PurchaseTypeAbstract {
 		return $table;
 	}
 
-	public function buildShippingTable($includeSelect = false, $useTable = true){
+	public function buildSemesters($semDates){
+
+		$QPeriods = Doctrine_Query::create()
+		->from('ProductsPayPerPeriods')
+		->where('products_id=?', $this->getProductId())
+		->andWhere('price > 0')
+		->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+		$table = '';
+		if(count($QPeriods) > 0){
+		ob_start();
+	?>
+	<table cellpadding="0" cellspacing="0" border="0">
+	<tr>
+      <td class="main" colspan="2">
+		  <?php
+		  	$CalOrSemester = htmlBase::newElement('radio')
+			->addGroup(array(
+				'checked' => 1,
+				'separator' => '<br />',
+				'name' => 'cal_or_semester',
+				'data' => array(
+					array(
+						'label' => sysLanguage::get('TEXT_USE_CALENDAR'),
+						'labelPosition' => 'before',
+						'value' => '1'
+					),
+					array(
+						'label' => sysLanguage::get('TEXT_USE_SEMESTER'),
+						'labelPosition' => 'before',
+						'value' => '0'
+					)
+				)
+			));
+			  echo $CalOrSemester->draw();
+		  ?>
+
+      </td>
+     </tr>
+	<tr class="semRow">
+      <td class="main" colspan="2">
+		  <?php
+		  	$selectSem = htmlBase::newElement('selectbox')
+		  	->setName('semester_name')
+		  	->setLabel(sysLanguage::get('TEXT_SELECT_PERIOD'))
+		  	->setLabelPosition('before')
+		  	->attr('id','selected_period');
+			$selectSem->addOption('',sysLanguage::get('TEXT_SELECT_SEMESTER'));
+
+			foreach($semDates as $sDate){
+
+				$attr = array(
+						array(
+							'name' => 'start_date',
+							'value' => $sDate['start_date']
+						),
+						array(
+							'name' => 'end_date',
+							'value' => $sDate['end_date']
+						)
+					);
+				$selectSem->addOptionWithAttributes($sDate['period_name'], $sDate['period_name'],$attr);
+			}
+			$moreInfo = htmlBase::newElement('a')
+			->attr('id','moreInfoSem')
+		  	->html(sysLanguage::get('TEXT_MORE_INFO_SEM'));
+			echo $selectSem->draw();//.$moreInfo;
+		  ?>
+
+      </td>
+     </tr>
+	</table>
+			<?php
+			$table = ob_get_contents();
+			ob_end_clean();
+		}
+		return $table;
+	}
+
+	public function buildShippingTable(){
 		global $userAccount;
 
 		if ($this->enabledShipping === false) return;
@@ -1293,24 +1353,18 @@ class PurchaseType_reservation extends PurchaseTypeAbstract {
 		if (sysConfig::get('EXTENSION_PAY_PER_RENTALS_USE_UPS_RESERVATION') == 'False'){
 			$Module = OrderShippingModules::getModule($this->shipModuleCode);
 			$quotes = array($Module->quote());
-			$table = '';
+			$table = '<div class="shippingTable">';
 			if (sizeof($quotes[0]['methods']) > 0){
-				$table .= ($useTable === true ? '<table cellpadding="0" cellspacing="0" border="0" width="100%">' : '') .
-					'<tr>' .
-					($includeSelect === true ? '<td class="main">'.sysLanguage::get('PPR_SHIPPING_SELECT').':</td>' : '') .
-					'<td class="main">' . $this->parseQuotes($quotes, $includeSelect) . '</td>' .
-					'</tr>' .
-				($useTable === true ? '</table>' : '');
+				$table .= sysLanguage::get('PPR_SHIPPING_SELECT') . $this->parseQuotes($quotes) ;
+				$table .= '</div>';
 			}
 		}else{
-			$table = '';
+			$table = '<div class="shippingUPS"><table cellpadding="0" cellspacing="0" border="0">';
 
-				$table .= ($useTable === true ? '<table cellpadding="0" cellspacing="0" border="0" width="100%">' : '') .
-					'<tr id="shipMethods">' .
-					($includeSelect === true ? '<td class="main">'.sysLanguage::get('PPR_SHIPPING_SELECT').':</td>' : '') .
-					'<td class="main" id="rowquotes">' .  '</td>' .
-					'</tr>' .
-				($useTable === true ? '</table>' : '');
+			$table .= '<tr id="shipMethods">' .
+						    '<td class="main">'.sysLanguage::get('PPR_SHIPPING_SELECT').':</td>' .
+						    '<td class="main" id="rowquotes">' .  '</td>' .
+						 '</tr>' ;
 
 			$checkAddressButton = htmlBase::newElement('button')
 			->usePreset('continue')
@@ -1354,28 +1408,27 @@ class PurchaseType_reservation extends PurchaseTypeAbstract {
 					'<td>' . tep_draw_input_field('postcode',$shippingAddress['entry_postcode'],'id="postcode2"') . '</td>' .
 				'</tr>' .
 			'</table>');
+
 			$hiddenField = htmlBase::newElement('input')
-					->setType('hidden')
-					->setId('pid')
-					->setValue($_GET['products_id']);
+			->setType('hidden')
+			->setId('pid')
+			->setValue($_GET['products_id']);
 
 			$getQuotes->append($checkAddressBox)
-					  ->append($checkAddressBoxZip)
-					  ->append($hiddenField)
-					  ->append($checkAddressButton);
+			->append($checkAddressBoxZip)
+			->append($hiddenField)
+			->append($checkAddressButton);
 
-				$table .= ($useTable === true ? '<table cellpadding="0" cellspacing="0" border="0" width="100%">' : '') .
-					'<tr>' .
-					($includeSelect === true ? '<td class="main"></td>' : '') .
-					'<td class="main">' . $getQuotes->draw() . '</td>' .
-					'</tr>' .
-				($useTable === true ? '</table>' : '');
+			$table .= '<tr style="text-align:center">' .
+					    '<td colspan="2" class="main" style="text-align:center">' . sysLanguage::get('TEXT_BEFORE_QUOTES') . $getQuotes->draw() . '</td>' .
+			    	  '</tr>' ;
+			$table .= '</table></div>';
 		}
 
 		return $table;
 	}
 
-	public function parseQuotes($quotes, $includeSelect){
+	public function parseQuotes($quotes){
 		global $currencies, $pID_string;
 		$table = '';
 		if ($this->enabledShipping !== false){
@@ -1406,10 +1459,10 @@ class PurchaseType_reservation extends PurchaseTypeAbstract {
 			for ($i=0, $n=sizeof($quotes); $i<$n; $i++) {
 				$table .= '<tr>' .
 				'<td><table border="0" width="100%" cellspacing="0" cellpadding="2">' .
-				($includeSelect === true ?
+
 				'<tr>' .
-				'<td class="main" colspan="3"><b>' . $quotes[$i]['module'] . '</b>&nbsp;' . (isset($quotes[$i]['icon']) && tep_not_null($quotes[$i]['icon']) ? $quotes[$i]['icon'] : '') . '</td>' .
-				'</tr>' : '');
+				'<td class="main" colspan="3"><b>' . $quotes[$i]['module'] . '</b>&nbsp;' . (isset($quotes[$i]['icon']) && ($quotes[$i]['icon'] != '') ? $quotes[$i]['icon'] : '') . '</td>' .
+				'</tr>';
 
 				for ($j=0, $n2=sizeof($quotes[$i]['methods']); $j<$n2; $j++) {
 
@@ -1433,14 +1486,14 @@ class PurchaseType_reservation extends PurchaseTypeAbstract {
 
 					if ( ($n > 1) || ($n2 > 1) ) {
 						//$radioShipping = tep_draw_radio_field('rental_shipping', $quotes[$i]['id'] . '_' . $quotes[$i]['methods'][$j]['id'], $checked, 'days_before="' . $quotes[$i]['methods'][$j]['days_before'] . '" days_after="' . $quotes[$i]['methods'][$j]['days_after'] . '"');
-						$radioShipping = '<input type="radio" checked="'.(($checked==true)?'checked':'').'" name="rental_shipping" value="'. $quotes[$i]['id'] . '_' . $quotes[$i]['methods'][$j]['id'].'" days_before="' . $quotes[$i]['methods'][$j]['days_before'] . '" days_after="' . $quotes[$i]['methods'][$j]['days_after'] . '">';
+						$radioShipping = '<input type="radio" '.(($checked==true)?'checked="checked"':'').' name="rental_shipping" value="'. $quotes[$i]['id'] . '_' . $quotes[$i]['methods'][$j]['id'].'" days_before="' . $quotes[$i]['methods'][$j]['days_before'] . '" days_after="' . $quotes[$i]['methods'][$j]['days_after'] . '">';
 
 						$table .= '<td class="main" class="cost_'.$quotes[$i]['methods'][$j]['id'].'">' . $currencies->format(tep_add_tax($quotes[$i]['methods'][$j]['cost'], (isset($quotes[$i]['tax']) ? $quotes[$i]['tax'] : 0))) . '</td>' .
-						'<td class="main" align="right">' . ($includeSelect === true ? $radioShipping  : '') . '</td>';
+						'<td class="main" align="right">' . $radioShipping . '</td>';
 					} else {
-						$radioShipping = '<input type="radio" checked="checked" name="rental_shipping" value="'. $quotes[$i]['id'] . '_' . $quotes[$i]['methods'][$j]['id'].'" days_before="' . $quotes[$i]['methods'][$j]['days_before'] . '" days_after="' . $quotes[$i]['methods'][$j]['days_after'] . '">';
+						$radioShipping = '<input type="radio" '.(($checked==true)?'checked="checked"':'').' name="rental_shipping" value="'. $quotes[$i]['id'] . '_' . $quotes[$i]['methods'][$j]['id'].'" days_before="' . $quotes[$i]['methods'][$j]['days_before'] . '" days_after="' . $quotes[$i]['methods'][$j]['days_after'] . '">';
 						$table .= '<td class="main" class="cost_'.$quotes[$i]['methods'][$j]['id'].'">' . $currencies->format(tep_add_tax($quotes[$i]['methods'][$j]['cost'], (isset($quotes[$i]['tax']) ? $quotes[$i]['tax'] : 0))) . '</td>' .
-						'<td class="main" align="right">' . ($includeSelect === true ? $radioShipping : '') . '</td>';
+						'<td class="main" align="right">' . $radioShipping . '</td>';
 					}
 
 					$table .= '</tr>';
@@ -1846,7 +1899,13 @@ class PurchaseType_reservation extends PurchaseTypeAbstract {
 		}elseif (isset($_POST['rental_shipping']) && tep_not_null($_POST['rental_shipping']) && $_POST['rental_shipping'] != 'undefined'){
 			$shippingMethod = explode('_', $_POST['rental_shipping']);
 			$Module = OrderShippingModules::getModule($shippingMethod[0]);
-			$quote = $Module->quote($shippingMethod[1]);
+			$product = new product($this->productInfo['id']);
+			if(isset($_POST['rental_qty'])){
+ 	            $total_weight = (int)$_POST['rental_qty'] * $product->getWeight();
+			}else{
+				$total_weight = $product->getWeight();
+			}
+			$quote = $Module->quote($shippingMethod[1], $total_weight);
 
 			if ($quote['methods'][0]['cost'] > 0){
 				$productPricing['shipping'] = (float)$quote['methods'][0]['cost'];

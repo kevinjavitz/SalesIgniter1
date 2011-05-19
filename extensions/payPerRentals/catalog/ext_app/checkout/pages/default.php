@@ -187,7 +187,13 @@ class payPerRentals_catalog_checkout_default extends Extension_payPerRentals {
 				$shippingInfo = $reservationInfo['shipping'];
 				if(isset($shippingInfo['module']) && $shippingInfo['module'] == 'upsreservation'){
 					$Module = OrderShippingModules::getModule($shippingInfo['module']);
-					$quote = $Module->quote($shippingInfo['id']);
+				    	$product = new product($pID);
+					if(isset($pInfo['reservationInfo']['quantity'])){
+						$total_weight = (int)$pInfo['reservationInfo']['quantity'] * $product->getWeight();
+					}else{
+						$total_weight = $product->getWeight();
+					}
+					$quote = $Module->quote($shippingInfo['id'], $total_weight);
 					if (!isset($quote['error'])){
 						$pInfo['reservationInfo']['shipping']['cost'] = (float)$quote['methods'][0]['cost'];
 					}else{

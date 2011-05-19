@@ -74,5 +74,5 @@
 
 	<define key="TEXT_CREATE_RESERVATION"><![CDATA[Create Reservation]]></define>
 	<define key="PAYPERRENTALS_TO"><![CDATA[ To ]]></define>
-
+	<define key="TEXT_BEFORE_QUOTES"><![CDATA[<span style="color: #FFF600 !important;font-size:14px;">First, please enter your zip code so we can calculate shipping and availability :</span> <br/><br/>]]></define>
 </definitions>
