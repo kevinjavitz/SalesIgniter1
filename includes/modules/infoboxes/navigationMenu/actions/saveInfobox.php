@@ -65,9 +65,10 @@ if (!isset($_POST['linked_to'])){
 	$menuConfig = array();
 	if (!empty($_POST['navMenuSortable'])){
 		parse_str($_POST['navMenuSortable'], $items);
+		$i = 0;
 		foreach($items['menu_item'] as $itemId => $parent){
 			if ($parent == 'root'){
-				$menuConfig[$itemId] = array(
+				$menuConfig[$i] = array(
 					'icon' => $_POST['menu_item_icon'][$itemId],
 					'icon_src' => (isset($_POST['menu_item_icon_src'][$itemId]) ? $_POST['menu_item_icon_src'][$itemId] : ''),
 					'link' => parseItemLink($itemId),
@@ -76,12 +77,13 @@ if (!isset($_POST['linked_to'])){
 				);
 
 				foreach(sysLanguage::getLanguages() as $lInfo){
-					$menuConfig[$itemId][$lInfo['id']]['text'] = $_POST['menu_item_text'][$lInfo['id']][$itemId];
+					$menuConfig[$i][$lInfo['id']]['text'] = $_POST['menu_item_text'][$lInfo['id']][$itemId];
 				}
 
 				if (in_array($itemId, $items['menu_item'])){
-					parseChildren($itemId, $items['menu_item'], $menuConfig[$itemId]['children']);
+					parseChildren($itemId, $items['menu_item'], $menuConfig[$i]['children']);
 				}
+				$i++;
 			}
 		}
 	}

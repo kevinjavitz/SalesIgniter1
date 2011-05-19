@@ -698,10 +698,6 @@ if (!isset($WidgetSettings->linked_to)){
 		$i = 0;
 		foreach($WidgetSettings->menuSettings as $mInfo){
 			$menuItems .= parseMenuItem($mInfo, &$i);
-
-			if (empty($mInfo->children)){
-				$i++;
-			}
 		}
 	}
 
