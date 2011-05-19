@@ -147,6 +147,7 @@ class Product {
 	function getWeight(){ return $this->productInfo['products_weight']; }
 	function getTaxClassID(){ return $this->productInfo['products_tax_class_id']; }
 	function getPType(){ return $this->productInfo['products_ptype']; }
+	function getPurchaseTypesArray(){ return explode(',',$this->productInfo['products_type']); }
 	//function getAuthMethod(){ return $this->productInfo['products_auth_method']; }
 	//function getAuthCharge(){ return $this->productInfo['products_auth_charge']; }
 	/* GET Methods -- End --*/
