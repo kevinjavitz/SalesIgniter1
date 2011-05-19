@@ -19,7 +19,7 @@ $cacheKey = $env . '-javascript-' . $templateDir . '-' . md5($layoutId . '-' . $
 
 require('includes/classes/system_cache.php');
 $JavascriptCache = new SystemCache($cacheKey);
-if ($JavascriptCache->loadData() === true){
+if (!isset($_GET['noCache']) && $JavascriptCache->loadData() === true){
 	$JavascriptCache->output(false, true);
 	exit;
 }

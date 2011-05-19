@@ -18,7 +18,7 @@ $cacheKey = $env . '-stylesheet-' . $templateDir . '-' . md5($_SERVER['HTTP_USER
 
 require('includes/classes/system_cache.php');
 $StylesheetCache = new SystemCache($cacheKey);
-if ($StylesheetCache->loadData() === true){
+if (!isset($_GET['noCache']) && $StylesheetCache->loadData() === true){
 	$StylesheetCache->output(false, true);
 	exit;
 }
