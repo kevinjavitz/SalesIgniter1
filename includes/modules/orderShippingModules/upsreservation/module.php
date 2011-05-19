@@ -84,17 +84,34 @@ class OrderShippingUpsReservation extends OrderShippingModule {
 		}
 		return 'none';
 	}
+
+	public function getNumBoxes(&$shipping_weight, &$shipping_num_boxes){
+		$boxWeight = sysConfig::get('SHIPPING_BOX_WEIGHT');
+		$boxPadding = sysConfig::get('SHIPPING_BOX_PADDING');
+		$boxMaxWeight = sysConfig::get('SHIPPING_MAX_WEIGHT');
+
+		$shipping_num_boxes = 1;
+		if ($boxWeight >= $shipping_weight * $boxPadding / 100) {
+			$shipping_weight = $shipping_weight + $boxWeight;
+		} else {
+			$shipping_weight = $shipping_weight + ($shipping_weight * $boxPadding / 100);
+		}
+
+		if ($shipping_weight > $boxMaxWeight) { // Split into many boxes
+			$shipping_num_boxes = ceil($shipping_weight / $boxMaxWeight);
+			$shipping_weight = $shipping_weight / $shipping_num_boxes;
+		}
+	}
 	
-	public function quote($method = ''){
-		global $order, $shipping_weight, $shipping_num_boxes, $userAccount;
+	public function quote($method = '', $shipping_weight = -1){
+		global $order,  $userAccount;
+		$this->getNumBoxes($shipping_weight, $shipping_num_boxes);
 
 		if ( isset($method) && !empty($method)) {
 			$prod = $method;
 		} else {
 			$prod = 'GND';
 		}
-
-		//if ($method) $this->_upsAction($method); // return a single quote
 
 		$this->_upsProduct($prod);
 		$deliveryAddress = $this->getDeliveryAddress();
