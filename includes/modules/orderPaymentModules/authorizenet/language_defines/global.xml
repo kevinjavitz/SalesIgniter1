@@ -19,7 +19,7 @@
 	<define key="MODULE_PAYMENT_AUTHORIZENET_TEXT_DISCOVER"><![CDATA[Discover]]></define>
 	<define key="MODULE_PAYMENT_AUTHORIZENET_TEXT_MASTERCARD"><![CDATA[Mastercard]]></define>
 	<define key="MODULE_PAYMENT_AUTHORIZENET_TEXT_VISA"><![CDATA[Visa]]></define>
-	<define key="MODULE_PAYMENT_AUTHORIZENET_CAN_REUSE"><![CDATA[Can Reuse CC]]></define>
+	<define key="MODULE_PAYMENT_AUTHORIZENET_CAN_REUSE"><![CDATA[Securely store credit card for fast checkout]]></define>
 	<define key="MODULE_PAYMENT_AUTHORIZENET_SELECT_PAYMENT_PROFILE"><![CDATA[Select Payment Profile]]></define>
 	<define key="TEXT_PLEASE_SELECT_PAYMENT_PROFILE"><![CDATA[Please Select Payment Profile]]></define>
 	<define key="MODULE_PAYMENT_AUTHORIZENET_CREATE_NEW_PROFILE"><![CDATA[Create New Profile]]></define>

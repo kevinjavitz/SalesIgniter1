@@ -28,7 +28,7 @@
 				$this->testMode = ($this->getConfigData('MODULE_PAYMENT_AUTHORIZENET_TESTMODE') == 'Test' || $this->getConfigData('MODULE_PAYMENT_AUTHORIZENET_TESTMODE') == 'Test And Debug');
 				$this->cim_mode = ($this->getConfigData('MODULE_PAYMENT_AUTHORIZENET_CIM') == 'True');
 				$this->curlCompiled = ($this->getConfigData('MODULE_PAYMENT_AUTHORIZENET_CURL') != 'Not Compiled');
-
+				$this->can_reuse = $this->getReuses();
 				$this->allowedTypes = array();
 
 				// Credit card pulldown list
@@ -58,6 +58,24 @@
 				 */
 				//$this->gatewayUrl = 'https://developer.authorize.net/param_dump.asp';
 			}
+		}
+
+		public function getReuses(){
+
+			$userAccount = OrderPaymentModules::getUserAccount();
+			if(is_object($userAccount)){
+				$Qhistory = Doctrine_Query::create()
+				->from('Orders o')
+				->leftJoin('o.OrdersPaymentsHistory oph')
+				->where('o.customers_id=?', $userAccount->getCustomerId())
+				->orderBy('payment_history_id DESC')
+				->limit(1)
+				->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+				if($Qhistory[0]['OrdersPaymentsHistory'][0]['can_reuse'] == 1){
+					return true;
+				}
+			}
+			return false;
 		}
 
 		public function getCreatorRow($Editor, &$headerPaymentCols){
@@ -141,7 +159,7 @@
 				}
 			}
 
-			if($this->cim_mode === true && count($paymentCards) > 0){
+			if($this->cim_mode === true && count($paymentCards) > 0 && $this->can_reuse === true){
 				$htmlSelect = htmlBase::newElement('selectbox')
 				->setName('payment_profile');
 				$htmlSelect->addOption('-1', sysLanguage::get('TEXT_PLEASE_SELECT_PAYMENT_PROFILE'));
@@ -212,7 +230,7 @@
 					);
 				}
 
-				/*if($this->cim_mode === true){
+				if($this->cim_mode === true){
 					$htmlCheck = htmlBase::newElement('checkbox')
 					->setName('canReuse');
 					if(isset($onePageCheckout->onePage['info']['payment']['cardDetails']['canReuse'])){
@@ -223,7 +241,7 @@
 						'field' => $htmlCheck->draw()
 					);
 
-				}*/
+				}
 			}
 
 			$return = parent::onSelect();
