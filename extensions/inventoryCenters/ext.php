@@ -368,7 +368,8 @@ class Extension_inventoryCenters extends ExtensionBase {
 		}
 		if(sysConfig::get('EXTENSION_INVENTORY_CENTERS_SINGLE_INVENTORY_PER_ORDER') == 'True'){
 			global $ShoppingCart;
-			if (!is_object($ShoppingCart)) return;
+
+			if (!is_object($ShoppingCart) || !is_array($reservationInfo) || ($reservationInfo['start_date'] == '' && $reservationInfo['end_date'] == '')) return;
 			$notgood = false;
 			foreach($ShoppingCart->getProducts() as $cartProduct){
 				if ($cartProduct->hasInfo('reservationInfo') === true){

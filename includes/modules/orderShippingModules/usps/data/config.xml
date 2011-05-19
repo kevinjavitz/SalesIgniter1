@@ -61,4 +61,24 @@
 		<description><![CDATA[Sort order of display.]]></description>
 		<sort_order>8</sort_order>
 	</configuration>
+
+	<configuration>
+		<title><![CDATA[Select Allowable Shipping Types]]></title>
+		<key><![CDATA[MODULE_ORDER_SHIPPING_USPS_TYPES]]></key>
+		<value><![CDATA[0]]></value>
+		<description><![CDATA[Select Allowable ShippingTypes]]></description>
+		<sort_order>8</sort_order>
+		<set_function>tep_cfg_select_multioption(array('EXPRESS','FIRST CLASS','PRIORITY','PARCEL','MEDIA','BPM','LIBRARY'),</set_function>
+	</configuration>
+
+	<configuration>
+		<title><![CDATA[Select Allowable International Shipping Types]]></title>
+		<key><![CDATA[MODULE_ORDER_SHIPPING_USPS_INTL_TYPES]]></key>
+		<value><![CDATA[0]]></value>
+		<description><![CDATA[Select Allowable International Shipping Types]]></description>
+		<sort_order>8</sort_order>
+		<set_function>tep_cfg_select_multioption(array('Global Express','Global Express Non-Doc Rect','Global Express Non-Doc Non-Rect','Global Express Envelopes','Express Mail Int','Express Mail Int Flat Rate Env','Priority Mail International','Priority Mail Int Flat Rate Env','Priority Mail Int Flat Rate Box','Priority Mail Int Flat Rate Small Box','Priority Mail Int Flat Rate Med Box','Priority Mail Int Flat Rate Lrg Box','First Class Mail Int Lrg Env','First Class Mail Int Package','First Class Mail Int Letter'),</set_function>
+	</configuration>
+
+
 </configurations>

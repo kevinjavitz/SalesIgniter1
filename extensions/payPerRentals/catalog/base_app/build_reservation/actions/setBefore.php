@@ -141,7 +141,7 @@
 		Session::set('isppr_shipping_cost', 0);
 	}
 
-	if(!isset($_POST['rType'])){
+	if(!isset($_POST['rType']) && !isset($_POST['fromInfobox'])){
 			if(isset($_POST['cPath']) && ($_POST['cPath'] != '-1')){
 				EventManager::attachActionResponse(itw_app_link('cPath=' . $_POST['cPath'], 'index', 'default'), 'redirect');
 			}else if(isset($_GET['cPath']) && ($_POST['cPath'] != '-1')){
@@ -213,7 +213,13 @@
 			}
 			//here I return the filtered contry-state-etc..the same has to be done in infoboxutil
 			if(!isset($_POST['isInv'])){
-				//echo 'uu';
+				if(isset($_POST['continent']) && $_POST['continent'] != 'select' && isset($_POST['isContinent']) && $_POST['isContinent'] == 'true'){
+					Session::set('isppr_continent', $_POST['continent']);
+					Session::set('isppr_country', '');
+					Session::set('isppr_state', '');
+					Session::set('isppr_city', '');
+					Session::remove('isppr_inventory_pickup');
+				}else
 				if(isset($_POST['continent']) && $_POST['continent'] != 'select'){
 					Session::set('isppr_continent', $_POST['continent']);
 
@@ -240,6 +246,7 @@
 						Session::set('isppr_city', '');
 						Session::remove('isppr_inventory_pickup');
 					}
+
 				}else{
 					Session::set('isppr_continent', '');
 					Session::set('isppr_country', '');
@@ -248,12 +255,6 @@
 					Session::remove('isppr_inventory_pickup');
 				}
 
-				/*if(isset($_POST['pickup']) && $_POST['pickup'] != 'select' && isset($_POST['pick']) && ($_POST['pick'] == 'true')){
-					Session::set('isppr_selected_pickup', $_POST['pickup']);
-					Session::set('isppr_selected', true);
-				}else{
-					Session::set('isppr_selected_pickup', '');
-				}*/
 			}
 
 			if (isset($_POST['hasHeaders']) && $_POST['hasHeaders'] == false){
@@ -261,11 +262,25 @@
 			}else{
 				$isHome = true;
 			}
-			$html = ReservationInfoBoxUtil::inventoryCenterAddon($isHome)->draw();
-			EventManager::attachActionResponse(array(
-				'success' => true,
-				'data'     => $html
-			), 'json');
+			if(!isset($_POST['fromInfobox'])){
+				$html = ReservationUtilities::inventoryCenterAddon($isHome, true, false, false)->draw();
+				EventManager::attachActionResponse(array(
+					'success' => true,
+					'data'     => $html
+				), 'json');
+			}else{
+				if(isset($_POST['cPath']) && ($_POST['cPath'] != '-1')){
+					EventManager::attachActionResponse(itw_app_link('cPath=' . $_POST['cPath'], 'index', 'default'), 'redirect');
+				}else if(isset($_GET['cPath']) && ($_POST['cPath'] != '-1')){
+					EventManager::attachActionResponse(itw_app_link('cPath=' . $_GET['cPath'], 'index', 'default'), 'redirect');
+				}else{
+					if (isset($_POST['url']) && (strpos($_POST['url'],'index/default') < 0) && $_POST['cPath'] != '-1' && $_GET['cPath'] != '-1'){
+						EventManager::attachActionResponse($_POST['url'], 'redirect');
+					}else{
+						EventManager::attachActionResponse(itw_app_link(null,'products','all'), 'redirect');
+					}
+				}
+			}
 		}
 	}
  

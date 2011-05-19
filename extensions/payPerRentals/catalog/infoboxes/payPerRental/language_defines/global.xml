@@ -1,6 +1,6 @@
 <definitions>
 	<define key="INFOBOX_HEADING_PAYPERRENTAL"><![CDATA[Start Here]]></define>
-    <define key="INFOBOX_CATEGORIES_ALL_PRODUCTS"><![CDATA[View All]]></define>
+    <define key="INFOBOX_CATEGORIES_ALL_PRODUCTS"><![CDATA[View All Surfboards]]></define>
     <define key="TEXT_ENTRY_PICKUP_DATE"><![CDATA[Start: ]]></define>
 	<define key="TEXT_ENTRY_RETURN_DATE"><![CDATA[End: ]]></define>
 	<define key="TEXT_INFOBOX_PAY_PER_RENTAL_BUTTON_UPDATE"><![CDATA[Update]]></define>
@@ -23,6 +23,23 @@
 	<define key="TEXT_COUNTRY"><![CDATA[Country: ]]></define>
 	<define key="TEXT_CITY"><![CDATA[City: ]]></define>
 	<define key="TEXT_SELECT_DESTINATION"><![CDATA[1. Select Destinations ]]></define>
+	<define key="INFOBOX_PAYPERRENTAL_BOXID"><![CDATA[Box ID: ]]></define>
+
+	<define key="INFOBOX_PAYPERRENTAL_HASHEADER"><![CDATA[Has Headers: ]]></define>
+	<define key="INFOBOX_PAYPERRENTAL_HASBUTTON"><![CDATA[Has Update Button: ]]></define>
+	<define key="INFOBOX_PAYPERRENTAL_SHOWSUBMIT"><![CDATA[Show Submit button: ]]></define>
+
+	<define key="INFOBOX_PAYPERRENTAL_HASGEOGRAPHIC"><![CDATA[Enable Geographic Addon: ]]></define>
+	<define key="INFOBOX_PAYPERRENTAL_SHOWSHIPPING"><![CDATA[Show Shipping: ]]></define>
+	<define key="INFOBOX_PAYPERRENTAL_SHOWQTY"><![CDATA[Show Quantity: ]]></define>
+	<define key="INFOBOX_PAYPERRENTAL_SHOWCATEGORIES"><![CDATA[Show Categories: ]]></define>
+	<define key="INFOBOX_PAYPERRENTAL_SHOWTIMES"><![CDATA[Show Times: ]]></define>
+
+	<define key="INFOBOX_PAYPERRENTAL_SHOWPICKUP"><![CDATA[Show Pickup: ]]></define>
+	<define key="INFOBOX_PAYPERRENTAL_SHOWDROPOFF"><![CDATA[Show Dropoff: ]]></define>
+
+	<define key="INFOBOX_PAYPERRENTAL_SELECT_CATEGORY"><![CDATA[Select Category ]]></define>
+	<define key="INFOBOX_PAYPERRENTAL_SELECT_DATES"><![CDATA[2. Select Dates ]]></define>
 
 
 </definitions>

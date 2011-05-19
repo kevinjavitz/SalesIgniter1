@@ -15,26 +15,34 @@ class OrderShippingUsps extends OrderShippingModule {
 			$this->useServer = $this->getConfigData('MODULE_ORDER_SHIPPING_USPS_SERVER');
 			$this->userId = $this->getConfigData('MODULE_ORDER_SHIPPING_USPS_USERID');
 			$this->userPass = $this->getConfigData('MODULE_ORDER_SHIPPING_USPS_PASSWORD');
-			
-			$this->types = array(
-				'EXPRESS'     => 'Express Mail',
-				'FIRST CLASS' => 'First-Class Mail',
-				'PRIORITY'    => 'Priority Mail',
-				'PARCEL'      => 'Parcel Post'
-			);
+			$this->selectedTypes = $this->getConfigData('MODULE_ORDER_SHIPPING_USPS_TYPES');
+			$this->selectedIntlTypes = $this->getConfigData('MODULE_ORDER_SHIPPING_USPS_INTL_TYPES');
+
+			$this->types = array('EXPRESS' => 'Express Mail',
+			        'FIRST CLASS' => 'First-Class Mail',
+			        'PRIORITY' => 'Priority Mail',
+			        'PARCEL' => 'Parcel Post',
+			        'MEDIA' => 'Media Mail',
+			        'BPM' => 'Bound Printed Matter',
+			        'LIBRARY' => 'Library'
+			        );
 
 			$this->intl_types = array(
-				'GXG DOCUMENT'     => 'Global Express Guaranteed Document Service',
-				'GXG NON-DOCUMENT' => 'Global Express Guaranteed Non-Document Service',
-				'EXPRESS'          => 'Global Express Mail (EMS)',
-				'PRIORITY LG'      => 'Global Priority Mail - Flat-rate Envelope (large)',
-				'PRIORITY SM'      => 'Global Priority Mail - Flat-rate Envelope (small)',
-				'PRIORITY VAR'     => 'Global Priority Mail - Variable Weight Envelope (single)',
-				'AIRMAIL LETTER'   => 'Airmail Letter Post',
-				'AIRMAIL PARCEL'   => 'Airmail Parcel Post',
-				'SURFACE LETTER'   => 'Economy (Surface) Letter Post',
-				'SURFACE POST'     => 'Economy (Surface) Parcel Post'
+			        'Global Express' => 'Global Express Guaranteed&lt;sup&gt;&amp;reg;&lt;/sup&gt; (GXG)**',
+			        'Global Express Non-Doc Rect' => 'Global Express Guaranteed&lt;sup&gt;&amp;reg;&lt;/sup&gt; Non-Document Rectangular',
+			        'Global Express Non-Doc Non-Rect' => 'Global Express Guaranteed&lt;sup&gt;&amp;reg;&lt;/sup&gt; Non-Document Non-Rectangular',
+			        'Global Express Envelopes' => 'USPS GXG&lt;sup&gt;&amp;trade;&lt;/sup&gt; Envelopes**',
+			        'Express Mail Int' => 'Express Mail&lt;sup&gt;&amp;reg;&lt;/sup&gt; International',
+			        'Express Mail Int Flat Rate Env' => 'Express Mail&lt;sup&gt;&amp;reg;&lt;/sup&gt; International Flat Rate Envelope',
+			        'Priority Mail International' => 'Priority Mail&lt;sup&gt;&amp;reg;&lt;/sup&gt; International',
+			        'Priority Mail Int Flat Rate Env' => 'Priority Mail&lt;sup&gt;&amp;reg;&lt;/sup&gt; International Flat Rate Envelope**',
+			        'Priority Mail Int Flat Rate Small Box' => 'Priority Mail&lt;sup&gt;&amp;reg;&lt;/sup&gt; International Small Flat Rate Box**',
+			        'Priority Mail Int Flat Rate Med Box' => 'Priority Mail&lt;sup&gt;&amp;reg;&lt;/sup&gt; International Medium Flat Rate Box',
+			        'Priority Mail Int Flat Rate Lrg Box' => 'Priority Mail&lt;sup&gt;&amp;reg;&lt;/sup&gt; International Large Flat Rate Box',
+			        'First Class Mail Int Lrg Env' => 'First-Class Mail&lt;sup&gt;&amp;reg;&lt;/sup&gt; International Large Envelope**',
+			        'First Class Mail Int Package' => 'First-Class Mail&lt;sup&gt;&amp;reg;&lt;/sup&gt; International Package**'
 			);
+
 
 			$this->countries = $this->country_list();
 		}
@@ -47,16 +55,33 @@ class OrderShippingUsps extends OrderShippingModule {
 			$this->_setService(urldecode($method));
 		}
 
-		$this->_setMachinable('False');
+		$usps_shipping_weight = ($shipping_weight <= 0.0 ? 0.0625 : $shipping_weight);
+		$shipping_pounds = floor ($usps_shipping_weight);
+		$shipping_ounces = (16 * ($usps_shipping_weight - floor($usps_shipping_weight)));
+		$shipping_ounces = number_format($shipping_ounces, 3);
+
+		switch(true) {
+		  case ($shipping_pounds == 0 and $shipping_ounces < 6):
+		  // override admin choice too light
+		  $is_machinable = 'False';
+		  break;
+
+		  case ($usps_shipping_weight > 35):
+		  // override admin choice too heavy
+		  $is_machinable = 'False';
+		  break;
+
+		  default:
+		  // admin choice on what to use
+		  $is_machinable = 'False';
+		}
+
+		$this->_setMachinable($is_machinable);
 		$this->_setContainer('None');
 		$this->_setSize('REGULAR');
+		$this->_setFirstClassType('FLAT');
 
-		// usps doesnt accept zero weight
-		//$shipping_weight = ($shipping_weight < 0.1 ? 0.1 : $shipping_weight);
-		$shipping_pounds = floor ($shipping_weight);
-		$shipping_ounces = round(16 * ($shipping_weight - floor($shipping_weight)));
 		$this->_setWeight($shipping_pounds, $shipping_ounces);
-
 		$uspsQuote = $this->_getQuote();
 
 		$this->quotes = array(
@@ -71,7 +96,7 @@ class OrderShippingUsps extends OrderShippingModule {
 				$this->quotes['error'] = $uspsQuote['error'];
 			}else{
 				$this->quotes['module'] .= ' (' . $shipping_num_boxes . ' x ' . $shipping_weight . 'lbs)';
-				
+
 				foreach($uspsQuote as $qInfo){
 					$methodName = $qInfo['method'];
 					
@@ -82,7 +107,7 @@ class OrderShippingUsps extends OrderShippingModule {
 					
 					$this->quotes['methods'][] = array(
 						'id'    => urlencode($methodName),
-						'title' => $methodShow,
+						'title' => html_entity_decode(htmlspecialchars_decode($methodShow)),
 						'cost'  => ($qInfo['cost'] + $this->handlingCost) * $shipping_num_boxes
 					);
 				}
@@ -116,16 +141,21 @@ class OrderShippingUsps extends OrderShippingModule {
 		$this->size = $size;
 	}
 
+	function _setFirstClassType($fctype) {
+	  $this->fctype = $fctype;
+	}
+
 	public function _setMachinable($machinable) {
 		$this->machinable = $machinable;
 	}
 
-	public function _getQuote() {
+	function _getQuote() {
+		global $order;
 		$deliveryAddress = $this->getDeliveryAddress();
 		$deliveryCountry = OrderShippingModules::getCountryInfo($deliveryAddress['entry_country_id']);
-		//print_r($deliveryCountry);
+			//print_r($deliveryCountry);
 		if ($deliveryAddress['entry_country_id'] == sysConfig::get('SHIPPING_ORIGIN_COUNTRY')) {
-			$request  = '<RateRequest USERID="' . $this->userId . '" PASSWORD="' . $this->userPass . '">';
+			$request  = '<RateV3Request USERID="' . $this->userId . '" PASSWORD="' . $this->userPass . '">';
 			$services_count = 0;
 
 			if (isset($this->service)) {
@@ -136,117 +166,179 @@ class OrderShippingUsps extends OrderShippingModule {
 			if ($deliveryCountry['countries_iso_code_2'] == 'US') $dest_zip = substr($dest_zip, 0, 5);
 
 			reset($this->types);
-			while (list($key, $value) = each($this->types)) {
-				$request .= '<Package ID="' . $services_count . '">' .
-					'<Service>' . $key . '</Service>' .
-					'<ZipOrigination>' . sysConfig::get('SHIPPING_ORIGIN_ZIP') . '</ZipOrigination>' .
-					'<ZipDestination>' . $dest_zip . '</ZipDestination>' .
-					'<Pounds>' . $this->pounds . '</Pounds>' .
-					'<Ounces>' . $this->ounces . '</Ounces>' .
-					'<Container>' . $this->container . '</Container>' .
-					'<Size>' . $this->size . '</Size>' .
-					'<Machinable>' . $this->machinable . '</Machinable>' .
-				'</Package>';
-				$services_count++;
-			}
-			$request .= '</RateRequest>';
+			$allowed_types = explode(',', $this->selectedTypes);
+		  while (list($key, $value) = each($this->types)) {
 
-			$request = 'API=Rate&XML=' . urlencode($request);
+			if ( !in_array($key, $allowed_types) ) continue;
+			  if ($key == 'FIRST CLASS') {
+				$this->FirstClassMailType = '<FirstClassMailType>LETTER</FirstClassMailType>';
+			  } else {
+				$this->FirstClassMailType = '';
+			  }
+
+			  if ($key == 'PRIORITY'){
+				$this->container = ''; // Blank, Flate Rate Envelope, or Flat Rate Box // Sm Flat Rate Box, Md Flat Rate Box and Lg Flat Rate Box
+
+			  }
+
+			  if ($key == 'EXPRESS'){
+				$this->container = '';  // Blank, or Flate Rate Envelope
+			  }
+
+			  if ($key == 'PARCEL'){
+				$this->container = 'Regular';
+				$this->machinable = 'true';
+			  }
+			$request .= '<Package ID="' . $services_count . '">' .
+			'<Service>' . $key . '</Service>' .
+			'<FirstClassMailType>' . $this->fctype . '</FirstClassMailType>' .
+			'<ZipOrigination>' . sysConfig::get('SHIPPING_ORIGIN_ZIP') . '</ZipOrigination>' .
+			'<ZipDestination>' . $dest_zip . '</ZipDestination>' .
+			'<Pounds>' . $this->pounds . '</Pounds>' .
+			'<Ounces>' . $this->ounces . '</Ounces>' .
+			'<Container>' . $this->container . '</Container>' .
+			'<Size>' . $this->size . '</Size>' .
+			'<Machinable>' . $this->machinable . '</Machinable>' .
+			'</Package>';
+
+			$services_count++;
+		  }
+		  $request .= '</RateV3Request>';
+
+		  $request = 'API=RateV3&XML=' . urlencode($request);
 		} else {
-			$request  = '<IntlRateRequest USERID="' . $this->userId . '" PASSWORD="' . $this->userPass . '">' .
-				'<Package ID="0">' .
-					'<Pounds>' . $this->pounds . '</Pounds>' .
-					'<Ounces>' . $this->ounces . '</Ounces>' .
-					'<MailType>Package</MailType>' .
-					'<Country>' . $this->countries[$deliveryCountry['countries_iso_code_2']] . '</Country>' .
-				'</Package>' .
-			'</IntlRateRequest>';
+		  $request  = '<IntlRateRequest USERID="' . $this->userId . '">' .
+		  '<Package ID="0">' .
+		  '<Pounds>' . $this->pounds . '</Pounds>' .
+		  '<Ounces>' . $this->ounces . '</Ounces>' .
+		  '<MailType>Package</MailType>' .
+		  '<Country>' . $this->countries[$deliveryCountry['countries_iso_code_2']] . '</Country>' .
+		  '</Package>' .
+		  '</IntlRateRequest>';
 
-			$request = 'API=IntlRate&XML=' . urlencode($request);
+		  $request = 'API=IntlRate&XML=' . urlencode($request);
 		}
 
 		switch ($this->useServer) {
-			case 'Production':
-				$usps_server = 'production.shippingapis.com';
-				$api_dll = 'shippingapi.dll';
-				break;
-			case 'Test':
-			default:
-				$usps_server = 'testing.shippingapis.com';
-				$api_dll = 'ShippingAPITest.dll';
-				break;
+		  case 'production':
+		  $usps_server = 'production.shippingapis.com';
+		  $api_dll = 'shippingapi.dll';
+		  break;
+		  case 'test':
+		  default:
+		  $usps_server = 'testing.shippingapis.com';
+		  $api_dll = 'ShippingAPI.dll';
+		  break;
 		}
 
 		$body = '';
 
 		$http = new httpClient();
+		$http->timeout = 5;
 		if ($http->Connect($usps_server, 80)) {
-			$http->addHeader('Host', $usps_server);
-			$http->addHeader('User-Agent', 'SalesIgniter');
-			$http->addHeader('Connection', 'Close');
-
-			if ($http->Get('/' . $api_dll . '?' . $request)) $body = $http->getBody();
-
-			$http->Disconnect();
+		  $http->addHeader('Host', $usps_server);
+		  $http->addHeader('User-Agent', 'SES2.0');
+		  $http->addHeader('Connection', 'Close');
+		  if ($http->Get('/' . $api_dll . '?' . $request)) $body = $http->getBody();
+		  $http->Disconnect();
 		} else {
-			return false;
+		  return -1;
 		}
-		$Response = simplexml_load_string(
-			$body,
-			'SimpleXMLElement',
-			LIBXML_NOCDATA
-		);
 
-		$ResponseInfo = $Response;
-		
+		$response = array();
+		while (true) {
+		  if ($start = strpos($body, '<Package ID=')) {
+			$body = substr($body, $start);
+			$end = strpos($body, '</Package>');
+			$response[] = substr($body, 0, $end+10);
+			$body = substr($body, $end+9);
+		  } else {
+			break;
+		  }
+		}
+
 		$rates = array();
-		if (isset($ResponseInfo->Error)){
-			return array(
-				'error' => (string) $ResponseInfo->Error->Number . ' - ' . (string) $ResponseInfo->Error->Description,
-			);
-		}else{
-			if ($deliveryAddress['entry_country_id'] == sysConfig::get('SHIPPING_ORIGIN_COUNTRY')) {
-				foreach($ResponseInfo->Package as $pInfo){
-					if ($pInfo->Error){
-						//$rates[] = array(
-						//	(string) $pInfo->Service => (string) $pInfo->Error->Description
-						//);
-					}else{
-						$rateInfo = array(
-							'method' => (string) $pInfo->Service,
-							'cost'   => (float) $pInfo->Postage
-						);
-						
-						/*
-						 * @TODO: figure out how to get delivery time for in-country shipments
-						 */
-						if ($pInfo->SvcCommitments){
-							$rateInfo['time'] = (string) $pInfo->SvcCommitments;
-						}
-						
-						$rates[] = $rateInfo;
-					}
-				}
-			} else {
-				foreach($Response->Package as $pInfo){
-					foreach($pInfo->Service as $sInfo){
-						if (isset($this->service) && ((string) $sInfo->SvcDescription != $this->service) ) {
-							continue;
-						}
 
-						$rateInfo = array(
-							'method' => (string) $sInfo->SvcDescription,
-							'cost' => (float) $sInfo->Postage
-						);
-						
-						if ($sInfo->SvcCommitments){
-							$rateInfo['time'] = (string) $sInfo->SvcCommitments;
-						}
-						
-						$rates[] = $rateInfo;
-					}
-				}
+		if ($deliveryAddress['entry_country_id'] == sysConfig::get('SHIPPING_ORIGIN_COUNTRY') && $deliveryCountry['countries_iso_code_2'] == 'US') {
+		  if (sizeof($response) == '1') {
+			if (preg_match('/<Error>/i', $response[0])) {
+			  $number = preg_match('/<Number>(.*)<\/Number>/msi', $response[0], $regs);
+			  $number = $regs[1];
+			  $description = preg_match('/<Description>(.*)<\/Description>/msi', $response[0], $regs);
+			  $description = $regs[1];
+
+			  return array('error' => $number . ' - ' . $description);
 			}
+		  }
+
+		  $n = sizeof($response);
+		  for ($i=0; $i<$n; $i++) {
+			if (strpos($response[$i], '<Rate>')) {
+			  $service = preg_match('/<MailService>(.*)<\/MailService>/msi', $response[$i], $regs);
+			  $service = $regs[1];
+			  if (preg_match('/Express/i', $service)) $service = 'EXPRESS';
+			  if (preg_match('/Priority/i', $service)) $service = 'PRIORITY';
+			  if (preg_match('/First-Class Mail/i', $service)) $service = 'FIRST CLASS';
+			  if (preg_match('/Parcel/i', $service)) $service = 'PARCEL';
+			  if (preg_match('/Media/i', $service)) $service = 'MEDIA';
+			  if (preg_match('/Bound Printed/i', $service)) $service = 'BPM';
+			  if (preg_match('/Library/i', $service)) $service = 'LIBRARY';
+			  $postage = preg_match('/<Rate>(.*)<\/Rate>/msi', $response[$i], $regs);
+			  $postage = $regs[1];
+
+			  $rates[] = array('method' => $service, 'cost' => $postage);
+			}
+		  }
+		} else {
+		  if (preg_match('/<Error>/i', $response[0])) {
+			$number = preg_match('/<Number>(.*)<\/Number>/msi', $response[0], $regs);
+			$number = $regs[1];
+			$description = preg_match('/<Description>(.*)<\/Description>/msi', $response[0], $regs);
+			$description = $regs[1];
+
+			return array('error' => $number . ' - ' . $description);
+		  } else {
+			$body = $response[0];
+			$services = array();
+			while (true) {
+			  if ($start = strpos($body, '<Service ID=')) {
+				$body = substr($body, $start);
+				$end = strpos($body, '</Service>');
+				$services[] = substr($body, 0, $end+10);
+				$body = substr($body, $end+9);
+			  } else {
+				break;
+			  }
+			}
+
+			$allowed_types = array();
+			foreach( explode(',', $this->selectedIntlTypes) as $value ){
+				$allowed_types[$value] = htmlspecialchars($this->intl_types[$value]);
+			}
+
+			$size = sizeof($services);
+			for ($i=0, $n=$size; $i<$n; $i++) {
+			  if (strpos($services[$i], '<Postage>')) {
+				$service = preg_match('/<SvcDescription>(.*)<\/SvcDescription>/msi', $services[$i], $regs);
+				$service = $regs[1];
+				$postage = preg_match('/<Postage>(.*)<\/Postage>/i', $services[$i], $regs);
+				$postage = $regs[1];
+				$time = preg_match('/<SvcCommitments>(.*)<\/SvcCommitments>/msi', $services[$i], $tregs);
+				$time = $tregs[1];
+				$time = preg_replace('/Weeks$/', 'Weeks', $time);
+				$time = preg_replace('/Days$/', 'Days', $time);
+				$time = preg_replace('/Day$/', 'Day', $time);
+
+				if( !in_array($service, $allowed_types) ) continue;
+				if ($order->info['total'] > 400 && strstr($services[$i], 'Priority Mail International Flat Rate Envelope')) continue; // skip value > $400 Priority Mail International Flat Rate Envelope
+				if (isset($this->service) && ($service != $this->service) ) {
+				  continue;
+				}
+
+				$rates[] = array('method' => $service, 'cost' => $postage, 'time'=> $time);
+			  }
+			}
+		  }
 		}
 
 		return ((sizeof($rates) > 0) ? $rates : false);
