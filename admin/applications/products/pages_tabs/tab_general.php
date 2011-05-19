@@ -89,15 +89,6 @@
 	$ProductModel = htmlBase::newElement('input')
 	->setName('products_model');
 	
-	$ProductPreview = htmlBase::newElement('uploadManagerInput')
-	->setName('movie_preview')
-	->setFileType('image') // @TODO: change to movie when all the upload types are supported.
-	->autoUpload(true)
-	->showPreview(false)
-	->showMaxUploadSize(true)
-	->allowMultipleUploads(false)
-	->allowLocalSelection(true);
-	
 	$ProductWeight = htmlBase::newElement('input')
 	->setName('products_weight');
 	
@@ -128,7 +119,6 @@
 		$ManufacturerMenu->selectOptionByValue($Product['manufacturers_id']);
 		$ProductDateOrdered->setValue($Product['products_date_ordered']);
 		$ProductModel->setValue($Product['products_model']);
-		$ProductPreview->setValue($Product['movie_preview']);
 		$ProductWeight->setValue($Product['products_weight']);
 	}
 ?>
@@ -173,16 +163,6 @@
   <tr>
    <td class="main"><?php echo sysLanguage::get('TEXT_PRODUCTS_MODEL'); ?></td>
    <td class="main"><?php echo $ProductModel->draw(); ?></td>
-  </tr>
-  <tr>
-   <td colspan="2"><?php echo tep_draw_separator('pixel_trans.gif', '1', '10'); ?></td>
-  </tr>
-  <tr>
-   <td colspan="2"><?php echo tep_draw_separator('pixel_trans.gif', '1', '10'); ?></td>
-  </tr>
-  <tr>
-   <td class="main"><?php echo sysLanguage::get('TEXT_PRODUCTS_MOVIE_PREVIEW'); ?></td>
-   <td class="main"><?php echo $ProductPreview->draw(); ?></td>
   </tr>
   <tr>
    <td colspan="2"><?php echo tep_draw_separator('pixel_trans.gif', '1', '10'); ?></td>

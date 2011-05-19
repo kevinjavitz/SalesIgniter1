@@ -1176,6 +1176,16 @@ class Doctrine_Core
         return false;
     }
 
+	public static function loadAllModels(){
+		Doctrine_Core::loadModels(self::$_modelsDirectory, Doctrine_Core::MODEL_LOADING_AGGRESSIVE);
+
+		if (!empty(self::$_extModelsDirectory)){
+			foreach(self::$_extModelsDirectory as $dir){
+				Doctrine_Core::loadModels($dir, Doctrine_Core::MODEL_LOADING_AGGRESSIVE);
+			}
+		}
+	}
+
     /**
      * Load classes from the Doctrine extensions directory/path
      *
