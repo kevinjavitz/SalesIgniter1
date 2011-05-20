@@ -320,7 +320,7 @@ require(sysConfig::getDirFsCatalog() . 'includes/classes/htmlBase.php');
 		if (isset($_GET['currency'])) {
 			if (!$currency = tep_currency_exists($_GET['currency'])) $currency = (sysConfig::get('USE_DEFAULT_LANGUAGE_CURRENCY') == 'true') ? LANGUAGE_CURRENCY : sysConfig::get('DEFAULT_CURRENCY');
 		} else {
-			$currency = (sysConfig::get('USE_DEFAULT_LANGUAGE_CURRENCY') == 'true') ? LANGUAGE_CURRENCY : sysConfig::get('DEFAULT_CURRENCY');
+			$currency = sysConfig::get('DEFAULT_CURRENCY');
 		}
 		Session::set('currency', $currency);
 	}
