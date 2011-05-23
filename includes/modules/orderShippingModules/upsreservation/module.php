@@ -90,7 +90,7 @@ class OrderShippingUpsReservation extends OrderShippingModule {
 		$boxPadding = sysConfig::get('SHIPPING_BOX_PADDING');
 		$boxMaxWeight = sysConfig::get('SHIPPING_MAX_WEIGHT');
 
-		$shipping_num_boxes = 1;
+
 		if ($boxWeight >= $shipping_weight * $boxPadding / 100) {
 			$shipping_weight = $shipping_weight + $boxWeight;
 		} else {
@@ -105,6 +105,7 @@ class OrderShippingUpsReservation extends OrderShippingModule {
 	
 	public function quote($method = '', $shipping_weight = -1){
 		global $order,  $userAccount;
+		$shipping_num_boxes = 1;
 		$this->getNumBoxes($shipping_weight, $shipping_num_boxes);
 
 		if ( isset($method) && !empty($method)) {
