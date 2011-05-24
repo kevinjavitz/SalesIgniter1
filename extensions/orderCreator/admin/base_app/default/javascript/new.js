@@ -112,7 +112,7 @@ $(document).ready(function (){
 				if(prType == 'reservation' && isEvent == false){
 					$('.productQty').attr('readonly','readonly');
 				}
-				if(isEvent){
+				if(isEvent && $Row.find('.eventf').val() != '0'){
 					$('.reservationShipping').trigger('change');
 				}
 				removeAjaxLoader($Row);

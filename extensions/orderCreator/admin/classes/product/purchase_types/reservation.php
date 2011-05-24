@@ -138,7 +138,7 @@ class OrderCreatorProductPurchaseTypeReservation extends PurchaseType_reservatio
 				$endTime = strtotime($iReservation['end']);
 				while($startTime<=$endTime){
 					$dateFormated = date('Y-n-j', $startTime);
-					if ($this->getTrackMethod() == 'barcode'){
+					if ($this->getTrackMethod() == 'barcode' && !in_array($iReservation['barcode'], $bookedDates[$dateFormated]['barcode'])){
 						$bookedDates[$dateFormated]['barcode'][] = $iReservation['barcode'];
 						//check if all the barcodes are already or make a new function to make checks by qty... (this function can return also the free barcode?)
 					}else{
