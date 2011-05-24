@@ -95,7 +95,7 @@ $(document).ready(function (){
 	});
 
 
-	$('.eventf').live('change', function(){
+	$('.eventf, .reservationShipping').live('change', function(){
 		var $self = $(this);
 		var $Row = $(this).parent().parent().parent().parent();
 		var $ShippingInput = $Row.find('.reservationShipping option:selected');
@@ -108,12 +108,13 @@ $(document).ready(function (){
 		$.ajax({
 			cache: false,
 			dataType: 'json',
-			url: js_app_link('appExt=orderCreator&app=default&appPage=new&action=saveResInfo&id=' + $Row.attr('data-id')+ '&event=' + eventS.val() + '&shipping=' + $ShippingInput.val() + '&qty=' + selectedQty+'&purchase_type='+$purchaseTypeSelected.val()),
+			url: js_app_link('appExt=orderCreator&app=default&appPage=new&action=saveResInfo&id=' + $Row.attr('data-id')+ '&event=' + eventS.val() + '&shipping=' + $ShippingInput.val() + '&qty=' + selectedQty+'&purchase_type='+$purchaseTypeSelected.val()+'&days_before='+$ShippingInput.attr('days_before')+'&days_after='+$ShippingInput.attr('days_after')),
 			success: function (data) {
 
 				if(data.success == true){
 					$Row.find('.priceEx').val(data.price).trigger('keyup');
 				}else{
+					$Row.find('.eventf').val('0');
 					alert('There is no available item for the selected event. Make your Selection again.');
 				}
 				removeAjaxLoader($self);
