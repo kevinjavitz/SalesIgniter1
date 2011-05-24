@@ -50,7 +50,7 @@
 	}
 
 	$pageTitle = $contentHeading;
-	$pageContents = $contentHtml
+	$pageContents = $contentHtml;
 
 	$pageContent->set('pageTitle', $pageTitle);
 	$pageContent->set('pageContent', $pageContents);
