@@ -8,10 +8,10 @@ if ($ShoppingCart->countContents() > 0) {
 	->attr('width', '100%');
 	
 	$shoppingCartHeader = array(
-		array('addCls' => '', 'text' => sysLanguage::get('TABLE_HEADING_REMOVE'), 'align' => 'center'),
-		array('addCls' => '', 'text' => sysLanguage::get('TABLE_HEADING_PRODUCTS'), 'align' => 'left'),
-		array('addCls' => '', 'text' => sysLanguage::get('TABLE_HEADING_QUANTITY'), 'align' => 'center'),
-		array('addCls' => '', 'text' => sysLanguage::get('TABLE_HEADING_TOTAL'), 'align' => 'right'),
+		array('addCls' => 'ui-widget-header', 'text' => sysLanguage::get('TABLE_HEADING_REMOVE'), 'align' => 'center'),
+		array('addCls' => 'ui-widget-header', 'text' => sysLanguage::get('TABLE_HEADING_PRODUCTS'), 'align' => 'center'),
+		array('addCls' => 'ui-widget-header', 'text' => sysLanguage::get('TABLE_HEADING_QUANTITY'), 'align' => 'center'),
+		array('addCls' => 'ui-widget-header', 'text' => sysLanguage::get('TABLE_HEADING_TOTAL'), 'align' => 'center'),
 	);
 
 	EventManager::notify('ShoppingCartListingAddHeaderColumn', &$shoppingCartHeader);
