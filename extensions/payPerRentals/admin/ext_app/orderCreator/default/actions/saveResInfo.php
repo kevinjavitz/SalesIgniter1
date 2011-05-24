@@ -45,7 +45,6 @@
 			$reservArr = array();
 			$barcodesBooked = array();
 			$bookings = $PurchaseType->getBookedDaysArrayNew(date('Y-m-d', strtotime($start_date)), $rQty, &$reservArr, &$barcodesBooked, $Editor->ProductManager->getContents());
-			$dateIsReserved = false;
 
 			$startingTime = strtotime($starting_date);//here can be multiple dates...right now for event are two
 			$endingTime = strtotime($ending_date);
