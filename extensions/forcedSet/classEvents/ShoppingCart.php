@@ -76,8 +76,10 @@
 					$messageStack->addSession('pageStack','You have added your ' . $wheelType . ' successfully, now please select a '. $wheelTypeReverse, 'success');
 					if ($Qrelation[0]['forced_set_category_one_id'] == $cID){
 						tep_redirect(itw_app_link('cPath='. $Qrelation[0]['forced_set_category_two_id'], 'index', 'default'));
+						itwExit();
 					}else{
 						tep_redirect(itw_app_link('cPath='. $Qrelation[0]['forced_set_category_one_id'], 'index', 'default'));
+						itwExit();
 					}
 				}
             }
