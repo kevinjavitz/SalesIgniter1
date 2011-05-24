@@ -59,12 +59,14 @@ class ReservationUtilities {
 	}
 
 	public static function getPeriodTime($period, $type){
-		$QPayPerRentalTypes = Doctrine_Query::create()
-		->from('PayPerRentalTypes')
-		->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
-		foreach($QPayPerRentalTypes as $iType){
-			if($type == $iType['pay_per_rental_types_id']){
-				 return $period * $iType['minutes'];
+		if(isset($period) && is_numeric($period)){
+			$QPayPerRentalTypes = Doctrine_Query::create()
+			->from('PayPerRentalTypes')
+			->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+			foreach($QPayPerRentalTypes as $iType){
+				if($type == $iType['pay_per_rental_types_id']){
+					 return $period * $iType['minutes'];
+				}
 			}
 		}
 		return 0;
@@ -168,7 +170,7 @@ class ReservationUtilities {
 		$shippingTable = '';
 		if ($purchaseTypeClass->shippingIsNone() === false && $purchaseTypeClass->shippingIsStore() === false) {
 			if($showShipping){
-				$shippingTable = $purchaseTypeClass->buildShippingTable(true, false);
+				$shippingTable = $purchaseTypeClass->buildShippingTable();
 			}
 			$maxShippingDays = $purchaseTypeClass->getMaxShippingDays(date('Y-m-d', $startTime));
 		}
@@ -402,8 +404,8 @@ class ReservationUtilities {
 					today_month = todayDate.getMonth();
 				}
 
-				$selfID.find('.start_date').val(today_month + '/' + today_day + '/' + todayDate.getFullYear());
-				$selfID.find('.end_date').val('');
+				$selfID.find('.start_date').val(today_month + '/' + today_day + '/' + todayDate.getFullYear()).trigger('change');
+				$selfID.find('.end_date').val('').trigger('change');
 
 				<?php
 
@@ -422,8 +424,8 @@ class ReservationUtilities {
 				allowSelection = true;
 				allowSelectionMin = true;
 				allowSelectionMax = true;
-				$selfID.find('.start_date').val('');
-				$selfID.find('.end_date').val('');
+				$selfID.find('.start_date').val('').trigger('change');
+				$selfID.find('.end_date').val('').trigger('change');
 				$selfID.find('.calendarTime').hide();
 				<?php
 
@@ -650,7 +652,7 @@ class ReservationUtilities {
 					} else {
 						monthTs = monthT + '';
 					}
-					$selfID.find('.end_date').val(monthTs + '/' + daysTs + '/' + date.getFullYear());
+					$selfID.find('.end_date').val(monthTs + '/' + daysTs + '/' + date.getFullYear()).trigger('change');
 					var $this = $selfID.find('.datePicker');
 					$sDate = new Date($selfID.find('.start_date').val());
 					$eDate = new Date($selfID.find('.end_date').val());
@@ -666,6 +668,7 @@ class ReservationUtilities {
 							success: function (data) {
 								if (data.success == true) {
 									$selfID.parent().find('.priceQuote').html(data.price + ' ' + data.message);
+									$selfID.parent().find('.priceQuote').trigger('EventAfterPriceQuote');
 									$selfID.parent().find('.inCart').show();
 									$selfID.parent().find('.inCart').button();
 									//$('#checkAvail').hide();
@@ -711,8 +714,8 @@ class ReservationUtilities {
    	if (sysConfig::get('EXTENSION_PAY_PER_RENTALS_FORCE_START_DATE') == 'True') {
 					?>
 					if ($selfID.find('.start_date').val() == '' && isStart) {
-						$selfID.find('.start_date').val(dates[0]);
-						$selfID.find('.end_date').val(dates[1]);
+						$selfID.find('.start_date').val(dates[0]).trigger('change');
+						$selfID.find('.end_date').val(dates[1]).trigger('change');
 						isStart = false;
 						if (dates[0] != dates[1]) {
 							$selfID.find('.datePicker').datepick('option', 'maxDate', null);
@@ -721,7 +724,7 @@ class ReservationUtilities {
 						}
 					} else {
 						var todayDate = new Date();
-						$selfID.find('.end_date').val(dates[0]);
+						$selfID.find('.end_date').val(dates[0]).trigger('change');
 						selected = 'start';
 						selectedDate = todayDate;
 						isStart = true;
@@ -732,8 +735,8 @@ class ReservationUtilities {
 				} else {
 					?>
 					var dates = value.split(',');
-					$selfID.find('.start_date').val(dates[0]);
-					$selfID.find('.end_date').val(dates[1]);
+					$selfID.find('.start_date').val(dates[0]).trigger('change');
+					$selfID.find('.end_date').val(dates[1]).trigger('change');
 					isStart = false;
 					if (dates[0] != dates[1]) {
 						$selfID.find('.datePicker').datepick('option', 'maxDate', null);
@@ -767,7 +770,7 @@ class ReservationUtilities {
 				today_month = todayDate.getMonth() + 1;
 			}
 
-			$selfID.find('.start_date').val(today_month + '/' + today_day + '/' + todayDate.getFullYear());
+			$selfID.find('.start_date').val(today_month + '/' + today_day + '/' + todayDate.getFullYear()).trigger('change');
 			<?php
 
 		}
@@ -786,6 +789,7 @@ class ReservationUtilities {
 					if (data.success == true) {
 						removeAjaxLoader($calLoader);
 						$selfID.parent().html(data.calendar);
+						$calLoader.trigger('EventAfterLoadedCalendar');
 					}
 				}
 			});
@@ -796,8 +800,8 @@ class ReservationUtilities {
 				var selectedPeriod = $(this);
 				var startDateString = $selfID.find('.selected_period option:selected').attr('start_date');
 				var endDateString = $selfID.find('.selected_period option:selected').attr('end_date');
-				$selfID.find('.start_date').val(startDateString.substr(0, startDateString.length - 9));
-				$selfID.find('.end_date').val(endDateString.substr(0, endDateString.length - 9));
+				$selfID.find('.start_date').val(startDateString.substr(0, startDateString.length - 9)).trigger('change');
+				$selfID.find('.end_date').val(endDateString.substr(0, endDateString.length - 9)).trigger('change');
 				showAjaxLoader(selectedPeriod, 'xlarge');
 				$.ajax({
 					cache: false,
@@ -879,7 +883,7 @@ class ReservationUtilities {
 						today_month = selectedStartTime.getMonth() + 1;
 					}
 
-					$selfID.find('.start_date').val(today_month + '/' + today_day + '/' + selectedStartTime.getFullYear() + ' ' + selectedStartTime.getHours() + ':' + selectedStartTime.getMinutes() + ':00');
+					$selfID.find('.start_date').val(today_month + '/' + today_day + '/' + selectedStartTime.getFullYear() + ' ' + selectedStartTime.getHours() + ':' + selectedStartTime.getMinutes() + ':00').trigger('change');
 				} else {
 					if (selectedStartTime < new Date(date)) {
 
@@ -936,7 +940,7 @@ class ReservationUtilities {
 							today_month = selectedEndTime.getMonth() + 1;
 						}
 
-						$selfID.find('.end_date').val(today_month + '/' + today_day + '/' + selectedEndTime.getFullYear() + ' ' + selectedEndTime.getHours() + ':' + selectedEndTime.getMinutes() + ':00');
+						$selfID.find('.end_date').val(today_month + '/' + today_day + '/' + selectedEndTime.getFullYear() + ' ' + selectedEndTime.getHours() + ':' + selectedEndTime.getMinutes() + ':00').trigger('change');
 						var $this = $selfID.find('.datePicker');
 
 						showAjaxLoader($this, 'xlarge');
@@ -967,15 +971,6 @@ class ReservationUtilities {
 			}
 		});
 
-			<?php
-   		if (sysConfig::get('EXTENSION_PAY_PER_RENTALS_USE_UPS_RESERVATION') == 'True') {
-			?>
-			showOverlay($selfID.find('.datePicker'));
-			<?php
-
-		}
-		?>
-
         $selfID.find('.semRow').hide();
 
         $selfID.find('input[name="cal_or_semester"]').change(function(){
@@ -991,8 +986,80 @@ class ReservationUtilities {
 				$selfID.find('.selected_period').attr('name','semester_name');
 			}
         });
+		$selfID.find('.calendarTime').hide();
+		<?php
+   		if (sysConfig::get('EXTENSION_PAY_PER_RENTALS_USE_UPS_RESERVATION') == 'True') {
+			?>
 
-        $selfID.find('.calendarTime').hide();
+			$('#getQuotes').click(function(){
+			 showAjaxLoader($('#getQuotes'), 'xlarge');
+			 $('#shipMethods').hide();
+			 $.ajax({
+					cache:false,
+					url: js_app_link('appExt=payPerRentals&app=build_reservation&appPage=default&action=getUpsQuotes&products_id='+$('#pID').val()+'&qty='+$selfID.find('.rental_qty').val()),
+					type: 'post',
+					data: 'rental_qty='+$selfID.find('.rental_qty').val()+'&street_address='+$('#street_address').val() + '&state='+$('#state').val() +'&city='+$('#city').val() +'&postcode1='+$('#postcode1').val() +'&postcode2='+$('#postcode2').val() +'&country='+$('#countryDrop').val() + '&iszip=' + $('#zipAddress').is(":visible"),
+					dataType: 'json',
+					success: function (data) {
+
+						removeAjaxLoader($('#getQuotes'));
+						if(data.success == true){
+							if (data.nr == 0){
+								$('#zipAddress').hide();
+								$('#fullAddress').show();
+								removeAjaxLoader($calLoader2);
+								showAjaxLoader($calLoader2,'noloader');
+								$calLoader2.datepick('option', 'initStatus', '');
+							} else{
+								$('#shipMethods').show();
+								$('#rowquotes').html(data.html);
+								$('#zipAddress').show();
+								$('#fullAddress').hide();
+								$calLoader2.datepick('option', 'initStatus', 'Please select a start date');
+								removeAjaxLoader($calLoader2);
+							}
+						}
+						//foreach data.quotesid make them visible
+						//the same for data.quotescosts
+					}
+			 });
+		});
+
+		$('#countryDrop').change(function (){
+			var $stateColumn = $('#stateCol');
+			//showAjaxLoader($stateColumn);
+			$.ajax({
+				cache: true,
+				url: js_app_link('appExt=payPerRentals&app=build_reservation&appPage=default&action=getCountryZones'),
+				data: 'cID=' + $(this).val(),
+				dataType: 'html',
+				success: function (data){
+					//removeAjaxLoader($stateColumn);
+					$('#stateCol').html(data);
+				}
+			})
+		});
+		$('#countryDrop').val('223').trigger('change');
+		$('#fullAddress').hide();
+		$('#shipMethods').hide();
+		$('#zipAddress').show();
+		var $calLoader2 = $selfID.find('.datePicker');
+		showAjaxLoader($calLoader2, 'noloader');
+
+
+		/*$selfID.find('.datePicker').bind('EventAfterLoadedCalendar', function(){
+			$('#countryDrop').val('223').trigger('change');
+			$('#fullAddress').hide();
+			$('#shipMethods').hide();
+			$('#zipAddress').show();
+			var $calLoader2 = $selfID.find('.datePicker');
+			showAjaxLoader($calLoader2, 'noloader');
+
+		});*/
+		<?php
+
+		}
+		?>
 	});
 	</script>
 	<style>
@@ -1054,107 +1121,55 @@ class ReservationUtilities {
 			background: #CACEE6;
 		}
 	</style>
-	<table id="reserv<?php echo $pID_string; ?>" class="reservationTable">
-	 <tr>
-      <td class="main"><?php echo sysLanguage::get('ENTRY_QUANTITY');?></td>
-      <td><input type="text" size="3" class="rental_qty" name="rental_qty" value="<?php echo $rQty;?>"></td>
-     </tr>
+	<div id="reserv<?php echo $pID_string; ?>" class="reservationTable">
+		<div class="quantityDiv">
+            <div>
+	            <?php echo sysLanguage::get('ENTRY_QUANTITY');?><input type="text" size="3" class="rental_qty" name="rental_qty" value="<?php echo $rQty;?>">
+            </div>
+        </div>
+		<div class="shippingInfoDiv">
+			<div colspan="2">
+				<table cellpadding="0" cellspacing="3" border="0" width="100%">
+				<tr>
+				<td style="width:10px;height:10px;" class="ui-datepicker-reserved ui-state-disabled">&nbsp;</td>
+				<td style="font-size:.8em"> - Unavailable Days.</td>
+				</tr>
+			    <tr>
+				<td style="width:10px;height:10px;" class="ui-datepicker-shipping-day-hover-info">&nbsp;</td>
+				<td style="font-size:.8em"> - Selected Days.</td>
+			    </tr>
+
+			<?php if ($purchaseTypeClass->shippingIsNone() === false && $purchaseTypeClass->shippingIsStore() === false){ ?>
+				<tr>
+				<td style="width:10px;height:10px;background: #F7C8D3;">&nbsp;</td>
+				<td style="font-size:.8em"> - Shipping Days.</td>
+		        </tr>
+			<?php } ?>
+
+                </table>
+			</div>
+		</div>
      <?php
      if ($purchaseTypeClass->shippingIsNone() === false && $purchaseTypeClass->shippingIsStore() === false){
+	  ?>
+		<div class="shippingDiv"><div>
+	<?php
      	echo $shippingTable;
+	?>
+		</div></div>
+	<?php
      }
      ?>
-		<?php
-			$QPeriods = Doctrine_Query::create()
-			->from('ProductsPayPerPeriods')
-			->where('products_id=?', $productsId)
-			->andWhere('price > 0')
-			->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
-		if(count($QPeriods) > 0){
-		 ?>
-	<tr>
-      <td class="main" colspan="2">
-		  <?php
-		  	$CalOrSemester = htmlBase::newElement('radio')
-			->addGroup(array(
-				'checked' => 1,
-				'separator' => '<br />',
-				'name' => 'cal_or_semester',
-				'data' => array(
-					array(
-						'label' => sysLanguage::get('TEXT_USE_CALENDAR'),
-						'labelPosition' => 'before',
-						'value' => '1'
-					),
-					array(
-						'label' => sysLanguage::get('TEXT_USE_SEMESTER'),
-						'labelPosition' => 'before',
-						'value' => '0'
-					)
-				)
-			));
-			  echo $CalOrSemester->draw();
-		  ?>
+	 <div class="semestersDiv">
+		 <div>
+            <?php
+		    	echo $purchaseTypeClass->buildSemesters($semDates);
+	        ?>
+		 </div>
+	 </div>
 
-      </td>
-     </tr>
-	<tr class="semRow">
-      <td class="main" colspan="2">
-		  <?php
-		  	$selectSem = htmlBase::newElement('selectbox')
-		  	->setName('semester_name')
-		  	->setLabel(sysLanguage::get('TEXT_SELECT_PERIOD'))
-		  	->setLabelPosition('before')
-		  	->attr('id','selected_period');
-			$selectSem->addOption('',sysLanguage::get('TEXT_SELECT_SEMESTER'));
-
-			foreach($semDates as $sDate){
-
-				$attr = array(
-						array(
-							'name' => 'start_date',
-							'value' => $sDate['start_date']
-						),
-						array(
-							'name' => 'end_date',
-							'value' => $sDate['end_date']
-						)
-					);
-				$selectSem->addOptionWithAttributes($sDate['period_name'], $sDate['period_name'],$attr);
-			}
-			$moreInfo = htmlBase::newElement('a')
-			->attr('id','moreInfoSem')
-		  	->html(sysLanguage::get('TEXT_MORE_INFO_SEM'));
-			echo $selectSem->draw();//.$moreInfo;
-		  ?>
-
-      </td>
-     </tr>
-			<?php
-			}
-			?>
-	 <tr class="dateRow">
-      <td colspan="2"><table cellpadding="0" cellspacing="3" border="0" width="100%">
-       <tr>
-        <td width="20%"><table cellpadding="0" cellspacing="3" border="0">
-   	     <tr>
-          <td style="width:10px;height:10px;" class="ui-datepicker-reserved ui-state-disabled">&nbsp;</td>
-          <td style="font-size:.8em"> - <?php echo sysLanguage::get('PPR_UNAVAILABLE_DAYS'); ?>.</td>
-         </tr>
-<?php if ($purchaseTypeClass->shippingIsNone() === false && $purchaseTypeClass->shippingIsStore() === false){ ?>
-       <tr>
-        <td style="width:10px;height:10px;" class="ui-datepicker-shipping-day-hover-info">&nbsp;</td>
-        <td style="font-size:.8em"> - <?php echo sysLanguage::get('PPR_SHIPPING_DAYS'); ?>.</td>
-       </tr>
-<?php } ?>
-        </table></td>
-        <td width="50%"><table cellpadding="0" cellspacing="3" border="0" width="100%">
-         <tr>
-          <td style="font-size:.8em" width="100%">* <?php echo sysLanguage::get('PPR_CALENDAR_EXPLAIN1'); ?><br /><?php echo sysLanguage::get('PPR_CALENDAR_EXPLAIN2'); ?><br /><?php echo sysLanguage::get('PPR_CALENDAR_EXPLAIN3'); ?>.</td>
-         </tr>
-        </table></td>
-       </tr>
-      </table><table cellpadding="3" cellspacing="0" border="0" width="100%">
+	 <div class="dateRow">
+      <div><table cellpadding="3" cellspacing="0" border="0" width="100%">
        <tr>
         <td valign="top"><div type="text" class="datePicker"></div>
 		<div class="calendarTime">
@@ -1163,26 +1178,25 @@ class ReservationUtilities {
 
 		</td>
        </tr>
-      </table></td>
-     </tr>
+      </table></div>
+     </div>
 
-     <tr class="dateSelectedCalendar">
-      <td class="main"><?php echo sysLanguage::get('ENTRY_RENTAL_DATES_SELECTED');?></td>
-      <td><input type="text" name="start_date" class="start_date" value="<?php echo (isset($rInfo) ? $rInfo['reservationInfo']['start_date'] : '');?>" readonly="readonly"> <?php echo sysLanguage::get('PAYPERRENTALS_TO');?> <input type="text" name="end_date" class="end_date" value="<?php echo (isset($rInfo) ? $rInfo['reservationInfo']['end_date'] : '');?>" readonly="readonly">
-      <?php
+     <div class="dateSelectedCalendar">
+      <div class="datesInputs"><?php echo sysLanguage::get('ENTRY_RENTAL_DATES_SELECTED');?>
+      <input type="text" name="start_date" class="start_date" value="<?php echo (isset($rInfo) ? $rInfo['reservationInfo']['start_date'] : '');?>" readonly="readonly"> <?php echo sysLanguage::get('PAYPERRENTALS_TO');?> <input type="text" name="end_date" class="end_date" value="<?php echo (isset($rInfo) ? $rInfo['reservationInfo']['end_date'] : '');?>" readonly="readonly">
+      </div>
+	  <?php
         echo htmlBase::newElement('button')
              ->addClass('refreshCal')
              ->setName('refreshCal')
              ->setText(sysLanguage::get('PPR_CALENDAR_RESET'))
              ->draw();
       ?>
-
-      </td>
-     </tr>
-		</table>
-		<div class="pprButttons">
+     </div>
+	</div>
+	<div class="pprButttons">
 			<?php
-	   $pprButtons = sysLanguage::get('TEXT_ESTIMATED_PRICING') . '<span class="priceQuote"></span>'.'&nbsp;&nbsp;&nbsp;';
+	   $pprButtons = '<span class="estimatedPricing">' . sysLanguage::get('TEXT_ESTIMATED_PRICING') . '</span>' . '<span class="priceQuote"></span>'.'&nbsp;&nbsp;&nbsp;';
 	   $pprButtons .= '<input type="hidden" name="products_id" id="pID" value="' . $product->getID() . '">';
 	   $pprButtons .= $purchaseTypeClass->getHiddenFields($pID_string);
 

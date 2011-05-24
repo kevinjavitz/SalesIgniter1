@@ -112,9 +112,11 @@ class InfoBoxNavigationMenu extends InfoBoxAbstract
 			$addCls .= ' middle';
 		}
 
-		if (isset($application) && $App->getAppName() == $application && $App->getPageName() == $item->link->page){
+		if (isset($application) && $App->getAppName() == $application && $App->getPageName() == $item->link->page && !isset($_GET['cPath'])){
 			$addCls .= ' ui-state-active';
-		}elseif (isset($application) && $App->getAppName() == $application && isset($_GET['appPage']) && $_GET['appPage'] == $item->link->page){
+		}elseif (isset($application) && $App->getAppName() == $application && isset($_GET['appPage']) && $_GET['appPage'] == $item->link->page && !isset($_GET['cPath'])){
+			$addCls .= ' ui-state-active';
+		}elseif (isset($_GET['cPath']) && $item->link->get_vars == 'cPath='. $_GET['cPath']){
 			$addCls .= ' ui-state-active';
 		}
 

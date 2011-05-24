@@ -18,11 +18,11 @@
 	);
     $addressBook =& $userAccount->plugins['addressBook'];
 	$addressBook->addAddressEntry('delivery', $shippingAddressArray);
-	global $total_weight;
-	$total_weight = $product->getWeight()* $_GET['qty'];
-    	OrderShippingModules::calculateWeight();
+	//global $current_product_weight;
+	$current_product_weight = $product->getWeight()* $_GET['qty'];
+    //OrderShippingModules::calculateWeight();
 	$Module = OrderShippingModules::getModule('upsreservation');
-	$quotes = array($Module->quote());
+	$quotes = array($Module->quote('', $current_product_weight));
 
  	$html = $purchaseTypeClass->parseQuotes($quotes ,true);
 	$nr = 0;

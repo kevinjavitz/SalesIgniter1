@@ -26,7 +26,8 @@ class productListing_productsPricePayPerRental {
 		global $currencies;
 		$tableRow = array();
 		$purchaseTypeClass = $productClass->getPurchaseType('reservation');
-		if (is_null($purchaseTypeClass) === false && sysConfig::get('EXTENSION_PAY_PER_RENTALS_ENABLED') == 'True'){
+
+		if (is_null($purchaseTypeClass) === false && sysConfig::get('EXTENSION_PAY_PER_RENTALS_ENABLED') == 'True' && in_array('reservation', $productClass->getPurchaseTypesArray())){
 
 			if (sysConfig::get('EXTENSION_PAY_PER_RENTALS_DATE_SELECTION') == 'Using calendar after browsing products and clicking Reserve' && $purchaseTypeClass->hasInventory()){
 				$payPerRentalButton = htmlBase::newElement('button')
