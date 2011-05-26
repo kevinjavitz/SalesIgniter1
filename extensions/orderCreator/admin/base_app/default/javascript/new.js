@@ -74,6 +74,7 @@ $(document).ready(function (){
 						});
 					});
 					$('select[name=payment_method]').trigger('change');
+					$('.purchaseType').trigger('change');
 				}
 			});
 			$('input[name=customer_search]').val(ui.item.label);
@@ -104,10 +105,15 @@ $(document).ready(function (){
 			success: function (data){
 				$Row.find('td:eq(1)').html(data.name);
 				$Row.find('.priceEx').val(data.price).trigger('keyup');
-
-				if(prType == 'reservation'){
-					$('.reservationShipping').attr('readonly','readonly');
+				var isEvent = false;
+				if($('.eventf').size() > 0){
+					isEvent = true;
+				}
+				if(prType == 'reservation' && isEvent == false){
 					$('.productQty').attr('readonly','readonly');
+				}
+				if(isEvent && $Row.find('.eventf').val() != '0'){
+					$('.reservationShipping').trigger('change');
 				}
 				removeAjaxLoader($Row);
 			}
@@ -284,6 +290,7 @@ $(document).ready(function (){
 	});
 
 	$('select[name=payment_method]').trigger('change');
+	$('.purchaseType').trigger('change');
 	$('.paymentRefundButton').click(function (){
 		var $self = $(this);
 		showAjaxLoader($self, 'small');

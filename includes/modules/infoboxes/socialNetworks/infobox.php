@@ -20,15 +20,13 @@ class InfoBoxSocialNetworks extends InfoBoxAbstract {
 	public function show(){
 
 		$boxWidgetProperties = $this->getWidgetProperties();
-		$facebook = isset($boxWidgetProperties->facebook)?$boxWidgetProperties->facebook:'';
-		$twitter = isset($boxWidgetProperties->twitter)?$boxWidgetProperties->twitter:'';
-		$email = isset($boxWidgetProperties->email)?$boxWidgetProperties->email:'';
+		$facebook = (isset($boxWidgetProperties->facebook) && $boxWidgetProperties->facebook!= '')?'<a target="_blank" href="'.$boxWidgetProperties->facebook.'"><img src="'. sysConfig::getDirWsCatalog() .'images/facebookSocial.png" /></a>':'';
+		$twitter = (isset($boxWidgetProperties->twitter) && $boxWidgetProperties->twitter != '')?'<a href="'.$boxWidgetProperties->twitter.'" target="_blank"><img src="'. sysConfig::getDirWsCatalog() .'images/twitterSocial.png" /></a>':'';
+		$email = (isset($boxWidgetProperties->email) && $boxWidgetProperties->email != '')?'<a href="'.$boxWidgetProperties->email.'" target="_blank"><img src="'. sysConfig::getDirWsCatalog() .'images/emailSocial.png" /></a>':'';
+
 		$htmlText = htmlBase::newElement('div')
 		->addClass('socialNetworks')
-		->html('<a target="_blank" href="'.$facebook.'"><img src="'. sysConfig::getDirWsCatalog() .'images/facebookSocial.png" /></a>
-			<a href="'.$twitter.'" target="_blank"><img src="'. sysConfig::getDirWsCatalog() .'images/twitterSocial.png" /></a>
-			<a href="'.$email.'" target="_blank"><img src="'. sysConfig::getDirWsCatalog() .'images/emailSocial.png" /></a>'
-		);
+		->html(sysLanguage::get('INFOBOX_SOCIAL_NETWORKS_TEXT') . $facebook .$twitter .$email);
 
 		$this->setBoxContent($htmlText->draw());
 		return $this->draw();

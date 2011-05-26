@@ -13,6 +13,7 @@ class ReservationUtilities {
 
 	public static function getShippingDetails($method = null){
 		$Quote = null;
+		OrderShippingModules::loadModules();
 		$ModuleQuote = OrderShippingModules::quote($method, 'zonereservation');
 		if (isset($ModuleQuote[0]['methods']) && !empty($ModuleQuote[0]['methods'][0])){
 			$Quote = $ModuleQuote[0]['methods'][0];

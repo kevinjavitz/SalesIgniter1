@@ -216,29 +216,40 @@ class PurchaseType_reservation extends PurchaseTypeAbstract {
 		}
 
 
-		$selectBox = htmlBase::newElement('input')
-		->setType('hidden')
-		->addClass('ui-widget-content reservationShipping')
-		->setName('product[' . $id . '][reservation][shipping]');
-		$shipInput = '';
-		if ($this->shippingIsNone() === false && $this->shippingIsStore() === false){
-			/*if (isset($Module) && is_object($Module)){
-				$quotes = $Module->quote();
-				foreach($quotes['methods'] as $method){
-					$selectBox->addOption(
-						$method['id'],
-						$method['title'] . ' ( ' . $currencies->format($method['cost']) . ' )',
-						false,
-						array(
-							'days_before' => $method['days_before'],
-							'days_after' => $method['days_after']
-						)
-					);
-				}
-			} */
 
+		if ($this->shippingIsNone() === false && $this->shippingIsStore() === false){
+			$shipInput = '';
+			if(sysConfig::get('EXTENSION_PAY_PER_RENTALS_USE_EVENTS') == 'True'){
+				$selectBox = htmlBase::newElement('selectbox')
+				->addClass('ui-widget-content reservationShipping')
+				->setName('product[' . $id . '][reservation][shipping]');
+
+				if (isset($Module) && is_object($Module)){
+					$quotes = $Module->quote();
+					foreach($quotes['methods'] as $method){
+						$selectBox->addOption(
+							$method['id'],
+							$method['title'] . ' ( ' . $currencies->format($method['cost']) . ' )',
+							false,
+							array(
+								'days_before' => $method['days_before'],
+								'days_after' => $method['days_after']
+							)
+						);
+					}
+				}
+			}else{
+				$selectBox = htmlBase::newElement('input')
+				->setType('hidden')
+				->addClass('ui-widget-content reservationShipping')
+				->setName('product[' . $id . '][reservation][shipping]');
+			}
 			if (is_null($resInfo) === false && isset($resInfo['shipping']) && $resInfo['shipping'] !== false && isset($resInfo['shipping']['title']) && !empty($resInfo['shipping']['title']) && isset($resInfo['shipping']['cost']) && !empty($resInfo['shipping']['cost'])){
-				$selectBox->setValue($resInfo['shipping']['id']);
+				if(sysConfig::get('EXTENSION_PAY_PER_RENTALS_USE_EVENTS') == 'True'){
+					$selectBox->selectOptionByValue($resInfo['shipping']['id']);
+				}else{
+					$selectBox->setValue($resInfo['shipping']['id']);
+				}
 				$shipInput = '<span class="reservationShippingText">'.$resInfo['shipping']['title'].'</span>';
 			}
 
@@ -308,7 +319,7 @@ class PurchaseType_reservation extends PurchaseTypeAbstract {
 		if (is_null($this->inventoryCls)) return true;
 		$invItems = $this->inventoryCls->getInventoryItems();
 		$hasInv = false;
-		if (sysConfig::get('EXTENSION_PAY_PER_RENTALS_DATE_SELECTION') != 'Using calendar after browsing products and clicking Reserve' && Session::exists('isppr_inventory_pickup') === false && sysConfig::get('EXTENSION_PAY_PER_RENTALS_CHOOSE_PICKUP') == 'True'){
+		if (sysConfig::get('EXTENSION_PAY_PER_RENTALS_DATE_SELECTION') != 'Using calendar after browsing products and clicking Reserve' && Session::exists('isppr_inventory_pickup') === false && sysConfig::get('EXTENSION_PAY_PER_RENTALS_CHOOSE_PICKUP') == 'True' && sysConfig::get('EXTENSION_PAY_PER_RENTALS_USE_EVENTS') == 'False'){
 			return false;
 		}
 
@@ -358,10 +369,10 @@ class PurchaseType_reservation extends PurchaseTypeAbstract {
 				}
 
 				if (Session::exists('isppr_shipping_days_before')){
-					$bookingInfo['shipping_days_before'] = Session::get('isppr_shipping_days_before');
+					$bookingInfo['start_date'] = strtotime('- '. Session::get('isppr_shipping_days_before').' days', $bookingInfo['start_date']);
 				}
 				if (Session::exists('isppr_shipping_days_after')){
-					$bookingInfo['shipping_days_after'] = Session::get('isppr_shipping_days_after');
+					$bookingInfo['end_date'] = strtotime('+ '. Session::get('isppr_shipping_days_after').' days', $bookingInfo['end_date']);
 				}
 
 				$numBookings = ReservationUtilities::CheckBooking($bookingInfo);
