@@ -292,7 +292,7 @@
     end of update*/
 	$tableGrid = htmlBase::newElement('grid')
 	->usePagination(true)
-	->setPageLimit((isset($_GET['limit']) ? (int)$_GET['limit']: 25))
+	->setPageLimit((isset($_GET['limit']) ? (int)$_GET['limit']: 10))
 	->setCurrentPage((isset($_GET['page']) ? (int)$_GET['page'] : 1))
 	->setQuery($Qproducts);
 
@@ -336,21 +336,45 @@
 			addGridRow($productClass, $tableGrid, $infoBoxes);
 		}
 	}
+	$array_limit = array(
+		array(
+			'id'   => '10',
+			'text' => '10'
+		),
+		array(
+			'id'   => '25',
+			'text' => '25'
+		),
+		array(
+			'id'   => '50',
+			'text' => '50'
+		),
+		array(
+			'id'   => '100',
+			'text' => '100'
+		)
+	);
 ?>
  <div class="pageHeading"><?php echo sysLanguage::get('HEADING_TITLE');?></div>
  <br />
  <table border="0" width="100%" cellspacing="0" cellpadding="3">
   <tr>
    <td class="smallText" align="right" colspan="2"><?php
-   $searchForm = htmlBase::newElement('form')
-   ->attr('name', 'search')
-   ->attr('action', itw_app_link(null, null, null, 'SSL'))
-   ->attr('method', 'get');
+	   $searchForm = htmlBase::newElement('form')
+		   ->attr('name', 'search')
+		   ->attr('id', 'search')
+		   ->attr('action', itw_app_link(null, null, null, 'SSL'))
+		   ->attr('method', 'get');
 
-	$submitb = htmlBase::newElement('button')
-	->setType('submit')
-	->setText('GO')
-	->setName('submitb');
+	   $pageLimit = htmlBase::newElement('selectbox')
+			   ->setName('limit')
+			   ->setId('limit')
+			   ->setLabel(sysLanguage::get('TEXT_SEARCH_RESULTS'))
+			   ->setLabelPosition('before');
+	   foreach($array_limit as $limitOption){
+		   $pageLimit->addOption($limitOption['id'], $limitOption['text']);
+	   }
+	   $pageLimit->selectOptionByValue(isset($_GET['limit']) ? $_GET['limit'] : '10');
 
     $categorySelect = htmlBase::newElement('selectbox')
 	->setName('categorySelect')
@@ -384,11 +408,14 @@
 	    $categorySelect->selectOptionByValue($_GET['categorySelect']);
     }
 
-   $searchField = htmlBase::newElement('input')->setName('search')
-   ->setLabel(sysLanguage::get('HEADING_TITLE_SEARCH'))->setLabelPosition('before');
+   $searchField = htmlBase::newElement('input')
+			   ->setName('search')
+			   ->setLabel(sysLanguage::get('HEADING_TITLE_SEARCH'))
+			   ->setLabelPosition('before');
    if (isset($_GET['search'])){
    	$searchField->setValue($_GET['search']);
    }
+   $searchForm->append($pageLimit);
 
    $searchForm->append($searchField)->append($categorySelect);
 
