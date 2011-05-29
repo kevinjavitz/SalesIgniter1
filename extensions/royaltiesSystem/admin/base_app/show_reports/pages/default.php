@@ -9,20 +9,18 @@
 
 	This script and it's source is not redistributable
 */
-
 	$Qroyal = Doctrine_Query::create()
-	->from('RoyaltiesSystemViews r')
+	->from('RoyaltiesSystemRoyaltiesEarned r')
 	->leftJoin('r.Customers c')
-	->leftJoin('r.ProductsStreams ps')
-	->leftJoin('r.ProductsDownloads prd')
-	->leftJoin('ps.Products p1')
-	->leftJoin('p1.ProductsDescription pd1')
-	->leftJoin('prd.Products p2')
-	->leftJoin('p2.ProductsDescription pd2')
-	->where('(pd1.language_id = "' . Session::get('languages_id') . '" OR pd2.language_id = "' . Session::get('languages_id') . '") AND TRUE');
+	->leftJoin('r.Products p')
+	->leftJoin('p.ProductsDescription pd')
+	->where('pd.language_id = "' . Session::get('languages_id') . '" AND TRUE')
+	->addOrderBy('r.date_added desc');
 	
 	if (isset($_GET['start_date']) && tep_not_null($_GET['start_date'])){
 		$Qroyal->andWhere('r.date_added >= ?', $_GET['start_date']);
+	} else {
+		$Qroyal->andWhere('r.date_added >= ?', date('Y-m-d',strtotime('-30 DAYS')));
 	}
 	
 	if (isset($_GET['end_date']) && tep_not_null($_GET['end_date'])){
@@ -30,7 +28,7 @@
 	}
 	
 	if (isset($_GET['cnt_provider']) && tep_not_null($_GET['cnt_provider']) ){
-		$Qroyal->andWhere('r.customers_id = ?', $_GET['cnt_provider']);
+		$Qroyal->andWhere('r.content_provider_id = ?', $_GET['cnt_provider']);
 	}
 	
 	$tableGrid = htmlBase::newElement('newGrid')
@@ -40,12 +38,14 @@
 	->setQuery($Qroyal);
 	
 	$tableGrid->addButtons(array(
-		htmlBase::newElement('button')->setText('View Totals')->setHref(itw_app_link('appExt=royaltiesSystem', 'show_reports', 'totals'))
+		htmlBase::newElement('button')->setText('View Totals')->setHref(itw_app_link('appExt=royaltiesSystem', 'show_reports', 'totals')),
+		htmlBase::newElement('button')->setText('Payment Report')->setHref(itw_app_link('appExt=royaltiesSystem', 'show_reports', 'paymentReport'))
 	));
 
 	$tableGrid->addHeaderRow(array(
 		'columns' => array(
 			array('text' => sysLanguage::get('TABLE_HEADING_DATE_ADDED')),
+			array('text' => sysLanguage::get('TABLE_HEADING_ORDERS_ID')),
 			array('text' => sysLanguage::get('TABLE_HEADING_CONTENT')),
 			array('text' => sysLanguage::get('TABLE_HEADING_CONTENT_TYPE')),
 			array('text' => sysLanguage::get('TABLE_HEADING_PRODUCT_NAME')),
@@ -57,25 +57,45 @@
 	$Result = $tableGrid->getResults();
 	if ($Result){
 		foreach($Result as $rInfo){
-			if ($rInfo['streaming_id'] > 0){
-				$contentType = 'Stream';
-				$typeTable = 'ProductsStreams';
-			}else{
-				$contentType = 'Download';
-				$typeTable = 'ProductsDownloads';
+			switch($rInfo['purchase_type']){
+				case 'new':
+					$contentType = 'New Product Sale';
+					$displayName = $rInfo['Products']['ProductsDescription'][Session::get('languages_id')]['products_name'];
+					$ordersLink = htmlBase::newElement('a')->html($rInfo['orders_id'])->setHref(itw_app_link('oID='.$rInfo['orders_id'],'orders', 'details', 'SSL'))->draw();
+					break;
+				case 'used':
+					$contentType = 'Used Product Sale';
+					$displayName = $rInfo['Products']['ProductsDescription'][Session::get('languages_id')]['products_name'];
+					$ordersLink = htmlBase::newElement('a')->html($rInfo['orders_id'])->setHref(itw_app_link('oID='.$rInfo['orders_id'],'orders', 'details', 'SSL'))->draw();
+					break;
+				case 'stream':
+					$contentType = 'Stream';
+					$displayName = $rInfo['Products']['ProductsDescription'][Session::get('languages_id')]['products_name'];
+					$ordersLink = htmlBase::newElement('a')->html($rInfo['orders_id'])->setHref(itw_app_link('oID='.$rInfo['orders_id'],'orders', 'details', 'SSL'))->draw();
+					break;
+				case 'download':
+					$contentType = 'Download';
+					$displayName = $rInfo['Products']['ProductsDescription'][Session::get('languages_id')]['products_name'];
+					$ordersLink = htmlBase::newElement('a')->html($rInfo['orders_id'])->setHref(itw_app_link('oID='.$rInfo['orders_id'],'orders', 'details', 'SSL'))->draw();
+					break;
+				case 'rental':
+					$contentType = 'Member Rental';
+					$displayName = $rInfo['Products']['ProductsDescription'][Session::get('languages_id')]['products_name'];
+					$ordersLink = 'Rental';
+					break;
 			}
-			
 			$tableGrid->addBodyRow(array(
 				'rowAttr' => array(
 					'data-stream_id' => $rInfo['streaming_id'],
 					'data-download_id' => $rInfo['download_id']
 				),
 				'columns' => array(
-					array('text' => tep_date_short($rInfo['date_added'])),
-					array('text' => $rInfo[$typeTable]['display_name']),
+					array('text' => $rInfo['date_added']),
+					array('text' => $ordersLink),
+					array('text' => $displayName),
 					array('text' => $contentType),
-					array('text' => $rInfo[$typeTable]['Products']['ProductsDescription'][Session::get('languages_id')]['products_name']),
-					array('text' => $rInfo[$typeTable]['royalty_fee'], 'align' => 'center'),
+					array('text' => $rInfo['Products']['ProductsDescription'][Session::get('languages_id')]['products_name']),
+					array('text' => $currencies->format($rInfo['royalty']), 'align' => 'center'),
 					array('text' => $rInfo['Customers']['customers_firstname'] . ' ' . $rInfo['Customers']['customers_lastname'], 'align' => 'center')
 
 				)
@@ -139,6 +159,8 @@
 	
 	if (isset($_GET['start_date'])){
 		$startdateField->setValue($_GET['start_date']);
+	} else {
+		$startdateField->setValue(date('Y-m-d',strtotime('-30 DAYS')));
 	}
 	
 	if (isset($_GET['end_date'])){

@@ -23,4 +23,5 @@
 	<define key="TABLE_HEADING_PRODUCT_NAME"><![CDATA[Product Name]]></define>
 	<define key="TABLE_HEADING_ROYALTY_FEE"><![CDATA[Royalty Fee]]></define>
 	<define key="TABLE_HEADING_CONTENT_OWNER"><![CDATA[Content Provider]]></define>
+	<define key="TABLE_HEADING_ORDERS_ID"><![CDATA[Order ID]]></define>
 </definitions>
