@@ -12,8 +12,11 @@
 	->leftJoin('os.OrdersStatusDescription osd')
 	->where('o.customers_id = ?', $userAccount->getCustomerId())
 	->andWhere('osd.language_id = ?', Session::get('languages_id'))
+	->andWhere('op.purchase_type = ?', 'download')
+	->andWhere('opd.orders_products_id = op.orders_products_id')
+	->andWhere('pd.download_id = opd.download_id')
 	->andWhere('opd.download_count < opd.download_maxcount')
-	->andWhere('(opd.download_maxdays = 0 OR DATE_ADD(o.date_purchased, INTERVAL opd.download_maxdays DAY) > now()) AND TRUE')
+	->andWhere('(opd.download_maxdays = 0 OR DATE_ADD(o.date_purchased, INTERVAL opd.download_maxdays DAY) > now())')
 	->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 	if ($Qhistory){
 		$ListingTable->addClass('ui-widget ui-widget-content')
