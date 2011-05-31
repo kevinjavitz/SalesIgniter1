@@ -261,16 +261,13 @@ class inventoryCenters_admin_products_new_product extends Extension_inventoryCen
 		}
 		
 		$Result = $QinventoryCenter->execute(array(), Doctrine::HYDRATE_ARRAY);
-		
-		if ($barcodes['status'] == 'R' || $barcodes['status'] == 'O'){
-			$colText = ($Result ? $Result[0]['name'] : '&nbsp;');
-		}else{
-			$box = clone $this->selectBox;
-			if ($Result){
-				$box->selectOptionByValue($Result[0]['id']);
-			}
-			$colText = $box;
+
+		$box = clone $this->selectBox;
+		if ($Result) {
+			$box->selectOptionByValue($Result[0]['id']);
 		}
+		$colText = $box;
+
 		
 		$currentBarcodesTableBody[] = array(
 			'addCls' => 'ui-widget-content ui-grid-cell centerAlign',
