@@ -497,39 +497,47 @@ $(document).ready(function (){
 		var $thisRow = $(this).parent().parent();
 		var barcodeID = $(this).attr('data-barcode_id');
 
-		var linkParams = [];
-		linkParams.push('app=products');
-		linkParams.push('appPage=new_product');
-		linkParams.push('action=deleteBarcode');
-		linkParams.push('bID=' + barcodeID);
-		linkParams.push('pID=' + productID);
-		
-		if ($(this).attr('data-purchase_type')){
-			linkParams.push('purchaseType=' + $(this).attr('data-purchase_type'));
-		}
-		
-		if ($(this).attr('data-attribute_string')){
-			linkParams.push('aID_string=' + $(this).attr('data-attribute_string'));
-		}
-		
-		$thisRow.fadeTo('fast', .3, function (){
-			applyRowOverlay($thisRow, 'Deleting Barcode, Please Wait', function (){
-				$.ajax({
-					cache: false,
-					url: js_app_link(linkParams.join('&')),
-					dataType: 'json',
-					success: function (data){
-						var removeRow = false;
-						if (typeof data.errorMsg == 'undefined'){
-							removeRow = true;
-						}else{
-							alert(data.errorMsg);
-						}
-						removeRowOverlay($thisRow, removeRow);
+		confirmDialog({
+				title: 'Delete Barcode',
+				content: 'Are you sure you want to delete this barcode?',
+				onConfirm: function (){
+					var linkParams = [];
+					linkParams.push('app=products');
+					linkParams.push('appPage=new_product');
+					linkParams.push('action=deleteBarcode');
+					linkParams.push('bID=' + barcodeID);
+					linkParams.push('pID=' + productID);
+
+					if ($(this).attr('data-purchase_type')){
+						linkParams.push('purchaseType=' + $(this).attr('data-purchase_type'));
 					}
-				});
+
+					if ($(this).attr('data-attribute_string')){
+						linkParams.push('aID_string=' + $(this).attr('data-attribute_string'));
+					}
+
+					$thisRow.fadeTo('fast', .3, function (){
+						applyRowOverlay($thisRow, 'Deleting Barcode, Please Wait', function (){
+							$.ajax({
+								cache: false,
+								url: js_app_link(linkParams.join('&')),
+								dataType: 'json',
+								success: function (data){
+									var removeRow = false;
+									if (typeof data.errorMsg == 'undefined'){
+										removeRow = true;
+									}else{
+										alert(data.errorMsg);
+									}
+									removeRowOverlay($thisRow, removeRow);
+								}
+							});
+						});
+					});
+					$(this).dialog('close').remove();
+				}
 			});
-		});
+
 	});
 	
 	$('.updateBarcode').live('click', function (){
