@@ -21,7 +21,9 @@ class quantityDiscount_admin_products_new_product extends Extension_quantityDisc
 		
 		EventManager::attachEvent('NewProductPricingTabBottom', null, $this);
 	}
-
+	/*
+	 * @TODO: Remove when the new purchase types modules are in place
+	 */
 	public function exemptedPurchaseTypes(){
 		return array('rental');
 	}
