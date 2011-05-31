@@ -20,7 +20,8 @@ class Extension_royaltiesSystem extends ExtensionBase {
 		global $appExtension;
 
 		if ($appExtension->isAdmin()){
-			EventManager::attachEvent(array('BoxMarketingAddLink'
+			EventManager::attachEvents(array('BoxMarketingAddLink',
+				'RentalQueueProductSent'
 			), null, $this);
 		}
 
@@ -32,7 +33,7 @@ class Extension_royaltiesSystem extends ExtensionBase {
 			'NewProductDownloadNewBeforeSave',
 			'NewProductStreamExistsBeforeSave',
 			'NewProductStreamNewBeforeSave',
-			'RentalQueueProductSent'
+
 		), null, $this);
 	}
 
