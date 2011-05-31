@@ -16,7 +16,7 @@
 	->andWhere('opd.orders_products_id = op.orders_products_id')
 	->andWhere('pd.download_id = opd.download_id')
 	->andWhere('opd.download_count < opd.download_maxcount')
-	->andWhere('(opd.download_maxdays = 0 OR DATE_ADD(o.date_purchased, INTERVAL opd.download_maxdays DAY) > now())')
+	->andWhere('(opd.download_maxdays = 0 OR DATE_ADD(o.date_purchased, INTERVAL opd.download_maxdays DAY) > now()) AND TRUE')
 	->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 	if ($Qhistory){
 		$ListingTable->addClass('ui-widget ui-widget-content')
