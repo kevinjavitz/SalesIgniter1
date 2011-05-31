@@ -19,7 +19,7 @@
 		public function AddToCartAfterAction(&$pID_info, &$pInfo, &$cartProduct){
 			global $messageStack, $ShoppingCart, $appExtension;
 
-			$pID = $_GET['products_id'];
+			$pID = $pInfo['id_string'];;
 			
 			if(sysConfig::get('EXTENSION_FORCED_SET_USE_CATEGORIES') == 'True'){
 				$wheelType = '';
