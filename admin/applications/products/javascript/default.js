@@ -2,6 +2,9 @@ $(document).ready(function (){
 	$('#select_page').change(function(){
 		$('#form_page').submit();	
 	});
+	$('#limit').change(function(){
+		$('#search').submit();
+	});
 	$('.deleteProductButton').click(function (){
 		var $selfButton = $(this);
 		$('<div></div>').dialog({

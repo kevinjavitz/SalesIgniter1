@@ -114,6 +114,7 @@
 	<define key="TEXT_INFO_DATE_ADDED"><![CDATA[Date Added:]]></define>;
 	<define key="TEXT_INFO_LAST_MODIFIED"><![CDATA[Last Modified:]]></define>
 	<define key="TEXT_PRODUCTS"><![CDATA[Products:]]></define>
+	<define key="TEXT_SEARCH_RESULTS"><![CDATA[Show at a time:]]></define>
 	<define key="TEXT_IMAGE_NONEXISTENT"><![CDATA[IMAGE DOES NOT EXIST]]></define>
 	<define key="TEXT_INFO_NEW_MANUFACTURER_INTRO"><![CDATA[Please fill out the following information for the new manufacturer]]></define>
 	<define key="TEXT_INFO_EDIT_MANUFACTURER_INTRO"><![CDATA[Please make any necessary changes]]></define>

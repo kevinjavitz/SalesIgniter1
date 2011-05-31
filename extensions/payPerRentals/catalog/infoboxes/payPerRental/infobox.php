@@ -385,7 +385,7 @@ class InfoBoxPayPerRental extends InfoBoxAbstract {
 			Session::set('isppr_selectOptionscurdaye', $hourCurDaye);
 		}
 		$shipt = htmlBase::newElement('p')
-		->html('<span style="color:#D31820;float:left;">2. Select Level of Service</span><a style="float:right;margin-right:10px;"href="' . itw_app_link('appExt=infoPages', 'show_page', 'help_level_service') . '" onclick="popupWindow(\'' . itw_app_link('appExt=infoPages&dialog=true', 'show_page', 'help_level_service', 'SSL') . '\',\'400\',\'300\');return false;"><span class="helpicon"></span></a><br style="clear:both;"/>')
+		->html(sysLanguage::get('INFOBOX_PAYPERRENTAL_SELECT_LEVEL_OF_SERVICE').'<a style="float:right;margin-right:10px;"href="' . itw_app_link('appExt=infoPages', 'show_page', 'help_level_service') . '" onclick="popupWindow(\'' . itw_app_link('appExt=infoPages&dialog=true', 'show_page', 'help_level_service', 'SSL') . '\',\'400\',\'300\');return false;"><span class="helpicon"></span></a><br style="clear:both;"/>')
 		->addClass('shipp');
 
 		$br = htmlBase::newElement('br');
@@ -413,14 +413,14 @@ class InfoBoxPayPerRental extends InfoBoxAbstract {
 		}
 
 		$eventt = htmlBase::newElement('p')
-		->html('<span style="color:#D31820">1. Select Event</span>')
+		->html(sysLanguage::get('INFOBOX_PAYPERRENTAL_SELECT_EVENT'))
 		->addClass('eventp');
 
 		$br = htmlBase::newElement('br');
 		$eventb = htmlBase::newElement('selectbox')
 		->setName('event')
 		->addClass('eventf');
-		$eventb->addOption('0', 'Select your event');
+		$eventb->addOption('0', sysLanguage::get('INFOBOX_SELECT_EVENT'));
 
 		$firstEvent = 0;
 		if (Session::exists('isppr_event') && tep_not_null(Session::get('isppr_event')) && Session::get('isppr_selected') == true){
@@ -428,7 +428,7 @@ class InfoBoxPayPerRental extends InfoBoxAbstract {
 			$firstEvent = Session::get('isppr_event');
 		}
 
-		$shipb->addOption('0', 'Select Level of Service');
+		$shipb->addOption('0',sysLanguage::get('INFOBOX_SELECT_LEVEL_OF_SERVICE'));
 
 		$min_date =  date("Y-m-d h:i:s", mktime(date("h"),date("i"),date("s"),date("m"),date("d")/*+$min_days*/,date("Y")));
 		$Qevent = Doctrine_Query::create()
@@ -587,24 +587,23 @@ class InfoBoxPayPerRental extends InfoBoxAbstract {
 			$pprform->append($submitb);
 		}else{
 			//if (Session::exists('isppr_selected') && Session::get('isppr_selected') == true && (isset($_GET['cPath']) || strpos($App->getAppLocation('relative'), 'categoriesPages') > 0) && $hasButton){
-			if($hasUpdateButton){
+			if($hasUpdateButton && (Session::exists('isppr_date_start') && (Session::get('isppr_date_start') != '') && Session::exists('isppr_date_end') && (Session::get('isppr_date_end') != ''))){
 				$submitb->html(sysLanguage::get('TEXT_INFOBOX_PAY_PER_RENTAL_BUTTON_UPDATE'));
 				Session::set('button_text', sysLanguage::get('TEXT_INFOBOX_PAY_PER_RENTAL_BUTTON_UPDATE'));
 				$pprform->append($submitb);
-				if($showCategories){
-					$pprform->append($headerMenuContainer);
-				}
-				if(Session::get('current_store_id') == 1){
-					$lngViewAll = sysLanguage::get('INFOBOX_CATEGORIES_ALL_PRODUCTS');
-				}else{
-					$lngViewAll = sysLanguage::get('INFOBOX_CATEGORIES_ALL_PRODUCTS_STORE2');
-				}
-				$viewAllHtml = htmlBase::newElement('span')
-				->html('<div style="text-align:center;font-size:.8em;font-weight:bold;margin:.5em;" ><a class="catsh" rel="-1" href="' . itw_app_link(null, 'products', 'all', 'NONSSL') . '">' . $lngViewAll . '</a></div>');
-				 //if ($hasHeaders == false && $hasButton == false){
-				$pprform->append($viewAllHtml);
-		 //}
 			}
+
+			if($showCategories){
+					$pprform->append($headerMenuContainer);
+			}
+
+			$lngViewAll = sysLanguage::get('INFOBOX_CATEGORIES_ALL_PRODUCTS');
+
+			$viewAllHtml = htmlBase::newElement('span')
+			->html('<div style="text-align:center;font-size:.8em;font-weight:bold;margin:.5em;" ><a class="catsh" rel="-1" href="' . itw_app_link(null, 'products', 'all', 'NONSSL') . '">' . $lngViewAll . '</a></div>');
+				 //if ($hasHeaders == false && $hasButton == false){
+			$pprform->append($viewAllHtml);
+		 //}
 		}
 		return $pprform->draw();
 	}
@@ -1000,7 +999,7 @@ class InfoBoxPayPerRental extends InfoBoxAbstract {
 
 		$('<?php echo '#'.$WidgetProperties->boxID;?> .mysh1').attr('href',"#");
 		$('<?php echo '#'.$WidgetProperties->boxID;?> .mysh1').live('click', function(){
-				link = js_app_link('appExt=payPerRentals&app=show_shipping&appPage=default&sh_id='+$(this).closest('form').find('.shipz').val());
+				link = js_app_link('appExt=payPerRentals&app=show_shipping&appPage=default&dialog=true&sh_id='+$(this).prev('.shipz').val());
 				popupWindow(link,'400','300');
 				return false;
 		});

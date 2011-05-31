@@ -40,6 +40,10 @@
 
 	<define key="INFOBOX_PAYPERRENTAL_SELECT_CATEGORY"><![CDATA[Select Category ]]></define>
 	<define key="INFOBOX_PAYPERRENTAL_SELECT_DATES"><![CDATA[2. Select Dates ]]></define>
+	<define key="INFOBOX_PAYPERRENTAL_SELECT_EVENT"><![CDATA[<span style="color:#D31820"><span class="icon1"></span> Select Event</span>]]></define>
 
+	<define key="INFOBOX_SELECT_EVENT"><![CDATA[Select your event]]></define>
+	<define key="INFOBOX_SELECT_LEVEL_OF_SERVICE"><![CDATA[Select Level of Service]]></define>
+	<define key="INFOBOX_PAYPERRENTAL_SELECT_LEVEL_OF_SERVICE"><![CDATA[<span style="color:#D31820;float:left;"><span class="icon2"></span>Select Level of Service</span>]]></define>
 
 </definitions>

@@ -59,6 +59,19 @@ if (!isset($WidgetSettings->linked_to)){
 							$AppArray['ext'][$extName][$appName][$pageName] = (isset($selApps['ext'][$extName][$appName][$pageName]) ? $selApps['ext'][$extName][$appName][$pageName] : false);
 						}
 					}
+				}elseif ($Extension->getBasename() == 'categoriesPages'){
+					$Qpages = Doctrine_Query::create()
+						->select('page_key')
+						->from('CategoriesPages')
+						->orderBy('page_key asc')
+						->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+					if ($Qpages){
+						foreach($Qpages as $pInfo){
+							$pageName = $pInfo['page_key'];
+
+							$AppArray['ext'][$extName][$appName][$pageName] = (isset($selApps['ext'][$extName][$appName][$pageName]) ? $selApps['ext'][$extName][$appName][$pageName] : false);
+						}
+					}
 				}
 				elseif (is_dir($ExtApplication->getPathname() . '/pages/')) {
 					$ExtPages = new DirectoryIterator($ExtApplication->getPathname() . '/pages/');

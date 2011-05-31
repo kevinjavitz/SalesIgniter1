@@ -51,7 +51,7 @@
 				
 				$include_quotes = array();
 				foreach(self::getModules() as $moduleName => $moduleClass){
-					if (!tep_not_null($module) || (tep_not_null($module) && $module == $moduleName)){
+					if (($module == '') || (($module != '') && $module == $moduleName)){
 						$quotes = $moduleClass->quote($method);
 						if (is_array($quotes)) $quotes_array[] = $quotes;
 					}

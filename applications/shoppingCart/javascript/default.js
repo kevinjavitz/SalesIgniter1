@@ -20,6 +20,8 @@ function popupWindowInitials(url, initials, w, h) {
 			$.ajax({
 				cache: false,
 				url: url,
+				data: 'get=true',
+				type: 'post',
 				success: function (data){
 					hideAjaxLoader($('#initials'));
 					$('#termsText').html(data.html);

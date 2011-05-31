@@ -1,3 +1,9 @@
-<definitions>
-	<define key="INFOBOX_HEADING_SOCIAL_NETWORKS"><![CDATA[Get Social]]></define>
+<definitions>
+
+	<define key="INFOBOX_HEADING_SOCIAL_NETWORKS"><![CDATA[Get Social]]></define>
+
+	<define key="INFOBOX_SOCIAL_NETWORKS_TEXT"><![CDATA[Follow Ironman Wheel Rentals on Twitter and Facebook, click the icons below<br/><br/>]]></define>
+
+
+
 </definitions>                                                                       
