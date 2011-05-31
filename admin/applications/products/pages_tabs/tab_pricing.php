@@ -41,7 +41,7 @@
 
 		$inputTable->addBodyRow(array(
 		                             'columns' => array(
-			                             array('text' => 'Enabled:'),
+			                             array('text' => sysLanguage::get('TEXT_PRODUCTS_ENABLED')),
 			                             array('text' => $productTypeEnabled->draw())
 		                             )
 		                        ));
