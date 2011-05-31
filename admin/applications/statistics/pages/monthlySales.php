@@ -69,6 +69,10 @@
 	// create extra column so totals are comprehensively correct
 	$classValueArr = array(
 		'ot_subtotal',
+		'subtotal',
+		'total',
+		'tax',
+		'shipping',
 		'ot_tax',
 		'ot_shipping',
 		'ot_loworderfee',
@@ -160,6 +164,7 @@
 		array('align' => 'left', 'valign' => 'bottom', 'width' => '35', 'text' => mirror_out($col2Text)),
 		array('align' => 'right', 'valign' => 'bottom', 'width' => '70', 'text' => mirror_out(sysLanguage::get('TABLE_HEADING_INCOME'))),
 		array('align' => 'right', 'valign' => 'bottom', 'width' => '70', 'text' => mirror_out(sysLanguage::get('TABLE_HEADING_SALES'))),
+		array('align' => 'right', 'valign' => 'bottom', 'width' => '70', 'text' => mirror_out(sysLanguage::get('TABLE_HEADING_RENTAL_MEMBERSHIPS'))),
 		array('align' => 'right', 'valign' => 'bottom', 'width' => '70', 'text' => mirror_out(sysLanguage::get('TABLE_HEADING_NONTAXED'))),
 		array('align' => 'right', 'valign' => 'bottom', 'width' => '70', 'text' => mirror_out(sysLanguage::get('TABLE_HEADING_TAXED'))),
 		array('align' => 'right', 'valign' => 'bottom', 'width' => '70', 'text' => mirror_out(sysLanguage::get('TABLE_HEADING_TAX_COLL'))),
@@ -183,6 +188,7 @@
 	// clear footer totals
 	$footer_gross = 0;
 	$footer_sales = 0;
+	$footer_rentals = 0;
 	$footer_sales_nontaxed = 0;
 	$footer_sales_taxed = 0;
 	$footer_tax_coll = 0;
@@ -250,6 +256,7 @@
 					array('css' => $cssLeft, 'text' => mirror_out($last_row_year)),
 					array('css' => $cssRight, 'format' => 'currency', 'text' => mirror_out($footer_gross)),
 					array('css' => $cssRight, 'format' => 'currency', 'text' => mirror_out($footer_sales)),
+					array('css' => $cssRight, 'format' => 'currency', 'text' => mirror_out($footer_rentals)),
 					array('css' => $cssRight, 'format' => 'currency', 'text' => mirror_out($footer_sales_nontaxed)),
 					array('css' => $cssRight, 'format' => 'currency', 'text' => mirror_out($footer_sales_taxed)),
 					array('css' => $cssRight, 'format' => 'currency', 'text' => mirror_out($footer_tax_coll)),
@@ -273,6 +280,7 @@
 				// clear footer totals
 				$footer_gross = 0;
 				$footer_sales = 0;
+				$footer_rentals = 0;
 				$footer_sales_nontaxed = 0;
 				$footer_sales_taxed = 0;
 				$footer_tax_coll = 0;
@@ -286,26 +294,33 @@
 			}
 
 			$Queries = array();
+
+			$Queries['salesRental'] = Doctrine_Query::create()
+			->select('SUM(op.final_price) as total')
+			->from('Orders o')
+			->leftJoin('o.OrdersProducts op')
+			->andWhere('op.purchase_type = ?', 'membership');
+
 			$Queries['netNoTax'] = Doctrine_Query::create()
-			->select('SUM(op.final_price * op.products_quantity) as total')
+			->select('SUM(op.final_price) as total')
 			->from('Orders o')
 			->leftJoin('o.OrdersProducts op')
 			->where('op.products_tax = ?', '0');
 
 			$Queries['netTax'] = Doctrine_Query::create()
-			->select('SUM(op.final_price * op.products_quantity) as total')
+			->select('SUM(op.final_price) as total')
 			->from('Orders o')
 			->leftJoin('o.OrdersProducts op')
 			->where('op.products_tax > ?', '0');
 
 			$Queries['grossSales'] = Doctrine_Query::create()
-			->select('SUM(op.final_price * op.products_quantity * (1 + (op.products_tax / 100.0))) as total')
+			->select('SUM(op.final_price * (1 + (op.products_tax / 100.0))) as total')
 			->from('Orders o')
 			->leftJoin('o.OrdersProducts op')
 			->where('op.products_tax > ?', '0');
 
 			$Queries['salesTax'] = Doctrine_Query::create()
-			->select('SUM((op.final_price * op.products_quantity * (1 + (op.products_tax / 100.0))) - (op.final_price * op.products_quantity)) as total')
+			->select('SUM((op.final_price * (1 + (op.products_tax / 100.0))) - (op.final_price)) as total')
 			->from('Orders o')
 			->leftJoin('o.OrdersProducts op')
 			->where('op.products_tax > ?', '0');
@@ -314,13 +329,13 @@
 			->select('SUM(ot.value) as total')
 			->from('Orders o')
 			->leftJoin('o.OrdersTotal ot')
-			->where('ot.module_type = ?', 'ot_tax');
+			->whereIn('ot.module_type', array('ot_tax','tax'));
 
 			$Queries['shippingCollected'] = Doctrine_Query::create()
 			->select('SUM(ot.value) as total')
 			->from('Orders o')
 			->leftJoin('o.OrdersTotal ot')
-			->where('ot.module_type = ?', 'ot_shipping');
+			->whereIn('ot.module_type', array('ot_shipping','shipping'));
 
 			if ($loworder) {
 				$Queries['lowOrderFees'] = Doctrine_Query::create()
@@ -353,6 +368,7 @@
 				$$finalVarName = $queryObj->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 			}
 
+			$rentals_sales_this_row = $salesRental[0]['total'];
 			$zero_rated_net_sales_this_row = $netNoTax[0]['total'];
 			$net_sales_this_row = $netTax[0]['total'];
 			$gross_sales_this_row = $grossSales[0]['total'];
@@ -367,6 +383,7 @@
 			}
 
 			// Correct any rounding errors
+			$rentals_sales_this_row = (floor(($rentals_sales_this_row * 100) + 0.5)) / 100;
 			$net_sales_this_row = (floor(($net_sales_this_row * 100) + 0.5)) / 100;
 			$sales_tax_this_row = (floor(($sales_tax_this_row * 100) + 0.5)) / 100;
 			$zero_rated_net_sales_this_row = (floor(($zero_rated_net_sales_this_row * 100) + 0.5)) / 100;
@@ -374,7 +391,8 @@
 
 			// accumulate row results in footer
 			$footer_gross += $sInfo['gross_sales']; // Gross Income
-			$footer_sales += $net_sales_this_row + $zero_rated_net_sales_this_row; // Product Sales
+			$footer_sales += $net_sales_this_row + $zero_rated_net_sales_this_row - $rentals_sales_this_row; // Product Sales
+			$footer_rentals += $rentals_sales_this_row; // Product Rental
 			$footer_sales_nontaxed += $zero_rated_net_sales_this_row; // Nontaxed Sales
 			$footer_sales_taxed += $net_sales_this_row; // Taxed Sales
 			$footer_tax_coll += $sales_tax_this_row; // Taxes Collected
@@ -399,15 +417,6 @@
 			}
 			$last_row_year = $sInfo['row_year']; // save this row's year to check for annual footer
 
-			$col7Text = mirror_out(number_format($sales_tax_this_row,2));
-			if ($sales_tax_this_row > 0){
-				$col7Text = htmlBase::newElement('a')
-				->setHRef(itw_app_link(tep_get_all_get_params(array('action', 'month', 'year', 'show')) . 'show=ot_tax&month=' . $sInfo['i_month'] . ($sel_month<>0 ? '&day=' . $sInfo['row_day'] : '') . ($status <> '' ? '&status=' . $status : '')))
-				->html($col7Text)
-				->attr('onclick', 'window.open(this.href, \'detail\',config=\'height=200,width=400,scrollbars=1,resizable=1\')')
-				->draw();
-			}
-
 			$sh_tax = $tax_this_row - $sales_tax_this_row;
 			$col9Text =  ($sh_tax <= 0) ? 0 : $sh_tax;
 
@@ -415,10 +424,11 @@
 				array('align' => 'left', 'text' => $col1Text),
 				array('align' => 'left', 'text' => $col2Text),
 				array('align' => 'right', 'format' => 'currency', 'text' => mirror_out($sInfo['gross_sales'])),
-				array('align' => 'right', 'format' => 'currency', 'text' => mirror_out($net_sales_this_row + $zero_rated_net_sales_this_row)),
+				array('align' => 'right', 'format' => 'currency', 'text' => mirror_out($net_sales_this_row + $zero_rated_net_sales_this_row - $rentals_sales_this_row)),
+				array('align' => 'right', 'format' => 'currency', 'text' => mirror_out($rentals_sales_this_row)),
 				array('align' => 'right', 'format' => 'currency', 'text' => mirror_out($zero_rated_net_sales_this_row)),
 				array('align' => 'right', 'format' => 'currency', 'text' => mirror_out($net_sales_this_row)),
-				array('align' => 'right', 'format' => 'currency', 'text' => mirror_out($col7Text)),
+				array('align' => 'right', 'format' => 'currency', 'text' => mirror_out($sales_tax_this_row)),
 				array('align' => 'right', 'format' => 'currency', 'text' => mirror_out($shiphndl_this_row)),
 				array('align' => 'right', 'format' => 'currency', 'text' => mirror_out($col9Text))
 			);
@@ -460,6 +470,7 @@
 					array('css' => $cssLeft, 'text' => mirror_out($sInfo['row_year'])),
 					array('css' => $cssRight, 'format' => 'currency', 'text' => mirror_out($footer_gross)),
 					array('css' => $cssRight, 'format' => 'currency', 'text' => mirror_out($footer_sales)),
+					array('css' => $cssRight, 'format' => 'currency', 'text' => mirror_out($footer_rentals)),
 					array('css' => $cssRight, 'format' => 'currency', 'text' => mirror_out($footer_sales_nontaxed)),
 					array('css' => $cssRight, 'format' => 'currency', 'text' => mirror_out($footer_sales_taxed)),
 					array('css' => $cssRight, 'format' => 'currency', 'text' => mirror_out($footer_tax_coll)),
@@ -482,6 +493,7 @@
 
 				$footer_gross = 0;
 				$footer_sales = 0;
+				$footer_rentals = 0;
 				$footer_sales_nontaxed = 0;
 				$footer_sales_taxed = 0;
 				$footer_tax_coll = 0;

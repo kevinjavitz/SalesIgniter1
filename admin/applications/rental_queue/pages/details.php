@@ -35,14 +35,7 @@
 			if (!isset($barcodeArray[$products[$i]['id']])){
 				$purchaseTypeCls = $products[$i]['productClass']->getPurchaseType('rental');
 				$barcodeArray[$products[$i]['id']] = array();
-				$productInv =& $purchaseTypeCls->inventoryCls->invMethod->trackMethod;
-				$productInv->invUnavailableStatus = array(
-					'B',
-					'O',
-					'P',
-					'R'
-				);
-				$invItems = $productInv->getInventoryItems();
+				$invItems = $purchaseTypeCls->getInventoryItems();
 				if (!is_array($invItems) || sizeof($invItems) <= 0){
 					$barcodeArray[$products[$i]['id']][] = array(
 						'id'   => '',
