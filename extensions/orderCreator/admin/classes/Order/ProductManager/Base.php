@@ -72,7 +72,7 @@ product[85544][price]:17.99
 			$OrderedProduct->products_name = $Product->getName();
 			$OrderedProduct->products_model = $Product->getModel();
 			$OrderedProduct->products_price = $Product->getFinalPrice(false, false);
-			$OrderedProduct->final_price = $Product->getFinalPrice(true, false);
+			$OrderedProduct->final_price = $Product->getFinalPrice(false, false);
 			$OrderedProduct->products_tax = $Product->getTaxRate();
 			$OrderedProduct->purchase_type = $Product->getPurchaseType();
 
