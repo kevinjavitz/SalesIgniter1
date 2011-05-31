@@ -1,16 +1,17 @@
 <?php
+	$pID_string	= array();
+	$purchaseTypeClasses = array();
+	//foreach($_POST['pID'] as $pElem){
+		$OrderProduct = $Editor->ProductManager->get($_POST['pID']);
+   	    $OrderProduct->setPurchaseType('reservation');
+		$Product = $OrderProduct->productClass;
 
-	$OrderProduct = $Editor->ProductManager->get((int) $_POST['pID']);
-   	$OrderProduct->setPurchaseType('reservation');
-	$Product = $OrderProduct->productClass;
-	$purchaseTypeClass = $OrderProduct->purchaseTypeClass;
-
-	//if (isset($_POST['id']['reservation']) && !empty($_POST['id']['reservation'])){
-	//	$purchaseTypeClass->inventoryCls->invMethod->trackMethod->aID_string = attributesUtil::getAttributeString($_POST['id']['reservation']);
+        $pInfo = $OrderProduct->getPInfo();
+		$pID_string[] = $pInfo['products_id'];
+		$purchaseTypeClasses[] = $OrderProduct->purchaseTypeClass;
 	//}
 
-    $pInfo = $OrderProduct->getPInfo();
-	$calendar = ReservationUtilities::getCalendar($pInfo['products_id'], $Product, $purchaseTypeClass, (isset($_POST['rental_qty'])?$_POST['rental_qty']:1), true, 'catalog');
+	$calendar = ReservationUtilities::getCalendar($pID_string, $purchaseTypeClasses, (isset($_POST['rental_qty'])?$_POST['rental_qty']:1), true, 'catalog');
 
 	EventManager::attachActionResponse(array(
 		'success'   => true,

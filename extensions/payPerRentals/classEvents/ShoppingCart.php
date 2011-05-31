@@ -32,7 +32,7 @@
 		}
 		public function AddToCartAfterAction(&$pID_info, &$pInfo, &$cartProduct){
 			global $messageStack, $ShoppingCart;
-			$pID = $_GET['products_id'];
+			$pID = $pInfo['id_string'];
 			$isRemoved = false;
 			$shoppingProducts = $ShoppingCart->getProducts()->getContents();
 			for ($i=0;$i<count($shoppingProducts)-1;$i++){

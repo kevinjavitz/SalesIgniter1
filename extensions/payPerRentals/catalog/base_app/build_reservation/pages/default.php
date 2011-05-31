@@ -2,6 +2,8 @@
 	$pID_string = $_GET['products_id'];
 	$product = new product((int)$pID_string);
 	$purchaseTypeClass = $product->getPurchaseType('reservation');
+	$purchaseTypeClasses = array();
+	$purchaseTypeClasses[] = $purchaseTypeClass;
 	$pprTable = Doctrine_Core::getTable('ProductsPayPerRental')->findOneByProductsId($pID_string);
 	$insurancePrice = $pprTable->insurance;
 	if (sysConfig::get('EXTENSION_PAY_PER_RENTALS_USE_GLOBAL_MIN_RENTAL_DAYS') == 'False') {
@@ -14,6 +16,7 @@
 	if ($pprTable->max_period > 0) {
 		$maxRentalPeriod = ReservationUtilities::getPeriodTime($pprTable->max_period, $pprTable->max_type) * 60 * 1000;
 	}
+
 	ob_start();
 ?>
 
@@ -82,7 +85,7 @@ if ($insurancePrice > 0){
 ?>
     <div class="calendarTable" style="display:block;">
 		<?php
-				echo ReservationUtilities::getCalendar($_GET['products_id'],$product, $purchaseTypeClass, 1, true);
+				echo ReservationUtilities::getCalendar($_GET['products_id'], $purchaseTypeClasses, 1, true);
 		?>
 	</div>
 
