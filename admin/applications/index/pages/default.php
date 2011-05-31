@@ -377,25 +377,25 @@
 
 			$Queries = array();
 			$Queries['netNoTax'] = Doctrine_Query::create()
-			->select('SUM(op.final_price) as total')
+			->select('SUM(op.final_price * op.products_quantity) as total')
 			->from('Orders o')
 			->leftJoin('o.OrdersProducts op')
 			->where('op.products_tax = ?', '0');
 
 			$Queries['netTax'] = Doctrine_Query::create()
-			->select('SUM(op.final_price) as total')
+			->select('SUM(op.final_price * op.products_quantity) as total')
 			->from('Orders o')
 			->leftJoin('o.OrdersProducts op')
 			->where('op.products_tax > ?', '0');
 
 			$Queries['grossSales'] = Doctrine_Query::create()
-			->select('SUM(op.final_price * (1 + (op.products_tax / 100.0))) as total')
+			->select('SUM(op.final_price * op.products_quantity * (1 + (op.products_tax / 100.0))) as total')
 			->from('Orders o')
 			->leftJoin('o.OrdersProducts op')
 			->where('op.products_tax > ?', '0');
 
 			$Queries['salesTax'] = Doctrine_Query::create()
-			->select('SUM((op.final_price * (1 + (op.products_tax / 100.0))) - (op.final_price)) as total')
+			->select('SUM((op.final_price * op.products_quantity * (1 + (op.products_tax / 100.0))) - (op.final_price * op.products_quantity)) as total')
 			->from('Orders o')
 			->leftJoin('o.OrdersProducts op')
 			->where('op.products_tax > ?', '0');
