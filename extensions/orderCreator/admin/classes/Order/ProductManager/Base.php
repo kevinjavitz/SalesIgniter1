@@ -114,9 +114,10 @@ product[85544][price]:17.99
 	public function editProducts(){
 		global $currencies, $typeNames;
 		$productsTable = htmlBase::newElement('table')
-				->setCellPadding(3)
-				->setCellSpacing(0)
-				->css('width', '100%');
+		->setCellPadding(3)
+		->setCellSpacing(0)
+		->addClass('productTable')
+		->css('width', '100%');
 
 		$productTableHeaderColumns = array(
 			array('colspan' => 2, 'text' => sysLanguage::get('TABLE_HEADING_PRODUCTS')),
