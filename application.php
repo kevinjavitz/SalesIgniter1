@@ -27,10 +27,15 @@
 	
 	EventManager::notify('ApplicationTemplateBeforeInclude');
 
+	$tplFile = 'main_page';
 	if (isset($_GET['dialog']) && $_GET['dialog'] == 'true'){
-		require(sysConfig::getDirFsCatalog() . 'templates/' . Session::get('tplDir') . '/popup.tpl.php');
+		$tplFile = 'popup';
+	}
+	
+	if (file_exists(sysConfig::getDirFsCatalog() . 'templates/' . Session::get('tplDir') . '/' . $tplFile . '.tpl.php')){
+		require(sysConfig::getDirFsCatalog() . 'templates/' . Session::get('tplDir') . '/' . $tplFile . '.tpl.php');
 	}else{
-		require(sysConfig::getDirFsCatalog() . 'templates/' . Session::get('tplDir') . '/main_page.tpl.php');
+		require(sysConfig::getDirFsCatalog() . 'extensions/templateManager/mainFiles/' . $tplFile . '.tpl.php');
 	}
 	
 	EventManager::notify('ApplicationTemplateAfterInclude');
