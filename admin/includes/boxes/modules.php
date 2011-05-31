@@ -106,11 +106,18 @@
 				'text' => sysLanguage::get('BOX_MODULES_ORDER_TOTAL')
 			);
 		}
-		
+
 		if (sysPermissions::adminAccessAllowed('modules', 'infoboxes') === true){
 			$contents['children'][] = array(
 				'link' => itw_app_link(null, 'modules', 'infoboxes', 'SSL'),
 				'text' => sysLanguage::get('BOX_MODULES_INFOBOXES')
+			);
+		}
+
+		if (sysPermissions::adminAccessAllowed('modules', 'purchaseTypes') === true){
+			$contents['children'][] = array(
+				'link' => itw_app_link(null, 'modules', 'purchaseTypes', 'SSL'),
+				'text' => sysLanguage::get('BOX_MODULES_PURCHASETYPES')
 			);
 		}
 	}

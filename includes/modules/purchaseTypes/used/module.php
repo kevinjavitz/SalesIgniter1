@@ -14,52 +14,40 @@
  * Used Purchase Type
  * @package ProductPurchaseTypes
  */
-class PurchaseType_used extends PurchaseTypeAbstract {
-	public $typeLong = 'used';
-	public $typeName;
-	public $typeShow;
+class PurchaseType_used extends PurchaseTypeAbstract
+{
 
-	public function __construct($ProductCls, $forceEnable = false){
+	public function __construct($ProductCls, $forceEnable = false) {
+		$this->setTitle('Used');
+		$this->setDescription('Used Products Such As Open Box Or Returned Products');
 
-		$this->typeName = sysLanguage::get('PURCHASE_TYPE_USED_NAME');
-		$this->typeShow = sysLanguage::get('PURCHASE_TYPE_USED_SHOW');
+		$this->init('used', $ProductCls, $forceEnable);
 
-		$productInfo = $ProductCls->productInfo;
-		$this->enabled = ($forceEnable === true ? true : (in_array($this->typeLong, $productInfo['typeArr'])));
-
-		if ($this->enabled === true){
-			$this->productInfo = array(
-				'id'      => $productInfo['products_id'],
-				'price'   => $productInfo['products_price_used'],
-				'taxRate' => $productInfo['taxRate']
-			);
-
-			$this->inventoryCls = new ProductInventory(
-				$this->productInfo['id'],
-				$this->typeLong,
-				$productInfo['products_inventory_controller']
-			);
+		if ($this->isInstalled() === true){
+			if ($this->isEnabled() === true){
+				$this->setProductInfo('price', $ProductCls->productInfo['products_price_used']);
+			}
 		}
 	}
 
-	public function processRemoveFromCart(){
+	public function processRemoveFromCart() {
 		return null;
 	}
 
-	public function processAddToOrder(&$pInfo){
+	public function processAddToOrder(&$pInfo) {
 		$this->processAddToCart($pInfo);
 	}
 
-	public function processAddToCart(&$pInfo){
+	public function processAddToCart(&$pInfo) {
 		$pInfo['price'] = $this->productInfo['price'];
 		$pInfo['final_price'] = $this->productInfo['price'];
 	}
 
-	public function canUseSpecial(){
+	public function canUseSpecial() {
 		return false;
 	}
 
-	public function getPurchaseHtml($key){
+	public function getPurchaseHtml($key) {
 		$return = null;
 		switch($key){
 			case 'product_info':
@@ -80,16 +68,17 @@ class PurchaseType_used extends PurchaseTypeAbstract {
 					->html($this->displayPrice());
 
 				$return = array(
-					'form_action'   => itw_app_link(tep_get_all_get_params(array('action'))),
+					'form_action' => itw_app_link(tep_get_all_get_params(array('action'))),
 					'purchase_type' => $this->typeLong,
-					'allowQty'      => true,
-					'header'        => 'Buy ' . $this->typeShow,
-					'content'       => $content->draw(),
-					'button'        => $button
+					'allowQty' => true,
+					'header' => 'Buy ' . $this->typeShow,
+					'content' => $content->draw(),
+					'button' => $button
 				);
 				break;
 		}
 		return $return;
 	}
 }
+
 ?>

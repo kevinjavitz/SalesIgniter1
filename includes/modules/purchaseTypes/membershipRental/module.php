@@ -15,57 +15,48 @@
  * @package ProductPurchaseTypes
  */
 
-class PurchaseType_rental extends PurchaseTypeAbstract {
-	public $typeLong = 'rental';
-	public $typeName;
-	public $typeShow;
+class PurchaseType_MembershipRental extends PurchaseTypeAbstract
+{
 
-	public function __construct($ProductCls, $forceEnable = false){
+	public function __construct($ProductCls, $forceEnable = false) {
+		$this->setTitle('Membership Rental');
+		$this->setDescription('Membership Based Rentals Which Mimic Sites Like netflix.com');
 
-		$this->typeName = sysLanguage::get('PURCHASE_TYPE_RENTAL_NAME');
-		$this->typeShow = sysLanguage::get('PURCHASE_TYPE_RENTAL_SHOW');
+		$this->init('membershipRental', $ProductCls, $forceEnable);
 
-		$productInfo = $ProductCls->productInfo;
-		$this->enabled = ($forceEnable === true ? true : (in_array($this->typeLong, $productInfo['typeArr'])));
-
-		if ($this->enabled === true){
-			$this->productInfo = array(
-				'id'      => $productInfo['products_id'],
-				'isBox'   => $ProductCls->isBox(),
-				'price'   => null
-			);
-
-			$this->inventoryCls = new ProductInventory(
-				$this->productInfo['id'],
-				$this->typeLong,
-				$productInfo['products_inventory_controller']
-			);
+		if ($this->isInstalled() === true){
+			if ($this->isEnabled() === true){
+				$this->setProductInfo('price', null);
+				$this->setProductInfo('isBox', $ProductCls->isBox());
+			}
 		}
 	}
 
-	public function hasInventory(){
-		if ($this->enabled === false) return false;
+	public function hasInventory() {
+		if ($this->enabled === false) {
+			return false;
+		}
 		return true;
 	}
 
-	public function processRemoveFromCart(){
+	public function processRemoveFromCart() {
 		return null;
 	}
 
-	public function processAddToOrder(&$pInfo){
+	public function processAddToOrder(&$pInfo) {
 		$this->processAddToCart($pInfo);
 	}
 
-	public function processAddToCart(&$pInfo){
+	public function processAddToCart(&$pInfo) {
 		$pInfo['price'] = $this->productInfo['price'];
 		$pInfo['final_price'] = $this->productInfo['price'];
 	}
 
-	public function canUseSpecial(){
+	public function canUseSpecial() {
 		return false;
 	}
 
-	public function getPurchaseHtml($key){
+	public function getPurchaseHtml($key) {
 		global $rentalQueue;
 
 		$return = null;
@@ -77,7 +68,8 @@ class PurchaseType_rental extends PurchaseTypeAbstract {
 					if ($rentalQueue->in_queue($this->productInfo['id']) === true){
 						$button->disable();
 					}
-				}elseif ($this->productInfo['isBox'] === true){
+				}
+				elseif ($this->productInfo['isBox'] === true) {
 					$button->setText(sysLanguage::get('TEXT_BUTTON_IN_QUEUE_SERIES'))->setName('add_queue_all');
 				}
 				$content = '';
@@ -88,28 +80,27 @@ class PurchaseType_rental extends PurchaseTypeAbstract {
 					   </tr></table>';
 				}
 
-
 				$return = array(
-					'form_action'   => itw_app_link(tep_get_all_get_params(array('action'))),
+					'form_action' => itw_app_link(tep_get_all_get_params(array('action'))),
 					'purchase_type' => $this->typeLong,
-					'allowQty'      => false,
-					'header'        => $this->typeName,
-					'content'       => $content,
-					'button'        => $button
+					'allowQty' => false,
+					'header' => $this->typeName,
+					'content' => $content,
+					'button' => $button
 				);
 				break;
 		}
 		return $return;
 	}
 
-	function showRentalAvailability(){
+	function showRentalAvailability() {
 		if (sysConfig::get('ALLOW_RENTALS') == 'false' || sysConfig::get('RENTAL_AVAILABILITY_PRODUCT_INFO') == 'false'){
 			return false;
 		}
 		return (sysConfig::get('RENTAL_AVAILABILITY_PRODUCT_INFO') == 'true');
 	}
 
-	function getAvailabilityName(){
+	function getAvailabilityName() {
 
 		$QproductsInQueue = Doctrine_Query::create()
 			->from('RentalQueueTable')
@@ -138,4 +129,5 @@ class PurchaseType_rental extends PurchaseTypeAbstract {
 		return $availabilityName;
 	}
 }
+
 ?>

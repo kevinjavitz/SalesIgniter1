@@ -14,57 +14,47 @@
  * Rental Membership Stream Purchase Type
  * @package ProductPurchaseTypes
  */
-class PurchaseType_member_stream extends PurchaseTypeAbstract {
-	public $typeLong = 'member_stream';
-	public $typeName;
-	public $typeShow;
+class PurchaseType_MembershipStream extends PurchaseTypeAbstract
+{
 
+	public function __construct($ProductCls, $forceEnable = false) {
+		$this->setTitle('Membership Stream');
+		$this->setDescription('Membership Based Stream Products Which Mimic Sites Like netflix.com');
 
-	public function __construct($ProductCls, $forceEnable = false){
+		$this->init('membershipStream', $ProductCls, $forceEnable);
 
-		$this->typeName = sysLanguage::get('PURCHASE_TYPE_MEMEBER_NAME');
-		$this->typeShow = sysLanguage::get('PURCHASE_TYPE_MEMEBER_SHOW');
-
-		$productInfo = $ProductCls->productInfo;
-		$this->enabled = ($forceEnable === true ? true : (in_array($this->typeLong, $productInfo['typeArr'])));
-
-		if ($this->enabled === true){
-			$this->productInfo = array(
-				'id'      => $productInfo['products_id'],
-				'price'   => $productInfo['products_price_download'],
-				'taxRate' => $productInfo['taxRate']
-			);
-
-			$this->inventoryCls = null;
+		if ($this->isInstalled() === true){
+			if ($this->isEnabled() === true){
+			}
 		}
 	}
 
-	public function processRemoveFromCart(){
+	public function processRemoveFromCart() {
 		return null;
 	}
 
-	public function processAddToOrder(&$pInfo){
+	public function processAddToOrder(&$pInfo) {
 		$this->processAddToCart($pInfo);
 	}
 
-	public function processAddToCart(&$pInfo){
+	public function processAddToCart(&$pInfo) {
 		$pInfo['price'] = $this->productInfo['price'];
 		$pInfo['final_price'] = $this->productInfo['price'];
 	}
 
-	public function hasInventory(){
+	public function hasInventory() {
 		return true;
 	}
 
-	public function canUseSpecial(){
+	public function canUseSpecial() {
 		return false;
 	}
 
-	public function updateStock($orderId, $orderProductId, &$cartProduct){
+	public function updateStock($orderId, $orderProductId, &$cartProduct) {
 		return false;
 	}
 
-	public function getPurchaseHtml($key){
+	public function getPurchaseHtml($key) {
 		$return = null;
 		switch($key){
 			case 'product_info':
@@ -74,16 +64,17 @@ class PurchaseType_member_stream extends PurchaseTypeAbstract {
 					->setText(sysLanguage::get('TEXT_BUTTON_VIEW_STREAM'));
 
 				$return = array(
-					'form_action'   => itw_app_link(tep_get_all_get_params(array('action'))),
+					'form_action' => itw_app_link(tep_get_all_get_params(array('action'))),
 					'purchase_type' => $this->typeLong,
-					'allowQty'      => false,
-					'header'        => $this->typeShow,
-					'content'       => '',
-					'button'        => $button
+					'allowQty' => false,
+					'header' => $this->typeShow,
+					'content' => '',
+					'button' => $button
 				);
 				break;
 		}
 		return $return;
 	}
 }
+
 ?>

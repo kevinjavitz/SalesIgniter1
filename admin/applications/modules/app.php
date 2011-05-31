@@ -16,6 +16,10 @@
 		$module_type = 'infoboxes';
 		$module_directory = sysConfig::getDirFsCatalog() . 'includes/modules/infoboxes/';
 		$module_key = 'MODULE_INFOBOXES_INSTALLED';
+	}elseif ($App->getPageName() == 'purchaseTypes'){
+		$module_type = 'purchase_type';
+		$module_directory = sysConfig::getDirFsCatalog() . 'includes/modules/purchaseTypes/';
+		$module_key = 'MODULE_PURCHASETYPES_INSTALLED';
 	}else{
 		$set = (isset($_GET['set']) ? $_GET['set'] : '');
 		if (!empty($set)){

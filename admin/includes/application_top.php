@@ -176,6 +176,7 @@ require(sysConfig::getDirFsCatalog() . 'includes/classes/eventManager/EventActio
 	require(sysConfig::getDirFsCatalog() . 'includes/modules/orderShippingModules/modules.php');
 	require(sysConfig::getDirFsCatalog() . 'includes/modules/orderPaymentModules/modules.php');
 	require(sysConfig::getDirFsCatalog() . 'includes/modules/orderTotalModules/modules.php');
+	require(sysConfig::getDirFsCatalog() . 'includes/modules/purchaseTypes/PurchaseTypeAbstract.php');
 
 	$appExtension->loadExtensions();
 

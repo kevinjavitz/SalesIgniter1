@@ -14,31 +14,23 @@
  * Download Purchase Type
  * @package ProductPurchaseTypes
  */
-class PurchaseType_download extends PurchaseTypeAbstract {
-	public $typeLong = 'download';
-	public $typeName;
-	public $typeShow;
+class PurchaseType_download extends PurchaseTypeAbstract
+{
 
-	public function __construct($ProductCls, $forceEnable = false){
+	public function __construct($ProductCls, $forceEnable = false) {
+		$this->setTitle('Download');
+		$this->setDescription('Downloadable Products Such As Movie/Pdf/Image');
 
-		$this->typeName = sysLanguage::get('PURCHASE_TYPE_DOWNLOAD_NAME');
-		$this->typeShow = sysLanguage::get('PURCHASE_TYPE_DOWNLOAD_SHOW');
+		$this->init('download', $ProductCls, $forceEnable);
 
-		$productInfo = $ProductCls->productInfo;
-		$this->enabled = ($forceEnable === true ? true : (in_array($this->typeLong, $productInfo['typeArr'])));
-
-		if ($this->enabled === true){
-			$this->productInfo = array(
-				'id'      => $productInfo['products_id'],
-				'price'   => $productInfo['products_price_download'],
-				'taxRate' => $productInfo['taxRate']
-			);
-
-			$this->inventoryCls = false;
+		if ($this->isInstalled() === true){
+			if ($this->isEnabled() === true){
+				$this->setProductInfo('price', $ProductCls->productInfo['products_price_download']);
+			}
 		}
 	}
 
-	private function showViewType(){
+	private function showViewType() {
 		$viewTypeHtml = htmlBase::newElement('span')
 			->css(array(
 				'font-size' => '.8em',
@@ -49,15 +41,15 @@ class PurchaseType_download extends PurchaseTypeAbstract {
 		return '<br />' . $viewTypeHtml->draw();
 	}
 
-	public function orderAfterProductName(&$orderedProduct){
+	public function orderAfterProductName(&$orderedProduct) {
 		return $this->showViewType();
 	}
 
-	public function orderAfterEditProductName(&$orderedProduct){
+	public function orderAfterEditProductName(&$orderedProduct) {
 		return $this->showViewType();
 	}
 
-	public function checkoutAfterProductName(&$cartProduct){
+	public function checkoutAfterProductName(&$cartProduct) {
 		if ($cartProduct->hasInfo('download_type')){
 			if ($cartProduct->getInfo('download_type') == 'download'){
 				return $this->showViewType();
@@ -66,7 +58,7 @@ class PurchaseType_download extends PurchaseTypeAbstract {
 		return '';
 	}
 
-	public function shoppingCartAfterProductName(&$cartProduct){
+	public function shoppingCartAfterProductName(&$cartProduct) {
 		if ($cartProduct->hasInfo('download_type')){
 			if ($cartProduct->getInfo('download_type') == 'download'){
 				return $this->showViewType();
@@ -75,24 +67,24 @@ class PurchaseType_download extends PurchaseTypeAbstract {
 		return '';
 	}
 
-	public function processRemoveFromCart(){
+	public function processRemoveFromCart() {
 		return null;
 	}
 
-	public function updateStock($orderId, $orderProductId, &$cartProduct){
+	public function updateStock($orderId, $orderProductId, &$cartProduct) {
 		return false;
 	}
 
-	public function processAddToOrder(&$pInfo){
+	public function processAddToOrder(&$pInfo) {
 		$this->processAddToCart($pInfo);
 	}
 
-	public function processAddToCart(&$pInfo){
+	public function processAddToCart(&$pInfo) {
 		$pInfo['price'] = $this->productInfo['price'];
 		$pInfo['final_price'] = $this->productInfo['price'];
 	}
 
-	public function onInsertOrderedProduct($cartProduct, $orderId, &$orderedProduct, &$products_ordered){
+	public function onInsertOrderedProduct($cartProduct, $orderId, &$orderedProduct, &$products_ordered) {
 		$Qdownloads = Doctrine_Query::create()
 			->from('ProductsDownloads')
 			->where('products_id = ?', (int)$cartProduct->getIdString())
@@ -113,15 +105,15 @@ class PurchaseType_download extends PurchaseTypeAbstract {
 		}
 	}
 
-	public function hasInventory(){
+	public function hasInventory() {
 		return true;
 	}
 
-	public function canUseSpecial(){
+	public function canUseSpecial() {
 		return false;
 	}
 
-	public function getPurchaseHtml($key){
+	public function getPurchaseHtml($key) {
 		$return = null;
 
 		$headerInfo = htmlBase::newElement('a')
@@ -145,12 +137,12 @@ class PurchaseType_download extends PurchaseTypeAbstract {
 					->html($this->displayPrice());
 
 				$return = array(
-					'form_action'   => itw_app_link(tep_get_all_get_params(array('action'))),
+					'form_action' => itw_app_link(tep_get_all_get_params(array('action'))),
 					'purchase_type' => $this->typeLong,
-					'allowQty'      => false,
-					'header'        => $headerInfo->draw() . 'Buy ' . $this->typeShow,
-					'content'       => $content->draw(),
-					'button'        => $button
+					'allowQty' => false,
+					'header' => $headerInfo->draw() . 'Buy ' . $this->typeShow,
+					'content' => $content->draw(),
+					'button' => $button
 				);
 				break;
 			case 'product_listing_row':
@@ -169,4 +161,5 @@ class PurchaseType_download extends PurchaseTypeAbstract {
 		return $return;
 	}
 }
+
 ?>

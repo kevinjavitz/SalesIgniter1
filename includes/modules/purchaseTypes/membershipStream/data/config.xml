@@ -1,0 +1,10 @@
+<configurations>
+	<configuration>
+		<title><![CDATA[Enable Purchase Type]]></title>
+		<key><![CDATA[MODULE_PURCHASE_TYPE_MEMBERSHIPSTREAM_ENABLED]]></key>
+		<value><![CDATA[True]]></value>
+		<description><![CDATA[Do you want to enable this purchase type?]]></description>
+		<sort_order>1</sort_order>
+		<set_function><![CDATA[tep_cfg_select_option(array('True', 'False'),]]></set_function>
+	</configuration>
+</configurations>

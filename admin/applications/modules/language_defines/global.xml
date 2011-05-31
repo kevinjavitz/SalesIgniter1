@@ -3,6 +3,7 @@
 	<define key="HEADING_TITLE_MODULES_SHIPPING"><![CDATA[Shipping Modules]]></define>
 	<define key="HEADING_TITLE_MODULES_ORDER_TOTAL"><![CDATA[Order Total Modules]]></define>
 	<define key="HEADING_TITLE_MODULES_INFOBOXES"><![CDATA[Infoboxes]]></define>
+	<define key="HEADING_TITLE_MODULES_PURCHASE_TYPE"><![CDATA[Purchase Types]]></define>
 	<define key="TABLE_HEADING_MODULES"><![CDATA[Modules]]></define>
 	<define key="TABLE_HEADING_SORT_ORDER"><![CDATA[Sort Order]]></define>
 	<define key="TABLE_HEADING_INSTALLED"><![CDATA[Installed]]></define>

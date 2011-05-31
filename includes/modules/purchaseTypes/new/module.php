@@ -14,60 +14,49 @@
  * New Purchase Type
  * @package ProductPurchaseTypes
  */
-class PurchaseType_new extends PurchaseTypeAbstract {
-	public $typeLong = 'new';
-	public $typeName;
-	public $typeShow;
+class PurchaseType_new extends PurchaseTypeAbstract
+{
 
-	public function __construct($ProductCls, $forceEnable = false){
+	public function __construct($ProductCls, $forceEnable = false) {
+		$this->setTitle('New');
+		$this->setDescription('New Products In Retail Or Oem Packaging');
 
-		$this->typeName = sysLanguage::get('PURCHASE_TYPE_NEW_NAME');
-		$this->typeShow = sysLanguage::get('PURCHASE_TYPE_NEW_SHOW');
+		$this->init('new', $ProductCls, $forceEnable);
 
-		$productInfo = $ProductCls->productInfo;
-		$this->enabled = ($forceEnable === true ? true : (in_array($this->typeLong, $productInfo['typeArr'])));
+		if ($this->isInstalled() === true){
+			if ($this->isEnabled() === true){
+				$this->setProductInfo('price', $ProductCls->productInfo['products_price']);
 
-		if ($this->enabled === true){
-			$this->productInfo = array(
-				'id'      => $productInfo['products_id'],
-				'price'   => $productInfo['products_price'],
-				'taxRate' => $productInfo['taxRate']
-			);
-
-			if (isset($productInfo['Specials']) && !empty($productInfo['Specials'])){
-				$this->productInfo['special_price'] = $productInfo['Specials']['specials_new_products_price'];
+				if (isset($productInfo['Specials']) && !empty($productInfo['Specials'])){
+					$this->setProductInfo('special_price', $ProductCls->productInfo['Specials']['specials_new_products_price']);
+				}
 			}
-
-			$this->inventoryCls = new ProductInventory(
-				$this->productInfo['id'],
-				$this->typeLong,
-				$productInfo['products_inventory_controller']
-			);
 		}
 	}
 
-	public function processRemoveFromCart(){
+	public function processRemoveFromCart() {
 		return null;
 	}
 
-	public function processAddToOrder(&$pInfo){
+	public function processAddToOrder(&$pInfo) {
 		$this->processAddToCart($pInfo);
 	}
 
-	public function processAddToCart(&$pInfo){
+	public function processAddToCart(&$pInfo) {
 		if (isset($this->productInfo['special_price'])){
 			$pInfo['price'] = $this->productInfo['special_price'];
 			$pInfo['final_price'] = $this->productInfo['special_price'];
-		}else{
+		}
+		else {
 			$pInfo['price'] = $this->productInfo['price'];
 			$pInfo['final_price'] = $this->productInfo['price'];
 		}
 	}
 
-	public function onInsertOrderedProduct($cartProduct, $orderId, &$orderedProduct, &$products_ordered){
+	public function onInsertOrderedProduct($cartProduct, $orderId, &$orderedProduct, &$products_ordered) {
 	}
 
-	public function getPurchaseHtml($key){
+	public function getPurchaseHtml($key) {
 		$return = null;
 		switch($key){
 			case 'product_info':
@@ -88,16 +77,17 @@ class PurchaseType_new extends PurchaseTypeAbstract {
 					->html($this->displayPrice());
 
 				$return = array(
-					'form_action'   => itw_app_link(tep_get_all_get_params(array('action'))),
+					'form_action' => itw_app_link(tep_get_all_get_params(array('action'))),
 					'purchase_type' => $this->typeLong,
-					'allowQty'      => true,
-					'header'        => 'Buy ' . $this->typeShow,
-					'content'       => $content->draw(),
-					'button'        => $button
+					'allowQty' => true,
+					'header' => 'Buy ' . $this->typeShow,
+					'content' => $content->draw(),
+					'button' => $button
 				);
 				break;
 		}
 		return $return;
 	}
 }
+
 ?>

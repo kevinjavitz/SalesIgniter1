@@ -32,6 +32,7 @@
 	<define key="BOX_MODULES_SHIPPING"><![CDATA[Shipping]]></define>
 	<define key="BOX_MODULES_ORDER_TOTAL"><![CDATA[Order Total]]></define>
 	<define key="BOX_MODULES_INFOBOXES"><![CDATA[Infoboxes]]></define>
+	<define key="BOX_MODULES_PURCHASETYPES"><![CDATA[Purchase Types]]></define>
 	<define key="BOX_HEADING_CATALOG"><![CDATA[Catalog]]></define>
 	<define key="BOX_CATALOG_CATEGORIES"><![CDATA[Categories]]></define>
 	<define key="BOX_CATALOG_PRODUCTS"><![CDATA[Products]]></define>
