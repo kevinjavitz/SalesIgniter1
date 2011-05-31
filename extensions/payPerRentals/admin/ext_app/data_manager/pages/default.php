@@ -96,7 +96,8 @@ class payPerRentals_admin_data_manager_default extends Extension_payPerRentals {
 		$QPricePerRentalProductsMAX = Doctrine_Query::create()
 			->select('COUNT(*) as pprmax')
 			->from('PricePerRentalPerProducts')
-			->groupby('pay_per_rental_id')
+			->where('pay_per_rental_id > 0')
+			->groupBy('pay_per_rental_id')
 			//->where('pay_per_rental_id =?',$Product['ProductsPayPerRental']['pay_per_rental_id'])
 			//->orderBy('price_per_rental_per_products_id')
 			->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
