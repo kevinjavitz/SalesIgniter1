@@ -67,13 +67,13 @@
 			}
 			$inputTable->addBodyRow(array(
 			                             'columns' => array(
-				                             array('text' => 'Price Net:'),
+				                             array('text' => sysLanguage::get('TEXT_PRODUCTS_PRICE_NET')),
 				                             array('text' => $inputNet->draw())
 			                             )
 			                        ));
 			$inputTable->addBodyRow(array(
 			                             'columns' => array(
-				                             array('text' => 'Price Gross:'),
+				                             array('text' => sysLanguage::get('TEXT_PRODUCTS_PRICE_GROSS')),
 				                             array('text' => $inputGross->draw())
 			                             )
 			                        ));
