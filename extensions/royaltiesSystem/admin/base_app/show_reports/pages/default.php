@@ -14,7 +14,7 @@
 	->leftJoin('r.Customers c')
 	->leftJoin('r.Products p')
 	->leftJoin('p.ProductsDescription pd')
-	->where('pd.language_id = "' . Session::get('languages_id') . '" AND TRUE')
+	->where('pd.language_id = "' . Session::get('languages_id') . '"')
 	->addOrderBy('r.date_added desc');
 	
 	if (isset($_GET['start_date']) && tep_not_null($_GET['start_date'])){

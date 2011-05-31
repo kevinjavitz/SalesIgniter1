@@ -14,5 +14,5 @@ foreach($_POST['royalties_status_id'] as $royalties_status_id)
 	$royaltiesSystemOrderStatus->orders_status_id = $royalties_status_id;
 	$royaltiesSystemOrderStatus->save();
 }
-tep_redirect(itw_app_link('appExt=royaltiesSystem', 'royalties_order_status', 'default'));
+EventManager::attachActionResponse(itw_app_link('appExt=royaltiesSystem', 'royalties_order_status', 'default'), 'redirect');
 ?>

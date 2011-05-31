@@ -40,16 +40,16 @@
 	->setQuery($Qroyal);
 
 	$tableGrid->addButtons(array(
-		htmlBase::newElement('button')->setText('Back To Report')->setHref(itw_app_link('appExt=royaltiesSystem', 'show_reports', 'default')),
-		htmlBase::newElement('button')->setText('Pay Providers')->addClass('newButton')->setType('submit'),
-		htmlBase::newElement('button')->setText('Payment Report')->setHref(itw_app_link('appExt=royaltiesSystem', 'show_reports', 'paymentReport'))
+		htmlBase::newElement('button')->setText(sysLanguage::get('TEXT_BACK_TO_REPORT'))->setHref(itw_app_link('appExt=royaltiesSystem', 'show_reports', 'default')),
+		htmlBase::newElement('button')->setText(sysLanguage::get('TEXT_PAY_PROVIDERS'))->addClass('newButton')->setType('submit'),
+		htmlBase::newElement('button')->setText(sysLanguage::get('TEXT_PAYMENT_REPORT'))->setHref(itw_app_link('appExt=royaltiesSystem', 'show_reports', 'paymentReport'))
 	));
 	
 	$tableGrid->addHeaderRow(array(
 		'columns' => array(
-			array('text' => "Owed"),
-			array('text' => "Content Provider"),
-			array('text' => 'Pay' . '<input type="hidden" name="paid_end_date[]" value="' . (isset($_GET['end_date']) ? $_GET['end_date'] : date('Y-m-d') ) . '" />')
+			array('text' => sysLanguage::get('TEXT_OWED')),
+			array('text' => sysLanguage::get('TABLE_HEADING_CONTENT_OWNER')),
+			array('text' => sysLanguage::get('TABLE_HEADING_PAY') . '<input type="hidden" name="paid_end_date[]" value="' . (isset($_GET['end_date']) ? $_GET['end_date'] : date('Y-m-d') ) . '" />')
 		)
 	));
 
@@ -80,7 +80,7 @@
 				$tableGrid->addBodyRow(array(
 				                            'rowAttr' => array(),
 				                            'columns' => array(
-					                            array('text' => 'No records Found', 'align' => 'center', 'colspan' => 3),
+					                            array('text' => sysLanguage::get('TEXT_NO_RECORD'), 'align' => 'center', 'colspan' => 3),
 				                            )
 				                       ));
 			}

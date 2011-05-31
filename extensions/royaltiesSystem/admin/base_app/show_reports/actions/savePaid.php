@@ -11,5 +11,5 @@ if(isset($_POST['paid_content_provider_id']) && is_array($_POST['paid_content_pr
 	}
 }
 
-tep_redirect(itw_app_link('appExt=royaltiesSystem', 'show_reports', 'totals'));
+EventManager::attachActionResponse(itw_app_link('appExt=royaltiesSystem', 'show_reports', 'totals'), 'redirect');
 ?>

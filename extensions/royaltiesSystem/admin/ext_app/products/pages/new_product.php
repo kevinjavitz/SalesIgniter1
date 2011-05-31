@@ -245,20 +245,20 @@ class royaltiesSystem_admin_products_new_product extends Extension_royaltiesSyst
 					->val((isset($Product) ? $ProductsRoyalties->products_price_rental : ''));
 			$inputTable->addBodyRow(array(
 			                             'columns' => array(
-				                             array('text' => 'Price Net(will only be used to calculate the %age for royalties):'),
+				                             array('text' => sysLanguage::get('TEXT_PRICE_NET')),
 				                             array('text' => $inputNet->draw())
 			                             )
 			                        ));
 		}
 		$inputTable->addBodyRow(array(
 		                             'columns' => array(
-			                             array('text' => 'Content Provider:'),
+			                             array('text' => sysLanguage::get('TEXT_CONTENT_PROVIDER')),
 			                             array('text' => $Cselectbox->draw())
 		                             )
 		                        ));
 		$inputTable->addBodyRow(array(
 		                             'columns' => array(
-			                             array('text' => 'Royalty:'),
+			                             array('text' => sysLanguage::get('TEXT_ROYALTY')),
 			                             array('text' => $royaltyFeeInput->draw())
 		                             )
 		                        ));

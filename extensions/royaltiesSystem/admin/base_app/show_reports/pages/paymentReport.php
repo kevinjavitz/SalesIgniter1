@@ -36,14 +36,14 @@ $tableGrid = htmlBase::newElement('newGrid')
 		->setQuery($RoyaltiesSystemRoyaltiesPaidQuery);
 
 $tableGrid->addButtons(array(
-                            htmlBase::newElement('button')->setText('Back To Report')->setHref(itw_app_link('appExt=royaltiesSystem', 'show_reports', 'default'))
+                            htmlBase::newElement('button')->setText(sysLanguage::get('TEXT_BACK_TO_REPORT'))->setHref(itw_app_link('appExt=royaltiesSystem', 'show_reports', 'default'))
                        ));
 
 $tableGrid->addHeaderRow(array(
                               'columns' => array(
-	                              array('text' => "Date Paid"),
-	                              array('text' => "Content Provider"),
-	                              array('text' => 'Amount Paid')
+	                              array('text' => sysLanguage::get('TABLE_HEADING_DATE_PAID')),
+	                              array('text' => sysLanguage::get('TABLE_HEADING_CONTENT_OWNER')),
+	                              array('text' => sysLanguage::get('TABLE_HEADING_AMOUNT_PAID'))
                               )
                          ));
 
@@ -63,7 +63,7 @@ if ($Result){
 			$tableGrid->addBodyRow(array(
 			                            'rowAttr' => array(),
 			                            'columns' => array(
-				                            array('text' => 'No payment records found', 'align' => 'center', 'colspan' => 3),
+				                            array('text' => sysLanguage::get('TEXT_NO_PAYMENT_RECORD'), 'align' => 'center', 'colspan' => 3),
 			                            )
 			                       ));
 		}
