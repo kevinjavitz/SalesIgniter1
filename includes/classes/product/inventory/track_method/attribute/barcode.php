@@ -78,6 +78,30 @@ class productInventoryAttribute_barcode {
 		}
 	}
 
+	public function addStockToCollection(&$Product, &$CollectionObj){
+		if ($this->invData['type'] == 'new' || $this->invData['type'] == 'used' || $this->invData['type'] == 'reservation'){
+			$Qcheck = Doctrine_Query::create()
+			->select('ib.barcode_id')
+			->from('ProductsInventoryBarcodes ib')
+			->where('ib.status = ?', 'A')
+			->andWhere('ib.inventory_id = ?', $this->invData['inventory_id'])
+			->limit('1');
+
+			if (is_null($this->aID_string) === false){
+				$attributePermutations = attributesUtil::permutateAttributesFromString($this->aID_string);
+
+				$Qcheck->andWhereIn('ib.attributes', $attributePermutations);
+			}
+			EventManager::notify('ProductInventoryBarcodeUpdateStockQueryBeforeExecute', $this->invData, &$Qcheck);
+
+			$Result = $Qcheck->execute();
+			if ($Result){
+				$CollectionObj->barcode_id = (int) $Result[0]->barcode_id;
+				$CollectionObj->ProductsInventoryBarcodes->status = 'P';
+			}
+		}
+	}
+
 	public function getInventoryItems(){
 		$barcodes = array();
 
