@@ -404,7 +404,7 @@
 			->select('SUM(ot.value) as total')
 			->from('Orders o')
 			->leftJoin('o.OrdersTotal ot')
-			->whereIn('ot.module_type = ?', array('ot_tax','tax'));
+			->whereIn('ot.module_type', array('ot_tax','tax'));
 
 			$Queries['shippingCollected'] = Doctrine_Query::create()
 			->select('SUM(ot.value) as total')
