@@ -40,23 +40,11 @@ class ReservationUtilities {
 	}
 
 
-	public static function addReservationProductToCart($simPost = false){
+	public static function addReservationProductToCart($productID, $rQty){
 		global $ShoppingCart;
-		if ($simPost !== false){
-			$_POST['products_id'] = $simPost['products_id'];
-			$_POST['id'] = $simPost['id']; /* @TODO: Add event to allow attributes extension to handle this */
-			$_POST['rental_qty'] = $simPost['rental_qty'];
-			$_POST['insurance'] = $simPost['insurance'];
-			$_POST['rental_shipping'] = $simPost['rental_shipping'];
-			$_POST['start_date'] = $simPost['start_date'];
-			$_POST['end_date'] = $simPost['end_date'];
-			$_POST['semester_name'] = $simPost['semester_name'];
-			if (sysConfig::get('EXTENSION_PAY_PER_RENTALS_USE_EVENTS') == 'True'){
-				$_POST['event_name'] = $simPost['event_name'];
-				$_POST['event_date'] = $simPost['event_date'];
-			}
-		}
-		$ShoppingCart->addProduct($_POST['products_id'], 'reservation', $_POST['rental_qty']);
+		//global variable with all the attributes per product which will get the POST[id] changed and then cleaned based on the product id
+		$_POST['rental_qty'] = $rQty;
+		$ShoppingCart->addProduct($productID, 'reservation', $rQty);
 	}
 
 	public static function getPeriodTime($period, $type){
@@ -85,8 +73,20 @@ class ReservationUtilities {
 		return '';
 	}
 
-	public static function getCalendar($productsId, $product, $purchaseTypeClass, $rQty = 1, $showShipping = true, $callType = 'catalog')
+	public static function getProductName($productId){
+		$QProduct = Doctrine_Query::create()
+		->from('Products p')
+		->leftJoin('p.ProductsDescription pd')
+		->where('p.products_id=?', $productId)
+		->andWhere('pd.language_id=?', Session::get('languages_id'))
+		->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+
+		return $QProduct[0]['ProductsDescription'][0]['products_name'];
+	}
+
+	public static function getCalendar($productsId, $purchaseTypeClasses, $rQty = 1, $showShipping = true, $callType = 'catalog')
 	{
+
 		if($callType == 'catalog'){
 			$callLink = 'js_catalog_app_link(\'rType=ajax&appExt=payPerRentals&app=build_reservation&appPage=default\')';
 			$callAction = 'getReservedDates';
@@ -95,20 +95,22 @@ class ReservationUtilities {
 			$callAction = '';
 		}
 
-		$pID_string = $productsId;
 
-		$pprTable = Doctrine_Core::getTable('ProductsPayPerRental')->findOneByProductsId($pID_string);
-		$total_weight = $product->getWeight();
-		OrderShippingModules::calculateWeight();
+		if(!is_array($productsId)){
+			$pID_string =  array();
+			$pID_string[] = $productsId;
+		}else{
+			$pID_string = $productsId;
+		}
 
-		//this part under a for.. I don't care for min max. but I have to care which product has the date reserved.maybe an array with counts and product name.
-
-		/*periods*/
+		$purchaseTypeClass = $purchaseTypeClasses[0];
+		$pprTable = Doctrine_Core::getTable('ProductsPayPerRental')->findOneByProductsId($pID_string[0]);//only for first product
 		$QPeriods = Doctrine_Query::create()
-				->from('ProductsPayPerPeriods')
-				->where('products_id=?', $pID_string)
-				->andWhere('price > 0')
-				->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+		->from('ProductsPayPerPeriods')
+		->whereIn('products_id', $pID_string)
+		->andWhere('price > 0')
+		->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+
 		$semDates = array();
 
 		$sDate = array();
@@ -156,16 +158,30 @@ class ReservationUtilities {
 		//$endTime = mktime(0,0,0,date('m'), 1, date('Y')+3);
 
 		//this part under a for i merge array
-		$reservArr = array();
-		$barcodesBooked = array();
-		$bookings = $purchaseTypeClass->getBookedDaysArray(date('Y-m-d', $startTime), $rQty, &$reservArr, &$barcodesBooked);
+		$popArr = array();
+		$bookings = array();
+		$timeBookings = array();
 		$isDisabled = false;
-		if($bookings === false){
-			$isDisabled = true;
-			$bookings = array();
-		}
+		$disabledBy = '""';
+		foreach($pID_string as $nr => $pID_stringElem){
 
-		$timeBookings = $purchaseTypeClass->getBookedTimeDaysArray(date('Y-m-d', $startTime), $rQty, $minTime, $reservArr, $barcodesBooked);
+			$reservArr = array();
+			$barcodesBooked = array();
+			$bookingsF = $purchaseTypeClasses[$nr]->getBookedDaysArray(date('Y-m-d', $startTime), $rQty, &$reservArr, &$barcodesBooked);
+			if($bookingsF === false){
+				$isDisabled = true;
+				$disabledBy = '"'. ReservationUtilities::getProductName($pID_stringElem) . '"';
+				$bookingsF = array();
+			}
+			for($i=0;$i<count($bookings);$i++){
+				$popArr[] =  '"' .ReservationUtilities::getProductName($pID_stringElem) .'"';
+			}
+			$timeBookingsF = $purchaseTypeClasses[$nr]->getBookedTimeDaysArray(date('Y-m-d', $startTime), $rQty, $minTime, $reservArr, $barcodesBooked);
+
+			$bookings = array_merge($bookings, $bookingsF);
+			$timeBookings = array_merge($timeBookings, $timeBookingsF);
+
+		}
 
 		$maxShippingDays = -1;
 		$shippingTable = '';
@@ -337,6 +353,7 @@ class ReservationUtilities {
 		?>
 	<script>
 	var bookedDates = [<?php echo implode(',', $booked);?>];
+	var popArr = [<?php echo implode(',', $popArr);?>];
 	var shippingDaysPadding = [<?php echo implode(',', $shippingDaysPadding);?>];
 	var shippingDaysArray = [<?php echo implode(',', $shippingDaysArray);?>];
 	var disabledDatesPadding = [<?php echo implode(',', $paddingDays);?>];
@@ -353,7 +370,6 @@ class ReservationUtilities {
 	var allowSelection = true;
 	var allowSelectionMin = true;
 	var allowSelectionMax = true;
-	var productsID = <?php echo $pID_string;?>;
 
 	var startArray = [<?php echo implode(',', $timeBooked);?>];
 	var bookedTimesArr = [<?php echo implode(',', $timeBookedDate);?>];
@@ -364,7 +380,7 @@ class ReservationUtilities {
 	//var autoChanged = false;
 	var isHour = false;
 	var isDisabled = <?php echo (($isDisabled === true)?'true':'false');?>;
-
+	var disabledBy = <?php echo $disabledBy;?>;
 
 	$(document).ready(function () {
 		var $selfID = $('#reserv<?php echo $pID_string; ?>');
@@ -464,7 +480,7 @@ class ReservationUtilities {
 				if ($.inArray(dayShortNames[dateObj.getDay()], disabledDays) > -1) {
 					return [false, 'ui-datepicker-disabled ui-datepicker-shipable', 'Disabled By Admin'];
 				} else if ($.inArray(dateFormatted, bookedDates) > -1 || isDisabled == true) {
-					return [false, 'ui-datepicker-reserved', 'Reserved'];
+					return [false, 'ui-datepicker-reserved', 'Reserved for '+ ((isDisabled == false)?popArr[$.inArray(dateFormatted, bookedDates)]:disabledBy)];
 				} else if ($.inArray(dateFormatted, disabledDatesPadding) > -1) {
 					return [false, 'ui-datepicker-disabled', 'Disabled by Admin'];
 				} else if ($.inArray(dateFormatted, shippingDaysPadding) > -1) {
@@ -665,7 +681,7 @@ class ReservationUtilities {
 							dataType: 'json',
 							type: 'post',
 							url: js_catalog_app_link('rType=ajax&appExt=payPerRentals&app=build_reservation&appPage=default'),
-							data: 'action=checkRes&pID=' + productsID + '&' + $('.reservationTable *, .ui-widget-footer-box *').serialize(),
+							data: 'action=checkRes&' + $('.reservationTable *, .ui-widget-footer-box *, .pprButttons *').serialize(),
 							success: function (data) {
 								if (data.success == true) {
 									$selfID.parent().find('.priceQuote').html(data.price + ' ' + data.message);
@@ -785,7 +801,7 @@ class ReservationUtilities {
 				dataType: 'json',
 				type: 'post',
 				url: <?php echo $callLink; ?>,
-				data: 'action=<?php echo $callAction;?>&pID=' + productsID + '&' + $('.reservationTable *, .ui-widget-footer-box *, .pprButttons *').serialize(),
+				data: 'action=<?php echo $callAction;?>&' + $('.reservationTable *, .ui-widget-footer-box *, .pprButttons *').serialize(),
 				success: function (data) {
 					if (data.success == true) {
 						removeAjaxLoader($calLoader);
@@ -809,7 +825,7 @@ class ReservationUtilities {
 					dataType: 'json',
 					type: 'post',
 					url: js_catalog_app_link('rType=ajax&appExt=payPerRentals&app=build_reservation&appPage=default'),
-					data: 'action=checkRes&pID=' + productsID + '&' + $('.reservationTable *, .ui-widget-footer-box *').serialize(),//+'&price='+price,//isSemester=1&
+					data: 'action=checkRes&' + $('.reservationTable *, .ui-widget-footer-box *, .pprButttons *').serialize(),//+'&price='+price,//isSemester=1&
 					success: function (data) {
 						if (data.success == true) {
 							$selfID.parent().find('.priceQuote').html(data.price + ' ' + data.message);
@@ -950,7 +966,7 @@ class ReservationUtilities {
 							dataType: 'json',
 							type: 'post',
 							url: js_catalog_app_link('rType=ajax&appExt=payPerRentals&app=build_reservation&appPage=default'),
-							data: 'action=checkRes&pID=' + productsID + '&' + $('.reservationTable *, .ui-widget-footer-box *').serialize(),
+							data: 'action=checkRes&' + $('.reservationTable *, .ui-widget-footer-box *, .pprButttons *').serialize(),
 							success: function (data) {
 								if (data.success == true) {
 									removeAjaxLoader($this);
@@ -1198,9 +1214,12 @@ class ReservationUtilities {
 	<div class="pprButttons">
 			<?php
 	   $pprButtons = '<span class="estimatedPricing">' . sysLanguage::get('TEXT_ESTIMATED_PRICING') . '</span>' . '<span class="priceQuote"></span>'.'&nbsp;&nbsp;&nbsp;';
-	   $pprButtons .= '<input type="hidden" name="products_id" id="pID" value="' . $product->getID() . '">';
-	   $pprButtons .= $purchaseTypeClass->getHiddenFields($pID_string);
 
+	   foreach($pID_string as $nr => $pElem){
+	        $pprButtons .= '<input type="hidden" name="products_id[]" class="pID" value="' . $pElem . '">';
+	   }
+
+	   $pprButtons .= $purchaseTypeClass->getHiddenFields();
 
 	   $pprButtons .= htmlBase::newElement('div')
 	   ->addClass('inCart')

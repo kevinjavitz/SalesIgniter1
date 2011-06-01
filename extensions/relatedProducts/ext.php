@@ -33,7 +33,8 @@ class Extension_relatedProducts extends ExtensionBase {
 			$Qproducts = Doctrine_Query::create()
 			->select('products_id')
 			->from('Products')
-			->whereIn('products_id', $productsArr)
+			->where('products_status=?','1')
+			->andWhereIn('products_id', $productsArr)
 			->limit((int)sysConfig::get('EXTENSION_RELATED_PRODUCTS_DISPLAY_NUMBER'));
 
 			if (sysConfig::get('EXTENSION_RELATED_PRODUCTS_LISTING_METHOD') == 'Column'){

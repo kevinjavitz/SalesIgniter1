@@ -476,4 +476,9 @@
 	<define key="PURCHASE_TYPE_DOWNLOAD_SHOW_SHOPPING_CART"><![CDATA[ Download]]></define>
 	<define key="PPR_PRICE_BASED_ON"><![CDATA[ <br/>Price based on: ]]></define>
 	<define key="PPR_PRICE_BASED_ON_SEMESTER"><![CDATA[ <br/>Price based on semester ]]></define>
+
+	<define key="EXTENSION_CUSTOMER_FAVORITES_TITLE"><![CDATA[ Customer Favorites ]]></define>
+	<define key="TEXT_BUTTON_ADD_TO_FAVORITES"><![CDATA[ Add to Favorites ]]></define>
+
+
 </definitions>

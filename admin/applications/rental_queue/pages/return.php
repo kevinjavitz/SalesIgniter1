@@ -70,7 +70,7 @@
 	}
 
 	$Qrented = Doctrine_Query::create()
-		->select('r.customers_queue_id, r.customers_id, r.products_id, p.products_id, pd.products_id, pd.products_name, r.date_added, r.products_barcode, concat(c.customers_firstname, " ", c.customers_lastname) as full_name')
+		->select('r.customers_queue_id,r.comments, r.customers_id, r.products_id, p.products_id, pd.products_id, pd.products_name, r.date_added, r.products_barcode, concat(c.customers_firstname, " ", c.customers_lastname) as full_name')
 		->from('RentedQueue r')
 		->leftJoin('r.Products p')
 		->leftJoin('p.ProductsDescription pd')
@@ -124,7 +124,7 @@
 					}
 				?></td>
 				<?php } ?>
-				<td class="main"><?php echo  tep_draw_textarea_field('comments', 'soft', 35, 5, '', 'id="comments"'); ?></td>
+				<td class="main"><?php echo  tep_draw_textarea_field('comments', 'soft', 35, 5, $rented['comments'], 'id="comments"'); ?></td>
 				<td class="main" align="center"><?php
 	                echo htmlBase::newElement('button')->addClass('returnOk')->setText('Return OK')->draw() . '<br>' .
 						htmlBase::newElement('button')->addClass('returnBroken')->setText('Return Broken')->draw() . '<br>' .

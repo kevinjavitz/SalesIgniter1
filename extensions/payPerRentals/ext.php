@@ -248,8 +248,14 @@ class Extension_payPerRentals extends ExtensionBase {
 		}
 	}
 
-	public function ApplicationTopAction_add_reservation_product($simPost = false){
-		ReservationUtilities::addReservationProductToCart($simPost);
+	public function ApplicationTopAction_add_reservation_product(){
+		if(is_array($_POST['products_id'])){
+			$productID = $_POST['products_id'][0];
+		}else{
+			$productID = $_POST['products_id'];
+		}
+		$qty = $_POST['rental_qty'];
+		ReservationUtilities::addReservationProductToCart($productID, $qty);
 		tep_redirect(itw_app_link(null, 'shoppingCart', 'default'));
 	}
 

@@ -1045,12 +1045,12 @@ class PurchaseType_reservation extends PurchaseTypeAbstract {
 
 							$pageForm =  htmlBase::newElement('div');
 
-					if (isset($start_date)) {
-						$htmlStartDate = htmlBase::newElement('input')
+							if (isset($start_date)) {
+								$htmlStartDate = htmlBase::newElement('input')
 								->setType('hidden')
 								->setName('start_date')
 								->setValue($start_date);
-					}
+							}
 							if (sysConfig::get('EXTENSION_PAY_PER_RENTALS_USE_EVENTS') == 'True'){
 								$htmlEventDate = htmlBase::newElement('input')
 								->setType('hidden')
@@ -1061,18 +1061,18 @@ class PurchaseType_reservation extends PurchaseTypeAbstract {
 								->setName('event_name')
 								->setValue($event_name);
 							}
-					if (isset($pickup)) {
-						$htmlPickup = htmlBase::newElement('input')
+							if (isset($pickup)) {
+								$htmlPickup = htmlBase::newElement('input')
 								->setType('hidden')
 								->setName('pickup')
 								->setValue($pickup);
-					}
-					if (isset($dropoff)) {
-						$htmlDropoff = htmlBase::newElement('input')
+							}
+							if (isset($dropoff)) {
+								$htmlDropoff = htmlBase::newElement('input')
 								->setType('hidden')
 								->setName('dropoff')
 								->setValue($dropoff);
-					}
+							}
 							$htmlRentalQty = htmlBase::newElement('input')
 							->setType('hidden')
 							->setName('rental_qty')
@@ -1081,27 +1081,27 @@ class PurchaseType_reservation extends PurchaseTypeAbstract {
 							->setType('hidden')
 							->setName('products_id')
 							->setValue($_GET['products_id']);
-					if (isset($end_date)) {
-						$htmlEndDate = htmlBase::newElement('input')
+							if (isset($end_date)) {
+								$htmlEndDate = htmlBase::newElement('input')
 								->setType('hidden')
 								->setName('end_date')
 								->setValue($end_date);
-					}
+							}
 
-					if (isset($htmlStartDate)) {
-						$pageForm->append($htmlStartDate);
-					}
-					if (isset($htmlEndDate)) {
-						$pageForm->append($htmlEndDate);
-					}
-					if (isset($htmlPickup)) {
-						$pageForm->append($htmlPickup);
-					}
-					if (isset($htmlDropoff)) {
-						$pageForm->append($htmlDropoff);
-					}
-					$pageForm->append($htmlRentalQty);
-					$pageForm->append($htmlProductsId);
+							if (isset($htmlStartDate)) {
+								$pageForm->append($htmlStartDate);
+							}
+							if (isset($htmlEndDate)) {
+								$pageForm->append($htmlEndDate);
+							}
+							if (isset($htmlPickup)) {
+								$pageForm->append($htmlPickup);
+							}
+							if (isset($htmlDropoff)) {
+								$pageForm->append($htmlDropoff);
+							}
+							$pageForm->append($htmlRentalQty);
+							$pageForm->append($htmlProductsId);
 
 							if (sysConfig::get('EXTENSION_PAY_PER_RENTALS_USE_EVENTS') == 'True'){
 								$pageForm->append($htmlEventDate)
@@ -1533,24 +1533,9 @@ class PurchaseType_reservation extends PurchaseTypeAbstract {
 		return $table;
 	}
 
-	public function loadDefaults($pID_string){
-		global $ShoppingCart;
-		if ($ShoppingCart->inCart($pID_string, 'reservation')){
-			$cartProduct = $ShoppingCart->getProduct($pID_string, 'reservation');
-			if (isset($_GET['action']) && $_GET['action'] == 'editReservation'){
-				$this->defaults = $cartProduct->getInfo('reservationInfo');
-
-				$this->shippingMethod = $this->shipModuleCode . '_' . $this->defaults['shipping']['id'];
-			}
-
-			$this->getHiddenFields($pID_string);
-		}
-	}
-
-	public function getHiddenFields($pID_string){
-		global $ShoppingCart, $appExtension;
+	public function getHiddenFields(){
+		global $appExtension;
 		$this->hiddenFields = array();
-		$this->hiddenFields[] = tep_draw_hidden_field('products_id', tep_get_prid($pID_string));
 
 		$extAttributes = $appExtension->getExtension('attributes');
 		if ($extAttributes && $extAttributes->isEnabled()){
@@ -1561,16 +1546,6 @@ class PurchaseType_reservation extends PurchaseTypeAbstract {
 					}
 				}
 				Session::remove('postedVars');
-			}else{
-				$cartProduct = $ShoppingCart->contents->find($pID_string, 'reservation');
-				if ($cartProduct){
-					$attributes = $cartProduct->getInfo('attributes');
-					if ($attributes){
-						foreach($attributes as $oID => $vID){
-							$this->hiddenFields[] = tep_draw_hidden_field('id[reservation][' . $oID . ']', $vID);
-						}
-					}
-				}
 			}
 		}
 

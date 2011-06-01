@@ -37,7 +37,7 @@ class InfoBoxSearch extends InfoBoxAbstract {
 		$boxWidgetProperties = $this->getWidgetProperties();
 		$Qitems = (array)$boxWidgetProperties->searchOptions;
 
-		if (isset($Qitems)){
+		if (isset($Qitems) && count($Qitems) > 0){
 			$boxContent .= '<div class="ui-widget-header ui-infobox-header guidedHeader" ><div class="ui-infobox-header-text">'.sysLanguage::get('INFOBOX_SEARCH_GUIDED_SEARCH').'</div></div><form name="guided_search" action="' . itw_app_link(null, 'products', 'search_result') . '" method="get">';
 			$this->searchItemDisplay = 4;
 			foreach($Qitems as $type){

@@ -366,7 +366,7 @@ class Extension_customFields extends ExtensionBase {
 		return $output;
 	}
 	
-	public function AdvancedSearchAddSearchFields(){
+	public function AdvancedSearchAddSearchFields(&$AdvancedTable){
 		$Qfields = Doctrine_Query::create()
 		->select('f.search_key, f.field_id, fd.field_name, f2p.value')
 		->from('ProductsCustomFields f')
@@ -377,7 +377,6 @@ class Extension_customFields extends ExtensionBase {
 		->orderBy('fd.field_name')
 		->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 		if ($Qfields){
-			$fieldHtml = '';
 			foreach($Qfields as $fInfo){
 				if ($fInfo['search_key'] == '') continue ;
 			
@@ -403,21 +402,15 @@ class Extension_customFields extends ExtensionBase {
 										'text' => $value
 						);
 					}
-					$fieldHtml .= '<tr>' . 
-						'<td class="fieldKey">' . 
-							$fInfo['ProductsCustomFieldsDescription'][0]['field_name'] . '' .
-						'</td>' . 
-						'<td class="fieldValue">' . 
-							tep_draw_pull_down_menu($fInfo['search_key'], $dropArray) . 
-						'</td>' .
-					'</tr>';
+					$AdvancedTable->addBodyRow(array(
+							'columns' => array(
+								array('addCls' => 'fieldKey', 'text' => $fInfo['ProductsCustomFieldsDescription'][0]['field_name']),
+								array('addCls' => 'fieldValue', 'text' => tep_draw_pull_down_menu($fInfo['search_key'], $dropArray))
+							)
+						));
 					unset($dropArray);
 				}
 			}
-	        return $fieldHtml . 
-	        '<tr>' . 
-	        	'<td colspan="2">' . tep_draw_separator('pixel_trans.gif', '100%', '10') . '</td>' . 
-	        '</tr>';
 		}
 	}
 }

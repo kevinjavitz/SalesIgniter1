@@ -90,6 +90,12 @@
 
 	echo '</div><br /><div class="productSection"><h2><u>' . sysLanguage::get('HEADING_PRODUCTS') . '</u></h2>';
 
+	$contents = EventManager::notifyWithReturn('OrderInfoBeforeProductListingEdit', (isset($oID) ? $oID : null));
+	if (!empty($contents)){
+		foreach($contents as $content){
+			echo $content;
+		}
+	}
 	/* products --BEGIN-- */
 	$productsTable = $Editor->editProducts();
 

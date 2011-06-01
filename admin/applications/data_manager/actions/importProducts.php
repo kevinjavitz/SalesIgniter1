@@ -402,26 +402,6 @@
 				$status = 'Deleted';
 			}else{
 				$status = $Product->products_status;
-				foreach($inventoryTypes as $type => $typeName){
-					if ($type == 'rental') continue;
-
-					if (isset($items['v_inventory_quantity_' . $type]) && $items['v_inventory_quantity_' . $type] != ''){
-						$Inventory = Doctrine_Core::getTable('ProductsInventory')
-						->findOneByProductsIdAndType($Product->products_id, $type);
-						if ($Inventory){
-							if ($Inventory->track_method == 'barcode'){
-								continue;
-							}
-						}else{
-							$Inventory = new ProductsInventory();
-							$Inventory->type = $type;
-							$Inventory->track_method = 'quantity';
-						}
-
-						$Inventory->ProductsInventoryQuantity[0]->available = $items['v_inventory_quantity_' . $type];
-						$Inventory->save();
-					}
-				}
 			}
 			
 			$productLogArr = array(

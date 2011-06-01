@@ -70,14 +70,17 @@
 		}
 		
 		private function buildLabel($labelInfo, $newLine, $hideBarcode = false){
-			$labelContent = array(
-				substr($labelInfo['products_name'], 0, 13) . ' - ' . $labelInfo['barcode']
-			);
-
+			$labelContent = array();
 			if ($labelInfo['customers_address'] !== false){
 				$labelContent[] = $labelInfo['customers_address']['name'];
 				$labelContent[] = $labelInfo['customers_address']['street_address'];
 				$labelContent[] = $labelInfo['customers_address']['city'] . ', ' . $labelInfo['customers_address']['state'] . ' ' . $labelInfo['customers_address']['postcode'];
+			}
+
+			if (!empty($labelInfo['barcode_id'])){
+				$labelContent[] = '<img src="' . tep_href_link('showBarcode_' . $labelInfo['barcode_id'] . '.png', Session::getSessionName() . '=' . Session::getSessionId()) . '">';
+			}elseif (!empty($labelInfo['barcode'])){
+				$labelContent[] = $labelInfo['barcode'];
 			}
 
 			if ($this->outputType == 'pdf'){
