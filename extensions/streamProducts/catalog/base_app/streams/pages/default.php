@@ -50,7 +50,7 @@
 						$addDays = $opsInfo['stream_maxdays'];
 						$dateArr = date_parse($oInfo['date_purchased']);
 						$time = mktime(0,0,0,$dateArr['month'],$dateArr['day'],$dateArr['year']);
-						$expires = date('Y-m-d', strtotime('+ ' . $addDays . ' day', $time));
+						$expires = date(sysLanguage::get('date_format_short'), strtotime('+ ' . $addDays . ' day', $time));
 					}
 
 					$streamButton = htmlBase::newElement('button')
