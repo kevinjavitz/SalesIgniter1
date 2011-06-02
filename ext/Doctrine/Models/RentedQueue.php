@@ -129,5 +129,13 @@ class RentedQueue extends Doctrine_Record {
 		'notnull' => true,
 		'autoincrement' => false,
 		));
+		$this->hasColumn('comments', 'string', null, array(
+		'type' => 'string',
+		'length' => null,
+		'fixed' => false,
+		'primary' => false,
+		'notnull' => false,
+		'autoincrement' => false,
+		));
 	}
 }

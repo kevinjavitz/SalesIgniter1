@@ -76,7 +76,7 @@ $(document).ready(function (){
 		runAction($thisRow, 'Appending Comments, Please Wait', function (){
 			$.ajax({
 				cache: false,
-				url: js_app_link('app=rental_queue&appPage=return&action=append_comments'),
+				url: js_app_link('app=rental_queue&appPage=return&action=appendComments'),
 				dataType: 'json',
 				data: $('#queue_id, #comments', $thisRow).serialize(),
 				type: 'post',

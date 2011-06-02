@@ -29,7 +29,7 @@
 	<define key="TABLE_HEADING_SHIPHNDL"><![CDATA[Shipping<br> & Handling]]></define>
 	<define key="TABLE_HEADING_SHIP_TAX"><![CDATA[Tax on<br /> shipping]]></define>
 	<define key="TABLE_HEADING_LOWORDER"><![CDATA[Low Order<br /> Fees]]></define>
-	<define key="TABLE_HEADING_OTHER"><![CDATA[Gift<br> Vouchers]]></define>
+	<define key="TABLE_HEADING_OTHER"><![CDATA[Coupons&<br/>Credits]]></define>
 	<define key="TABLE_FOOTER_YTD"><![CDATA[YTD]]></define>
 	<define key="TABLE_FOOTER_YEAR"><![CDATA[YEAR]]></define>
 	<define key="TEXT_DETAIL"><![CDATA[Detail]]></define>
@@ -66,4 +66,6 @@
 	<define key="TOTAL_SALES"><![CDATA[Recovered Sales:]]></define>
 	<define key="TOTAL_SALES_EXPLANATION"><![CDATA[ (Possible sales from customers who abanoned carts & were notified via RCS)]]></define>
 	<define key="TOTAL_RECOVERED"><![CDATA[Total Recovered:]]></define>
+	<define key="TABLE_HEADING_RENTAL_MEMBERSHIPS"><![CDATA[Rental<br/>Memberships]]></define>
+
 </definitions>

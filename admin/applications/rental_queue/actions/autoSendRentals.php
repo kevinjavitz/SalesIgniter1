@@ -53,7 +53,7 @@
 						for($i=0, $n=sizeof($products); $i<$n; $i++){
 							$barcodeId = false;
 							$purchaseTypeCls = $products[$i]['productClass']->getPurchaseType('rental');
-							$productInv =& $purchaseTypeCls->inventoryCls->invMethod->trackMethod;
+							$productInv =& $purchaseTypeCls->invMethod->trackMethod;
 							$productInv->invUnavailableStatus = array(
 								'B',
 								'O',
@@ -119,6 +119,7 @@
 								$NewRentedProduct->shipment_date = $shipmentDate;
 								$NewRentedProduct->arrival_date = $arrivalDate;
 								$NewRentedProduct->save();
+								EventManager::notify('RentalQueueProductSent', &$NewRentedProduct);
 
 								$rentalQueue->removeFromQueue($QproductsQueue['products_id']);
 

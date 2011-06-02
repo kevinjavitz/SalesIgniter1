@@ -48,13 +48,7 @@
 		'v_tax_class_title',
 		'v_status'
 	));
-	
-	foreach($inventoryTypes as $type => $typeName){
-		if ($type == 'rental') continue;
-		$dataExport->setHeaders(array(
-			'v_inventory_quantity_' . $type
-		));
-	}
+
 			
 	EventManager::notify('DataExportFullQueryFileLayoutHeader', &$dataExport);
 
@@ -188,21 +182,6 @@
 			$pInfo['v_status'] = $active;
 		} else {
 			$pInfo['v_status'] = $inactive;
-		}
-
-		foreach($inventoryTypes as $type => $typeName){
-			if ($type == 'rental') continue;
-			$Qinventory = Doctrine_Query::create()
-			->select('i.inventory_id, iq.available')
-			->from('ProductsInventory i')
-			->leftJoin('i.ProductsInventoryQuantity iq')
-			->where('i.products_id = ?', $pInfo['products_id'])
-			->andWhere('i.type = ?', $type)
-			->andWhere('i.track_method = ?', 'quantity')
-			->execute();
-			if ($Qinventory->count() > 0){
-				$pInfo['v_inventory_quantity_' . $type] = $Qinventory[0]->ProductsInventoryQuantity[0]->available;
-			}
 		}
 
 		EventManager::notify('DataExportBeforeFileLineCommit', &$pInfo);

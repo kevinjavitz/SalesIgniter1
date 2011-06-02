@@ -37,23 +37,18 @@ class attributes_admin_orderCreator_default_new extends Extension_attributes {
 					(int) $optionId,
 					(int) $oInfo['value']
 				);
-				
-				$Attribute = new OrdersProductsAttributes();
-				$Attribute->products_options = 'attribute_name_not_defined_for_language';
-				$Attribute->products_options_values = 'attribute_value_not_defined_for_language';
-				$Attribute->options_values_price = $oInfo['price'];
-				$Attribute->price_prefix = $oInfo['prefix'];
-				$Attribute->options_id = $optionId;
-				$Attribute->options_values_id = $oInfo['value'];
-				if (isset($aInfo[0]['ProductsOptions']['ProductsOptionsDescription'][$langId])){
+				if (isset($aInfo[0]['ProductsOptions']['ProductsOptionsDescription'][$langId]) && isset($aInfo[0]['ProductsOptionsValues']['ProductsOptionsValuesDescription'][$langId])){
+					$Attribute = new OrdersProductsAttributes();
+					$Attribute->options_values_price = $oInfo['price'];
+					$Attribute->price_prefix = $oInfo['prefix'];
+					$Attribute->options_id = $optionId;
+					$Attribute->options_values_id = $oInfo['value'];
 					$Attribute->products_options = $aInfo[0]['ProductsOptions']['ProductsOptionsDescription'][$langId]['products_options_name'];
-				}
-				
-				if (isset($aInfo[0]['ProductsOptionsValues']['ProductsOptionsValuesDescription'][$langId])){
 					$Attribute->products_options_values = $aInfo[0]['ProductsOptionsValues']['ProductsOptionsValuesDescription'][$langId]['products_options_values_name'];
+					$OrderedProduct->OrdersProductsAttributes->add($Attribute);
 				}
 				
-				$OrderedProduct->OrdersProductsAttributes->add($Attribute);
+
 			}
 		}
 	}

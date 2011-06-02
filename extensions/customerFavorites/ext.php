@@ -23,6 +23,5 @@ class Extension_customerFavorites extends ExtensionBase {
 		), null, $this);
 	}
 
-
 }
 ?>

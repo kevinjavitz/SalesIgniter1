@@ -1,4 +1,7 @@
 $(document).ready(function (){
+	$('#limit').change(function(){
+		$('#search').submit();
+	});
 	$('.gridBody > .gridBodyRow').click(function (){
 		if ($(this).hasClass('state-active')) return;
 

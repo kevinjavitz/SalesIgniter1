@@ -59,6 +59,7 @@
 	<define key="TEXT_PRODUCTS_WEIGHT"><![CDATA[Products Weight:]]></define>
 	<define key="TEXT_PRODUCTS_TYPE"><![CDATA[Purchase/Rental Types: ]]></define>
 	<define key="TEXT_PRODUCTS_PTYPE"><![CDATA[Products Type:]]></define>
+	<define key="TEXT_PRODUCTS_ENABLED"><![CDATA[Enabled:]]></define>
 	<define key="TEXT_PRODUCTS_RECURRING_DAYS"><![CDATA[No of Installments:]]></define>
 	<define key="TEXT_PRODUCTS_RECURRING_TIME"><![CDATA[Recurring Period:]]></define>
 	<define key="ERROR_CATALOG_IMAGE_DIRECTORY_NOT_WRITEABLE"><![CDATA[Error: Catalog images directory is not writeable: %s.]]></define>

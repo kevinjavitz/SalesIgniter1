@@ -4,7 +4,7 @@
 <br />
 <?php
 	$Qcustomers = Doctrine_Query::create()
-	->select('c.customers_firstname, c.customers_lastname, sum(op.products_quantity * op.final_price) as ordersum')
+	->select('c.customers_firstname, c.customers_lastname, sum(op.final_price) as ordersum')
 	->from('Customers c')
 	->leftJoin('c.Orders o')
 	->leftJoin('o.OrdersProducts op')

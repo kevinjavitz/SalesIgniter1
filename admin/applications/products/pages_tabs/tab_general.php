@@ -9,46 +9,6 @@
 	->setLabel(sysLanguage::get('TEXT_PRODUCT_NOT_AVAILABLE'))
 	->setValue('0');
 	
-	$productTypes = array(
-		array(
-			'new'           => sysLanguage::get('TEXT_SALE') . ' (New)',
-			'stream'        => sysLanguage::get('TEXT_STREAMING_BUY'),
-			'rental'        => sysLanguage::get('TEXT_QUEUE')
-		), array(
-			'used'          => sysLanguage::get('TEXT_SALE') . ' (Used)',
-			'download'      => sysLanguage::get('TEXT_DOWNLOAD'),
-			'member_stream' => sysLanguage::get('TEXT_STREAMING_MEMBERSHIP')
-		)
-	);
-	
-	EventManager::notify('ProductEditAppendProductTypes', &$productTypes);
-	
-	if (isset($Product)){
-		$currentTypes = explode(',', $Product['products_type']);
-	}
-	
-	$ProductTypesTable = htmlBase::newElement('table')->setCellPadding(1)->setCellSpacing(0);
-	foreach($productTypes as $row){
-		$cols = array();
-		foreach($row as $pType => $pLabel){
-			$input = htmlBase::newElement('checkbox')
-			->setName('products_type[]')
-			->setLabel($pLabel)
-			->setValue($pType);
-			
-			if (isset($currentTypes) && in_array($pType, $currentTypes)){
-				$input->setChecked(true);
-			}
-			
-			$cols[] = array(
-				'text' => $input
-			);
-		}
-		$ProductTypesTable->addBodyRow(array(
-			'columns' => $cols
-		));
-	}
-	
 	$ProductFeaturedStatusEnabled = htmlBase::newElement('radio')
 	->setName('products_featured')
 	->setLabel(sysLanguage::get('TEXT_PRODUCT_FEATURED'))
@@ -136,10 +96,6 @@
   <tr>
    <td class="main"><?php echo sysLanguage::get('TEXT_PRODUCTS_STATUS'); ?></td>
    <td class="main"><?php echo $ProductStatusEnabled->draw() . $ProductStatusDisabled->draw(); ?></td>
-  </tr>
-  <tr>
-   <td class="main"><?php echo sysLanguage::get('TEXT_PRODUCTS_TYPE'); ?></td>
-   <td class="main"><?php echo $ProductTypesTable->draw();?></td>
   </tr>
   <tr>
    <td class="main"><?php echo sysLanguage::get('TEXT_PRODUCTS_FEATURED'); ?></td>

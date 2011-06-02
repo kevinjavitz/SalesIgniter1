@@ -150,12 +150,9 @@ if (sysConfig::exists('MODULE_SHIPPING_FREE_SHOW_TEXT')){
      ->setType('submit')
      ->draw();
 
-     $back = sizeof($navigation->path)-2;
-
      $checkoutFormButton = htmlBase::newElement('button')
      ->setText(sysLanguage::get('TEXT_BUTTON_CHECKOUT'))
-     ->setName('checkout')
-     ->setType('submit');
+     ->setHref(itw_app_link(null, 'checkout','default'));
 	 if (sysConfig::get('TERMS_CONDITIONS_SHOPPING_CART') == 'true'){    
 		 $checkoutFormButton->addClass('checkoutFormButton');
 	 }

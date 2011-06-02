@@ -398,10 +398,13 @@ require(sysConfig::getDirFsCatalog() . 'includes/classes/htmlBase.php');
 					if (in_array($productsId[$i], (isset($_POST['cart_delete']) && is_array($_POST['cart_delete']) ? $_POST['cart_delete'] : array()))) {
 						$ShoppingCart->removeProduct($productsId[$i], $_POST['purchase_type'][$i]);
 					} else {
-						$ShoppingCart->updateProduct($productsId[$i], array(
-							'purchase_type' => $_POST['purchase_type'][$i],
-							'quantity'      => $_POST['cart_quantity'][$i]
-						));
+
+						if (in_array($productsId[$i], (isset($_POST['cart_quantity']) && is_array($_POST['cart_quantity']) ? $_POST['cart_quantity'] : array()))) {
+							$ShoppingCart->updateProduct($productsId[$i], array(
+								'purchase_type' => $_POST['purchase_type'][$i],
+								'quantity'      => $_POST['cart_quantity'][$i]
+							));
+						}
 					}
 				}
 				tep_redirect($goto);

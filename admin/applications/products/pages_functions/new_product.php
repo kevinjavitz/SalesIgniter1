@@ -246,22 +246,20 @@
 
 				EventManager::notify('NewProductAddBarcodeListingBody', &$bInfo, &$currentBarcodesTableBody);
 
-				if ($bInfo['status'] == 'R' || $bInfo['status'] == 'O'){
-					$lastColHtml = '&nbsp;';
-				}else{
-					$buttonData = array(
-						'data-barcode_id' => $bInfo['barcode_id'],
-						'data-purchase_type' => $purchaseType
-					);
-				
-					if (isset($settings['attribute_string'])){
-						$buttonData['data-attribute_string'] = $settings['attributeString'];
-					}
-				
-					$deleteButton->attr($buttonData);
-					$updateButton->attr($buttonData);
-					$lastColHtml = $deleteButton->draw() . ' ' . $updateButton->draw();
+
+				$buttonData = array(
+					'data-barcode_id' => $bInfo['barcode_id'],
+					'data-purchase_type' => $purchaseType
+				);
+
+				if (isset($settings['attribute_string'])) {
+					$buttonData['data-attribute_string'] = $settings['attributeString'];
 				}
+
+				$deleteButton->attr($buttonData);
+				$updateButton->attr($buttonData);
+				$lastColHtml = $deleteButton->draw() . ' ' . $updateButton->draw();
+
 
 				$buttonData = array(
 						'data-barcode_id' => $bInfo['barcode_id']

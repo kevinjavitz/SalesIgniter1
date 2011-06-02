@@ -115,7 +115,7 @@ EventManager::notify('ProductInfoProductsImageShow', &$image, &$product);
 		}
 		
 		$boxInfo['content'] .= tep_draw_hidden_field('products_id', $productID);
-		
+
 		$boxObj = htmlBase::newElement('infobox')
 		->setForm(array(
 			'name' => 'cart_quantity',
@@ -123,9 +123,8 @@ EventManager::notify('ProductInfoProductsImageShow', &$image, &$product);
 		))
 		->css('width', 'auto')->removeCss('margin-left')->removeCss('margin-right')
 		->setHeader($boxInfo['header'])
-		->setButtonBarLocation('bottom')
-		->addContentRow($boxInfo['content']);
-		
+		->setButtonBarLocation('bottom');
+
 		if ($boxInfo['allowQty'] === true){
 			$qtyInput = htmlBase::newElement('input')
 			->css('margin-right', '1em')
@@ -139,13 +138,17 @@ EventManager::notify('ProductInfoProductsImageShow', &$image, &$product);
 		}
 		
 		$boxObj->addButton($boxInfo['button']);
-		
+
+		EventManager::notifyWithReturn('ProductInfoTabImageBeforeDrawPurchaseType', &$product, &$boxObj, &$boxInfo);
+
+		$boxObj->addContentRow($boxInfo['content']);
+
 		$columns[] = array(
 			'align' => 'center',
 			'valign' => 'top',
 			'text' => $boxObj->draw()
 		);
-		
+
 		if (sizeof($columns) > 1){
 			$purchaseTable->addBodyRow(array(
 				'columns' => $columns
@@ -255,4 +258,13 @@ EventManager::notify('ProductInfoProductsImageShow', &$image, &$product);
 	}
 	
 	echo '</div>';
+
+    //echo '<div style="text-align:center">';
+	$contents = EventManager::notifyWithReturn('ProductInfoTabImageAfterInfo', &$product);
+		if (!empty($contents)){
+			foreach($contents as $content){
+				echo $content;
+			}
+	}
+	//echo '</div>';
 ?>

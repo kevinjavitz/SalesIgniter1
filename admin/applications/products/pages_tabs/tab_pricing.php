@@ -17,49 +17,68 @@
  		'new' => 'New',
  		'used' => 'Used',
  		'stream' => 'Streaming',
- 		'download' => 'Download'
+ 		'download' => 'Download',
+ 		'rental' => 'Member Rental'
  	);
- 	
+	 if (isset($Product)){
+		 $currentTypes = explode(',', $Product['products_type']);
+	 }
+
+
  	$pricingTabsObj = htmlBase::newElement('tabs')
  	->setId('pricingTabs');
  	foreach($pricingTabsInfo as $pricingTypeName => $pricingTypeText){
-		$inputNet = htmlBase::newElement('input')->addClass('netPricing');
-		$inputGross = htmlBase::newElement('input')->addClass('grossPricing');
- 		if ($pricingTypeName == 'new'){
- 			$inputNet->setName('products_price')
- 			->setId('products_price')
- 			->val((isset($Product) ? $Product['products_price'] : ''));
- 			
- 			$inputGross->setName('products_price_gross')
- 			->setId('products_price_gross')
- 			->val((isset($Product) ? $Product['products_price'] : ''));
- 		}else{
- 			$inputNet->setName('products_price_' . $pricingTypeName)
- 			->setId('products_price_' . $pricingTypeName)
- 			->val((isset($Product) ? $Product['products_price_' . $pricingTypeName] : ''));
- 			
- 			$inputGross->setName('products_price_' . $pricingTypeName . '_gross')
- 			->setId('products_price_' . $pricingTypeName . '_gross')
- 			->val((isset($Product) ? $Product['products_price_' . $pricingTypeName] : ''));
- 		}
- 		
- 		$inputTable = htmlBase::newElement('table')
- 		->setCellPadding(2)
- 		->setCellSpacing(0);
- 		
- 		$inputTable->addBodyRow(array(
- 			'columns' => array(
- 				array('text' => 'Price Net:'),
- 				array('text' => $inputNet->draw())
- 			)
- 		));
- 		$inputTable->addBodyRow(array(
- 			'columns' => array(
- 				array('text' => 'Price Gross:'),
- 				array('text' => $inputGross->draw())
- 			)
- 		));
- 		
+		$productTypeEnabled = htmlBase::newElement('checkbox')
+				->setName('products_type[]')
+				->setValue($pricingTypeName);
+
+		if (isset($currentTypes) && in_array($pricingTypeName, $currentTypes)){
+			$productTypeEnabled->setChecked(true);
+		}
+		$inputTable = htmlBase::newElement('table')
+				->setCellPadding(2)
+				->setCellSpacing(0);
+
+		$inputTable->addBodyRow(array(
+		                             'columns' => array(
+			                             array('text' => sysLanguage::get('TEXT_PRODUCTS_ENABLED')),
+			                             array('text' => $productTypeEnabled->draw())
+		                             )
+		                        ));
+		if($pricingTypeName !== 'rental'){
+			$inputNet = htmlBase::newElement('input')->addClass('netPricing');
+			$inputGross = htmlBase::newElement('input')->addClass('grossPricing');
+			if ($pricingTypeName == 'new'){
+				$inputNet->setName('products_price')
+				->setId('products_price')
+				->val((isset($Product) ? $Product['products_price'] : ''));
+
+				$inputGross->setName('products_price_gross')
+				->setId('products_price_gross')
+				->val((isset($Product) ? $Product['products_price'] : ''));
+			}else{
+				$inputNet->setName('products_price_' . $pricingTypeName)
+				->setId('products_price_' . $pricingTypeName)
+				->val((isset($Product) ? $Product['products_price_' . $pricingTypeName] : ''));
+
+				$inputGross->setName('products_price_' . $pricingTypeName . '_gross')
+				->setId('products_price_' . $pricingTypeName . '_gross')
+				->val((isset($Product) ? $Product['products_price_' . $pricingTypeName] : ''));
+			}
+			$inputTable->addBodyRow(array(
+			                             'columns' => array(
+				                             array('text' => sysLanguage::get('TEXT_PRODUCTS_PRICE_NET')),
+				                             array('text' => $inputNet->draw())
+			                             )
+			                        ));
+			$inputTable->addBodyRow(array(
+			                             'columns' => array(
+				                             array('text' => sysLanguage::get('TEXT_PRODUCTS_PRICE_GROSS')),
+				                             array('text' => $inputGross->draw())
+			                             )
+			                        ));
+		}
+
 		EventManager::notify('NewProductPricingTabBottom', (isset($Product) ? $Product : false), &$inputTable, &$pricingTypeName);
 		
  		$pricingTabsObj->addTabHeader('productPricingTab_' . $pricingTypeName, array('text' => $pricingTypeText))

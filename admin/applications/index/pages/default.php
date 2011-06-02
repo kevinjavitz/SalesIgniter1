@@ -234,6 +234,9 @@
 		'ot_subtotal',
 		'ot_tax',
 		'ot_shipping',
+		'total',
+		'tax',
+		'shipping',
 		'ot_loworderfee',
 		'ot_total',
 		'total',
@@ -401,13 +404,13 @@
 			->select('SUM(ot.value) as total')
 			->from('Orders o')
 			->leftJoin('o.OrdersTotal ot')
-			->where('ot.module_type = ?', 'ot_tax');
+			->whereIn('ot.module_type', array('ot_tax','tax'));
 
 			$Queries['shippingCollected'] = Doctrine_Query::create()
 			->select('SUM(ot.value) as total')
 			->from('Orders o')
 			->leftJoin('o.OrdersTotal ot')
-			->where('ot.module_type = ?', 'ot_shipping');
+			->whereIn('ot.module_type', array('ot_shipping','shipping'));
 
 			if ($loworder) {
 				$Queries['lowOrderFees'] = Doctrine_Query::create()
