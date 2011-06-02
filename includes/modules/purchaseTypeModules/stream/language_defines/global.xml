@@ -1,0 +1,4 @@
+<definitions>
+	<define key="MODULE_PURCHASE_TYPE_STREAM_TITLE"><![CDATA[Stream]]></define>
+	<define key="MODULE_PURCHASE_TYPE_STREAM_DESCRIPTION"><![CDATA[Streaming Products Which Mimic Sites Like vudu.com]]></define>
+</definitions>

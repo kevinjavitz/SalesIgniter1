@@ -17,37 +17,21 @@
 class PurchaseType_MembershipStream extends PurchaseTypeAbstract
 {
 
-	public function __construct($ProductCls, $forceEnable = false) {
+	public function __construct($ProductCls = false, $forceEnable = false) {
 		$this->setTitle('Membership Stream');
 		$this->setDescription('Membership Based Stream Products Which Mimic Sites Like netflix.com');
 
 		$this->init('membershipStream', $ProductCls, $forceEnable);
 
-		if ($this->isInstalled() === true){
-			if ($this->isEnabled() === true){
+		if ($this->isEnabled() === true){
+			if ($ProductCls !== false){
+				EventManager::notify('PurchaseTypeConstruct', $this->getCode(), $ProductCls, $this->configData);
 			}
 		}
 	}
 
-	public function processRemoveFromCart() {
-		return null;
-	}
-
-	public function processAddToOrder(&$pInfo) {
-		$this->processAddToCart($pInfo);
-	}
-
-	public function processAddToCart(&$pInfo) {
-		$pInfo['price'] = $this->productInfo['price'];
-		$pInfo['final_price'] = $this->productInfo['price'];
-	}
-
 	public function hasInventory() {
 		return true;
-	}
-
-	public function canUseSpecial() {
-		return false;
 	}
 
 	public function updateStock($orderId, $orderProductId, &$cartProduct) {
@@ -65,9 +49,9 @@ class PurchaseType_MembershipStream extends PurchaseTypeAbstract
 
 				$return = array(
 					'form_action' => itw_app_link(tep_get_all_get_params(array('action'))),
-					'purchase_type' => $this->typeLong,
+					'purchase_type' => $this->getCode(),
 					'allowQty' => false,
-					'header' => $this->typeShow,
+					'header' => $this->getTitle(),
 					'content' => '',
 					'button' => $button
 				);

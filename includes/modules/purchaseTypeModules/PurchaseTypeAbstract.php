@@ -8,7 +8,7 @@ abstract class PurchaseTypeAbstract
 
 	private $enabled = false;
 
-	private $installed = false;
+	private $installed = true;
 
 	private $xmlData = null;
 
@@ -18,40 +18,31 @@ abstract class PurchaseTypeAbstract
 
 	abstract function getPurchaseHtml($key);
 
-	public function init($code, $ProductCls, $forceEnable){
+	public function init($code, $ProductCls = false, $forceEnable = false){
 		$this->code = $code;
 
-		$moduleDir = sysConfig::getDirFsCatalog() . 'includes/modules/purchaseTypes/' . $code . '/';
+		$moduleDir = sysConfig::getDirFsCatalog() . 'includes/modules/purchaseTypeModules/' . $code . '/';
 		$this->xmlData = simplexml_load_file(
 			$moduleDir . 'data/info.xml',
 			'SimpleXMLElement',
 			LIBXML_NOCDATA
 		);
-
 		$info = $this->xmlData;
 
-		$Qmodules = Doctrine_Query::create()
-			->from('Modules m')
-			->leftJoin('m.ModulesConfiguration mc')
-			->where('m.modules_type = ?', 'purchase_type')
-			->andWhere('m.modules_code = ?', $this->code)
-			->orderBy('mc.sort_order')
-			->execute();
-		if ($Qmodules->count() > 0){
-			$this->moduleData = $Qmodules->toArray(true);
-			$this->configData = $this->moduleData[0]['ModulesConfiguration'];
-			$this->installed = true;
+		$Config = new ModuleConfigReader($code, 'purchaseType');
+		$this->configData = $Config->getConfig();
 
-			sysLanguage::loadDefinitions(sysConfig::getDirFsCatalog() . 'includes/modules/purchaseTypes/' . $code . '/language_defines/global.xml');
-			if (file_exists(sysConfig::getDirFsCatalog() . 'includes/languages/' . Session::get('language') . '/includes/modules/purchaseTypes/' . $code . '/global.xml')){
-				sysLanguage::loadDefinitions(sysConfig::getDirFsCatalog() . 'includes/languages/' . Session::get('language') . '/includes/modules/purchaseTypes/' . $code . '/global.xml');
-			}
+		sysLanguage::loadDefinitions(sysConfig::getDirFsCatalog() . 'includes/modules/purchaseTypeModules/' . $code . '/language_defines/global.xml');
+		if (file_exists(sysConfig::getDirFsCatalog() . 'includes/languages/' . Session::get('language') . '/includes/modules/purchaseTypeModules/' . $code . '/global.xml')){
+			sysLanguage::loadDefinitions(sysConfig::getDirFsCatalog() . 'includes/languages/' . Session::get('language') . '/includes/modules/purchaseTypeModules/' . $code . '/global.xml');
+		}
 
-			$this->title = sysLanguage::get((string) $info->title_key);
-			$this->description = sysLanguage::get((string) $info->description_key);
-			$this->enabled = (bool) ($this->configData[(string) $info->status_key]['configuration_value'] == 'True' ? true : false);
-			$this->sort_order = (int) $this->configData[(string) $info->sort_key]['configuration_value'];
+		$this->title = sysLanguage::get((string) $info->title_key);
+		$this->description = sysLanguage::get((string) $info->description_key);
+		$this->enabled = (bool) ($this->getConfigData((string) $info->status_key) == 'True');
+		$this->sort_order = (int) $this->getConfigData((string) $info->sort_key);
 
+		if ($ProductCls !== false){
 			$this->productInfo = array(
 				'id' => $ProductCls->productInfo['products_id'],
 				'taxRate' => $ProductCls->productInfo['taxRate']
@@ -95,7 +86,7 @@ abstract class PurchaseTypeAbstract
 
 	public function getConfigData($key){
 		if (array_key_exists($key, $this->configData)){
-			return $this->configData[$key]['configuration_value'];
+			return $this->configData[$key]->getValue();
 		}
 		return null;
 	}

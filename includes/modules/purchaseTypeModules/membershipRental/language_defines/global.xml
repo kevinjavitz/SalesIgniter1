@@ -1,0 +1,4 @@
+<definitions>
+	<define key="MODULE_PURCHASE_TYPE_MEMBERSHIPRENTAL_TITLE"><![CDATA[Membership Rental]]></define>
+	<define key="MODULE_PURCHASE_TYPE_MEMBERSHIPRENTAL_DESCRIPTION"><![CDATA[Membership Based Rentals Which Mimic Sites Like netflix.com]]></define>
+</definitions>

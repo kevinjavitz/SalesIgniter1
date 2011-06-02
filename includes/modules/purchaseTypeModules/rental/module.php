@@ -17,15 +17,17 @@
 class PurchaseType_Rental extends PurchaseTypeAbstract
 {
 
-	public function __construct($ProductCls, $forceEnable = false) {
+	public function __construct($ProductCls = false, $forceEnable = false) {
 		$this->setTitle('Rental');
 		$this->setDescription('Rentals Which Mimic A Retail Rental Store');
 
 		$this->init('rental', $ProductCls, $forceEnable);
 
-		if ($this->isInstalled() === true){
-			if ($this->isEnabled() === true){
+		if ($this->isEnabled() === true){
+			if ($ProductCls !== false){
 				$this->setProductInfo('price', $ProductCls->productInfo['products_price_rental']);
+
+				EventManager::notify('PurchaseTypeConstruct', $this->getCode(), $ProductCls, $this->configData);
 			}
 		}
 	}
@@ -41,14 +43,12 @@ class PurchaseType_Rental extends PurchaseTypeAbstract
 	public function processAddToCart(&$pInfo) {
 		$pInfo['price'] = $this->productInfo['price'];
 		$pInfo['final_price'] = $this->productInfo['price'];
+
+		EventManager::notify('PurchaseTypeAddToCart', $this->getCode(), &$pInfo, $this->productInfo);
 	}
 
 	public function hasInventory() {
 		return true;
-	}
-
-	public function canUseSpecial() {
-		return false;
 	}
 
 	public function updateStock($orderId, $orderProductId, &$cartProduct) {

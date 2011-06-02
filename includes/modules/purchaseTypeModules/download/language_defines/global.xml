@@ -1,0 +1,4 @@
+<definitions>
+	<define key="MODULE_PURCHASE_TYPE_DOWNLOAD_TITLE"><![CDATA[Download]]></define>
+	<define key="MODULE_PURCHASE_TYPE_DOWNLOAD_DESCRIPTION"><![CDATA[Downloadable Products Such As Movie/Pdf/Image]]></define>
+</definitions>

@@ -1,0 +1,4 @@
+<definitions>
+	<define key="MODULE_PURCHASE_TYPE_USED_TITLE"><![CDATA[Used]]></define>
+	<define key="MODULE_PURCHASE_TYPE_USED_DESCRIPTION"><![CDATA[Used Products Such As Open Box Or Returned Products]]></define>
+</definitions>

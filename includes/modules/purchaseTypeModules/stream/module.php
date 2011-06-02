@@ -17,7 +17,7 @@
 class PurchaseType_stream extends PurchaseTypeAbstract
 {
 
-	public function __construct($ProductCls, $forceEnable = false) {
+	public function __construct($ProductCls = false, $forceEnable = false) {
 		$this->setTitle('Stream');
 		$this->setDescription('Streaming Products Which Mimic Sites Like vudu.com');
 
@@ -26,6 +26,8 @@ class PurchaseType_stream extends PurchaseTypeAbstract
 		if ($this->isInstalled() === true){
 			if ($this->isEnabled() === true){
 				$this->setProductInfo('price', $ProductCls->productInfo['products_price_stream']);
+
+				EventManager::notify('PurchaseTypeConstruct', $this->getCode(), $ProductCls, $this->configData);
 			}
 		}
 	}
@@ -72,6 +74,8 @@ class PurchaseType_stream extends PurchaseTypeAbstract
 	public function processAddToCart(&$pInfo) {
 		$pInfo['price'] = $this->productInfo['price'];
 		$pInfo['final_price'] = $this->productInfo['price'];
+
+		EventManager::notify('PurchaseTypeAddToCart', $this->getCode(), &$pInfo, $this->productInfo);
 	}
 
 	public function onInsertOrderedProduct($cartProduct, $orderId, &$orderedProduct, &$products_ordered) {
@@ -99,10 +103,6 @@ class PurchaseType_stream extends PurchaseTypeAbstract
 		return true;
 	}
 
-	public function canUseSpecial() {
-		return false;
-	}
-
 	public function getPurchaseHtml($key) {
 		$return = null;
 
@@ -116,7 +116,7 @@ class PurchaseType_stream extends PurchaseTypeAbstract
 				$headerInfo->addClass('infoPopupIcon');
 				$button = htmlBase::newElement('button')
 					->setType('submit')
-					->setName('buy_' . $this->typeLong . '_product')
+					->setName('buy_' . $this->getCode() . '_product')
 					->setText(sysLanguage::get('TEXT_BUTTON_BUY'));
 
 				$content = htmlBase::newElement('span')
@@ -128,9 +128,9 @@ class PurchaseType_stream extends PurchaseTypeAbstract
 
 				$return = array(
 					'form_action' => itw_app_link(tep_get_all_get_params(array('action'))),
-					'purchase_type' => $this->typeLong,
+					'purchase_type' => $this->getCode(),
 					'allowQty' => false,
-					'header' => $headerInfo->draw() . 'Buy ' . $this->typeShow,
+					'header' => $headerInfo->draw() . ' ' . $this->getTitle(),
 					'content' => $content->draw(),
 					'button' => $button
 				);
@@ -138,11 +138,11 @@ class PurchaseType_stream extends PurchaseTypeAbstract
 			case 'product_listing_row':
 				$button = htmlBase::newElement('button')
 					->setText(sysLanguage::get('TEXT_BUTTON_BUY_NOW'))
-					->setHref(itw_app_link(tep_get_all_get_params(array('action', 'products_id')) . 'action=buy_' . $this->typeLong . '_product&products_id=' . $this->productInfo['id']), true);
+					->setHref(itw_app_link(tep_get_all_get_params(array('action', 'products_id')) . 'action=buy_' . $this->getCode() . '_product&products_id=' . $this->productInfo['id']), true);
 
 				$return = '<tr>' .
 					'<td class="main">' . $headerInfo->draw() . '</td>' .
-					'<td class="main">' . $this->typeShow . ':</td>' .
+					'<td class="main">' . $this->getTitle() . ':</td>' .
 					'<td class="main">' . $this->displayPrice() . '</td>' .
 					'<td class="main" style="font-size:.7em;">' . $button->draw() . '</td>' .
 					'</tr>';

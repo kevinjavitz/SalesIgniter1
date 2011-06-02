@@ -1,6 +1,6 @@
 <?php
 /*
-	Product Purchase Type: New
+	Product Purchase Type: Used
 
 	I.T. Web Experts, Rental Store v2
 	http://www.itwebexperts.com
@@ -11,25 +11,23 @@
 */
 
 /**
- * New Purchase Type
+ * Used Purchase Type
  * @package ProductPurchaseTypes
  */
-class PurchaseType_new extends PurchaseTypeAbstract
+class PurchaseType_used extends PurchaseTypeAbstract
 {
 
-	public function __construct($ProductCls, $forceEnable = false) {
-		$this->setTitle('New');
-		$this->setDescription('New Products In Retail Or Oem Packaging');
+	public function __construct($ProductCls = false, $forceEnable = false) {
+		$this->setTitle('Used');
+		$this->setDescription('Used Products Such As Open Box Or Returned Products');
 
-		$this->init('new', $ProductCls, $forceEnable);
+		$this->init('used', $ProductCls, $forceEnable);
 
 		if ($this->isInstalled() === true){
 			if ($this->isEnabled() === true){
-				$this->setProductInfo('price', $ProductCls->productInfo['products_price']);
+				$this->setProductInfo('price', $ProductCls->productInfo['products_price_used']);
 
-				if (isset($productInfo['Specials']) && !empty($productInfo['Specials'])){
-					$this->setProductInfo('special_price', $ProductCls->productInfo['Specials']['specials_new_products_price']);
-				}
+				EventManager::notify('PurchaseTypeConstruct', $this->getCode(), $ProductCls, $this->configData);
 			}
 		}
 	}
@@ -43,17 +41,10 @@ class PurchaseType_new extends PurchaseTypeAbstract
 	}
 
 	public function processAddToCart(&$pInfo) {
-		if (isset($this->productInfo['special_price'])){
-			$pInfo['price'] = $this->productInfo['special_price'];
-			$pInfo['final_price'] = $this->productInfo['special_price'];
-		}
-		else {
-			$pInfo['price'] = $this->productInfo['price'];
-			$pInfo['final_price'] = $this->productInfo['price'];
-		}
-	}
+		$pInfo['price'] = $this->productInfo['price'];
+		$pInfo['final_price'] = $this->productInfo['price'];
 
-	public function onInsertOrderedProduct($cartProduct, $orderId, &$orderedProduct, &$products_ordered) {
+		EventManager::notify('PurchaseTypeAddToCart', $this->getCode(), &$pInfo, $this->productInfo);
 	}
 
 	public function getPurchaseHtml($key) {
@@ -62,7 +53,7 @@ class PurchaseType_new extends PurchaseTypeAbstract
 			case 'product_info':
 				$button = htmlBase::newElement('button')
 					->setType('submit')
-					->setName('buy_' . $this->typeLong . '_product')
+					->setName('buy_' . $this->getCode() . '_product')
 					->setText(sysLanguage::get('TEXT_BUTTON_BUY'));
 
 				if ($this->hasInventory() === false){
@@ -78,9 +69,9 @@ class PurchaseType_new extends PurchaseTypeAbstract
 
 				$return = array(
 					'form_action' => itw_app_link(tep_get_all_get_params(array('action'))),
-					'purchase_type' => $this->typeLong,
+					'purchase_type' => $this->getCode(),
 					'allowQty' => true,
-					'header' => 'Buy ' . $this->typeShow,
+					'header' => $this->getTitle(),
 					'content' => $content->draw(),
 					'button' => $button
 				);

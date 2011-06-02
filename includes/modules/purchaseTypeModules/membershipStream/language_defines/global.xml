@@ -1,0 +1,4 @@
+<definitions>
+	<define key="MODULE_PURCHASE_TYPE_MEMBERSHIPSTREAM_TITLE"><![CDATA[Membership Stream]]></define>
+	<define key="MODULE_PURCHASE_TYPE_MEMBERSHIPSTREAM_DESCRIPTION"><![CDATA[Membership Based Stream Products Which Mimic Sites Like netflix.com]]></define>
+</definitions>

@@ -1,5 +1,5 @@
 <?php
-	$infoBox = htmlBase::newElement('infobox');
+$infoBox = htmlBase::newElement('infobox');
 	$infoBox->setHeader('<b>' . sysLanguage::get('TEXT_INFO_HEADING_EDIT') . '</b>');
 	$infoBox->setButtonBarLocation('top');
 	
@@ -7,8 +7,23 @@
 	$cancelButton = htmlBase::newElement('button')->addClass('cancelButton')->usePreset('cancel');
 
 	$infoBox->addButton($saveButton)->addButton($cancelButton);
+
+$Config = new ModuleConfigReader($_GET['module'], $_GET['moduleType']);
+foreach($Config->getConfig() as $cfg){
+	$key = $cfg->getKey();
+	$value = $cfg->getValue();
+	if ($cfg->hasSetFunction() && $cfg->getSetFunction() != 'isArea') {
+		eval('$inputField = ' . $cfg->getSetFunction() . "'" . $value . "', '" . $key . "');");
+	} else if ($cfg->hasSetFunction() && $cfg->getSetFunction() == 'isArea') {
+		$inputField = tep_draw_textarea_field('configuration[' . $key . ']', 'hard', 30, 5, $value, 'class="makeModFCK"');
+	}else {
+		$inputField = tep_draw_input_field('configuration[' . $key . ']', $value);
+	}
+
+	$infoBox->addContentRow('<b>' . $cfg->getTitle() . '</b><br>' . $cfg->getDescription() . '<br>' . $inputField);
+}
 	
-	$Qconfig = Doctrine_Query::create()
+/*	$Qconfig = Doctrine_Query::create()
 	->from('Modules m')
 	->leftJoin('m.ModulesConfiguration c')
 	->where('modules_code = ?', $_GET['module'])
@@ -32,6 +47,6 @@
 			}
 		}
 	}
-	
+	*/
 	EventManager::attachActionResponse($infoBox->draw(), 'html');
 ?>
