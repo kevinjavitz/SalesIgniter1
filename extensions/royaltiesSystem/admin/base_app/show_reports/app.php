@@ -18,7 +18,7 @@ foreach($RoyaltiesSystemRoyaltiesEarnedOrders as $ordersExisting){
 }
 
 $ordersQuery = Doctrine_Query::create()
-		->select('o.orders_id, o.customers_id, o.orders_status, o.date_purchased, pr.content_provider_id, pr.royalty_fee, op.products_id, op.purchase_type')
+		->select('o.orders_id, o.customers_id, o.orders_status, o.date_purchased, pr.content_provider_id, pr.royalty_fee, op.products_id, op.purchase_type, op.final_price, op.products_price')
 		->from('Orders o')
 		->leftJoin('o.RoyaltiesSystemOrderStatuses os')
 		->leftJoin('o.OrdersProducts op')
@@ -37,11 +37,16 @@ foreach($Qorders as $order)	{
 		continue;
 
 	foreach($order['OrdersProducts'] as $product){
+		if (strpos($product['RoyaltiesSystemProductsRoyalties'][0]['royalty_fee'], '%') === false) {
+			$royaltyFee = $product['RoyaltiesSystemProductsRoyalties'][0]['royalty_fee'];
+		} else {
+			$royaltyFee = $product['OrdersProducts'][0]['products_prices'] * ($product['RoyaltiesSystemProductsRoyalties'][0]['royalty_fee'] / 100);
+		}
 		$RoyaltiesSystemRoyaltiesEarnedNew = new RoyaltiesSystemRoyaltiesEarned();
 		$RoyaltiesSystemRoyaltiesEarnedNew->content_provider_id = $product['RoyaltiesSystemProductsRoyalties'][0]['content_provider_id'];
-		$RoyaltiesSystemRoyaltiesEarnedNew->royalty = $product['RoyaltiesSystemProductsRoyalties'][0]['royalty_fee'];
+		$RoyaltiesSystemRoyaltiesEarnedNew->royalty = $royaltyFee;
 		$RoyaltiesSystemRoyaltiesEarnedNew->products_id = $product['products_id'];
-		$RoyaltiesSystemRoyaltiesEarnedNew->purchase_type = $product['purchase_type'];
+		$RoyaltiesSystemRoyaltiesEarnedNew->purchase_type = $product['OrdersProducts'][0]['purchase_type'];
 		$RoyaltiesSystemRoyaltiesEarnedNew->orders_id = $order['orders_id'];
 		$RoyaltiesSystemRoyaltiesEarnedNew->customers_id = $order['customers_id'];
 		$RoyaltiesSystemRoyaltiesEarnedNew->date_added = $order['date_purchased'];
