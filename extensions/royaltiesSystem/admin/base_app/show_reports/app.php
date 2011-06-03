@@ -40,13 +40,13 @@ foreach($Qorders as $order)	{
 		if (strpos($product['RoyaltiesSystemProductsRoyalties'][0]['royalty_fee'], '%') === false) {
 			$royaltyFee = $product['RoyaltiesSystemProductsRoyalties'][0]['royalty_fee'];
 		} else {
-			$royaltyFee = $product['OrdersProducts'][0]['products_prices'] * ($product['RoyaltiesSystemProductsRoyalties'][0]['royalty_fee'] / 100);
+			$royaltyFee = $product['products_price'] * ($product['RoyaltiesSystemProductsRoyalties'][0]['royalty_fee'] / 100);
 		}
 		$RoyaltiesSystemRoyaltiesEarnedNew = new RoyaltiesSystemRoyaltiesEarned();
 		$RoyaltiesSystemRoyaltiesEarnedNew->content_provider_id = $product['RoyaltiesSystemProductsRoyalties'][0]['content_provider_id'];
 		$RoyaltiesSystemRoyaltiesEarnedNew->royalty = $royaltyFee;
 		$RoyaltiesSystemRoyaltiesEarnedNew->products_id = $product['products_id'];
-		$RoyaltiesSystemRoyaltiesEarnedNew->purchase_type = $product['OrdersProducts'][0]['purchase_type'];
+		$RoyaltiesSystemRoyaltiesEarnedNew->purchase_type = $product['purchase_type'];
 		$RoyaltiesSystemRoyaltiesEarnedNew->orders_id = $order['orders_id'];
 		$RoyaltiesSystemRoyaltiesEarnedNew->customers_id = $order['customers_id'];
 		$RoyaltiesSystemRoyaltiesEarnedNew->date_added = $order['date_purchased'];
