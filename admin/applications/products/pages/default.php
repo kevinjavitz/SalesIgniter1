@@ -420,7 +420,6 @@
    $searchForm->append($searchField)->append($categorySelect);
 
    $contents = EventManager::notify('ProductsDefaultAddFilterOptions', &$searchForm);
-   $searchForm->append($submitb);
 
    echo $searchForm->draw();
    ?></td>
