@@ -1,0 +1,10 @@
+<configurations>
+	<configuration>
+		<title><![CDATA[Enable Royalties System Integration]]></title>
+		<key><![CDATA[ROYALTIES_SYSTEM_ENABLED]]></key>
+		<tab><![CDATA[Royalties System]]></tab>
+		<value><![CDATA[False]]></value>
+		<description><![CDATA[Do you want to enable royalties system integration for this purchase type?]]></description>
+		<set_function><![CDATA[tep_cfg_select_option(array('True', 'False'),]]></set_function>
+	</configuration>
+</configurations>
