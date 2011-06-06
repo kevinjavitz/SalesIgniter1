@@ -165,7 +165,7 @@ class InfoBoxProductsBox extends InfoBoxAbstract {
 			'list-style:none;' . 
 			'display:block;' . 
 			'vertical-align:middle;' . 
-			'width:9999px;' . 
+			'width:auto;' .
 			'padding:0;' . 
 			'margin:0;' . 
 			'background:transparent;' . 
