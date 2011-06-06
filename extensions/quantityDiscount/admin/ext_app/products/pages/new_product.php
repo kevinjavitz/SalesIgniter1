@@ -22,7 +22,10 @@ class quantityDiscount_admin_products_new_product extends Extension_quantityDisc
 		EventManager::attachEvent('NewProductPricingTabBottom', null, $this);
 	}
 	
-	public function NewProductPricingTabBottom(&$Product, &$inputTable, &$typeName){
+	public function NewProductPricingTabBottom(&$Product, &$inputTable, &$PurchaseType){
+		if ($PurchaseType->getConfigData('QUANTITIY_DISCOUNT_ENABLED') == 'False') return;
+
+		$typeName = $PurchaseType->getCode();
 		if ($Product !== false && $Product['products_id'] > 0){
 			$discounts = Doctrine_Query::create()
 			->from('ProductsQuantityDiscounts')

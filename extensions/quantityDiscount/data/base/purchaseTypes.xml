@@ -1,0 +1,10 @@
+<configurations>
+	<configuration>
+		<title><![CDATA[Enable Quantity Discounts Integration]]></title>
+		<key><![CDATA[QUANTITIY_DISCOUNT_ENABLED]]></key>
+		<tab><![CDATA[Quantity Discounts]]></tab>
+		<value><![CDATA[True]]></value>
+		<description><![CDATA[Do you want to enable quantity discounts integration for this purchase type?]]></description>
+		<set_function><![CDATA[tep_cfg_select_option(array('True', 'False'),]]></set_function>
+	</configuration>
+</configurations>
