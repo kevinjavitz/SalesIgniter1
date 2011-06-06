@@ -68,19 +68,19 @@ class royaltiesSystem_admin_data_manager_default extends Extension_royaltiesSyst
 		$i = 0;
 		if(isset($items['royalties_royalty_fee_new']) && !empty($items['royalties_royalty_fee_new'])){
 			$royaltiesSystemProductsRoyalties[$i]->content_provider_id = $items['royalties_content_provider_id_new'];
-			$royaltiesSystemProductsRoyalties[$i]->royalty_fee = $items['royalties_content_provider_id_new'];
+			$royaltiesSystemProductsRoyalties[$i]->royalty_fee = $items['royalties_royalty_fee_new'];
 			$royaltiesSystemProductsRoyalties[$i]->purchase_type = 'new';
 			$i++;
 		}
 		if(isset($items['royalties_royalty_fee_used']) && !empty($items['royalties_royalty_fee_used'])){
 			$royaltiesSystemProductsRoyalties[$i]->content_provider_id = $items['royalties_content_provider_id_used'];
-			$royaltiesSystemProductsRoyalties[$i]->royalty_fee = $items['royalties_content_provider_id_used'];
+			$royaltiesSystemProductsRoyalties[$i]->royalty_fee = $items['royalties_royalty_fee_used'];
 			$royaltiesSystemProductsRoyalties[$i]->purchase_type = 'used';
 			$i++;
 		}
 		if(isset($items['royalties_royalty_fee_rental']) && !empty($items['royalties_royalty_fee_rental'])){
 			$royaltiesSystemProductsRoyalties[$i]->content_provider_id = $items['royalties_content_provider_id_rental'];
-			$royaltiesSystemProductsRoyalties[$i]->royalty_fee = $items['royalties_content_provider_id_rental'];
+			$royaltiesSystemProductsRoyalties[$i]->royalty_fee = $items['royalties_royalty_fee_rental'];
 			$royaltiesSystemProductsRoyalties[$i]->purchase_type = 'rental';
 		}
 		$Product->save();

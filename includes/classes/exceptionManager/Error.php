@@ -27,6 +27,10 @@ class ExceptionError extends ExceptionParser {
 	}
 
 	public function output(){
+		if (!class_exists('htmlBase')){
+			require(realpath(__FILE__ . '/../htmlBase.php'));
+		}
+		
 		$ReportContainer = htmlBase::newElement('div')->addClass('errorReport ui-widget');
 		$TableContainer = htmlBase::newElement('div')->addClass('ui-state-error ui-corner-all');
 		$Icon = htmlBase::newElement('span')->addClass('ui-icon ' . $this->iconClass);

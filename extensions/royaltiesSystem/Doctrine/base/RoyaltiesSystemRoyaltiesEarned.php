@@ -13,6 +13,7 @@
 class RoyaltiesSystemRoyaltiesEarned  extends Doctrine_Record {
 
 	public function setUp(){
+		parent::setUp();
 		$this->setUpParent();
 		if (sysConfig::exists('EXTENSION_STREAMPRODUCTS_ENABLED')){
 			$this->hasOne('ProductsStreams', array(
