@@ -32,6 +32,10 @@ class PurchaseType_stream extends PurchaseTypeAbstract
 		}
 	}
 
+	public function getPriceFromQuery($ProductQuery){
+		return $ProductQuery['products_price_stream'];
+	}
+
 	private function showViewType() {
 		$viewTypeHtml = htmlBase::newElement('span')
 			->css(array(

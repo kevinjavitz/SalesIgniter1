@@ -1,10 +1,42 @@
 <configurations>
 	<configuration>
 		<title><![CDATA[Enable Purchase Type]]></title>
-		<key><![CDATA[MODULE_PURCHASE_TYPE_NEW_ENABLED]]></key>
+		<key><![CDATA[ENABLED]]></key>
+		<tab><![CDATA[General]]></tab>
 		<value><![CDATA[True]]></value>
 		<description><![CDATA[Do you want to enable this purchase type?]]></description>
-		<sort_order>1</sort_order>
+		<set_function><![CDATA[tep_cfg_select_option(array('True', 'False'),]]></set_function>
+	</configuration>
+	<configuration>
+		<title><![CDATA[Enable Pricing]]></title>
+		<key><![CDATA[PRICING_ENABLED]]></key>
+		<tab><![CDATA[General]]></tab>
+		<value><![CDATA[True]]></value>
+		<description><![CDATA[Do you want to enable pricing for this purchase type?]]></description>
+		<set_function><![CDATA[tep_cfg_select_option(array('True', 'False'),]]></set_function>
+	</configuration>
+	<configuration>
+		<title><![CDATA[Enable Inventory Management]]></title>
+		<key><![CDATA[INVENTORY_ENABLED]]></key>
+		<tab><![CDATA[Inventory]]></tab>
+		<value><![CDATA[True]]></value>
+		<description><![CDATA[Do you want to enable inventory management for this purchase type?]]></description>
+		<set_function><![CDATA[tep_cfg_select_option(array('True', 'False'),]]></set_function>
+	</configuration>
+	<configuration>
+		<title><![CDATA[Enable Quantity Inventory Management]]></title>
+		<key><![CDATA[INVENTORY_QUANTITY_ENABLED]]></key>
+		<tab><![CDATA[Inventory]]></tab>
+		<value><![CDATA[True]]></value>
+		<description><![CDATA[Do you want to enable quantity inventory management for this purchase type?]]></description>
+		<set_function><![CDATA[tep_cfg_select_option(array('True', 'False'),]]></set_function>
+	</configuration>
+	<configuration>
+		<title><![CDATA[Enable Barcode Inventory Management]]></title>
+		<key><![CDATA[INVENTORY_BARCODE_ENABLED]]></key>
+		<tab><![CDATA[Inventory]]></tab>
+		<value><![CDATA[False]]></value>
+		<description><![CDATA[Do you want to enable barcode inventory management for this purchase type?]]></description>
 		<set_function><![CDATA[tep_cfg_select_option(array('True', 'False'),]]></set_function>
 	</configuration>
 </configurations>

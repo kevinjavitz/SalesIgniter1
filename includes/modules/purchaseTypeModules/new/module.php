@@ -32,6 +32,10 @@ class PurchaseType_new extends PurchaseTypeAbstract
 		}
 	}
 
+	public function getPriceFromQuery($ProductQuery){
+		return $ProductQuery['products_price'];
+	}
+
 	public function processRemoveFromCart() {
 		return null;
 	}

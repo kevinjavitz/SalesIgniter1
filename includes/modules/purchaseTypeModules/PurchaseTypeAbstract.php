@@ -14,25 +14,35 @@ abstract class PurchaseTypeAbstract
 
 	private $check = null;
 
+	private $path = false;
+
 	private $configData = array();
 
 	abstract function getPurchaseHtml($key);
 
-	public function init($code, $ProductCls = false, $forceEnable = false){
+	public function init($code, $ProductCls = false, $forceEnable = false, $moduleDir = false){
 		$this->code = $code;
+		$this->path = $moduleDir;
 
-		$moduleDir = sysConfig::getDirFsCatalog() . 'includes/modules/purchaseTypeModules/' . $code . '/';
+		if ($moduleDir === false){
+			$this->path = sysConfig::getDirFsCatalog() . 'includes/modules/purchaseTypeModules/' . $code . '/';
+		}
+
 		$this->xmlData = simplexml_load_file(
-			$moduleDir . 'data/info.xml',
+			$this->path . 'data/info.xml',
 			'SimpleXMLElement',
 			LIBXML_NOCDATA
 		);
 		$info = $this->xmlData;
 
-		$Config = new ModuleConfigReader($code, 'purchaseType');
+		$Config = new ModuleConfigReader(
+			$code,
+			'purchaseType',
+			$this->path
+		);
 		$this->configData = $Config->getConfig();
 
-		sysLanguage::loadDefinitions(sysConfig::getDirFsCatalog() . 'includes/modules/purchaseTypeModules/' . $code . '/language_defines/global.xml');
+		sysLanguage::loadDefinitions($this->path . 'language_defines/global.xml');
 		if (file_exists(sysConfig::getDirFsCatalog() . 'includes/languages/' . Session::get('language') . '/includes/modules/purchaseTypeModules/' . $code . '/global.xml')){
 			sysLanguage::loadDefinitions(sysConfig::getDirFsCatalog() . 'includes/languages/' . Session::get('language') . '/includes/modules/purchaseTypeModules/' . $code . '/global.xml');
 		}
@@ -58,6 +68,10 @@ abstract class PurchaseTypeAbstract
 				$this->enabled = true;
 			}
 		}
+	}
+
+	public function getPriceFromQuery($ProductQuery){
+		return '';
 	}
 
 	public function setProductInfo($key, $val){
@@ -89,6 +103,10 @@ abstract class PurchaseTypeAbstract
 			return $this->configData[$key]->getValue();
 		}
 		return null;
+	}
+
+	public function getPath(){
+		return $this->path;
 	}
 
 	public function getCode(){

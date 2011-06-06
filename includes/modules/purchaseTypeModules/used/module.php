@@ -32,6 +32,10 @@ class PurchaseType_used extends PurchaseTypeAbstract
 		}
 	}
 
+	public function getPriceFromQuery($ProductQuery){
+		return $ProductQuery['products_price_used'];
+	}
+
 	public function processRemoveFromCart() {
 		return null;
 	}

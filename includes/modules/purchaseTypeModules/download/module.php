@@ -32,6 +32,10 @@ class PurchaseType_download extends PurchaseTypeAbstract
 		}
 	}
 
+	public function getPriceFromQuery($ProductQuery){
+		return $ProductQuery['products_price_download'];
+	}
+
 	private function showViewType() {
 		$viewTypeHtml = htmlBase::newElement('span')
 			->css(array(
