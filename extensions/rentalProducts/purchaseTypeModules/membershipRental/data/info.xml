@@ -1,6 +1,6 @@
 <info>
 	<code>membershipRental</code>
 	<title_key>MODULE_PURCHASE_TYPE_MEMBERSHIPRENTAL_TITLE</title_key>
-	<status_key>MODULE_PURCHASE_TYPE_MEMBERSHIPRENTAL_ENABLED</status_key>
+	<status_key>ENABLED</status_key>
 	<description_key>MODULE_PURCHASE_TYPE_MEMBERSHIPRENTAL_DESCRIPTION</description_key>
 </info>

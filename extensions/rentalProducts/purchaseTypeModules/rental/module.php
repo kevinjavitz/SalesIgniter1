@@ -21,7 +21,12 @@ class PurchaseType_Rental extends PurchaseTypeAbstract
 		$this->setTitle('Rental');
 		$this->setDescription('Rentals Which Mimic A Retail Rental Store');
 
-		$this->init('rental', $ProductCls, $forceEnable);
+		$this->init(
+			'rental',
+			$ProductCls,
+			$forceEnable,
+			sysConfig::getDirFsCatalog() . 'extensions/rentalProducts/purchaseTypeModules/rental/'
+		);
 
 		if ($this->isEnabled() === true){
 			if ($ProductCls !== false){
@@ -30,6 +35,10 @@ class PurchaseType_Rental extends PurchaseTypeAbstract
 				EventManager::notify('PurchaseTypeConstruct', $this->getCode(), $ProductCls, $this->configData);
 			}
 		}
+	}
+
+	public function getPriceFromQuery($ProductQuery){
+		return $ProductQuery['ProductsRentalSettings']['price'];
 	}
 
 	public function processRemoveFromCart() {

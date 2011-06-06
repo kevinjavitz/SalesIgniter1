@@ -22,7 +22,12 @@ class PurchaseType_MembershipRental extends PurchaseTypeAbstract
 		$this->setTitle('Membership Rental');
 		$this->setDescription('Membership Based Rentals Which Mimic Sites Like netflix.com');
 
-		$this->init('membershipRental', $ProductCls, $forceEnable);
+		$this->init(
+			'membershipRental',
+			$ProductCls,
+			$forceEnable,
+			sysConfig::getDirFsCatalog() . 'extensions/rentalProducts/purchaseTypeModules/membershipRental/'
+		);
 
 		if ($this->isEnabled() === true){
 			if ($ProductCls !== false){
