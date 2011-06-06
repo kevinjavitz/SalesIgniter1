@@ -8,21 +8,62 @@ $infoBox = htmlBase::newElement('infobox');
 
 	$infoBox->addButton($saveButton)->addButton($cancelButton);
 
-$Config = new ModuleConfigReader($_GET['module'], $_GET['moduleType']);
-foreach($Config->getConfig() as $cfg){
-	$key = $cfg->getKey();
-	$value = $cfg->getValue();
-	if ($cfg->hasSetFunction() && $cfg->getSetFunction() != 'isArea') {
-		eval('$inputField = ' . $cfg->getSetFunction() . "'" . $value . "', '" . $key . "');");
-	} else if ($cfg->hasSetFunction() && $cfg->getSetFunction() == 'isArea') {
-		$inputField = tep_draw_textarea_field('configuration[' . $key . ']', 'hard', 30, 5, $value, 'class="makeModFCK"');
-	}else {
-		$inputField = tep_draw_input_field('configuration[' . $key . ']', $value);
+$Config = new ModuleConfigReader(
+	$_GET['module'],
+	$_GET['moduleType'],
+	(isset($_GET['modulePath']) ? $_GET['modulePath'] : false)
+);
+if ($_GET['moduleType'] == 'purchaseType'){
+	$tabs = array();
+	$tabsPages = array();
+	$tabId = 1;
+	foreach($Config->getConfig() as $cfg){
+		if (!isset($tabs[$cfg->getTab()])){
+			$tabs[$cfg->getTab()] = array(
+				'panelId' => 'page-' . $tabId,
+				'panelHeader' => $cfg->getTab(),
+				'panelContent' => ''
+			);
+			$tabId++;
+		}
+
+		$key = $cfg->getKey();
+		$value = $cfg->getValue();
+		if ($cfg->hasSetFunction() && $cfg->getSetFunction() != 'isArea') {
+			eval('$inputField = ' . $cfg->getSetFunction() . "'" . $value . "', '" . $key . "');");
+		} else if ($cfg->hasSetFunction() && $cfg->getSetFunction() == 'isArea') {
+			$inputField = '<br>' . tep_draw_textarea_field('configuration[' . $key . ']', 'hard', 30, 5, $value, 'class="makeModFCK"');
+		}else {
+			$inputField = '<br>' . tep_draw_input_field('configuration[' . $key . ']', $value);
+		}
+
+		$tabs[$cfg->getTab()]['panelContent'] .= '<br><b>' . $cfg->getTitle() . '</b><br>' . $cfg->getDescription() . $inputField . '<br>';
 	}
 
-	$infoBox->addContentRow('<b>' . $cfg->getTitle() . '</b><br>' . $cfg->getDescription() . '<br>' . $inputField);
+	$tabPanel = htmlBase::newElement('tabs')
+		->setId('module_tabs');
+	foreach($tabs as $pInfo){
+		$tabPanel->addTabHeader($pInfo['panelId'], array('text' => $pInfo['panelHeader']))
+			->addTabPage($pInfo['panelId'], array('text' => $pInfo['panelContent']));
+	}
+	$infoBox->addContentRow($tabPanel->draw());
+
+}else{
+	foreach($Config->getConfig() as $cfg){
+		$key = $cfg->getKey();
+		$value = $cfg->getValue();
+		if ($cfg->hasSetFunction() && $cfg->getSetFunction() != 'isArea') {
+			eval('$inputField = ' . $cfg->getSetFunction() . "'" . $value . "', '" . $key . "');");
+		} else if ($cfg->hasSetFunction() && $cfg->getSetFunction() == 'isArea') {
+			$inputField = tep_draw_textarea_field('configuration[' . $key . ']', 'hard', 30, 5, $value, 'class="makeModFCK"');
+		}else {
+			$inputField = tep_draw_input_field('configuration[' . $key . ']', $value);
+		}
+
+		$infoBox->addContentRow('<b>' . $cfg->getTitle() . '</b><br>' . $cfg->getDescription() . '<br>' . $inputField);
+	}
 }
-	
+
 /*	$Qconfig = Doctrine_Query::create()
 	->from('Modules m')
 	->leftJoin('m.ModulesConfiguration c')

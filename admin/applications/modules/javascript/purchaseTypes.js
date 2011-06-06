@@ -4,6 +4,7 @@ function getLinkParams(addVars){
 	getVars.push('appPage=' + thisAppPage);
 	getVars.push('module=' + $('.gridBodyRow.state-active').attr('data-module_code'));
 	getVars.push('moduleType=' + $('.gridBodyRow.state-active').attr('data-module_type'));
+	getVars.push('modulePath=' + $('.gridBodyRow.state-active').attr('data-module_path'));
 
 	if (addVars){
 		for(var i=0; i<addVars.length; i++){
@@ -70,6 +71,8 @@ $(document).ready(function (){
 								}
 							});
 					});
+
+					$(self).find('#module_tabs').tabs();
 
 					if (typeof editWindowOnLoad != 'undefined'){
 						editWindowOnLoad.apply(self);

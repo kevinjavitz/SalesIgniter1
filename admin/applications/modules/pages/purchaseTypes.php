@@ -55,7 +55,8 @@ foreach($modules as $moduleCode => $moduleCls){
 
 	$tableGrid->addBodyRow(array(
 			'rowAttr' => array(
-				'data-module_code' => $moduleCode,
+				'data-module_code' => $moduleCls->getCode(),
+				'data-module_path' => $moduleCls->getPath(),
 				'data-module_type' => 'purchaseType',
 				'data-enabled'   => ($moduleCls->isEnabled() === true ? 'true' : 'false')
 			),

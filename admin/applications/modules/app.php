@@ -5,6 +5,7 @@
 	$App->addJavascriptFile('ext/jQuery/ui/jquery.effects.slide.js');
 	$App->addJavascriptFile('ext/jQuery/ui/jquery.effects.fold.js');
 	$App->addJavascriptFile('ext/jQuery/ui/jquery.effects.fade.js');
+	$App->addJavascriptFile('ext/jQuery/ui/jquery.ui.tabs.js');
 	$App->addJavascriptFile('admin/rental_wysiwyg/ckeditor.js');
 
 	if (isset($_GET['module'])){
