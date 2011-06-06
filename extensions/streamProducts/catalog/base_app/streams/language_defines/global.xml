@@ -13,7 +13,7 @@
 
 	<define key="TEXT_INFO_EXPIRES_NEVER"><![CDATA[Never]]></define>
 	<define key="TEXT_INFO_PENDING_APPROVAL"><![CDATA[Pending Payment Approval]]></define>
-	<define key="TEXT_INFO_STREAM_PERMISSION_DENIED"><![CDATA[Permission Denied<br><br>if you feel this is an error please contact the store administrator]]></define>
+	<define key="TEXT_INFO_STREAM_PERMISSION_DENIED"><![CDATA[Permission Denied<br>You must <a href="%s"><u>Register</u></a> for a membership account or <a href="%s"><u>Login</u></a> to your account to stream<br><br>if you feel this is an error please contact the store administrator]]></define>
 	<define key="TEXT_NO_PURCHASES"><![CDATA[You have no streams purchased]]></define>
 
 	<define key="TEXT_BUTTON_VIEW_ORDER"><![CDATA[View Order]]></define>

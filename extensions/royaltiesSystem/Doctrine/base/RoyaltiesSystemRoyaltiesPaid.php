@@ -7,6 +7,7 @@
 class RoyaltiesSystemRoyaltiesPaid extends Doctrine_Record {
 
 	public function setUp(){
+		parent::setUp();
 		$this->setUpParent();
 
 		$this->hasOne('Customers', array(
