@@ -1,0 +1,10 @@
+<configurations>
+	<configuration>
+		<title><![CDATA[Enable Specials Integration]]></title>
+		<key><![CDATA[SPECIALS_ENABLED]]></key>
+		<tab><![CDATA[Specials]]></tab>
+		<value><![CDATA[False]]></value>
+		<description><![CDATA[Do you want to enable specials integration for this purchase type?]]></description>
+		<set_function><![CDATA[tep_cfg_select_option(array('True', 'False'),]]></set_function>
+	</configuration>
+</configurations>
