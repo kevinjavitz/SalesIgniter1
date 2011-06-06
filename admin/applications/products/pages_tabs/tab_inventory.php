@@ -7,15 +7,12 @@ $(document).ready(function (){
 });
 </script>
 <?php
-	$inventoryTypes = array(
-		'new'         => 'New',
-		'used'        => 'Used',
-		'rental'      => 'Member Rental'
-	);
-
-	if ($appExtension->isInstalled('payPerRentals')){
-		$inventoryTypes['reservation'] = 'Pay Per Rental';
+$inventoryTypes = array();
+foreach(PurchaseTypeModules::getModules() as $purchaseType){
+	if ($purchaseType->getConfigData('INVENTORY_ENABLED') == 'True'){
+		$inventoryTypes[$purchaseType->getCode()] = $purchaseType->getTitle();
 	}
+}
 
 	$inventoryTrackMethods = array(
 		'quantity' => 'Quantity',
@@ -29,7 +26,7 @@ $(document).ready(function (){
 			'inventoryTabFunction'  => 'getNormalInventoryTabContent',
 			'showLabelPrint'        => true,
 			'showInvCalander'       => true,
-			'calanderPurchaseTypes' => array('rental', 'reservation'),
+			'calanderPurchaseTypes' => array('rental', 'membershipRental', 'reservation'),
 			'purchaseTypes'         => $inventoryTypes,
 			'trackMethods'          => $inventoryTrackMethods
 		)

@@ -1,6 +1,11 @@
 <?php
-require(dirname(__FILE__) . '/product/PurchaseTypeAbstract.php');
-require(dirname(__FILE__) . '/product/Inventory.php');
+if (!class_exists('PurchaseTypeAbstract')){
+	require(dirname(__FILE__) . '/product/PurchaseTypeAbstract.php');
+}
+
+if (!class_exists('productInventory')){
+	require(dirname(__FILE__) . '/product/Inventory.php');
+}
 
 class Product {
 	public function __construct($pID){

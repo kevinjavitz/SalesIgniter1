@@ -5,6 +5,10 @@ class ModuleConfig {
 		$this->cfg = $dataArray;
 	}
 
+	public function getTab(){
+		return $this->cfg['tab'];
+	}
+
 	public function getKey(){
 		return $this->cfg['key'];
 	}
@@ -42,12 +46,15 @@ class ModuleConfigReader {
 
 	private $configData = array();
 
-	public function __construct($module, $moduleType){
+	public function __construct($module, $moduleType, $moduleDir = false){
 		$this->module = $module;
 		$this->moduleType = $moduleType;
 
+		if ($moduleDir === false){
+			$moduleDir = sysConfig::getDirFsCatalog() . 'includes/modules/' . $this->moduleType . 'Modules/' . $this->module . '/';
+		}
 		$coreFile = simplexml_load_file(
-			sysConfig::getDirFsCatalog() . 'includes/modules/' . $this->moduleType . 'Modules/' . $this->module . '/data/config.xml',
+			$moduleDir . 'data/config.xml',
 			'SimpleXMLElement',
 			LIBXML_NOCDATA
 		);
@@ -58,10 +65,10 @@ class ModuleConfigReader {
 		foreach($Extensions as $Ext){
 			if ($Ext->isDot() || $Ext->isFile()) continue;
 
-			if (is_dir($Ext->getPathname() . '/' . $this->moduleType . 'Modules/' . $this->module)){
-				if (file_exists($Ext->getPathname() . '/' . $this->moduleType . 'Modules/' . $this->module . '/data/config.xml')){
+			if (is_dir($Ext->getPathname() . '/data/base')){
+				if (file_exists($Ext->getPathname() . '/data/base/purchaseTypes.xml')){
 					$extFile = simplexml_load_file(
-						$Ext->getPathname() . '/' . $this->moduleType . 'Modules/' . $this->module . '/data/config.xml',
+						$Ext->getPathname() . '/data/base/purchaseTypes.xml',
 						'SimpleXMLElement',
 						LIBXML_NOCDATA
 					);
@@ -74,10 +81,11 @@ class ModuleConfigReader {
 	private function parseXmlConfig($xmlObj){
 		$Qmodule = Doctrine_Query::create()
 			->from('Modules m')
-			->leftJoin('ModulesConfiguration mc')
+			->leftJoin('m.ModulesConfiguration mc')
 			->where('m.modules_type = ?', $this->moduleType)
 			->andWhere('m.modules_code = ?', $this->module)
-			->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+			->execute()
+			->toArray();
 		foreach($xmlObj->configuration as $cInfo){
 			$cfgKey = (string) $cInfo->key;
 			if (isset($Qmodule[0]['ModulesConfiguration'][$cfgKey])){
@@ -88,6 +96,7 @@ class ModuleConfigReader {
 			$this->configData[$cfgKey] = new ModuleConfig(array(
 				'key' => $cfgKey,
 				'value' => $configVal,
+				'tab' => (string) $cInfo->tab,
 				'title' => (string) $cInfo->title,
 				'description' => (string) $cInfo->description,
 				'use_function' => (isset($cInfo->use_function) ? (string) $cInfo->use_function : null),

@@ -119,7 +119,7 @@ class Application {
 		$appExtension->getLanguageFiles(array(
 				'env' => $this->env,
 				'appName' => $this->getAppName()
-			), $languageFiles);
+			), &$languageFiles);
 
 		/*
 		 * Application definitions overwrite file path
@@ -132,7 +132,7 @@ class Application {
 		$appExtension->getOverwriteLanguageFiles(array(
 				'env' => $this->env,
 				'appName' => $this->getAppName()
-			), $languageFiles);
+			), &$languageFiles);
 
 		/*
 		 * Load all definition files and overwrite definitions

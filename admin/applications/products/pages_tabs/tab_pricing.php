@@ -1,69 +1,62 @@
- <?php
- 	$contents = EventManager::notifyWithReturn('NewProductPricingTabTop', (isset($Product) ? $Product : false));
- 	if (!empty($contents)){
- 		foreach($contents as $content){
-			echo $content;
-		}
+<?php
+$pricingTabsObj = htmlBase::newElement('tabs')
+	->setId('pricingTabs');
+
+foreach(PurchaseTypeModules::getModules() as $purchaseType){
+	if ($purchaseType->getConfigData('PRICING_ENABLED') == 'True'){
+		$pricingTypeName = $purchaseType->getCode();
+		$pricingTypeText = $purchaseType->getTitle();
+		$productsPrice = $purchaseType->getPriceFromQuery($Product);
+
+		$inputNet = htmlBase::newElement('input')
+			->addClass('netPricing')
+			->setName('products_price_' . $pricingTypeName)
+			->setId('products_price_' . $pricingTypeName)
+			->val($productsPrice);
+
+		$inputGross = htmlBase::newElement('input')
+			->addClass('grossPricing')
+			->setName('products_price_' . $pricingTypeName . '_gross')
+			->setId('products_price_' . $pricingTypeName . '_gross')
+			->val($productsPrice);
+
+		$inputTable = htmlBase::newElement('table')
+			->setCellPadding(2)
+			->setCellSpacing(0);
+
+		$inputTable->addBodyRow(array(
+				'columns' => array(
+					array('text' => 'Price Net:'),
+					array('text' => $inputNet->draw())
+				)
+			));
+		$inputTable->addBodyRow(array(
+				'columns' => array(
+					array('text' => 'Price Gross:'),
+					array('text' => $inputGross->draw())
+				)
+			));
+
+		EventManager::notify('NewProductPricingTabBottom', $Product, &$inputTable, &$purchaseType);
+
+		$pricingTabsObj->addTabHeader('productPricingTab_' . $pricingTypeName, array('text' => $pricingTypeText))
+			->addTabPage('productPricingTab_' . $pricingTypeName, array('text' => $inputTable));
 	}
- ?>
- <div class="main"><?php
-	echo sysLanguage::get('TEXT_PRODUCTS_TAX_CLASS') . 
-	     tep_draw_separator('pixel_trans.gif', '24', '15') . '&nbsp;' . 
-	     tep_draw_pull_down_menu('products_tax_class_id', $tax_class_array, (isset($Product) ? $Product['products_tax_class_id'] : ''), ' id="tax_class_id"');
-?></div>
- <hr>
- <?php
- 	$pricingTabsInfo = array(
- 		'new' => 'New',
- 		'used' => 'Used',
- 		'stream' => 'Streaming',
- 		'download' => 'Download'
- 	);
- 	
- 	$pricingTabsObj = htmlBase::newElement('tabs')
- 	->setId('pricingTabs');
- 	foreach($pricingTabsInfo as $pricingTypeName => $pricingTypeText){
-		$inputNet = htmlBase::newElement('input')->addClass('netPricing');
-		$inputGross = htmlBase::newElement('input')->addClass('grossPricing');
- 		if ($pricingTypeName == 'new'){
- 			$inputNet->setName('products_price')
- 			->setId('products_price')
- 			->val((isset($Product) ? $Product['products_price'] : ''));
- 			
- 			$inputGross->setName('products_price_gross')
- 			->setId('products_price_gross')
- 			->val((isset($Product) ? $Product['products_price'] : ''));
- 		}else{
- 			$inputNet->setName('products_price_' . $pricingTypeName)
- 			->setId('products_price_' . $pricingTypeName)
- 			->val((isset($Product) ? $Product['products_price_' . $pricingTypeName] : ''));
- 			
- 			$inputGross->setName('products_price_' . $pricingTypeName . '_gross')
- 			->setId('products_price_' . $pricingTypeName . '_gross')
- 			->val((isset($Product) ? $Product['products_price_' . $pricingTypeName] : ''));
- 		}
- 		
- 		$inputTable = htmlBase::newElement('table')
- 		->setCellPadding(2)
- 		->setCellSpacing(0);
- 		
- 		$inputTable->addBodyRow(array(
- 			'columns' => array(
- 				array('text' => 'Price Net:'),
- 				array('text' => $inputNet->draw())
- 			)
- 		));
- 		$inputTable->addBodyRow(array(
- 			'columns' => array(
- 				array('text' => 'Price Gross:'),
- 				array('text' => $inputGross->draw())
- 			)
- 		));
- 		
-		EventManager::notify('NewProductPricingTabBottom', (isset($Product) ? $Product : false), &$inputTable, &$pricingTypeName);
-		
- 		$pricingTabsObj->addTabHeader('productPricingTab_' . $pricingTypeName, array('text' => $pricingTypeText))
- 		->addTabPage('productPricingTab_' . $pricingTypeName, array('text' => $inputTable));
- 	}
+}
+
+$contents = EventManager::notifyWithReturn('NewProductPricingTabTop', $Product);
+if (!empty($contents)){
+	foreach($contents as $content){
+		echo $content;
+	}
+}
+?>
+<div class="main"><?php
+	echo sysLanguage::get('TEXT_PRODUCTS_TAX_CLASS') .
+	tep_draw_separator('pixel_trans.gif', '24', '15') . '&nbsp;' .
+	tep_draw_pull_down_menu('products_tax_class_id', $tax_class_array, $Product['products_tax_class_id'], ' id="tax_class_id"');
+	?></div>
+<hr>
+<?php
  	echo $pricingTabsObj->draw();
 ?>

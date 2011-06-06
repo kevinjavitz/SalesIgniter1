@@ -183,17 +183,19 @@
 		public static function loadDefinitions($filePath, $forcedEnv = null){
 			global $App, $messageStack;
 			//$langFile = strtolower(self::getName()) . '.xml';
-			
+
 			if (substr($filePath, -3) != 'xml'){
 				$langFile = 'global.xml';
 				$prependPath = '';
 				if (substr($filePath, 0, 1) != '/'){
-					$prependPath = sysConfig::getDirFsCatalog();
+					if (substr($filePath, 0, strlen(sysConfig::getDirFsCatalog())) != sysConfig::getDirFsCatalog()){
+						$prependPath = sysConfig::getDirFsCatalog();
+					}
 				}
 
 				$filePath = $prependPath . $filePath . $langFile;
 			}
-			
+
 			if (file_exists($filePath)){
 				$langData = simplexml_load_file(
 					$filePath,

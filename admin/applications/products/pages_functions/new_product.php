@@ -49,10 +49,12 @@
 		$invController = $settings['controller'];
 		$purchaseType = $settings['purchaseType'];
 		$trackMethods = $settings['trackMethods'];
-		
+		$purchaseTypeClass = PurchaseTypeModules::getModule($purchaseType);
+
 		$trackMethodTable = htmlBase::newElement('table')
 		->setCellPadding(3)->setCellSpacing(0)->css('width', '98%');
 		foreach($trackMethods as $id => $text){
+
 			$radioField = htmlBase::newElement('radio')
 			->addClass('trackMethodButton')
 			->setName('track_method[' . $invController . '][' . $purchaseType . ']')
@@ -60,13 +62,12 @@
 			->setLabel('Use ' . $text . ' Tracking')
 			->setLabelPosition('after')
 			->setLabelSeparator('&nbsp;');
-			if (isset($track_method) && $track_method[$invController][$purchaseType] == $id){
+			if ($purchaseTypeClass->getConfigData('INVENTORY_' . strtoupper($id) . '_ENABLED') == 'False'){
+				$radioField->disable(true);
+			}elseif (isset($track_method) && $track_method[$invController][$purchaseType] == $id){
 				$radioField->setChecked(true);
 			}
-			if ($purchaseType == 'rental' && $id == 'quantity'){
-				$radioField->disable(true);
-			}
-			
+
 			$trackMethodTable->addBodyRow(array(
 				'columns' => array(
 					array('addCls' => 'main', 'text' => $radioField)
@@ -373,70 +374,83 @@
 		$dataSet = $settings['dataSet'];
 		$purchaseType = $settings['purchaseType'];
 		$productId = $settings['productId'];
-		
+		$purchaseTypeClass = PurchaseTypeModules::getModule($purchaseType);
+
+		$useQuantityTable = $purchaseTypeClass->getConfigData('INVENTORY_QUANTITY_ENABLED') == 'True';
+		$useBarcodeTable = $purchaseTypeClass->getConfigData('INVENTORY_BARCODE_ENABLED') == 'True';
+
 		$contentContainer = htmlBase::newElement('div')
 		->addClass('main');
-		
-     	$quantityTable = buildQuantityTable(array(
-     		'purchaseType' => $purchaseType,
-     		'inventoryId' => $dataSet['quantity']['inventoryId'],
-     		'dataSet' => $dataSet['quantity']['inventoryItems']
-     	));
-     	
-		$quantityTableHeader = htmlBase::newElement('div')
-		->addClass('ui-widget ui-widget-header ui-corner-top centerAlign')
-		->css(array(
-			'padding' => '.5em'
-		))
-		->html('Quantity');
-		
-		$barcodeTableContainer = htmlBase::newElement('div')
-		->addClass('ui-widget ui-widget-content ui-corner-all')
-		->attr('data-purchase_type', $purchaseType)
-		->css(array(
-			'width'     => '100%',
-			'padding'   => '.3em',
-			'font-size' => '12px'
-		));
-		
-		if (!isset($_GET['pID'])){
-			$barcodeTableContainer->disable(true);
-		}
-		
-		$barcodeTable = buildBarcodeEntryTable(array(
-			'purchaseType' => $purchaseType
-		));
 
-		$ajaxNotice = htmlBase::newElement('div')
-		->addClass('main')
-		->html('<small>*Barcodes are dynamically added and do not require the product to be updated</small>');
-		
-		$currentBarcodesHeader = htmlBase::newElement('div')
-		->addClass('ui-widget ui-widget-header ui-corner-top centerAlign')
-		->css(array(
-			'padding' => '.5em',
-			'text-align' => 'center'
-		))
-		->html('Current Barcodes');
-		
-		$currentBarcodesTable = buildCurrentBarcodesTable(array(
-			'purchaseType' => $purchaseType,
-     		'inventoryId' => $dataSet['barcode']['inventoryId'],
-			'dataSet' => $dataSet['barcode']['inventoryItems']
-		));
-		
-		$barcodeTableContainer->append($barcodeTable)
-		->append($ajaxNotice)
-		->append(htmlBase::newElement('hr'))
-		->append($currentBarcodesHeader)
-		->append($currentBarcodesTable);
-		
-		$contentContainer->append($quantityTableHeader)
-		->append($quantityTable)
-		->append(htmlBase::newElement('br'))
-		->append(htmlBase::newElement('hr'))
-		->append(htmlBase::newElement('br'))
-		->append($barcodeTableContainer);
+		if ($useQuantityTable === true){
+			$quantityTable = buildQuantityTable(array(
+					'purchaseType' => $purchaseType,
+					'inventoryId' => $dataSet['quantity']['inventoryId'],
+					'dataSet' => $dataSet['quantity']['inventoryItems']
+					));
+
+			$quantityTableHeader = htmlBase::newElement('div')
+				->addClass('ui-widget ui-widget-header ui-corner-top centerAlign')
+				->css(array(
+					'padding' => '.5em'
+				))
+				->html('Quantity');
+		}
+
+		if ($useBarcodeTable === true){
+			$barcodeTableContainer = htmlBase::newElement('div')
+				->addClass('ui-widget ui-widget-content ui-corner-all')
+				->attr('data-purchase_type', $purchaseType)
+				->css(array(
+					'width'     => '100%',
+					'padding'   => '.3em',
+					'font-size' => '12px'
+				));
+
+			if (!isset($_GET['pID'])){
+				$barcodeTableContainer->disable(true);
+			}
+
+			$barcodeTable = buildBarcodeEntryTable(array(
+					'purchaseType' => $purchaseType
+				));
+
+			$ajaxNotice = htmlBase::newElement('div')
+				->addClass('main')
+				->html('<small>*Barcodes are dynamically added and do not require the product to be updated</small>');
+
+			$currentBarcodesHeader = htmlBase::newElement('div')
+				->addClass('ui-widget ui-widget-header ui-corner-top centerAlign')
+				->css(array(
+					'padding' => '.5em',
+					'text-align' => 'center'
+				))
+				->html('Current Barcodes');
+
+			$currentBarcodesTable = buildCurrentBarcodesTable(array(
+					'purchaseType' => $purchaseType,
+					'inventoryId' => $dataSet['barcode']['inventoryId'],
+					'dataSet' => $dataSet['barcode']['inventoryItems']
+				));
+
+			$barcodeTableContainer->append($barcodeTable)
+				->append($ajaxNotice)
+				->append(htmlBase::newElement('hr'))
+				->append($currentBarcodesHeader)
+				->append($currentBarcodesTable);
+		}
+
+		if ($useQuantityTable === true){
+			$contentContainer->append($quantityTableHeader)
+				->append($quantityTable)
+				->append(htmlBase::newElement('br'))
+				->append(htmlBase::newElement('hr'))
+				->append(htmlBase::newElement('br'));
+		}
+
+		if ($useBarcodeTable === true){
+			$contentContainer->append($barcodeTableContainer);
+		}
 		
 		return $contentContainer->draw();
 	}

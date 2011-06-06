@@ -1,5 +1,9 @@
 <?php
 	require(sysConfig::getDirFsAdmin() . 'includes/classes/upload.php');
+
+	require(sysConfig::getDirFsCatalog() . 'includes/modules/purchaseTypeModules/modules.php');
+	PurchaseTypeModules::loadModules();
+
 	$appContent = $App->getAppContentFile();
     $infoBoxId = null;
 		if (isset($_GET['pID'])){

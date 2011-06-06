@@ -8,7 +8,7 @@
 	->setName('products_status')
 	->setLabel(sysLanguage::get('TEXT_PRODUCT_NOT_AVAILABLE'))
 	->setValue('0');
-	
+
 	$productTypes = array(
 		array(
 			'new'           => sysLanguage::get('TEXT_SALE') . ' (New)',
@@ -20,9 +20,14 @@
 			'member_stream' => sysLanguage::get('TEXT_STREAMING_MEMBERSHIP')
 		)
 	);
-	
+
 	EventManager::notify('ProductEditAppendProductTypes', &$productTypes);
-	
+
+	$productTypes = array();
+	foreach(PurchaseTypeModules::getModules() as $purchaseType){
+		$productTypes[][$purchaseType->getCode()] = $purchaseType->getTitle();
+	}
+
 	if (isset($Product)){
 		$currentTypes = explode(',', $Product['products_type']);
 	}
@@ -33,6 +38,7 @@
 		foreach($row as $pType => $pLabel){
 			$input = htmlBase::newElement('checkbox')
 			->setName('products_type[]')
+			->setLabelPosition('after')
 			->setLabel($pLabel)
 			->setValue($pType);
 			
