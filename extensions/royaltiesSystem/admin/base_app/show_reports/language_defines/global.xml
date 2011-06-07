@@ -23,4 +23,16 @@
 	<define key="TABLE_HEADING_PRODUCT_NAME"><![CDATA[Product Name]]></define>
 	<define key="TABLE_HEADING_ROYALTY_FEE"><![CDATA[Royalty Fee]]></define>
 	<define key="TABLE_HEADING_CONTENT_OWNER"><![CDATA[Content Provider]]></define>
+	<define key="TABLE_HEADING_DATE_PAID"><![CDATA[Date Paid]]></define>
+	<define key="TABLE_HEADING_AMOUNT_PAID"><![CDATA[Amount Paid]]></define>
+	<define key="TABLE_HEADING_OWED"><![CDATA[Owed]]></define>
+	<define key="TABLE_HEADING_PAY"><![CDATA[Pay]]></define>
+	<define key="TABLE_HEADING_ORDERS_ID"><![CDATA[Order ID]]></define>
+	<define key="TEXT_BACK_TO_REPORT"><![CDATA[Back To Report]]></define>
+	<define key="TEXT_PAY_PROVIDERS"><![CDATA[Pay Providers]]></define>
+	<define key="TEXT_PAYMENT_REPORT"><![CDATA[Payment Report]]></define>
+
+	<define key="TEXT_NO_PAYMENT_RECORD"><![CDATA[No payment record found]]></define>
+	<define key="TEXT_NO_RECORD"><![CDATA[No record found]]></define>
+
 </definitions>

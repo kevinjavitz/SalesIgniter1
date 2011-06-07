@@ -12,6 +12,7 @@
 	->leftJoin('os.OrdersStatusDescription osd')
 	->where('o.customers_id = ?', $userAccount->getCustomerId())
 	->andWhere('osd.language_id = ?', Session::get('languages_id'))
+	->andWhere('op.purchase_type = ?', 'stream')
 	->andWhere('(ops.stream_maxdays = 0 OR DATE_ADD(o.date_purchased, INTERVAL ops.stream_maxdays DAY) > now()) AND TRUE')
 	->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 	if ($Qhistory){
@@ -49,7 +50,7 @@
 						$addDays = $opsInfo['stream_maxdays'];
 						$dateArr = date_parse($oInfo['date_purchased']);
 						$time = mktime(0,0,0,$dateArr['month'],$dateArr['day'],$dateArr['year']);
-						$expires = date('Y-m-d', strtotime('+ ' . $addDays . ' day', $time));
+						$expires = tep_date_short(date('Y-m-d H:i:s', strtotime('+ ' . $addDays . ' day', $time)));
 					}
 
 					$streamButton = htmlBase::newElement('button')

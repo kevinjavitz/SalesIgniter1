@@ -25,8 +25,14 @@ class royaltiesSystem_admin_products_new_product extends Extension_royaltiesSyst
 			'NewProductStreamingTableAddInputRow',
 			'NewProductDownloadsTableAddHeaderCol',
 			'NewProductDownloadsTableAddBodyCol',
-			'NewProductDownloadsTableAddInputRow'
+			'NewProductDownloadsTableAddInputRow',
+			'NewProductPricingTabBottom',
+			'NewProductPricingTabsComplete'
 		), null, $this);
+	}
+
+	public function exemptedPurchaseTypes(){
+		return array('stream', 'download');
 	}
 	
 	public function NewProductStreamingTableAddBodyCol($sInfo, &$BodyColumns){
@@ -39,7 +45,7 @@ class royaltiesSystem_admin_products_new_product extends Extension_royaltiesSyst
 
 		$providerName = '';
 		$Qproviders = Doctrine_Query::create()
-		->select('customers_id, customers_firstname, customers_lastname')
+				->select('customers_id, CONCAT(customers_firstname," ", customers_lastname) as customers_name')
 		->from('Customers')
 		->where('is_content_provider = ?', '1')
 		->execute(array(),Doctrine_Core::HYDRATE_ARRAY);
@@ -47,7 +53,7 @@ class royaltiesSystem_admin_products_new_product extends Extension_royaltiesSyst
 			foreach($Qproviders as $pInfo){
 				$Cselectbox->addOption(
 					$pInfo['customers_id'],
-					$pInfo['customers_firstname'] . ' ' . $pInfo['customers_lastname']
+					$pInfo['customers_name']
 				);
 				
 				if ($pInfo['customers_id'] == $sInfo['content_provider_id']){
@@ -87,7 +93,7 @@ class royaltiesSystem_admin_products_new_product extends Extension_royaltiesSyst
 		$Cselectbox->addOption('0', sysLanguage::get('TEXT_PLEASE_SELECT'), false);
 
 		$Qproviders = Doctrine_Query::create()
-		->select('customers_id, customers_firstname, customers_lastname')
+				->select('customers_id, CONCAT(customers_firstname," ", customers_lastname) as customers_name')
 		->from('Customers')
 		->where('is_content_provider = ?', '1')
 		->execute(array(),Doctrine_Core::HYDRATE_ARRAY);
@@ -95,7 +101,7 @@ class royaltiesSystem_admin_products_new_product extends Extension_royaltiesSyst
 			foreach($Qproviders as $pInfo){
 				$Cselectbox->addOption(
 					$pInfo['customers_id'],
-					$pInfo['customers_firstname'] . ' ' . $pInfo['customers_lastname']
+					$pInfo['customers_name']
 				);
 			}
 		}
@@ -123,7 +129,7 @@ class royaltiesSystem_admin_products_new_product extends Extension_royaltiesSyst
 
 		$providerName = '';
 		$Qproviders = Doctrine_Query::create()
-		->select('customers_id, customers_firstname, customers_lastname')
+				->select('customers_id, CONCAT(customers_firstname," ", customers_lastname) as customers_name')
 		->from('Customers')
 		->where('is_content_provider = ?', '1')
 		->execute(array(),Doctrine_Core::HYDRATE_ARRAY);
@@ -131,12 +137,12 @@ class royaltiesSystem_admin_products_new_product extends Extension_royaltiesSyst
 			foreach($Qproviders as $pInfo){
 				$Cselectbox->addOption(
 					$pInfo['customers_id'],
-					$pInfo['customers_firstname'] . ' ' . $pInfo['customers_lastname']
+					$pInfo['customers_name']
 				);
 				
 				if ($pInfo['customers_id'] == $dInfo['content_provider_id']){
 					$Cselectbox->selectOptionByValue($dInfo['content_provider_id']);
-					$providerName = $pInfo['customers_firstname'] . ' ' . $pInfo['customers_lastname'];
+					$providerName = $pInfo['customers_name'];
 				}
 			}
 		}
@@ -172,7 +178,7 @@ class royaltiesSystem_admin_products_new_product extends Extension_royaltiesSyst
 		$Cselectbox->addOption('0', sysLanguage::get('TEXT_PLEASE_SELECT'), false);
 
 		$Qproviders = Doctrine_Query::create()
-		->select('customers_id, customers_firstname, customers_lastname')
+				->select('customers_id, CONCAT(customers_firstname," ", customers_lastname) as customers_name')
 		->from('Customers')
 		->where('is_content_provider = ?', '1')
 		->execute(array(),Doctrine_Core::HYDRATE_ARRAY);
@@ -180,7 +186,7 @@ class royaltiesSystem_admin_products_new_product extends Extension_royaltiesSyst
 			foreach($Qproviders as $pInfo){
 				$Cselectbox->addOption(
 					$pInfo['customers_id'],
-					$pInfo['customers_firstname'] . ' ' . $pInfo['customers_lastname']
+					$pInfo['customers_name']
 				);
 			}
 		}
@@ -196,6 +202,66 @@ class royaltiesSystem_admin_products_new_product extends Extension_royaltiesSyst
 		$inputRow[] = array(
 			'text' => $royaltyFeeInput->draw()
 		);
+	}
+
+	public function NewProductPricingTabBottom(&$Product, &$inputTable, &$typeName){
+		if(in_array($typeName,$this->exemptedPurchaseTypes()))
+			return false;
+		if ($Product !== false && $Product['products_id'] > 0){
+			$ProductsRoyaltiesTable = Doctrine_Core::getTable('RoyaltiesSystemProductsRoyalties');
+			$ProductsRoyalties = $ProductsRoyaltiesTable->findOneByProductsIdAndPurchaseType($Product['products_id'],$typeName);
+		}
+
+
+		$Cselectbox = htmlBase::newElement('selectbox')
+				->setName('content_provider_id[' . $typeName . ']');
+
+		$Cselectbox->addOption('0', sysLanguage::get('TEXT_PLEASE_SELECT'), false);
+
+		$Qproviders = Doctrine_Query::create()
+				->select('customers_id, CONCAT(customers_firstname," ", customers_lastname) as customers_name')
+				->from('Customers')
+				->where('is_content_provider = ?', '1')
+				->execute(array(),Doctrine_Core::HYDRATE_ARRAY);
+
+		if ($Qproviders){
+			foreach($Qproviders as $pInfo){
+				$Cselectbox->addOption(
+					$pInfo['customers_id'],
+					$pInfo['customers_name']
+				);
+			}
+		}
+		$Cselectbox->selectOptionByValue($ProductsRoyalties->content_provider_id);
+
+		$royaltyFeeInput = htmlBase::newElement('input')
+				->setName('royalty_fee[' . $typeName . ']')
+				->attr('size', 6)
+				->val($ProductsRoyalties->royalty_fee);
+		if($typeName == 'rental'){
+			$inputNet = htmlBase::newElement('input')->addClass('netPricing');
+			$inputNet->setName('products_price_rental')
+					->setId('products_price_rental')
+					->val((isset($Product) ? $ProductsRoyalties->products_price_rental : ''));
+			$inputTable->addBodyRow(array(
+			                             'columns' => array(
+				                             array('text' => sysLanguage::get('TEXT_PRICE_NET')),
+				                             array('text' => $inputNet->draw())
+			                             )
+			                        ));
+		}
+		$inputTable->addBodyRow(array(
+		                             'columns' => array(
+			                             array('text' => sysLanguage::get('TEXT_CONTENT_PROVIDER')),
+			                             array('text' => $Cselectbox->draw())
+		                             )
+		                        ));
+		$inputTable->addBodyRow(array(
+		                             'columns' => array(
+			                             array('text' => sysLanguage::get('TEXT_ROYALTY')),
+			                             array('text' => $royaltyFeeInput->draw())
+		                             )
+		                        ));
 	}
 }
 ?>
