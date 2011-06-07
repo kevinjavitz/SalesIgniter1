@@ -15,12 +15,6 @@ $(document).ready(function (){
 		}
 	});
 
-$(".tip7").fancybox({
-	'showCloseButton'	: false,
-	'titlePosition' 		: 'inside',
-	'titleFormat'		: formatTitle
-});
-
 	$('.makeCommentFCK').each(function (){
 		$(this).data('editorInstance', CKEDITOR.replace(this, {
 			filebrowserBrowseUrl: DIR_WS_ADMIN + 'rentalwysiwyg/editor/filemanager/browser/default/browser.php'
