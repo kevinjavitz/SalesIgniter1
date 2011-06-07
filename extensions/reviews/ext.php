@@ -26,11 +26,12 @@ class Extension_reviews extends ExtensionBase {
 	}
 	
 	public function ProductInfoButtonBarAddButton($product){
-		return htmlBase::newElement('button')
+		/*return htmlBase::newElement('button')
 		->css('float', 'right')
 		->setText(sysLanguage::get('TEXT_BUTTON_REVIEWS'))
 		->setHref(itw_app_link('appExt=reviews&products_id=' . $product->getId(), 'product_review', 'default'))
-		->draw();
+		->draw();*/
+		return '';
 	}
 }
 ?>

@@ -18,7 +18,7 @@
 		$Review->save();
 
 		$messageStack->addSession('pageStack','Review added!','success');
-		$link = itw_app_link('appExt=reviews', 'product_review', 'default');
+		$link = itw_app_link('appExt=reviews&products_id=' . $_POST['products_id'], 'product_review', 'default');
 	}else{
 		$messageStack->addSession('pageStack','You must select a rating!','error');
 		$link = itw_app_link('appExt=reviews&products_id=' . $_POST['products_id'], 'product_review', 'write');
