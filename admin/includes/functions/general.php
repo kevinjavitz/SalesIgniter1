@@ -401,25 +401,34 @@ function tep_get_geo_zone_name($geo_zone_id) {
 	return $geo_zone_name;
 }
 
-function tep_address_format($address_format_id, $address, $html, $boln, $eoln) {
-	$address_format_query = tep_db_query("select address_format as format from " . TABLE_ADDRESS_FORMAT . " where address_format_id = '" . (int)$address_format_id . "'");
-	$address_format = tep_db_fetch_array($address_format_query);
+function tep_address_format($address_format_id, $address, $html, $boln, $eoln, $type = 'long') {
 
-	$company = tep_output_string_protected($address['entry_company']);
+	$QAddressAformat = Doctrine_Query::create()
+	->from('AddressFormat')
+	->where('address_format_id=?', $address_format_id)
+	->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+	if($type == 'long'){
+		$fmt = $QAddressAformat[0]['address_format'];
+	}else{
+		$fmt = $QAddressAformat[0]['address_summary'];
+	}
+
+	$company = $address['entry_company'];
 	if (isset($address['entry_firstname']) && tep_not_null($address['entry_firstname'])) {
-		$firstname = tep_output_string_protected($address['entry_firstname']);
-		$lastname = tep_output_string_protected($address['entry_lastname']);
+		$firstname = $address['entry_firstname'];
+		$lastname = $address['entry_lastname'];
 	} elseif (isset($address['entry_name']) && tep_not_null($address['entry_name'])) {
-		$firstname = tep_output_string_protected($address['entry_name']);
+		$firstname = $address['entry_name'];
 		$lastname = '';
 	} else {
 		$firstname = '';
 		$lastname = '';
 	}
-	$street = tep_output_string_protected($address['entry_street_address']);
-	$suburb = tep_output_string_protected($address['entry_suburb']);
-	$city = tep_output_string_protected($address['entry_city']);
-	$state = tep_output_string_protected($address['entry_state']);
+
+	$street_address = $address['entry_street_address'];
+	$suburb = $address['entry_suburb'];
+	$city = $address['entry_city'];
+	$state = $address['entry_state'];
 	if (isset($address['entry_country_id']) && tep_not_null($address['entry_country_id'])) {
 		$country = tep_get_country_name($address['entry_country_id']);
 
@@ -427,48 +436,18 @@ function tep_address_format($address_format_id, $address, $html, $boln, $eoln) {
 			$state = tep_get_zone_code($address['entry_country_id'], $address['entry_zone_id'], $state);
 		}
 	} elseif (isset($address['country']) && tep_not_null($address['country'])) {
-		if (is_array($address['country']))
-		$country = tep_output_string_protected($address['country']['title']);
-		else
-		$country = tep_output_string_protected($address['country']);
+		if (is_array($address['country'])){
+			$country = $address['country']['title'];
+		}
+		else{
+			$country = tep_output_string_protected($address['country']);
+		}
 	} else {
 		$country = '';
 	}
-	$postcode = tep_output_string_protected($address['entry_postcode']);
-	$zip = $postcode;
+	$postcode = $address['entry_postcode'];
 
-	if ($html) {
-		// HTML Mode
-		$HR = '<hr>';
-		$hr = '<hr>';
-		if ( ($boln == '') && ($eoln == "\n") ) { // Values not specified, use rational defaults
-			$CR = '<br>';
-			$cr = '<br>';
-			$eoln = $cr;
-		} else { // Use values supplied
-			$CR = $eoln . $boln;
-			$cr = $CR;
-		}
-	} else {
-		// Text Mode
-		$CR = $eoln;
-		$cr = $CR;
-		$HR = '----------------------------------------';
-		$hr = '----------------------------------------';
-	}
-
-	$statecomma = '';
-	$streets = $street;
-	if ($suburb != '') $streets = $street . $cr . $suburb;
-	//if ($country == '') $country = tep_output_string_protected($address['country']);
-	if ($state != '') $statecomma = $state . ', ';
-
-	$fmt = $address_format['format'];
 	eval("\$address = \"$fmt\";");
-
-	if ( (ACCOUNT_COMPANY == 'true') && (tep_not_null($company)) ) {
-		$address = $company . $cr . $address;
-	}
 
 	return $address;
 }
@@ -734,18 +713,6 @@ function tep_prepare_country_zones_pull_down($country_id = '') {
 	}
 
 	return $zones;
-}
-
-////
-// Get list of address_format_id's
-function tep_get_address_formats() {
-	$address_format_query = tep_db_query("select address_format_id from " . TABLE_ADDRESS_FORMAT . " order by address_format_id");
-	$address_format_array = array();
-	while ($address_format_values = tep_db_fetch_array($address_format_query)) {
-		$address_format_array[] = array('id' => $address_format_values['address_format_id'],
-		'text' => $address_format_values['address_format_id']);
-	}
-	return $address_format_array;
 }
 
 ////

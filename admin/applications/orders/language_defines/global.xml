@@ -88,4 +88,6 @@
 	<define key="TEXT_PAYMENT_HISTORY_MESSAGE"><![CDATA[Comments]]></define>
 	<define key="TEXT_PAYMENT_HISTORY_AMOUNT_PAID"><![CDATA[Amount Paid]]></define>
     <define key="EMAIL_TEXT_TRACKING_NUMBER"><![CDATA[Tracking Number:]]></define>
+	<define key="ENTRY_IPADDRESS"><![CDATA[Ip Address:]]></define>
+
 </definitions>

@@ -149,6 +149,7 @@
 	<define key="PRIMARY_ADDRESS_DESCRIPTION"><![CDATA[This address is used as the pre-selected shipping and billing address for orders placed on this store.<br><br>This address is also used as the base for product and service tax calculations.]]></define>
 	<define key="ADDRESS_BOOK_TITLE"><![CDATA[Address Book Entries]]></define>
 	<define key="PRIMARY_ADDRESS"><![CDATA[(primary address)]]></define>
+	<define key="PRIMARY_SHIPPING_ADDRESS"><![CDATA[(primary shipping address)]]></define>
 	<define key="TEXT_MAXIMUM_ENTRIES"><![CDATA[<font color="#ff0000"><b>NOTE:</b></font> A maximum of %s address book entries allowed.]]></define>
 	<define key="TEXT_BUTTON_ADD_ADDRESS"><![CDATA[Add Address]]></define>
 
@@ -299,6 +300,8 @@
     <define key="TEXT_PAYMENT_HISTORY_PAYMENT_METHOD"><![CDATA[Payment Method]]></define>
     <define key="TEXT_PAYMENT_HISTORY_DATE_ADDED"><![CDATA[Date Added]]></define>
 	<define key="TEXT_BUTTON_CANCEL"><![CDATA[Cancel]]></define>
+
+	<define key="SET_AS_PRIMARY_SHIPPING"><![CDATA[Use as rental shipping address]]></define>
 
 	<define key="TEXT_ACTIVATED_MINUTES"><![CDATA[Your Account will be activated in a few minutes]]></define>
 </definitions>

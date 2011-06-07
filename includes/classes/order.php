@@ -361,7 +361,7 @@ class OrderProcessor {
 		$newOrder->currency = $this->info['currency'];
 		$newOrder->currency_value = (float)$this->info['currency_value'];
 		$newOrder->bill_attempts = (isset($this->info['bill_attempts']) ? $this->info['bill_attempts'] : 1);
-
+		$newOrder->ip_address = $_SERVER['REMOTE_ADDR'];
 		EventManager::notify('NewOrderBeforeSave', &$this, &$newOrder);
 
 		$newOrder->save();
