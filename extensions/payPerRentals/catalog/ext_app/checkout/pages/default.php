@@ -94,7 +94,7 @@ class payPerRentals_catalog_checkout_default extends Extension_payPerRentals {
 			}
 
 		if ($isAll){
-			$insuranceText = '<span id="insuranceTextRemove" style="display:'.(($isRemove == true)? '':'none').'">Remove Insurance For All</span>'. '<span id="insuranceText"style="display:'.(($isRemove == false)? '':'none').'">Insure All</span>';
+			$insuranceText = '<span id="insuranceTextRemove" style="display:'.(($isRemove == true)? '':'none').'">'.sysLanguage::get('TEXT_REMOVE_INSURANCE_ALL').'</span>'. '<span id="insuranceText"style="display:'.(($isRemove == false)? '':'none').'">'.sysLanguage::get('TEXT_INSURE_ALL').'</span>';
 
 			$rows[] = '<tr>
 						<td class="main" valign="top">' . $htmlCheckboxAll->draw() . '</td>

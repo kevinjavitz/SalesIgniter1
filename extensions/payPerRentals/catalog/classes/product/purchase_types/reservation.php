@@ -406,7 +406,7 @@ class PurchaseType_reservation extends PurchaseTypeAbstract {
 			$Module = OrderShippingModules::getModule($shippingModule);
 			$product = new product($this->productInfo['id']);
 			if(isset($resInfo['quantity'])){
- 	            		$total_weight = (int)$resInfo['quantity'] * $product->getWeight();
+ 	            $total_weight = (int)$resInfo['quantity'] * $product->getWeight();
 			}else{
 				$total_weight = $product->getWeight();
 			}
@@ -1220,6 +1220,8 @@ class PurchaseType_reservation extends PurchaseTypeAbstract {
 
 	public function displayReservePrice($price){
 		global $currencies;
+
+		EventManager::notify('ReservationPriceBeforeSetup', &$price);
 		return $currencies->display_price($price, $this->productInfo['taxRate']);
 	}
 
@@ -1875,7 +1877,7 @@ class PurchaseType_reservation extends PurchaseTypeAbstract {
 		return $date;
 	}
 
-	public function getReservationPrice($start, $end, $rInfo = '', $semName = ''){
+	public function getReservationPrice($start, $end, &$rInfo = '', $semName = ''){
 		global $currencies;
 		$productPricing = array();
 
@@ -1928,32 +1930,47 @@ class PurchaseType_reservation extends PurchaseTypeAbstract {
 
 			if (isset($productPricing['shipping'])){
 				$returnPrice['price'] += $productPricing['shipping'];
-				$returnPrice['message'] .= ' + '. $currencies->format($productPricing['shipping']).' Shipping';
+				$returnPrice['message'] .= ' + '. $currencies->format($productPricing['shipping']). ' '. sysLanguage::get('EXTENSION_PAY_PER_RENTALS_CALENDAR_SHIPPING');
 			}
 			if ($this->getDepositAmount() > 0){
 				$returnPrice['price'] += $this->getDepositAmount();
-				$returnPrice['message'] .= ' + '. $currencies->format($this->getDepositAmount()).' Deposit Amount';
+				$returnPrice['message'] .= ' + '. $currencies->format($this->getDepositAmount()).' '. sysLanguage::get('EXTENSION_PAY_PER_RENTALS_CALENDAR_DEPOSIT') ;
 			}
 
 			if (isset($rInfo['insurance'])){
 				$returnPrice['price'] += (float)$rInfo['insurance'];
+			}else{
+				if(sysConfig::get('EXTENSION_PAY_PER_RENTALS_INSURE_ALL_PRODUCTS_AUTO') == 'True'){
+					$payPerRentals = Doctrine_Query::create()
+					->select('insurance')
+					->from('ProductsPayPerRental')
+					->where('products_id = ?', $this->productInfo['id'])
+					->fetchOne();
+					$rInfo['insurance'] = $payPerRentals->insurance;
+					$returnPrice['price'] += (float)$rInfo['insurance'];
+					$returnPrice['message'] .= ' + '. $currencies->format($rInfo['insurance']).' '. sysLanguage::get('EXTENSION_PAY_PER_RENTALS_CALENDAR_INSURANCE') ;
+				}
 			}
+
+			EventManager::notify('PurchaseTypeAfterSetup', &$returnPrice);
 		}
 		return $returnPrice;
 	}
 
-	public function figureProductPricing($pID_string, $externalResInfo = false){
+	public function figureProductPricing(&$pID_string, $externalResInfo = false){
 		global $ShoppingCart;
+
 		if ($externalResInfo === true){
 			$rInfo = $ShoppingCart->reservationInfo;
 		}elseif (is_array($pID_string)){
-			$rInfo = $pID_string;
+			$rInfo =& $pID_string;
 		}else{
 			$cartProduct = $ShoppingCart->contents->find($pID_string, 'reservation');
 			$rInfo = $cartProduct->getInfo('reservationInfo');
 		}
 
-		$pricing = $this->getReservationPrice($rInfo['start_date'], $rInfo['end_date'], $rInfo);
+		$pricing = $this->getReservationPrice($rInfo['start_date'], $rInfo['end_date'], &$rInfo);
+
 		return $pricing;
 	}
 
