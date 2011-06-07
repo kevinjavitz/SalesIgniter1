@@ -71,16 +71,16 @@
 		
 		private function buildLabel($labelInfo, $newLine, $hideBarcode = false){
 			$labelContent = array();
-			if ($labelInfo['customers_address'] !== false){
-				$labelContent[] = $labelInfo['customers_address']['name'];
-				$labelContent[] = $labelInfo['customers_address']['street_address'];
-				$labelContent[] = $labelInfo['customers_address']['city'] . ', ' . $labelInfo['customers_address']['state'] . ' ' . $labelInfo['customers_address']['postcode'];
+
+			//if (!empty($labelInfo['barcode_id'])){
+			//	$labelContent[] = '<img src="' . tep_href_link('showBarcode_' . $labelInfo['barcode_id'] . '.png', Session::getSessionName() . '=' . Session::getSessionId()) . '">';
+			//}else
+			if (!empty($labelInfo['barcode'])){
+				$labelContent[] = $labelInfo['barcode'];
 			}
 
-			if (!empty($labelInfo['barcode_id'])){
-				$labelContent[] = '<img src="' . tep_href_link('showBarcode_' . $labelInfo['barcode_id'] . '.png', Session::getSessionName() . '=' . Session::getSessionId()) . '">';
-			}elseif (!empty($labelInfo['barcode'])){
-				$labelContent[] = $labelInfo['barcode'];
+			if ($labelInfo['customers_address'] !== false){
+				$labelContent[] = tep_address_format(tep_get_address_format_id($labelInfo['customers_address']['entry_country_id']), $labelInfo['customers_address'],'','','','short');
 			}
 
 			if ($this->outputType == 'pdf'){

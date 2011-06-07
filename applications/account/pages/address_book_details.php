@@ -200,10 +200,21 @@
 	if ((isset($_GET['edit']) && ($addressBook->getDefaultAddressId() != $_GET['edit'])) || (isset($_GET['edit']) == false) ){
 		$formTable->addBodyRow(array(
 			'columns' => array(
-				array('addCls' => 'main', 'text' => tep_draw_checkbox_field('primary', 'on', false, 'id="primary"') . ' ' . sysLanguage::get('SET_AS_PRIMARY'), 'attr' => array('colspan' => 2))
+				array('addCls' => 'main', 'text' => tep_draw_checkbox_field('primary', 'on', false, 'id="primary"') . ' ' . sysLanguage::get('SET_AS_PRIMARY'), 'attr' => array('colspan' => 2)),
 			)
 		));
 	}
+
+	if ((isset($_GET['edit']) && ($addressBook->getDeliveryDefaultAddressId() != $_GET['edit'])) || (isset($_GET['edit']) == false) ){
+		$formTable->addBodyRow(array(
+			'columns' => array(
+				array('addCls' => 'main', 'text' => tep_draw_checkbox_field('primary_shipping', 'on', false, 'id="primaryShipping"') . ' ' . sysLanguage::get('SET_AS_PRIMARY_SHIPPING'), 'attr' => array('colspan' => 2)),
+			)
+		));
+	}
+
+
+
 	
 	$pageContents = '<span class="inputRequirement" style="float:right;">' . sysLanguage::get('FORM_REQUIRED_INFORMATION') . '</span>' . $formTable->draw();
 	

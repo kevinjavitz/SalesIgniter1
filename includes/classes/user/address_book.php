@@ -33,6 +33,7 @@ class rentalStoreUser_addressBook {
 		$this->customerId = 0;
 		$this->addresses = array();
 		unset($this->defaultAddress);
+		unset($this->deliveryDefaultAddress);
 	}
 
 	public function setCustomerId($cId){
@@ -47,12 +48,21 @@ class rentalStoreUser_addressBook {
 		return $this->defaultAddress;
 	}
 
+	public function getDeliveryDefaultAddressId(){
+		if (!isset($this->deliveryDefaultAddress)){
+			$userAccount = &$this->getUserAccount();
+			$this->deliveryDefaultAddress = $userAccount->getDeliveryDefaultAddressId();
+		}
+		return $this->deliveryDefaultAddress;
+	}
+
 	public function getRentalAddressId(){
 		return $this->rentalAddress;
 	}
 
 	public function getAddress($aId){
 		if ($this->entryExists($aId) === true){
+
 			return $this->addresses[$aId];
 		}else{
 			$Qaddress = Doctrine::getTable('AddressBook')->find($aId);
@@ -85,7 +95,18 @@ class rentalStoreUser_addressBook {
 		}
 	}
 
-	public function insertAddress($addressArray, $setAsDefault = false){
+	public function setDeliveryDefaultAddress($aID, $updateDB = false){
+		global $userAccount;
+		$this->deliveryDefaultAddress = $aID;
+
+		if ($updateDB === true){
+			$Customers = Doctrine::getTable('Customers')->find($this->customerId);
+			$Customers->customers_delivery_address_id = $this->deliveryDefaultAddress;
+			$Customers->save();
+		}
+	}
+
+	public function insertAddress($addressArray, $setAsDefault = false, $setAsShipping = false){
 		$newAddress = new AddressBook();
 		$newAddress->customers_id = (int)$this->customerId;
 		$newAddress->entry_firstname = $addressArray['entry_firstname'];
@@ -127,6 +148,10 @@ class rentalStoreUser_addressBook {
 		
 		if ($setAsDefault === true){
 			$this->setDefaultAddress($aID, true);
+		}
+
+		if ($setAsShipping === true){
+			$this->setDeliveryDefaultAddress($aID, true);
 		}
 		return $aID;
 	}
@@ -177,7 +202,6 @@ class rentalStoreUser_addressBook {
 
 	public function addAddressEntry($aID, $address){
 		$cInfo = $this->getCountryInfo($address['entry_country_id']);
-
 		$this->addresses[$aID] = $address;
 		
 		if (!is_numeric($address['entry_zone_id']) || $address['entry_zone_id'] == 0){
@@ -301,66 +325,55 @@ class rentalStoreUser_addressBook {
 		return $centerID;
 	}
 
-	public function formatAddress($aID, $html = false){
-		$address = $this->addresses[$aID];		
-		$company = htmlspecialchars($address['entry_company']);
-		if (isset($address['entry_firstname']) && !empty($address['entry_firstname'])) {
-			$firstname = htmlspecialchars($address['entry_firstname']);
-			$lastname = htmlspecialchars($address['entry_lastname']);
-		} elseif (isset($address['entry_name']) && !empty($address['entry_name'])) {
-			$firstname = htmlspecialchars($address['entry_name']);
+	public function formatAddress($aID, $html = false, $type = 'long'){
+		$address = $this->addresses[$aID];
+
+		$QAddressFormat = Doctrine_Query::create()
+		->from('AddressFormat')
+		->where('address_format_id=?', $address['AddressFormat']['address_format_id'])
+		->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+
+		if($type == 'long'){
+			$fmt = $QAddressFormat[0]['address_format'];
+		}else{
+			$fmt = $QAddressFormat[0]['address_summary'];
+		}
+
+		$company = $address['entry_company'];
+		if (isset($address['entry_firstname']) && tep_not_null($address['entry_firstname'])) {
+			$firstname = $address['entry_firstname'];
+			$lastname = $address['entry_lastname'];
+		} elseif (isset($address['entry_name']) && tep_not_null($address['entry_name'])) {
+			$firstname = $address['entry_name'];
 			$lastname = '';
 		} else {
 			$firstname = '';
 			$lastname = '';
 		}
-		$street = htmlspecialchars($address['entry_street_address']);
-		$suburb = htmlspecialchars($address['entry_suburb']);
-		$city = htmlspecialchars($address['entry_city']);
-		$state = htmlspecialchars($address['entry_state']);
-		if (isset($address['entry_country_id']) && !empty($address['entry_country_id'])) {
+
+		$street_address = $address['entry_street_address'];
+		$suburb = $address['entry_suburb'];
+		$city = $address['entry_city'];
+		$state = $address['entry_state'];
+		if (isset($address['entry_country_id']) && tep_not_null($address['entry_country_id'])) {
 			$country = tep_get_country_name($address['entry_country_id']);
-			if (isset($address['entry_zone_id']) && !empty($address['entry_zone_id'])) {
+
+			if (isset($address['entry_zone_id']) && tep_not_null($address['entry_zone_id'])) {
 				$state = tep_get_zone_code($address['entry_country_id'], $address['entry_zone_id'], $state);
 			}
-		}elseif (isset($address['country']) && !empty($address['country'])){
+		} elseif (isset($address['country']) && tep_not_null($address['country'])) {
 			if (is_array($address['country'])){
-				$country = htmlspecialchars($address['country']['title']);
-			}else{
-				$country = htmlspecialchars($address['country']);
+				$country = $address['country']['title'];
 			}
-		}else{
+			else{
+				$country = tep_output_string_protected($address['country']);
+			}
+		} else {
 			$country = '';
 		}
-		$postcode = htmlspecialchars($address['entry_postcode']);
-		$zip = $postcode;
+		$postcode = $address['entry_postcode'];
 
-		if ($html === true){
-			// HTML Mode
-			$HR = '<hr>';
-			$hr = '<hr>';
-			$CR = '<br>';
-			$cr = '<br>';
-			$eoln = $cr;
-		}else{
-			// Text Mode
-			$CR = "\n";
-			$cr = $CR;
-			$HR = '----------------------------------------';
-			$hr = '----------------------------------------';
-		}
-
-		$statecomma = '';
-		$streets = $street;
-		if ($suburb != '') $streets = $street . $cr . $suburb;
-		if ($state != '') $statecomma = $state . ', ';
-
-		$fmt = $address['AddressFormat']['address_format'];
 		eval("\$address = \"$fmt\";");
-
-		if (sysConfig::get('ACCOUNT_COMPANY') == 'true' && !empty($company)){
-			$address = $company . $cr . $address;
-		}
 		return $address;
 	}
 
