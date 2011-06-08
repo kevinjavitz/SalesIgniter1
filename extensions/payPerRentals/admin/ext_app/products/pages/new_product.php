@@ -355,7 +355,23 @@ class payPerRentals_admin_products_new_product extends Extension_payPerRentals {
 			'data' => $shippingInputs
 		));
 		
+		$currentTypes = explode(',', $Product['products_type']);
+		$productTypeEnabled = htmlBase::newElement('checkbox')
+				->setName('products_type[]')
+				->setValue('reservation');
+
+		if (isset($currentTypes) && in_array('reservation', $currentTypes)){
+			$productTypeEnabled->setChecked(true);
+		}
+
 		$mainTable = htmlBase::newElement('table')->setCellPadding(3)->setCellSpacing(0);
+		$mainTable->addBodyRow(array(
+			'columns' => array(
+				array('addCls' => 'main', 'text' => sysLanguage::get('TEXT_PRODUCTS_ENABLED')),
+				array('addCls' => 'main', 'text' => $productTypeEnabled)
+			)
+		));
+		
 		$mainTable->addBodyRow(array(
 			'columns' => array(
 				array('addCls' => 'main', 'text' => sysLanguage::get('TEXT_PAY_PER_RENTAL_OVERBOOKING')),
