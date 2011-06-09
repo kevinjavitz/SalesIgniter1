@@ -584,6 +584,18 @@ require(sysConfig::getDirFsCatalog() . 'includes/classes/htmlBase.php');
 	// calculate category path
 	if (isset($_GET['cPath'])) {
 		$cPath = $_GET['cPath'];
+		$cPathValid = true;
+		$check = explode('_', $cPath);
+		foreach($check as $catId){
+			if (!is_numeric($catId)){
+				$cPathValid = false;
+				break;
+			}
+		}
+		if ($cPathValid === false){
+			$cPath = '';
+			unset($_GET['cPath']);
+		}
 	} elseif (isset($_GET['products_id']) && !isset($_GET['manufacturers_id'])) {
 		$cPath = tep_get_product_path($_GET['products_id']);
 	} else {
