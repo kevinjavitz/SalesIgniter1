@@ -34,6 +34,8 @@ class PurchaseType_stream extends PurchaseTypeAbstract {
 				'taxRate' => $productInfo['taxRate']
 			);
 
+			EventManager::notify('PurchaseTypeAfterSetup', &$this->productInfo);
+
 			$this->inventoryCls = false;
 		}
 	}
@@ -126,6 +128,12 @@ class PurchaseType_stream extends PurchaseTypeAbstract {
 				->setType('submit')
 				->setName('buy_' . $this->typeLong . '_product')
 				->setText(sysLanguage::get('TEXT_BUTTON_BUY'));
+
+				$pClass = new product($this->productInfo['id']);
+				if ($pClass->isNotAvailable() ){
+					$button->disable();
+					$button->setText(sysLanguage::get('TEXT_AVAILABLE').': '. strftime(sysLanguage::getDateFormat('short'), strtotime($pClass->getAvailableDate())));
+				}
 
 				$content = htmlBase::newElement('span')
 				->css(array(

@@ -118,7 +118,7 @@
 		public function PageLayoutHeaderCustomMeta(){
 			if (sysConfig::get('EXTENSION_BLOG_SHOW_RSS_ON_BAR') == 'True'){
 				echo '<link rel="alternate" type="application/rss+xml"
-  					  title="'.sysConfig::get('STORE_NAME').' RSS" href="'.itw_app_link(tep_get_all_get_params().'appExt=blog','show_category','rss').'">';
+  					  title="'.sysConfig::get('STORE_NAME').' RSS" href="'.itw_app_link('appExt=blog','show_category','rss').'">';
 			}
 		}
 

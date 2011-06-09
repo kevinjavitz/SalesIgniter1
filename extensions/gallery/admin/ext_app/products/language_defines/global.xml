@@ -1,0 +1,7 @@
+<definitions>
+	<define key="TAB_GALLERY"><![CDATA[Gallery]]></define>
+
+	<define key="TABLE_HEADING_FILE_NAME"><![CDATA[Image]]></define>
+	<define key="TABLE_HEADING_COMMENTS"><![CDATA[Comments]]></define>
+
+</definitions>

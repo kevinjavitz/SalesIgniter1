@@ -27,6 +27,7 @@ class RentalStoreUser implements Serializable {
 			*/
 			$this->customerInfo['id'] = 0;
 			$this->customerInfo['default_address_id'] = 0;
+			$this->customerInfo['delivery_address_id'] = 0;
 		}
 	}
 	
@@ -129,6 +130,7 @@ class RentalStoreUser implements Serializable {
 			$customerInfo = array(
 				'id'                 => $customer['customers_id'],
 				'default_address_id' => $customer['customers_default_address_id'],
+				'delivery_address_id' => $customer['customers_delivery_address_id'],
 				'firstName'          => $customer['customers_firstname'],
 				'lastName'           => $customer['customers_lastname'],
 				'dob'                => $customer['customers_dob'],
@@ -570,6 +572,10 @@ class RentalStoreUser implements Serializable {
 	
 	public function getDefaultAddressId(){
 		return $this->customerInfo['default_address_id'];
+	}
+
+	public function getDeliveryDefaultAddressId(){
+		return $this->customerInfo['delivery_address_id'];
 	}
 
 	public function getFullName(){

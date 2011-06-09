@@ -34,6 +34,8 @@ class PurchaseType_used extends PurchaseTypeAbstract {
 				'taxRate' => $productInfo['taxRate']
 			);
 
+			EventManager::notify('PurchaseTypeAfterSetup', &$this->productInfo);
+
 			$this->inventoryCls = new ProductInventory(
 				$this->productInfo['id'],
 				$this->typeLong,
@@ -67,9 +69,10 @@ class PurchaseType_used extends PurchaseTypeAbstract {
 				->setType('submit')
 				->setName('buy_' . $this->typeLong . '_product')
 				->setText(sysLanguage::get('TEXT_BUTTON_BUY'));
-
-				if ($this->hasInventory() === false){
+				$pClass = new product($this->productInfo['id']);
+				if ($this->hasInventory() === false || $pClass->isNotAvailable()){
 					$button->disable();
+					$button->setText(sysLanguage::get('TEXT_AVAILABLE').': '. strftime(sysLanguage::getDateFormat('short'), strtotime($pClass->getAvailableDate())));
 				}
 
 				$content = htmlBase::newElement('span')

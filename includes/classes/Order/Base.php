@@ -155,6 +155,14 @@ class Order {
 		return $telephone;
 	}
 
+	public function getIPAddress(){
+		$ip = '';
+		if (isset($this->Order['ip_address'])){
+			$ip = $this->Order['ip_address'];
+		}
+		return $ip;
+	}
+
 	public function getEmailAddress(){
 		$email = '';
 		if (isset($this->Order['customers_email_address'])){

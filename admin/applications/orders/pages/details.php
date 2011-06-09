@@ -33,6 +33,14 @@
 			array('addCls' => 'main', 'text' => $Order->getTelephone())
 		)
 	));
+
+	$infoTable->addBodyRow(array(
+		'columns' => array(
+			array('addCls' => 'main', 'text' => '<b>' . sysLanguage::get('ENTRY_IPADDRESS') . '</b>'),
+			array('addCls' => 'main', 'text' => $Order->getIPAddress())
+		)
+	));
+
 	$infoTable->addBodyRow(array(
 		'columns' => array(
 			array('addCls' => 'main', 'text' => '<b>' . sysLanguage::get('ENTRY_EMAIL_ADDRESS') . '</b>'),

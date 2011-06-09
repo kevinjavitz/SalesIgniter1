@@ -237,6 +237,14 @@ class Orders extends Doctrine_Record {
 		'notnull' => true,
 		'autoincrement' => false,
 		));
+		$this->hasColumn('ip_address', 'string', 64, array(
+		'type' => 'string',
+		'length' => 64,
+		'fixed' => false,
+		'primary' => false,
+		'notnull' => true,
+		'autoincrement' => false,
+		));
 		$this->hasColumn('bill_attempts', 'integer', 1, array(
 		'type' => 'integer',
 		'length' => 1,
