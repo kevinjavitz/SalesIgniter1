@@ -10,23 +10,13 @@
 			foreach($result as $product){
 				//echo '<pre>';print_r($product);
 				$CustomerAddress = $product['OrdersAddresses']['delivery'];
-				
 				$prodArr[] = array(
 					'products_id'          => $product['OrdersProducts'][0]['products_id'],
 					'products_name'        => $product['OrdersProducts'][0]['products_name'],
 					'barcode_id'           => $product['OrdersProducts'][0]['OrdersProductsReservation'][0]['ProductsInventoryBarcodes']['barcode_id'],
 					'barcode'              => $product['OrdersProducts'][0]['OrdersProductsReservation'][0]['ProductsInventoryBarcodes']['barcode'],
 					'products_description' => stripslashes(strip_tags($product['OrdersProducts'][0]['Products']['ProductsDescription'][Session::get('languages_id')]['products_description'])),
-					'customers_address'    => array(
-						'name'           => $CustomerAddress['entry_name'],
-						'street_address' => $CustomerAddress['entry_street_address'],
-						'city'           => $CustomerAddress['entry_city'],
-						'state'          => $CustomerAddress['entry_state'],
-						'country'        => $CustomerAddress['entry_country'],
-						'postcode'       => $CustomerAddress['entry_postcode'],
-						'company'        => $CustomerAddress['entry_company'],
-						'format_id'      => $CustomerAddress['entry_format_id']
-					)
+					'customers_address'    => $CustomerAddress
 				);
 			}
 			return $prodArr;

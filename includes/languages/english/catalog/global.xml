@@ -479,6 +479,15 @@
 
 	<define key="EXTENSION_CUSTOMER_FAVORITES_TITLE"><![CDATA[ Customer Favorites ]]></define>
 	<define key="TEXT_BUTTON_ADD_TO_FAVORITES"><![CDATA[ Add to Favorites ]]></define>
+	<define key="TEXT_AVAILABLE"><![CDATA[ Available]]></define>
+	<define key="TAB_GALLERY"><![CDATA[ Gallery]]></define>
+
+	<define key="EXTENSION_PAY_PER_RENTALS_CALENDAR_SHIPPING"><![CDATA[Shipping]]></define>
+	<define key="EXTENSION_PAY_PER_RENTALS_CALENDAR_DEPOSIT"><![CDATA[Deposit Amount]]></define>
+	<define key="EXTENSION_PAY_PER_RENTALS_CALENDAR_INSURANCE"><![CDATA[Insurance]]></define>
+
+	<define key="TEXT_REMOVE_INSURANCE_ALL"><![CDATA[Decline Insurance]]></define>
+	<define key="TEXT_INSURE_ALL"><![CDATA[Insure All]]></define>
 
 
 </definitions>

@@ -19,6 +19,10 @@ class productListing_productsPriceUsed {
 			->setText(sysLanguage::get('TEXT_BUTTON_BUY_NOW'))
 			->setHref(itw_app_link(tep_get_all_get_params(array('action', 'products_id')) . 'action=buy_used_product&products_id=' . $productClass->getID()), true);
 
+			if($productClass->isNotAvailable()){
+				$buyNowButton->disable();
+				$buyNowButton->setText(sysLanguage::get('TEXT_AVAILABLE').': '. strftime(sysLanguage::getDateFormat('short'), strtotime($productClass->getAvailableDate())));
+			}
 			EventManager::notify('ProductListingModuleShowBeforeShow', 'used', $productClass, &$buyNowButton);
 
 			return $purchaseTypeUsed->displayPrice() . '<br />' . $buyNowButton->draw();

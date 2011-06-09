@@ -25,10 +25,17 @@
 			if (isset($_POST['primary']) || $_GET['edit'] == $addressBook->getDefaultAddressId()) {
 				$addressBook->setDefaultAddress((int)$_GET['edit'], true);
 			}
+
+			if (isset($_POST['primary_shipping'])) {
+				$addressBook->setDeliveryDefaultAddress((int)$_GET['edit'], true);
+			}
 		} else {
 			$newAddressId = $addressBook->insertAddress($addressValidationArray);
 			if (isset($_POST['primary'])) {
 				$addressBook->setDefaultAddress($newAddressId, true);
+			}
+			if (isset($_POST['primary_shipping'])) {
+				$addressBook->setDeliveryDefaultAddress($newAddressId, true);
 			}
 		}
 		$messageStack->addSession('pageStack', sysLanguage::get('SUCCESS_ADDRESS_BOOK_ENTRY_UPDATED'), 'success');

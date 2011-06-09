@@ -19,11 +19,35 @@
 
 	$infoBox->addButton($saveButton)->addButton($cancelButton);
 
+	$htmlCountryName = htmlBase::newElement('input')
+	->setName('countries_name')
+	->setValue($Country->countries_name);
+
+	$htmlCountryCode2 = htmlBase::newElement('input')
+	->setName('countries_iso_code_2')
+	->setValue($Country->countries_iso_code_2);
+
+	$htmlCountryCode3 = htmlBase::newElement('input')
+	->setName('countries_iso_code_3')
+	->setValue($Country->countries_iso_code_3);
+
+	$htmlAddressFormat = htmlBase::newElement('selectbox')
+	->setName('address_format_id')
+	->selectOptionByValue($Country->address_format_id);
+
+	$QAddressFormat = Doctrine_Query::create()
+	->from('AddressFormat')
+	->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+
+	foreach($QAddressFormat as $afInfo){
+		$htmlAddressFormat->addOption($afInfo['address_format_id'], $afInfo['address_summary']);
+	}
+
 	$infoBox->addContentRow($boxIntro);
-	$infoBox->addContentRow(sysLanguage::get('TEXT_INFO_COUNTRY_NAME') . '<br>' . tep_draw_input_field('countries_name', $Country->countries_name));
-	$infoBox->addContentRow(sysLanguage::get('TEXT_INFO_COUNTRY_CODE_2') . '<br>' . tep_draw_input_field('countries_iso_code_2', $Country->countries_iso_code_2));
-	$infoBox->addContentRow(sysLanguage::get('TEXT_INFO_COUNTRY_CODE_3') . '<br>' . tep_draw_input_field('countries_iso_code_3', $Country->countries_iso_code_3));
-	$infoBox->addContentRow(sysLanguage::get('TEXT_INFO_ADDRESS_FORMAT') . '<br>' . tep_draw_pull_down_menu('address_format_id', tep_get_address_formats(), $Country->address_format_id));
+	$infoBox->addContentRow(sysLanguage::get('TEXT_INFO_COUNTRY_NAME') . '<br>' . $htmlCountryName->draw());
+	$infoBox->addContentRow(sysLanguage::get('TEXT_INFO_COUNTRY_CODE_2') . '<br>' . $htmlCountryCode2->draw());
+	$infoBox->addContentRow(sysLanguage::get('TEXT_INFO_COUNTRY_CODE_3') . '<br>' . $htmlCountryCode3->draw());
+	$infoBox->addContentRow(sysLanguage::get('TEXT_INFO_ADDRESS_FORMAT') . '<br>' . $htmlAddressFormat->draw());
 	
 	$infoBox->addContentRow('<b>Countries Zones</b>');
 	$listTable = htmlBase::newElement('table')

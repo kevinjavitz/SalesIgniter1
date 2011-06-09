@@ -12,24 +12,26 @@
 				$ProductDescription = $Product['ProductsDescription'][Session::get('languages_id')];
 				$ProductsInventoryBarcodes = $product['ProductsInventoryBarcodes'];
 				$Customer = $product['Customers'];
-				$CustomerAddress = $Customer['AddressBook'][0];
-				
+
+				if(isset($Customer['customers_delivery_address_id'])){
+					$deliveryAdress = $Customer['customers_delivery_address_id'];
+				}else{
+					$deliveryAdress = $Customer['customers_default_address_id'];
+				}
+
+				$QAddress = Doctrine_Query::create()
+				->from('AddressBook')
+				->where('address_book_id = ?', $deliveryAdress)
+				->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+
+
 				$prodArr[] = array(
 					'products_id'          => $Product['products_id'],
 					'products_name'        => $ProductDescription['products_name'],
 					'barcode_id'           => $ProductsInventoryBarcodes['barcode_id'],
 					'barcode'              => $ProductsInventoryBarcodes['barcode'],
 					'products_description' => stripslashes(strip_tags($ProductDescription['products_description'])),
-					'customers_address'    => array(
-						'name'           => $Customer['customers_firstname'] . ' ' . $Customer['customers_lastname'],
-						'street_address' => $CustomerAddress['entry_street_address'],
-						'city'           => $CustomerAddress['entry_city'],
-						'postcode'       => $CustomerAddress['entry_postcode'],
-						'company'        => $CustomerAddress['entry_company'],
-						'country'        => $CustomerAddress['Countries']['countries_name'],
-						'format_id'      => $CustomerAddress['Countries']['address_format_id'],
-						'state'          => $CustomerAddress['Zones']['zone_name']
-					)
+					'customers_address'    => $QAddress[0]
 				);
 			}
 			return $prodArr;

@@ -12,7 +12,8 @@
 		global $total_weight;
 		$total_weight = (int)$_POST['rental_qty'] * $product->getWeight();
 		OrderShippingModules::calculateWeight();
-		$pricing = $purchaseTypeClass->getReservationPrice($starting_date, $ending_date, '', $semName);
+	    $rInfo = '';
+		$pricing = $purchaseTypeClass->getReservationPrice($starting_date, $ending_date, $rInfo, $semName);
 	    if (is_array($pricing) && is_numeric($pricing['price'])){
 		    $price += $pricing['price'];
 		    $message .= $pricing['message'].'<br/>';

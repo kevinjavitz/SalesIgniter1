@@ -46,7 +46,7 @@
 
 		$customerId = $userAccount->createNewAccount();
 
-		$addressBook->insertAddress($accountValidation, true);
+		$addressBook->insertAddress($accountValidation, true, true);
 
 		$userAccount->processLogIn(
 			$accountValidation['email_address'],

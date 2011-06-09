@@ -28,6 +28,7 @@
 	$NewOrder->fedex_track_num2 = $_POST['fedex_track_num2'];
 	$NewOrder->dhl_track_num = $_POST['dhl_track_num'];
 	$NewOrder->dhl_track_num2 = $_POST['dhl_track_num2'];
+	$NewOrder->ip_address = $_SERVER['REMOTE_ADDR'];
 //	$NewOrder->payment_module = $Editor->getPaymentModule();
 
 	$Editor->AddressManager->updateFromPost();
