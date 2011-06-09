@@ -20,16 +20,6 @@
 			echo '<br /><div style="width:98%;margin-right:auto;margin-left:auto;">' . $ExceptionManager->output('text') . '</div>';
 		}
 	}
-
-	/*cleaning get and post variables*/
-	function confHtmlEnt($data){
-		return htmlentities($data, ENT_QUOTES, 'UTF-8');
-	}
-
-	$cleanGet = array_map('confHtmlEnt', $_GET);
-	$_GET = $cleanGet;
-	/*end of cleaning*/
-
 	register_shutdown_function('onShutdown');
 
 	define('APPLICATION_ENVIRONMENT', 'catalog');
