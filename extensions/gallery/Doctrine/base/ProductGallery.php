@@ -13,10 +13,20 @@
 class ProductGallery extends Doctrine_Record {
 	
 	public function setUp(){
-		parent::setUp();
+		$this->setUpParent();
 		$this->hasOne('Products', array(
 			'local' => 'products_id',
 			'foreign' => 'products_id'
+		));
+	}
+
+	public function setUpParent(){
+		$Products = Doctrine::getTable('Products')->getRecordInstance();
+
+		$Products->hasOne('ProductGallery', array(
+			'local' => 'products_id',
+			'foreign' => 'products_id',
+			'cascade' => array('delete')
 		));
 	}
 

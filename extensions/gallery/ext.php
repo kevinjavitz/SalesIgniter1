@@ -18,10 +18,6 @@ class Extension_gallery extends ExtensionBase {
 
 	public function init(){
 		if ($this->enabled === false) return;
-
-		EventManager::attachEvents(array(
-
-		), null, $this);
 	}
 
 
