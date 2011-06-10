@@ -111,6 +111,14 @@ class Customers extends Doctrine_Record {
 			'notnull' => false,
 			'autoincrement' => false,
 		));
+		$this->hasColumn('customers_delivery_address_id', 'integer', 4, array(
+			'type' => 'integer',
+			'length' => 4,
+			'unsigned' => 0,
+			'primary' => false,
+			'notnull' => false,
+			'autoincrement' => false,
+		));
 		$this->hasColumn('customers_telephone', 'string', 32, array(
 			'type' => 'string',
 			'length' => 32,

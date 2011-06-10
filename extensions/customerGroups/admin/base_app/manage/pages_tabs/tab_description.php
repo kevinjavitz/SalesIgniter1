@@ -18,6 +18,7 @@
 
 		$name = $CustomerGroups->customer_groups_name;
 		$credit = $CustomerGroups->customer_groups_credit;
+		$discount = $CustomerGroups->customer_groups_discount;
 		$htmlCustomerList = '<ul>';
 		foreach($QCustomers as $iCustomer){
 			$htmlInput = htmlBase::newElement('input')
@@ -31,6 +32,7 @@
 	}else{
 		$name = '';
 		$credit = 0;
+		$discount = 0;
 		$htmlCustomerList = '<ul></ul>';
 	}
 
@@ -46,9 +48,13 @@
   <tr>
    <td colspan="2"><?php echo tep_draw_separator('pixel_trans.gif', '1', '10'); ?></td>
   </tr>
-	 <tr>
+  <tr>
    <td class="main"><?php echo sysLanguage::get('TEXT_CUSTOMER_GROUPS_CREDIT'); ?></td>
    <td class="main"><?php echo tep_draw_input_field('customer_groups_credit', $credit); ?></td>
+  </tr>
+  <tr>
+   <td class="main"><?php echo sysLanguage::get('TEXT_CUSTOMER_GROUPS_DISCOUNT'); ?></td>
+   <td class="main"><?php echo tep_draw_input_field('customer_groups_discount', $discount); ?></td>
   </tr>
   <tr>
    <td colspan="2"><?php echo tep_draw_separator('pixel_trans.gif', '1', '10'); ?></td>

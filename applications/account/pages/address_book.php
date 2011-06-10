@@ -25,6 +25,7 @@
 <div class="main">
  <b><?php echo $address['entry_firstname'] . ' ' . $address['entry_lastname']; ?></b>
  <?php if ($aID == $addressBook->getDefaultAddressId()) echo '&nbsp;<small><i>' . sysLanguage::get('PRIMARY_ADDRESS') . '</i></small>'; ?>
+ <?php if ($aID == $addressBook->getDeliveryDefaultAddressId()) echo '&nbsp;<small><i>' . sysLanguage::get('PRIMARY_SHIPPING_ADDRESS') . '</i></small>'; ?>
  <div style="position:relative;float:right;"><?php
   $editButton = htmlBase::newElement('button')->usePreset('edit')
   ->setHref(itw_app_link('edit=' . $aID, 'account', 'address_book_process', 'SSL'));

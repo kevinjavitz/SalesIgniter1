@@ -116,8 +116,8 @@ class ReservationUtilities {
 		$sDate = array();
 		if (count($QPeriods)) {
 			$QPeriodsNames = Doctrine_Query::create()
-					->from('PayPerRentalPeriods')
-					->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+			->from('PayPerRentalPeriods')
+			->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 			foreach ($QPeriods as $iPeriod) {
 				$periodName = '';
 				foreach ($QPeriodsNames as $periodNames) {
@@ -262,7 +262,23 @@ class ReservationUtilities {
 
 		$disabledDays = sysConfig::explode('EXTENSION_PAY_PER_RENTALS_DISABLED_DAYS', ',');
 		$startTimePadding = strtotime(date('Y-m-d'));
-		$endTimePadding = strtotime('+' . (int)sysConfig::get('EXTENSION_PAY_PER_RENTALS_DATE_PADDING') . ' days', $startTimePadding);
+
+		$daysPadding =  (int)sysConfig::get('EXTENSION_PAY_PER_RENTALS_DATE_PADDING');
+		foreach($pID_string as $pElem){
+			$pClass = new product($pElem);
+			if($pClass->isNotAvailable()){
+				$date1 = date('Y-m-d h:i:s');
+				$date2 = $pClass->getAvailableDate();
+				$diff = strtotime($date2) - strtotime($date1);
+				$years = floor($diff / (365*60*60*24));
+				$months = floor(($diff - $years * 365*60*60*24) / (30*60*60*24));
+				$days = floor(($diff - $years * 365*60*60*24 - $months*30*60*60*24)/ (60*60*24));
+				if($days > $daysPadding){
+					$daysPadding = $days;
+				}
+			}
+		}
+		$endTimePadding = strtotime('+' . $daysPadding . ' days', $startTimePadding);
 		while ($startTimePadding <= $endTimePadding) {
 			$dateFormatted = date('Y-n-j', $startTimePadding);
 			$paddingDays[] = '"' . $dateFormatted . '"';
@@ -280,8 +296,8 @@ class ReservationUtilities {
 		}
 
 		$QBlockedDates = Doctrine_Query::create()
-				->from('PayPerRentalBlockedDates')
-				->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+		->from('PayPerRentalBlockedDates')
+		->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 
 		foreach ($QBlockedDates as $bInfo) {
 			$startTimePaddingArr = array();
@@ -464,6 +480,7 @@ class ReservationUtilities {
 			rangeSelect: <?php echo ((sysConfig::get('EXTENSION_PAY_PER_RENTALS_FORCE_START_DATE') == 'True') ? 'false' : 'true');?>,
 			rangeSeparator: ',',
 			changeMonth: false,
+			firstDay:0,
 			changeYear: false,
 			numberOfMonths: <?php echo sysConfig::get('EXTENSION_PAY_PER_RENTALS_NUMBER_OF_MONTHS_CALENDARS');?>,
 			prevText: '<span class="ui-icon ui-icon-circle-triangle-w"></span>',

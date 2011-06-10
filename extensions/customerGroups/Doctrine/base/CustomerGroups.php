@@ -44,6 +44,17 @@ class CustomerGroups extends Doctrine_Record {
 			'scale' => false,
 		));
 
+		$this->hasColumn('customer_groups_discount', 'decimal', 15, array(
+			'type' => 'decimal',
+			'length' => 15,
+			'unsigned' => 0,
+			'primary' => false,
+			'default' => '0.0000',
+			'notnull' => true,
+			'autoincrement' => false,
+			'scale' => false,
+		));
+
 		$this->hasColumn('customer_groups_name', 'string', 64, array(
 			'type'          => 'string',
 			'length'        => 64,
@@ -52,6 +63,7 @@ class CustomerGroups extends Doctrine_Record {
 			'notnull'       => false,
 			'autoincrement' => false
 		));
+
 
 	}
 }

@@ -79,5 +79,14 @@ class Stores extends Doctrine_Record {
 			'notnull'       => true,
 			'autoincrement' => false,
 		));
+		
+		$this->hasColumn('google_key', 'string', 255, array(
+			'type'          => 'string',
+			'length'        => 255,
+			'fixed'         => false,
+			'primary'       => false,
+			'notnull'       => true,
+			'autoincrement' => false,
+		));
 	}
 }

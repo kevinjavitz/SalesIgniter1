@@ -10,6 +10,7 @@
 	<define key="TEXT_CUSTOMER_GROUPS_SEARCH_CUSTOMER"><![CDATA[Search Customer]]></define>
 	<define key="TEXT_CUSTOMER_GROUPS_LIST"><![CDATA[Customers From This Group]]></define>
 
+	<define key="TEXT_CUSTOMER_GROUPS_DISCOUNT"><![CDATA[Discount]]></define>
 
 
 

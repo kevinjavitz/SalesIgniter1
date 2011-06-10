@@ -118,36 +118,11 @@ class OrderAddressManager {
 		$state = htmlspecialchars($Address->getState());
 		$country = htmlspecialchars($Address->getCountry());
 		$postcode = htmlspecialchars($Address->getPostcode());
-		$zip = $postcode;
 
-		if ($html === true){
-			// HTML Mode
-			$HR = '<hr>';
-			$hr = '<hr>';
-			$CR = '<br>';
-			$cr = '<br>';
-			$eoln = $cr;
-		}else{
-			// Text Mode
-			$CR = "\n";
-			$cr = $CR;
-			$HR = '----------------------------------------';
-			$hr = '----------------------------------------';
-		}
-
-		$statecomma = '';
-		$streets = $street;
-		if ($suburb != '')
-			$streets = $street . $cr . $suburb;
-		if ($state != '')
-			$statecomma = $state . ', ';
 
 		$fmt = $Address->getFormat();
 		eval("\$address = \"$fmt\";");
 
-		if (sysConfig::get('ACCOUNT_COMPANY') == 'true' && !empty($company)){
-			$address = $company . $cr . $address;
-		}
 		return $address;
 	}
 }

@@ -16,7 +16,10 @@ class productListing_productsPriceDownload {
 			$buyNowButton = htmlBase::newElement('button')
 			->setText(sysLanguage::get('TEXT_BUTTON_BUY_NOW'))
 			->setHref(itw_app_link(tep_get_all_get_params(array('action', 'products_id')) . 'action=buy_download_product&products_id=' . $productClass->getID()), true);
-
+			if ($productClass->isNotAvailable() ){
+				$buyNowButton->disable();
+				$buyNowButton->setText(sysLanguage::get('TEXT_AVAILABLE').': '. strftime(sysLanguage::getDateFormat('short'), strtotime($productClass->getAvailableDate())));
+			}
 			return '<a href="Javascript:void(0)" onclick="popupWindow(\'' . itw_app_link('appExt=infoPages&dialog=true', 'show_page', 'help_download') . '\', 300, 300)">' . tep_image(DIR_WS_TEMPLATES . 'images/icon_help.png') . '</a>:' . $purchaseTypeDownload->displayPrice() . '<br />' . $buyNowButton->draw();
 		}
 		return false;
