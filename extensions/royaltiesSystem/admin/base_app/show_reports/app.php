@@ -37,10 +37,24 @@ foreach($Qorders as $order)	{
 		continue;
 
 	foreach($order['OrdersProducts'] as $product){
+		$productsPrice = $product['products_price'];
+		$royaltiesSystemOrderTotals =  Doctrine_Core::getTable('OrdersTotal')->findOneByOrdersIdAndModuleType($order['orders_id'],'coupon');
+		if($royaltiesSystemOrderTotals != false) {
+			$coupon_code = explode(':',$royaltiesSystemOrderTotals->title);
+			$coupon_code = $coupon_code[1];
+
+			$coupon =  Doctrine_Core::getTable('Coupons')->findOneByCouponCode($coupon_code);
+			if($coupon != false) {
+				if($coupon->coupon_type == 'P') {
+					$discountPrice = $productsPrice *  $coupon->coupon_amount / 100;
+					$productsPrice -= $discountPrice;
+				}
+			}
+		}
 		if (strpos($product['RoyaltiesSystemProductsRoyalties'][0]['royalty_fee'], '%') === false) {
 			$royaltyFee = $product['RoyaltiesSystemProductsRoyalties'][0]['royalty_fee'];
 		} else {
-			$royaltyFee = $product['products_price'] * ($product['RoyaltiesSystemProductsRoyalties'][0]['royalty_fee'] / 100);
+			$royaltyFee = $productsPrice * ($product['RoyaltiesSystemProductsRoyalties'][0]['royalty_fee'] / 100);
 		}
 		$RoyaltiesSystemRoyaltiesEarnedNew = new RoyaltiesSystemRoyaltiesEarned();
 		$RoyaltiesSystemRoyaltiesEarnedNew->content_provider_id = $product['RoyaltiesSystemProductsRoyalties'][0]['content_provider_id'];
