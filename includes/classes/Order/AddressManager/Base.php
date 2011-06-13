@@ -112,13 +112,13 @@ class OrderAddressManager {
 		$company = htmlspecialchars($Address->getCompany());
 		$firstname = htmlspecialchars($Address->getName());
 		$lastname = '';
-		$street = htmlspecialchars($Address->getStreetAddress());
+		$street_address = htmlspecialchars($Address->getStreetAddress());
 		$suburb = htmlspecialchars($Address->getSuburb());
 		$city = htmlspecialchars($Address->getCity());
 		$state = htmlspecialchars($Address->getState());
 		$country = htmlspecialchars($Address->getCountry());
 		$postcode = htmlspecialchars($Address->getPostcode());
-
+		$abbrstate = htmlspecialchars($Address->getZoneCode());
 
 		$fmt = $Address->getFormat();
 		eval("\$address = \"$fmt\";");
