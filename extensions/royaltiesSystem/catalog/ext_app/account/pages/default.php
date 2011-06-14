@@ -21,11 +21,17 @@
 			if ($Customer->is_content_provider == 0){
 				return '';
 			}
-			$links = htmlBase::newElement('a')
-			->html(sysLanguage::get('VIEW_ROYALTIES'))
-			->setHref(itw_app_link('appExt=royaltiesSystem', 'account_addon', 'view_royalties', 'SSL'));
+			$links[] = htmlBase::newElement('a')
+					->html(sysLanguage::get('VIEW_ROYALTIES'))
+					->setHref(itw_app_link('appExt=royaltiesSystem', 'account_addon', 'view_royalties', 'SSL'))
+					->draw();
 
-			return $links->draw();
+			$links[] = htmlBase::newElement('a')
+					->html(sysLanguage::get('VIEW_ROYALTIES_PAYMENT_HISTORY'))
+					->setHref(itw_app_link('appExt=royaltiesSystem', 'account_addon', 'view_payment_history', 'SSL'))
+					->draw();
+
+			return $links;
 		}
 	}
 ?>
