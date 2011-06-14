@@ -71,6 +71,7 @@
 	<define key="BOX_HEADING_LOCALIZATION"><![CDATA[Localization]]></define>
 	<define key="BOX_LOCALIZATION_CURRENCIES"><![CDATA[Currencies]]></define>
 	<define key="BOX_LOCALIZATION_LANGUAGES"><![CDATA[Languages]]></define>
+	<define key="BOX_LOCALIZATION_ADDRESS_FORMAT"><![CDATA[Address Format]]></define>
 	<define key="BOX_LOCALIZATION_ORDERS_STATUS"><![CDATA[Orders Status]]></define>
 	<define key="JS_ERROR"><![CDATA[Errors have occured during the process of your form!<br/>Please make the following corrections:<br/><br/>]]></define>
 	<define key="JS_OPTIONS_VALUE_PRICE"><![CDATA[* The new product atribute needs a price value<br/>]]></define>

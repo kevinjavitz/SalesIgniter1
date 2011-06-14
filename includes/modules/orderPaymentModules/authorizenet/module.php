@@ -136,7 +136,7 @@
 			return '';
 		}
 		public function validatePost(){
-			if(isset($_POST['cardNumber'])){
+			/* if(isset($_POST['cardNumber'])){
 				foreach($this->startNumbersRejected as $rejected){
 					if(strpos($_POST['cardNumber'], $rejected) == 0){
 						$redirectTo = itw_app_link('payment_error=1', 'checkout', 'default', 'SSL');
@@ -147,7 +147,7 @@
 						);
 					}
 				}
-			}
+			} */
 			if(!isset($_POST['payment_profile']) || $_POST['payment_profile'] == -1){
 				return parent::validatePost();
 			}

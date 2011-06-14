@@ -10,6 +10,7 @@
 -->
 <definitions>
 
-	<define key="VIEW_ROYALTIES"><![CDATA[View Royalties]]></define>	
+	<define key="VIEW_ROYALTIES"><![CDATA[View Royalties]]></define>
+	<define key="VIEW_ROYALTIES_PAYMENT_HISTORY"><![CDATA[View Payment History]]></define>
 
 </definitions>

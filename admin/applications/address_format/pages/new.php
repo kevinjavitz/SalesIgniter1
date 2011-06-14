@@ -1,4 +1,4 @@
-<?php
+	<?php
 	$AddressFormat = Doctrine_Core::getTable('AddressFormat');
 	if (isset($_GET['fID']) && empty($_POST)){
 		$AddressFormat = $AddressFormat->find((int)$_GET['fID']);
@@ -11,6 +11,10 @@
 	$columns = '';
 	$myColumn = 'country';
 	$columns .= '$'. $myColumn. '<br/>';
+
+	$myColumn = 'abbrstate';
+	$columns .= '$'. $myColumn. '<br/>';
+
 	foreach ($addressBookColumns as $column =>$value){
 
 		if(strpos($column,'_id') === false){
