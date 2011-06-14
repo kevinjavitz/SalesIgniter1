@@ -109,6 +109,10 @@ $enddateField = htmlBase::newElement('input')
 		->css(array(
 		           'margin-right'	=> '20px'
 		      ));
+$gobut = htmlBase::newElement('button')
+		->setType('submit')
+		->setText('Submit');
+
 $mainPageTable = htmlBase::newElement('table')
 		->setCellPadding(2)
 		->setCellSpacing(0)
@@ -119,7 +123,8 @@ $mainPageTable = htmlBase::newElement('table')
 $mainPageTable->addBodyRow(array(
                                 'columns' => array(
 	                                array('text' => $startdateField->draw()),
-	                                array('text' =>$enddateField->draw())
+	                                array('text' =>$enddateField->draw()),
+	                                array('text' =>$gobut->draw())
                                 )
                            ));
 $mainPageTable->addBodyRow(array(

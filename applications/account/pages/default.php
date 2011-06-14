@@ -133,9 +133,17 @@
 	$contents = EventManager::notifyWithReturn('AccountDefaultMyAccountAddLink');
 	if (!empty($contents)){
 		foreach($contents as $content){
-
-			if (trim($content) != '') {
-				$links .= sprintf('<li>%s%s</li>', $listIcon, $content) . "\n";
+			if(!is_array($content)){
+				if (trim($content) != '') {
+					$links .= sprintf('<li>%s%s</li>', $listIcon, $content) . "\n";
+				}
+			}
+			else{
+				foreach($content as $moreContent){
+					if (trim($moreContent) != '') {
+						$links .= sprintf('<li>%s%s</li>', $listIcon, $moreContent) . "\n";
+					}
+				}
 			}
 		}
 	}
