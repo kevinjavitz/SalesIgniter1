@@ -59,12 +59,6 @@
 		if ($onePageCheckout->isMembershipCheckout() === false){
 			$total_weight = $ShoppingCart->showWeight();
 			$total_count = $ShoppingCart->countContents();
-
-			if (method_exists($ShoppingCart, 'countContentsVirtual')){
-				// Start - CREDIT CLASS Gift Voucher Contribution
-				$total_count = $ShoppingCart->countContentsVirtual();
-				// End - CREDIT CLASS Gift Voucher Contribution
-			}
 		}else{
 			$total_weight = 1;
 			$total_count = 1;
@@ -89,7 +83,6 @@
 	OrderShippingModules::loadModules();
 	OrderPaymentModules::loadModules();
 	OrderTotalModules::loadModules();
-	
 	if ($onePageCheckout->isMembershipCheckout() === true){
 		$onePageCheckout->loadMembershipPlan();
 	}

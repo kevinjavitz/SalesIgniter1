@@ -433,14 +433,7 @@ function tep_address_format($address_format_id, $address, $html, $boln, $eoln, $
 		$country = tep_get_country_name($address['entry_country_id']);
 
 		if (isset($address['entry_zone_id']) && tep_not_null($address['entry_zone_id'])) {
-			$state = tep_get_zone_code($address['entry_country_id'], $address['entry_zone_id'], $state);
-		}
-	} elseif (isset($address['country']) && tep_not_null($address['country'])) {
-		if (is_array($address['country'])){
-			$country = $address['country']['title'];
-		}
-		else{
-			$country = tep_output_string_protected($address['country']);
+			$abbrstate = tep_get_zone_code($address['entry_country_id'], $address['entry_zone_id'], $state);
 		}
 	} else {
 		$country = '';

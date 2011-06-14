@@ -56,6 +56,13 @@
 				'text' => sysLanguage::get('BOX_LOCALIZATION_LANGUAGES')
 			);
 		}
+
+		if (sysPermissions::adminAccessAllowed('address_format', 'default') === true){
+			$subChildren[] = array(
+				'link' => itw_app_link(null, 'address_format', 'default', 'SSL'),
+				'text' => sysLanguage::get('BOX_LOCALIZATION_ADDRESS_FORMAT')
+			);
+		}
 		
 		if (sysPermissions::adminAccessAllowed('orders_status', 'default') === true){
 			$subChildren[] = array(
