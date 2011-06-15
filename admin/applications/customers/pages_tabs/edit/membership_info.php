@@ -271,18 +271,6 @@
 		);
 	}
 
-	$AuthNetExpiresMonth = clone $NextBillMonthBox;
-	$AuthNetExpiresMonth->setName('authorizenet_cc_expires_month')->disable();
-						
-	$AuthNetExpiresYear = clone $NextBillYearBox;
-	$AuthNetExpiresYear->setName('authorizenet_cc_expires_year')->disable();
-
-	$UsaEpayExpiresMonth = clone $NextBillMonthBox;
-	$UsaEpayExpiresMonth->setName('usaepay_cc_expires_month')->disable();
-						
-	$UsaEpayExpiresYear = clone $NextBillYearBox;
-	$UsaEpayExpiresYear->setName('usaepay_cc_expires_year')->disable();
-
 	$CCExpiresMonth = clone $NextBillMonthBox;
 	$CCExpiresMonth->setName('cc_expires_month')->disable();
 						
@@ -308,28 +296,12 @@
 					<td class="main"><?php echo sysLanguage::get('TEXT_PAYPAL');?></td>
 				</tr>
 				<tr>
-					<td class="main"><?php echo tep_draw_radio_field('payment_method','authorizenet_aim',true,'',' disabled ');?></td>
+					<td class="main"><?php echo tep_draw_radio_field('payment_method','authorizenet',true,'',' disabled ');?></td>
 					<td class="main"><?php echo sysLanguage::get('TEXT_AUTHORIZE');?></td>
-				</tr>
-				<tr>
-					<td class="main"><?php echo sysLanguage::get('TEXT_CARD_NUM');?></td>
-					<td class="main"><?php echo tep_draw_input_field('authorizenet_cc_number','',' disabled ');?></td>
-				</tr>
-				<tr>
-					<td class="main"><?php echo sysLanguage::get('TEXT_EXP_DATE');?></td>
-					<td class="main"><?php echo $AuthNetExpiresMonth->draw() . '&nbsp;' . $AuthNetExpiresYear->draw();?></td>
 				</tr>
 				<tr>
 					<td class="main"><?php echo tep_draw_radio_field('payment_method','usaepay',true,'',' disabled ');?></td>
 					<td class="main"><?php echo sysLanguage::get('TEXT_USAEPAY');?></td>
-				</tr>
-				<tr>
-					<td class="main"><?php echo sysLanguage::get('TEXT_CARD_NUM');?></td>
-					<td class="main"><?php echo tep_draw_input_field('usaepay_cc_number','',' disabled ');?></td>
-				</tr>
-				<tr>
-					<td class="main"><?php echo sysLanguage::get('TEXT_EXP_DATE');?></td>
-					<td class="main"><?php echo $UsaEpayExpiresMonth->draw() . '&nbsp;' . $UsaEpayExpiresYear->draw();?></td>
 				</tr>
 				<tr>
 					<td class="main"><?php echo tep_draw_radio_field('payment_method','cc',true,'',' disabled ');?></td>
