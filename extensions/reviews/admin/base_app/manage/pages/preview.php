@@ -15,7 +15,7 @@
 	}
 	$ratingBar = htmlBase::newElement('ratingbar')->setStars(5)->setValue($rInfo->reviews_rating);
 ?>
-<div class="pageHeading"><?php echo sysLanguage::get('HEADING_TITLE');?></div>
+<div class="pageHeading"><?php echo sysLanguage::get('HEADING_TITLE_REVIEWS');?></div>
 <br />
 <form name="update" action="<?php echo itw_app_link(tep_get_all_get_params(array('action', 'rID')) . 'action=save&rID=' . (int)$_GET['rID']);?>" method="post">
 <div style="width:100%;display:inline-block;">

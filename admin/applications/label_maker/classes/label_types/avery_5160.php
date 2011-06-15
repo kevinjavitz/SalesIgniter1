@@ -13,7 +13,7 @@
 				$this->pdf->SetAuthor('Kevin Javitz');
 				$this->pdf->SetTitle('Rental Product Labels');
 				$this->pdf->SetSubject('Rental Product Labels');
-				$this->pdf->SetMargins(0.18, 0.49, 0.2);
+				$this->pdf->SetMargins(0.18, 0.35, 0.2);
 				$this->pdf->SetCellPadding(.075);
 				$this->pdf->setPrintHeader(false);
 				$this->pdf->setPrintFooter(false);
@@ -84,7 +84,7 @@
 			}
 
 			if ($this->outputType == 'pdf'){
-				$this->pdf->MultiCell(2.63, 1, implode('<br>', $labelContent), 0, 'L', 0, $newLine, '', '', true, 0, true);
+				$this->pdf->MultiCell(2.7, 1, implode('<br>', $labelContent), 0, 'L', 0, $newLine, '', '', true, 0, true);
 				if ($newLine == 0){
 					$this->pdf->Cell(0.13, 1, '');
 				}
