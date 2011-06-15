@@ -1,5 +1,5 @@
 <?php
-
+require('includes/application_top.php');
 if(sysConfig::get('EXTENSION_PAY_PER_RENTALS_AUTO_SEND') == 'True'){
 	$Qreservations = Doctrine_Query::create()
 	->from('Orders o')
@@ -12,7 +12,7 @@ if(sysConfig::get('EXTENSION_PAY_PER_RENTALS_AUTO_SEND') == 'True'){
 	->leftJoin('opr.ProductsInventoryQuantity iq')
 	->leftJoin('iq.ProductsInventory i2')
 	//->whereIn('opr.orders_products_reservations_id', $_GET['sendRes'])
-	->where('opr.start_date <= ?', date('Y-m-d'))
+	->where('opr.start_date <= ?', date('Y-m-d H:i:s'))//substract shipping days before
 	->andWhere('oa.address_type = ?', 'customer')
 	->andWhere('opr.parent_id IS NULL')
 	->execute();
@@ -60,7 +60,9 @@ if(sysConfig::get('EXTENSION_PAY_PER_RENTALS_AUTO_SEND') == 'True'){
 		}
 		$Qreservations->save();
 	}
-}else if(sysConfig::get('EXTENSION_PAY_PER_RENTALS_AUTO_RETURN') == 'True'){
+}
+
+if(sysConfig::get('EXTENSION_PAY_PER_RENTALS_AUTO_RETURN') == 'True'){
 	$ReservationQuery = Doctrine_Query::create()
 		->from('Orders o')
 		->leftJoin('o.Customers c')
@@ -72,7 +74,7 @@ if(sysConfig::get('EXTENSION_PAY_PER_RENTALS_AUTO_SEND') == 'True'){
 		->leftJoin('opr.ProductsInventoryQuantity iq')
 		->leftJoin('iq.ProductsInventory iqi')
 		//->where('opr.orders_products_reservations_id = ?', $bID)
-		->where('opr.end_date >= ?', date('Y-m-d'))
+		->where('opr.end_date <= ?', date('Y-m-d H:i:s')) //addshipping_day_after
 		->andWhere('oa.address_type = ?', 'customer')
 		->andWhere('parent_id IS NULL');
 
@@ -193,5 +195,5 @@ if(sysConfig::get('EXTENSION_PAY_PER_RENTALS_AUTO_SEND') == 'True'){
 		}
 		$Reservation->save();
 }
-
+	require('includes/application_bottom.php');
 ?>
