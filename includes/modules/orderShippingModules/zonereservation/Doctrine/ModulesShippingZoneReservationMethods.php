@@ -73,5 +73,10 @@ class ModulesShippingZoneReservationMethods extends Doctrine_Record {
 			'length'        => 2,
 			'autoincrement' => false
 		));
+		$this->hasColumn('weight_rates', 'string', null, array(
+			'type'          => 'string',
+			'length'        => null,
+			'autoincrement' => false
+		));
 	}
 }
