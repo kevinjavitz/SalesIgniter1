@@ -392,6 +392,8 @@ class ReservationUtilities {
 
 	var selected = '';
 	var selectedDate;
+	var days_before = 0;
+	var days_after = 0;
 	var isStart = false;
 	//var autoChanged = false;
 	var isHour = false;
@@ -437,6 +439,8 @@ class ReservationUtilities {
 					today_month = todayDate.getMonth();
 				}
 
+				//this part won't work for shipping days before
+
 				$selfID.find('.start_date').val(today_month + '/' + today_day + '/' + todayDate.getFullYear()).trigger('change');
 				$selfID.find('.end_date').val('').trigger('change');
 
@@ -444,9 +448,10 @@ class ReservationUtilities {
 
 			} else {
 				?>
+
 				if (selected == 'start') {
 					$selfID.find('.datePicker').datepick('setDate', 0);
-				} else {
+				} else if(selected == 'end') {
 					$selfID.find('.datePicker').datepick('setDate', -1);
 				}
 				selected = '';
@@ -544,7 +549,10 @@ class ReservationUtilities {
 					allowSelectionAfter = true;
 
 					if (!isStart) {
-						for (var i = 0; i < shippingDaysBefore; i++) {
+						//for (var i = 0; i < shippingDaysBefore; i++) {
+
+						var sEnd = shippingDaysBefore;
+						while(sEnd > 0){
 							if (prevTD.prev().size() <= 0) {
 								if (prevTD.find('a').html() == '1' || prevTD.html() == '1') {
 									prevTD = prevTD.closest('.ui-datepicker-group').prev().find('td').filter(':not(.ui-datepicker-other-month)').last();
@@ -563,10 +571,14 @@ class ReservationUtilities {
 							if (prevTD.hasClass('ui-state-disabled') && !prevTD.hasClass('ui-datepicker-shipable')) {
 								allowSelectionBefore = false;
 							}
-
+							if (prevTD.hasClass('ui-state-disabled')){
+								sEnd ++;
+							}
+							sEnd = sEnd - 1;
 						}
 					} else {
-						for (var i = 0; i < shippingDaysAfter; i++) {
+						var sEnd2 = shippingDaysAfter;
+						while(sEnd2 > 0){
 							if (nextTD.next().size() <= 0) {
 								nextTD = nextTD.parent().next().find('td').first();
 							} else {
@@ -583,6 +595,10 @@ class ReservationUtilities {
 								allowSelectionAfter = false;
 							}
 
+							if (nextTD.hasClass('ui-state-disabled')){
+								sEnd2 ++;
+							}
+							sEnd2 = sEnd2 - 1;
 						}
 					}
 
@@ -664,13 +680,76 @@ class ReservationUtilities {
 					return false;
 				}
 
+
+
 				selected = (selected == '' || selected == 'end' ? 'start' : 'end');
 
 				if (selected == 'start') {
 					selectedDate = date;
 					$selfID.find('.datePicker').datepick('option', 'initStatus', '<?php echo sysLanguage::get('PPR_SELECT_END_DATE'); ?>');
 					$selfID.parent().find('.inCart').hide();
+
+					days_before = $selfID.find('input[name=rental_shipping]:checked').attr('days_before');
+
+					var prevTD = $(td);
+
+
+						var sEnd = shippingDaysBefore;
+						while(sEnd > 0){
+							if (prevTD.prev().size() <= 0) {
+								if (prevTD.find('a').html() == '1' || prevTD.html() == '1') {
+									prevTD = prevTD.closest('.ui-datepicker-group').prev().find('td').filter(':not(.ui-datepicker-other-month)').last();
+								} else {
+									prevTD = prevTD.parent().prev().find('td').filter(':not(.ui-datepicker-other-month)').last();
+								}
+							} else {
+								prevTD = prevTD.prev();
+							}
+
+							if (prevTD.hasClass('ui-datepicker-other-month')) {
+								prevTD = prevTD.closest('.ui-datepicker-group').prev().find('td').filter(':not(.ui-datepicker-other-month)').last();
+							}
+
+							$('a', prevTD).addClass('ui-datepicker-shipping-day-hover');
+
+							if (prevTD.hasClass('ui-state-disabled')){
+								sEnd ++;
+								days_before ++;
+							}
+							sEnd = sEnd - 1;
+						}
+
+
 				} else if (selected == 'end') {
+
+
+
+					days_after = $selfID.find('input[name=rental_shipping]:checked').attr('days_after');
+					var nextTD = $(td);
+					var sEnd2 = $selfID.find('input[name=rental_shipping]:checked').attr('days_after');
+						while(sEnd2 > 0){
+							if (nextTD.next().size() <= 0) {
+								nextTD = nextTD.parent().next().find('td').first();
+							} else {
+								nextTD = nextTD.next();
+							}
+
+							if (nextTD.hasClass('ui-datepicker-other-month')) {
+								nextTD = nextTD.closest('.ui-datepicker-group').next().find('td').filter(':not(.ui-datepicker-other-month)').first();
+							}
+
+							$('a', nextTD).addClass('ui-datepicker-shipping-day-hover');
+
+							if (nextTD.hasClass('ui-state-disabled') && !nextTD.hasClass('ui-datepicker-shipable')) {
+								allowSelectionAfter = false;
+							}
+
+							if (nextTD.hasClass('ui-state-disabled')){
+								sEnd2 ++;
+								days_after ++;
+							}
+							sEnd2 = sEnd2 - 1;
+						}
 					$selfID.find('.datePicker').datepick('option', 'initStatus', '<?php echo sysLanguage::get('PPR_DATES_SELECTED'); ?>.<br /><?php echo sysLanguage::get('PPR_CLICK_RESTART_PROCESS'); ?>');
 					var monthT = date.getMonth() + 1;
 					var daysT = date.getDate();
@@ -687,6 +766,8 @@ class ReservationUtilities {
 						monthTs = monthT + '';
 					}
 					$selfID.find('.end_date').val(monthTs + '/' + daysTs + '/' + date.getFullYear()).trigger('change');
+					$selfID.find('.days_before').val(days_before);
+					$selfID.find('.days_after').val(days_after);
 					var $this = $selfID.find('.datePicker');
 					$sDate = new Date($selfID.find('.start_date').val());
 					$eDate = new Date($selfID.find('.end_date').val());
@@ -750,6 +831,10 @@ class ReservationUtilities {
 					if ($selfID.find('.start_date').val() == '' && isStart) {
 						$selfID.find('.start_date').val(dates[0]).trigger('change');
 						$selfID.find('.end_date').val(dates[1]).trigger('change');
+
+						$selfID.find('.days_before').val(days_before);
+						$selfID.find('.days_after').val(days_after);
+
 						isStart = false;
 						if (dates[0] != dates[1]) {
 							$selfID.find('.datePicker').datepick('option', 'maxDate', null);
@@ -759,6 +844,8 @@ class ReservationUtilities {
 					} else {
 						var todayDate = new Date();
 						$selfID.find('.end_date').val(dates[0]).trigger('change');
+						$selfID.find('.days_before').val(days_before);
+						$selfID.find('.days_after').val(days_after);
 						selected = 'start';
 						selectedDate = todayDate;
 						isStart = true;
@@ -771,6 +858,8 @@ class ReservationUtilities {
 					var dates = value.split(',');
 					$selfID.find('.start_date').val(dates[0]).trigger('change');
 					$selfID.find('.end_date').val(dates[1]).trigger('change');
+					$selfID.find('.days_before').val(days_before);
+					$selfID.find('.days_after').val(days_after);
 					isStart = false;
 					if (dates[0] != dates[1]) {
 						$selfID.find('.datePicker').datepick('option', 'maxDate', null);
@@ -836,6 +925,8 @@ class ReservationUtilities {
 				var endDateString = $selfID.find('.selected_period option:selected').attr('end_date');
 				$selfID.find('.start_date').val(startDateString.substr(0, startDateString.length - 9)).trigger('change');
 				$selfID.find('.end_date').val(endDateString.substr(0, endDateString.length - 9)).trigger('change');
+				$selfID.find('.days_before').val(days_before);
+				$selfID.find('.days_after').val(days_after);
 				showAjaxLoader(selectedPeriod, 'xlarge');
 				$.ajax({
 					cache: false,
@@ -975,6 +1066,8 @@ class ReservationUtilities {
 						}
 
 						$selfID.find('.end_date').val(today_month + '/' + today_day + '/' + selectedEndTime.getFullYear() + ' ' + selectedEndTime.getHours() + ':' + selectedEndTime.getMinutes() + ':00').trigger('change');
+						$selfID.find('.days_before').val(days_before);
+						$selfID.find('.days_after').val(days_after);
 						var $this = $selfID.find('.datePicker');
 
 						showAjaxLoader($this, 'xlarge');
@@ -1218,6 +1311,8 @@ class ReservationUtilities {
      <div class="dateSelectedCalendar">
       <div class="datesInputs"><?php echo sysLanguage::get('ENTRY_RENTAL_DATES_SELECTED');?>
       <input type="text" name="start_date" class="start_date" value="<?php echo (isset($rInfo) ? $rInfo['reservationInfo']['start_date'] : '');?>" readonly="readonly"> <?php echo sysLanguage::get('PAYPERRENTALS_TO');?> <input type="text" name="end_date" class="end_date" value="<?php echo (isset($rInfo) ? $rInfo['reservationInfo']['end_date'] : '');?>" readonly="readonly">
+
+	  <input type="hidden" name="days_before" class="days_before" value="<?php echo (isset($rInfo['reservationInfo']['days_before']) ? $rInfo['reservationInfo']['days_before'] : '');?>"> <input type="hidden" name="days_after" class="days_after" value="<?php echo (isset($rInfo['reservationInfo']['days_after']) ? $rInfo['reservationInfo']['days_after'] : '');?>">
       </div>
 	  <?php
         echo htmlBase::newElement('button')

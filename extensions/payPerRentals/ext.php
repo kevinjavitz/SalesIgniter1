@@ -38,6 +38,7 @@ class Extension_payPerRentals extends ExtensionBase {
 			'ApplicationTopAction_add_reservation_product',
 			'CouponEditPurchaseTypeBeforeOutput',
 			'CouponEditBeforeSave',
+			'UpdateTotalsCheckout',
 			'CouponsPurchaseTypeRestrictionCheck'
 		), null, $this);
 
@@ -77,6 +78,34 @@ class Extension_payPerRentals extends ExtensionBase {
 		}else{
 			Session::set('google_key', sysConfig::get('EXTENSION_PAY_PER_RENTALS_GOOGLE_MAPS_API_KEY'));
 		}
+	}
+
+	public function UpdateTotalsCheckout(){
+		global $onePageCheckout, $ShoppingCart;
+		$weight = 0;
+		$selectedMethod = '';
+
+		foreach($ShoppingCart->getProducts() as $cartProduct) {
+					if ($cartProduct->hasInfo('reservationInfo') === true){
+						$reservationInfo1 = $cartProduct->getInfo('reservationInfo');
+						if(isset($reservationInfo1['shipping']) && isset($reservationInfo1['shipping']['module']) && $reservationInfo1['shipping']['module'] == 'zonereservation'){
+							$selectedMethod = $reservationInfo1['shipping']['id'];
+							$weight += $cartProduct->getWeight();
+						}
+					}
+		}
+
+		$Module = OrderShippingModules::getModule('zonereservation', true);
+		$quotes = array($Module->quote($selectedMethod, $weight));
+
+
+		$onePageCheckout->onePage['info']['reservationshipping'] = array(
+								'id'     => 'zonereservation_'.$quotes[0]['methods'][0]['id'],
+								'module' => 'zonereservation',
+								'method' => 'zonereservation',
+								'title'  => $quotes[0]['methods'][0]['title'],
+								'cost'   => $quotes[0]['methods'][0]['cost']
+		);
 	}
 	
 	public function CouponEditPurchaseTypeBeforeOutput(&$checkbox, $name, $Coupon){
