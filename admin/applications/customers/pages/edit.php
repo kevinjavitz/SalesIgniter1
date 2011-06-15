@@ -22,12 +22,6 @@ function fnClicked() {
 		document.customers.payment_method[1].disabled = false;
 		document.customers.payment_method[2].disabled = false;
 		document.customers.payment_method[3].disabled = false;
-		document.customers.authorizenet_cc_number.disabled = false;
-		document.customers.authorizenet_cc_expires_month.disabled = false;
-		document.customers.authorizenet_cc_expires_year.disabled = false;
-		document.customers.usaepay_cc_number.disabled = false;
-		document.customers.usaepay_cc_expires_month.disabled = false;
-		document.customers.usaepay_cc_expires_year.disabled = false;
 		document.customers.cc_number.disabled = false;
 		document.customers.cc_expires_month.disabled = false;
 		document.customers.cc_expires_year.disabled = false;
@@ -66,12 +60,6 @@ function fnClicked() {
 		document.customers.payment_method[1].disabled = true;
 		document.customers.payment_method[2].disabled = true;
 		document.customers.payment_method[3].disabled = true;
-		document.customers.authorizenet_cc_number.disabled = true;
-		document.customers.authorizenet_cc_expires_month.disabled = true;
-		document.customers.authorizenet_cc_expires_year.disabled = true;
-		document.customers.usaepay_cc_number.disabled = true;
-		document.customers.usaepay_cc_expires_month.disabled = true;
-		document.customers.usaepay_cc_expires_year.disabled = true;
 		document.customers.cc_number.disabled = true;
 		document.customers.cc_expires_month.disabled = true;
 		document.customers.cc_expires_year.disabled = true;
@@ -164,12 +152,12 @@ function check_form() {
 
 	if(document.customers.make_member.checked){
 		if(document.customers.payment_method[1].checked){
-			if(document.customers.authorizenet_cc_number.value==''){
+			if(document.customers.cc_number.value==''){
 				error_message += "<?php echo sysLanguage::get('JS_ERROR_AUTH_NET_NUMBER');?>";
 				error = 1;
 			}
 		}else if(document.customers.payment_method[2].checked){
-			if(document.customers.usaepay_cc_number.value==''){
+			if(document.customers.cc_number.value==''){
 				error_message += "\n<?php echo sysLanguage::get('JS_ERROR_USAEPAY_NUMBER');?>";
 				error = 1;
 			}
