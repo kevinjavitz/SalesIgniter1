@@ -394,16 +394,23 @@ require(sysConfig::getDirFsCatalog() . 'includes/classes/htmlBase.php');
 		switch($action){
 			// customer wants to update the product quantity in their shopping cart
 			case 'update_product' :
-				for ($i=0, $n=sizeof($productsId); $i<$n; $i++) {
-					if (in_array($productsId[$i], (isset($_POST['cart_delete']) && is_array($_POST['cart_delete']) ? $_POST['cart_delete'] : array()))) {
-						$ShoppingCart->removeProduct($productsId[$i], $_POST['purchase_type'][$i]);
-					} else {
+				$removed = array();
+				if(isset($_POST['cart_delete']) && is_array($_POST['cart_delete'])){
+					foreach($_POST['cart_delete'] as $item => $purchaseTypeVal){
+	                	$ShoppingCart->removeProduct($item, $purchaseTypeVal);
+						$removed[] = $item;
+					}
+				}
 
-						if (in_array($productsId[$i], (isset($_POST['cart_quantity']) && is_array($_POST['cart_quantity']) ? $_POST['cart_quantity'] : array()))) {
-							$ShoppingCart->updateProduct($productsId[$i], array(
-								'purchase_type' => $_POST['purchase_type'][$i],
-								'quantity'      => $_POST['cart_quantity'][$i]
-							));
+				if(isset($_POST['cart_quantity']) && is_array($_POST['cart_quantity'])){
+					foreach($_POST['cart_quantity'] as $item => $val){
+						if(!in_array($item, $removed)){
+							foreach($val as $purchaseTypeVal => $qtyVal){
+								$ShoppingCart->updateProduct($item, array(
+										'purchase_type' => $purchaseTypeVal,
+										'quantity'      => $qtyVal
+								));
+							}
 						}
 					}
 				}
