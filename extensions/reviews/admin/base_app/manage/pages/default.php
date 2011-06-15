@@ -108,7 +108,7 @@
 			break;
 	}
 ?>
- <div class="pageHeading"><?php echo sysLanguage::get('HEADING_TITLE');?></div>
+ <div class="pageHeading"><?php echo sysLanguage::get('HEADING_TITLE_REVIEWS');?></div>
  <br />
  <div style="width:75%;float:left;">
   <div class="ui-widget ui-widget-content ui-corner-all" style="width:99%;margin-right:5px;margin-left:5px;">
