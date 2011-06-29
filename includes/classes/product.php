@@ -203,20 +203,5 @@ class Product {
 	}
 	/* Box Set Methods -- End -- */
 
-	/* Package Products -- Begin -- */
-	function hasPackageProducts($type = 'new'){
-		if (isset($this->classes['plugin']['package'])){
-			return $this->classes['plugin']['package']->hasPackageProducts($type);
-		}
-		return false;
-	}
-
-	function getPackageProducts($type = 'new'){
-		if (isset($this->classes['plugin']['package'])){
-			return $this->classes['plugin']['package']->getPackageProducts($type);
-		}
-		return false;
-	}
-	/* Package Products -- End -- */
 }
 ?>
