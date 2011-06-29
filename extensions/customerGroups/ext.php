@@ -27,7 +27,7 @@ class Extension_customerGroups extends ExtensionBase {
 	}
 
 	public function PurchaseTypeAfterSetup(&$productInfo){
-		global $userAccount, $appExtension;
+		global $userAccount, $appExtension, $currencies;
 
 		if($appExtension->isCatalog()){
 			$cID = $userAccount->getCustomerId();
@@ -49,6 +49,9 @@ class Extension_customerGroups extends ExtensionBase {
 				$discount = $QCustomers[0]['customer_groups_discount'];
 
 				$productInfo['price'] -= $productInfo['price']*$discount/100;
+				if(isset($productInfo['message'])){
+					$productInfo['message'].= '-'. $currencies->format($productInfo['price']*$discount/100). ' discount based on customer groups. ';
+				}
 				if (isset($productInfo['special_price'])){
 					$productInfo['special_price'] -= $productInfo['special_price']*$discount/100;
 				}
