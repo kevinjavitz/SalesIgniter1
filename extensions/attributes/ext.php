@@ -279,12 +279,7 @@ class Extension_attributes extends ExtensionBase {
 			if (sizeof($attributes) > 0){
 				$langId = Session::get('languages_id');
 				foreach($attributes as $aInfo1){
-
-						//$aInfo['products_options'] .
-						//': ' .
-						//'<input type="text" class="ui-widget-content" name="product[' . $orderedProduct->getId() . '][attributes][' . $aInfo['options_id'] . '][value]" value="' . $aInfo['products_options_values'] . '">';
 					   $pInfo = $orderedProduct->getPInfo();
-					   //$html .= $pInfo['products_id'].'oooo'.$orderedProduct->getPurchaseType();
 					   $ProductsAttributes = attributesUtil::getAttributes(
 							$pInfo['products_id'],
 							null,
@@ -311,7 +306,7 @@ class Extension_attributes extends ExtensionBase {
 										$vInfo['options_values_name']
 									);
 								}
-								$valuesDrop->selectOptionByValue($aInfo1['options_id']);
+								$valuesDrop->selectOptionByValue($aInfo1['options_values_id']);
 							}
 
 						}
@@ -319,9 +314,7 @@ class Extension_attributes extends ExtensionBase {
 					$html .= '<br />' .
 						'<small>&nbsp;<i> - ' . $aInfo1['products_options'] .
 						': ' . (isset($valuesDrop)?$valuesDrop->draw():'');
-					//if ($aInfo['price'] != '0'){
 					$html .= ' ( ' . '<select class="ui-widget-content" name="product[' . $orderedProduct->getId() . '][attributes][' . $aInfo1['options_id'] . '][prefix]"><option value="+"' . ($aInfo1['price_prefix'] == '+' ? ' selected="selected"' : '') . '>+</option><option value="-"' . ($aInfo1['price_prefix'] == '-' ? ' selected="selected"' : '') . '>-</option></select> <input type="text" class="ui-widget-content" size="4" name="product[' . $orderedProduct->getId() . '][attributes][' . $aInfo1['options_id'] . '][price]" value="' . ($aInfo1['options_values_price'] * $orderedProduct->getQuantity()) . '"> )';
-					//}
 					$html .= '</i></small>';
 				}
 			}
