@@ -5,7 +5,7 @@ function number_format(number){
 }
 
 $(document).ready(function (){
-
+	var getVars = getUrlVars();
 	$('select[name=payment_method]').change(function(){
 		var $self = $(this);
 		showAjaxLoader($self, 'small');
@@ -28,6 +28,24 @@ $(document).ready(function (){
 				//removeAjaxLoader($self);
 			}
 		});
+	});
+
+	$('#emailEstimate').click(function(){
+		$.ajax({
+			url: js_app_link('appExt=orderCreator&app=default&appPage=new&action=sendEstimateEmail'),
+			cache: false,
+			dataType: 'json',
+			data: 'email=' + $('#emailInput').val()+'&oID='+getVars['oID'],
+			type: 'post',
+			success: function (data){
+				if(data.success == true){
+					alert('Estimate Sent!');
+				}else{
+					alert('Email not sent. Please Check email address');
+				}
+			}
+		});
+		return false;
 	});
 
 	$('input[name=customer_search]').autocomplete({
@@ -115,10 +133,46 @@ $(document).ready(function (){
 				if(isEvent && $Row.find('.eventf').val() != '0'){
 					$('.reservationShipping').trigger('change');
 				}
+
+				$('.barcodeName').live('focus',function(){
+					if($(this).val() == ''){
+						$(this).keyup().autocomplete("search", "");
+					}
+				});
 				removeAjaxLoader($Row);
 			}
 		})
 	});
+
+	$('.barcodeName').live('keyup', function() {
+					var $rowVal = $(this).parent().parent();
+					var attributeVal = 'mId='+ $rowVal.attr('data-id') + '&purchaseType=' + $rowVal.find('.purchaseType').val();
+					$rowVal.find('.productAttribute option:selected').each(function() {
+						attributeVal += '&id[reservation][' + $(this).parent().attr('attrval') + ']=' + $(this).val();
+					});
+
+					var link = js_app_link('appExt=orderCreator&app=default&appPage=new&action=getBarcodes');
+		            var $barInput = $(this);
+					$(this).autocomplete({
+						source: function(request, response) {
+							$.ajax({
+							  url: link,
+							  data: attributeVal,
+							  dataType: 'json',
+							  type: 'POST',
+							  success: function(data){
+								  response(data);
+							  }
+							});
+						 },
+						minLength: 0,
+						select: function(event, ui) {
+							$barInput.val(ui.item.label);
+							$barInput.attr('barid', ui.item.value);
+							return false;
+						}
+					})
+				});
 
 	$('.taxRate').live('keyup', function (){
 		var $Row = $(this).parent().parent();
@@ -216,7 +270,7 @@ $(document).ready(function (){
 				$.ajax({
 					cache: false,
 					dataType: 'html',
-					url: js_app_link('appExt=orderCreator&app=default&appPage=new&action=loadProductRow&pID=' + ui.item.value),
+					url: js_app_link('appExt=orderCreator&app=default&appPage=new&action=loadProductRow&pID=' + ui.item.value +'&purchaseType=' + ui.item.prtype),
 					success: function (html){
 						removeAjaxLoader($Row);
 						$(html).insertAfter($Row);
@@ -458,7 +512,7 @@ $(document).ready(function (){
 		}
 	});
 	
-	var getVars = getUrlVars();
+
 	if (!getVars['error'] && !getVars['oID']){
 		$('.productSection, .totalSection, .paymentSection, .commentSection').hide();
 	}

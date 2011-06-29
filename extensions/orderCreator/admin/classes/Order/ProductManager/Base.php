@@ -154,7 +154,7 @@ product[85544][price]:17.99
 			$bodyColumns = array(
 				array('align' => 'right', 'text' => $orderedProduct->getQuantityEdit()),
 				array('text' => $orderedProduct->getNameEdit()),
-				array('text' => ($orderedProduct->hasBarcode() ? $orderedProduct->getBarcode() : '')),
+				array('text' => $orderedProduct->getBarcodeEdit()),
 				array('text' => $orderedProduct->getModel()),
 				array('align' => 'right', 'text' => $orderedProduct->getTaxRateEdit()),
 				array('align' => 'right', 'text' => $orderedProduct->getPriceEdit()),
