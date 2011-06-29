@@ -13,8 +13,11 @@
 	->where('o.customers_id = ?', $userAccount->getCustomerId())
 	->andWhere('osd.language_id = ?', Session::get('languages_id'))
 	->andWhere('op.purchase_type = ?', 'stream')
-	->andWhere('(ops.stream_maxdays = 0 OR DATE_ADD(o.date_purchased, INTERVAL ops.stream_maxdays DAY) > now()) AND TRUE')
-	->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+	->andWhere('(ops.stream_maxdays = 0 OR DATE_ADD(o.date_purchased, INTERVAL ops.stream_maxdays DAY) > now()) AND TRUE');
+
+    EventManager::notify('OrdersListingBeforeExecute', &$Qhistory);
+
+	$Qhistory = $Qhistory->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 	if ($Qhistory){
 		$ListingTable->addClass('ui-widget ui-widget-content')
 		->css(array(

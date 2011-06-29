@@ -228,6 +228,8 @@ class Extension_streamProducts extends ExtensionBase {
 		->where('o.customers_id = ?', $userAccount->getCustomerId())
 		->andWhere('osd.language_id = ?', Session::get('languages_id'));
 
+		EventManager::notify('OrdersListingBeforeExecute', &$Qcheck);
+
 		$Result = $Qcheck->execute(array(), Doctrine::HYDRATE_ARRAY);
 		$html = '';
 		if ($Result[0]['total'] > 0){
