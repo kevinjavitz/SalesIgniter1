@@ -14,7 +14,9 @@ require(sysConfig::getDirFsCatalog() . 'includes/classes/product/purchase_types/
 class OrderCreatorProductPurchaseTypeNew extends PurchaseType_new {
 
 	public function addToOrdersProductCollection(&$ProductObj, &$CollectionObj){
-		$this->inventoryCls->addStockToCollection($ProductObj, $CollectionObj);
+		if(!isset($_POST['estimateOrder'])){
+			$this->inventoryCls->addStockToCollection($ProductObj, $CollectionObj);
+		}
 	}
 }
 ?>
