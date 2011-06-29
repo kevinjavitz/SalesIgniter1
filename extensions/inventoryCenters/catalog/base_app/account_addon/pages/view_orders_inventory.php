@@ -7,7 +7,7 @@
 	->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 
 
-$Qorders = Doctrine_Query::create()
+	$Qorders = Doctrine_Query::create()
 	->from('Orders o')
 	->leftJoin('o.OrdersProducts op')
 	->leftJoin('op.OrdersProductsReservation ops')
@@ -16,8 +16,11 @@ $Qorders = Doctrine_Query::create()
 	->leftJoin('s.OrdersStatusDescription sd')
 	->where('ops.inventory_center_pickup = ?', $QcustomerCenter[0]['inventory_center_id'])
 	->andWhereIn('ot.module_type', array('total', 'ot_total'))
-	->andWhere('sd.language_id = ?', Session::get('languages_id'))
-	->execute(array(),Doctrine_Core::HYDRATE_ARRAY);
+	->andWhere('sd.language_id = ?', Session::get('languages_id'));
+
+    EventManager::notify('OrdersListingBeforeExecute', &$Qorders);
+
+	$Qorders = $Qorders->execute(array(),Doctrine_Core::HYDRATE_ARRAY);
 
 	//echo "<pre>". print_r($Qorders);
 	ob_start();
