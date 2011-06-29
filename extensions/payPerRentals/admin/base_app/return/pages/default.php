@@ -170,6 +170,8 @@ if ($centersEnabled === true){
 	}
 }
 
+EventManager::notify('OrdersListingBeforeExecute', &$Qreservations);
+
 $Result = $Qreservations->execute();
 if ($Result->count() > 0){
 	//echo '<pre>';print_r($Result->toArray(true));

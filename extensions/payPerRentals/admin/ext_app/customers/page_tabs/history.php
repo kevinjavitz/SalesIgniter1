@@ -6,8 +6,11 @@
 	->leftJoin('opr.ProductsInventoryBarcodes ib')
 	->where('opr.rental_state = ?', 'returned')
 	->andWhere('o.customers_id = ?', $cID)
-	->orderBy('opr.date_returned DESC')
-	->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+	->orderBy('opr.date_returned DESC');
+
+    EventManager::notify('OrdersListingBeforeExecute', &$Qreservations);
+
+	$Qreservations = $Qreservations->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 
 	$htmlTable = htmlBase::newElement('table')
 	->setCellPadding(2)
