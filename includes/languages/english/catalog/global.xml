@@ -414,6 +414,9 @@
 	<define key="PURCHASE_TYPE_NEW_NAME"><![CDATA[Purchase (New)]]></define>
 	<define key="PURCHASE_TYPE_NEW_SHOW"><![CDATA[New]]></define>
 
+	<define key="PURCHASE_TYPE_PACKAGE_NAME"><![CDATA[Package]]></define>
+	<define key="PURCHASE_TYPE_PACKAGE_SHOW"><![CDATA[Package]]></define>
+
 	<define key="PURCHASE_TYPE_RENTAL_NAME"><![CDATA[Membership Rental]]></define>
 	<define key="PURCHASE_TYPE_RENTAL_SHOW"><![CDATA[Member Rental]]></define>
 
@@ -464,6 +467,7 @@
 	<define key="BUY_USED"><![CDATA[Buy Used]]></define>
 	<define key="BUY_RENTAL"><![CDATA[Buy Rental]]></define>
 	<define key="BUY_RESERVATION"><![CDATA[Buy Reservation]]></define>
+	<define key="BUY_PACKAGE"><![CDATA[Buy Package]]></define>
 
 	<define key="TEXT_SHOPPING_CART_PURCHASE_TYPE"><![CDATA[ Purchase Type:]]></define>
 	<define key="TEXT_SHOPPING_CART_VIEW_TYPE"><![CDATA[ View Type:]]></define>
