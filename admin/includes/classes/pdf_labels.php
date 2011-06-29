@@ -127,6 +127,8 @@ class PDF_Labels {
 			$query->andWhere('opr.parent_id is null');
 		}
 
+		EventManager::notify('OrdersListingBeforeExecute', &$query);
+
 		return $this->getPayPerRentals($settings);
 		return $query;
 	}
@@ -150,6 +152,8 @@ class PDF_Labels {
 		}else{
 			$query->andWhere('opr.parent_id is null');
 		}
+
+		EventManager::notify('OrdersListingBeforeExecute', &$query);
 
 		$Result = $query->execute();
 		$dataArray = array();

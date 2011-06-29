@@ -121,6 +121,7 @@ class OrderAddressManager {
 		$abbrstate = htmlspecialchars($Address->getZoneCode());
 
 		$fmt = $Address->getFormat();
+		$fmt = nl2br($fmt);
 		eval("\$address = \"$fmt\";");
 
 		return $address;

@@ -30,6 +30,8 @@
 	->orderBy('o.orders_id desc')
 	->limit('3');
 
+    EventManager::notify('OrdersListingBeforeExecute', &$Qorders);
+
 	$Result = $Qorders->execute(array(), Doctrine::HYDRATE_ARRAY);
 
 	if ($Result){

@@ -27,22 +27,18 @@
 
 		public function output(){
 			$Qorders = Doctrine_Query::create()
-					->select('o.orders_id, a.entry_name, o.date_purchased, o.customers_id, o.last_modified, o.currency, o.currency_value, s.orders_status_id, sd.orders_status_name, ot.text as order_total, o.payment_module')
-					->from('Orders o')
-					->leftJoin('o.OrdersTotal ot')
-					->leftJoin('o.OrdersAddresses a')
-					->leftJoin('o.OrdersStatus s')
-					->leftJoin('s.OrdersStatusDescription sd')
-					->where('sd.language_id = ?', Session::get('languages_id'))
+			->select('o.orders_id, a.entry_name, o.date_purchased, o.customers_id, o.last_modified, o.currency, o.currency_value, s.orders_status_id, sd.orders_status_name, ot.text as order_total, o.payment_module')
+			->from('Orders o')
+			->leftJoin('o.OrdersTotal ot')
+			->leftJoin('o.OrdersAddresses a')
+			->leftJoin('o.OrdersStatus s')
+			->leftJoin('s.OrdersStatusDescription sd')
+			->where('sd.language_id = ?', Session::get('languages_id'))
+			->andWhereIn('ot.module_type', array('total', 'ot_total'))
+			->andWhere('a.address_type = ?', 'customer')
+			->orderBy('o.date_purchased desc');
 
-					/*
-					 * @TODO: Change to only look for "total" after a while, when client upgrades will no longer be affected
-					 */
-					->andWhereIn('ot.module_type', array('total', 'ot_total'))
-					->andWhere('a.address_type = ?', 'customer')
-					->orderBy('o.date_purchased desc');
-
-			EventManager::notify('AdminOrdersListingBeforeExecute', $Qorders);
+			EventManager::notify('AdminOrdersListingBeforeExecute', &$Qorders);
 
 			if (isset($_GET['cID'])){
 				$Qorders->andWhere('o.customers_id = ?', (int) $_GET['cID']);

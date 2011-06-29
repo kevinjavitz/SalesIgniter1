@@ -14,8 +14,11 @@ if(sysConfig::get('EXTENSION_PAY_PER_RENTALS_AUTO_SEND') == 'True'){
 	//->whereIn('opr.orders_products_reservations_id', $_GET['sendRes'])
 	->where('opr.start_date <= ?', date('Y-m-d H:i:s'))//substract shipping days before
 	->andWhere('oa.address_type = ?', 'customer')
-	->andWhere('opr.parent_id IS NULL')
-	->execute();
+	->andWhere('opr.parent_id IS NULL');
+
+	EventManager::notify('OrdersListingBeforeExecute', &$Qreservations);
+
+	$Qreservations = $Qreservations->execute();
 	if ($Qreservations->count() > 0){
 		foreach($Qreservations as $oInfo){
 			foreach($oInfo->OrdersProducts as $opInfo){
@@ -88,6 +91,9 @@ if(sysConfig::get('EXTENSION_PAY_PER_RENTALS_AUTO_RETURN') == 'True'){
 				->leftJoin('b2c.ProductsInventoryCenters');
 			}
 		}
+
+		EventManager::notify('OrdersListingBeforeExecute', &$ReservationQuery);
+
 		$Reservation = $ReservationQuery->execute();
 		foreach($Reservation as $oInfo){
 			foreach($oInfo->OrdersProducts as $opInfo){

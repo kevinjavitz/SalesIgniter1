@@ -236,6 +236,8 @@ class RentalStoreUser implements Serializable {
 
 				$this->updateUserLogins();
 
+				EventManager::notify('ProcessLoginAfterExecute', &$this);
+
 				$ShoppingCart->restoreContents();
 
 				if (Session::exists('rentalQueueBase') === true){
