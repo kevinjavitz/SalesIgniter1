@@ -84,9 +84,9 @@ class ReservationUtilities {
 		return $QProduct[0]['ProductsDescription'][0]['products_name'];
 	}
 
-	public static function getCalendar($productsId, $purchaseTypeClasses, $rQty = 1, $showShipping = true, $callType = 'catalog')
+	public static function getCalendar($productsId, $purchaseTypeClasses, $rQty = 1, $showShipping = true, $callType = 'catalog', $usableBarcodes = array())
 	{
-
+		global $App;
 		if($callType == 'catalog'){
 			$callLink = 'js_catalog_app_link(\'rType=ajax&appExt=payPerRentals&app=build_reservation&appPage=default\')';
 			$callAction = 'getReservedDates';
@@ -167,7 +167,7 @@ class ReservationUtilities {
 
 			$reservArr = array();
 			$barcodesBooked = array();
-			$bookingsF = $purchaseTypeClasses[$nr]->getBookedDaysArray(date('Y-m-d', $startTime), $rQty, &$reservArr, &$barcodesBooked);
+			$bookingsF = $purchaseTypeClasses[$nr]->getBookedDaysArray(date('Y-m-d', $startTime), $rQty, &$reservArr, &$barcodesBooked, $usableBarcodes);
 			if($bookingsF === false){
 				$isDisabled = true;
 				$disabledBy = '"'. ReservationUtilities::getProductName($pID_stringElem) . '"';
@@ -1254,6 +1254,23 @@ class ReservationUtilities {
 	            <?php echo sysLanguage::get('ENTRY_QUANTITY');?><input type="text" size="3" class="rental_qty" name="rental_qty" value="<?php echo $rQty;?>">
             </div>
         </div>
+		<?php
+		if($App->getEnv() == 'catalog'){
+			if(sysConfig::get('EXTENSION_PAY_PER_RENTALS_INSURE_ALL_PRODUCTS_AUTO') == 'True'){
+			?>
+			<input type="hidden" class="hasInsurance" name="hasInsurance" value="1">
+				<?php
+			}
+		}else{
+		?>
+		<div class="insuranceDiv">
+            <div>
+	            <?php echo sysLanguage::get('ENTRY_INSURANCE');?><input type="checkbox" class="hasInsurance" name="hasInsurance" value="1">
+            </div>
+        </div>
+		<?php
+		}
+        ?>
 		<div class="shippingInfoDiv">
 			<div colspan="2">
 				<table cellpadding="0" cellspacing="3" border="0" width="100%">
@@ -1331,6 +1348,10 @@ class ReservationUtilities {
 	        $pprButtons .= '<input type="hidden" name="products_id[]" class="pID" value="' . $pElem . '">';
 	   }
 
+	   foreach($usableBarcodes as $bElem){
+	        $pprButtons .= '<input type="hidden" name="barcode" value="' . $bElem . '">';
+	   }
+
 	   $pprButtons .= $purchaseTypeClass->getHiddenFields();
 
 	   $pprButtons .= htmlBase::newElement('div')
@@ -1364,8 +1385,11 @@ class ReservationUtilities {
 			->where('i.products_id = ?', $productId)
 			->andWhereIn('opr.rental_state', array('reserved', 'out'))
 			->andWhere('opr.parent_id IS NULL')
-			->andWhere('DATE_ADD(end_date, INTERVAL shipping_days_after DAY) >= ?', $start)
-			->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+			->andWhere('DATE_ADD(end_date, INTERVAL shipping_days_after DAY) >= ?', $start);
+
+			EventManager::notify('OrdersProductsReservationListingBeforeExecute', &$Qcheck);
+
+			$Qcheck = $Qcheck->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 
 			if($Qcheck[0]['max_before'] > $Qcheck[0]['max_after']){
 				$maxDays = $Qcheck[0]['max_before'];
@@ -1376,7 +1400,7 @@ class ReservationUtilities {
 		return $maxDays;
 	}
 
-	public static function getMyReservations($productId, $start, $allowOverbooking = false){
+	public static function getMyReservations($productId, $start, $allowOverbooking = false, $usableBarcodes = array()){
 
 		$reservArr = array();
 		if (sysConfig::get('EXTENSION_PAY_PER_RENTALS_ALLOW_OVERBOOKING') == 'False' && $allowOverbooking === false){
@@ -1388,8 +1412,15 @@ class ReservationUtilities {
 			->where('i.products_id = ?', $productId)
 			->andWhereIn('opr.rental_state', array('reserved', 'out'))
 			->andWhere('opr.parent_id IS NULL')
-			->andWhere('DATE_ADD(end_date, INTERVAL shipping_days_after DAY) >= ?', $start)
-			->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+			->andWhere('DATE_ADD(end_date, INTERVAL shipping_days_after DAY) >= ?', $start);
+
+			if(count($usableBarcodes) > 0){
+				$Qcheck->andWhereIn('ib.barcode_id', $usableBarcodes);
+			}
+
+			EventManager::notify('OrdersProductsReservationListingBeforeExecute', &$Qcheck);
+
+			$Qcheck = $Qcheck->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 
 			foreach($Qcheck as $iReservation){
 					$reservationArr = array();
