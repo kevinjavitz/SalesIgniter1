@@ -50,7 +50,7 @@ class Extension_customerGroups extends ExtensionBase {
 
 				$productInfo['price'] -= $productInfo['price']*$discount/100;
 				if(isset($productInfo['message'])){
-					$productInfo['message'].= '-'. $currencies->format($productInfo['price']*$discount/100). ' discount based on customer groups. ';
+					$productInfo['message'].= '-'. $currencies->format($productInfo['price']*$discount/100). sysLanguage::get('TEXT_DISCOUNT_BASED');
 				}
 				if (isset($productInfo['special_price'])){
 					$productInfo['special_price'] -= $productInfo['special_price']*$discount/100;
