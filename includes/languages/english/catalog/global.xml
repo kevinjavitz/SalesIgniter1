@@ -492,6 +492,13 @@
 
 	<define key="TEXT_REMOVE_INSURANCE_ALL"><![CDATA[Decline Insurance]]></define>
 	<define key="TEXT_INSURE_ALL"><![CDATA[Insure All]]></define>
+	<define key="TABLE_HEADING_SUBACCOUNT"><![CDATA[Subaccount]]></define>
+
+	<define key="TEXT_SUBACCOUNT_UPDATED"><![CDATA[Subaccount updated]]></define>
+	<define key="TEXT_SUBACCOUNTS"><![CDATA[Subaccounts]]></define>
+	<define key="TEXT_VIEW_SUBACCOUNTS"><![CDATA[View Subaccounts]]></define>
+	<define key="TEXT_CHANGE_PASSWORD"><![CDATA[Change Password]]></define>
+	<define key="TEXT_DISCOUNT_BASED"><![CDATA[ discount based on customer groups. ]]></define>
 
 
 </definitions>
