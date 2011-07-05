@@ -7,7 +7,6 @@
 	));
 
 	$Qfields = Doctrine_Query::create()
-	->select('f.field_id, f.input_type, f.show_on_site, fd.field_name')
 	->from('ProductsCustomFields f')
 	->leftJoin('f.ProductsCustomFieldsDescription fd')
 	->where('fd.language_id = ?', Session::get('languages_id'))
@@ -34,6 +33,10 @@
 			->setHref(itw_app_link('appExt=customFields&windowAction=edit&action=getFieldWindow&fID=' . $fieldId))
 			->css($iconCss);
 
+			$htmlFields = '<b><span class="fieldName" field_id="' . $fieldId . '">' . $fieldName . '</span></b>' . $deleteIcon->draw() . $editIcon->draw() . '<br />' . TEXT_TYPE . '<span class="fieldType">' . $inputType . '</span><br />' . sysLanguage::get('TEXT_SHOWN_ON_SITE') . ($showOnSite == '1' ? 'Yes' : 'No');
+
+			EventManager::notify('ProductCustomFieldsAddOptions', &$htmlFields, $fInfo);
+
 			$newFieldWrapper = htmlBase::newElement('div')->css(array(
 				'float'   => 'left',
 				'width'   => '150px',
@@ -41,7 +44,7 @@
 				'padding' => '4px',
 				'margin'  => '3px'
 			))->addClass('ui-widget ui-widget-content ui-corner-all draggableField')
-			->html('<b><span class="fieldName" field_id="' . $fieldId . '">' . $fieldName . '</span></b>' . $deleteIcon->draw() . $editIcon->draw() . '<br />' . TEXT_TYPE . '<span class="fieldType">' . $inputType . '</span><br />' . sysLanguage::get('TEXT_SHOWN_ON_SITE') . ($showOnSite == '1' ? 'Yes' : 'No'));
+			->html($htmlFields);
 
 			$fieldListing->append($newFieldWrapper);
 		}

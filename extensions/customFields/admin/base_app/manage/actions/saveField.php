@@ -14,6 +14,8 @@
 	$Field->show_on_labels = (isset($_POST['show_on_labels']) ? '1' : '0');
 	$Field->labels_max_chars = $_POST['labels_max_chars'];
 
+	EventManager::notify('CustomFieldsSaveOptions', &$Field);
+
 	$FieldDescription =& $Field->ProductsCustomFieldsDescription;
 	foreach($_POST['field_name'] as $lId => $fieldName){
 		$FieldDescription[$lId]->field_name = $fieldName;

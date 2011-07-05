@@ -236,7 +236,25 @@ class Extension_customFields extends ExtensionBase {
 	}
 
 	public function ProductListingQueryBeforeExecute(&$Qproducts){
-		$Qproducts->leftJoin('p.ProductsCustomFieldsToProducts f2p');
+
+		if(Session::exists('childrenAccount')){
+			$QChecked = Doctrine_Query::create()
+				->from('ProductCustomFieldsToCustomers')
+				->where('customers_id=?', Session::get('childrenAccount'))
+				->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+			if($QChecked){
+	                $i = 0;
+				foreach($QChecked as $customField){
+					$Qproducts->leftJoin('p.ProductsCustomFieldsToProducts f2p'.$i);
+					$fieldArr = '"'. implode('","',explode(',',$customField['options'])).'"';
+					$query = '(f2p'.$i.'.field_id='.$customField['product_custom_field_id'] .' AND f2p'.$i.'.value IN ('.$fieldArr.'))';
+					$Qproducts->andWhere($query);
+					$i++;
+				}
+			}
+		}else{
+			$Qproducts->leftJoin('p.ProductsCustomFieldsToProducts f2p');
+		}
 	}
 
 	public function getFields($pId = null, $languageId = null, $shownOnProductInfo = false, $shownOnLabels = false, $shownOnListing = false){
