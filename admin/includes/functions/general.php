@@ -33,9 +33,11 @@ function tep_cfg_get_shipping_methods(){
 		$module = OrderShippingModules::getModule('upsreservation');
 	}
 	$shippingInputs = array();
-	$quotes = $module->quote();
-	for($i=0, $n=sizeof($quotes['methods']); $i<$n; $i++){
-		$shippingInputs[] = $quotes['methods'][$i]['title'];
+	if($module){
+		$quotes = $module->quote();
+		for($i=0, $n=sizeof($quotes['methods']); $i<$n; $i++){
+			$shippingInputs[] = $quotes['methods'][$i]['title'];
+		}
 	}
     return $shippingInputs;
 }

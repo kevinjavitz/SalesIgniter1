@@ -16,7 +16,7 @@ class OrderShippingZonereservation extends OrderShippingModule {
 		if (isset($_GET['app']) && $_GET['app'] == 'checkout' && (!Session::exists('onlyReservations') || Session::get('onlyReservations') == false)){
 			$this->setEnabled(false);
 		}
-
+		if(class_exists('ModulesShippingZoneReservationMethods')){
 			$Qmethods = Doctrine_Query::create()
 			->from('ModulesShippingZoneReservationMethods m')
 			->leftJoin('m.ModulesShippingZoneReservationMethodsDescription md')
@@ -47,6 +47,7 @@ class OrderShippingZonereservation extends OrderShippingModule {
 					}
 				}
 			}
+		}
 
 	}
 
