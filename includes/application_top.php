@@ -465,10 +465,10 @@ require(sysConfig::getDirFsCatalog() . 'includes/classes/htmlBase.php');
 									Session::remove('account_action');
 								}
 
-								$errorMsg = sprintf(sysLanguage::get('TEXT_NOT_RENTAL_CUSTOMER'),itw_app_link('checkoutType=rental','checkout','default'), itw_app_link(null,'account','login'));
+								$errorMsg = sprintf(sysLanguage::get('TEXT_NOT_RENTAL_CUSTOMER'),itw_app_link('checkoutType=rental','checkout','default','SSL'), itw_app_link(null,'account','login'));
 								break;
 							case 'inactive':
-								$errorMsg = sprintf(sysLanguage::get('TEXT_NOT_ACTIVE_CUSTOMER'), itw_app_link('checkoutType=rental','checkout','default'));
+								$errorMsg = sprintf(sysLanguage::get('TEXT_NOT_ACTIVE_CUSTOMER'), itw_app_link('checkoutType=rental','checkout','default','SSL'));
 								break;
 						}
 						$messageStack->addSession('pageStack', $errorMsg, 'warning');
@@ -482,7 +482,7 @@ require(sysConfig::getDirFsCatalog() . 'includes/classes/htmlBase.php');
 					Session::set('add_to_queue_product_attrib', $attribs);
 					//$navigation->set_snapshot();
 					$messageStack->addSession('pageStack',sysLanguage::get('TO_ADD_TO_QUEUE_MESSAGE'),'warning');
-					tep_redirect(itw_app_link('checkoutType=rental','checkout','default'));
+					tep_redirect(itw_app_link('checkoutType=rental','checkout','default','SSL'));
 				}
 				break;
 			case 'add_queue_all':
@@ -510,10 +510,10 @@ require(sysConfig::getDirFsCatalog() . 'includes/classes/htmlBase.php');
 									Session::remove('account_action');
 								}
 
-								$errorMsg = sprintf(sysLanguage::get('TEXT_NOT_RENTAL_CUSTOMER'),itw_app_link('checkoutType=rental','checkout','default'), itw_app_link(null,'account','login'));
+								$errorMsg = sprintf(sysLanguage::get('TEXT_NOT_RENTAL_CUSTOMER'),itw_app_link('checkoutType=rental','checkout','default','SSL'), itw_app_link(null,'account','login'));
 								break;
 							case 'inactive':
-								$errorMsg = sprintf(sysLanguage::get('TEXT_NOT_ACTIVE_CUSTOMER'), itw_app_link('checkoutType=rental','checkout','default'));
+								$errorMsg = sprintf(sysLanguage::get('TEXT_NOT_ACTIVE_CUSTOMER'), itw_app_link('checkoutType=rental','checkout','default','SSL'));
 								break;
 						}
 						$messageStack->addSession('pageStack', $errorMsg, 'warning');
