@@ -1,0 +1,34 @@
+<data>
+	<Customers>
+		<parent>
+			<type>integer</type>
+			<length>4</length>
+			<unsigned>0</unsigned>
+			<primary>false</primary>
+			<default>0</default>
+			<notnull>true</notnull>
+		</parent>
+	</Customers>
+	<RentalQueueTable>
+		<children_customers_id>
+			<type>integer</type>
+			<length>4</length>
+			<unsigned>0</unsigned>
+			<primary>false</primary>
+			<default>0</default>
+			<notnull>true</notnull>
+		</children_customers_id>
+	</RentalQueueTable>
+
+	<RentedProducts>
+		<children_customers_id>
+			<type>integer</type>
+			<length>4</length>
+			<unsigned>0</unsigned>
+			<primary>false</primary>
+			<default>0</default>
+			<notnull>true</notnull>
+		</children_customers_id>
+	</RentedProducts>
+
+</data>
