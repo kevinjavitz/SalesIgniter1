@@ -17,15 +17,13 @@
 	->leftJoin('o.OrdersStatus s')
 	->leftJoin('s.OrdersStatusDescription sd')
 	->where('sd.language_id = ?', Session::get('languages_id'))
-	/*
-	 * @TODO: Change to only look for "total" after a while, when client upgrades will no longer be affected
-	 */
+
 	->andWhereIn('ot.module_type', array('total', 'ot_total'))
 	->andWhere('a.address_type = ?', 'customer')
 	->orderBy('o.date_purchased desc')
 	->limit(10);
 
-	EventManager::notify('AdminOrdersListingBeforeExecute', $Qorders);
+	EventManager::notify('AdminOrdersListingBeforeExecute', &$Qorders);
 
 	$tableGridOrders = htmlBase::newElement('grid')
 	->usePagination(false)
@@ -115,9 +113,12 @@
 			$arrowIcon = htmlBase::newElement('icon')->setType('info');
 			$Qorders = Doctrine_Query::create()
 			->select('count(*) as total')
-			->from('Orders')
-			->where('customers_id = ?', $customerId)
-			->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+			->from('Orders o')
+			->where('customers_id = ?', $customerId);
+
+			EventManager::notify('OrdersListingBeforeExecute', &$Qorders);
+
+			$Qorders = $Qorders->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 
 			if (empty($customer['MembershipBillingReport'])){
 			}elseif ($customer['MembershipBillingReport']['status'] == 'A'){
@@ -316,6 +317,8 @@
 	->groupBy('YEAR(o.date_purchased) , MONTH(o.date_purchased)')
 	->orderBy('o.date_purchased desc');
 
+	EventManager::notify('OrdersListingBeforeExecute', &$Qsales);
+
 	$Result = $Qsales->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 	if ($Result){
 		$rows = 0;
@@ -439,6 +442,8 @@
 				if ($sel_month <> 0){
 					$queryObj->andWhere('DAYOFMONTH(o.date_purchased) = ?', $sInfo['row_day']);
 				}
+
+				EventManager::notify('OrdersListingBeforeExecute', &$queryObj);
 
 				$$finalVarName = $queryObj->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 			}

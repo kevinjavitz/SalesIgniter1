@@ -6,8 +6,11 @@
 	->leftJoin('opr.ProductsInventoryBarcodes ib')
 	->where('opr.rental_state = ?', 'out')
 	->andWhere('opr.parent_id IS NULL')
-	->andWhere('o.customers_id = ?', $cID)
-	->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+	->andWhere('o.customers_id = ?', $cID);
+
+    EventManager::notify('OrdersListingBeforeExecute', &$Qreservations);
+
+	$Qreservations = $Qreservations->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 
 	$htmlTable = htmlBase::newElement('table')
 	->setCellPadding(2)

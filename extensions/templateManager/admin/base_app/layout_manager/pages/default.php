@@ -11,6 +11,7 @@ $tableGrid->addHeaderRow(array(
 $tableGrid->addButtons(array(
 	htmlBase::newElement('button')->setText('View Layouts')->addClass('layoutsButton')->disable(),
 	htmlBase::newElement('button')->setText('New')->addClass('newButton'),
+	htmlBase::newElement('button')->setText('Copy')->addClass('copyButton'),
 	htmlBase::newElement('button')->setText('Import')->addClass('importButton'),
 	htmlBase::newElement('button')->setText('Export')->addClass('exportButton')->disable(),
 	htmlBase::newElement('button')->setText('Configure')->addClass('configureButton')->disable(),

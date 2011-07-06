@@ -14,6 +14,7 @@
 		private $configData = array();
 		private $xmlData = null;
 		private $enabled = false;
+		private $visible = 'Both';
 		private $code = null;
 		private $title = 'No Title Set';
 		private $description = 'No Description Set';
@@ -66,6 +67,10 @@
 				if (array_key_exists((string) $info->status_key, $this->configData)){
 					$this->enabled = ($this->configData[(string) $info->status_key]['configuration_value'] == 'True' ? true : false);
 				}
+
+				if (array_key_exists((string) $info->visible_key, $this->configData)){
+					$this->visible = $this->configData[(string) $info->visible_key]['configuration_value'];
+				}
 				
 				if (array_key_exists((string) $info->sort_key, $this->configData)){
 					$this->sortOrder = (int) $this->configData[(string) $info->sort_key]['configuration_value'];
@@ -92,7 +97,23 @@
 		}
 		
 		public function isEnabled(){
-			return $this->enabled;
+			global $App;
+			$enabled = false;
+			if($this->visible == 'Both'){
+				$enabled = true;
+			}else{
+				if($App->getEnv() == 'catalog'){
+					if($this->visible == 'Catalog'){
+						$enabled = true;
+					}
+				}else{
+					if($this->visible == 'Admin'){
+						$enabled = true;
+					}
+				}
+			}
+
+			return ($this->enabled && $enabled);
 		}
 		
 		public function isInstalled(){

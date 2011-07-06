@@ -72,28 +72,42 @@
 	if (isset($resInfo['start_date']) && isset($resInfo['end_date'])){
 
 		if(isset($_GET['shipping']) && $_GET['shipping'] != 'undefined'){
-			$resInfo['rental_shipping'] = 'zonereservation_'.$_GET['shipping'];
+			$resInfo['rental_shipping'] = $_GET['shipping'];
 		}else{
 			$resInfo['rental_shipping'] = false;
 		}
 		if (isset($_GET['qty']) && $_GET['qty'] != 'undefined'){
 			$resInfo['rental_qty'] = $_GET['qty'];
 		}
+
 		if (sysConfig::get('EXTENSION_PAY_PER_RENTALS_USE_EVENTS') == 'True' && $Qevent){
 			$resInfo['event_name'] = $Qevent->events_name;
 			$resInfo['event_date'] = $starting_date;
 		}
 
-		$PurchaseType->processAddToCartNew($reservationInfo, $resInfo);
 
+		$PurchaseType->processAddToCartNew($reservationInfo, $resInfo);
 		if (sysConfig::get('EXTENSION_PAY_PER_RENTALS_USE_EVENTS') == 'True' && $Qevent){
 			$reservationInfo['reservationInfo']['event_name'] = $Qevent->events_name;
 			$reservationInfo['reservationInfo']['event_date'] = $starting_date;
 		}
 		/*todo move into attributes*/
 		if (isset($_POST['id']['reservation']) && !empty($_POST['id']['reservation'])){
-			$reservationInfo['aID_string'] = attributesUtil::getAttributeString($_POST['id']['reservation']);//'{1}2';
+			$attrValue = attributesUtil::getAttributeString($_POST['id']['reservation']);
+			if(!empty($attrValue))
+			$reservationInfo['aID_string'] = $attrValue;
 		}
+		if(isset($_GET['hasInsurance']) && $_GET['hasInsurance'] == '1'){
+			$payPerRentals = Doctrine_Query::create()
+			->select('insurance')
+			->from('ProductsPayPerRental')
+			->where('products_id = ?', $Product->getID())
+			->fetchOne();
+
+			$reservationInfo['reservationInfo']['insurance'] = $payPerRentals->insurance;
+			$reservationInfo['price'] += $payPerRentals->insurance;
+		}
+		//}
 		$OrderProduct->setPInfo($reservationInfo);
 
 		EventManager::attachActionResponse(array(

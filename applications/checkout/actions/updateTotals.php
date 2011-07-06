@@ -1,4 +1,5 @@
 <?php
+	EventManager::notify('UpdateTotalsCheckout');
 	OrderTotalModules::process();
     if (Session::exists('redirectUrl')){
 		$redirect = Session::get('redirectUrl');

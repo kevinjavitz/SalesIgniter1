@@ -18,11 +18,29 @@
 <div style="text-align:right"><?php
 	$saveButton = htmlBase::newElement('button')->usePreset('save')
 	->setType('submit')->setName('saveOrder');
+	$estimateButton = htmlBase::newElement('button')->usePreset('save')
+	->setType('submit')->setName('estimateOrder');
+	$emailButton = htmlBase::newElement('button')->usePreset('save')
+	->setType('submit')->setName('emailEstimate')->setId('emailEstimate');
+	$EmailInput = htmlBase::newElement('input')
+	->setName('emailInput')
+	->setId('emailInput')
+	->setLabel('Email:')
+	->setLabelPosition('before');
 	
 	if (isset($_GET['oID'])){
-		$saveButton->setText(sysLanguage::get('TEXT_BUTTON_UPDATE_ORDER'));
+		if(!isset($_GET['isEstimate'])){
+			$saveButton->setText(sysLanguage::get('TEXT_BUTTON_UPDATE_ORDER'));
+			$estimateButton->disable();
+		}else{
+			$saveButton->setText(sysLanguage::get('TEXT_BUTTON_SAVE_AS_ORDER'));
+			$estimateButton->setText(sysLanguage::get('TEXT_BUTTON_UPDATE_ESTIMATE'));
+			$emailButton->setText(sysLanguage::get('TEXT_BUTTON_SEND_ESTIMATE'));
+		}
+
 	}else{
 		$saveButton->setText(sysLanguage::get('TEXT_BUTTON_SAVE_AS_ORDER'));
+		$estimateButton->setText(sysLanguage::get('TEXT_BUTTON_SAVE_AS_ESTIMATE'));
 	}
 	
 	/*$saveQuoteButton = htmlBase::newElement('button')->usePreset('save')->setText('Save As Quote')
@@ -31,7 +49,13 @@
 	$cancelButton = htmlBase::newElement('button')->usePreset('cancel')
 	->setHref(itw_app_link(null, 'orders', 'default'));
 	
-	echo $saveButton->draw() . /*$saveQuoteButton->draw() . */$cancelButton->draw() . '<br>';
+	echo $saveButton->draw() . $estimateButton->draw() . $cancelButton->draw();
+	echo '<br>';
+	if (isset($_GET['oID'])){
+		if(isset($_GET['isEstimate'])){
+			echo $EmailInput->draw().' '.$emailButton->draw();
+		}
+	}
 ?></div>
 <br />
 <div class="ui-widget">
@@ -265,6 +289,6 @@
 </div>
 <br />
 <div style="text-align:right"><?php
-	echo $saveButton->draw() . /*$saveQuoteButton->draw() . */$cancelButton->draw() . '<br>';
+	echo $saveButton->draw() . $estimateButton->draw() . $cancelButton->draw() . '<br>';
 ?></div>
 </form>

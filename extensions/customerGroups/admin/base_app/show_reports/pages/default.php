@@ -74,6 +74,8 @@
 		$Qorders->andWhere('o.date_purchased <= ?', date('Y-m-d',strtotime('+1 day',strtotime($_GET['end_date']))));
 	}
 
+	EventManager::notify('OrdersListingBeforeExecute', &$Qorders);
+
 	$Result = $Qorders->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 
 	if ($Result){

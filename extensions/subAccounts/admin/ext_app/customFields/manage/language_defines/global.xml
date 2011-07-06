@@ -1,0 +1,5 @@
+<definitions>
+	<define key="ENTRY_FILTER_SUBACCOUNTS"><![CDATA[Filter from subaccounts]]></define>
+	<define key="TEXT_FILTER_FROM_ACCOUNT"><![CDATA[Filter from subaccounts]]></define>
+
+</definitions>

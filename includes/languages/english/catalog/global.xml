@@ -25,7 +25,7 @@
 	<define key="HEADER_NAV_LINK_FEATURED"><![CDATA[Featured]]></define>
 	<define key="HEADER_NAV_LINK_BEST_SELLERS"><![CDATA[Best Sellers]]></define>
 	<define key="HEADER_NAV_LINK_MY_DOWNLOADS"><![CDATA[My Downloads]]></define>
-	<define key="HEADER_NAV_TEXT_SEARCH"><![CDATA[Product Search]]></define>
+	<define key="HEADER_NAV_TEXT_SEARCH"><![CDATA[Search]]></define>
 	<define key="HEADER_NAV_GIFT_SUBSCRIPTION"><![CDATA[Gift Subscription]]></define>
 	<define key="HEADER_NAV_TERMS"><![CDATA[Terms]]></define>
 	<define key="HEADER_NAV_LINK_WHEELS"><![CDATA[WHEELS]]></define>
@@ -414,6 +414,9 @@
 	<define key="PURCHASE_TYPE_NEW_NAME"><![CDATA[Purchase (New)]]></define>
 	<define key="PURCHASE_TYPE_NEW_SHOW"><![CDATA[New]]></define>
 
+	<define key="PURCHASE_TYPE_PACKAGE_NAME"><![CDATA[Package]]></define>
+	<define key="PURCHASE_TYPE_PACKAGE_SHOW"><![CDATA[Package]]></define>
+
 	<define key="PURCHASE_TYPE_RENTAL_NAME"><![CDATA[Membership Rental]]></define>
 	<define key="PURCHASE_TYPE_RENTAL_SHOW"><![CDATA[Member Rental]]></define>
 
@@ -437,7 +440,7 @@
     <define key="TEXT_EMAIL_DO_NOT_MATCH"><![CDATA[The email address or password do not match our records]]></define>
     <define key="TEXT_INFO_SEMESTER"><![CDATA[Semester Name:]]></define>
     
-    <define key="HEADER_TEXT_SHOPPING_CART_ITEMS"><![CDATA[%s Items in your shopping cart]]></define>
+    <define key="HEADER_TEXT_SHOPPING_CART_ITEMS"><![CDATA[Shopping Cart(%s items)]]></define>
     <define key="HEADER_TEXT_RENTAL_QUEUE_ITEMS"><![CDATA[%s Items in your rental queue]]></define>
     <define key="TEXT_ENTRY_PICKUP_TIME"><![CDATA[Pickup Up Time:]]></define>
     <define key="TEXT_ENTRY_RETURN_TIME"><![CDATA[Drop Off Time:]]></define>
@@ -464,6 +467,7 @@
 	<define key="BUY_USED"><![CDATA[Buy Used]]></define>
 	<define key="BUY_RENTAL"><![CDATA[Buy Rental]]></define>
 	<define key="BUY_RESERVATION"><![CDATA[Buy Reservation]]></define>
+	<define key="BUY_PACKAGE"><![CDATA[Buy Package]]></define>
 
 	<define key="TEXT_SHOPPING_CART_PURCHASE_TYPE"><![CDATA[ Purchase Type:]]></define>
 	<define key="TEXT_SHOPPING_CART_VIEW_TYPE"><![CDATA[ View Type:]]></define>
@@ -488,6 +492,13 @@
 
 	<define key="TEXT_REMOVE_INSURANCE_ALL"><![CDATA[Decline Insurance]]></define>
 	<define key="TEXT_INSURE_ALL"><![CDATA[Insure All]]></define>
+	<define key="TABLE_HEADING_SUBACCOUNT"><![CDATA[Subaccount]]></define>
+
+	<define key="TEXT_SUBACCOUNT_UPDATED"><![CDATA[Subaccount updated]]></define>
+	<define key="TEXT_SUBACCOUNTS"><![CDATA[Subaccounts]]></define>
+	<define key="TEXT_VIEW_SUBACCOUNTS"><![CDATA[View Subaccounts]]></define>
+	<define key="TEXT_CHANGE_PASSWORD"><![CDATA[Change Password]]></define>
+	<define key="TEXT_DISCOUNT_BASED"><![CDATA[ discount based on customer groups. ]]></define>
 
 
 </definitions>

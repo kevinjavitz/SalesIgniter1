@@ -26,6 +26,8 @@
 	
 	<define key="TEXT_BUTTON_SAVE_AS_ORDER"><![CDATA[Save As Order]]></define>
 	<define key="TEXT_BUTTON_UPDATE_ORDER"><![CDATA[Update Order]]></define>
+	<define key="TEXT_BUTTON_SAVE_AS_ESTIMATE"><![CDATA[Save As Estimate]]></define>
+	<define key="TEXT_BUTTON_UPDATE_ESTIMATE"><![CDATA[Update Estimate]]></define>
 	<define key="TEXT_BUTTON_UPDATE_CUSTOMER"><![CDATA[Update Customer]]></define>
 	
 	<define key="HEADING_CUSTOMER_INFORMATION"><![CDATA[Customer Information]]></define>
@@ -50,4 +52,6 @@
 	<define key="PURCHASE_TYPE_USED_SHOW"><![CDATA[Used]]></define>
 	<define key="PURCHASE_TYPE_RENTAL_NAME"><![CDATA[Rental]]></define>
 	<define key="PURCHASE_TYPE_RENTAL_SHOW"><![CDATA[Rental]]></define>
+	<define key="TEXT_BUTTON_SEND_ESTIMATE"><![CDATA[Send Estimate]]></define>
+
 </definitions>

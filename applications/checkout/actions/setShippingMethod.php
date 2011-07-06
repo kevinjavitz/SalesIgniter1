@@ -66,7 +66,7 @@
 			}
 		}
 	}
-
+    EventManager::notify('UpdateTotalsCheckout');
 	OrderTotalModules::process();
 
 	EventManager::attachActionResponse(array(

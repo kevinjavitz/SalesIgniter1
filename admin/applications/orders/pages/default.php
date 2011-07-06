@@ -7,14 +7,12 @@
 	->leftJoin('o.OrdersStatus s')
 	->leftJoin('s.OrdersStatusDescription sd')
 	->where('sd.language_id = ?', Session::get('languages_id'))
-	/*
-	 * @TODO: Change to only look for "total" after a while, when client upgrades will no longer be affect ed
-	 */
+	->andWhere('o.orders_status != ?', sysConfig::get('ORDERS_STATUS_ESTIMATE_ID'))
 	->andWhereIn('ot.module_type', array('total', 'ot_total'))
 	->andWhere('a.address_type = ?', 'customer')
 	->orderBy('o.date_purchased desc');
 	
-	EventManager::notify('AdminOrdersListingBeforeExecute', $Qorders);
+	EventManager::notify('AdminOrdersListingBeforeExecute', &$Qorders);
 	
 	if (isset($_GET['cID'])){
 		$Qorders->andWhere('o.customers_id = ?', (int)$_GET['cID']);

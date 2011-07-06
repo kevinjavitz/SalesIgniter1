@@ -1,5 +1,6 @@
 <?php
-        $listing_sql = "select rp.rented_products_id, pd.products_name, p.products_image, p.products_id, rp.date_added  from " . TABLE_PRODUCTS . " p
+//here i check for children too
+$listing_sql = "select rp.rented_products_id, pd.products_name, p.products_image, p.products_id, rp.date_added  from " . TABLE_PRODUCTS . " p
         INNER JOIN " . TABLE_PRODUCTS_DESCRIPTION . " pd ON pd.products_id = p.products_id
         INNER JOIN ".TABLE_RENTED_PRODUCTS." rp ON rp.products_id = p.products_id and customers_id = '".$cid ."'
        where p.products_status = '1' and pd.language_id = '" . (int)Session::get('languages_id') . "' order by rp.date_added desc";

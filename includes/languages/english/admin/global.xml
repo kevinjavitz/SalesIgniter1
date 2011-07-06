@@ -46,6 +46,7 @@
 	<define key="BOX_HEADING_CUSTOMERS"><![CDATA[Customers]]></define>
 	<define key="BOX_CUSTOMERS_CUSTOMERS"><![CDATA[Customers]]></define>
 	<define key="BOX_CUSTOMERS_ORDERS"><![CDATA[Orders]]></define>
+	<define key="BOX_CUSTOMERS_ESTIMATES"><![CDATA[Estimates]]></define>
 	<define key="BOX_CUSTOMERS_SEND_RENTALS"><![CDATA[Send Rentals]]></define>
 	<define key="BOX_CUSTOMERS_SUBSCRIBERS"><![CDATA[Membership]]></define>
 	<define key="BOX_HEADING_LOCATION_AND_TAXES"><![CDATA[Locations / Taxes]]></define>

@@ -367,5 +367,73 @@ class OrderCreator extends Order implements Serializable {
 			));
 		}
 	}
+
+	public function sendNewEstimateEmail($CollectionObj, $emailAddress = ''){
+		global $appExtension, $currencies;
+		$DeliveryAddress = $this->AddressManager->getAddress('delivery');
+		$BillingAddress = $this->AddressManager->getAddress('billing');
+
+		$sendToFormatted = $this->AddressManager->showAddress($DeliveryAddress, false);
+		$billToFormatted = $this->AddressManager->showAddress($BillingAddress, false);
+
+		$products_ordered = '';
+		foreach($CollectionObj->OrdersProducts as $opInfo){
+			$products_ordered .= sprintf("%s x %s (%s) = %s\n",
+				$opInfo->products_quantity,
+				$opInfo->products_name,
+				$opInfo->products_model,
+				$currencies->display_price(
+				 	$opInfo->products_price,
+				 	$opInfo->products_tax,
+				 	$opInfo->products_quantity
+				)
+			);
+
+			EventManager::notify('OrderCreatorAddProductToEmail', $opInfo, &$products_ordered);
+		}
+
+		$emailEvent = new emailEvent('estimate_success', Session::get('languages_id'));
+		$emailEvent->setVar('order_id', $CollectionObj->orders_id);
+		$emailEvent->setVar('invoice_link', itw_catalog_app_link('order_id=' . $CollectionObj->orders_id, 'account', 'history_info', 'SSL', false));
+		$emailEvent->setVar('date_ordered', strftime(sysLanguage::getDateFormat('long')));
+		$emailEvent->setVar('ordered_products', $products_ordered);
+		$emailEvent->setVar('billing_address', $billToFormatted);
+		$emailEvent->setVar('shipping_address', $sendToFormatted);
+		if (sysConfig::get('ONEPAGE_CHECKOUT_PICKUP_ADDRESS') == 'true'){
+			$PickupAddress = $this->AddressManager->getAddress('pickup');
+			$pickUpFormatted = $this->AddressManager->showAddress($PickupAddress, false);
+			$emailEvent->setVar('pickup_address', $pickUpFormatted);
+		}
+		if ($appExtension->isInstalled('goRentalsDepot') && $appExtension->isEnabled('goRentalsDepot')){
+			//$emailEvent->setVar('rental_city', $this->info['delivery_depot_postcode']);
+			//$emailEvent->setVar('delivery_depot', $this->info['delivery_depot']);
+		}
+		$emailEvent->setVar('order_comments', $CollectionObj->OrdersStatusHistory[0]->comments);
+
+		$orderTotals = '';
+		foreach($CollectionObj->OrdersTotal as $tInfo){
+			$orderTotals .= strip_tags($tInfo['title']) . ' ' . strip_tags($tInfo['text']) . "\n";
+		}
+		$emailEvent->setVar('orderTotals', $orderTotals);
+
+		EventManager::notify('OrderCreatorBeforeSendNewEmail', $CollectionObj, $emailEvent, &$products_ordered);
+		if($emailAddress == ''){
+			$email = $CollectionObj->customers_email_address;
+		}else{
+			$email = $emailAddress;
+		}
+		$emailEvent->sendEmail(array(
+			'email' => $email,
+			'name'  => $BillingAddress->getName()
+		));
+
+		// send emails to other people
+		if (sysConfig::get('SEND_EXTRA_ORDER_EMAILS_TO') != '') {
+			$emailEvent->sendEmail(array(
+				'email' => sysConfig::get('SEND_EXTRA_ORDER_EMAILS_TO'),
+				'name'  => ''
+			));
+		}
+	}
 }
 ?>

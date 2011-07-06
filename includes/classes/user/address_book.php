@@ -338,7 +338,7 @@ class rentalStoreUser_addressBook {
 		}else{
 			$fmt = $QAddressFormat[0]['address_summary'];
 		}
-
+		$fmt = nl2br($fmt);
 		$company = $address['entry_company'];
 		if (isset($address['entry_firstname']) && tep_not_null($address['entry_firstname'])) {
 			$firstname = $address['entry_firstname'];
@@ -359,7 +359,7 @@ class rentalStoreUser_addressBook {
 			$country = tep_get_country_name($address['entry_country_id']);
 
 			if (isset($address['entry_zone_id']) && tep_not_null($address['entry_zone_id'])) {
-				$state = tep_get_zone_code($address['entry_country_id'], $address['entry_zone_id'], $state);
+				$abbrstate = tep_get_zone_code($address['entry_country_id'], $address['entry_zone_id'], $state);
 			}
 		} elseif (isset($address['country']) && tep_not_null($address['country'])) {
 			if (is_array($address['country'])){

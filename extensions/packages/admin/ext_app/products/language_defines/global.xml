@@ -1,4 +1,5 @@
 <definitions>
 	<define key="TAB_PACKAGES"><![CDATA[Packages]]></define>
+	<define key="TEXT_PURCHASE_TYPE_PACKAGE"><![CDATA[Package]]></define>
 
 </definitions>

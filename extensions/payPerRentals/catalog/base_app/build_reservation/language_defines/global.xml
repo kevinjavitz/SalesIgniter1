@@ -6,6 +6,7 @@
 	<define key="TEXT_DAYS"><![CDATA[Days]]></define>
 	<define key="TEXT_MONTHS"><![CDATA[Months]]></define>
 	<define key="ENTRY_QUANTITY"><![CDATA[Quantity: ]]></define>
+	<define key="ENTRY_INSURANCE"><![CDATA[Add Insurance to Order: ]]></define>
 	<define key="ENTRY_RENTAL_START_DATE"><![CDATA[Select Rental Start Date:]]></define>
 	<define key="ENTRY_RENTAL_END_DATE"><![CDATA[Select Rental End Date:]]></define>
 	<define key="ERROR_SELECT_START_DATE"><![CDATA[Please Select A Start Date First]]></define>
@@ -75,4 +76,18 @@
 	<define key="TEXT_CREATE_RESERVATION"><![CDATA[Create Reservation]]></define>
 	<define key="PAYPERRENTALS_TO"><![CDATA[ To ]]></define>
 	<define key="TEXT_BEFORE_QUOTES"><![CDATA[<span style="color: #FFF600 !important;font-size:14px;">First, please enter your zip code so we can calculate shipping and availability :</span> <br/><br/>]]></define>
+	<define key="NAVBAR_TITLE"><![CDATA[Service Area Check]]></define>
+	<define key="HEADING_TITLE"><![CDATA[Service Area Check]]></define>
+	<define key="TEXT_CHOOSE_SERVICE_ADDRESS"><![CDATA[Choose Your Service Area]]></define>
+	<define key="TEXT_CHECK_ADDRESS"><![CDATA[Check Your Address]]></define>
+	<define key="TEXT_BUTTON_CHECK_ADDRESS"><![CDATA[Check Address]]></define>
+	<define key="TEXT_BUTTON_SET_CENTER"><![CDATA[Set Service Location]]></define>
+	<define key="TEXT_BUTTON_CHECK_ADDRESS"><![CDATA[Check Address]]></define>
+	<define key="TEXT_BUTTON_CHANGE_ADDRESS"><![CDATA[Change Address]]></define>
+
+	<define key="EXTENSION_PAY_PER_RENTALS_ADDRESS_CHECK_ERROR"><![CDATA[There is no shipping address in your area. Please reselect]]></define>
+
+	<define key="EXTENSION_PAY_PER_RENTALS_ADDRESS_CHECK_SUCCESS"><![CDATA[We have selected the shipping methods available for your area. They will be available to you for the whole session.]]></define>
+
+
 </definitions>

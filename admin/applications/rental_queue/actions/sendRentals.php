@@ -53,7 +53,7 @@
 			$NewRentedProduct->shipment_date = $shipmentDate;
 			$NewRentedProduct->arrival_date = $arrivalDate;
 			$NewRentedProduct->save();
-			EventManager::notify('RentalQueueProductSent', &$NewRentedProduct);
+			EventManager::notify('RentalQueueProductSent', &$NewRentedProduct, $QproductsQueue);
 
 			$rentalQueue->removeFromQueue($QproductsQueue['products_id']);
 

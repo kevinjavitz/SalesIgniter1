@@ -53,10 +53,10 @@ function addPackageProduct(){
 		return false;
 	}
 
-	if ($('#packageProductType').val() != 'reservation'){
+	/*if ($('#packageProductType').val() != 'reservation'){
 		alert('Only "Pay Per Rental" products can be added to this package.');
 		return false;
-	}
+	}*/
 	var $tabDiv = $thisRow.parent().parent().parent();
 
 	$thisRow.fadeTo('fast', .3, function (){

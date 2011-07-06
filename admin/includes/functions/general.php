@@ -33,9 +33,11 @@ function tep_cfg_get_shipping_methods(){
 		$module = OrderShippingModules::getModule('upsreservation');
 	}
 	$shippingInputs = array();
-	$quotes = $module->quote();
-	for($i=0, $n=sizeof($quotes['methods']); $i<$n; $i++){
-		$shippingInputs[] = $quotes['methods'][$i]['title'];
+	if($module){
+		$quotes = $module->quote();
+		for($i=0, $n=sizeof($quotes['methods']); $i<$n; $i++){
+			$shippingInputs[] = $quotes['methods'][$i]['title'];
+		}
 	}
     return $shippingInputs;
 }
@@ -412,7 +414,7 @@ function tep_address_format($address_format_id, $address, $html, $boln, $eoln, $
 	}else{
 		$fmt = $QAddressAformat[0]['address_summary'];
 	}
-
+	$fmt = nl2br($fmt);
 	$company = $address['entry_company'];
 	if (isset($address['entry_firstname']) && tep_not_null($address['entry_firstname'])) {
 		$firstname = $address['entry_firstname'];

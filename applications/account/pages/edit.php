@@ -12,8 +12,7 @@
 		->setValue('f')
 		->setLabel(sysLanguage::get('FEMALE'));
 		
-		if ((isset($gender) && $gender == 'f') || ($userAccount->getCustomerGender() == 'f')){
-			$femaleInput->setChecked(true);
+		if ((isset($gender) && $gender == 'f') || ($userAccount->getGender() == 'f')){			$femaleInput->setChecked(true);
 		}else{
 			$maleInput->setChecked(true);
 		}

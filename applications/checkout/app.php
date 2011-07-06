@@ -20,9 +20,13 @@
 		header('content-type: text/html; charset=' . sysLanguage::getCharset());
 	}
 
+
+
 	if ($userAccount->isLoggedIn() && $userAccount->plugins['membership']->isRentalMember() && $userAccount->plugins['membership']->isActivated() && isset($_GET['checkoutType']) && $_GET['checkoutType'] == 'rental' && !isset($_GET['isUpgrade'])){
 		tep_redirect(itw_app_link(null, 'account', 'default', 'SSL'));	
 	}
+
+	EventManager::notify('CheckoutBeforeExecute');
 
 	$isPostPage = (isset($_POST) && !empty($_POST));
 

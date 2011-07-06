@@ -41,6 +41,7 @@ class productInventoryNormal_quantity {
 	}
 	
 	public function addStockToCollection(&$Product, &$CollectionObj){
+		global $Editor;
 		$Qcheck = Doctrine_Query::create()
 		->select('quantity_id')
 		->from('ProductsInventoryQuantity')
@@ -59,6 +60,8 @@ class productInventoryNormal_quantity {
 			}else{
 				$CollectionObj->ProductsInventoryQuantity->purchased += $Product->getQuantity();
 			}
+		}else{
+			$Editor->addErrorMessage('There is no inventory for the estimate. Please reselect.');
 		}
 	}
 
