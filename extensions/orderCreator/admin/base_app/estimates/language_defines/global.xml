@@ -89,5 +89,6 @@
 	<define key="TEXT_PAYMENT_HISTORY_AMOUNT_PAID"><![CDATA[Amount Paid]]></define>
     <define key="EMAIL_TEXT_TRACKING_NUMBER"><![CDATA[Tracking Number:]]></define>
 	<define key="ENTRY_IPADDRESS"><![CDATA[Ip Address:]]></define>
-
+	<define key="TEXT_NEW_ESTIMATE"><![CDATA[New Estimate]]></define>
+	<define key="TEXT_EDIT_ESTIMATE"><![CDATA[Edit Estimate]]></define>
 </definitions>

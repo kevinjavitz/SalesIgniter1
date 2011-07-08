@@ -53,5 +53,8 @@
 	<define key="PURCHASE_TYPE_RENTAL_NAME"><![CDATA[Rental]]></define>
 	<define key="PURCHASE_TYPE_RENTAL_SHOW"><![CDATA[Rental]]></define>
 	<define key="TEXT_BUTTON_SEND_ESTIMATE"><![CDATA[Send Estimate]]></define>
+	<define key="TEXT_NEW_ORDER"><![CDATA[New Order]]></define>
+	<define key="TEXT_EDIT_ORDER"><![CDATA[Edit Order]]></define>
+
 
 </definitions>

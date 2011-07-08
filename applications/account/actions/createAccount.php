@@ -23,6 +23,7 @@
 	if (array_key_exists('suburb', $_POST)) $accountValidation['entry_suburb'] = $_POST['suburb'];
 	if (array_key_exists('fiscal_code', $_POST)) $accountValidation['entry_cif'] = $_POST['fiscal_code'];
 	if (array_key_exists('vat_number', $_POST)) $accountValidation['entry_vat'] = $_POST['vat_number'];
+	if (array_key_exists('city_birth', $_POST)) $accountValidation['entry_city_birth'] = $_POST['city_birth'];
 	if (array_key_exists('company', $_POST)) $accountValidation['entry_company'] = $_POST['company'];
 	if (array_key_exists('gender', $_POST)) $accountValidation['entry_gender'] = $_POST['gender'];
 	if (array_key_exists('newsletter', $_POST)) $accountValidation['newsletter'] = $_POST['newsletter'];

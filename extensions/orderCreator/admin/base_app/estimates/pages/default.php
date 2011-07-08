@@ -29,7 +29,7 @@
 		htmlBase::newElement('button')->setText('Delete')->addClass('deleteButton')->disable()
 	);
 	
-	EventManager::notify('OrdersGridButtonsBeforeAdd', &$gridButtons);
+	EventManager::notify('EstimatesGridButtonsBeforeAdd', &$gridButtons);
 	
 	$tableGrid->addButtons($gridButtons);
 

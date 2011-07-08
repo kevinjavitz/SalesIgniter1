@@ -18,6 +18,11 @@
 	
 	if (array_key_exists('entry_suburb', $_POST)) $accountValidation['entry_suburb'] = $_POST['entry_suburb'];
 	if (array_key_exists('entry_company', $_POST)) $accountValidation['entry_company'] = $_POST['entry_company'];
+
+	if (array_key_exists('entry_cif', $_POST)) $accountValidation['entry_cif'] = $_POST['entry_cif'];
+	if (array_key_exists('entry_vat', $_POST)) $accountValidation['entry_vat'] = $_POST['entry_vat'];
+	if (array_key_exists('entry_city_birth', $_POST)) $accountValidation['entry_city_birth'] = $_POST['entry_city_birth'];
+
 	if (array_key_exists('customers_gender', $_POST)) $accountValidation['entry_gender'] = $_POST['customers_gender'];
 	if (array_key_exists('customers_newsletter', $_POST)) $accountValidation['newsletter'] = $_POST['customers_newsletter'];
 	if (array_key_exists('customers_telephone', $_POST)) $accountValidation['telephone'] = $_POST['customers_telephone'];
