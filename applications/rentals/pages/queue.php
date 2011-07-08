@@ -9,6 +9,8 @@
 
 	This script and it's source is not redistributable
 */
+
+//here i check for parent
 	if (!$userAccount->isLoggedIn()){
 		tep_redirect(itw_app_link(null,'account','default'));
 	}else{
@@ -87,8 +89,10 @@
 		
 		$Qrental = Doctrine_Query::create()
 		->from('RentalQueueTable')
-		->where('customers_id = ?', $userAccount->getCustomerId())
-		->orderBy('priority')
+		->where('customers_id = ?', $userAccount->getCustomerId());
+		EventManager::notify('RentalQueueBeforeExecute', &$Qrental);
+		$Qrental = $Qrental->orderBy('priority')
+
 		->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 		if (count($Qrental) > 0){
 			ob_start();
@@ -142,6 +146,8 @@
 					'params' => 'class="ui-widget-header"',
 					'text' => sysLanguage::get('TABLE_HEADING_REMOVE')
 				);
+
+				EventManager::notify('ListingRentalQueueHeader', &$info_box_contents[0]);
 
 				$i = 1;
 				foreach($Qrental as $rInfo){
@@ -215,6 +221,9 @@
 						'params' => 'class="productListing-data" valign="top"',
 						'text' => $remove->draw()
 					);
+
+					EventManager::notify('ListingRentalQueue', &$info_box_contents[$i], $rInfo);
+
 					$i++;
 				}
 

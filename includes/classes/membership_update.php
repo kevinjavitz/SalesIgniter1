@@ -121,6 +121,10 @@ class membershipUpdate_cron {
 		$this->paymentObj = $obj;
 	}
 
+	public function isActivated(){
+		return $this->userAccount->plugins['membership']->isActivated();
+	}
+
 	public function updateStreamingAccess(){
 		if ($this->canStream() && $this->isCanceled() && $this->isMember()){
 			$membership =& $this->userAccount->plugins['membership'];

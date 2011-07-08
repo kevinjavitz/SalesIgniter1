@@ -26,7 +26,11 @@ class OrderCreatorProductPurchaseTypeStream extends PurchaseType_stream {
 				$Stream->orders_products_filename = $sInfo['file_name'];
 				$Stream->stream_maxdays = sysConfig::get('STREAMING_MAX_DAYS');
 				$Stream->stream_count = '0';
-				
+				if(isset($_POST['estimateOrder'])){
+					$Stream->is_estimate = 1;
+				}else{
+					$Stream->is_estimate = 0;
+				}
 				$CollectionObj->OrdersProductsStream->add($Stream);
 			}
 		}

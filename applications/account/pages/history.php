@@ -20,8 +20,11 @@
   	->andWhere('osd.language_id = ?', Session::get('languages_id'))
   	->andWhere('oa.address_type = ?', 'billing')
   	->orderBy('orders_id DESC')
-  	->limit(MAX_DISPLAY_ORDER_HISTORY)
-  	->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+  	->limit(sysConfig::get('MAX_DISPLAY_ORDER_HISTORY'));
+
+	EventManager::notify('OrdersListingBeforeExecute', &$Qorders);
+
+  	$Qorders = $Qorders->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
     foreach($Qorders as $Order){
 ?>
           <table border="0" width="100%" cellspacing="0" cellpadding="2">

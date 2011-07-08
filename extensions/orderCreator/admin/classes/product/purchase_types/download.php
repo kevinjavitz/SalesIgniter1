@@ -29,7 +29,11 @@ class OrderCreatorProductPurchaseTypeDownload extends PurchaseType_download {
 				$Download->download_maxdays = sysConfig::get('DOWNLOAD_MAX_DAYS');
 				$Download->download_maxcount = sysConfig::get('DOWNLOAD_MAX_COUNT');
 				$Download->download_count = '0';
-				
+				if(isset($_POST['estimateOrder'])){
+					$Download->is_estimate = 1;
+				}else{
+					$Download->is_estimate = 0;
+				}
 				$CollectionObj->OrdersProductsDownload->add($Download);
 			}
 		}

@@ -8,8 +8,44 @@
 			
 			EventManager::attachEvents(array(
 				'CountContents',
-				'AddToCartAfterAction'
+				'AddToCartAfterAction',
+				'AddToCartBeforeAction'
 			), 'ShoppingCart', $this);
+		}
+
+		public function AddToCartBeforeAction(&$pID_info, &$pInfo, &$cartProduct){
+
+			if(isset($_POST['rental_qty'])){
+				$pInfo['reservationInfo']['quantity'] = $_POST['rental_qty'];
+			}
+
+			if (isset($pInfo['rental_shipping']) && $_POST['rental_shipping'] !== false) {
+				list($module, $method) = explode('_', $_POST['rental_shipping']);
+				$pInfo['reservationInfo']['shipping']['module'] = $module;
+				$pInfo['reservationInfo']['shipping']['id'] = $method;
+			}
+			if (isset($_POST['start_date'])){
+				$pInfo['reservationInfo']['start_date'] = $_POST['start_date'];
+			}
+
+			if (isset($_POST['event_date'])) {
+				$pInfo['reservationInfo']['event_date'] = $_POST['event_date'];
+			}
+			if (isset($_POST['event_name'])) {
+				$pInfo['reservationInfo']['event_name'] = $_POST['event_name'];
+			}
+
+			if (isset($_POST['semester_name'])) {
+				$pInfo['reservationInfo']['semester_name'] = $_POST['semester_name'];
+			}
+
+			if (isset($_POST['end_date'])) {
+				$pInfo['reservationInfo']['end_date'] = $_POST['end_date'];
+			}
+
+			if (isset($_POST['rental_qty'])) {
+				$pInfo['reservationInfo']['quantity'] = $_POST['rental_qty'];
+			}
 		}
 		
 		public function CountContents(&$totalItems){

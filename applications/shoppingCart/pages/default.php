@@ -106,7 +106,7 @@ if ($ShoppingCart->countContents() > 0) {
 
      $checkoutFormButton = htmlBase::newElement('button')
      ->setText(sysLanguage::get('TEXT_BUTTON_CHECKOUT'))
-     ->setHref(itw_app_link(null, 'checkout','default'));
+     ->setHref(itw_app_link(null, 'checkout','default','SSL'));
 	 if (sysConfig::get('TERMS_CONDITIONS_SHOPPING_CART') == 'true'){
 		 $checkoutFormButton->addClass('checkoutFormButton');
 	 }

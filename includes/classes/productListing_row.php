@@ -126,6 +126,8 @@ class productListing_row extends productListing {
 			$Products = $pagerInfo['Products']->toArray(true);
 		}
 
+		EventManager::notify('ProductListingQueryAfterExecute', &$Products);
+
 		if (isset($pagerInfo['pagerLayout'])){
 			$PagerLayout = $pagerInfo['pagerLayout'];
 			$Pager = $PagerLayout->getPager();

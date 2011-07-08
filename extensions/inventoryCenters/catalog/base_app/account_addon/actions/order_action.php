@@ -57,11 +57,11 @@
 	$datePurchased = tep_date_long($Qorder[0]['date_purchased']);
 
 	$pickupz = Doctrine_Query::create()
-						->from('Orders o')
-						->leftJoin('o.OrdersProducts op')
-						->leftJoin('op.OrdersProductsReservation ops')
-						->where('o.orders_id =?', (int)$_GET['order_id'])
-						->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+	->from('Orders o')
+	->leftJoin('o.OrdersProducts op')
+	->leftJoin('op.OrdersProductsReservation ops')
+	->where('o.orders_id =?', (int)$_GET['order_id'])
+	->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 
 $inv_address = "\n\t";
 $contents = EventManager::notifyWithReturn('OrderInfoAddBlock', (int)$_GET['order_id']);

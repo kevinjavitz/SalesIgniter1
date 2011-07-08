@@ -146,6 +146,9 @@ class rentalQueue_base {
 		}else{
 			$Item = $RentalQueue->findOneByCustomersIdAndProductsId($this->customerID, $pInfo['product_id']);
 		}
+
+		EventManager::notify('RentalQueueBeforeInsert', &$Item);
+
 		$Item->priority = $pInfo['priority'];
 		$Item->save();
 	}

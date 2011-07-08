@@ -226,6 +226,8 @@
 		$Qsales->andWhere('MONTH(o.date_purchased) = ?', $sel_month);
 	}
 
+    EventManager::notify('OrdersListingBeforeExecute', &$Qsales);
+
 	$Result = $Qsales->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 	if ($Result){
 		$rows = 0;
@@ -364,6 +366,8 @@
 				if ($sel_month <> 0){
 					$queryObj->andWhere('DAYOFMONTH(o.date_purchased) = ?', $sInfo['row_day']);
 				}
+
+				EventManager::notify('OrdersListingBeforeExecute', &$queryObj);
 
 				$$finalVarName = $queryObj->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 			}

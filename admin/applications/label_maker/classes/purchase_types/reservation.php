@@ -44,6 +44,8 @@
 			}else{
 				$query->andWhere('opr.parent_id is null');
 			}
+
+			EventManager::notify('OrdersListingBeforeExecute', &$query);
 			
 			return $query->execute()->toArray(true);
 		}

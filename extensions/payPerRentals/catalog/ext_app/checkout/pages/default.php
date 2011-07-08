@@ -185,8 +185,8 @@ class payPerRentals_catalog_checkout_default extends Extension_payPerRentals {
 
 			if (isset($reservationInfo['shipping']) && $reservationInfo['shipping'] !== false){
 				$shippingInfo = $reservationInfo['shipping'];
+				$Module = OrderShippingModules::getModule($shippingInfo['module'], true);
 				if(isset($shippingInfo['module']) && $shippingInfo['module'] == 'upsreservation'){
-					$Module = OrderShippingModules::getModule($shippingInfo['module']);
 				    	$product = new product($pID);
 					if(isset($pInfo['reservationInfo']['quantity'])){
 						$total_weight = (int)$pInfo['reservationInfo']['quantity'] * $product->getWeight();
@@ -201,13 +201,15 @@ class payPerRentals_catalog_checkout_default extends Extension_payPerRentals {
 					}
 					$ShoppingCart->updateProduct($pID, $pInfo);
 				}
-				$tableRows[] = array(
-					'columns' => array(
-						array('text' => '<b>' . $cartProduct->getName() . '</b>'),
-						array('text' => ' - ' . $shippingInfo['title']),
-						array('text' => '(' . $currencies->format($shippingInfo['cost'], true, $order->info['currency'], $order->info['currency_value']) . ')')
-					)
-				);
+				if($Module->getType() == 'Product'){
+					$tableRows[] = array(
+						'columns' => array(
+							array('text' => '<b>' . $cartProduct->getName() . '</b>'),
+							array('text' => ' - ' . $shippingInfo['title']),
+							array('text' => '(' . $currencies->format($shippingInfo['cost'], true, $order->info['currency'], $order->info['currency_value']) . ')')
+						)
+					);
+				}
 			}else{
 				$showStoreMethods = true;
 			}

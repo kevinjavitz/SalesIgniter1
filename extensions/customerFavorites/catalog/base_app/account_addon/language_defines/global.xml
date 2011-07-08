@@ -19,6 +19,7 @@
 		<define key="TEXT_DAYS"><![CDATA[Days]]></define>
 		<define key="TEXT_MONTHS"><![CDATA[Months]]></define>
 		<define key="ENTRY_QUANTITY"><![CDATA[Quantity: ]]></define>
+	<define key="ENTRY_INSURANCE"><![CDATA[Add Insurance to Order: ]]></define>
 		<define key="ENTRY_RENTAL_START_DATE"><![CDATA[Select Rental Start Date:]]></define>
 		<define key="ENTRY_RENTAL_END_DATE"><![CDATA[Select Rental End Date:]]></define>
 		<define key="ERROR_SELECT_START_DATE"><![CDATA[Please Select A Start Date First]]></define>

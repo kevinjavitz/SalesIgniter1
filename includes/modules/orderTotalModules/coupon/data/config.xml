@@ -10,7 +10,7 @@
 	<configuration>
 		<title><![CDATA[Sort order of display]]></title>
 		<key><![CDATA[MODULE_ORDER_TOTAL_COUPON_SORT_ORDER]]></key>
-		<value><![CDATA[0]]></value>
+		<value><![CDATA[12]]></value>
 		<description><![CDATA[Sort order of display. Lowest is displayed first.]]></description>
 		<sort_order>2</sort_order>
 	</configuration>

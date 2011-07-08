@@ -20,9 +20,14 @@ class packages_admin_products_new_product extends Extension_packages {
 		if ($this->enabled === false) return;
 		
 		EventManager::attachEvents(array(
+			'ProductEditAppendProductTypes',
 			'NewProductTabHeader',
 			'NewProductTabBody'
 		), null, $this);
+	}
+
+	public function ProductEditAppendProductTypes(&$productTypes){
+		$productTypes[]['package'] = sysLanguage::get('TEXT_PURCHASE_TYPE_PACKAGE');
 	}
 
 	

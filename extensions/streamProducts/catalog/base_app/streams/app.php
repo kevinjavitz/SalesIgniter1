@@ -38,15 +38,15 @@
 						$error = true;
 					}
 				}else{
-					$messageStack->addSession('pageStack', sprintf(sysLanguage::get('TEXT_NOT_ALLOWED_STREAMING'), itw_app_link('checkoutType=rental','checkout','default')), 'warning');
+					$messageStack->addSession('pageStack', sprintf(sysLanguage::get('TEXT_NOT_ALLOWED_STREAMING'), itw_app_link('checkoutType=rental','checkout','default','SSL')), 'warning');
 					$error = true;
 				}
 			}else{
-				$messageStack->addSession('pageStack', sprintf(sysLanguage::get('TEXT_NOT_RENTAL_CUSTOMER'),itw_app_link('checkoutType=rental','checkout','default'), itw_app_link(null,'account','login')), 'warning');
+				$messageStack->addSession('pageStack', sprintf(sysLanguage::get('TEXT_NOT_RENTAL_CUSTOMER'),itw_app_link('checkoutType=rental','checkout','default','SSL'), itw_app_link(null,'account','login')), 'warning');
 				$error = true;
 			}
 		}else{
-			$messageStack->addSession('pageStack', sprintf(sysLanguage::get('TEXT_NOT_RENTAL_CUSTOMER'),itw_app_link('checkoutType=rental','checkout','default'), itw_app_link(null,'account','login')), 'warning');
+			$messageStack->addSession('pageStack', sprintf(sysLanguage::get('TEXT_NOT_RENTAL_CUSTOMER'),itw_app_link('checkoutType=rental','checkout','default','SSL'), itw_app_link(null,'account','login')), 'warning');
 			$error = true;
 		}
 		

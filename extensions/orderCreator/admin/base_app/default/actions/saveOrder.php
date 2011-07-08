@@ -16,7 +16,11 @@
 	
 	$NewOrder->customers_email_address = $Editor->getEmailAddress();
 	$NewOrder->customers_telephone = $Editor->getTelephone();
-	$NewOrder->orders_status = $_POST['status'];
+	if(isset($_POST['estimateOrder'])){
+		$NewOrder->orders_status  = sysConfig::get('ORDERS_STATUS_ESTIMATE_ID');
+	}else{
+		$NewOrder->orders_status = $_POST['status'];
+	}
 	$NewOrder->currency = $Editor->getCurrency();
 	$NewOrder->currency_value = $Editor->getCurrencyValue();
 	$NewOrder->shipping_module = $Editor->getShippingModule();
@@ -43,17 +47,30 @@
 	EventManager::notify('OrderSaveBeforeSave', $NewOrder);
 	//echo '<pre>';print_r($NewOrder->toArray());itwExit();
 
-	$success = true;
-	if (!isset($_GET['oID'])){
-		$NewOrder->bill_attempts = 1;
-		$NewOrder->payment_module = $_POST['payment_method'];
-		$success = $Editor->PaymentManager->processPayment($_POST['payment_method'], $NewOrder);
+	if($Editor->hasErrors()){
+		$success = false;
+	}else{
+		$success = true;
+		if (!isset($_GET['oID'])){
+			$NewOrder->bill_attempts = 1;
+			if(!isset($_POST['estimateOrder'])){
+				$NewOrder->payment_module = $_POST['payment_method'];
+				$success = $Editor->PaymentManager->processPayment($_POST['payment_method'], $NewOrder);
+				$Editor->addErrorMessage($success['error_message']);
+			}else{
+				$success = true;
+			}
+		}
 	}
 	
 	if ($success === true){
-		if (isset($_POST['notify_comments'])){
+		if (isset($_POST['notify_comments']) || isset($_POST['estimateOrder'])){
 			$StatusHistory = new OrdersStatusHistory();
-			$StatusHistory->orders_status_id = $_POST['status'];
+			if(!isset($_POST['estimateOrder'])){
+				$StatusHistory->orders_status_id = $_POST['status'];
+			}else{
+				$StatusHistory->orders_status_id = sysConfig::get('ORDERS_STATUS_ESTIMATE_ID');
+			}
 			$StatusHistory->customer_notified = (int) (isset($_POST['notify']));
 			$StatusHistory->comments = $_POST['comments'];
 			
@@ -63,17 +80,28 @@
 		if (!isset($_GET['oID'])){
 			$NewOrder->Customers->customers_default_address_id = $NewOrder->Customers->AddressBook[0]->address_book_id;
 			$NewOrder->save();
-			
-			$Editor->sendNewOrderEmail($NewOrder);
+			if(!isset($_POST['estimateOrder'])){
+				$Editor->sendNewOrderEmail($NewOrder);
+			}else{
+				$Editor->sendNewEstimateEmail($NewOrder);
+			}
 		}
-		
-		EventManager::attachActionResponse(itw_app_link('oID=' . $NewOrder->orders_id, 'orders', 'details'), 'redirect');
-	}else{
-		$Editor->addErrorMessage($success['error_message']);
-		if (isset($_GET['oID'])){
-			EventManager::attachActionResponse(itw_app_link('appExt=orderCreator&error=true&oID=' . $_GET['oID'], 'default', 'new'), 'redirect');
+		if(!isset($_POST['estimateOrder'])){
+			EventManager::attachActionResponse(itw_app_link('oID=' . $NewOrder->orders_id, 'orders', 'details'), 'redirect');
 		}else{
-			EventManager::attachActionResponse(itw_app_link('appExt=orderCreator&error=true', 'default', 'new'), 'redirect');
+			EventManager::attachActionResponse(itw_app_link('oID=' . $NewOrder->orders_id.'&isEstimate=1', 'orders', 'details'), 'redirect');
+		}
+
+	}else{
+		if(isset($_POST['estimateOrder'])){
+			$est = '&isEstimate=1';
+		}else{
+			$est = '';
+		}
+		if (isset($_GET['oID'])){
+			EventManager::attachActionResponse(itw_app_link('appExt=orderCreator&error=true&oID=' . $_GET['oID'].$est, 'default', 'new'), 'redirect');
+		}else{
+			EventManager::attachActionResponse(itw_app_link('appExt=orderCreator&error=true'.$est, 'default', 'new'), 'redirect');
 		}
 	}
 ?>

@@ -13,8 +13,9 @@ $(document).ready(function (){
 		var $AttrInput = $Row.find('.productAttribute');
 		var $qtyInput = $Row.find('.productQty');
 		var $purchaseTypeSelected = $Row.find('.purchaseType option:selected');
+		var $barcodeName = $Row.find('.barcodeName').attr('barid');
 		productsID = $Row.attr('data-id');
-		var attrParams = 'pID=' + $Row.attr('data-id');
+		var attrParams = 'pID=' + $Row.attr('data-id')+'&barcode='+$barcodeName;
 		if ($AttrInput) {
 			attrParams = attrParams + '&id[reservation][' + $AttrInput.attr('attrval') + ']=' + $AttrInput.val();
 		}
@@ -34,18 +35,22 @@ $(document).ready(function (){
 					removeAjaxLoader($selfInput);
 					$self.html('');
 					$self.hide();
-					$closeBut.hide();
+					$(this).hide();
 					return false;
 				});
 
 				$('.inCart').live('click', function(event) {
 					showAjaxLoader($self, 'large');
+					var insVal = -1;
+					if($self.find('.hasInsurance').attr('checked') == true){
+						insVal = 1;
+					}
 					$.ajax({
 						cache: false,
 						dataType: 'json',
 						type:'post',
 						data: attrParams,
-						url: js_app_link('appExt=orderCreator&app=default&appPage=new&action=saveResInfo&id=' + $Row.attr('data-id') + '&start_date=' + $self.find('.start_date').val() + '&end_date=' + $self.find('.end_date').val() + '&shipping=' + $self.find('input[name="rental_shipping"]:checked').val() + '&qty=' + $self.find('.rental_qty').val() + '&purchase_type=' + $purchaseTypeSelected.val()),
+						url: js_app_link('appExt=orderCreator&app=default&appPage=new&action=saveResInfo&id=' + $Row.attr('data-id') + '&start_date=' + $self.find('.start_date').val() + '&end_date=' + $self.find('.end_date').val() + '&shipping=' + $self.find('input[name="rental_shipping"]:checked').val() + '&qty=' + $self.find('.rental_qty').val() + '&purchase_type=' + $purchaseTypeSelected.val()+ '&hasInsurance=' + insVal),
 						success: function (data) {
 							//update priceEx
 

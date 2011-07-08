@@ -100,6 +100,13 @@
 			);
 		}
 
+		if (sysConfig::get('ACCOUNT_CITY_BIRTH_REQUIRED') == 'true'){
+			$FieldsArray['city_birth'] = array(
+				'required' => false,
+				'value' => $values['entry_city_birth']
+			);
+		}
+
 		if ($onePageCheckout->isMembershipCheckout() === true){
 			if (sysConfig::get('RENTAL_DEFAULT_COUNTRY_ENABLED') == 'true'){
 				$FieldsArray['country']['value'] = sysConfig::get('RENTAL_DEFAULT_COUNTRY');
@@ -180,6 +187,11 @@
 				if (isset($Fields['vat_number'])){
 					$FormTable->addRow(sysLanguage::get('ENTRY_VAT_NUMBER'));
 					$FormTable->addRow($Fields['vat_number']);
+				}
+
+				if (isset($Fields['city_birth'])){
+					$FormTable->addRow(sysLanguage::get('ENTRY_CITY_BIRTH'));
+					$FormTable->addRow($Fields['city_birth']);
 				}
 
 				if ($userAccount->isLoggedIn() === false){

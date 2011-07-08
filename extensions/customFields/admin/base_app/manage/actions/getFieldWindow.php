@@ -186,5 +186,7 @@
 		array('addCls' => 'main', 'text' => $maxCharsInput)
 	)));
 
+	EventManager::notify('CustomFieldsNewOptions', $Field, &$finalTable, $windowAction);
+
 	EventManager::attachActionResponse($finalTable->draw(), 'html');
 ?>

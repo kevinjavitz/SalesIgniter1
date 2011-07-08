@@ -22,32 +22,10 @@
 	$booked = array();
     $shippingDaysPadding = array();
     $shippingDaysArray = array();
-	if ($Product->hasPackageProducts('reservation')){
-		$products = $Product->getPackageProducts('reservation');
-		while($startTime <= $endTime){
-			$dateFormatted = date('Y-n-j', $startTime);
-			$dateBooked = false;
-			foreach($products as $pInfo){
-				$pID = $pInfo['productClass']->getID();
-				if (!isset($invItems[$pID])){
-					$invItems[$pID] = $pInfo['productClass']->getInventoryItems('reservation');
-				}
 
-				if ($product->dateIsBooked($dateFormatted, $bookings, $invItems[$pID], ($pInfo['packageQuantity']*$_POST['rental_qty']))){
-					$dateBooked = true;
-					break;
-				}
-			}
-
-			if ($dateBooked === true){
-				$booked[] = $dateFormatted;
-			}
-			$startTime += 60*60*24;
-		}
-	}else{
-		$invItems = $PurchaseType->getInventoryItems();
-		//print_r($invItems);
-		while($startTime <= $endTime){
+	$invItems = $PurchaseType->getInventoryItems();
+	//print_r($invItems);
+	while($startTime <= $endTime){
 			$dateFormatted = date('Y-n-j', $startTime);
 			if ($PurchaseType->dateIsBooked($dateFormatted, $bookings, $invItems, (int) $_POST['rental_qty'])){
 				$booked[] = $dateFormatted;
@@ -75,8 +53,8 @@
 				}
 			}
 			$startTime += 60*60*24;
-		}
 	}
+
 	$disabledDays = sysConfig::explode('EXTENSION_PAY_PER_RENTALS_DISABLED_DAYS', ',');
 
 	EventManager::attachActionResponse(array(

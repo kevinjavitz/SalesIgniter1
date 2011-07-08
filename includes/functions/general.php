@@ -568,7 +568,7 @@ function tep_get_all_get_params($exclude_array = '') {
 		}else{
 			$fmt = $QAddressAformat[0]['address_summary'];
 		}
-
+	    $fmt = nl2br($fmt);
 		$company = $address['entry_company'];
 		if (isset($address['entry_firstname']) && tep_not_null($address['entry_firstname'])) {
 			$firstname = $address['entry_firstname'];
@@ -584,6 +584,9 @@ function tep_get_all_get_params($exclude_array = '') {
 		$street_address = $address['entry_street_address'];
 		$suburb = $address['entry_suburb'];
 		$city = $address['entry_city'];
+		$vat = $address['entry_vat'];
+		$cif = $address['entry_cif'];
+		$city_birth = $address['entry_city_birth'];
 		$state = $address['entry_state'];
 		if (isset($address['entry_country_id']) && tep_not_null($address['entry_country_id'])) {
 			$country = tep_get_country_name($address['entry_country_id']);

@@ -27,9 +27,12 @@
 			);
 
 			$Qcheck = Doctrine_Query::create()
-			->from('OrdersProductsReservation')
-			->where('parent_id = ?', $bookingID)
-			->execute();
+			->from('OrdersProductsReservation opr')
+			->where('parent_id = ?', $bookingID);
+
+			EventManager::notify('OrdersProductsReservationListingBeforeExecute', &$Qcheck);
+
+			$Qcheck = $Qcheck->execute();
 			if ($Qcheck !== false){
 				foreach($Qcheck->toArray() as $childBooking){
 					$packBookingID = $childBooking['orders_products_reservations_id'];

@@ -30,6 +30,8 @@
 	->orderBy('o.orders_id desc')
 	->limit('3');
 
+    EventManager::notify('OrdersListingBeforeExecute', &$Qorders);
+
 	$Result = $Qorders->execute(array(), Doctrine::HYDRATE_ARRAY);
 
 	if ($Result){
@@ -149,7 +151,7 @@
 	}
 
 	/* remoteUpdate needs to do its job before to draw links */
-	EventManager::notify('AccountDefaultMyAccountBeforeDrawLinks', &$links);
+	EventManager::notify('AccountDefaultMyAccountBeforeDrawLinks', &$links, &$rentalLinkList);
 
 	$pageContents .= '<div class="main" style="margin-top:1em;">' . 
 		'<b>' . sysLanguage::get('MY_ACCOUNT_TITLE') . '</b>' . 

@@ -4,6 +4,7 @@ require(sysConfig::getDirFsCatalog() . 'extensions/payPerRentals/catalog/classes
 class OrderCreatorProductPurchaseTypeReservation extends PurchaseType_reservation {
 	
 	public function addToOrdersProductCollection(&$ProductObj, &$CollectionObj){
+		global $Editor;
 		$ResInfo = $ProductObj->getInfo('reservationInfo');
 		$allInfo = $ProductObj->getPInfo();
 		if (isset($allInfo['aID_string']) && !empty($allInfo['aID_string'])){
@@ -43,6 +44,11 @@ class OrderCreatorProductPurchaseTypeReservation extends PurchaseType_reservatio
 			$Reservation->event_date = $EventDate;
 			$Reservation->track_method = $TrackMethod;
 			$Reservation->rental_state = 'reserved';
+			if(isset($_POST['estimateOrder'])){
+				$Reservation->is_estimate = 1;
+			}else{
+				$Reservation->is_estimate = 0;
+			}
 			if (isset($ShippingInfo['id']) && !empty($ShippingInfo['id'])){
 				$Reservation->shipping_method_title = $ShippingInfo['title'];
 				$Reservation->shipping_method = $ShippingInfo['id'];
@@ -50,16 +56,27 @@ class OrderCreatorProductPurchaseTypeReservation extends PurchaseType_reservatio
 				$Reservation->shipping_days_after = $ShippingInfo['days_after'];
 				$Reservation->shipping_cost = $ShippingInfo['cost'];
 			}
-
-			if ($TrackMethod == 'barcode'){
-				$Reservation->barcode_id = $this->getAvailableBarcode($ProductObj, $excludedBarcode);
-				$excludedBarcode[] = $Reservation->barcode_id;
-				$Reservation->ProductsInventoryBarcodes->status = 'R';
-			}elseif ($TrackMethod == 'quantity'){
-				$Reservation->quantity_id = $this->getAvailableQuantity($ProductObj, $excludedQuantity);
-				$excludedQuantity[] = $Reservation->quantity_id;
-				$Reservation->ProductsInventoryQuantity->available -= 1;
-				$Reservation->ProductsInventoryQuantity->reserved += 1;
+			if(!isset($_POST['estimateOrder'])){
+				if ($TrackMethod == 'barcode'){
+					$barId = $this->getAvailableBarcode($ProductObj, $excludedBarcode, $allInfo['usableBarcodes']);
+					if($barId != -1){
+						$Reservation->barcode_id = $barId;
+					}else{
+						$Editor->addErrorMessage('Reservation already taken for the date. Please reselect');
+					}
+					$excludedBarcode[] = $Reservation->barcode_id;
+					$Reservation->ProductsInventoryBarcodes->status = 'R';
+				}elseif ($TrackMethod == 'quantity'){
+					$qtyId = $this->getAvailableQuantity($ProductObj, $excludedQuantity);
+					if($qtyId != -1){
+						$Reservation->quantity_id = $qtyId;
+					}else{
+						$Editor->addErrorMessage('Reservation already taken for the date. Please reselect');
+					}
+					$excludedQuantity[] = $Reservation->quantity_id;
+					$Reservation->ProductsInventoryQuantity->available -= 1;
+					$Reservation->ProductsInventoryQuantity->reserved += 1;
+				}
 			}
 			EventManager::notify('ReservationOnInsertOrderedProduct', $Reservation, &$ProductObj);
 

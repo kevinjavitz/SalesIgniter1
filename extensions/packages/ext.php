@@ -17,7 +17,13 @@ class Extension_packages extends ExtensionBase {
 	}
 
 	public function init(){
-		if ($this->enabled === false) return;
+		global $App, $appExtension, $typeNames, $inventoryTypes;
+		if ($this->enabled === false){
+			return;
+		}
+
+		$typeNames['package'] = 'Package';
+		$inventoryTypes['package'] = 'Package';
 
 		EventManager::attachEvents(array(
 		), null, $this);

@@ -62,8 +62,11 @@
 			->where('(o.customers_id = "' . $cInfo['customers_id'] . '" OR o.customers_email_address LIKE "' . $cInfo['Customers']['customers_email_address'] . '")')
 			->andWhere('o.orders_status > ?', RCS_PENDING_SALE_STATUS)
 			->andWhere('o.date_purchased >= CAST(? as DATE)', $cInfo['dateadded'])
-			->andWhereIn('ot.module_type', array('total', 'ot_total'))
-			->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+			->andWhereIn('ot.module_type', array('total', 'ot_total'));
+
+			EventManager::notify('OrdersListingBeforeExecute', &$Qorder);
+
+			$Qorder = $Qorder->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 			if ($Qorder){
 				$custknt++;
 				$total_recovered += $Qorder[0]['OrdersTotal']['value'];
