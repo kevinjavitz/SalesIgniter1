@@ -79,6 +79,11 @@
 	<define key="CATEGORY_PASSWORD"><![CDATA[Your Password]]></define>
 	<define key="CATEGORY_SOURCE"><![CDATA[Referral Source]]></define>
 	<define key="ENTRY_COMPANY"><![CDATA[Company Name:]]></define>
+	<define key="ENTRY_FISCAL_CODE"><![CDATA[Fiscal Code:]]></define>
+	<define key="ENTRY_VAT_NUMBER"><![CDATA[VAT Number:]]></define>
+	<define key="ENTRY_FISCAL_CODE_ERROR"><![CDATA[Wrong Fiscal code:]]></define>
+	<define key="ENTRY_VAT_NUMBER_ERROR"><![CDATA[Wrong VAT Number:]]></define>
+
 	<define key="ENTRY_GENDER"><![CDATA[Gender:]]></define>
 	<define key="ENTRY_FIRST_NAME"><![CDATA[First Name:]]></define>
 	<define key="ENTRY_LAST_NAME"><![CDATA[Last Name:]]></define>
@@ -88,6 +93,7 @@
 	<define key="ENTRY_SUBURB"><![CDATA[Suburb:]]></define>
 	<define key="ENTRY_POST_CODE"><![CDATA[Postal Code:]]></define>
 	<define key="ENTRY_CITY"><![CDATA[City:]]></define>
+	<define key="ENTRY_CITY_BIRTH"><![CDATA[City of Birth:]]></define>
 	<define key="ENTRY_STATE"><![CDATA[State/Province:]]></define>
 	<define key="ENTRY_COMPANY_ERROR"><![CDATA[]]></define>
 	<define key="ENTRY_COUNTRY"><![CDATA[Country:]]></define>
