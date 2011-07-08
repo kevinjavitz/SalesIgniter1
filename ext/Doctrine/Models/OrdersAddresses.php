@@ -121,6 +121,14 @@ class OrdersAddresses extends Doctrine_Record {
 			'notnull' => true,
 			'autoincrement' => false,
 		));
+		$this->hasColumn('entry_city_birth', 'string', 64, array(
+			'type' => 'string',
+			'length' => 64,
+			'fixed' => false,
+			'primary' => false,
+			'notnull' => true,
+			'autoincrement' => false,
+		));
 		$this->hasColumn('address_type', 'string', 32, array(
 			'type' => 'string',
 			'length' => 32,
