@@ -38,6 +38,7 @@ class Extension_orderCreator extends ExtensionBase {
 		global $appExtension;
 		EventManager::attachEvents(array(
 			'OrdersGridButtonsBeforeAdd',
+			'EstimatesGridButtonsBeforeAdd',
 			'OrdersListingBeforeExecute',
 			'OrdersProductsReservationListingBeforeExecute',
 			'AdminOrdersListingBeforeExecute',
@@ -106,14 +107,25 @@ class Extension_orderCreator extends ExtensionBase {
 	
 	public function OrdersGridButtonsBeforeAdd(&$gridButtons){
 		$gridButtons[] = htmlBase::newElement('button')
-		->setText('New Order')
+		->setText(sysLanguage::get('TEXT_NEW_ORDER'))
 		->addClass('createButton')
 		->setHref(itw_app_link('appExt=orderCreator', 'default', 'new'));
 		
 		$gridButtons[] = htmlBase::newElement('button')
-		->setText('Edit Order')
+		->setText(sysLanguage::get('TEXT_EDIT_ORDER'))
 		->addClass('editButton')
 		->disable();
+	}
+	public function EstimatesGridButtonsBeforeAdd(&$gridButtons){
+		$gridButtons[] = htmlBase::newElement('button')
+			->setText(sysLanguage::get('TEXT_NEW_ESTIMATE'))
+			->addClass('createButton')
+			->setHref(itw_app_link('appExt=orderCreator', 'default', 'new'));
+
+		$gridButtons[] = htmlBase::newElement('button')
+			->setText(sysLanguage::get('TEXT_EDIT_ESTIMATE'))
+			->addClass('editButton')
+			->disable();
 	}
 }
 ?>
