@@ -624,10 +624,6 @@ class PurchaseType_reservation extends PurchaseTypeAbstract {
 
 		$trackMethod = $this->inventoryCls->getTrackMethod();
 
-		if ($cartProduct->productClass->hasPackageProducts() === true){
-			$packageProducts = $cartProduct->productClass->getPackageProducts();
-		}
-
 		$Reservations =& $orderedProduct->OrdersProductsReservation;
 		$rCount = 0;
 		$excludedBarcode = array();
