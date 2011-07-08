@@ -57,6 +57,11 @@
 		$FormTable->addRow(tep_draw_input_field('vat_number') . '&nbsp;' . '<a style="display: inline-block;" tooltip="Input Required" class="ui-icon ui-icon-gear ui-icon-required"></a>');
 	}
 
+	if (sysConfig::get('ACCOUNT_CITY_BIRTH_REQUIRED') == 'true'){
+		$FormTable->addRow(sysLanguage::get('ENTRY_CITY_BIRTH'));
+		$FormTable->addRow(tep_draw_input_field('city_birth'));
+	}
+
 	$FormTable->addRow(sysLanguage::get('ENTRY_CITY'));
 	$FormTable->addRow(tep_draw_input_field('city') . '&nbsp;' . '<a style="display: inline-block;" tooltip="Input Required" class="ui-icon ui-icon-gear ui-icon-required"></a>');
 

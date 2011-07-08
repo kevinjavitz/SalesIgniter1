@@ -169,6 +169,7 @@ class rentalStoreUser_addressBook {
 		if (isset($addressArray['entry_company'])) $Address->entry_company = $addressArray['entry_company'];
 		if (isset($addressArray['entry_cif'])) $Address->entry_cif = $addressArray['entry_cif'];
 		if (isset($addressArray['entry_vat'])) $Address->entry_vat = $addressArray['entry_vat'];
+		if (isset($addressArray['entry_city_birth'])) $Address->entry_city_birth = $addressArray['entry_city_birth'];
 		if (isset($addressArray['entry_entry_suburb'])) $Address->entry_suburb = $addressArray['entry_suburb'];
 		if (isset($addressArray['entry_zone_id'])) $Address->entry_zone_id = (int)$addressArray['entry_zone_id'];
 		if (isset($addressArray['entry_state'])) $Address->entry_state = $addressArray['entry_state'];
@@ -325,7 +326,7 @@ class rentalStoreUser_addressBook {
 		return $centerID;
 	}
 
-	public function formatAddress($aID, $html = false, $type = 'long'){
+	public function formatAddress($aID, $html = true, $type = 'long'){
 		$address = $this->addresses[$aID];
 
 		$QAddressFormat = Doctrine_Query::create()
@@ -338,7 +339,9 @@ class rentalStoreUser_addressBook {
 		}else{
 			$fmt = $QAddressFormat[0]['address_summary'];
 		}
-		$fmt = nl2br($fmt);
+		if($html){
+			$fmt = nl2br($fmt);
+		}
 		$company = $address['entry_company'];
 		if (isset($address['entry_firstname']) && tep_not_null($address['entry_firstname'])) {
 			$firstname = $address['entry_firstname'];
@@ -354,6 +357,9 @@ class rentalStoreUser_addressBook {
 		$street_address = $address['entry_street_address'];
 		$suburb = $address['entry_suburb'];
 		$city = $address['entry_city'];
+		$vat = $address['entry_vat'];
+		$cif = $address['entry_cif'];
+		$city_birth = $address['entry_city_birth'];
 		$state = $address['entry_state'];
 		if (isset($address['entry_country_id']) && tep_not_null($address['entry_country_id'])) {
 			$country = tep_get_country_name($address['entry_country_id']);
@@ -548,6 +554,13 @@ class rentalStoreUser_addressBook {
 			->setValue((isset($fields['vat_number']['value']) ? $fields['vat_number']['value'] : ''))
 			->setRequired((isset($fields['vat_number']['required']) ? $fields['vat_number']['required'] : false))
 			->setName($namePrefix . 'vat_number');
+		}
+
+		if (isset($fields['city_birth'])){
+			$returnArray['city_birth'] = htmlBase::newElement('input')
+				->setValue((isset($fields['city_birth']['value']) ? $fields['city_birth']['value'] : ''))
+				->setRequired((isset($fields['city_birth']['required']) ? $fields['city_birth']['required'] : false))
+				->setName($namePrefix . 'city_birth');
 		}
 
 		if (isset($fields['country'])){

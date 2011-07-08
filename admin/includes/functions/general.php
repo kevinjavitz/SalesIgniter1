@@ -430,6 +430,9 @@ function tep_address_format($address_format_id, $address, $html, $boln, $eoln, $
 	$street_address = $address['entry_street_address'];
 	$suburb = $address['entry_suburb'];
 	$city = $address['entry_city'];
+	$vat = $address['entry_vat'];
+	$cif = $address['entry_cif'];
+	$city_birth = $address['entry_city_birth'];
 	$state = $address['entry_state'];
 	if (isset($address['entry_country_id']) && tep_not_null($address['entry_country_id'])) {
 		$country = tep_get_country_name($address['entry_country_id']);

@@ -136,4 +136,8 @@
  	<define key="TEXT_INFO_NO_ONETIME_RENTAL_PENDING"><![CDATA[Pay Per Rental Pending List for this customer is Empty]]></define>
     <define key="ENTRY_EMAIL_ADDRESS_EXISTS_ERROR"><![CDATA[Email Address already exists]]></define>
 
+	<define key="ENTRY_CITY_BIRTH"><![CDATA[City of birth:]]></define>
+	<define key="ENTRY_CIF"><![CDATA[Fiscal code:]]></define>
+	<define key="ENTRY_VAT"><![CDATA[VAT:]]></define>
+
 </definitions>

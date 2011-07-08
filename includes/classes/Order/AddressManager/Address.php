@@ -100,6 +100,18 @@ class OrderAddress {
 		return $this->getValue('entry_city');
 	}
 
+	public function getVAT(){
+		return $this->getValue('entry_vat');
+	}
+
+	public function getCIF(){
+		return $this->getValue('entry_cif');
+	}
+
+	public function getCityBirth(){
+		return $this->getValue('entry_city_birth');
+	}
+
 	public function getPostcode(){
 		return $this->getValue('entry_postcode');
 	}

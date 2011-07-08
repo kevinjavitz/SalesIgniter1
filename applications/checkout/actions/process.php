@@ -46,6 +46,7 @@
 			if (array_key_exists('billing_state', $_POST)) $accountValidation['entry_state'] = $_POST['billing_state'];
 			if (array_key_exists('billing_fiscal_code', $_POST)) $accountValidation['entry_cif'] = $_POST['billing_fiscal_code'];
 			if (array_key_exists('billing_vat_number', $_POST)) $accountValidation['entry_vat'] = $_POST['billing_vat_number'];
+			if (array_key_exists('billing_city_birth', $_POST)) $accountValidation['entry_city_birth'] = $_POST['billing_city_birth'];
 			if (array_key_exists('billing_company', $_POST)) $accountValidation['entry_company'] = $_POST['billing_company'];
 			if (array_key_exists('billing_telephone', $_POST)) $accountValidation['telephone'] = $_POST['billing_telephone'];
 			if (array_key_exists('billing_fax', $_POST)) $accountValidation['fax'] = $_POST['billing_fax'];
@@ -67,6 +68,7 @@
 					'entry_city' => $_POST['billing_city'],
 					'entry_cif' => (isset($_POST['billing_fiscal_code'])?$_POST['billing_fiscal_code']:''),
 					'entry_vat' => (isset($_POST['billing_vat_number'])?$_POST['billing_vat_number']:''),
+					'entry_city_birth' => (isset($_POST['billing_city_birth'])?$_POST['billing_city_birth']:''),
 					'entry_state' => (isset($_POST['billing_state'])?$_POST['billing_state']:'none'),
 					'entry_country_id' => $_POST['billing_country'],
 					'entry_zone_id' => (isset($_POST['billing_state'])?$_POST['billing_state']:'0')

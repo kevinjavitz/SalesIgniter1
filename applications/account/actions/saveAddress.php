@@ -16,6 +16,7 @@
 	if (array_key_exists('suburb', $_POST)) $addressValidationArray['entry_suburb'] = $_POST['suburb'];
 	if (array_key_exists('fiscal_code', $_POST)) $addressValidationArray['entry_cif'] = $_POST['fiscal_code'];
 	if (array_key_exists('vat_number', $_POST)) $addressValidationArray['entry_vat'] = $_POST['vat_number'];
+	if (array_key_exists('city_birth', $_POST)) $addressValidationArray['entry_city_birth'] = $_POST['city_birth'];
 	if (array_key_exists('company', $_POST)) $addressValidationArray['entry_company'] = $_POST['company'];
 	//$hasError = $addressBook->validate($addressValidationArray);
 	if ($hasError === false){
