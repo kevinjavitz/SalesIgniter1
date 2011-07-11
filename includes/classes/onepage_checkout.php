@@ -198,19 +198,19 @@ class osC_onePageCheckout {
 			
 			$defaultId = $addressBook->insertAddress($addressBook->getAddress('billing'));
 			$isShipping = true;
-			if (isset($_POST['diffShipping'])){
+			if (isset($_POST['shipping_diff'])){
 				$shippingId = $addressBook->insertAddress($addressBook->getAddress('delivery'));
 				$isShipping = false;
 			}
 
-			if (isset($_POST['diffPickup'])){
+			if (isset($_POST['pickup_diff'])){
 				$addressBook->insertAddress($addressBook->getAddress('pickup'), $isShipping);
 			}
 
 			$addressBook->setDefaultAddress($defaultId, true);
 
 			if(isset($shippingId)){
-				$addressBook->setDeliveryDefaultAddress($defaultId, true, true);
+				$addressBook->setDeliveryDefaultAddress($shippingId, true);
 			}
 
 			if ($this->isMembershipCheckout() === true){
