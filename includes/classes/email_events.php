@@ -173,7 +173,7 @@ class emailEvent {
 
 				if (is_null($this->templateParsed) === true){
 					$this->templateUnparsed = explode("\n", $emailInfo['email_templates_content']);
-					EventManager::notify('EmailEventPreParseTemplateFile_' . $this->eventName, &$this->templateUnparsed);
+					EventManager::notify('EmailEventPreParseTemplateText_' . $this->eventName, &$this->templateUnparsed);
 					$this->templateParsed = $this->parseTemplateText();
 				}
 			}
