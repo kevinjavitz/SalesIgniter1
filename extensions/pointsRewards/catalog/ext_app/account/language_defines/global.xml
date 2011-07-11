@@ -1,0 +1,16 @@
+<!--
+	Info Pages Extension Version 1
+	
+	I.T. Web Experts, Rental Store v2
+	http://www.itwebexperts.com
+
+	Copyright (c) 2009 I.T. Web Experts
+
+	This script and it's source is not redistributable
+-->
+<definitions>
+
+	<define key="VIEW_POINTS"><![CDATA[View Points]]></define>
+	<define key="VIEW_POINTS_PAYMENT_HISTORY"><![CDATA[View Points History]]></define>
+
+</definitions>

@@ -1,0 +1,18 @@
+<definitions>
+	<define key="TEXT_POINTS_USE_NEW"><![CDATA[Apply %s in rewards points to new products]]></define>
+	<define key="TEXT_POINTS_USE_DOWNLOAD"><![CDATA[Apply %s in rewards points to downloads only products]]></define>
+	<define key="TEXT_POINTS_USE_STREAM"><![CDATA[Apply %s in rewards points to streaming only products]]></define>
+	<define key="TEXT_POINTS_USE_RENTAL"><![CDATA[Apply %s in rewards points to rentals products]]></define>
+	<define key="TEXT_POINTS_USE_RESERVATION"><![CDATA[Apply %s in rewards points to rentals products]]></define>
+	<define key="TEXT_POINTS_USE_USED"><![CDATA[Apply %s in rewards points to used products]]></define>
+
+	<define key="TEXT_REDEEM_LABEL_NEW"><![CDATA[ <b>Redeem Points for New Products</b> ]]></define>
+	<define key="TEXT_REDEEM_LABEL_USED"><![CDATA[ <b>Redeem Pointsfor Used Products</b> ]]></define>
+	<define key="TEXT_REDEEM_LABEL_DOWNLOAD"><![CDATA[ <b>Redeem Points for Downloads</b> ]]></define>
+	<define key="TEXT_REDEEM_LABEL_STREAM"><![CDATA[ <b>Redeem Points for Streams</b> ]]></define>
+	<define key="TEXT_REDEEM_LABEL_RENTAL"><![CDATA[ <b>Redeem Points for Rental Member Products</b> ]]></define>
+	<define key="TEXT_REDEEM_LABEL_RESERVATION"><![CDATA[ <b>Redeem Points for Pay Per Rentals</b> ]]></define>
+
+	<define key="ERROR_NO_REDEEM_POINTS"><![CDATA[ Not enough points to redeem. ]]></define>
+	<define key="ERROR_NOT_REACHED_THRESHOLD"><![CDATA[You have not reached the maximum level to redeem points. ]]></define>
+</definitions>
