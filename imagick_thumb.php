@@ -1,5 +1,10 @@
 <?php
-$cacheKey = 'image-' . md5($_GET['path'] . '-' . $_GET['imgSrc'] . '-' . $_GET['width'] . '-' . $_GET['height']);
+$path = isset($_GET['path'])?$_GET['path']:'';
+$imgSrc= isset($_GET['imgSrc'])?$_GET['imgSrc']:'';
+$width =isset($_GET['width'])?$_GET['width']:'';
+$height =isset($_GET['height'])?$_GET['height']:'';
+
+$cacheKey = 'image-' . md5($path . '-' . $imgSrc . '-' . $width . '-' . $height);
 
 	require('includes/classes/system_cache.php');
 	$ImageCache = new SystemCache($cacheKey);

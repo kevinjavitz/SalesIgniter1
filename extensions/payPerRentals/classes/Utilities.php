@@ -1123,7 +1123,7 @@ class ReservationUtilities {
 			 $('#shipMethods').hide();
 			 $.ajax({
 					cache:false,
-					url: js_app_link('appExt=payPerRentals&app=build_reservation&appPage=default&action=getUpsQuotes&products_id='+$('#pID').val()+'&qty='+$selfID.find('.rental_qty').val()),
+					url: js_app_link('appExt=payPerRentals&app=build_reservation&appPage=default&action=getUpsQuotes&products_id='+$('.pID').val()+'&qty='+$selfID.find('.rental_qty').val()),
 					type: 'post',
 					data: 'rental_qty='+$selfID.find('.rental_qty').val()+'&street_address='+$('#street_address').val() + '&state='+$('#state').val() +'&city='+$('#city').val() +'&postcode1='+$('#postcode1').val() +'&postcode2='+$('#postcode2').val() +'&country='+$('#countryDrop').val() + '&iszip=' + $('#zipAddress').is(":visible"),
 					dataType: 'json',

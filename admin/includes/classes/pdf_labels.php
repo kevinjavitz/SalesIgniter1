@@ -31,7 +31,7 @@ class PDF_Labels {
 		->leftJoin('rq.Products p')
 		->leftJoin('p.ProductsDescription pd')
 		->where('pd.language_id = ?', Session::get('languages_id'))
-		->andWhere('ab.address_book_id = c.customers_default_address_id')
+		->andWhere('ab.address_book_id = c.customers_delivery_address_id or c.customers_delivery_address_id is null')
 		->orderBy('rq.shipment_date asc, pd.products_name asc');
 
 		if (isset($settings['startDate']) && isset($settings['endDate'])){
@@ -58,7 +58,7 @@ class PDF_Labels {
 		->leftJoin('rq.Products p')
 		->leftJoin('p.ProductsDescription pd')
 		->where('pd.language_id = ?', Session::get('languages_id'))
-		->andWhere('ab.address_book_id = c.customers_default_address_id')
+		->andWhere('ab.address_book_id = c.customers_delivery_address_id or c.customers_delivery_address_id is null')
 		->orderBy('rq.shipment_date asc, pd.products_name asc');
 
 		if (isset($settings['startDate']) && isset($settings['endDate'])){
