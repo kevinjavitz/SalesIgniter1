@@ -3,7 +3,7 @@ chdir('../../../../');
 if (isset($_GET['layout_id'])){
 	$env = 'catalog';
 	$layoutId = $_GET['layout_id'];
-	$templateDir = $_GET['tplDir'];
+	$templateDir = isset($_GET['tplDir'])?$_GET['tplDir']:'';
 }
 else {
 	$env = 'admin';
