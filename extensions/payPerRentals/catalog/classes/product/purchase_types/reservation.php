@@ -401,10 +401,10 @@ class PurchaseType_reservation extends PurchaseTypeAbstract {
 		global $App, $ShoppingCart;
 		$shippingMethod = $resInfo['shipping_method'];
 		$rShipping = false;
-		if (isset($shippingMethod) && !empty($shippingMethod) && ($shippingMethod != 'zonereservation') && ((sysConfig::get('EXTENSION_PAY_PER_RENTALS_USE_UPS_RESERVATION') == 'False' && $App->getEnv() == 'admin') || $App->getEnv() == 'catalog' )){
+		if (isset($shippingMethod) && !empty($shippingMethod) && ($shippingMethod != 'zonereservation')){
 			$shippingModule = $resInfo['shipping_module'];
 			$Module = OrderShippingModules::getModule($shippingModule);
-			if($Module->getType() == 'Order' && $App->getEnv() == 'catalog'){
+			if(is_object($Module) && $Module->getType() == 'Order' && $App->getEnv() == 'catalog'){
 				foreach($ShoppingCart->getProducts() as $cartProduct) {
 					if ($cartProduct->hasInfo('reservationInfo') === true){
 						$reservationInfo1 = $cartProduct->getInfo();
@@ -423,14 +423,24 @@ class PurchaseType_reservation extends PurchaseTypeAbstract {
 			}else{
 				$total_weight = $product->getWeight();
 			}
-			$quote = $Module->quote($shippingMethod, $total_weight);
+			if(is_object($Module)){
+				$quote = $Module->quote($shippingMethod, $total_weight);
 
-			$rShipping = array(
-				'title'  => $quote['methods'][0]['title'],
-				'cost'   => $quote['methods'][0]['cost'],
-				'id'     => $quote['methods'][0]['id'],
-				'module' => $shippingModule
-			);
+				$rShipping = array(
+					'title'  => $quote['methods'][0]['title'],
+					'cost'   => $quote['methods'][0]['cost'],
+					'id'     => $quote['methods'][0]['id'],
+					'module' => $shippingModule
+				);
+
+			}else{
+				$rShipping = array(
+					'title'  => '',
+					'cost'   => '',
+					'id'     => '',
+					'module' => $shippingModule
+				);
+			}
 
 			if (isset($resInfo['days_before'])){
 				$rShipping['days_before'] = $resInfo['days_before'];
@@ -1423,9 +1433,13 @@ class PurchaseType_reservation extends PurchaseTypeAbstract {
 			$getQuotes = htmlBase::newElement('div');
 
 			$checkAddressBox = htmlBase::newElement('div');
-
-			$addressBook = $userAccount->plugins['addressBook'];
-			$shippingAddress = $addressBook->getAddress('delivery');
+			if ($App->getEnv() == 'catalog'){
+				$addressBook = $userAccount->plugins['addressBook'];
+				$shippingAddress = $addressBook->getAddress('delivery');
+			}else{
+				global $Editor;
+				$shippingAddress = $Editor->AddressManager->getAddress('delivery')->toArray();
+			}
 
 			$checkAddressBox->html('<table border="0" cellspacing="2" cellpadding="2" id="fullAddress">' .
 				'<tr>' .

@@ -94,8 +94,15 @@ class ReservationUtilities {
 			$callLink = 'js_app_link(\'rType=ajax&appExt=orderCreator&app=default&appPage=new&action=loadReservationData\')';
 			$callAction = '';
 		}
+		if($App->getEnv() == 'catalog'){
+			$upsQuotes = 'js_catalog_app_link(\'appExt=payPerRentals&app=build_reservation&appPage=default&action=getUpsQuotes&products_id=\'+$(\'.pID\').val()+\'&qty=\'+$selfID.find(\'.rental_qty\').val())';
+			$checkRes = 'js_catalog_app_link(\'rType=ajax&appExt=payPerRentals&app=build_reservation&appPage=default&action=checkRes\')';
+		}else{
+			$upsQuotes = 'js_app_link(\'appExt=orderCreator&app=default&appPage=new&action=getUpsQuotes&products_id=\'+$(\'.pID\').val()+\'&qty=\'+$selfID.find(\'.rental_qty\').val())';
+			$checkRes = 'js_app_link(\'rType=ajax&appExt=orderCreator&app=default&appPage=new&action=checkRes\')';
+		}
 
-
+		$countryZones = 'js_catalog_app_link(\'appExt=payPerRentals&app=build_reservation&appPage=default&action=getCountryZones\')';
 		if(!is_array($productsId)){
 			$pID_string =  array();
 			$pID_string[] = $productsId;
@@ -778,8 +785,8 @@ class ReservationUtilities {
 							cache: false,
 							dataType: 'json',
 							type: 'post',
-							url: js_catalog_app_link('rType=ajax&appExt=payPerRentals&app=build_reservation&appPage=default'),
-							data: 'action=checkRes&' + $('.reservationTable *, .ui-widget-footer-box *, .pprButttons *').serialize(),
+							url: <?php echo $checkRes;?>,
+							data: $('.reservationTable *, .ui-widget-footer-box *, .pprButttons *').serialize(),
 							success: function (data) {
 								if (data.success == true) {
 									$selfID.parent().find('.priceQuote').html(data.price + ' ' + data.message);
@@ -932,8 +939,8 @@ class ReservationUtilities {
 					cache: false,
 					dataType: 'json',
 					type: 'post',
-					url: js_catalog_app_link('rType=ajax&appExt=payPerRentals&app=build_reservation&appPage=default'),
-					data: 'action=checkRes&' + $('.reservationTable *, .ui-widget-footer-box *, .pprButttons *').serialize(),//+'&price='+price,//isSemester=1&
+					url: <?php echo $checkRes;?>,
+					data: $('.reservationTable *, .ui-widget-footer-box *, .pprButttons *').serialize(),//+'&price='+price,//isSemester=1&
 					success: function (data) {
 						if (data.success == true) {
 							$selfID.parent().find('.priceQuote').html(data.price + ' ' + data.message);
@@ -1075,8 +1082,8 @@ class ReservationUtilities {
 							cache: false,
 							dataType: 'json',
 							type: 'post',
-							url: js_catalog_app_link('rType=ajax&appExt=payPerRentals&app=build_reservation&appPage=default'),
-							data: 'action=checkRes&' + $('.reservationTable *, .ui-widget-footer-box *, .pprButttons *').serialize(),
+							url: <?php echo $checkRes;?>,
+							data: $('.reservationTable *, .ui-widget-footer-box *, .pprButttons *').serialize(),
 							success: function (data) {
 								if (data.success == true) {
 									removeAjaxLoader($this);
@@ -1117,13 +1124,12 @@ class ReservationUtilities {
 		<?php
    		if (sysConfig::get('EXTENSION_PAY_PER_RENTALS_USE_UPS_RESERVATION') == 'True') {
 			?>
-
 			$('#getQuotes').click(function(){
 			 showAjaxLoader($('#getQuotes'), 'xlarge');
 			 $('#shipMethods').hide();
 			 $.ajax({
 					cache:false,
-					url: js_app_link('appExt=payPerRentals&app=build_reservation&appPage=default&action=getUpsQuotes&products_id='+$('.pID').val()+'&qty='+$selfID.find('.rental_qty').val()),
+					url: <?php echo $upsQuotes;?>,
 					type: 'post',
 					data: 'rental_qty='+$selfID.find('.rental_qty').val()+'&street_address='+$('#street_address').val() + '&state='+$('#state').val() +'&city='+$('#city').val() +'&postcode1='+$('#postcode1').val() +'&postcode2='+$('#postcode2').val() +'&country='+$('#countryDrop').val() + '&iszip=' + $('#zipAddress').is(":visible"),
 					dataType: 'json',
@@ -1157,7 +1163,7 @@ class ReservationUtilities {
 			//showAjaxLoader($stateColumn);
 			$.ajax({
 				cache: true,
-				url: js_app_link('appExt=payPerRentals&app=build_reservation&appPage=default&action=getCountryZones'),
+				url: <?php echo $countryZones;?>,
 				data: 'cID=' + $(this).val(),
 				dataType: 'html',
 				success: function (data){
