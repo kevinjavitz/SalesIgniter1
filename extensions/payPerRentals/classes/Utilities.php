@@ -150,15 +150,17 @@ class ReservationUtilities {
 
 		if (sysConfig::get('EXTENSION_PAY_PER_RENTALS_USE_GLOBAL_MIN_RENTAL_DAYS') == 'False') {
 			$minRentalPeriod = ReservationUtilities::getPeriodTime($pprTable->min_period, $pprTable->min_type) * 60 * 1000;
-
+			$minRentalMessage = sysLanguage::get('PPR_ERR_AT_LEAST') . ' ' . $pprTable->min_period . ' ' . ReservationUtilities::getPeriodType($pprTable->min_type) . ' ' . sysLanguage::get('PPR_ERR_DAYS_RESERVED');
 		} else {
 			$minRentalPeriod = (int)sysConfig::get('EXTENSION_PAY_PER_RENTALS_MIN_RENTAL_DAYS') * 24 * 60 * 60 * 1000;
+			$minRentalMessage = sysLanguage::get('PPR_ERR_AT_LEAST') . ' ' . sysConfig::get('EXTENSION_PAY_PER_RENTALS_MIN_RENTAL_DAYS') . ' ' . 'Days' . ' ' . sysLanguage::get('PPR_ERR_DAYS_RESERVED');
 		}
 
 		$maxRentalPeriod = -1;
-
+		$maxRentalMessage = '';
 		if ($pprTable->max_period > 0) {
 			$maxRentalPeriod = ReservationUtilities::getPeriodTime($pprTable->max_period, $pprTable->max_type) * 60 * 1000;
+			$maxRentalMessage = sysLanguage::get('PPR_ERR_MAXIMUM') . ' ' . $pprTable->max_period . ' ' . ReservationUtilities::getPeriodType($pprTable->max_type) . ' ' . sysLanguage::get('PPR_ERR_DAYS_RESERVED');
 		}
 
 		$startTime = mktime(0, 0, 0, date('m'), date('d'), date('Y'));
@@ -386,8 +388,8 @@ class ReservationUtilities {
 	var minRentalPeriod = <?php echo $minRentalPeriod;?>;
 	var maxRentalPeriod = <?php echo $maxRentalPeriod;?>;
 
-	var minRentalPeriodMessage = '<?php echo sysLanguage::get('PPR_ERR_AT_LEAST') . ' ' . $pprTable->min_period . ' ' . ReservationUtilities::getPeriodType($pprTable->min_type) . ' ' . sysLanguage::get('PPR_ERR_DAYS_RESERVED'); ?>';
-	var maxRentalPeriodMessage = '<?php echo sysLanguage::get('PPR_ERR_MAXIMUM') . ' ' . $pprTable->max_period . ' ' . ReservationUtilities::getPeriodType($pprTable->max_type) . ' ' . sysLanguage::get('PPR_ERR_DAYS_RESERVED'); ?>';
+	var minRentalPeriodMessage = '<?php echo $minRentalMessage;?>';
+	var maxRentalPeriodMessage = '<?php echo $maxRentalMessage; ?>';
 	var allowSelectionBefore = true;
 	var allowSelectionAfter = true;
 	var allowSelection = true;
