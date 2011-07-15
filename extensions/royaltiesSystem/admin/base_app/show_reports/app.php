@@ -79,7 +79,7 @@ $rentedProducts = Doctrine_Query::create()
 		->from('RentedProducts rp')
 		->leftJoin('rp.RoyaltiesSystemProductsRoyalties pr')
 		->where('pr.purchase_type = ?', 'rental')
-		->andWhere('rp.content_provider_id > ?', 0)
+		->andWhere('pr.content_provider_id > ?', 0)
 		->andWhere('rp.products_id = pr.products_id')
 		->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 foreach($rentedProducts as $product){
