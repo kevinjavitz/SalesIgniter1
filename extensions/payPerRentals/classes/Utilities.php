@@ -94,8 +94,15 @@ class ReservationUtilities {
 			$callLink = 'js_app_link(\'rType=ajax&appExt=orderCreator&app=default&appPage=new&action=loadReservationData\')';
 			$callAction = '';
 		}
+		if($App->getEnv() == 'catalog'){
+			$upsQuotes = 'js_catalog_app_link(\'appExt=payPerRentals&app=build_reservation&appPage=default&action=getUpsQuotes&products_id=\'+$(\'.pID\').val()+\'&qty=\'+$selfID.find(\'.rental_qty\').val())';
+			$checkRes = 'js_catalog_app_link(\'rType=ajax&appExt=payPerRentals&app=build_reservation&appPage=default&action=checkRes\')';
+		}else{
+			$upsQuotes = 'js_app_link(\'appExt=orderCreator&app=default&appPage=new&action=getUpsQuotes&products_id=\'+$(\'.pID\').val()+\'&qty=\'+$selfID.find(\'.rental_qty\').val())';
+			$checkRes = 'js_app_link(\'rType=ajax&appExt=orderCreator&app=default&appPage=new&action=checkRes\')';
+		}
 
-
+		$countryZones = 'js_catalog_app_link(\'appExt=payPerRentals&app=build_reservation&appPage=default&action=getCountryZones\')';
 		if(!is_array($productsId)){
 			$pID_string =  array();
 			$pID_string[] = $productsId;
@@ -143,15 +150,17 @@ class ReservationUtilities {
 
 		if (sysConfig::get('EXTENSION_PAY_PER_RENTALS_USE_GLOBAL_MIN_RENTAL_DAYS') == 'False') {
 			$minRentalPeriod = ReservationUtilities::getPeriodTime($pprTable->min_period, $pprTable->min_type) * 60 * 1000;
-
+			$minRentalMessage = sysLanguage::get('PPR_ERR_AT_LEAST') . ' ' . $pprTable->min_period . ' ' . ReservationUtilities::getPeriodType($pprTable->min_type) . ' ' . sysLanguage::get('PPR_ERR_DAYS_RESERVED');
 		} else {
 			$minRentalPeriod = (int)sysConfig::get('EXTENSION_PAY_PER_RENTALS_MIN_RENTAL_DAYS') * 24 * 60 * 60 * 1000;
+			$minRentalMessage = sysLanguage::get('PPR_ERR_AT_LEAST') . ' ' . sysConfig::get('EXTENSION_PAY_PER_RENTALS_MIN_RENTAL_DAYS') . ' ' . 'Days' . ' ' . sysLanguage::get('PPR_ERR_DAYS_RESERVED');
 		}
 
 		$maxRentalPeriod = -1;
-
+		$maxRentalMessage = '';
 		if ($pprTable->max_period > 0) {
 			$maxRentalPeriod = ReservationUtilities::getPeriodTime($pprTable->max_period, $pprTable->max_type) * 60 * 1000;
+			$maxRentalMessage = sysLanguage::get('PPR_ERR_MAXIMUM') . ' ' . $pprTable->max_period . ' ' . ReservationUtilities::getPeriodType($pprTable->max_type) . ' ' . sysLanguage::get('PPR_ERR_DAYS_RESERVED');
 		}
 
 		$startTime = mktime(0, 0, 0, date('m'), date('d'), date('Y'));
@@ -379,8 +388,8 @@ class ReservationUtilities {
 	var minRentalPeriod = <?php echo $minRentalPeriod;?>;
 	var maxRentalPeriod = <?php echo $maxRentalPeriod;?>;
 
-	var minRentalPeriodMessage = '<?php echo sysLanguage::get('PPR_ERR_AT_LEAST') . ' ' . $pprTable->min_period . ' ' . ReservationUtilities::getPeriodType($pprTable->min_type) . ' ' . sysLanguage::get('PPR_ERR_DAYS_RESERVED'); ?>';
-	var maxRentalPeriodMessage = '<?php echo sysLanguage::get('PPR_ERR_MAXIMUM') . ' ' . $pprTable->max_period . ' ' . ReservationUtilities::getPeriodType($pprTable->max_type) . ' ' . sysLanguage::get('PPR_ERR_DAYS_RESERVED'); ?>';
+	var minRentalPeriodMessage = '<?php echo $minRentalMessage;?>';
+	var maxRentalPeriodMessage = '<?php echo $maxRentalMessage; ?>';
 	var allowSelectionBefore = true;
 	var allowSelectionAfter = true;
 	var allowSelection = true;
@@ -778,8 +787,8 @@ class ReservationUtilities {
 							cache: false,
 							dataType: 'json',
 							type: 'post',
-							url: js_catalog_app_link('rType=ajax&appExt=payPerRentals&app=build_reservation&appPage=default'),
-							data: 'action=checkRes&' + $('.reservationTable *, .ui-widget-footer-box *, .pprButttons *').serialize(),
+							url: <?php echo $checkRes;?>,
+							data: $('.reservationTable *, .ui-widget-footer-box *, .pprButttons *').serialize(),
 							success: function (data) {
 								if (data.success == true) {
 									$selfID.parent().find('.priceQuote').html(data.price + ' ' + data.message);
@@ -932,8 +941,8 @@ class ReservationUtilities {
 					cache: false,
 					dataType: 'json',
 					type: 'post',
-					url: js_catalog_app_link('rType=ajax&appExt=payPerRentals&app=build_reservation&appPage=default'),
-					data: 'action=checkRes&' + $('.reservationTable *, .ui-widget-footer-box *, .pprButttons *').serialize(),//+'&price='+price,//isSemester=1&
+					url: <?php echo $checkRes;?>,
+					data: $('.reservationTable *, .ui-widget-footer-box *, .pprButttons *').serialize(),//+'&price='+price,//isSemester=1&
 					success: function (data) {
 						if (data.success == true) {
 							$selfID.parent().find('.priceQuote').html(data.price + ' ' + data.message);
@@ -1075,8 +1084,8 @@ class ReservationUtilities {
 							cache: false,
 							dataType: 'json',
 							type: 'post',
-							url: js_catalog_app_link('rType=ajax&appExt=payPerRentals&app=build_reservation&appPage=default'),
-							data: 'action=checkRes&' + $('.reservationTable *, .ui-widget-footer-box *, .pprButttons *').serialize(),
+							url: <?php echo $checkRes;?>,
+							data: $('.reservationTable *, .ui-widget-footer-box *, .pprButttons *').serialize(),
 							success: function (data) {
 								if (data.success == true) {
 									removeAjaxLoader($this);
@@ -1117,13 +1126,12 @@ class ReservationUtilities {
 		<?php
    		if (sysConfig::get('EXTENSION_PAY_PER_RENTALS_USE_UPS_RESERVATION') == 'True') {
 			?>
-
 			$('#getQuotes').click(function(){
 			 showAjaxLoader($('#getQuotes'), 'xlarge');
 			 $('#shipMethods').hide();
 			 $.ajax({
 					cache:false,
-					url: js_app_link('appExt=payPerRentals&app=build_reservation&appPage=default&action=getUpsQuotes&products_id='+$('.pID').val()+'&qty='+$selfID.find('.rental_qty').val()),
+					url: <?php echo $upsQuotes;?>,
 					type: 'post',
 					data: 'rental_qty='+$selfID.find('.rental_qty').val()+'&street_address='+$('#street_address').val() + '&state='+$('#state').val() +'&city='+$('#city').val() +'&postcode1='+$('#postcode1').val() +'&postcode2='+$('#postcode2').val() +'&country='+$('#countryDrop').val() + '&iszip=' + $('#zipAddress').is(":visible"),
 					dataType: 'json',
@@ -1157,7 +1165,7 @@ class ReservationUtilities {
 			//showAjaxLoader($stateColumn);
 			$.ajax({
 				cache: true,
-				url: js_app_link('appExt=payPerRentals&app=build_reservation&appPage=default&action=getCountryZones'),
+				url: <?php echo $countryZones;?>,
 				data: 'cID=' + $(this).val(),
 				dataType: 'html',
 				success: function (data){

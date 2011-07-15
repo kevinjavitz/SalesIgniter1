@@ -9,8 +9,7 @@ class OrderShippingUpsReservation extends OrderShippingModule {
 		$this->setDescription('United Postal Service');
 		
 		$this->init('upsreservation');
-		
-		if ($this->isEnabled() === true){
+
 			/*$this->types = array(
 				'1DM'    => 'Next Day Air Early AM',
 				'1DML'   => 'Next Day Air Early AM Letter',
@@ -35,7 +34,7 @@ class OrderShippingUpsReservation extends OrderShippingModule {
 				'XPD'    => 'Worldwide Expedited'
 			);*/
 
-			if ($this->isEnabled() === true){
+			if (class_exists('ModulesShippingUpsReservationMethods')){
 				$Qmethods = Doctrine_Query::create()
 				->from('ModulesShippingUpsReservationMethods m')
 				->leftJoin('m.ModulesShippingUpsReservationMethodsDescription md')
@@ -69,7 +68,7 @@ class OrderShippingUpsReservation extends OrderShippingModule {
 			$this->packageContainer = $this->getConfigData('MODULE_ORDER_SHIPPING_UPS_RESERVATION_PACKAGE');
 			$this->addressType = $this->getConfigData('MODULE_ORDER_SHIPPING_UPS_RESERVATION_RES');
 			$this->handlingCost = ($this->getConfigData('MODULE_SHIPPING_UPS_RESERVATION_HANDLING')!='')?$this->getConfigData('MODULE_SHIPPING_UPS_RESERVATION_HANDLING'):0;
-		}
+
 	}
 
 	public function getUpsTitle($upscode){
@@ -83,6 +82,10 @@ class OrderShippingUpsReservation extends OrderShippingModule {
 			}
 		}
 		return 'none';
+	}
+
+	public function getType(){
+		return $this->type;
 	}
 
 	public function getNumBoxes(&$shipping_weight, &$shipping_num_boxes){
@@ -104,7 +107,7 @@ class OrderShippingUpsReservation extends OrderShippingModule {
 	}
 	
 	public function quote($method = '', $shipping_weight = -1){
-		global $order,  $userAccount;
+		global $order,  $userAccount, $App;
 		$shipping_num_boxes = 1;
 		$this->getNumBoxes($shipping_weight, $shipping_num_boxes);
 
@@ -115,10 +118,16 @@ class OrderShippingUpsReservation extends OrderShippingModule {
 		}
 
 		$this->_upsProduct($prod);
-		$deliveryAddress = $this->getDeliveryAddress();
-		$addressBook =& $userAccount->plugins['addressBook'];
-		if (is_object($addressBook) && $method != 'all'){
-			$deliveryCountry = $addressBook->getCountryInfo($deliveryAddress['entry_country_id']);
+		if($App->getEnv() == 'catalog'){
+			$deliveryAddress = $this->getDeliveryAddress();
+		}else{
+			global $Editor;
+			if(isset($Editor)){
+				$deliveryAddress = $Editor->AddressManager->getAddress('delivery')->toArray();
+			}
+		}
+		if (isset($deliveryAddress) && $method != 'all'){
+			$deliveryCountry = OrderShippingModules::getCountryInfo($deliveryAddress['entry_country_id']);
 			$country_name = tep_get_countries(sysConfig::get('SHIPPING_ORIGIN_COUNTRY'), true);
 			$this->_upsOrigin(sysConfig::get('SHIPPING_ORIGIN_ZIP'), $deliveryCountry['countries_iso_code_2']);
 			$this->_upsDest($deliveryAddress['entry_postcode'], $deliveryCountry['countries_iso_code_2']);
@@ -161,6 +170,7 @@ class OrderShippingUpsReservation extends OrderShippingModule {
 										'title'   => $mInfo['text'],
 										'default' => $mInfo['default'],
 										'cost'    => ($cost + $this->handlingCost) * $numBoxes + ($cost + $this->handlingCost) * $numBoxes * ($mInfo['markup'] / 100),
+										'showCost'    => ($cost + $this->handlingCost) * $numBoxes + ($cost + $this->handlingCost) * $numBoxes * ($mInfo['markup'] / 100),
 										'days_before'    => $mInfo['days_before'],
 										'days_after'    => $mInfo['days_after']
 									);
@@ -190,6 +200,7 @@ class OrderShippingUpsReservation extends OrderShippingModule {
 						'id'      => 'method' . $methodId,
 						'title'   => $mInfo['text'],
 						'cost'	  =>0,
+						'showCost'	  =>0,
 						'days_before'    => $mInfo['days_before'],
 						'days_after'    => $mInfo['days_after']
 					);
