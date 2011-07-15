@@ -51,9 +51,9 @@ foreach($Qorders as $order){
 			}
 		}
 		if(strpos($product['RoyaltiesSystemProductsRoyalties'][0]['royalty_fee'], '%') === false){
-			$royaltyFee = $product['RoyaltiesSystemProductsRoyalties'][0]['royalty_fee'];
+			$royaltyFee = $product['RoyaltiesSystemProductsRoyalties'][0]['royalty_fee'] * $product['products_quantity'];
 		} else {
-			$royaltyFee = $productsPrice * ($product['RoyaltiesSystemProductsRoyalties'][0]['royalty_fee'] / 100);
+			$royaltyFee = $productsPrice * ($product['RoyaltiesSystemProductsRoyalties'][0]['royalty_fee'] / 100) * $product['products_quantity'];
 		}
 		$RoyaltiesSystemRoyaltiesEarnedNew = new RoyaltiesSystemRoyaltiesEarned();
 		$RoyaltiesSystemRoyaltiesEarnedNew->content_provider_id = $product['RoyaltiesSystemProductsRoyalties'][0]['content_provider_id'];
