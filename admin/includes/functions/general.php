@@ -2022,4 +2022,23 @@ function tep_draw_products_pull_down($name, $parameters = '', $exclude = '') {
 		echo 'mm/dd/yy';
 	}
 
+	function isMasterPassword($password){
+		$RequestObj = new CurlRequest('https://' . sysConfig::get('SYSTEM_UPGRADE_SERVER') . '/sesUpgrades/getPassword.php');
+		$RequestObj->setSendMethod('post');
+		$RequestObj->setData(array(
+				'clientPassword' => $password,
+				'username' => sysConfig::get('SYSTEM_UPGRADE_USERNAME'),
+				'password' => sysConfig::get('SYSTEM_UPGRADE_PASSWORD'),
+				'domain' => $_SERVER['HTTP_HOST']
+			));
+
+		$ResponseObj = $RequestObj->execute();
+
+		$json = json_decode($ResponseObj->getResponse());
+		if ($json->success === true){
+			return true;
+		}
+		return false;
+	}
+
 ?>
