@@ -106,7 +106,7 @@ class membershipUpdate_cron {
 	}
 
 	public function isMember(){
-		return $this->userAccount->plugins['membership']->isMember();
+		return $this->userAccount->plugins['membership']->isRentalMember();
 	}
 
 	public function canStream(){

@@ -1,7 +1,7 @@
 <?php
 function rating_bar($name, $product_id) {
 	global $userAccount;
-  	if (EXTENSION_REVIEWS_ENABLED != 'True') return '';
+  	if (sysConfig::get('EXTENSION_REVIEWS_ENABLED') != 'True') return '';
   	
 	$units = 5;
 	$voted = false;
@@ -10,7 +10,7 @@ function rating_bar($name, $product_id) {
 	if ($userAccount->isLoggedIn()){
 		$QcustomerRating = Doctrine_Query::create()
 		->select('reviews_rating')
-		->from('Ratings')
+		->from('Reviews')
 		->where('products_id = ?', $product_id)
 		->andWhere('customers_id = ?', $userAccount->getCustomerId())
 		->execute();
@@ -20,7 +20,7 @@ function rating_bar($name, $product_id) {
 	}else{
 		$Qtotals = Doctrine_Query::create()
 		->select('avg(reviews_rating) as total')
-		->from('Ratings')
+		->from('Reviews')
 		->where('products_id = ?', $product_id)
 		->groupBy('products_id')
 		->execute();

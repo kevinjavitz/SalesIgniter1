@@ -242,10 +242,30 @@
 		$limitField->selectOptionByValue($_GET['limit']);
 	}
 
+	$gotoOrderField = htmlBase::newElement('input')
+	->setName('oID')
+	->attr('size','4')
+	->setLabel('Go to order: ')
+	->setLabelPosition('before')
+	->setId('orderIdField');
+
+	$submitButtonGoto = htmlBase::newElement('button')
+	->setType('submit')
+	->usePreset('save')
+	->setText('Go');
+
 	$submitButton = htmlBase::newElement('button')
 	->setType('submit')
 	->usePreset('save')
 	->setText('Search');
+
+	$searchOrderForm = htmlBase::newElement('form')
+	->attr('name', 'searchOrder')
+	->attr('id', 'searchOrdersGoto')
+	->attr('action', itw_app_link(null,'orders', 'details', 'SSL'))
+	->attr('method', 'get');
+
+	$searchOrderForm->append($gotoOrderField)->append($submitButtonGoto);
 
 	$searchForm
 	->append($limitField)
@@ -345,7 +365,7 @@
 <div class="pageHeading"><?php echo sysLanguage::get('HEADING_TITLE');?></div>
 <br />
 <div style="width:100%"><?php
-	echo $searchForm->draw();
+	echo $searchForm->draw().$searchOrderForm->draw();
 ?></div>
 <form action="<?php echo itw_app_link('action=exportOrders','orders','default');?>" method="post">
 	<div style="width:100%;float:left;">

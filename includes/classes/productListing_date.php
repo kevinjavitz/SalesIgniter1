@@ -19,7 +19,7 @@ class productListing_date extends productListing {
 		}
 
 		$currentPage = (isset($_GET['page']) ? (int)$_GET['page'] : 1);
-		$limitResults = (isset($_GET['limit']) ? (int)$_GET['limit'] : 25);
+		$limitResults = (isset($_GET['limit']) ? (int)$_GET['limit'] : 10);
 
 		$listingPager = new Doctrine_Pager($this->query, $currentPage, $limitResults);
 		$pagerLink = itw_app_link(tep_get_all_get_params(array('page', 'action')) . 'page={%page_number}');
