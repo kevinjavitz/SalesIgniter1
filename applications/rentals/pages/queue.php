@@ -50,7 +50,7 @@
 					$info_box_contents[] = array('params' => 'class="productListing-odd"');
 				}
 
-				$productsName = tep_get_products_name($sInfo['products_id']);
+				$productsName = '<a target="_blank" href="'.itw_app_link('products_id='.$sInfo['products_id'],'product','info').'">'.tep_get_products_name($sInfo['products_id']).'</a>';
 				$shipDate = $sInfo['shipment_date'];
 				$shipDateString = date("m/d/Y", strtotime($shipDate));
 				$arrivalDate = $sInfo['arrival_date'];
@@ -178,7 +178,7 @@
 					->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 
 					$productClass = new product($productsId);
-					$productsName = $productClass->getName();
+					$productsName = '<a target="_blank" href="'.itw_app_link('products_id='.$productsId,'product','info').'">'.$productClass->getName().'</a>';
 					$purchaseTypeRental = $productClass->getPurchaseType('rental', true);
 					$availability = count($QproductsInQueue) - $purchaseTypeRental->getCurrentStock();
 					$availabilityName = null;

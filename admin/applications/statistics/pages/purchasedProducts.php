@@ -28,7 +28,7 @@
 
 	$Products = &$tableGrid->getResults();
 	if ($Products){
-		$rowNum = 0;
+		 $rowNum = ((isset($_GET['limit']) ? (int)$_GET['limit']:25)*((isset($_GET['page']) ? (int)$_GET['page'] : 1)-1));
 		foreach($Products as $pInfo){
 			$rowNum++;
 

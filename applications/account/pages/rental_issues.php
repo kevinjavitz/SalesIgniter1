@@ -95,8 +95,8 @@
         <td><?php echo tep_draw_separator('pixel_trans.gif', '100%', '10'); ?></td>
       </tr>
       <?php
-      	if($_GET[action]=='details' && $_GET[ID]!=''){
-			$rs_issues = tep_db_query("SELECT * FROM " . TABLE_RENTAL_ISSUES . " WHERE issue_id = ".$_GET[ID]);
+      	if($_GET['action']=='details' && $_GET['ID']!=''){
+			$rs_issues = tep_db_query("SELECT * FROM " . TABLE_RENTAL_ISSUES . " WHERE issue_id = ".$_GET['ID']);
 			$dt_issues = tep_db_fetch_array($rs_issues);
 			
  		$pageContent->set('pageForm', array(
@@ -112,7 +112,7 @@
 		  		echo tep_draw_form('rental_issues_details',FILENAME_RENTAL_ISSUES);
 		  		echo tep_draw_hidden_field('action', 'reopen_ticket');
 		  		echo tep_draw_hidden_field('issue_id', $_GET['ID']);
-		  		echo tep_draw_hidden_field('products_id', $dt_issues[products_id]);
+		  		echo tep_draw_hidden_field('products_id', $dt_issues['products_id']);
 			?>
 		    <table border="0" width="100%" cellspacing="1" cellpadding="2" class="infoBox">
 			<tr class="infoBoxContents">
@@ -120,35 +120,35 @@
 				<tr>
 				  <td width="10">&nbsp;</td>
 				  <td align="right" class="main" width=200><?php echo sysLanguage::get('TABLE_HEADING_ISSUE_ID'); ?>:</td>
-				  <td class="main"><?php echo $dt_issues[issue_id]; ?></td>
+				  <td class="main"><?php echo $dt_issues['issue_id']; ?></td>
 				  <td width="10">&nbsp;</td>
 				</tr>
 				<tr>
 				  <td width="10">&nbsp;</td>
 				  <td align="right" class="main"><?php echo sysLanguage::get('TABLE_HEADING_PRODUCT_A'); ?>:</td>
-				  <td class="main"><?php echo $dt_issues[products_name]; ?></td>
+				  <td class="main"><?php echo $dt_issues['products_name']; ?></td>
 				  <td width="10">&nbsp;</td>
 				</tr>
 				<tr>
 				  <td width="10">&nbsp;</td>
 				  <td align="right" class="main"><?php echo sysLanguage::get('TEXT_PROBLEM'); ?>:</td>
-				  <?if($dt_issues[feedback]!=""){?>
-				  <td class="main"><?php echo $dt_issues[problem]; ?></td>
+				  <?if($dt_issues['feedback']!=""){?>
+				  <td class="main"><?php echo $dt_issues['problem']; ?></td>
 				  <?}else{?>
 
 				  <td class="main" valign=top>
 				  <?php
-				  		echo $dt_issues[problem]."<br>";
+				  		echo $dt_issues['problem']."<br>";
 				  		echo tep_draw_hidden_field('old_problem',$dt_issues['problem']);
 				  		echo tep_draw_textarea_field('problem_new', 'soft', '40', '5','');?></td>
 				  <?}?>
 				  <td width="10">&nbsp;</td>
 				</tr>
-				<?if($dt_issues[feedback]!=""){?>
+				<?if($dt_issues['feedback']!=""){?>
 				<tr>
 				  <td width="10">&nbsp;</td>
 				  <td align="right" class="main"><?php echo sysLanguage::get('TEXT_FEEDBACK'); ?>:</td>
-				  <td class="main"><?php echo $dt_issues[feedback]; ?></td>
+				  <td class="main"><?php echo $dt_issues['feedback']; ?></td>
 				  <td width="10">&nbsp;</td>
 				</tr>
 				<tr>
@@ -156,10 +156,10 @@
 				  <td align="right" class="main"><?php echo sysLanguage::get('TEXT_PROBLEM_REPLY'); ?>:</td>
 				  <?php
 				  	//fetch replied text
-				  	$rs_thread = tep_db_query("Select problem from " . TABLE_RENTAL_ISSUES . " WHERE parent_id = ".$_GET[ID]);
+				  	$rs_thread = tep_db_query("Select problem from " . TABLE_RENTAL_ISSUES . " WHERE parent_id = ".$_GET['ID']);
 				  	$dt_thread = tep_db_fetch_array($rs_thread);
 				  ?>
-				  <td class="main"><?php echo tep_draw_textarea_field('problem_reply','virtual','3','5',$dt_thread[problem]); ?></td>
+				  <td class="main"><?php echo tep_draw_textarea_field('problem_reply','virtual','3','5',$dt_thread['problem']); ?></td>
 				  <td width="10">&nbsp;</td>
 				</tr>
 
@@ -172,7 +172,7 @@
       <?php
 		$pageButtons = tep_draw_hidden_field('action', 'reopen_ticket') . 
 		tep_draw_hidden_field('issue_id', $_GET['ID']) . 
-		tep_draw_hidden_field('products_id', $dt_issues[products_id]) . 
+		tep_draw_hidden_field('products_id', $dt_issues['products_id']) .
 		 htmlBase::newElement('button')
 		->usePreset('continue')
 		->setType('submit')

@@ -93,7 +93,7 @@
 			$resultsPerPageMenu->addOption(75, 75);
 			$resultsPerPageMenu->addOption(100, 100);
 
-			$resultsPerPageMenu->selectOptionByValue((isset($_GET['limit']) ? $_GET['limit'] : 25));
+			$resultsPerPageMenu->selectOptionByValue((isset($_GET['limit']) ? $_GET['limit'] : 10));
 
 			$perPageForm = htmlBase::newElement('form')
 			->attr('name', 'limit')

@@ -11,7 +11,7 @@ class productListing_row extends productListing {
 
 	private function getDoctrinePager($useQuery, $useLimit = null){
 		$currentPage = (isset($_GET['page']) ? (int)$_GET['page'] : 1);
-		$limitResults = (isset($_GET['limit']) ? (int)$_GET['limit'] : 25);
+		$limitResults = (isset($_GET['limit']) ? (int)$_GET['limit'] : 10);
 
 		if (is_null($useLimit) === false){
 			$limitResults = $useLimit;
