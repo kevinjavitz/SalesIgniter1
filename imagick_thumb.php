@@ -68,7 +68,7 @@ else {
 
 			$ImageCache->setContentType($ContentType);
 			$ImageCache->setContent($imgContent);
-			$ImageCache->setExpires(time() + (60 * 60 * 24 * 2));
+			$ImageCache->setExpires(time() + (60 * 60 * 24 * 7));
 			$ImageCache->setLastModified(date(DATE_RSS, time()));
 			$ImageCache->store();
 
