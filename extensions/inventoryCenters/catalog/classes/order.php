@@ -331,7 +331,7 @@ class OrderProcessor {
 		$newOrder->currency = $this->info['currency'];
 		$newOrder->currency_value = (float)$this->info['currency_value'];
 		$newOrder->bill_attempts = (isset($this->info['bill_attempts']) ? $this->info['bill_attempts'] : 1);
-		
+		$newOrder->ip_address = $_SERVER['REMOTE_ADDR'];
 		EventManager::notify('NewOrderBeforeSave', &$this, &$newOrder);
 		
 		$newOrder->save();
@@ -388,6 +388,15 @@ class OrderProcessor {
 		$newOrderAddress->entry_city = $address['entry_city'];
 		$newOrderAddress->entry_postcode = $address['entry_postcode'];
 		$newOrderAddress->entry_state = $address['entry_state'];
+		if(isset($address['entry_vat'])){
+			$newOrderAddress->entry_vat = $address['entry_vat'];
+		}
+		if(isset($address['entry_cif'])){
+			$newOrderAddress->entry_cif = $address['entry_cif'];
+		}
+		if(isset($address['entry_city_birth'])){
+			$newOrderAddress->entry_city_birth = $address['entry_city_birth'];
+		}
 		$newOrderAddress->entry_country = $countryInfo['countries_name'];
 		$newOrderAddress->entry_format_id = $countryInfo['AddressFormat']['address_format_id'];
 		$newOrderAddress->address_type = $type;
@@ -552,8 +561,8 @@ class OrderProcessor {
 		global $appExtension, $paymentModules, $products_ordered;
 		$userAccount = &$this->getUserAccount();
 		$addressBook =& $userAccount->plugins['addressBook'];
-		$sendToFormatted = $addressBook->formatAddress('delivery');
-		$billToFormatted = $addressBook->formatAddress('billing');
+		$sendToFormatted = $addressBook->formatAddress('delivery', false);
+		$billToFormatted = $addressBook->formatAddress('billing', false);
 
 		$emailEvent = new emailEvent('order_success', $userAccount->getLanguageId());
 		$emailEvent->setVar('order_id', $this->newOrder['orderID']);

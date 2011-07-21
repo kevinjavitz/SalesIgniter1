@@ -30,6 +30,8 @@
 	->orderBy('o.orders_id desc')
 	->limit('3');
 
+    EventManager::notify('OrdersListingBeforeExecute', &$Qorders);
+
 	$Result = $Qorders->execute(array(), Doctrine::HYDRATE_ARRAY);
 
 	if ($Result){
@@ -133,15 +135,23 @@
 	$contents = EventManager::notifyWithReturn('AccountDefaultMyAccountAddLink');
 	if (!empty($contents)){
 		foreach($contents as $content){
-
-			if (trim($content) != '') {
-				$links .= sprintf('<li>%s%s</li>', $listIcon, $content) . "\n";
+			if(!is_array($content)){
+				if (trim($content) != '') {
+					$links .= sprintf('<li>%s%s</li>', $listIcon, $content) . "\n";
+				}
+			}
+			else{
+				foreach($content as $moreContent){
+					if (trim($moreContent) != '') {
+						$links .= sprintf('<li>%s%s</li>', $listIcon, $moreContent) . "\n";
+					}
+				}
 			}
 		}
 	}
 
 	/* remoteUpdate needs to do its job before to draw links */
-	EventManager::notify('AccountDefaultMyAccountBeforeDrawLinks', &$links);
+	EventManager::notify('AccountDefaultMyAccountBeforeDrawLinks', &$links, &$rentalLinkList);
 
 	$pageContents .= '<div class="main" style="margin-top:1em;">' . 
 		'<b>' . sysLanguage::get('MY_ACCOUNT_TITLE') . '</b>' . 

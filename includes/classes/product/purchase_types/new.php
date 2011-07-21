@@ -38,6 +38,8 @@ class PurchaseType_new extends PurchaseTypeAbstract {
 				$this->productInfo['special_price'] = $productInfo['Specials']['specials_new_products_price'];
 			}
 
+			EventManager::notify('PurchaseTypeAfterSetup', &$this->productInfo);
+
 			$this->inventoryCls = new ProductInventory(
 				$this->productInfo['id'],
 				$this->typeLong,
@@ -75,9 +77,10 @@ class PurchaseType_new extends PurchaseTypeAbstract {
 				->setType('submit')
 				->setName('buy_' . $this->typeLong . '_product')
 				->setText(sysLanguage::get('TEXT_BUTTON_BUY'));
-
-				if ($this->hasInventory() === false){
+				$pClass = new product($this->productInfo['id']);
+				if ($this->hasInventory() === false || $pClass->isNotAvailable() ){
 					$button->disable();
+					$button->setText(sysLanguage::get('TEXT_AVAILABLE').': '. strftime(sysLanguage::getDateFormat('short'), strtotime($pClass->getAvailableDate())));
 				}
 
 				$content = htmlBase::newElement('span')

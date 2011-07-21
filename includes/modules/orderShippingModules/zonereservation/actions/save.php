@@ -35,6 +35,7 @@
 			$Method->method_cost = $mInfo['cost'];
 			$Method->method_default = (isset($_POST['method_default']) && $_POST['method_default'] == $methodId ? '1' : '0');
 			$Method->sort_order = $mInfo['sort_order'];
+			$Method->weight_rates = $mInfo['weight_rates'];
 			$Method->method_zone = $mInfo['zone'];
 			
 			$Method->save();

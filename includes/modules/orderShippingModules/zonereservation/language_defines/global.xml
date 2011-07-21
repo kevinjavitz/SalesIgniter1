@@ -10,4 +10,7 @@
 	<define key="TABLE_HEADING_DAYS_BEFORE"><![CDATA[Days Before]]></define>
     <define key="TABLE_HEADING_DAYS_AFTER"><![CDATA[Days After]]></define>
 	<define key="TABLE_HEADING_ZONE"><![CDATA[Google Map Zone]]></define>
+	<define key="TABLE_HEADING_WEIGHT_RATES"><![CDATA[Weight Rates]]></define>
+	<define key="TEXT_INFO_TABLE_RATES"><![CDATA[Weight rates can be added for every method in this format: Weight:Price separated by comma. e.g: 20:10 This is equivalent to: every product with weight less than 20 will have a price of $10]]></define>
+
 </definitions>

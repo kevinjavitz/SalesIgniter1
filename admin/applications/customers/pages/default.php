@@ -76,9 +76,12 @@
 
 			$Qorders = Doctrine_Query::create()
 			->select('count(*) as total')
-			->from('Orders')
-			->where('customers_id = ?', $customerId)
-			->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+			->from('Orders o')
+			->where('customers_id = ?', $customerId);
+
+			EventManager::notify('OrdersListingBeforeExecute', &$Qorders);
+
+			$Qorders = $Qorders->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 
 			$arrowIcon = htmlBase::newElement('icon')->setType('info');
 

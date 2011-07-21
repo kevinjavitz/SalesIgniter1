@@ -20,8 +20,11 @@
 	->where('opr.start_date BETWEEN "' . $_GET['start_date'] . '" AND "' . $_GET['end_date'] . '"')
 	->andWhere('opr.rental_state = ?', 'reserved')
 	->andWhere('oa.address_type = ?', 'delivery')
-	->andWhere('opr.parent_id is null')
-	->execute();
+	->andWhere('opr.parent_id is null');
+
+    EventManager::notify('OrdersListingBeforeExecute', &$Qreservations);
+
+	$Qreservations = $Qreservations->execute();
 	if ($Qreservations !== false){
 		$Orders = $Qreservations->toArray(true);
 		foreach($Orders as $oInfo){

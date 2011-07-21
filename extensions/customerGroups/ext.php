@@ -20,8 +20,100 @@ class Extension_customerGroups extends ExtensionBase {
 		if ($this->enabled === false) return;
 
 		EventManager::attachEvents(array(
+			'PurchaseTypeAfterSetup',
+			'ProductQueryAfterExecute',
+			'ReservationPriceBeforeSetup'
 		), null, $this);
 	}
+
+	public function PurchaseTypeAfterSetup(&$productInfo){
+		global $userAccount, $appExtension, $currencies;
+
+		if($appExtension->isCatalog()){
+			$cID = $userAccount->getCustomerId();
+		}else{
+			global $Editor;
+			if(isset($Editor)){
+				$cID = $Editor->getCustomerId();
+			}
+		}
+
+		if(isset($cID)){
+			$QCustomers = Doctrine_Query::create()
+			->from('CustomerGroups c')
+			->leftJoin('c.CustomersToCustomerGroups cg')
+			->where('cg.customers_id=?',(int)$cID)
+			->execute(array(),Doctrine_Core::HYDRATE_ARRAY);
+
+			if(count($QCustomers) > 0){
+				$discount = $QCustomers[0]['customer_groups_discount'];
+
+				$productInfo['price'] -= $productInfo['price']*$discount/100;
+				if(isset($productInfo['message'])){
+					$productInfo['message'].= '-'. $currencies->format($productInfo['price']*$discount/100). sysLanguage::get('TEXT_DISCOUNT_BASED');
+				}
+				if (isset($productInfo['special_price'])){
+					$productInfo['special_price'] -= $productInfo['special_price']*$discount/100;
+				}
+			}
+		}
+	}
+
+
+	public function ProductQueryAfterExecute(&$productInfo){
+		global $userAccount, $appExtension;
+
+		if($appExtension->isCatalog()){
+			$cID = $userAccount->getCustomerId();
+		}else{
+			global $Editor;
+			if(isset($Editor)){
+				$cID = $Editor->getCustomerId();
+			}
+		}
+		if(isset($cID)){
+			$QCustomers = Doctrine_Query::create()
+			->from('CustomerGroups c')
+			->leftJoin('c.CustomersToCustomerGroups cg')
+			->where('cg.customers_id=?',(int)$cID)
+			->execute(array(),Doctrine_Core::HYDRATE_ARRAY);
+
+			if(count($QCustomers) > 0){
+				$discount = $QCustomers[0]['customer_groups_discount'];
+				$productInfo['price'] -= $productInfo['price']*$discount/100;
+				if (isset($productInfo['special_price'])){
+					$productInfo['special_price'] -= $productInfo['special_price']*$discount/100;
+				}
+			}
+		}
+	}
+
+	public function ReservationPriceBeforeSetup(&$price){
+		global $userAccount, $appExtension;
+
+		if($appExtension->isCatalog()){
+			$cID = $userAccount->getCustomerId();
+		}else{
+			global $Editor;
+			if(isset($Editor)){
+				$cID = $Editor->getCustomerId();
+			}
+		}
+		if(isset($cID)){
+			$QCustomers = Doctrine_Query::create()
+			->from('CustomerGroups c')
+			->leftJoin('c.CustomersToCustomerGroups cg')
+			->where('cg.customers_id=?',(int)$cID)
+			->execute(array(),Doctrine_Core::HYDRATE_ARRAY);
+
+			if(count($QCustomers) > 0){
+				$discount = $QCustomers[0]['customer_groups_discount'];
+				$price -= $price*$discount/100;
+			}
+		}
+	}
+
+
 
 
 }

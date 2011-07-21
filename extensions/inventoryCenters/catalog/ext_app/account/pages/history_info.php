@@ -21,11 +21,11 @@
 
 			$content = '';
 			$pickupz = Doctrine_Query::create()
-						->from('Orders o')
-						->leftJoin('o.OrdersProducts op')
-						->leftJoin('op.OrdersProductsReservation ops')
-						->where('o.orders_id =?', (int)$_GET['order_id'])
-						->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+			->from('Orders o')
+			->leftJoin('o.OrdersProducts op')
+			->leftJoin('op.OrdersProductsReservation ops')
+			->where('o.orders_id =?', (int)$_GET['order_id'])
+			->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 			if (isset($pickupz[0]['OrdersProducts'][0]['OrdersProductsReservation'][0]['inventory_center_pickup'])){
 				$Qinv = Doctrine_Core::getTable('ProductsInventoryCenters')->findOneByInventoryCenterId($pickupz[0]['OrdersProducts'][0]['OrdersProductsReservation'][0]['inventory_center_pickup']);
 				$deliveryInstructions = $Qinv->inventory_center_delivery_instructions;

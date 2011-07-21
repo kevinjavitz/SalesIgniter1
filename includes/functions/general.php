@@ -558,76 +558,50 @@ function tep_get_all_get_params($exclude_array = '') {
 //
 //Return a formatted address
 // TABLES: address_format
-  function tep_address_format($address_format_id, $address, $html, $boln, $eoln) {
-    $address_format_query = tep_db_query("select address_format as format from " . TABLE_ADDRESS_FORMAT . " where address_format_id = '" . (int)$address_format_id . "'");
-    $address_format = tep_db_fetch_array($address_format_query);
+  function tep_address_format($address_format_id, $address, $html, $boln, $eoln, $type = 'long') {
+	$QAddressAformat = Doctrine_Query::create()
+		->from('AddressFormat')
+		->where('address_format_id=?', $address_format_id)
+		->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+		if($type == 'long'){
+			$fmt = $QAddressAformat[0]['address_format'];
+		}else{
+			$fmt = $QAddressAformat[0]['address_summary'];
+		}
+	    $fmt = nl2br($fmt);
+		$company = $address['entry_company'];
+		if (isset($address['entry_firstname']) && tep_not_null($address['entry_firstname'])) {
+			$firstname = $address['entry_firstname'];
+			$lastname = $address['entry_lastname'];
+		} elseif (isset($address['entry_name']) && tep_not_null($address['entry_name'])) {
+			$firstname = $address['entry_name'];
+			$lastname = '';
+		} else {
+			$firstname = '';
+			$lastname = '';
+		}
 
-    $company = tep_output_string_protected($address['company']);
-    if (isset($address['firstname']) && tep_not_null($address['firstname'])) {
-      $firstname = tep_output_string_protected($address['firstname']);
-      $lastname = tep_output_string_protected($address['lastname']);
-    } elseif (isset($address['name']) && tep_not_null($address['name'])) {
-      $firstname = tep_output_string_protected($address['name']);
-      $lastname = '';
-    } else {
-      $firstname = '';
-      $lastname = '';
-    }
-    $street = tep_output_string_protected($address['street_address']);
-    $suburb = tep_output_string_protected($address['suburb']);
-    $city = tep_output_string_protected($address['city']);
-    $state = tep_output_string_protected($address['state']);
-    if (isset($address['country_id']) && tep_not_null($address['country_id'])) {
-      $country = tep_get_country_name($address['country_id']);
+		$street_address = $address['entry_street_address'];
+		$suburb = $address['entry_suburb'];
+		$city = $address['entry_city'];
+		$vat = $address['entry_vat'];
+		$cif = $address['entry_cif'];
+		$city_birth = $address['entry_city_birth'];
+		$state = $address['entry_state'];
+		if (isset($address['entry_country_id']) && tep_not_null($address['entry_country_id'])) {
+			$country = tep_get_country_name($address['entry_country_id']);
 
-      if (isset($address['zone_id']) && tep_not_null($address['zone_id'])) {
-        $state = tep_get_zone_code($address['country_id'], $address['zone_id'], $state);
-      }
-    } elseif (isset($address['country']) && tep_not_null($address['country'])) {
-      	if (is_array($address['country']))
-			$country = tep_output_string_protected($address['country']['title']);
-		else
-			$country = tep_output_string_protected($address['country']);
-    } else {
-      $country = '';
-    }
-    $postcode = tep_output_string_protected($address['postcode']);
-    $zip = $postcode;
+			if (isset($address['entry_zone_id']) && tep_not_null($address['entry_zone_id'])) {
+				$abbrstate = tep_get_zone_code($address['entry_country_id'], $address['entry_zone_id'], $state);
+			}
+		} else {
+			$country = '';
+		}
+		$postcode = $address['entry_postcode'];
 
-    if ($html) {
-// HTML Mode
-      $HR = '<hr>';
-      $hr = '<hr>';
-      if ( ($boln == '') && ($eoln == "\n") ) { // Values not specified, use rational defaults
-        $CR = '<br>';
-        $cr = '<br>';
-        $eoln = $cr;
-      } else { // Use values supplied
-        $CR = $eoln . $boln;
-        $cr = $CR;
-      }
-    } else {
-// Text Mode
-      $CR = $eoln;
-      $cr = $CR;
-      $HR = '----------------------------------------';
-      $hr = '----------------------------------------';
-    }
+		eval("\$address = \"$fmt\";");
 
-    $statecomma = '';
-    $streets = $street;
-    if ($suburb != '') $streets = $street . $cr . $suburb;
-    //if ($country == '') $country = tep_output_string_protected($address['country']);
-    if ($state != '') $statecomma = $state . ', ';
-
-    $fmt = $address_format['format'];
-    eval("\$address = \"$fmt\";");
-
-    if ( (sysConfig::get('ACCOUNT_COMPANY') == 'true') && (!empty($company)) ) {
-      $address = $company . $cr . $address;
-    }
-
-    return $address;
+		return $address;
   }
 
 /////////////

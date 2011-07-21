@@ -78,10 +78,10 @@ function loadPostAttributes($productsId, $purchaseType, $CustomerFavoritesAttrib
 										Session::remove('account_action');
 									}
 
-									$errorMsg = sprintf(sysLanguage::get('TEXT_NOT_RENTAL_CUSTOMER'),itw_app_link('checkoutType=rental','checkout','default'), itw_app_link(null,'account','login'));
+									$errorMsg = sprintf(sysLanguage::get('TEXT_NOT_RENTAL_CUSTOMER'),itw_app_link('checkoutType=rental','checkout','default', 'SSL'), itw_app_link(null,'account','login'));
 									break;
 								case 'inactive':
-									$errorMsg = sprintf(sysLanguage::get('TEXT_NOT_ACTIVE_CUSTOMER'), itw_app_link('checkoutType=rental','checkout','default'));
+									$errorMsg = sprintf(sysLanguage::get('TEXT_NOT_ACTIVE_CUSTOMER'), itw_app_link('checkoutType=rental','checkout','default','SSL'));
 									break;
 							}
 						$message .= $errorMsg;

@@ -1,3 +1,3 @@
 <?php
-phpinfo();//mmm
+phpinfo();//mmmm
 ?>

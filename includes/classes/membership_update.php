@@ -106,7 +106,7 @@ class membershipUpdate_cron {
 	}
 
 	public function isMember(){
-		return $this->userAccount->plugins['membership']->isMember();
+		return $this->userAccount->plugins['membership']->isRentalMember();
 	}
 
 	public function canStream(){
@@ -119,6 +119,10 @@ class membershipUpdate_cron {
 
 	public function setPaymentObj($obj){
 		$this->paymentObj = $obj;
+	}
+
+	public function isActivated(){
+		return $this->userAccount->plugins['membership']->isActivated();
 	}
 
 	public function updateStreamingAccess(){

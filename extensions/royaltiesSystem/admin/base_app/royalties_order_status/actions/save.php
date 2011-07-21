@@ -1,5 +1,5 @@
 <?php
-$royaltiesSystemOrderStatuses = Doctrine_Core::getTable('royaltiesSystemOrderStatuses');
+$royaltiesSystemOrderStatuses = Doctrine_Core::getTable('RoyaltiesSystemOrderStatuses');
 $royaltiesSystemOrderStatusesAll = Doctrine_Query::create()
 		->from('royaltiesSystemOrderStatuses')
 		->execute();

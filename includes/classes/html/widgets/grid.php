@@ -312,7 +312,7 @@ class htmlWidget_grid implements htmlWidgetPlugin {
 		$pagerLink = itw_app_link(tep_get_all_get_params(array('page', 'action')) . 'page={%page_number}');
 
 		$pagerRange = new Doctrine_Pager_Range_Sliding(array(
-			'chunk' => 5
+			'chunk' => 15
 		));
 		
 		$pagerLayout = new PagerLayoutWithArrows($listingPager, $pagerRange, $pagerLink);
@@ -328,52 +328,54 @@ class htmlWidget_grid implements htmlWidgetPlugin {
 		return $Qproducts;
 	}
 }
-	
-class PagerLayoutWithArrows extends Doctrine_Pager_Layout {
-	private $myType = 'records';
 
-	public function setMyType($val){
-		$this->myType = $val;
-	}
+if(class_exists('PagerLayoutWithArrows') != true){
+	class PagerLayoutWithArrows extends Doctrine_Pager_Layout {
+		private $myType = 'records';
 
-	public function getMyType(){
-		return $this->myType;
-	}
-
-	public function display($options = array(), $return = false){
-		$pager = $this->getPager();
-		$str = '';
-			
-		// First page
-		$this->addMaskReplacement('page', '&laquo;', true);
-		$options['page_number'] = $pager->getFirstPage();
-		$str .= $this->processPage($options);
-			
-		// Previous page
-		$this->addMaskReplacement('page', '&lsaquo;', true);
-		$options['page_number'] = $pager->getPreviousPage();
-		$str .= $this->processPage($options);
-			
-		// Pages listing
-		$this->removeMaskReplacement('page');
-		$str .= parent::display($options, true);
-			
-		// Next page
-		$this->addMaskReplacement('page', '&rsaquo;', true);
-		$options['page_number'] = $pager->getNextPage();
-		$str .= $this->processPage($options);
-			
-		// Last page
-		$this->addMaskReplacement('page', '&raquo;', true);
-		$options['page_number'] = $pager->getLastPage();
-		$str .= $this->processPage($options);
-			
-		$str .= '&nbsp;&nbsp;<b>' . $pager->getFirstIndice() . ' - ' . $pager->getLastIndice() . ' (of ' . $pager->getNumResults() . ' ' . $this->myType .')</b>';
-		// Possible wish to return value instead of print it on screen
-		if ($return) {
-			return $str;
+		public function setMyType($val){
+			$this->myType = $val;
 		}
-		echo $str;
+
+		public function getMyType(){
+			return $this->myType;
+		}
+
+		public function display($options = array(), $return = false){
+			$pager = $this->getPager();
+			$str = '';
+
+			// First page
+			$this->addMaskReplacement('page', '&laquo;', true);
+			$options['page_number'] = $pager->getFirstPage();
+			$str .= $this->processPage($options);
+
+			// Previous page
+			$this->addMaskReplacement('page', '&lsaquo;', true);
+			$options['page_number'] = $pager->getPreviousPage();
+			$str .= $this->processPage($options);
+
+			// Pages listing
+			$this->removeMaskReplacement('page');
+			$str .= parent::display($options, true);
+
+			// Next page
+			$this->addMaskReplacement('page', '&rsaquo;', true);
+			$options['page_number'] = $pager->getNextPage();
+			$str .= $this->processPage($options);
+
+			// Last page
+			$this->addMaskReplacement('page', '&raquo;', true);
+			$options['page_number'] = $pager->getLastPage();
+			$str .= $this->processPage($options);
+
+			$str .= '&nbsp;&nbsp;<b>' . $pager->getFirstIndice() . ' - ' . $pager->getLastIndice() . ' (of ' . $pager->getNumResults() . ' ' . $this->myType .')</b>';
+			// Possible wish to return value instead of print it on screen
+			if ($return) {
+				return $str;
+			}
+			echo $str;
+		}
 	}
 }
 ?>

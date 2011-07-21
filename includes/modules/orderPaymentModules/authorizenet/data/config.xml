@@ -41,6 +41,14 @@
 		<set_function><![CDATA[tep_cfg_select_option(array('Membership','Normal','Both'),]]></set_function>
 	</configuration>
 	<configuration>
+		<title><![CDATA[Payment method visible]]></title>
+		<key><![CDATA[MODULE_PAYMENT_AUTHORIZENET_VISIBLE]]></key>
+		<value><![CDATA[Both]]></value>
+		<description><![CDATA[Where is this payment method visible: Admin, Catalog or Both )]]></description>
+		<sort_order>5</sort_order>
+		<set_function><![CDATA[tep_cfg_select_option(array('Admin','Catalog','Both'),]]></set_function>
+	</configuration>
+	<configuration>
 		<title><![CDATA[Enable CIM]]></title>
 		<key><![CDATA[MODULE_PAYMENT_AUTHORIZENET_CIM]]></key>
 		<value><![CDATA[False]]></value>
@@ -116,5 +124,12 @@
 		<description><![CDATA[The credit cards you currently accept]]></description>
 		<sort_order>14</sort_order>
 		<set_function><![CDATA[tep_cfg_select_multioption(array('Visa','Mastercard','Amex','Discover'),]]></set_function>
+	</configuration>
+	<configuration>
+		<title><![CDATA[Reject Credit Cards starting with]]></title>
+		<key><![CDATA[MODULE_PAYMENT_AUTHORIZENET_REJECTED_CC]]></key>
+		<value><![CDATA[4024]]></value>
+		<description><![CDATA[Add starting CC values separated by comma]]></description>
+		<sort_order>14</sort_order>
 	</configuration>
 </configurations>

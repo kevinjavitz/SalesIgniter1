@@ -57,7 +57,7 @@ class InfoBoxPayPerRental extends InfoBoxAbstract {
 			->addClass('ui-widget ui-widget-content ui-corner-all ui-menu-flyout')
 			->css('display', 'none');
 			foreach($currentParentChildren as $childInfo){
-				if ($childInfo['pp_show_in_menu'] == 1){
+				if ($childInfo['ppr_show_in_menu'] == 1){
 					$this->addPPRChildren($childInfo, $currentPath, &$children);
 				}
 			}

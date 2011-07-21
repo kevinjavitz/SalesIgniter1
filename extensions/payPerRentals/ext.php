@@ -38,6 +38,7 @@ class Extension_payPerRentals extends ExtensionBase {
 			'ApplicationTopAction_add_reservation_product',
 			'CouponEditPurchaseTypeBeforeOutput',
 			'CouponEditBeforeSave',
+			'UpdateTotalsCheckout',
 			'CouponsPurchaseTypeRestrictionCheck'
 		), null, $this);
 
@@ -77,6 +78,34 @@ class Extension_payPerRentals extends ExtensionBase {
 		}else{
 			Session::set('google_key', sysConfig::get('EXTENSION_PAY_PER_RENTALS_GOOGLE_MAPS_API_KEY'));
 		}
+	}
+
+	public function UpdateTotalsCheckout(){
+		global $onePageCheckout, $ShoppingCart;
+		$weight = 0;
+		$selectedMethod = '';
+
+		foreach($ShoppingCart->getProducts() as $cartProduct) {
+					if ($cartProduct->hasInfo('reservationInfo') === true){
+						$reservationInfo1 = $cartProduct->getInfo('reservationInfo');
+						if(isset($reservationInfo1['shipping']) && isset($reservationInfo1['shipping']['module']) && $reservationInfo1['shipping']['module'] == 'zonereservation'){
+							$selectedMethod = $reservationInfo1['shipping']['id'];
+							$weight += $cartProduct->getWeight();
+						}
+					}
+		}
+
+		$Module = OrderShippingModules::getModule('zonereservation', true);
+		$quotes = array($Module->quote($selectedMethod, $weight));
+
+
+		$onePageCheckout->onePage['info']['reservationshipping'] = array(
+								'id'     => 'zonereservation_'.$quotes[0]['methods'][0]['id'],
+								'module' => 'zonereservation',
+								'method' => 'zonereservation',
+								'title'  => $quotes[0]['methods'][0]['title'],
+								'cost'   => $quotes[0]['methods'][0]['cost']
+		);
 	}
 	
 	public function CouponEditPurchaseTypeBeforeOutput(&$checkbox, $name, $Coupon){
@@ -178,13 +207,16 @@ class Extension_payPerRentals extends ExtensionBase {
 			$plusFive = date('Y-n-j', mktime(0, 0, 0, date('m'), date('d') + 5, date('Y')));
 
 			$Qreserved = Doctrine_Query::create()
-					->select('count(orders_products_reservations_id) as total')
-					->from('OrdersProducts op')
-					->leftJoin('op.OrdersProductsReservation opr')
-					->where('op.products_id = ?', $invData['products_id'])
-					->andWhere('opr.track_method = ?', 'quantity')
-					->andWhere('((opr.start_date between CAST("' . $today . '" as DATE) and CAST("' . $plusFive . '" as DATE)) or (opr.end_date between CAST("' . $today . '" as DATE) and CAST("' . $plusFive . '" as DATE)))')
-					->execute();
+			->select('count(orders_products_reservations_id) as total')
+			->from('OrdersProducts op')
+			->leftJoin('op.OrdersProductsReservation opr')
+			->where('op.products_id = ?', $invData['products_id'])
+			->andWhere('opr.track_method = ?', 'quantity')
+			->andWhere('((opr.start_date between CAST("' . $today . '" as DATE) and CAST("' . $plusFive . '" as DATE)) or (opr.end_date between CAST("' . $today . '" as DATE) and CAST("' . $plusFive . '" as DATE)))');
+
+			EventManager::notify('OrdersProductsReservationListingBeforeExecute', &$Qreserved);
+
+			$Qreserved = $Qreserved->execute();
 			if ($Qreserved && $Qreserved[0]->total > $invItem['available']){
 				$addTotal = false;
 			}
@@ -197,12 +229,15 @@ class Extension_payPerRentals extends ExtensionBase {
 			$plusFive = date('Y-n-j', mktime(0, 0, 0, date('m'), date('d') + 5, date('Y')));
 
 			$Qreserved = Doctrine_Query::create()
-					->select('orders_products_reservations_id')
-					->from('OrdersProductsReservation')
-					->where('barcode_id = ?', $invItem['id'])
-					->andWhere('track_method = ?', 'barcode')
-					->andWhere('((start_date between CAST("' . $today . '" as DATE) and CAST("' . $plusFive . '" as DATE)) or (end_date between CAST("' . $today . '" as DATE) and CAST("' . $plusFive . '" as DATE)))')
-					->fetchOne();
+			->select('orders_products_reservations_id')
+			->from('OrdersProductsReservation opr')
+			->where('barcode_id = ?', $invItem['id'])
+			->andWhere('track_method = ?', 'barcode')
+			->andWhere('((start_date between CAST("' . $today . '" as DATE) and CAST("' . $plusFive . '" as DATE)) or (end_date between CAST("' . $today . '" as DATE) and CAST("' . $plusFive . '" as DATE)))');
+
+			EventManager::notify('OrdersProductsReservationListingBeforeExecute', &$Qreserved);
+			$Qreserved = $Qreserved->fetchOne();
+
 			if ($Qreserved){
 				$addTotal = false;
 			}
@@ -211,8 +246,8 @@ class Extension_payPerRentals extends ExtensionBase {
 
 	public function OrderQueryBeforeExecute(&$Qorder){
 		$Qorder->leftJoin('op.OrdersProductsReservation opr')
-			->leftJoin('opr.ProductsInventoryBarcodes pib')
-			->leftJoin('opr.ProductsInventoryQuantity piq');
+		->leftJoin('opr.ProductsInventoryBarcodes pib')
+		->leftJoin('opr.ProductsInventoryQuantity piq');
 	}
 
 
@@ -373,12 +408,12 @@ class Extension_payPerRentals extends ExtensionBase {
 	public function OrderBeforeSendEmail(&$order, &$emailEvent, &$products_ordered){
 
 			$Qorders = Doctrine_Query::create()
-					->from('Orders o')
-					->leftJoin('o.OrdersProducts op')
-					->leftJoin('op.OrdersProductsReservation ops')
-					->where('o.orders_id =?', $order['orderID'])
-					->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
-			//here the order must exists...
+			->from('Orders o')
+			->leftJoin('o.OrdersProducts op')
+			->leftJoin('op.OrdersProductsReservation ops')
+			->where('o.orders_id =?', $order['orderID'])
+			->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+
 			if(count($Qorders) > 0){
 				if (sysConfig::get('EXTENSION_PAY_PER_RENTALS_USE_EVENTS') == 'True' && sysConfig::get('EXTENSION_PAY_PER_RENTALS_SHOW_EVENT_EMAIL') == 'True'){
 					if (isset($Qorders[0]['OrdersProducts'][0]['OrdersProductsReservation'][0]['event_name'])){
@@ -395,11 +430,11 @@ class Extension_payPerRentals extends ExtensionBase {
 
 		public function OrderShowExtraPackingData(&$order){			
 			$QOrder = Doctrine_Query::create()
-				->from('Orders o')
-				->leftJoin('o.OrdersProducts op')
-				->leftJoin('op.OrdersProductsReservation ops')
-				->where('o.orders_id = ?', $_GET['oID'])
-				->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+			->from('Orders o')
+			->leftJoin('o.OrdersProducts op')
+			->leftJoin('op.OrdersProductsReservation ops')
+			->where('o.orders_id = ?', $_GET['oID'])
+			->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 			if (sysConfig::get('EXTENSION_PAY_PER_RENTALS_USE_EVENTS') == 'True'){
 				$evInfo = ReservationUtilities::getEvent($QOrder[0]['OrdersProducts'][0]['OrdersProductsReservation'][0]['event_name']);
 				$htmlEventDetails = '<br/><br/><b>Event Details:</b><br/>' .  trim($evInfo['events_details']);

@@ -21,7 +21,7 @@ class PDF_Labels {
 
 	function getRentedQueueQuery($settings = null){
 		$query = Doctrine_Query::create()
-		->select('ab.*, co.*, z.*, rq.customers_queue_id, rq.shipment_date as date_shipped, rq.products_barcode as barcode, concat(c.customers_firstname, " ", c.customers_lastname) as customers_name, p.products_id, pd.products_name, "rental" as products_type, c.customers_id, co.countries_id, ib.barcode_id')
+		->select('ab.*, co.*, z.*, rq.customers_queue_id, rq.shipment_date as date_shipped, concat(c.customers_firstname, " ", c.customers_lastname) as customers_name, p.products_id, pd.products_name, "rental" as products_type, c.customers_id, co.countries_id, ib.barcode_id, ib.barcode')
 		->from('RentedQueue rq')
 		->leftJoin('rq.ProductsInventoryBarcodes ib')
 		->leftJoin('rq.Customers c')
@@ -31,7 +31,7 @@ class PDF_Labels {
 		->leftJoin('rq.Products p')
 		->leftJoin('p.ProductsDescription pd')
 		->where('pd.language_id = ?', Session::get('languages_id'))
-		->andWhere('ab.address_book_id = c.customers_default_address_id')
+		->andWhere('ab.address_book_id = c.customers_delivery_address_id or c.customers_delivery_address_id is null')
 		->orderBy('rq.shipment_date asc, pd.products_name asc');
 
 		if (isset($settings['startDate']) && isset($settings['endDate'])){
@@ -48,7 +48,7 @@ class PDF_Labels {
 	
 	public function getRentedProducts($settings = null){
 		$query = Doctrine_Query::create()
-		->select('ab.*, co.*, z.*, rq.customers_queue_id, rq.shipment_date, rq.products_barcode as barcode, concat(c.customers_firstname, " ", c.customers_lastname) as customers_name, p.products_id, pd.products_name, c.customers_id, co.countries_id, ib.barcode_id')
+		->select('ab.*, co.*, z.*, rq.customers_queue_id, rq.shipment_date, concat(c.customers_firstname, " ", c.customers_lastname) as customers_name, p.products_id, pd.products_name, c.customers_id, co.countries_id, ib.barcode_id, ib.barcode')
 		->from('RentedQueue rq')
 		->leftJoin('rq.ProductsInventoryBarcodes ib')
 		->leftJoin('rq.Customers c')
@@ -58,7 +58,7 @@ class PDF_Labels {
 		->leftJoin('rq.Products p')
 		->leftJoin('p.ProductsDescription pd')
 		->where('pd.language_id = ?', Session::get('languages_id'))
-		->andWhere('ab.address_book_id = c.customers_default_address_id')
+		->andWhere('ab.address_book_id = c.customers_delivery_address_id or c.customers_delivery_address_id is null')
 		->orderBy('rq.shipment_date asc, pd.products_name asc');
 
 		if (isset($settings['startDate']) && isset($settings['endDate'])){
@@ -81,18 +81,18 @@ class PDF_Labels {
 						
 					$dataArray[$idx] = array(
 						'customers_name'   => $Queue['customers_name'],
-						'addressFormatted' => tep_address_format($Address['Countries']['address_format_id'], $Address, true, '', '<br />'),
+						'addressFormatted' => tep_address_format($Address['Countries']['address_format_id'], $Address, true, '', '<br />', 'short'),
 						'products_name'    => $descInfo['products_name'],
 						'products_type'    => 'rental',
 						'date_sent'        => $Queue['shipment_date'],
 						'checkbox_value'   => 'rental_' . $Queue['customers_queue_id']
 					);
-						
+
 					if (isset($Queue['ProductsInventoryBarcodes']) && !empty($Queue['ProductsInventoryBarcodes'])){
 						$dataArray[$idx]['barcode_id'] = $Queue['ProductsInventoryBarcodes']['barcode_id'];
 						$dataArray[$idx]['barcode'] = $Queue['ProductsInventoryBarcodes']['barcode'];
 					}
-						
+
 					if (isset($Queue['ProductsInventoryQuantity']) && !empty($Queue['ProductsInventoryQuantity'])){
 						$dataArray[$idx]['quantity_id'] = $Queue['ProductsInventoryQuantity']['quantity_id'];
 					}
@@ -127,10 +127,12 @@ class PDF_Labels {
 			$query->andWhere('opr.parent_id is null');
 		}
 
+		EventManager::notify('OrdersListingBeforeExecute', &$query);
+
 		return $this->getPayPerRentals($settings);
 		return $query;
 	}
-	
+
 	public function getPayPerRentals($settings = null){
 		$query = Doctrine_Query::create()
 		->from('Orders o')
@@ -150,7 +152,9 @@ class PDF_Labels {
 		}else{
 			$query->andWhere('opr.parent_id is null');
 		}
-		
+
+		EventManager::notify('OrdersListingBeforeExecute', &$query);
+
 		$Result = $query->execute();
 		$dataArray = array();
 		if ($Result->count() > 0){
@@ -160,21 +164,21 @@ class PDF_Labels {
 					if (!empty($OrderProduct['OrdersProductsReservation'])){
 						$resInfo = $OrderProduct['OrdersProductsReservation'][0];
 						$Address = $Order['OrdersAddresses']['delivery'];
-						
+
 						$dataArray[$idx] = array(
 							'customers_name'   => $Address['entry_name'],
-							'addressFormatted' => tep_address_format($Address['entry_format_id'], $Address, true, '', '<br />'),
+							'addressFormatted' => tep_address_format($Address['entry_format_id'], $Address, true, '', '<br />', 'short'),
 							'products_name'    => $OrderProduct['products_name'],
 							'products_type'    => 'reservation',
 							'date_sent'        => $resInfo['date_shipped'],
 							'checkbox_value'   => 'reservation_' . $resInfo['orders_products_reservations_id']
 						);
-						
+
 						if (isset($resInfo['ProductsInventoryBarcodes']) && !empty($resInfo['ProductsInventoryBarcodes'])){
 							$dataArray[$idx]['barcode_id'] = $resInfo['ProductsInventoryBarcodes']['barcode_id'];
 							$dataArray[$idx]['barcode'] = $resInfo['ProductsInventoryBarcodes']['barcode'];
 						}
-						
+
 						if (isset($resInfo['ProductsInventoryQuantity']) && !empty($resInfo['ProductsInventoryQuantity'])){
 							$dataArray[$idx]['quantity_id'] = $resInfo['ProductsInventoryQuantity']['quantity_id'];
 						}
@@ -226,7 +230,7 @@ class PDF_Labels {
 						->from('ProductsInventoryCenters')
 						->where('inventory_center_id = ?', $this->invCenter)
 						->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
-						
+
 						$inventoryCenterName = $QinventoryCenter[0]['inventory_center_name'];
 
 						$Result = false;
@@ -238,13 +242,13 @@ class PDF_Labels {
 								->where('barcode_id = ?', $itemData['barcode_id']);
 							}elseif (!empty($itemData['quantity_id'])){
 								$Qcheck->from('ProductsInventoryQuantity')
-								->where('quantity_id = ?', $rental['quantity_id']);
+								->where('quantity_id = ?', $itemData['quantity_id']);
 							}
 							$Qcheck->andWhere('inventory_center_id = ?', $this->invCenter);
-					
+
 							$Result = $Qcheck->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 						}
-					
+
 						if ($Result && $Result[0]['total'] <= 0){
 							continue;
 						}
@@ -252,7 +256,7 @@ class PDF_Labels {
 						$QinventoryCenter = Doctrine_Query::create()
 						->select('ic.inventory_center_name')
 						->from('ProductsInventoryCenters ic');
-						
+
 						if (isset($itemData['barcode_id']) || isset($itemData['quantity_id'])){
 							if (isset($itemData['barcode_id'])){
 								$QinventoryCenter->leftJoin('ic.ProductsInventoryBarcodesToInventoryCenters b2c')
@@ -261,7 +265,7 @@ class PDF_Labels {
 								$QinventoryCenter->leftJoin('ic.ProductsInventoryQuantity iq')
 								->where('iq.quantity_id = ?', $itemData['quantity_id']);
 							}
-						
+
 							$Result = $QinventoryCenter->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 							if ($Result){
 								$inventoryCenterName = $Result[0]['inventory_center_name'];
@@ -286,7 +290,7 @@ class PDF_Labels {
 				);
 			}
 		}
-		
+
 		/*
 		$index = 0;
 		foreach($sqlResources as $Qrental){
@@ -300,7 +304,7 @@ class PDF_Labels {
 						->from('ProductsInventoryCenters')
 						->where('inventory_center_id = ?', $this->invCenter)
 						->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
-						
+
 						$inventoryCenterName = $QinventoryCenter[0]['inventory_center_name'];
 
 						unset($Qcheck);
@@ -345,7 +349,7 @@ class PDF_Labels {
 						}
 					}
 				}
-				
+
 				if (isset($rental['ProductsInventoryBarcodes'])){
 					$Qbarcode = Doctrine_Query::create()
 					->select('barcode')
@@ -446,11 +450,11 @@ class PDF_Labels {
 		->from('ProductsInventory i')
 		->leftJoin('i.ProductsInventoryBarcodes ib')
 		->where('i.products_id = ?', $id);
-		
+
 		if ($singleBarcode !== false && $singleBarcode > 0){
 			$Qinventory->andWhere('barcode_id = ?', $singleBarcode);
 		}
-		
+
 		$inventory = $Qinventory->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 		if ($inventory){
 			foreach($inventory[0]['ProductsInventoryBarcodes'] as $barcode){
@@ -494,30 +498,21 @@ class PDF_Labels {
 
 				$order = $Qorder->execute()->toArray(true);
 				$oInfo = $order[0];
-				
+
 
 				$Product = $oInfo['Products'];
 				$ProductDescription = $Product['ProductsDescription'][Session::get('languages_id')];
 				$ProductsInventoryBarcodes = $oInfo['ProductsInventoryBarcodes'];
 				$Customer = $oInfo['Customers'];
 				$CustomerAddress = $Customer['AddressBook'][0];
-				
+				//todo here i have to select the delivery default
 				$this->labels[] = array(
 					'products_id'          => $Product['products_id'],
 					'products_name'        => $ProductDescription['products_name'],
 					'barcode_id'           => $ProductsInventoryBarcodes['barcode_id'],
 					'barcode'              => $ProductsInventoryBarcodes['barcode'],
 					'products_description' => stripslashes(strip_tags($ProductDescription['products_description'])),
-					'customers_address'    => array(
-						'name'           => $Customer['customers_firstname'] . ' ' . $Customer['customers_lastname'],
-						'street_address' => $CustomerAddress['entry_street_address'],
-						'city'           => $CustomerAddress['entry_city'],
-						'postcode'       => $CustomerAddress['entry_postcode'],
-						'company'        => $CustomerAddress['entry_company'],
-						'country'        => $CustomerAddress['Countries']['countries_name'],
-						'format_id'      => $CustomerAddress['Countries']['address_format_id'],
-						'state'          => $CustomerAddress['Zones']['zone_name']
-					)
+					'customers_address'    => $CustomerAddress
 				);
 				break;
 			case 'O':
@@ -533,16 +528,7 @@ class PDF_Labels {
 					'barcode_id'           => $oInfo['ProductsInventoryBarcodes']['barcode_id'],
 					'barcode'              => $oInfo['ProductsInventoryBarcodes']['barcode'],
 					'products_description' => stripslashes(strip_tags($oInfo['OrdersProducts']['Products']['ProductsDescription'][Session::get('languages_id')]['products_description'])),
-					'customers_address'    => array(
-						'name'           => $oInfo['OrdersProducts']['Orders']['OrdersAddresses']['delivery']['entry_name'],
-						'street_address' => $oInfo['OrdersProducts']['Orders']['OrdersAddresses']['delivery']['entry_street_address'],
-						'city'           => $oInfo['OrdersProducts']['Orders']['OrdersAddresses']['delivery']['entry_city'],
-						'state'          => $oInfo['OrdersProducts']['Orders']['OrdersAddresses']['delivery']['entry_state'],
-						'country'        => $oInfo['OrdersProducts']['Orders']['OrdersAddresses']['delivery']['entry_country'],
-						'postcode'       => $oInfo['OrdersProducts']['Orders']['OrdersAddresses']['delivery']['entry_postcode'],
-						'company'        => $oInfo['OrdersProducts']['Orders']['OrdersAddresses']['delivery']['entry_company'],
-						'format_id'      => $oInfo['OrdersProducts']['Orders']['OrdersAddresses']['delivery']['entry_format_id']
-					)
+					'customers_address'    => $oInfo['OrdersProducts']['Orders']['OrdersAddresses']['delivery']
 				);
 				break;
 			case 'barcode':
@@ -662,9 +648,7 @@ class PDF_Labels {
 		);
 
 		if ($lInfo['customers_address'] !== false){
-			$labelContent[] = $lInfo['customers_address']['name'];
-			$labelContent[] = $lInfo['customers_address']['street_address'];
-			$labelContent[] = $lInfo['customers_address']['city'] . ', ' . $lInfo['customers_address']['state'] . ' ' . $lInfo['customers_address']['postcode'];
+			$labelContent = tep_address_format($lInfo['customers_address']['address_format_id'], $lInfo['customers_address'],'','','','short');
 		}
 
 		if ($this->tmpType == 'pdf'){

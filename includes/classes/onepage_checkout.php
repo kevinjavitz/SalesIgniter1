@@ -153,11 +153,12 @@ class osC_onePageCheckout {
 		$this->onePage['info']['telephone'] = $userAccount->getTelephoneNumber();
 
 		$customerAddress = $addressBook->getAddress($addressBook->getDefaultAddressId());
+		$shippingAddress = $addressBook->getAddress($addressBook->getDeliveryDefaultAddressId());
 		if ($addressBook->entryExists('customer') === false){
 			$addressBook->addAddressEntry('customer', $customerAddress);
 		}
 		if ($addressBook->entryExists('delivery') === false){
-			$addressBook->addAddressEntry('delivery', $customerAddress);
+			$addressBook->addAddressEntry('delivery', $shippingAddress);
 		}
 		if ($addressBook->entryExists('billing') === false){
 			$addressBook->addAddressEntry('billing', $customerAddress);
@@ -196,15 +197,21 @@ class osC_onePageCheckout {
 			}
 			
 			$defaultId = $addressBook->insertAddress($addressBook->getAddress('billing'));
-			if (isset($_POST['diffShipping'])){
-				$addressBook->insertAddress($addressBook->getAddress('delivery'));
+			$isShipping = true;
+			if (isset($_POST['shipping_diff'])){
+				$shippingId = $addressBook->insertAddress($addressBook->getAddress('delivery'));
+				$isShipping = false;
 			}
 
-			if (isset($_POST['diffPickup'])){
-				$addressBook->insertAddress($addressBook->getAddress('pickup'));
+			if (isset($_POST['pickup_diff'])){
+				$addressBook->insertAddress($addressBook->getAddress('pickup'), $isShipping);
 			}
 
 			$addressBook->setDefaultAddress($defaultId, true);
+
+			if(isset($shippingId)){
+				$addressBook->setDeliveryDefaultAddress($shippingId, true);
+			}
 
 			if ($this->isMembershipCheckout() === true){
 				$userAccount->plugins['membership']->setRentalAddress($defaultId);

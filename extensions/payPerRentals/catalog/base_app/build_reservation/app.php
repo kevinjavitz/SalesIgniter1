@@ -9,6 +9,8 @@
 
 	This script and it's source is not redistributable
 */
+	require('includes/functions/google_maps_ppr.php');
+	require('includes/classes/json.php');
 
 	$appContent = $App->getAppContentFile();
 

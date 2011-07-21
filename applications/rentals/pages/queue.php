@@ -9,6 +9,8 @@
 
 	This script and it's source is not redistributable
 */
+
+//here i check for parent
 	if (!$userAccount->isLoggedIn()){
 		tep_redirect(itw_app_link(null,'account','default'));
 	}else{
@@ -48,7 +50,7 @@
 					$info_box_contents[] = array('params' => 'class="productListing-odd"');
 				}
 
-				$productsName = tep_get_products_name($sInfo['products_id']);
+				$productsName = '<a target="_blank" href="'.itw_app_link('products_id='.$sInfo['products_id'],'product','info').'">'.tep_get_products_name($sInfo['products_id']).'</a>';
 				$shipDate = $sInfo['shipment_date'];
 				$shipDateString = date("m/d/Y", strtotime($shipDate));
 				$arrivalDate = $sInfo['arrival_date'];
@@ -87,8 +89,10 @@
 		
 		$Qrental = Doctrine_Query::create()
 		->from('RentalQueueTable')
-		->where('customers_id = ?', $userAccount->getCustomerId())
-		->orderBy('priority')
+		->where('customers_id = ?', $userAccount->getCustomerId());
+		EventManager::notify('RentalQueueBeforeExecute', &$Qrental);
+		$Qrental = $Qrental->orderBy('priority')
+
 		->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 		if (count($Qrental) > 0){
 			ob_start();
@@ -143,6 +147,8 @@
 					'text' => sysLanguage::get('TABLE_HEADING_REMOVE')
 				);
 
+				EventManager::notify('ListingRentalQueueHeader', &$info_box_contents[0]);
+
 				$i = 1;
 				foreach($Qrental as $rInfo){
 					if ($i % 2 == 1) {
@@ -172,7 +178,7 @@
 					->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 
 					$productClass = new product($productsId);
-					$productsName = $productClass->getName();
+					$productsName = '<a target="_blank" href="'.itw_app_link('products_id='.$productsId,'product','info').'">'.$productClass->getName().'</a>';
 					$purchaseTypeRental = $productClass->getPurchaseType('rental', true);
 					$availability = count($QproductsInQueue) - $purchaseTypeRental->getCurrentStock();
 					$availabilityName = null;
@@ -215,6 +221,9 @@
 						'params' => 'class="productListing-data" valign="top"',
 						'text' => $remove->draw()
 					);
+
+					EventManager::notify('ListingRentalQueue', &$info_box_contents[$i], $rInfo);
+
 					$i++;
 				}
 

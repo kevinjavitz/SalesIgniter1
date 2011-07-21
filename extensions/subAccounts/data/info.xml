@@ -1,0 +1,8 @@
+<data>
+	<name>subAccounts</name>
+	<key>subAccounts</key>
+	<version>1.0</version>
+	<author>Cristian Arcu( http://www.itwebexperts.com )</author>
+	<status_key>EXTENSION_SUBACCOUNTS_ENABLED</status_key>
+	<description><![CDATA[Regular customers can add subaccounts like for child to see only movies for theirs age]]></description>
+</data>

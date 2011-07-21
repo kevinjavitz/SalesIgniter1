@@ -13,7 +13,7 @@
 				$this->pdf->SetAuthor('Kevin Javitz');
 				$this->pdf->SetTitle('Rental Product Labels');
 				$this->pdf->SetSubject('Rental Product Labels');
-				$this->pdf->SetMargins(0.18, 0.49, 0.2);
+				$this->pdf->SetMargins(0.18, 0.35, 0.2);
 				$this->pdf->SetCellPadding(.075);
 				$this->pdf->setPrintHeader(false);
 				$this->pdf->setPrintFooter(false);
@@ -71,20 +71,20 @@
 		
 		private function buildLabel($labelInfo, $newLine, $hideBarcode = false){
 			$labelContent = array();
-			if ($labelInfo['customers_address'] !== false){
-				$labelContent[] = $labelInfo['customers_address']['name'];
-				$labelContent[] = $labelInfo['customers_address']['street_address'];
-				$labelContent[] = $labelInfo['customers_address']['city'] . ', ' . $labelInfo['customers_address']['state'] . ' ' . $labelInfo['customers_address']['postcode'];
+
+			//if (!empty($labelInfo['barcode_id'])){
+			//	$labelContent[] = '<img src="' . tep_href_link('showBarcode_' . $labelInfo['barcode_id'] . '.png', Session::getSessionName() . '=' . Session::getSessionId()) . '">';
+			//}else
+			if (!empty($labelInfo['barcode'])){
+				$labelContent[] = $labelInfo['barcode'].'<br/>';
 			}
 
-			if (!empty($labelInfo['barcode_id'])){
-				$labelContent[] = '<img src="' . tep_href_link('showBarcode_' . $labelInfo['barcode_id'] . '.png', Session::getSessionName() . '=' . Session::getSessionId()) . '">';
-			}elseif (!empty($labelInfo['barcode'])){
-				$labelContent[] = $labelInfo['barcode'];
+			if ($labelInfo['customers_address'] !== false){
+				$labelContent[] = tep_address_format(tep_get_address_format_id($labelInfo['customers_address']['entry_country_id']), $labelInfo['customers_address'],'','','','short');
 			}
 
 			if ($this->outputType == 'pdf'){
-				$this->pdf->MultiCell(2.63, 1, implode('<br>', $labelContent), 0, 'L', 0, $newLine, '', '', true, 0, true);
+				$this->pdf->MultiCell(2.7, 1, implode('<br>', $labelContent), 0, 'L', 0, $newLine, '', '', true, 0, true);
 				if ($newLine == 0){
 					$this->pdf->Cell(0.13, 1, '');
 				}

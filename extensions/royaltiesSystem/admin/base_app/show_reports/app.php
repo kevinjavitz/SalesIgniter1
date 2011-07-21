@@ -6,11 +6,11 @@ $appContent = $App->getAppContentFile();
 $App->addJavascriptFile('ext/jQuery/ui/jquery.ui.datepicker.js');
 
 $RoyaltiesSystemRoyaltiesEarnedOrders = Doctrine_Query::create()
-		->select('orders_id')
-		->from('RoyaltiesSystemRoyaltiesEarned')
-		->addWhere('orders_id > 0')
-		->addGroupBy('orders_id')
-		->execute(array(),Doctrine_Core::HYDRATE_ARRAY);
+	->select('orders_id')
+	->from('RoyaltiesSystemRoyaltiesEarned')
+	->addWhere('orders_id > 0')
+	->addGroupBy('orders_id')
+	->execute(array(),Doctrine_Core::HYDRATE_ARRAY);
 $orders = false;
 //var_dump($RoyaltiesSystemRoyaltiesEarnedOrders);
 foreach($RoyaltiesSystemRoyaltiesEarnedOrders as $ordersExisting){
@@ -18,29 +18,46 @@ foreach($RoyaltiesSystemRoyaltiesEarnedOrders as $ordersExisting){
 }
 
 $ordersQuery = Doctrine_Query::create()
-		->select('o.orders_id, o.customers_id, o.orders_status, o.date_purchased, pr.content_provider_id, pr.royalty_fee, op.products_id, op.purchase_type, op.final_price, op.products_price')
-		->from('Orders o')
-		->leftJoin('o.RoyaltiesSystemOrderStatuses os')
-		->leftJoin('o.OrdersProducts op')
-		->leftJoin('op.RoyaltiesSystemProductsRoyalties pr')
-		->addWhere('o.orders_status = os.orders_status_id')
-		->addWhere('op.orders_id = o.orders_id')
-		->andWhere('op.purchase_type = pr.purchase_type')
-		->andWhere('pr.content_provider_id > 0')
-		->andWhere('op.products_id = pr.products_id');
+	->select('o.orders_id, o.customers_id, o.orders_status, o.date_purchased, pr.content_provider_id, pr.royalty_fee, op.products_id, op.purchase_type, op.final_price, op.products_price')
+	->from('Orders o')
+	->leftJoin('o.RoyaltiesSystemOrderStatuses os')
+	->leftJoin('o.OrdersProducts op')
+	->leftJoin('op.RoyaltiesSystemProductsRoyalties pr')
+	->addWhere('o.orders_status = os.orders_status_id')
+	->addWhere('op.orders_id = o.orders_id')
+	->andWhere('op.purchase_type = pr.purchase_type')
+	->andWhere('pr.content_provider_id > 0')
+	->andWhere('op.products_id = pr.products_id');
 if($orders && count($orders)){
 	$ordersQuery->andWhere('o.orders_id not in (" ? ")',implode(',',$orders));
 }
+
+EventManager::notify('OrdersListingBeforeExecute', &$ordersQuery);
+
 $Qorders = $ordersQuery->execute(array(),Doctrine_Core::HYDRATE_ARRAY);
 foreach($Qorders as $order)	{
 	if($orders && in_array($order['orders_id'],$orders))
 		continue;
 
 	foreach($order['OrdersProducts'] as $product){
+		$productsPrice = $product['products_price'];
+		$royaltiesSystemOrderTotals =  Doctrine_Core::getTable('OrdersTotal')->findOneByOrdersIdAndModuleType($order['orders_id'],'coupon');
+		if($royaltiesSystemOrderTotals != false) {
+			$coupon_code = explode(':',$royaltiesSystemOrderTotals->title);
+			$coupon_code = $coupon_code[1];
+
+			$coupon =  Doctrine_Core::getTable('Coupons')->findOneByCouponCode($coupon_code);
+			if($coupon != false) {
+				if($coupon->coupon_type == 'P') {
+					$discountPrice = $productsPrice *  $coupon->coupon_amount / 100;
+					$productsPrice -= $discountPrice;
+				}
+			}
+		}
 		if (strpos($product['RoyaltiesSystemProductsRoyalties'][0]['royalty_fee'], '%') === false) {
 			$royaltyFee = $product['RoyaltiesSystemProductsRoyalties'][0]['royalty_fee'];
 		} else {
-			$royaltyFee = $product['products_price'] * ($product['RoyaltiesSystemProductsRoyalties'][0]['royalty_fee'] / 100);
+			$royaltyFee = $productsPrice * ($product['RoyaltiesSystemProductsRoyalties'][0]['royalty_fee'] / 100);
 		}
 		$RoyaltiesSystemRoyaltiesEarnedNew = new RoyaltiesSystemRoyaltiesEarned();
 		$RoyaltiesSystemRoyaltiesEarnedNew->content_provider_id = $product['RoyaltiesSystemProductsRoyalties'][0]['content_provider_id'];

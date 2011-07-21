@@ -7,14 +7,12 @@
 	->leftJoin('o.OrdersStatus s')
 	->leftJoin('s.OrdersStatusDescription sd')
 	->where('sd.language_id = ?', Session::get('languages_id'))
-	/*
-	 * @TODO: Change to only look for "total" after a while, when client upgrades will no longer be affect ed
-	 */
+	->andWhere('o.orders_status != ?', sysConfig::get('ORDERS_STATUS_ESTIMATE_ID'))
 	->andWhereIn('ot.module_type', array('total', 'ot_total'))
 	->andWhere('a.address_type = ?', 'customer')
 	->orderBy('o.date_purchased desc');
 	
-	EventManager::notify('AdminOrdersListingBeforeExecute', $Qorders);
+	EventManager::notify('AdminOrdersListingBeforeExecute', &$Qorders);
 	
 	if (isset($_GET['cID'])){
 		$Qorders->andWhere('o.customers_id = ?', (int)$_GET['cID']);
@@ -244,10 +242,30 @@
 		$limitField->selectOptionByValue($_GET['limit']);
 	}
 
+	$gotoOrderField = htmlBase::newElement('input')
+	->setName('oID')
+	->attr('size','4')
+	->setLabel('Go to order: ')
+	->setLabelPosition('before')
+	->setId('orderIdField');
+
+	$submitButtonGoto = htmlBase::newElement('button')
+	->setType('submit')
+	->usePreset('save')
+	->setText('Go');
+
 	$submitButton = htmlBase::newElement('button')
 	->setType('submit')
 	->usePreset('save')
 	->setText('Search');
+
+	$searchOrderForm = htmlBase::newElement('form')
+	->attr('name', 'searchOrder')
+	->attr('id', 'searchOrdersGoto')
+	->attr('action', itw_app_link(null,'orders', 'details', 'SSL'))
+	->attr('method', 'get');
+
+	$searchOrderForm->append($gotoOrderField)->append($submitButtonGoto);
 
 	$searchForm
 	->append($limitField)
@@ -347,7 +365,7 @@
 <div class="pageHeading"><?php echo sysLanguage::get('HEADING_TITLE');?></div>
 <br />
 <div style="width:100%"><?php
-	echo $searchForm->draw();
+	echo $searchForm->draw().$searchOrderForm->draw();
 ?></div>
 <form action="<?php echo itw_app_link('action=exportOrders','orders','default');?>" method="post">
 	<div style="width:100%;float:left;">

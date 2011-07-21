@@ -27,6 +27,7 @@ class RentalStoreUser implements Serializable {
 			*/
 			$this->customerInfo['id'] = 0;
 			$this->customerInfo['default_address_id'] = 0;
+			$this->customerInfo['delivery_address_id'] = 0;
 		}
 	}
 	
@@ -98,6 +99,7 @@ class RentalStoreUser implements Serializable {
 		if (USER_ADDRESS_BOOK_ENABLED == 'True'){
 			$this->plugins['addressBook']->reset();
 		}
+		EventManager::notify('ProcessLogoutExecute');
 	}
 
 	public function setCustomerInfo($dataArray){
@@ -129,6 +131,7 @@ class RentalStoreUser implements Serializable {
 			$customerInfo = array(
 				'id'                 => $customer['customers_id'],
 				'default_address_id' => $customer['customers_default_address_id'],
+				'delivery_address_id' => $customer['customers_delivery_address_id'],
 				'firstName'          => $customer['customers_firstname'],
 				'lastName'           => $customer['customers_lastname'],
 				'dob'                => $customer['customers_dob'],
@@ -183,8 +186,8 @@ class RentalStoreUser implements Serializable {
 			->execute();
 			$noValidate = false;
 		}
-		
 		if ($Qcustomer){
+			EventManager::notify('ProcessLoginBeforeExecute', &$noValidate, $password, &$Qcustomer);
 			if ($noValidate === true || $this->validatePassword($password, $Qcustomer[0]->customers_password) === true){
 				if (sysConfig::get('SESSION_RECREATE') == 'True') {
 					Session::recreate();
@@ -233,6 +236,8 @@ class RentalStoreUser implements Serializable {
 				}
 
 				$this->updateUserLogins();
+
+				EventManager::notify('ProcessLoginAfterExecute', &$this);
 
 				$ShoppingCart->restoreContents();
 
@@ -572,6 +577,10 @@ class RentalStoreUser implements Serializable {
 		return $this->customerInfo['default_address_id'];
 	}
 
+	public function getDeliveryDefaultAddressId(){
+		return $this->customerInfo['delivery_address_id'];
+	}
+
 	public function getFullName(){
 		if (!isset($this->customerInfo['fullName'])){
 			$this->customerInfo['fullName'] = $this->getFirstName() . ' ' . $this->getLastName();
@@ -586,6 +595,7 @@ class RentalStoreUser implements Serializable {
 	public function getFaxNumber(){ return $this->customerInfo['fax']; }
 	public function getCustomerId(){ return $this->customerInfo['id']; }
 	public function getDateOfBirth(){ return $this->customerInfo['dob']; }
+	public function getGender(){ return $this->customerInfo['gender']; }
 	public function isLoggedIn(){ return ($this->customerInfo['id'] > 0 ? true : false); }
 	public function getCustomerInfo(){ return $this->customerInfo; }
 

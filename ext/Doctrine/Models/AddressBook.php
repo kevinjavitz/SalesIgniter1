@@ -144,6 +144,15 @@ class AddressBook extends Doctrine_Record {
 			'notnull' => false,
 			'autoincrement' => false,
 		));
+
+		$this->hasColumn('entry_city_birth', 'string', 64, array(
+				'type' => 'string',
+				'length' => 64,
+				'fixed' => false,
+				'primary' => false,
+				'notnull' => false,
+				'autoincrement' => false,
+		));
 		
 		$this->hasColumn('entry_country_id', 'integer', 4, array(
 			'type' => 'integer',

@@ -59,7 +59,7 @@
           $membershipUpdate->setCurrentCustomer($userAccount);
           if ($membershipUpdate->isCanceled() === true){
               $membershipUpdate->cancelMembership();
-          }else{
+          }elseif($membershipUpdate->isMember() && $membershipUpdate->isActivated()){
               $paymentMethod = $membershipUpdate->paymentMethod();
               $Module = OrderPaymentModules::getModule($paymentMethod);
               $membershipUpdate->setPaymentObj($Module);

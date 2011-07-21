@@ -144,7 +144,7 @@ if(isset($_GET['product_id']) && isset($_GET['barcode_id'])){
 		$Qorders->andWhere('ops.barcode_id = ?', $_GET['barcode_id']);
 	}
 
-
+	EventManager::notify('OrdersListingBeforeExecute', &$Qorders);
 
 	/*if (isset($_GET['start_date']) && tep_not_null($_GET['start_date'])){
 		$Qorders->andWhere('o.date_purchased >= ?', $_GET['start_date']);

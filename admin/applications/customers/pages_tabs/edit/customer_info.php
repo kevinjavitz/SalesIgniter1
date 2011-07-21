@@ -84,6 +84,24 @@
 		->setName('entry_company')
 		->val($Customer->AddressBook[0]->entry_company);
 	}
+
+if (sysConfig::get('ACCOUNT_VAT_REQUIRED') == 'true'){
+	$vatInput = htmlBase::newElement('input')
+		->setName('entry_vat')
+		->val($Customer->AddressBook[0]->entry_vat);
+}
+
+if (sysConfig::get('ACCOUNT_CIF_REQUIRED') == 'true'){
+	$cifInput = htmlBase::newElement('input')
+		->setName('entry_cif')
+		->val($Customer->AddressBook[0]->entry_cif);
+}
+
+if (sysConfig::get('ACCOUNT_CITY_BIRTH_REQUIRED') == 'true'){
+	$cityBirthInput = htmlBase::newElement('input')
+		->setName('entry_city_birth')
+		->val($Customer->AddressBook[0]->entry_city_birth);
+}
 	
 	if (sysConfig::get('ACCOUNT_SUBURB') == 'true'){
 		$suburbInput = htmlBase::newElement('input')
@@ -155,7 +173,7 @@
 		0 => array(sysLanguage::get('ENTRY_STREET_ADDRESS') => $streetAddressInput),
 		2 => array(sysLanguage::get('ENTRY_POST_CODE') => $postcodeInput),
 		3 => array(sysLanguage::get('ENTRY_CITY') => $cityInput),
-		5 => array(sysLanguage::get('ENTRY_COUNTRY') => $countryInput)
+		5 => array(sysLanguage::get('ENTRY_COUNTRY') => $countryInput),
 	);
 	
 	if (isset($suburbInput)){
@@ -165,6 +183,16 @@
 	if (isset($stateInput)){
 		$addressTableRows[4] = array(sysLanguage::get('ENTRY_STATE') => $stateInput);
 	}
+
+if (isset($cifInput)){
+	$addressTableRows[6] = array(sysLanguage::get('ENTRY_CIF') => $cifInput);
+}
+if (isset($vatInput)){
+	$addressTableRows[7] = array(sysLanguage::get('ENTRY_VAT') => $vatInput);
+}
+if (isset($cityBirthInput)){
+	$addressTableRows[8] = array(sysLanguage::get('ENTRY_CITY_BIRTH') => $cityBirthInput);
+}
 	
 	$addressTable = htmlBase::newElement('table')->setCellPadding(3)->setCellSpacing(0);
 	foreach($addressTableRows as $key => $rInfo){

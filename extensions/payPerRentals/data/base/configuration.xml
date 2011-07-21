@@ -209,6 +209,13 @@
 			<sort_order>29</sort_order>
 			<set_function>tep_cfg_select_option(array('True','False'),</set_function>
 		</EXTENSION_PAY_PER_RENTALS_INSURE_ALL_PRODUCTS_ON_ORDER>
+		<EXTENSION_PAY_PER_RENTALS_INSURE_ALL_PRODUCTS_AUTO>
+			<value>False</value>
+			<title>Insure all products automatically</title>
+			<description>If set to true all reservation products are insured from adding them into cart</description>
+			<sort_order>29</sort_order>
+			<set_function>tep_cfg_select_option(array('True','False'),</set_function>
+		</EXTENSION_PAY_PER_RENTALS_INSURE_ALL_PRODUCTS_AUTO>
 			<EXTENSION_PAY_PER_RENTALS_SHOW_PRICES_DATES_BEFORE>
 			<value>True</value>
 			<title>Show prices for rentals when date before is selected.</title>
@@ -278,6 +285,21 @@
 			<sort_order>32</sort_order>
 			<set_function>tep_cfg_select_option(array('True','False'),</set_function>
 		</EXTENSION_PAY_PER_RENTALS_ALLOW_DISCOUNT>
+
+		 <EXTENSION_PAY_PER_RENTALS_ENABLE_REMINDERS>
+			<value>True</value>
+			<title>Enable sending reminders about items which needs returning</title>
+			<description>If "True" it will send a reminder every period of time setup in cron about items which needs returning</description>
+			<sort_order>32</sort_order>
+			<set_function>tep_cfg_select_option(array('True','False'),</set_function>
+		</EXTENSION_PAY_PER_RENTALS_ENABLE_REMINDERS>
+		<EXTENSION_PAY_PER_RENTALS_REMINDERS_DAYS>
+				   <value>3</value>
+				   <title>How many days before the date scheduled to return items do you want start sending reminder emails</title>
+				   <description>Number of days before the date scheduled to return items do you want start sending reminder emails</description>
+				   <sort_order>32</sort_order>
+		</EXTENSION_PAY_PER_RENTALS_REMINDERS_DAYS>
+
         <EXTENSION_PAY_PER_RENTALS_DISCOUNT_MAX_DAYS>
                     <value>30</value>
                     <title>Number of days before the discount is calculated from the reservation orders</title>

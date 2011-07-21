@@ -112,42 +112,22 @@ class OrderAddressManager {
 		$company = htmlspecialchars($Address->getCompany());
 		$firstname = htmlspecialchars($Address->getName());
 		$lastname = '';
-		$street = htmlspecialchars($Address->getStreetAddress());
+		$street_address = htmlspecialchars($Address->getStreetAddress());
 		$suburb = htmlspecialchars($Address->getSuburb());
 		$city = htmlspecialchars($Address->getCity());
 		$state = htmlspecialchars($Address->getState());
 		$country = htmlspecialchars($Address->getCountry());
 		$postcode = htmlspecialchars($Address->getPostcode());
-		$zip = $postcode;
-
-		if ($html === true){
-			// HTML Mode
-			$HR = '<hr>';
-			$hr = '<hr>';
-			$CR = '<br>';
-			$cr = '<br>';
-			$eoln = $cr;
-		}else{
-			// Text Mode
-			$CR = "\n";
-			$cr = $CR;
-			$HR = '----------------------------------------';
-			$hr = '----------------------------------------';
-		}
-
-		$statecomma = '';
-		$streets = $street;
-		if ($suburb != '')
-			$streets = $street . $cr . $suburb;
-		if ($state != '')
-			$statecomma = $state . ', ';
-
+		$abbrstate = htmlspecialchars($Address->getZoneCode());
+		$vat = htmlspecialchars($Address->getVAT());
+		$cif = htmlspecialchars($Address->getCIF());
+		$city_birth = htmlspecialchars($Address->getCityBirth());
 		$fmt = $Address->getFormat();
+		if($html){
+			$fmt = nl2br($fmt);
+		}
 		eval("\$address = \"$fmt\";");
 
-		if (sysConfig::get('ACCOUNT_COMPANY') == 'true' && !empty($company)){
-			$address = $company . $cr . $address;
-		}
 		return $address;
 	}
 }

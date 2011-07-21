@@ -64,6 +64,9 @@
 	$profiler = new Doctrine_Connection_Profiler();
 
 	$conn = Doctrine_Manager::connection(sysConfig::get('DOCTRINE_CONN_STRING'), 'mainConnection');
+	$cacheDriver = new Doctrine_Cache_Apc();
+	$conn->setAttribute(Doctrine_Core::ATTR_QUERY_CACHE, $cacheDriver);
+	$conn->setAttribute(Doctrine_Core::ATTR_RESULT_CACHE, $cacheDriver);
 
 	$conn->setListener($profiler);
 
@@ -394,16 +397,23 @@ require(sysConfig::getDirFsCatalog() . 'includes/classes/htmlBase.php');
 		switch($action){
 			// customer wants to update the product quantity in their shopping cart
 			case 'update_product' :
-				for ($i=0, $n=sizeof($productsId); $i<$n; $i++) {
-					if (in_array($productsId[$i], (isset($_POST['cart_delete']) && is_array($_POST['cart_delete']) ? $_POST['cart_delete'] : array()))) {
-						$ShoppingCart->removeProduct($productsId[$i], $_POST['purchase_type'][$i]);
-					} else {
+				$removed = array();
+				if(isset($_POST['cart_delete']) && is_array($_POST['cart_delete'])){
+					foreach($_POST['cart_delete'] as $item => $purchaseTypeVal){
+	                	$ShoppingCart->removeProduct($item, $purchaseTypeVal);
+						$removed[] = $item;
+					}
+				}
 
-						if (in_array($productsId[$i], (isset($_POST['cart_quantity']) && is_array($_POST['cart_quantity']) ? $_POST['cart_quantity'] : array()))) {
-							$ShoppingCart->updateProduct($productsId[$i], array(
-								'purchase_type' => $_POST['purchase_type'][$i],
-								'quantity'      => $_POST['cart_quantity'][$i]
-							));
+				if(isset($_POST['cart_quantity']) && is_array($_POST['cart_quantity'])){
+					foreach($_POST['cart_quantity'] as $item => $val){
+						if(!in_array($item, $removed)){
+							foreach($val as $purchaseTypeVal => $qtyVal){
+								$ShoppingCart->updateProduct($item, array(
+										'purchase_type' => $purchaseTypeVal,
+										'quantity'      => $qtyVal
+								));
+							}
 						}
 					}
 				}
@@ -458,10 +468,10 @@ require(sysConfig::getDirFsCatalog() . 'includes/classes/htmlBase.php');
 									Session::remove('account_action');
 								}
 
-								$errorMsg = sprintf(sysLanguage::get('TEXT_NOT_RENTAL_CUSTOMER'),itw_app_link('checkoutType=rental','checkout','default'), itw_app_link(null,'account','login'));
+								$errorMsg = sprintf(sysLanguage::get('TEXT_NOT_RENTAL_CUSTOMER'),itw_app_link('checkoutType=rental','checkout','default','SSL'), itw_app_link(null,'account','login'));
 								break;
 							case 'inactive':
-								$errorMsg = sprintf(sysLanguage::get('TEXT_NOT_ACTIVE_CUSTOMER'), itw_app_link('checkoutType=rental','checkout','default'));
+								$errorMsg = sprintf(sysLanguage::get('TEXT_NOT_ACTIVE_CUSTOMER'), itw_app_link('checkoutType=rental','checkout','default','SSL'));
 								break;
 						}
 						$messageStack->addSession('pageStack', $errorMsg, 'warning');
@@ -475,7 +485,7 @@ require(sysConfig::getDirFsCatalog() . 'includes/classes/htmlBase.php');
 					Session::set('add_to_queue_product_attrib', $attribs);
 					//$navigation->set_snapshot();
 					$messageStack->addSession('pageStack',sysLanguage::get('TO_ADD_TO_QUEUE_MESSAGE'),'warning');
-					tep_redirect(itw_app_link('checkoutType=rental','checkout','default'));
+					tep_redirect(itw_app_link('checkoutType=rental','checkout','default','SSL'));
 				}
 				break;
 			case 'add_queue_all':
@@ -503,10 +513,10 @@ require(sysConfig::getDirFsCatalog() . 'includes/classes/htmlBase.php');
 									Session::remove('account_action');
 								}
 
-								$errorMsg = sprintf(sysLanguage::get('TEXT_NOT_RENTAL_CUSTOMER'),itw_app_link('checkoutType=rental','checkout','default'), itw_app_link(null,'account','login'));
+								$errorMsg = sprintf(sysLanguage::get('TEXT_NOT_RENTAL_CUSTOMER'),itw_app_link('checkoutType=rental','checkout','default','SSL'), itw_app_link(null,'account','login'));
 								break;
 							case 'inactive':
-								$errorMsg = sprintf(sysLanguage::get('TEXT_NOT_ACTIVE_CUSTOMER'), itw_app_link('checkoutType=rental','checkout','default'));
+								$errorMsg = sprintf(sysLanguage::get('TEXT_NOT_ACTIVE_CUSTOMER'), itw_app_link('checkoutType=rental','checkout','default','SSL'));
 								break;
 						}
 						$messageStack->addSession('pageStack', $errorMsg, 'warning');

@@ -75,17 +75,21 @@
 			unset($xmlData);
 
 			$httpDomainName = self::get('HTTP_DOMAIN_NAME');
-			if (substr($_SERVER['HTTP_HOST'], 0, 4) == 'www.' && substr($httpDomainName, 0, 4) != 'www.'){
-				$httpDomainName = 'www.' . $httpDomainName;
-			}elseif (substr($_SERVER['HTTP_HOST'], 0, 4) != 'www.' && substr($httpDomainName, 0, 4) == 'www.'){
-				$httpDomainName = substr($httpDomainName, 4);
+			if(isset($_SERVER['HTTP_HOST'])){
+				if (substr($_SERVER['HTTP_HOST'], 0, 4) == 'www.' && substr($httpDomainName, 0, 4) != 'www.'){
+					$httpDomainName = 'www.' . $httpDomainName;
+				}elseif (substr($_SERVER['HTTP_HOST'], 0, 4) != 'www.' && substr($httpDomainName, 0, 4) == 'www.'){
+					$httpDomainName = substr($httpDomainName, 4);
+				}
 			}
-			
+
 			$httpsDomainName = self::get('HTTPS_DOMAIN_NAME');
-			if (substr($_SERVER['HTTP_HOST'], 0, 4) == 'www.' && substr($httpsDomainName, 0, 4) != 'www.'){
-				$httpsDomainName = 'www.' . $httpsDomainName;
-			}elseif (substr($_SERVER['HTTP_HOST'], 0, 4) != 'www.' && substr($httpsDomainName, 0, 4) == 'www.'){
-				$httpsDomainName = substr($httpsDomainName, 4);
+			if(isset($_SERVER['HTTP_HOST'])){
+				if (substr($_SERVER['HTTP_HOST'], 0, 4) == 'www.' && substr($httpsDomainName, 0, 4) != 'www.'){
+					$httpsDomainName = 'www.' . $httpsDomainName;
+				}elseif (substr($_SERVER['HTTP_HOST'], 0, 4) != 'www.' && substr($httpsDomainName, 0, 4) == 'www.'){
+					$httpsDomainName = substr($httpsDomainName, 4);
+				}
 			}
 			
 			self::setMultiple(array(

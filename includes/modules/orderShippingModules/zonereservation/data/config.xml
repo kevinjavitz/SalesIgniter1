@@ -23,4 +23,12 @@
 		<description><![CDATA[Sort order of display.]]></description>
 		<sort_order>3</sort_order>
 	</configuration>
+	<configuration>
+		<title><![CDATA[By Order or By Product]]></title>
+		<key><![CDATA[MODULE_ORDER_SHIPPING_ZONERESERVATION_TYPE]]></key>
+		<value><![CDATA[Product]]></value>
+		<description><![CDATA[What type of shipping: by order or by product?]]></description>
+		<sort_order>1</sort_order>
+		<set_function><![CDATA[tep_cfg_select_option(array('Order', 'Product'),]]></set_function>
+	</configuration>
 </configurations>

@@ -265,7 +265,7 @@
 	->leftJoin('p.ProductsInventory pi')
 	->leftJoin('pi.ProductsInventoryBarcodes pib')
 	->leftJoin('pi.ProductsInventoryQuantity piq')
-	->leftJoin('pib.OrdersProductsReservation')
+	->leftJoin('pib.OrdersProductsReservation opr')
 	->leftJoin('pib.RentedProducts rp')
 	->where('pd.language_id = ?', $lID);
 

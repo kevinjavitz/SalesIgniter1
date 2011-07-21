@@ -59,7 +59,7 @@ class OrderTotalShipping extends OrderTotalModule {
 				}
 
 				if ( ($pass == true) && ( ($order->info['total'] - $shippingCost) >= $this->freeShipAmount) ) {
-					$order->info['shipping_method'] = $this->title;
+					$order->info['shipping_method'] = $this->getTitle();
 					$order->info['total'] -= $shippingCost;
 					$order->info['shipping_cost'] = 0;
 				}
@@ -91,32 +91,6 @@ class OrderTotalShipping extends OrderTotalModule {
 			));
 		}
 
-		$totalShippingCost = 0;
-		foreach($ShoppingCart->getProducts() as $cartProduct){
-			if ($cartProduct->getPurchaseType() == 'reservation'){
-				$resInfo = $cartProduct->getInfo('reservationInfo');
-				if (isset($resInfo['shipping']) && $resInfo['shipping'] !== false){
-					$shipInfo = $resInfo['shipping'];
-					$totalShippingCost += $shipInfo['cost'];
-					/*$this->addOutput(array(
-						'module' => $shipInfo['module'],
-						'method' => $shipInfo['id'],
-						'title'  => $cartProduct->getName() . ' - ' . $shipInfo['title'] . ':',
-						'text'   => $this->formatAmount($shipInfo['cost']),
-						'value'  => $shipInfo['cost']
-					));*/
-				}
-			}
-		}
-		
-		if (isset($shippingCost) && $shippingCost > 0 && $totalShippingCost > 0){
-			$totalShippingCost += $shippingCost;
-			$this->addOutput(array(
-				'title' => '<b>Total Shipping Cost</b>:',
-				'text'  => $this->formatAmount($totalShippingCost),
-				'value' => $totalShippingCost
-			));
-		}
 	}
 }
 ?>

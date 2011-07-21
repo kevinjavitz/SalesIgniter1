@@ -36,7 +36,7 @@ if ($OrdersStatus){
 		$id = $sInfo['orders_status_id'];
 		$name = $sInfo['OrdersStatusDescription'][Session::get('languages_id')]['orders_status_name'];
 
-		$royaltiesSystemOrderStatus =  Doctrine_Core::getTable('RoyaltiesSystemOrderStatuses');
+		$royaltiesSystemOrderStatus =  Doctrine_Core::getTable('RoyaltiesSystemOrderStatuses')->findOneByOrdersStatusId($id);
 		$checkBox = htmlBase::newElement('checkbox')
 				->setName('royalties_status_id[]')
 				->setValue($id);

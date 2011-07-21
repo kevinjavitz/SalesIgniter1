@@ -2,6 +2,7 @@
 
 	$cName = $_POST['customer_groups_name'];
 	$credit = $_POST['customer_groups_credit'];
+	$discount = $_POST['customer_groups_discount'];
 	$customersId = (isset($_POST['selectedCustomer']) ? $_POST['selectedCustomer'] : array());
 
 	$CustomerGroups = Doctrine_Core::getTable('CustomerGroups');
@@ -19,6 +20,7 @@
 
 	$CustomerGroups->customer_groups_name = $cName;
 	$CustomerGroups->customer_groups_credit = $credit;
+	$CustomerGroups->customer_groups_discount = $discount;
 	$CustomerGroups->save();
 
 	foreach($customersId as $iCustomer){

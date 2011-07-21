@@ -76,7 +76,10 @@ class OrderCreatorAddressManager extends OrderAddressManager implements Serializ
 			$Address->entry_postcode = $addressObj->getPostcode();
 			$Address->entry_state = $addressObj->getState();
 			$Address->entry_country = $addressObj->getCountry();
-			
+
+			$Address->entry_cif = $addressObj->getCIF();
+			$Address->entry_vat = $addressObj->getVAT();
+			$Address->entry_city_birth = $addressObj->getCityBirth();
 			$CollectionObj->add($Address);
 		}
 	}

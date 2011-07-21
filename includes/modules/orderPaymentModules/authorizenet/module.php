@@ -29,6 +29,8 @@
 				$this->cim_mode = ($this->getConfigData('MODULE_PAYMENT_AUTHORIZENET_CIM') == 'True');
 				$this->curlCompiled = ($this->getConfigData('MODULE_PAYMENT_AUTHORIZENET_CURL') != 'Not Compiled');
 				$this->can_reuse = $this->getReuses();
+
+				$this->startNumbersRejected = explode(',', $this->getConfigData('MODULE_PAYMENT_AUTHORIZENET_REJECTED_CC'));
 				$this->allowedTypes = array();
 
 				// Credit card pulldown list
@@ -134,6 +136,18 @@
 			return '';
 		}
 		public function validatePost(){
+			/* if(isset($_POST['cardNumber'])){
+				foreach($this->startNumbersRejected as $rejected){
+					if(strpos($_POST['cardNumber'], $rejected) == 0){
+						$redirectTo = itw_app_link('payment_error=1', 'checkout', 'default', 'SSL');
+
+						return array(
+							'redirectUrl' => $redirectTo,
+							'errorMsg'    => sprintf(sysLanguage::get('ERROR_AUTHORIZENET_CC_REJECTED_START_NUMBER'), $rejected)
+						);
+					}
+				}
+			} */
 			if(!isset($_POST['payment_profile']) || $_POST['payment_profile'] == -1){
 				return parent::validatePost();
 			}

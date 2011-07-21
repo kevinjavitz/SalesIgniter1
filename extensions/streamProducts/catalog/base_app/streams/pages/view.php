@@ -72,7 +72,7 @@ if (isset($_GET['sID'])){
 if (isset($content)){			
 	$pageContent->set('pageContent', $content->draw());
 }else{
-	$rentalSignupLink = itw_app_link('checkoutType=rental','checkout','default');
+	$rentalSignupLink = itw_app_link('checkoutType=rental','checkout','default','SSL');
 	$loginPageLink = itw_app_link(null,'account','login');
 	$pageContent->set('pageContent', sprintf(sysLanguage::get('TEXT_INFO_STREAM_PERMISSION_DENIED',$rentalSignupLink, $loginPageLink)));
 }

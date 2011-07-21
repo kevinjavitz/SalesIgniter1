@@ -73,6 +73,14 @@ class OrderCreatorProduct extends OrderProduct implements Serializable {
 		EventManager::notify('OrderEditorProductAddToCart', $this->pInfo, $this->productClass, $this->purchaseTypeClass);
 	}
 
+	public function getProductsBarcode(){
+		if($this->purchaseTypeClass->getTrackMethod() == 'barcode'){
+			return $this->purchaseTypeClass->inventoryCls->getInventoryItems($this->purchaseTypeClass->typeLong);
+		}else{
+			return array();
+		}
+	}
+
 	public function setTaxRate($val){
 		$this->pInfo['products_tax'] = $val;
 	}
@@ -88,6 +96,10 @@ class OrderCreatorProduct extends OrderProduct implements Serializable {
 
 	public function getTaxRateEdit(){
 		return '<input type="text" size="5" class="ui-widget-content taxRate" name="product[' . $this->id . '][tax_rate]" value="' . $this->getTaxRate() . '">%';
+	}
+
+	public function getBarcodeEdit(){
+		return '<input type="text" size="10" class="ui-widget-content barcodeName" name="product[' . $this->id . '][barcode]" value="' . $this->getBarcode() . '">';
 	}
 
 	public function getPriceEdit($incQty = false, $incTax = false){
@@ -115,19 +127,19 @@ class OrderCreatorProduct extends OrderProduct implements Serializable {
 
 		if ($this->getPurchaseType() != 'membership'){
 			$PurchaseTypes = Doctrine_Core::getTable('Products')
-				->getRecordInstance()
-				->getPurchaseTypes((int) $this->getProductsId(), true);
+			->getRecordInstance()
+			->getPurchaseTypes((int) $this->getProductsId(), true);
 
 			$purchaseTypeInput = htmlBase::newElement('selectbox')
-					->addClass('ui-widget-content purchaseType')
-					->setName('product[' . $this->id . '][purchase_type]');
+			->addClass('ui-widget-content purchaseType')
+			->setName('product[' . $this->id . '][purchase_type]');
 			foreach($PurchaseTypes as $typeName){
 				if (!in_array($typeName, $excludedPurchaseTypes)){
-					$purchaseTypeInput->addOption($typeName, $typeNames[$typeName]);
+					$attr = array();
+					$purchaseTypeInput->addOptionWithAttributes($typeName, $typeNames[$typeName],$attr);
 				}
 			}
 			$purchaseTypeInput->selectOptionByValue($this->getPurchaseType());
-
 			$productsName .= '<br><nobr><small>&nbsp;<i> - Purchase Type: ' . $purchaseTypeInput->draw() . '</i></small></nobr>';
 		}
 

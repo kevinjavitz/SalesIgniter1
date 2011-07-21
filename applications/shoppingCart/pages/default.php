@@ -39,20 +39,20 @@ if ($ShoppingCart->countContents() > 0) {
 				'    <td class="productListing-data" valign="top">' . $cartProduct->getNameHtml() . '</td>' .
 			'  </tr>' .
 		'</table>';
-		$qty = tep_draw_hidden_field('products_id[]', $pID_string) .
-		tep_draw_hidden_field('purchase_type[]', $purchaseType);
 
+
+		$qty = '';
 		/* @TODO: Get into pay per rental extension */
 		if ($purchaseType == 'reservation'){
-			$qty .= tep_draw_hidden_field('cart_quantity[]', $purchaseQuantity, 'size="4"') . $purchaseQuantity;
+			$qty .= tep_draw_hidden_field('cart_quantity['.$pID_string.']['.$purchaseType.']', $purchaseQuantity, 'size="4"') . $purchaseQuantity;
 		}else{
-			$qty .= tep_draw_input_field('cart_quantity[]', $purchaseQuantity, 'size="4"');
+			$qty .= tep_draw_input_field('cart_quantity['.$pID_string.']['.$purchaseType.']', $purchaseQuantity, 'size="4"');
 		}
 
 		$shoppingCartBodyRow = array(
 			array(
 				'addCls' => 'productListing-data',
-				'text' => tep_draw_checkbox_field('cart_delete[]', $pID_string),
+				'text' => tep_draw_checkbox_field('cart_delete['.$pID_string.']', $purchaseType),
 				'attr' => array('align' => 'center', 'valign' => 'top')
 			),
 			array(
@@ -93,11 +93,26 @@ if ($ShoppingCart->countContents() > 0) {
 		'text-align' => 'center',
 		'padding' => '.5em'
 	));
-	
-	echo $div->draw();
+
+	$PageForm = htmlBase::newElement('form')
+	->attr('name','cart_quantity')
+	->attr('action', itw_app_link(null, 'shoppingCart', 'default'))
+	->attr('method','post');
+
+	$pageButtonsHtml = htmlBase::newElement('button')
+     ->setName('update_product')
+     ->setText(sysLanguage::get('TEXT_BUTTON_UPDATE_CART'))
+     ->setType('submit');
+
+     $checkoutFormButton = htmlBase::newElement('button')
+     ->setText(sysLanguage::get('TEXT_BUTTON_CHECKOUT'))
+     ->setHref(itw_app_link(null, 'checkout','default','SSL'));
+	 if (sysConfig::get('TERMS_CONDITIONS_SHOPPING_CART') == 'true'){
+		 $checkoutFormButton->addClass('checkoutFormButton');
+	 }
+	$div3 = htmlBase::newElement('div');
+	$div3->html('<div class="main" style="text-align:right;"><span class="smallText" style="float:left;"></span><b>'. sysLanguage::get('SUB_TITLE_SUB_TOTAL'). $currencies->format($ShoppingCart->showTotal()).'</b></div><div style="clear:both;"></div>');
 ?>
-<div class="main" style="text-align:right;"><span class="smallText" style="float:left;"></span><b><?php echo sysLanguage::get('SUB_TITLE_SUB_TOTAL'); ?> <?php echo $currencies->format($ShoppingCart->showTotal()); ?></b></div>
-<div style="clear:both;"></div>
 <?php
 if (sysConfig::exists('MODULE_SHIPPING_FREE_SHOW_TEXT')){
 	 /*Free shipping add*/
@@ -143,20 +158,21 @@ if (sysConfig::exists('MODULE_SHIPPING_FREE_SHOW_TEXT')){
 			</script>
 <?php
 	}
-	
-	$pageButtons = htmlBase::newElement('button')
-     ->setName('update_product')
-     ->setText(sysLanguage::get('TEXT_BUTTON_UPDATE_CART'))
-     ->setType('submit')
-     ->draw();
+	$div2 = htmlBase::newElement('div')
+	->addClass('ui-widget-header ui-infobox-header ui-corner-all')
+	->css(array(
+		'margin-top' => '15px'
+    ));
+	$div2->append($pageButtonsHtml)->append($checkoutFormButton);
 
-     $checkoutFormButton = htmlBase::newElement('button')
-     ->setText(sysLanguage::get('TEXT_BUTTON_CHECKOUT'))
-     ->setHref(itw_app_link(null, 'checkout','default'));
-	 if (sysConfig::get('TERMS_CONDITIONS_SHOPPING_CART') == 'true'){    
-		 $checkoutFormButton->addClass('checkoutFormButton');
-	 }
-     $pageButtons .= $checkoutFormButton->draw();
+	$div4 = htmlBase::newElement('div')
+    ->css(array(
+		'margin-bottom' => '10px'
+    ));
+	$PageForm->append($div)->append($div3)->append($div2)->append($div4);
+	echo $PageForm->draw();
+	
+	$pageButtons = '';
 } else {
 	$div = htmlBase::newElement('div')
 	->addClass('ui-widget ui-widget-content ui-corner-all')
@@ -185,10 +201,5 @@ if (sysConfig::exists('MODULE_SHIPPING_FREE_SHOW_TEXT')){
 	ob_end_clean();
 	
 	$pageContent->set('pageTitle', sysLanguage::get('HEADING_TITLE'));
-	$pageContent->set('pageForm', array(
-		'name' => 'cart_quantity',
-		'action' => itw_app_link(null, 'shoppingCart', 'default'),
-		'method' => 'post'
-	));
 	$pageContent->set('pageContent', $pageContents);
 	$pageContent->set('pageButtons', $pageButtons);

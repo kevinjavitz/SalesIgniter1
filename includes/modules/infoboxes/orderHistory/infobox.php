@@ -29,8 +29,11 @@ class InfoBoxOrderHistory extends InfoBoxAbstract {
 			->where('o.customers_id = ?', (int)$userAccount->getCustomerId())
 			->groupBy('op.products_id')
 			->orderBy('o.date_purchased DESC')
-			->limit(MAX_DISPLAY_PRODUCTS_IN_ORDER_HISTORY_BOX)
-			->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+			->limit(sysConfig::get('MAX_DISPLAY_PRODUCTS_IN_ORDER_HISTORY_BOX'));
+
+			EventManager::notify('OrdersListingBeforeExecute', &$Qorders);
+
+			$Qorders = $Qorders->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 			if ($Qorders){
 				$boxContent = '<table border="0" width="100%" cellspacing="0" cellpadding="1">';
 				foreach($Qorders as $oInfo){

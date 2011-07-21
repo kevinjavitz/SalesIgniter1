@@ -30,7 +30,10 @@ class productListing_productsPriceNew {
 		$tableRow = array();
 
 		$buyNowButton = htmlBase::newElement('button')->setText(sysLanguage::get('TEXT_BUTTON_BUY_NOW'));
-
+		if($productClass->isNotAvailable()){
+			$buyNowButton->disable();
+			$buyNowButton->setText(sysLanguage::get('TEXT_AVAILABLE').': '. strftime(sysLanguage::getDateFormat('short'), strtotime($productClass->getAvailableDate())));
+		}
 		$productPurchaseTypes = $productClass->productInfo['typeArr'];
 		$purchaseTypes = array();
 		if (in_array('used', $productPurchaseTypes)){

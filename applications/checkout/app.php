@@ -20,9 +20,13 @@
 		header('content-type: text/html; charset=' . sysLanguage::getCharset());
 	}
 
+
+
 	if ($userAccount->isLoggedIn() && $userAccount->plugins['membership']->isRentalMember() && $userAccount->plugins['membership']->isActivated() && isset($_GET['checkoutType']) && $_GET['checkoutType'] == 'rental' && !isset($_GET['isUpgrade'])){
 		tep_redirect(itw_app_link(null, 'account', 'default', 'SSL'));	
 	}
+
+	EventManager::notify('CheckoutBeforeExecute');
 
 	$isPostPage = (isset($_POST) && !empty($_POST));
 
@@ -59,12 +63,6 @@
 		if ($onePageCheckout->isMembershipCheckout() === false){
 			$total_weight = $ShoppingCart->showWeight();
 			$total_count = $ShoppingCart->countContents();
-
-			if (method_exists($ShoppingCart, 'countContentsVirtual')){
-				// Start - CREDIT CLASS Gift Voucher Contribution
-				$total_count = $ShoppingCart->countContentsVirtual();
-				// End - CREDIT CLASS Gift Voucher Contribution
-			}
 		}else{
 			$total_weight = 1;
 			$total_count = 1;
@@ -89,7 +87,6 @@
 	OrderShippingModules::loadModules();
 	OrderPaymentModules::loadModules();
 	OrderTotalModules::loadModules();
-	
 	if ($onePageCheckout->isMembershipCheckout() === true){
 		$onePageCheckout->loadMembershipPlan();
 	}

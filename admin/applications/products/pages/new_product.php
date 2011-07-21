@@ -105,11 +105,6 @@ for ($i=0, $n=sizeof($tax_class_array); $i<$n; $i++) {
    <li class="ui-tabs-nav-item"><a href="#page-4"><span><?php echo sysLanguage::get('TAB_INVENTORY');?></span></a></li>
    <li class="ui-tabs-nav-item"><a href="#page-5"><span><?php echo 'Box Set';?></span></a></li>
    <li class="ui-tabs-nav-item"><a href="#page-r"><span><?php echo sysLanguage::get('TAB_RENTAL_MEMBERSHIP');?></span></a></li>
-<?php
-/* @TODO: Make Packages extension and make it support all product types */
-   if (defined('EXTENSION_PAY_PER_RENTALS_ENABLED') && EXTENSION_PAY_PER_RENTALS_ENABLED == 'True'){ ?>
-   <li class="ui-tabs-nav-item<?php echo (!isset($_GET['pID']) ? ' ui-state-disabled' : '');?>"><a href="#page-6"><span><?php echo sysLanguage::get('TAB_PACKAGES');?></span></a></li>
-<?php } ?>
    <li class="ui-tabs-nav-item"><a href="#page-categories"><span><?php echo 'Categories';?></span></a></li>
 <?php
 	$contents = EventManager::notifyWithReturn('NewProductTabHeader', &$Product);
@@ -128,12 +123,6 @@ for ($i=0, $n=sizeof($tax_class_array); $i<$n; $i++) {
   <div id="page-4"><?php include(DIR_WS_APP . 'products/pages_tabs/tab_inventory.php');?></div>
   <div id="page-5"><?php include(DIR_WS_APP . 'products/pages_tabs/tab_box_set.php');?></div>
   <div id="page-r"><?php include(DIR_WS_APP . 'products/pages_tabs/tab_rental_membership.php');?></div>
-<?php
-	/* @TODO: Make Packages extension and make it support all product types */
-	if (defined('EXTENSION_PAY_PER_RENTALS_ENABLED') && EXTENSION_PAY_PER_RENTALS_ENABLED == 'True'){
-?>
-  <div id="page-6"><?php include(DIR_WS_APP . 'products/pages_tabs/tab_packages.php');?></div>
-<?php } ?>
   <div id="page-categories"><?php include(DIR_WS_APP . 'products/pages_tabs/tab_categories.php');?></div>
 <?php
 	$contents = EventManager::notifyWithReturn('NewProductTabBody', &$Product);

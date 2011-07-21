@@ -51,6 +51,7 @@
 			array('text' => sysLanguage::get('TABLE_HEADING_DAYS_AFTER')),
 			array('text' => sysLanguage::get('TABLE_HEADING_ZONE')),
 			array('text' => sysLanguage::get('TABLE_HEADING_SORT_ORDER')),
+			array('text' => sysLanguage::get('TABLE_HEADING_WEIGHT_RATES')),
 			array('text' => sysLanguage::get('TABLE_HEADING_DEFAULT')),
 			array('text' => htmlBase::newElement('icon')->setType('insert')->addClass('insertIcon'))
 		)
@@ -97,6 +98,12 @@
 		->setName('method[' . $methodId . '][sort_order]')
 		->attr('size', '3')
 		->val($mInfo['sort_order']);
+
+		$WeightRates = htmlBase::newElement('input')
+		->addClass('ui-widget-content')
+		->setName('method[' . $methodId . '][weight_rates]')
+		->attr('size', '10')
+		->val($mInfo['weight_rates']);
 		
 		$DaysBefore = htmlBase::newElement('input')
 		->addClass('ui-widget-content')
@@ -141,12 +148,13 @@
 				array('align' => 'center', 'text' => $DaysAfter->draw()),
 				array('align' => 'center', 'text' => $Module->getZonesMenu('method[' . $methodId . '][zone]', $mInfo['zone'])),
 				array('align' => 'center', 'text' => $SortOrder->draw()),
+				array('align' => 'center', 'text' => $WeightRates->draw()),
 				array('align' => 'center', 'text' => $Default->draw()),
 				array('align' => 'center', 'text' => $deleteIcon)
 			)
 		));
 	}
-	
+	$infoBox->addContentRow(sysLanguage::get('TEXT_INFO_TABLE_RATES'));
 	$infoBox->addContentRow(sysLanguage::get('TEXT_INFO_EDIT_INTRO'));
 	$infoBox->addContentRow($Table->draw());
 	
@@ -167,9 +175,10 @@
 			var $td51 = $('<td></td>').attr('align', 'center').append('<input size="3" class="ui-widget-content" type="text" name="method[' + nextId + '][days_after]">');
 			var $td6 = $('<td></td>').attr('align', 'center').append('<?php echo $Module->getZonesMenu('method[\' + nextId + \'][zone]');?>');
 			var $td7 = $('<td></td>').attr('align', 'center').append('<input size="3" class="ui-widget-content" type="text" name="method[' + nextId + '][sort_order]">');
+			var $td71 = $('<td></td>').attr('align', 'center').append('<input size="10" class="ui-widget-content" type="text" name="method[' + nextId + '][weight_rates]">');
 			var $td8 = $('<td></td>').attr('align', 'center').append('<input class="ui-widget-content" type="radio" name="method_default" value="' + nextId + '">');
 			var $td9 = $('<td></td>').attr('align', 'center').append('<a class="ui-icon ui-icon-closethick deleteIcon"></a>');
-			var $newTr = $('<tr></tr>').append($td1).append($td2).append($td3).append($td4).append($td5).append($td51).append($td6).append($td7).append($td8).append($td9);
+			var $newTr = $('<tr></tr>').append($td1).append($td2).append($td3).append($td4).append($td5).append($td51).append($td6).append($td7).append($td71).append($td8).append($td9);
 			$(this).parent().parent().parent().parent().find('tbody').append($newTr);
 		});
 	}
