@@ -312,7 +312,7 @@ class htmlWidget_grid implements htmlWidgetPlugin {
 		$pagerLink = itw_app_link(tep_get_all_get_params(array('page', 'action')) . 'page={%page_number}');
 
 		$pagerRange = new Doctrine_Pager_Range_Sliding(array(
-			'chunk' => 5
+			'chunk' => 15
 		));
 		
 		$pagerLayout = new PagerLayoutWithArrows($listingPager, $pagerRange, $pagerLink);

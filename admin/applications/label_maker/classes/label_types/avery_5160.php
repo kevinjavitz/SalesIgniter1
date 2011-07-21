@@ -76,7 +76,7 @@
 			//	$labelContent[] = '<img src="' . tep_href_link('showBarcode_' . $labelInfo['barcode_id'] . '.png', Session::getSessionName() . '=' . Session::getSessionId()) . '">';
 			//}else
 			if (!empty($labelInfo['barcode'])){
-				$labelContent[] = $labelInfo['barcode'];
+				$labelContent[] = $labelInfo['barcode'].'<br/>';
 			}
 
 			if ($labelInfo['customers_address'] !== false){
