@@ -304,4 +304,11 @@
 	<define key="SET_AS_PRIMARY_SHIPPING"><![CDATA[Use as rental shipping address]]></define>
 
 	<define key="TEXT_ACTIVATED_MINUTES"><![CDATA[Your Account will be activated in a few minutes]]></define>
+
+	<define key="TEXT_REPLY_TICKET"><![CDATA[Reply Ticket]]></define>
+	<define key="TEXT_CLOSE_TICKET"><![CDATA[Close Ticket]]></define>
+	<define key="TEXT_REOPEN_TICKET"><![CDATA[Reopen Ticket]]></define>
+	<define key="TEXT_CONVERSATION"><![CDATA[<b>Conversation</b>]]></define>
+	<define key="TEXT_REPLY"><![CDATA[Reply]]></define>
+
 </definitions>
