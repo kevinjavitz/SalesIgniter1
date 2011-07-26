@@ -306,6 +306,13 @@
                     <description>The orders amde before this number of days won't be taken into account when calculating the discount</description>
                     <sort_order>32</sort_order>
         </EXTENSION_PAY_PER_RENTALS_DISCOUNT_MAX_DAYS>
+		<EXTENSION_PAY_PER_RENTALS_SHORT_PRICE>
+			<value>False</value>
+			<title>Show short price instead of long one</title>
+			<description>If true it will show short price</description>
+			<sort_order>32</sort_order>
+			<set_function>tep_cfg_select_option(array('True','False'),</set_function>
+		</EXTENSION_PAY_PER_RENTALS_SHORT_PRICE>
         <EXTENSION_PAY_PER_RENTALS_DISCOUNT_MAX_AMOUNT>
                     <value>300</value>
                     <title>Maximum amount to be taken into account when calculating the discount</title>

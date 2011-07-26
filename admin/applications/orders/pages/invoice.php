@@ -1,6 +1,7 @@
 <?php
 
 ?>
+<div style="width:110%;height:110px; z-index:10000;position:absolute;top:-100px;left:-30px;background-color:#ffffff;"></div>
     <table border="0" width="100%" cellspacing="0" cellpadding="0">
       <tr>
     <td><table border="0" width="100%" cellspacing="0" cellpadding="0">
@@ -37,52 +38,6 @@
       </tr>
 
           <tr class="infoBoxContents">
-<?php
-if ($Order->hasShippingMethod() === true) {
-	$deliveryAddress = $Order->getFormattedAddress('delivery');
-	if (is_null($deliveryAddress) === false) {
-?>
-            <td width="30%" valign="top"><table border="0" width="100%" cellspacing="0" cellpadding="2">
-              <tr>
-                <td class="main"><b><?php echo sysLanguage::get('HEADING_DELIVERY_ADDRESS'); ?></b></td>
-              </tr>
-              <tr>
-                <td class="main"><?php
- 	                echo $deliveryAddress;
-                ?></td>
-              </tr>
-              <tr>
-                <td class="main"><b><?php echo sysLanguage::get('HEADING_SHIPPING_METHOD'); ?></b></td>
-              </tr>
-              <tr>
-                <td class="main"><?php echo $Order->getShippingMethod(); ?></td>
-              </tr>
-            </table></td>
-<?php
-	}
-}
-?>
-	<?php
-
-	$pickupAddress = $Order->getFormattedAddress('pickup');
-	if (is_null($pickupAddress) === false && sysConfig::get('ONEPAGE_CHECKOUT_PICKUP_ADDRESS') == 'true') {
-?>          </tr>
-			<tr>
-				<td width="30%" valign="top"><table border="0" width="100%" cellspacing="0" cellpadding="2">
-				  <tr>
-					<td class="main"><b><?php echo sysLanguage::get('HEADING_PICKUP_ADDRESS'); ?></b></td>
-				  </tr>
-				  <tr>
-					<td class="main"><?php
-						echo $pickupAddress;
-					?></td>
-				  </tr>
-				</table></td>
-			</tr>
-			<tr>
-<?php
-}
-?>
             <td width="<?php echo ($Order->hasShippingMethod() === true ? '70%' : '100%'); ?>" valign="top"><table border="0" width="100%" cellspacing="0" cellpadding="0">
               <tr>
                 <td><table border="0" width="100%" cellspacing="0" cellpadding="2">
@@ -145,6 +100,6 @@ $contents = EventManager::notifyWithReturn('OrderInfoInvoiceAddBlock', $_GET['oI
                 <td class="main"><b><?php echo sysLanguage::get('HEADING_PAYMENT_METHOD'); ?></b></td>
               </tr>
               <tr>
-                <td class="main"><?php echo $Order->listPaymentHistory()->draw(); ?></td>
+                <td class="main"><?php echo $Order->listPaymentHistory(false)->draw(); ?></td>
               </tr>
 		</table>

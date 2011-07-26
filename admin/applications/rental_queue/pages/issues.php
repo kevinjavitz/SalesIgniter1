@@ -1,124 +1,160 @@
-<table border="0" width="100%" cellspacing="0" cellpadding="2">
-      <tr>
-        <td width="100%"><table border="0" width="100%" cellspacing="0" cellpadding="0">
-          <tr>
-            <td class="pageHeading"><?php echo sysLanguage::get('HEADING_TITLE_ISSUES'); ?></td>
-            <td class="pageHeading" align="right"><?php echo tep_draw_separator('pixel_trans.gif', HEADING_IMAGE_WIDTH, HEADING_IMAGE_HEIGHT); ?></td>
-          </tr>
-        </table></td>
-      </tr>
-      <tr>
-        <td><table border="0" width="100%" cellspacing="0" cellpadding="0">
-          <tr>
-            <td valign="top"><table border="0" width="100%" cellspacing="0" cellpadding="2">
-              <tr class="dataTableHeadingRow">
-                <td class="dataTableHeadingContent"><?php echo sysLanguage::get('TABLE_HEADING_ISSUE_ID'); ?></td>
-                <td class="dataTableHeadingContent"><?php echo sysLanguage::get('TABLE_HEADING_RENTED_PRODUCT'); ?></td>
-                <td class="dataTableHeadingContent"><?php echo sysLanguage::get('TABLE_HEADING_REPORTED_DATE'); ?></td>
-                <td class="dataTableHeadingContent"><?php echo sysLanguage::get('TABLE_HEADING_CUSTOMER_NAME'); ?></td>
-                <td class="dataTableHeadingContent"><?php echo sysLanguage::get('TABLE_HEADING_STATUS'); ?></td>
-                <td class="dataTableHeadingContent" align="right"><?php echo sysLanguage::get('TABLE_HEADING_ACTION'); ?>&nbsp;</td>
-              </tr>
 <?php
-  $rentalissues_query_raw = "select issue_id,products_name from " . TABLE_RENTAL_ISSUES . " ORDER BY issue_id desc";
-  $rentalissues_split = new splitPageResults($_GET['page'], MAX_DISPLAY_SEARCH_RESULTS, $rentalissues_query_raw, $rentalissues_query_numrows);
-  $rentalissues_query_raw = "select i.issue_id, i.products_name, date_format(i.reported_date,'%m/%d/%Y') as formatted_date, i.status, c.customers_firstname, c.customers_lastname, c.customers_id, problem, feedback FROM " . TABLE_RENTAL_ISSUES . " i , " . TABLE_CUSTOMERS . " c  WHERE c.customers_id = i.customers_id order by i.issue_id desc ";
-  $rentalissues_query = tep_db_query($rentalissues_query_raw);
-  while ($rental_issues = tep_db_fetch_array($rentalissues_query)) {
-    if ((!isset($_GET['tID']) || (isset($_GET['tID']) && ($_GET['tID'] == $rental_issues['issue_id']))) && !isset($tcInfo) && (substr($action, 0, 3) != 'new')) {
-      $tcInfo = new objectInfo($rental_issues);
-    }
+	$QRentIssues = Doctrine_Query::create()
+	->from('RentIssues')
+	->where('parent_id = ?', '0');
 
-    if (isset($tcInfo) && is_object($tcInfo) && ($rental_issues['issue_id'] == $tcInfo->issue_id)) {
-      echo '              <tr id="defaultSelected" class="dataTableRowSelected" onmouseover="rowOverEffect(this)" onmouseout="rowOutEffect(this)" onclick="document.location.href=\'' . itw_app_link('page=' . $_GET['page'] . '&tID=' . $rental_issues['issue_id'] . '&action=edit', 'rental_queue', 'issues') . '\'">' . "\n";
-    } else {
-      echo '              <tr class="dataTableRow" onmouseover="rowOverEffect(this)" onmouseout="rowOutEffect(this)" onclick="document.location.href=\'' . itw_app_link('page=' . $_GET['page'] . '&tID=' . $rental_issues['issue_id'], 'rental_queue', 'issues') . '\'">' . "\n";
-    }
+$tableGrid = htmlBase::newElement('grid')
+->usePagination(true)
+->setPageLimit((isset($_GET['limit']) ? (int)$_GET['limit']: 25))
+->setCurrentPage((isset($_GET['page']) ? (int)$_GET['page'] : 1))
+->setQuery($QRentIssues);
+
+$tableGrid->addHeaderRow(array(
+		'columns' => array(
+			array('text' => sysLanguage::get('TABLE_HEADING_ISSUE_ID')),
+			array('text' => sysLanguage::get('TABLE_HEADING_RENTED_PRODUCT')),
+			array('text' => sysLanguage::get('TABLE_HEADING_REPORTED_DATE')),
+			array('text' => sysLanguage::get('TABLE_HEADING_CUSTOMER_NAME')),
+			array('text' => sysLanguage::get('TABLE_HEADING_STATUS')),
+			array('text' => sysLanguage::get('TABLE_HEADING_ACTION'))
+		)
+	));
+
+$rIssue = &$tableGrid->getResults();
+if ($rIssue){
+	foreach($rIssue as $fInfo){
+		$rIssueId = $fInfo['issue_id'];
+
+		if ((!isset($_GET['fID']) || (isset($_GET['fID']) && ($_GET['fID'] == $rIssueId))) && !isset($fObject)){
+			$fObject = new objectInfo($fInfo);
+		}
+
+		$arrowIcon = htmlBase::newElement('icon')
+			->setHref(itw_app_link(tep_get_all_get_params(array('action', 'fID')) . 'fID=' . $rIssueId));
+
+		$onClickLink = itw_app_link(tep_get_all_get_params(array('action', 'fID')) . 'fID=' . $rIssueId);
+		if (isset($fObject) && $rIssueId == $fObject->issue_id){
+			$addCls = 'ui-state-default';
+			$onClickLink .= itw_app_link(tep_get_all_get_params(array('action', 'fID')) . 'action=edit&fID=' . $rIssueId);
+			$arrowIcon->setType('circleTriangleEast');
+		} else {
+			$addCls = '';
+			$arrowIcon->setType('info');
+		}
+	    $Qcustomer = Doctrine_Query::create()
+		->from('Customers')
+		->where('customers_id = ?', $fInfo['customers_id'])
+		->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+		if($fInfo['status'] == 'O'){
+			$status = 'Opened';
+		}else{
+			$status = 'Closed';
+		}
+		$tableGrid->addBodyRow(array(
+				'addCls'  => $addCls,
+				'click'   => 'js_redirect(\'' . $onClickLink . '\');',
+				'columns' => array(
+					array('text' => $fInfo['issue_id']),
+					array('text' => $fInfo['products_name']),
+					array('text' => sprintf(sysLanguage::getDateFormat('short'), strtotime($fInfo['reported_date']))),
+					array('text' => $Qcustomer[0]['customers_firstname']. ' '.$Qcustomer[0]['customers_lastname']),
+					array('text' => $status),
+					array('text' => $arrowIcon->draw(), 'align' => 'right')
+				)
+			));
+	}
+}
+
+$infoBox = htmlBase::newElement('infobox');
+$infoBox->setButtonBarLocation('top');
+
+switch ($action){
+	case 'edit':
+		$infoBox->setForm(array(
+				'action'    => itw_app_link(tep_get_all_get_params(array('action')) . 'action=saveIssue'),
+				'method'    =>  'post',
+				'name'      => 'edit_issue'
+			)
+		);
+
+		if (isset($_GET['fID'])) {
+			$rIssue = Doctrine_Core::getTable('RentIssues')->find($_GET['fID']);
+
+			$infoBox->setHeader('<b>Reply Issue</b>');
+
+			$QIssues = Doctrine_Query::create()
+			->from('RentIssues')
+			->where('parent_id = ?', $_GET['fID'])
+			->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+
+			$Qcustomer = Doctrine_Query::create()
+			->from('Customers')
+			->where('customers_id = ?', $rIssue->customers_id)
+			->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+
+			$replyMsg = $Qcustomer[0]['customers_firstname'].' '.$Qcustomer[0]['customers_lastname'].': '.$rIssue->feedback.'<br/>';
+			foreach($QIssues as $dissue){
+				if($dissue['customers_id'] > 0){
+					$replyMsg .= $Qcustomer[0]['customers_firstname'].' '.$Qcustomer[0]['customers_lastname'].': '.$dissue['feedback']."<br>";
+				}else{
+					$replyMsg .= '&nbsp;&nbsp;&nbsp;Me: '.$dissue['feedback']."<br>";
+				}
+			}
+
+			$replyText = htmlBase::newElement('textarea')
+			->attr('rows', '5')
+			->attr('cols','20')
+			->attr('name','feedback');
+
+			$saveButton = htmlBase::newElement('button')
+			->setType('submit')
+			->usePreset('save')
+			->setText(sysLanguage::get('TEXT_REPLY'));
+
+			$closeButton = htmlBase::newElement('button')
+			->setType('submit')
+			->usePreset('cancel')
+			->setText(sysLanguage::get('TEXT_CLOSE'))
+			->setHref(itw_app_link('action=closeIssue&fID='.$_GET['fID'], 'rental_queue', 'issues'));
+
+			$cancelButton = htmlBase::newElement('button')
+			->usePreset('close')
+			->setText(sysLanguage::get('TEXT_CANCEL'))
+			->setHref(itw_app_link(null, 'rental_queue', 'issues'));
+
+		$infoBox->addContentRow($replyMsg);
+		$infoBox->addContentRow('Reply: '.$replyText->draw());
+		$infoBox->addContentRow(tep_draw_hidden_field('customers_id', $rIssue->customers_id). tep_draw_hidden_field('products_id', $rIssue->products_id));
+		$infoBox->addButton($saveButton)->addButton($closeButton)->addButton($cancelButton);
+		}
+
+		break;
+	default:
+		if (isset($fObject) && is_object($fObject)) {
+			$infoBox->setHeader('<b>' . $fObject->feedback . '</b>');
+
+			$deleteButton = htmlBase::newElement('button')
+				->setType('submit')
+				->usePreset('delete')
+				->setHref(itw_app_link(tep_get_all_get_params(array('action', 'fID')) . 'action=deleteIssueConfirm&fID=' . $fObject->issue_id));
+			$editButton = htmlBase::newElement('button')
+				->setType('submit')
+				->usePreset('edit')
+				->setHref(itw_app_link(tep_get_all_get_params(array('action', 'fID')) . 'action=edit' . '&fID=' . $fObject->issue_id, 'rental_queue', 'issues'));
+
+			$infoBox->addButton($editButton)->addButton($deleteButton);
+
+		}
+		break;
+}
 ?>
-                <td class="dataTableContent"><?php echo $rental_issues['issue_id']; ?></td>
-                <td class="dataTableContent"><?php echo $rental_issues['products_name']; ?></td>
-                <td class="dataTableContent"><?php echo $rental_issues['formatted_date']; ?></td>
-                <td class="dataTableContent"><?php echo $rental_issues['customers_firstname'] . ' '  . $rental_issues['customers_lastname']; ?></td>
-                <td class="dataTableContent">
-                	<?php
-
-                	if($rental_issues['status']=='P'){
-                		echo 'Pending';
-                	}
-                	if($rental_issues['status']=='O'){
-                		echo 'Open';
-                	}
-                	if($rental_issues['status']=='C'){
-                		echo 'Closed';
-                	}
-                	?></td>
-                <td class="dataTableContent" align="right"><?php if (isset($tcInfo) && is_object($tcInfo) && ($rental_issues['issue_id'] == $tcInfo->issue_id)) { echo tep_image(DIR_WS_IMAGES . 'icon_arrow_right.gif'); } else { echo '<a href="' . itw_app_link('page=' . $_GET['page'] . '&tID=' . $rental_issues['issue_id'], 'rental_queue', 'issues') . '">' . tep_image(DIR_WS_IMAGES . 'icon_info.gif', IMAGE_ICON_INFO) . '</a>'; } ?>&nbsp;</td>
-              </tr>
-<?php
-  }
-?>
-              <tr>
-                <td colspan="2"><table border="0" width="100%" cellspacing="0" cellpadding="2">
-                  <tr>
-                    <td class="smallText" valign="top"><?php echo $rentalissues_split->display_count($rentalissues_query_numrows, MAX_DISPLAY_SEARCH_RESULTS, $_GET['page'], sysLanguage::get('TEXT_DISPLAY_NUMBER_OF_MANUFACTURERS')); ?></td>
-                    <td class="smallText" align="right"><?php echo $rentalissues_split->display_links($rentalissues_query_numrows, MAX_DISPLAY_SEARCH_RESULTS, MAX_DISPLAY_PAGE_LINKS, $_GET['page']); ?></td>
-                  </tr>
-                </table></td>
-              </tr>
-<?php
-  if (empty($action)) {
-  }
-?>
-            </table></td>
-<?php
-  $heading = array();
-  $contents = array();
-
-  switch ($action) {
-    case 'edit':
-      $rental_issues_query = "select i.issue_id, i.products_name, date_format(i.reported_date,'%m/%d/%Y') as formatted_date, i.status, c.customers_firstname, c.customers_lastname, c.customers_id, problem, feedback FROM " . TABLE_RENTAL_ISSUES . " i , " . TABLE_CUSTOMERS . " c  WHERE c.customers_id = i.customers_id AND issue_id = '" . $_GET['tID'] . "' order by i.issue_id desc ";
-
-
-      $issues = tep_db_fetch_array(tep_db_query($rental_issues_query));
-      $heading[] = array('text' => '<b>' . sysLanguage::get('TEXT_INFO_HEADING_EDIT_RENTAL_ISSUE') . '</b>');
-
-      $contents = array('form' => '<form name="rental_issues" action="' . itw_app_link('page=' . $_GET['page'] . '&tID=' . $issues['issue_id'] . '&action=saveIssue', 'rental_queue', 'issues') . '" method="post">');
-      $contents[] = array('text' => sysLanguage::get('TEXT_INFO_EDIT_INTRO'));
-      $contents[] = array('text' => '<br>' . sysLanguage::get('TEXT_INFO_PRODUCT_NAME') . '<br><b>' . $issues['products_name'].'</b>');
-      $contents[] = array('text' => '<br>' . sysLanguage::get('TEXT_INFO_PROBLEM') . '<br><b>' . $issues['problem'].'</b>');
-      $contents[] = array('text' => '<br>' . sysLanguage::get('TEXT_INFO_DATE_REPORTED'). '<br><b>' . $issues['formatted_date'].'</b>');
-      $contents[] = array('text' => '<br>' . sysLanguage::get('TEXT_INFO_FEEDBACK') . '<br>' . tep_draw_textarea_field('feedback','',30,5,$issues['feedback']));
-      $contents[] = array('align' => 'center', 'text' => '<br>'.tep_draw_hidden_field('customers_id',$issues['customers_id'])  . htmlBase::newElement('button')->usePreset('save')->setType('submit')->draw() . '&nbsp;' . htmlBase::newElement('button')->usePreset('cancel')->setHref(itw_app_link('page=' . $_GET['page'] . '&tID=' . $tcInfo->issue_id, 'rental_queue', 'issues'))->draw());
-      break;
-    case 'delete':
-      $heading[] = array('text' => '<b>' . $tcInfo->products_name . '</b>');
-
-      $contents = array('form' => '<form name="deleteIssue" action="' . itw_app_link('page=' . $_GET['page'] . '&tID=' . $tcInfo->issue_id . '&action=deleteIssueConfirm', 'rental_queue', 'issues') . '" method="post">');
-      $contents[] = array('text' => sysLanguage::get('TEXT_INFO_DELETE_INTRO'));
-      $contents[] = array('align' => 'center', 'text' => '<br>' . htmlBase::newElement('button')->usePreset('delete')->setType('submit')->draw() . '&nbsp;' . htmlBase::newElement('button')->usePreset('cancel')->setHref(itw_app_link('page=' . $_GET['page'] . '&tID=' . $tcInfo->issue_id, 'rental_queue', 'issues'))->draw());
-      break;
-    default:
-      if (isset($tcInfo) && is_object($tcInfo)) {
-        $heading[] = array('text' => '<b>' . $tcInfo->products_name . '</b>');
-
-        $contents[] = array('align' => 'center', 'text' => htmlBase::newElement('button')->usePreset('edit')->setHref(itw_app_link('page=' . $_GET['page'] . '&tID=' . $tcInfo->issue_id . '&action=edit', 'rental_queue', 'issues'))->draw() . ' ' . htmlBase::newElement('button')->usePreset('delete')->setHref(itw_app_link('page=' . $_GET['page'] . '&tID=' . $tcInfo->issue_id . '&action=delete', 'rental_queue', 'issues'))->draw());
-        $contents[] = array('text' => '<br><b>' . sysLanguage::get('TEXT_INFO_PROBLEM') . '</b> ' . $tcInfo->problem);
-        $contents[] = array('text' => '<b>' . sysLanguage::get('TEXT_INFO_FEEDBACK') . '</b> ' . $tcInfo->feedback);
-
-      }
-      break;
-  }
-
-  if ( (tep_not_null($heading)) && (tep_not_null($contents)) ) {
-    echo '            <td width="25%" valign="top">' . "\n";
-
-    $box = new box;
-    echo $box->infoBox($heading, $contents);
-
-    echo '            </td>' . "\n";
-  }
-?>
-          </tr>
-        </table></td>
-      </tr>
-    </table>
+<div class="pageHeading"><?php echo sysLanguage::get('HEADING_TITLE');?></div>
+<br />
+<div style="width:75%;float:left;">
+	<div class="ui-widget ui-widget-content ui-corner-all" style="width:99%;margin-right:5px;margin-left:5px;">
+		<div style="width:99%;margin:5px;"><?php echo $tableGrid->draw();?></div>
+	</div>
+	<div style="text-align:right;"><?php
+		?></div>
+</div>
+<div style="width:25%;float:right;"><?php echo $infoBox->draw();?></div>

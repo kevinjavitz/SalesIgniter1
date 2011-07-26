@@ -171,6 +171,13 @@ EventManager::notify('ProductInfoProductsImageShow', &$image, &$product);
 	'</div>' . 
 	'<div style="clear:both;"></div>';
 
+	$contents = EventManager::notifyWithReturn('ProductInfoAfterPurchaseTypes', &$product);
+	if (!empty($contents)){
+		foreach($contents as $content){
+			echo $content;
+		}
+	}
+
 	if ($product->isBox()){
 		$discs = $product->getDiscs(false, true);
 		$totalDiscs = $product->getTotalDiscs();

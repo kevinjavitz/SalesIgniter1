@@ -13,7 +13,7 @@
 				$this->pdf->SetAuthor('Kevin Javitz');
 				$this->pdf->SetTitle('Rental Product Labels');
 				$this->pdf->SetSubject('Rental Product Labels');
-				$this->pdf->SetMargins(0.18, 0.35, 0.2);
+				$this->pdf->SetMargins(0.38, 0.35, 0.2);
 				$this->pdf->SetCellPadding(.075);
 				$this->pdf->setPrintHeader(false);
 				$this->pdf->setPrintFooter(false);

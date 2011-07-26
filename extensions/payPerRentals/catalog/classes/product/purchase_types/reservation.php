@@ -1977,7 +1977,11 @@ class PurchaseType_reservation extends PurchaseTypeAbstract {
 		}
 
         $return['price'] = round($price,2);
-		$return['message'] = $message;
+        if(sysconfig::get('EXTENSION_PAY_PER_RENTALS_SHORT_PRICE') == 'False'){
+			$return['message'] = $message;
+        }else{
+	        $return['message'] = '';
+        }
 		return $return;
 	}
 
