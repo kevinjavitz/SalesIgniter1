@@ -505,6 +505,7 @@
 	<define key="TEXT_VIEW_SUBACCOUNTS"><![CDATA[View Subaccounts]]></define>
 	<define key="TEXT_CHANGE_PASSWORD"><![CDATA[Change Password]]></define>
 	<define key="TEXT_DISCOUNT_BASED"><![CDATA[ discount based on customer groups. ]]></define>
+	<define key="TEXT_OUT_OF_STOCK"><![CDATA[Out of Stock ]]></define>
 
 
 </definitions>

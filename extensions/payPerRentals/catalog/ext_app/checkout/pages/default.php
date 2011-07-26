@@ -109,7 +109,7 @@ class payPerRentals_catalog_checkout_default extends Extension_payPerRentals {
 								<td class="main" valign="top" colspan="2"><b>' . 'Select All' . '</b></td>
 						</tr>';
 			}
-			return '<div class="main"><b>Insure products</b></div>' .
+			return '<div class="main"><b>'.sysLanguage::get('TEXT_INSURE_PRODUCTS').'</b></div>' .
 				'<div class="ui-widget ui-widget-content ui-corner-all" style="padding:1em;" id="insure_form">' .
 					'<table cellpadding="3" cellspacing="0">' .
 						'<tr>' .

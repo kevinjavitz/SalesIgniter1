@@ -29,6 +29,7 @@ if (!empty($contents)){
 <div class="headerMenuHeadingBlock" style="float:left;"><span><a href="<?php echo itw_app_link(null, 'index', 'default');?>" class="ui-corner-all" style="text-decoration:none;padding:.75em;"><b>Home</b></a></span></div>	
 <div class="headerMenuHeadingBlock" style="float:left;"><span><a href="<?php echo itw_app_link(null, 'admin_account', 'default');?>" class="ui-corner-all" style="text-decoration:none;padding:.75em;"><b>My Account</b></a></span></div>
 <div class="headerMenuHeadingBlock" style="float:left;"><span><a id="addToFavorites" href="<?php echo itw_app_link('action=addToFavorites', 'index', 'default');?>" class="ui-corner-all" style="text-decoration:none;padding:.75em;"><b>Add To Favorites</b></a></span></div>
+<div class="headerMenuHeadingBlock" style="float:left;"><span><a href="<?php echo itw_app_link('action=clearCache', 'index', 'default');?>" class="ui-corner-all" style="text-decoration:none;padding:.75em;"><b>Clear Cache</b></a></span></div>
 <div class="headerMenuHeadingBlock" style="float:left;"><span><a href="<?php echo itw_app_link('action=logoff', 'login', 'default');?>" class="ui-corner-all" style="text-decoration:none;padding:.75em;"><b>Logoff</b></a></span></div>
 </div>
 <div style="float:right;height:36px;padding-right:10px;padding-top:5px;">

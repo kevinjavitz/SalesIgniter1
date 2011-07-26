@@ -42,7 +42,7 @@ class OrderPaymentManager {
 		return $this->History;
 	}
 	
-	public function show(){
+	public function show($cardData = true){
 		global $Order, $currencies, $App;
 		$paymentHistoryTable = htmlBase::newElement('table')
 		->setCellPadding(3)
@@ -107,7 +107,7 @@ class OrderPaymentManager {
 						'border-top' => 'none',
 						'border-left' => 'none'
 					),
-					'text' => (is_array($cardInfo) ? $cardInfo['cardNumber'] : '')
+					'text' => (is_array($cardInfo) ? (($cardData == false)? 'XXXXXXXXXXX' . substr($cardInfo['cardNumber'], strlen($cardInfo['cardNumber'])-5,4):$cardInfo['cardNumber']) : '')
 				);
 				$rowColumns[] = array(
 					'addCls' => 'ui-widget-content',

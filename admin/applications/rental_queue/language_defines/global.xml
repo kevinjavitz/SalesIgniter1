@@ -87,4 +87,11 @@
 
     <define key="TEXT_INFO_AVAILABILITY_NAME"><![CDATA[Available Name]]></define>
     <define key="TEXT_INFO_AVAILABILITY_RATIO"><![CDATA[Available Ratio]]></define>
+
+	<define key="TEXT_REPLY"><![CDATA[Reply]]></define>
+	<define key="TEXT_CANCEL"><![CDATA[Cancel]]></define>
+	<define key="TEXT_CLOSE"><![CDATA[Close]]></define>
+
+
+
 </definitions>
