@@ -31,11 +31,19 @@
 			<set_function>tep_cfg_select_option(array('Admin','Other Criteria'),</set_function>
 		</EXTENSION_RELATED_PRODUCTS_DISPLAY_TYPE>
 
+		<EXTENSION_RELATED_PRODUCTS_SHOW_ON_TAB>
+			<title>Show related products on tab</title>
+			<value>True</value>
+			<description>Show related products on tab</description>
+			<sort_order>5</sort_order>
+			<set_function>tep_cfg_select_option(array('True','False'),</set_function>
+		</EXTENSION_RELATED_PRODUCTS_SHOW_ON_TAB>
+
 		<EXTENSION_RELATED_PRODUCTS_SHOPPING_CART>
 			<title>Show related products under shopping cart</title>
 			<value>True</value>
 			<description>Show related products of items in shopping cart</description>
-			<sort_order>5</sort_order>
+			<sort_order>6</sort_order>
 			<set_function>tep_cfg_select_option(array('True','False'),</set_function>
 		</EXTENSION_RELATED_PRODUCTS_SHOPPING_CART>
 
