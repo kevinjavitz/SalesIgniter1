@@ -64,18 +64,18 @@
 	}
 	
 	if ($success === true){
-		if (isset($_POST['notify_comments']) || isset($_POST['estimateOrder'])){
-			$StatusHistory = new OrdersStatusHistory();
-			if(!isset($_POST['estimateOrder'])){
-				$StatusHistory->orders_status_id = $_POST['status'];
-			}else{
-				$StatusHistory->orders_status_id = sysConfig::get('ORDERS_STATUS_ESTIMATE_ID');
-			}
-			$StatusHistory->customer_notified = (int) (isset($_POST['notify']));
-			$StatusHistory->comments = $_POST['comments'];
-			
-			$NewOrder->OrdersStatusHistory->add($StatusHistory);
+
+		$StatusHistory = new OrdersStatusHistory();
+		if(!isset($_POST['estimateOrder'])){
+			$StatusHistory->orders_status_id = $_POST['status'];
+		}else{
+			$StatusHistory->orders_status_id = sysConfig::get('ORDERS_STATUS_ESTIMATE_ID');
 		}
+		$StatusHistory->customer_notified = (int) (isset($_POST['notify']));
+		$StatusHistory->comments = $_POST['comments'];
+			
+		$NewOrder->OrdersStatusHistory->add($StatusHistory);
+
 		$NewOrder->save();
 		if (!isset($_GET['oID'])){
 			$NewOrder->Customers->customers_default_address_id = $NewOrder->Customers->AddressBook[0]->address_book_id;
