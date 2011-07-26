@@ -72,7 +72,11 @@ class PurchaseType_used extends PurchaseTypeAbstract {
 				$pClass = new product($this->productInfo['id']);
 				if ($this->hasInventory() === false || $pClass->isNotAvailable()){
 					$button->disable();
-					$button->setText(sysLanguage::get('TEXT_AVAILABLE').': '. strftime(sysLanguage::getDateFormat('short'), strtotime($pClass->getAvailableDate())));
+					if($pClass->isNotAvailable()){
+						$button->setText(sysLanguage::get('TEXT_AVAILABLE').': '. strftime(sysLanguage::getDateFormat('short'), strtotime($pClass->getAvailableDate())));
+					}else{
+						$button->setText(sysLanguage::get('TEXT_OUT_OF_STOCK'));
+					}
 				}
 
 				$content = htmlBase::newElement('span')
