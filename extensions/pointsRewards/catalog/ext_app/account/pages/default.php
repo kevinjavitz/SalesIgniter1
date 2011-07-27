@@ -12,7 +12,10 @@
 		public function load(){
 			if ($this->enabled === false) return;
 
-			EventManager::attachEvent('AccountDefaultMyAccountAddLink', null, $this);
+			EventManager::attachEvents(array(
+			                                'AccountDefaultMyAccountAddLink',
+			                                'AccountDefaultAddLinksBlock'
+			                           ), null, $this);
 		}
 
 		public function AccountDefaultMyAccountAddLink(){
@@ -27,6 +30,16 @@
 
 
 			return $links;
+		}
+	
+		public function AccountDefaultAddLinksBlock($pageContents){
+			global $appExtension;
+
+			$extRewards = $appExtension->getExtension('pointsRewards');
+			$pageContents = '<div id="headerText" style="margin-top:1em;">' .
+							'<b>' . sprintf(sysLanguage::get('POINTS_EARNED'), $extRewards->getPointsEarned()) . '</b>' .
+							'</div>' .
+			                $pageContents;
 		}
 	}
 ?>

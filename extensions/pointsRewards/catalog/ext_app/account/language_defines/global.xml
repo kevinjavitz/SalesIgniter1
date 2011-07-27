@@ -11,6 +11,7 @@
 <definitions>
 
 	<define key="VIEW_POINTS"><![CDATA[View Points]]></define>
+	<define key="POINTS_EARNED"><![CDATA[You have %s points]]></define>
 	<define key="VIEW_POINTS_PAYMENT_HISTORY"><![CDATA[View Points History]]></define>
 
 </definitions>

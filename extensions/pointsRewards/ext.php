@@ -18,102 +18,33 @@ class Extension_pointsRewards extends ExtensionBase {
 
 	public function init(){
 		global $appExtension;
-/*
-		EventManager::attachEvents(array(
-		                                'OrdersProductsDownloadUpdateDownloadsAfterSave',
-		                                'OrdersProductsStreamUpdateViewsAfterSave',
-		                                'CustomersMembershipStreamUpdateViewsAfterSave'
-		                           ), null, $this);
 	}
 
-	public function OrdersProductsDownloadUpdateDownloadsAfterSave(&$OrdersDownload){
+	public function getPointsEarned() {
 		global $userAccount;
-
-		//check to see if royalty last date is smaller than datenow with config is it is than now royalty is added
-		$secs = (float)sysConfig::get('EXTENSION_ROYALTIES_SYSTEM_DOWNLOAD_DAYS_COUNT') * 24 * 3600;
-		$royaltiesSystemRoyaltiesEarnedCheck = Doctrine_Query::create()
-				->from('RoyaltiesSystemRoyaltiesEarned')
-				->where('customers_id = ?', (int)$userAccount->getcustomerId())
-				->andWhere('download_id = ?', (int)$OrdersDownload->ProductsDownloads->download_id)
-				->andWhere('products_id = ?', (int)$OrdersDownload->ProductsDownloads->products_id)
-				->andWhere('orders_id = ?', (int)$OrdersDownload->orders_id)
-				->orderBy('date_added DESC')
-				->execute(array(),Doctrine_Core::HYDRATE_ARRAY);
-		if(is_null($royaltiesSystemRoyaltiesEarnedCheck[0]['customers_id'])){
-			$productsDownloadsTable = Doctrine_Core::getTable('ProductsDownloads');
-			$contentProvidersId = $productsDownloadsTable->findOneByDownloadId($OrdersDownload->download_id,Doctrine_Core::HYDRATE_RECORD);
-
-			$royaltiesSystemRoyaltiesEarned = new RoyaltiesSystemRoyaltiesEarned();
-			$royaltiesSystemRoyaltiesEarned->customers_id = (int)$userAccount->getcustomerId();
-			$royaltiesSystemRoyaltiesEarned->orders_id = (int)$OrdersDownload->orders_id;
-			$royaltiesSystemRoyaltiesEarned->content_provider_id = (int)$contentProvidersId->content_provider_id;
-			$royaltiesSystemRoyaltiesEarned->products_id = (int)$OrdersDownload->ProductsDownloads->products_id;
-			$royaltiesSystemRoyaltiesEarned->download_id = (int)$OrdersDownload->ProductsDownloads->download_id;
-			$royaltiesSystemRoyaltiesEarned->date_added = date("Y-m-d h:i:s");
-			$royaltiesSystemRoyaltiesEarned->purchase_type = 'download';
-			$royaltiesSystemRoyaltiesEarned->royalty = $OrdersDownload->ProductsDownloads->royalty_fee;
-			$royaltiesSystemRoyaltiesEarned->save();
+		$finalTotal = 0;
+		$QpointsTable = Doctrine_Query::create()
+				->select('sum(points) as totalPoints')
+				->from('pointsRewardsPointsEarned ')
+				->where('customers_id= ?', (int)$userAccount->getCustomerId());
+		if(sysConfig::get('EXTENSION_POINTS_REWARDS_SYSTEM_POINTS_ON_SAME_PURCHASETYPE') == 'True'){
+			$QpointsTable->andWhere('purchase_type = "reservation"');
 		}
+		$Qpoints = $QpointsTable->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 
-	}
-
-	public function OrdersProductsStreamUpdateViewsAfterSave(&$OrdersStream){
-		global $userAccount;
-
-		$royaltiesSystemRoyaltiesEarnedCheck = Doctrine_Query::create()
-				->from('RoyaltiesSystemRoyaltiesEarned')
-				->where('customers_id = ?', (int)$userAccount->getcustomerId())
-				->andWhere('streaming_id = ?', (int)$OrdersStream->ProductsStreams->stream_id)
-				->andWhere('products_id = ?', (int)$OrdersStream->ProductsStreams->products_id)
-				->andWhere('orders_id = ?', (int)$OrdersStream->orders_id)
-				->execute(array(),Doctrine_Core::HYDRATE_ARRAY);
-
-		//every download a royalty is counted or onetime royalty(check if products, streaming and customer exists if not then add
-		if (is_null($royaltiesSystemRoyaltiesEarnedCheck[0]['customers_id'])){
-			$ProductsStreamsTable = Doctrine_Core::getTable('ProductsStreams');
-			$contentProvidersId = $ProductsStreamsTable->findOneByStreamId($OrdersStream->ProductsStreams->stream_id,Doctrine_Core::HYDRATE_RECORD);
-
-			$royaltiesSystemRoyaltiesEarned = new RoyaltiesSystemRoyaltiesEarned();
-			$royaltiesSystemRoyaltiesEarned->customers_id = (int)$userAccount->getcustomerId();
-			$royaltiesSystemRoyaltiesEarned->products_id = (int)$OrdersStream->ProductsStreams->products_id;
-			$royaltiesSystemRoyaltiesEarned->streaming_id = (int)$OrdersStream->ProductsStreams->stream_id;
-			$royaltiesSystemRoyaltiesEarned->orders_id = (int)$OrdersStream->orders_id;
-			$royaltiesSystemRoyaltiesEarned->content_provider_id = (int)$contentProvidersId->content_provider_id;
-			$royaltiesSystemRoyaltiesEarned->date_added = date("Y-m-d h:i:s");
-			$royaltiesSystemRoyaltiesEarned->purchase_type = 'stream';
-			$royaltiesSystemRoyaltiesEarned->royalty = $OrdersStream->ProductsStreams->royalty_fee;
-			$royaltiesSystemRoyaltiesEarned->save();
+		$QpointsDeductedTable = Doctrine_Query::create()
+				->select('sum(points) as totalPoints')
+				->from('pointsRewardsPointsDeducted ')
+				->where('customers_id= ?', (int)$userAccount->getCustomerId());
+		if(sysConfig::get('EXTENSION_POINTS_REWARDS_SYSTEM_POINTS_ON_SAME_PURCHASETYPE') == 'True'){
+			$QpointsDeductedTable->andWhere('purchase_type = "reservation"');
 		}
-	}
-
-	public function CustomersMembershipStreamUpdateViewsAfterSave(&$View){
-
-		$royaltiesSystemRoyaltiesEarnedCheck = Doctrine_Query::create()
-				->from('RoyaltiesSystemRoyaltiesEarned')
-				->where('customers_id = ?', (int)$View->customers_id)
-				->andWhere('streaming_id = ?', (int)$View->ProductsStreams->stream_id)
-				->andWhere('products_id = ?', (int)$View->ProductsStreams->products_id)
-				->andWhere('orders_id = ?', (int)$View->orders_id)
-				->execute(array(),Doctrine_Core::HYDRATE_ARRAY);
-
-		//every download a royalty is counted or onetime royalty(check if products, streaming and customer exists if not then add
-		if (is_null($royaltiesSystemRoyaltiesEarnedCheck[0]['customers_id'])){
-			$pointsRewardsPurchaseTypesTable = Doctrine_Core::getTable('pointsRewardsPurchaseTypes');
-			$pointsRewardsPurchaseType = $pointsRewardsPurchaseTypesTable->findOneByPurchaseType('stream',Doctrine_Core::HYDRATE_RECORD);
-			$pointsEarned = $pointsRewardsPurchaseType->percentage;
-
-			$royaltiesSystemRoyaltiesEarned = new RoyaltiesSystemRoyaltiesEarned();
-			$royaltiesSystemRoyaltiesEarned->customers_id = (int)$View->customers_id;
-			$royaltiesSystemRoyaltiesEarned->products_id = (int)$View->ProductsStreams->products_id;
-			$royaltiesSystemRoyaltiesEarned->streaming_id = (int)$View->ProductsStreams->stream_id;
-			$royaltiesSystemRoyaltiesEarned->orders_id = (int)$View->orders_id;
-			$royaltiesSystemRoyaltiesEarned->content_provider_id = ;
-			$royaltiesSystemRoyaltiesEarned->date_added = date("Y-m-d h:i:s");
-			$royaltiesSystemRoyaltiesEarned->purchase_type = 'stream';
-			$royaltiesSystemRoyaltiesEarned->royalty = $View->ProductsStreams->royalty_fee;
-			$royaltiesSystemRoyaltiesEarned->save();
+		$QpointsDeducted = $QpointsDeductedTable->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+		if ($Qpoints) {
+			$finalTotal = $Qpoints[0]['totalPoints'] - $QpointsDeducted[0]['totalPoints'];
+			return $finalTotal;
 		}
- */
+		return $finalTotal;
 	}
 }
 ?>

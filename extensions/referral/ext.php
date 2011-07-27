@@ -17,14 +17,28 @@ class Extension_referral extends ExtensionBase {
 	public function init(){
 		global $appExtension;
 		EventManager::attachEvents(array(
-		                                'EmailEventPreParseTemplateText_create_account'
+		                                'EmailEventPreParseTemplateText_create_account',
+			                            'AccountDefaultAddLinksBlock'
 		                           ), null, $this);
 	}
 
-	public function EmailEventPreParseTemplateText_create_account(&$templateText){
-		$userAccount = &Session::getReference('userAccount');
+	public function AccountDefaultAddLinksBlock($pageContents){
+		global $currencies;
 
-		$code = $userAccount->getFirstName() . '!' . $userAccount->getCustomerId();
+		$pageContents = '<div class="main" style="margin-top:1em;">' .
+		                '<b>' . sprintf(sysLanguage::get('TEXT_USE_REFERRAL_CODE'), $this->getReferralCode(), $currencies->format(sysConfig::get('EXTENSION_REFFERAL_SYSTEM_REWARD_POINTS'))) . '</b>' .
+		                '</div>' .
+		                $pageContents;
+	}
+
+	public function getReferralCode(){
+		$userAccount = &Session::getReference('userAccount');
+		return $userAccount->getFirstName() . '!' . $userAccount->getCustomerId();
+	}
+
+	public function EmailEventPreParseTemplateText_create_account(&$templateText){
+
+		$code = $this->getReferralCode();
 		$emailText = str_replace('__CODE__',$code,sysConfig::get('EXTENSION_REFFERAL_SYSTEM_EMAIL_TEXT'));
 		$templateText = str_replace('<--APPEND-->',"<--APPEND-->\n" . $emailText,$templateText);
 	}
