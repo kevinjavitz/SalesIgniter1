@@ -10,12 +10,13 @@
 	->attr('maxlength', '40')
 	->setName('confirmation')
 	->setRequired(true);
-	
-	$NewsletterInput = htmlBase::newElement('checkbox')
-	->setLabel(sysLanguage::get('ENTRY_NEWSLETTER'))
-	->setLabelPosition('before')
-	->setName('newsletter')
-	->setValue('1');
+	if(sysConfig::get('ACCOUNT_NEWSLETTER') == 'true') {
+		$NewsletterInput = htmlBase::newElement('checkbox')
+		->setLabel(sysLanguage::get('ENTRY_NEWSLETTER'))
+		->setLabelPosition('before')
+		->setName('newsletter')
+		->setValue('1');
+	}
 
 	$FormTable = htmlBase::newElement('formTable');
 
@@ -111,9 +112,11 @@
 				<td><?php echo sysLanguage::get('ENTRY_PASSWORD_CONFIRMATION'); ?></td>
 				<td colspan="2"><?php echo $BillingPasswordConfirmInput->draw(); ?></td>
 			</tr>
+			<?php if(sysConfig::get('ACCOUNT_NEWSLETTER') == 'true') { ?>
 			<tr>
 				<td colspan="3"><?php echo $NewsletterInput->draw(); ?></td>
 			</tr>
+			<?php } ?>
 		</table>
 		<?php
 			if (sysConfig::get('TERMS_CONDITIONS_CREATE_ACCOUNT') == 'true'){
