@@ -20,11 +20,8 @@ class Extension_royaltiesSystem extends ExtensionBase {
 		global $appExtension;
 
 		if ($appExtension->isAdmin()){
-			EventManager::attachEvents(array('BoxMarketingAddLink',
-				'RentalQueueProductSent'
-			), null, $this);
+			EventManager::attachEvents(array('BoxMarketingAddLink'), null, $this);
 		}
-
 		EventManager::attachEvents(array(
 			'OrdersProductsDownloadUpdateDownloadsAfterSave',
 			'OrdersProductsStreamUpdateViewsAfterSave',
@@ -156,32 +153,6 @@ class Extension_royaltiesSystem extends ExtensionBase {
 	public function NewProductDownloadNewBeforeSave(&$Download, $idx){
 		$Download->content_provider_id = $_POST['download_content_provider_id_new'][$idx];
 		$Download->royalty_fee = $_POST['download_royalty_fee_new'][$idx];
-	}
-
-	public function RentalQueueProductSent(&$RentedProduct){
-		$ProductsRoyaltiesTable = Doctrine_Core::getTable('RoyaltiesSystemProductsRoyalties');
-		$ProductsRoyalties = $ProductsRoyaltiesTable->findOneByProductsId($RentedProduct->products_id);
-
-		if ($ProductsRoyalties->content_provider_id) {
-			if (strpos($ProductsRoyalties->royalty_fee, '%') === false) {
-				$royaltyFee = $ProductsRoyalties->royalty_fee;
-			} else {
-				$royaltyFee = $ProductsRoyalties->products_price_rental * ($ProductsRoyalties->royalty_fee / 100);
-			}
-			$royaltiesSystemRoyaltiesEarned = new RoyaltiesSystemRoyaltiesEarned();
-			//$royaltiesSystemRoyaltiesEarned = $royaltiesSystemRoyaltiesEarned->create();
-			$royaltiesSystemRoyaltiesEarned->products_id = $RentedProduct->products_id;
-			$royaltiesSystemRoyaltiesEarned->customers_id = $RentedProduct->customers_id;
-			$royaltiesSystemRoyaltiesEarned->content_provider_id = $ProductsRoyalties->content_provider_id;
-			$royaltiesSystemRoyaltiesEarned->rented_products_id = $RentedProduct->rented_products_id;
-			$royaltiesSystemRoyaltiesEarned->products_barcode = $RentedProduct->products_barcode;
-			$royaltiesSystemRoyaltiesEarned->shipment_date = $RentedProduct->shipment_date;
-			$royaltiesSystemRoyaltiesEarned->arrival_date = $RentedProduct->arrival_date;
-			$royaltiesSystemRoyaltiesEarned->date_added = date("Y-m-d h:i:s");
-			$royaltiesSystemRoyaltiesEarned->royalty = $royaltyFee;
-			$royaltiesSystemRoyaltiesEarned->purchase_type = 'rental';
-			$royaltiesSystemRoyaltiesEarned->save();
-		}
 	}
 }
 ?>
