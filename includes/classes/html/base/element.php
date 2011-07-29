@@ -477,7 +477,7 @@ class htmlElement
 	 * @param bool $val
 	 * @return htmlElement
 	 */
-	public function disable($val) {
+	public function disable($val = true) {
 		if ($val === true){
 			$this->attr('disabled', 'disabled')->addClass('ui-state-disabled');
 		}
