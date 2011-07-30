@@ -27,7 +27,7 @@ input.ui-button { padding: .4em 1em; }
 a.ui-button-icon-only { width: 2.4em; } /* button elements seem to need a little more width */
 a.ui-button-icons-only { width: 3em; } 
 a.ui-button-icons-only { width: 3.2em; } 
-a.ui-button-text-only .ui-button-text { padding: .5em 1em; }
+a.ui-button-text-only .ui-button-text { padding: .4em 1em; }
 a.ui-button-text-icon .ui-button-text, a.ui-button-text-icons .ui-button-text { padding: .5em 1em .5em 1.8em; }
 
 /*button icon element(s) */
