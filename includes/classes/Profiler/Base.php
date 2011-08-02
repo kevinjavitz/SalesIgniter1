@@ -4,6 +4,12 @@
 	class SES_Profiler {
 		private static $profiles = array();
 
+		/**
+		 * @static
+		 * @param $name
+		 * @param bool $start
+		 * @return SES_Profile
+		 */
 		public static function newProfile($name, $start = false){
 			if (array_key_exists($name, self::$profiles)){
 				$Profile = self::$profiles[$name];

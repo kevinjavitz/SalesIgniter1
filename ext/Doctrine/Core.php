@@ -1147,7 +1147,7 @@ class Doctrine_Core
         if (class_exists($className, false) || interface_exists($className, false)) {
             return false;
         }
-
+if (!isset(self::$_modelsDirectory) && !isset(self::$_loadedModelFiles)) return false;
         if ( ! self::$_modelsDirectory) {
             $loadedModels = self::$_loadedModelFiles;
 
@@ -1175,6 +1175,16 @@ class Doctrine_Core
 
         return false;
     }
+
+	public static function loadAllModels(){
+		Doctrine_Core::loadModels(self::$_modelsDirectory, Doctrine_Core::MODEL_LOADING_AGGRESSIVE);
+
+		if (!empty(self::$_extModelsDirectory)){
+			foreach(self::$_extModelsDirectory as $dir){
+				Doctrine_Core::loadModels($dir, Doctrine_Core::MODEL_LOADING_AGGRESSIVE);
+			}
+		}
+	}
 
     /**
      * Load classes from the Doctrine extensions directory/path

@@ -1,0 +1,18 @@
+<definitions>
+	<define key="TAB_POINTS_REWARDS_HISTORY"><![CDATA[Points Rewards History]]></define>
+	<define key="TABLE_HEADING_POINTS"><![CDATA[Points]]></define>
+	<define key="TABLE_HEADING_POINTS_SPENDINGS"><![CDATA[Points Spent]]></define>
+	<define key="TABLE_HEADING_POINTS_EARNINGS"><![CDATA[Points Earned]]></define>
+	<define key="TABLE_HEADING_ORDER"><![CDATA[ORDER]]></define>
+	<define key="TABLE_HEADING_PRODUCT"><![CDATA[Product]]></define>
+	<define key="TABLE_HEADING_PURCHASE_TYPE"><![CDATA[Purchase Type]]></define>
+	<define key="TABLE_HEADING_DATE"><![CDATA[Date]]></define>
+	<define key="TABLE_HEADING_ADDED_BY"><![CDATA[Points added By]]></define>
+	<define key="TEXT_INFO_NO_HISTORY"><![CDATA[There is no points rewards earned or deducted till now.]]></define>
+	<define key="BUTTON_MANAGE_POINTS"><![CDATA[Manage Customer's Points]]></define>
+	<define key="TABLE_HEADING_ACTION"><![CDATA[Action]]></define>
+	<define key="TEXT_POINTS_TO_ADD"><![CDATA[No. of points:]]></define>
+	<define key="TAB_DESCRIPTION"><![CDATA[Award Points To Customer]]></define>
+	<define key="TEXT_SELECT_ACTION"><![CDATA[Action]]></define>
+	<define key="TEXT_PURCHASE_TYPE"><![CDATA[Purchase Type]]></define>
+</definitions>

@@ -143,7 +143,7 @@ class OrderTotalCoupon extends OrderTotalModule {
 	}
 
 	public function calculate_credit($amount) {
-		global $ShoppingCart;
+		global $ShoppingCart, $order;
 
 		$totalDiscount = 0;
 		if (Session::exists('cc_id') === true) {
@@ -155,6 +155,7 @@ class OrderTotalCoupon extends OrderTotalModule {
 				$Coupon = $Qcoupon[0];
 				$this->coupon_code = $Coupon['coupon_code'];
 				$couponAmount = $Coupon['coupon_amount'];
+
 				if ($Coupon['coupon_type'] == 'S'){
 					$couponAmount = $order->info['shipping_cost'];
 
@@ -163,7 +164,7 @@ class OrderTotalCoupon extends OrderTotalModule {
 					}
 				}
 
-				if ($Coupon['coupon_minimum_order'] <= $this->get_order_total()){
+				if (($Coupon['coupon_minimum_order'] <= $this->get_order_total() || $Coupon['coupon_minimum_order'] <= 0 ) && ($Coupon['coupon_maximum_order'] >= $this->get_order_total() || $Coupon['coupon_maximum_order'] <= 0) ){
 					if (!empty($Coupon['restrict_to_products']) || !empty($Coupon['restrict_to_purchase_type'])){
 						foreach($ShoppingCart->getProducts() as $cartProduct){
 							$productPrice = ($cartProduct->getFinalPrice() * $cartProduct->getQuantity());
@@ -179,6 +180,10 @@ class OrderTotalCoupon extends OrderTotalModule {
 									if ($Coupon['coupon_type'] == 'P'){
 										$priceDiscount = round($productPrice*10)/10*$couponAmount/100;
 										$totalDiscount += $priceDiscount;
+									}elseif($purchaseType == 'reservation' && $Coupon['coupon_type'] == 'S'){
+										$resInfo = $cartProduct->getInfo('reservationInfo');
+										$totalDiscount += $resInfo['shipping']['cost'];
+										$amount += $resInfo['shipping']['cost'];
 									}else{
 										$totalDiscount = $couponAmount;
 									}
@@ -200,6 +205,14 @@ class OrderTotalCoupon extends OrderTotalModule {
 					}else{
 						if ($Coupon['coupon_type'] != 'P'){
 							$totalDiscount = $couponAmount;
+							foreach($ShoppingCart->getProducts() as $cartProduct){
+								if($cartProduct->getPurchaseType() == 'reservation'){
+									$resInfo = $cartProduct->getInfo('reservationInfo');
+									$totalDiscount += $resInfo['shipping']['cost'];
+									$amount += $resInfo['shipping']['cost'];
+								}
+							}
+
 						} else {
 							$totalDiscount = $amount * $couponAmount / 100;
 						}
