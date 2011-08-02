@@ -28,6 +28,10 @@ class RoyaltiesSystemProductsRoyalties extends Doctrine_Record {
 		                                'local' => 'products_id',
 		                                'foreign' => 'products_id'
 		                           ));
+		$this->hasOne('RentedProducts', array(
+		                                     'local' => 'products_id',
+		                                     'foreign' => 'products_id'
+		                                ));
 	}
 
 	public function setUpParent(){
@@ -46,6 +50,13 @@ class RoyaltiesSystemProductsRoyalties extends Doctrine_Record {
 		                                                            'foreign' => 'products_id',
 		                                                            'cascade' => array('delete')
 		                                                       ));
+		$RentedProducts = Doctrine::getTable('RentedProducts')->getRecordInstance();
+
+		$RentedProducts->hasMany('RoyaltiesSystemProductsRoyalties', array(
+		                                                                  'local' => 'products_id',
+		                                                                  'foreign' => 'products_id',
+		                                                                  'cascade' => array('delete')
+		                                                             ));
 		$Customers = Doctrine::getTable('Customers')->getRecordInstance();
 
 		$Customers->hasMany('RoyaltiesSystemProductsRoyalties', array(
