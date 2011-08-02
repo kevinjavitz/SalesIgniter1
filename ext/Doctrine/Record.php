@@ -717,7 +717,7 @@ abstract class Doctrine_Record extends Doctrine_Record_Abstract implements Count
         foreach ($this->getTable()->getFieldNames() as $fieldName) {
             if (isset($tmp[$fieldName])) {
                 $data[$fieldName] = $tmp[$fieldName];
-            } else if (array_key_exists($fieldName, $tmp)) {
+            } else if (isset($tmp[$fieldName])) {
                 $data[$fieldName] = null;
             } else if ( !isset($this->_data[$fieldName])) {
                 $data[$fieldName] = self::$_null;
@@ -1129,7 +1129,7 @@ abstract class Doctrine_Record extends Doctrine_Record_Abstract implements Count
      */
     public function rawGet($fieldName)
     {
-        if ( ! array_key_exists($fieldName, $this->_data)) {
+        if ( ! isset($this->_data[$fieldName])) {
             throw new Doctrine_Record_Exception('Unknown property '. $fieldName);
         }
         if ($this->_data[$fieldName] === self::$_null) {
@@ -1165,7 +1165,7 @@ abstract class Doctrine_Record extends Doctrine_Record_Abstract implements Count
             
             if (is_array($data)) {
                 foreach ($data as $field => $value) {
-                    if ($table->hasField($field) && ( ! array_key_exists($field, $this->_data) || $this->_data[$field] === self::$_null)) {
+                    if ($table->hasField($field) && ( ! isset($this->_data[$field]) || $this->_data[$field] === self::$_null)) {
                        $this->_data[$field] = $value;
                    }
                 }
@@ -1354,11 +1354,11 @@ abstract class Doctrine_Record extends Doctrine_Record_Abstract implements Count
     {
         $value = self::$_null;
 
-        if (array_key_exists($fieldName, $this->_values)) {
+        if (isset($this->_values[$fieldName])) {
             return $this->_values[$fieldName];
         }
 
-        if (array_key_exists($fieldName, $this->_data)) {
+        if (isset($this->_data[$fieldName])) {
             // check if the value is the Doctrine_Null object located in self::$_null)
             if ($this->_data[$fieldName] === self::$_null && $load) {
                 $this->load();
@@ -1425,7 +1425,7 @@ abstract class Doctrine_Record extends Doctrine_Record_Abstract implements Count
      */
     public function hasMappedValue($name)
     {
-        return array_key_exists($name, $this->_values);
+        return isset($this->_values[$name]);
     }
 
     /**
@@ -1458,9 +1458,9 @@ abstract class Doctrine_Record extends Doctrine_Record_Abstract implements Count
 
     protected function _set($fieldName, $value, $load = true)
     {
-        if (array_key_exists($fieldName, $this->_values)) {
+        if (isset($this->_values[$fieldName])) {
             $this->_values[$fieldName] = $value;
-        } else if (array_key_exists($fieldName, $this->_data)) {
+        } else if (isset($this->_data[$fieldName])) {
             $type = $this->_table->getTypeOf($fieldName);
             if ($value instanceof Doctrine_Record) {
                 $id = $value->getIncremented();
@@ -1630,7 +1630,7 @@ abstract class Doctrine_Record extends Doctrine_Record_Abstract implements Count
      */
     public function contains($fieldName)
     {
-        if (array_key_exists($fieldName, $this->_data)) {
+        if (isset($this->_data[$fieldName])) {
             // this also returns true if the field is a Doctrine_Null.
             // imho this is not correct behavior.
             return true;
@@ -1656,7 +1656,7 @@ abstract class Doctrine_Record extends Doctrine_Record_Abstract implements Count
      */
     public function __unset($name)
     {
-        if (array_key_exists($name, $this->_data)) {
+        if (isset($this->_data[$name])) {
             $this->_data[$name] = array();
         } else if (isset($this->_references[$name])) {
             if ($this->_references[$name] instanceof Doctrine_Record) {
@@ -1921,7 +1921,7 @@ abstract class Doctrine_Record extends Doctrine_Record_Abstract implements Count
 
         if ($deep) {
             foreach ($this->_references as $key => $relation) {
-                if ( ! $relation instanceof Doctrine_Null) {
+                if ( is_object($relation) && ! $relation instanceof Doctrine_Null) {
                     $a[$key] = $relation->toArray($deep, $prefixKey);
                 }
             }
@@ -1990,7 +1990,7 @@ abstract class Doctrine_Record extends Doctrine_Record_Abstract implements Count
                         $this->$key->fromArray($value, $deep);
                     }
                 }
-            } else if ($this->getTable()->hasField($key) || array_key_exists($key, $this->_values)) {
+            } else if ($this->getTable()->hasField($key) || isset($this->_values[$key])) {
                 $this->set($key, $value);
             } else {
                 $method = 'set' . Doctrine_Inflector::classify($key);
@@ -2044,7 +2044,7 @@ abstract class Doctrine_Record extends Doctrine_Record_Abstract implements Count
                         $this->$key = $this->$key;
                     }
                 }
-            } else if ($this->getTable()->hasField($key) || array_key_exists($key, $this->_values)) {
+            } else if ($this->getTable()->hasField($key) || isset($this->_values[$key])) {
                 $this->set($key, $value);
             }
         }
