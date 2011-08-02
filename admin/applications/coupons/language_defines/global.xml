@@ -7,6 +7,7 @@
     <define key="TEXT_COUPON_ALL"><![CDATA[All Coupons]]></define>
     <define key="TEXT_COUPON_ACTIVE"><![CDATA[Active Coupons]]></define>
     <define key="TEXT_COUPON_INACTIVE"><![CDATA[Inactive Coupons]]></define>
+    <define key="TEXT_INFO_COUPON_FREE_SHIPPING"><![CDATA[Free Shipping (only free shipping will apply the amount will be disregarded)]]></define>
     <define key="TEXT_SUBJECT"><![CDATA[Subject:]]></define>
     <define key="TEXT_FROM"><![CDATA[From:]]></define>
     <define key="TEXT_FREE_SHIPPING"><![CDATA[Free Shipping]]></define>
@@ -44,6 +45,7 @@
     <define key="COUPON_FREE_SHIP"><![CDATA[Free Shipping]]></define>
     <define key="COUPON_DESC"><![CDATA[Coupon Description]]></define>
     <define key="COUPON_MIN_ORDER"><![CDATA[Coupon Minimum Order]]></define>
+    <define key="COUPON_MAX_ORDER"><![CDATA[Coupon Maximum Order]]></define>
     <define key="COUPON_USES_COUPON"><![CDATA[Uses per Coupon]]></define>
     <define key="COUPON_USES_USER"><![CDATA[Uses per Customer]]></define>
     <define key="COUPON_PRODUCTS"><![CDATA[Valid Product List]]></define>
@@ -151,6 +153,7 @@
 	<define key="TABLE_HEADING_TOTAL_REDEMPTIONS"><![CDATA[In Total]]></define>
 
 	<define key="TEXT_COUPON_MIN_ORDER"><![CDATA[Coupon Minimum Order]]></define>
+	<define key="TEXT_COUPON_MAX_ORDER"><![CDATA[Coupon Maximum Order]]></define>
 	<define key="TEXT_COUPON_STARTDATE"><![CDATA[Start Date]]></define>
 	<define key="TEXT_COUPON_FINISHDATE"><![CDATA[End Date]]></define>
 	<define key="TEXT_COUPON_USES_USER"><![CDATA[Uses per Customer]]></define>
@@ -191,6 +194,7 @@
 	<define key="TEXT_INFO_COUPON_STATUS"><![CDATA[Coupon Status: ]]></define>
 	<define key="TEXT_INFO_COUPON_AMOUNT"><![CDATA[Coupon Amount: ]]></define>
 	<define key="TEXT_INFO_COUPON_MIN_ORDER"><![CDATA[Minimum Order: ]]></define>
+	<define key="TEXT_INFO_COUPON_MAX_ORDER"><![CDATA[Maximum Order: ]]></define>
 	<define key="TEXT_INFO_COUPON_CODE"><![CDATA[Coupon Code: ]]></define>
 	<define key="TEXT_INFO_COUPON_USES_COUPON"><![CDATA[Uses Per Coupon: ]]></define>
 	<define key="TEXT_INFO_COUPON_USES_USER"><![CDATA[Uses Per User: ]]></define>
@@ -211,6 +215,7 @@
     <define key="TEXT_INFO_COUPON_FREE_SHIP_HELP"><![CDATA[The coupon gives free shipping on an order. Note. This overrides the coupon_amount figure but respects the minimum order value]]></define>
     <define key="TEXT_INFO_COUPON_DESC_HELP"><![CDATA[A description of the coupon for the customer]]></define>
     <define key="TEXT_INFO_COUPON_MIN_ORDER_HELP"><![CDATA[The minimum order value before the coupon is valid]]></define>
+    <define key="TEXT_INFO_COUPON_MAX_ORDER_HELP"><![CDATA[The maximum order value before the coupon is valid]]></define>
     <define key="TEXT_INFO_COUPON_USES_COUPON_HELP"><![CDATA[The maximum number of times the coupon can be used, leave blank if you want no limit.]]></define>
     <define key="TEXT_INFO_COUPON_USES_USER_HELP"><![CDATA[Number of times a user can use the coupon, leave blank for no limit.]]></define>
     <define key="TEXT_INFO_COUPON_PRODUCTS_HELP"><![CDATA[A comma separated list of product_ids that this coupon can be used with. Leave blank for no restrictions.]]></define>

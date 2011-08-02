@@ -1,0 +1,17 @@
+.royaltiesTable {}
+.royaltiesTable tr {  }
+
+.royaltiesTable tr.infoShown td { border-bottom-width:0px; }
+
+.royaltiesTable td { border-style:solid; border-color:#cccccc; border-top-width: 0px; border-right-width:0px; border-left-width:0px;border-bottom-width:1px; }
+
+.royaltiesTable td.first { border-left-width:1px; }
+.royaltiesTable td.last { border-right-width:1px; }
+
+.royaltiesTable tr.InfoRow td { background-color:#f1f1f1;font-size:.8em;border-bottom-width:0px;border-top-width:1px; }
+.royaltiesTable tr.InfoRow td.first { background-color:transparent;border-top-width:0px;border-right-width:1px;border-bottom-width:0px;border-left-width:1px; }
+.royaltiesTable tr.InfoRow td.last { background-color:transparent;border-top-width:0px;border-right-width:1px;border-bottom-width:0px;border-left-width:1px; }
+
+.royaltiesTable tr.InfoRow.last td { background-color:transparent; border-top-width:1px;border-bottom-width:1px; }
+.royaltiesTable tr.InfoRow.last td.first { border-top-width:0px;border-right-width:0px; }
+.royaltiesTable tr.InfoRow.last td.last { border-top-width:0px;border-left-width:0px; }

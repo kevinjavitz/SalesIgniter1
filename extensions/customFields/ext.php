@@ -195,6 +195,21 @@ class Extension_customFields extends ExtensionBase {
 	 */
 	public function ProductSearchQueryBeforeExecute(&$Qproducts){
 		//echo '<pre>';print_r($this->validSearchKeys);
+
+		$Qcheck = Doctrine_Query::create()
+			->select('search_key')
+			->from('ProductsCustomFields')
+			->where('search_key != ?', '')
+			->andWhere('include_in_search = ?', '1')
+			->andWhere('search_key is not NULL')
+			->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+		if ($Qcheck && sizeof($Qcheck) > 0){
+			foreach($Qcheck as $cInfo){
+				$this->validSearchKeys[$cInfo['search_key']] = $_GET['keywords'];
+			}
+		}
+
+
 		if (isset($this->validSearchKeys) && sizeof($this->validSearchKeys) > 0){
 			$fieldsSearch = array();
 			$i = 1;
@@ -210,16 +225,16 @@ class Extension_customFields extends ExtensionBase {
 					foreach($v as $count => $val){
 						$addSearch[] = 'f2p' . $i . '.value like "%' . str_replace('.', '%', $val) . '%"'; 
 					}
-					$fieldsSearch[] = '(SELECT count(*) FROM ProductsCustomFieldsToProducts f2p' . $i . ' LEFT JOIN f2p' . $i . '.ProductsCustomFields f' . $j . ' WHERE f2p' . $i . '.product_id = p.products_id AND f' . $j . '.search_key = "' . $k . '" AND (' . implode(' OR ', $addSearch) . ')) > 0';
+					$fieldsSearch[] = '(SELECT count(*) FROM ProductsCustomFieldsToProducts f2p' . $i . ' LEFT JOIN f2p' . $i . '.ProductsCustomFields f' . $j . ' WHERE p.products_id = f2p' . $i . '.product_id AND f' . $j . '.search_key = "' . $k . '" AND (' . implode(' OR ', $addSearch) . ')) > 0';
 					$i++;$j++;
 				}else{
-					$fieldsSearch[] = '(SELECT count(*) FROM ProductsCustomFieldsToProducts f2p' . $i . ' LEFT JOIN f2p' . $i . '.ProductsCustomFields f' . $j . ' WHERE f2p' . $i . '.product_id = p.products_id AND f' . $j . '.search_key = "' . $k . '" AND f2p' . $i . '.value LIKE "%' . str_replace('.', '%', $v) . '%") > 0';
+					$fieldsSearch[] = '(SELECT count(*) FROM ProductsCustomFieldsToProducts f2p' . $i . ' LEFT JOIN f2p' . $i . '.ProductsCustomFields f' . $j . ' WHERE p.products_id = f2p' . $i . '.product_id AND f' . $j . '.search_key = "' . $k . '" AND f2p' . $i . '.value LIKE "%' . str_replace('.', '%', $v) . '%") > 0';
 					$i++;$j++;
 				}
 			}
 			$Qproducts->leftJoin('p.ProductsCustomFieldsToProducts f2p')
 			->leftJoin('f2p.ProductsCustomFields f')
-			->andWhere('((' . implode(') AND (', $fieldsSearch) . '))');
+			->orWhere('((' . implode(') OR (', $fieldsSearch) . '))');
 		}
 	}
 
