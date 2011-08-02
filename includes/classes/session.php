@@ -69,7 +69,7 @@ class Session {
 		$Qvalue = mysql_query('select value from sessions where sesskey = "' . $key .'" and expiry > "' . time() . '"');
 		if (mysql_num_rows($Qvalue)){
 			$Result = mysql_fetch_assoc($Qvalue);
-			$value = $Result['value'];
+			$value = stripslashes($Result['value']);
 			if (!empty($value)){
 				return $value;
 			}
@@ -81,10 +81,10 @@ class Session {
 		$Qcheck = mysql_query('select count(*) as total from sessions where sesskey = "' . $key . '"');
 		$check = mysql_fetch_assoc($Qcheck);
 
-		if ($check['total'] > 0){
-			mysql_query('insert into sessions (sesskey, value, expiry) values ("' . $key . '", "' . $val . '", "' . (time() + self::$sessionLife) . '")');
+		if ($check['total'] <= 0){
+			mysql_query('insert into sessions (sesskey, value, expiry) values ("' . $key . '", "' . addslashes($val) . '", "' . (time() + self::$sessionLife) . '")') or die('ERROR:' . mysql_error());
 		}else{
-			mysql_query('update sessions set value = "' . $val . '", expiry = "' . (time() + self::$sessionLife) . '" where sesskey = "' . $key . '"');
+			mysql_query('update sessions set value = "' . addslashes($val) . '", expiry = "' . (time() + self::$sessionLife) . '" where sesskey = "' . $key . '"') or die('ERROR:' . mysql_error());
 		}
 		return true;
 	}
