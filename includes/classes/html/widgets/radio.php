@@ -12,6 +12,10 @@ class htmlWidget_radio implements htmlWidgetPlugin {
 	}
 	
 	public function __call($function, $args){
+		if ($this->isGroup === true){
+			die('Error: This is a group of radio inputs, please use data array to set button data');
+		}
+		
 		$return = call_user_func_array(array($this->inputElement, $function), $args);
 		if (!is_object($return)){
 			return $return;
@@ -52,11 +56,34 @@ class htmlWidget_radio implements htmlWidgetPlugin {
 	public function draw(){
 		$html = '';
 		if ($this->isGroup === true){
-			$htmlOutput = array();
-			foreach($this->groupElements as $button){
-				$htmlOutput[] = $button->draw();
+			if (is_array($this->groupSeparator)){
+				if ($this->groupSeparator['type'] == 'table'){
+					$table = htmlBase::newElement('table')->setCellPadding(2)->setCellSpacing(0);
+					$columns = array();
+					foreach($this->groupElements as $button){
+						$columns[] = array('text' => $button->draw());
+						if (sizeof($columns) == $this->groupSeparator['cols']){
+							$table->addBodyRow(array(
+								'columns' => $columns
+							));
+							$columns = array();
+						}
+					}
+					if (!empty($columns)){
+						$table->addBodyRow(array(
+							'columns' => $columns
+						));
+						$columns = array();
+					}
+					$html .= $table->draw();
+				}
+			}else{
+				$htmlOutput = array();
+				foreach($this->groupElements as $button){
+					$htmlOutput[] = $button->draw();
+				}
+				$html .= implode($this->groupSeparator, $htmlOutput);
 			}
-			$html .= implode($this->groupSeparator, $htmlOutput);
 		}else{
 			$html = $this->inputElement->draw();
 		}
@@ -83,10 +110,6 @@ class htmlWidget_radio implements htmlWidgetPlugin {
 			->setValue($bInfo['value'])
 			->setLabel($bInfo['label']);
 			
-			if (isset($data['addCls'])){
-				$button->addClass($data['addCls']);
-			}
-			
 			if (isset($bInfo['labelPosition'])){
 				$button->setLabelPosition($bInfo['labelPosition']);
 			}
@@ -99,6 +122,10 @@ class htmlWidget_radio implements htmlWidgetPlugin {
 				$button->attr('disabled', 'disabled');
 			}
 			
+			if (isset($data['addCls'])){
+				$button->addClass($data['addCls']);
+			}
+
 			if (isset($bInfo['id'])){
 				$button->setId($bInfo['id']);
 			}else{
@@ -106,7 +133,10 @@ class htmlWidget_radio implements htmlWidgetPlugin {
 				$button->setId(strtolower($data['name'] . '_' . str_replace(array('-', ' '), '_', $bInfo['value']) . '_' . round($number)));
 			}
 			
-			if (isset($data['checked']) && $data['checked'] == $bInfo['value']){
+			if (
+				(isset($bInfo['checked']) && ($bInfo['checked'] == $bInfo['value'] || $bInfo['checked'] === true)) ||
+				(isset($data['checked']) && $data['checked'] == $bInfo['value'])
+			){
 				$button->setChecked(true);
 			}else{
 				$button->setChecked(false);

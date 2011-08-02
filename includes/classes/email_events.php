@@ -1,5 +1,5 @@
 <?php
-if (!defined('STORE_NAME')){
+if (!class_exists('sysConfig')){
 	require_once('includes/application_top.php');
 }
 // require_once(DIR_WS_CLASSES . 'order.php');

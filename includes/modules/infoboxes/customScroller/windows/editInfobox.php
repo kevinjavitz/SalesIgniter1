@@ -241,8 +241,16 @@ foreach(sysLanguage::getLanguages() as $lInfo){
 			</td>
 		</tr>
 		<tr>
+			<td>Scroller Rows:</td>
+			<td><input type="text" name="new_scroller_rows" value="1" size="3"></td>
+		</tr>
+		<tr>
 			<td>Limit Query Results:</td>
 			<td><input type="text" name="new_scroller_query_limit" value="25" size="3"> 0 for no limit</td>
+		</tr>
+		<tr>
+			<td>Show Product Name:</td>
+			<td><input type="checkbox" name="new_scroller_show_product_name" value="1"></td>
 		</tr>
 		<tr>
 			<td>Reflect Blocks:</td>
@@ -307,6 +315,10 @@ foreach(sysLanguage::getLanguages() as $lInfo){
 			'<td><select name="scroller_query[' . $i . ']" class="scrollerQuery">' . $scrollerQueryOptions . '</select></td>' .
 			'</tr>' .
 			'<tr>' .
+			'<td>Scroller Rows:</td>' .
+			'<td><input type="text" name="scroller_rows[' . $i . ']" value="' . (!isset($cInfo->rows) ? 1 : $cInfo->rows) . '" size="3"></td>' .
+			'</tr>' .
+			'<tr>' .
 			'<td>Limit Query Results: </td>' .
 			'<td><input type="text" name="scroller_query_limit[' . $i . ']" size="3" value="' . $cInfo->query_limit . '"> 0 for no limit</td>' .
 			'</tr>' .
@@ -317,6 +329,10 @@ foreach(sysLanguage::getLanguages() as $lInfo){
 			'<tr>' .
 			'<td>Block Height: </td>' .
 			'<td><input type="text" name="scroller_block_height[' . $i . ']" value="' . $cInfo->block_height . '" size="4"> In Pixels</td>' .
+			'</tr>' .
+			'<tr>' .
+			'<td>Show Product Name: </td>' .
+			'<td><input type="checkbox" name="scroller_show_product_name[' . $i . ']" value="1"' . ($cInfo->show_product_name === true ? ' checked=checked' : '') . '></td>' .
 			'</tr>' .
 			'<tr>' .
 			'<td>Reflect Blocks: </td>' .

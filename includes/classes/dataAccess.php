@@ -17,7 +17,7 @@ class dataAccess {
 	}
 
 	public static function establishConnection(){
-		require(DIR_FS_CATALOG . DIR_WS_CLASSES . 'dataAccess/' . self::$accessMethod . '.php');
+		require(sysConfig::getDirFsCatalog() . 'includes/classes/dataAccess/' . self::$accessMethod . '.php');
 		$className = 'dataAccess_' . self::$accessMethod;
 		self::$dataConnector = new $className;
 		self::$dataConnector->connect();
@@ -136,7 +136,7 @@ class dataAccessResult {
 
 	public function reportError($result){
 		global $messageStack;
-		if (ERROR_REPORTING_METHOD == 'display'){
+		if (sysConfig::get('ERROR_REPORTING_METHOD') == 'display'){
 			$errMsg = '<table cellpadding="3" cellspacing="0" border="0">' .
 				'<tr>' .
 					'<td class="main" style="white-space:nowrap;">' . $result['errMsg'] . '</td>' .
@@ -182,7 +182,7 @@ class dataAccessResult {
 		global $messageStack;
 		$this->currentResult = dataAccess::fetchArray($this->Qresource['queryResource']);
 		if (isset($this->currentResult['errMsg']) && !empty($this->currentResult['errMsg'])){
-			if (ERROR_REPORTING_METHOD == 'display'){
+			if (sysConfig::get('ERROR_REPORTING_METHOD') == 'display'){
 				$this->reportError($this->Qresource);
 			}
 		}

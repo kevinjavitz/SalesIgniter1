@@ -1,6 +1,6 @@
 <?php
 if (!class_exists('productListing')){
-	require(DIR_WS_CLASSES . 'product_listing.php');
+	require(sysConfig::getDirFsCatalog() . 'includes/classes/product_listing.php');
 }
 
 class productListing_date extends productListing {

@@ -14,7 +14,7 @@ abstract class InfoBoxCustomScrollerAbstract
 	abstract function show();
 
 	public function buildPrevButton($image) {
-		$imgInfo = getimagesize(sysConfig::getDirFsCatalog() . $image);
+		$imgInfo = getimagesize(sysConfig::get('DIR_FS_DOCUMENT_ROOT') . $image);
 		return htmlBase::newElement('image')
 			->addClass('scrollerPrevImage')
 			->attr('data-width', $imgInfo[0])
@@ -23,7 +23,7 @@ abstract class InfoBoxCustomScrollerAbstract
 	}
 
 	public function buildNextButton($image) {
-		$imgInfo = getimagesize(sysConfig::getDirFsCatalog() . $image);
+		$imgInfo = getimagesize(sysConfig::get('DIR_FS_DOCUMENT_ROOT') . $image);
 		return htmlBase::newElement('image')
 			->addClass('scrollerNextImage')
 			->attr('data-width', $imgInfo[0])
@@ -32,26 +32,14 @@ abstract class InfoBoxCustomScrollerAbstract
 	}
 
 	public function buildList($products, $cInfo) {
-		$List = htmlBase::newElement('ul')->addClass('scrollerList');
+		$numOfLists = $cInfo->rows;
 
-		/*for($i=0; $i<25;$i++){
-			$ListItemImage = htmlBase::newElement('image')
-			->setSource('/images/icon_account.png')
-			->setWidth($cInfo['block_width'])
-			->setHeight($cInfo['block_height'])
-			->thumbnailImage(true);
-			
-			$productLink = 'http://www.test.com';
-			
-			$ListItem = htmlBase::newElement('li')
-			->html('<div class="scrollBlock">' . 
-				'<div class="scrollBlockImage"><a href="' . $productLink . '">' . $ListItemImage->draw() . '</a></div>' . 
-				'<div class="scrollBlockName"><a href="' . $productLink . '">' . 'TESTING' . '</a></div>' . 
-			'</div>');
-			
-			$List->append($ListItem);
-		}*/
+		$Lists = array();
+		for($i=0; $i<$numOfLists; $i++){
+			$Lists[] = htmlBase::newElement('ul')->addClass('scrollerList');
+		}
 
+		$i = 0;
 		foreach($products as $pInfo){
 			$ListItemImage = htmlBase::newElement('image')
 				->setSource('/' . sysConfig::get('DIR_WS_IMAGES') . $pInfo['products_image'])
@@ -79,7 +67,7 @@ abstract class InfoBoxCustomScrollerAbstract
 
 			$ScrollBlock->append($ImageBlock);
 
-			if ($cInfo->reflect_blocks === false){
+			if ($cInfo->show_product_name === true && $cInfo->reflect_blocks === false){
 				$ListItemNameLink = htmlBase::newElement('a')
 					->setHref($productLink)
 					->html($pInfo['ProductsDescription'][0]['products_name']);
@@ -94,13 +82,19 @@ abstract class InfoBoxCustomScrollerAbstract
 			$ListItem = htmlBase::newElement('li')
 				->append($ScrollBlock);
 
-			$List->append($ListItem);
+			$Lists[$i]->append($ListItem);
+			$i++;
+			if ($i == $numOfLists){
+				$i = 0;
+			}
 		}
 
 		$ListContainer = htmlBase::newElement('div')
 			->addClass('scrollerListContainer')
-			->attr('data-block_height', $cInfo->block_height)
-			->append($List);
+			->attr('data-block_height', $cInfo->block_height * $numOfLists);
+		foreach($Lists as $List){
+			$ListContainer->append($List);
+		}
 		return $ListContainer;
 	}
 
