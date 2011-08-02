@@ -82,10 +82,10 @@ class EventManager {
 		if (is_null($toClassName) === true){
 			$toClassName = self::$genericClassName;
 		}
-		if (array_key_exists($toClassName, self::$Observers) === false){
+		if (!isset(self::$Observers[$toClassName])){
 			self::$Observers[$toClassName] = array();
 		}
-		if (array_key_exists($eventName, self::$Observers[$toClassName]) === false){
+		if (!isset(self::$Observers[$toClassName][$eventName])){
 			self::$Observers[$toClassName][$eventName] = array();
 		}
 		$addResource = true;
@@ -157,16 +157,16 @@ class EventManager {
 				$parsed = explode('\\', $eventName);
 				$className = $parsed[0];
 				$eventName = $parsed[1];
-				if (array_key_exists($className, self::$Observers)){
+				if (isset(self::$Observers[$className])){
 					$ObserverArray = self::$Observers[$className];
 				}
 			}
 			else{
-				if (array_key_exists(self::$genericClassName, self::$Observers)){
+				if (isset(self::$Observers[self::$genericClassName])){
 					$ObserverArray = self::$Observers[self::$genericClassName];
 				}
 			}
-			if (array_key_exists($eventName, $ObserverArray)){
+			if (isset($ObserverArray[$eventName])){
 				foreach($ObserverArray[$eventName] as $idx => $Event){
 					$Event->start();
 					$returnArr[] = call_user_func_array(array($Event, 'update'), $args);
@@ -214,7 +214,7 @@ class EventManager {
 				$parsed = explode('\\', $eventName);
 				$className = $parsed[0];
 				$eventName = $parsed[1];
-				if (array_key_exists($className, self::$Observers)){
+				if (isset(self::$Observers[$className])){
 					$ObserverArray = self::$Observers[$className];
 				}
 				else{
@@ -222,14 +222,14 @@ class EventManager {
 				}
 			}
 			else{
-				if (array_key_exists(self::$genericClassName, self::$Observers)){
+				if (isset(self::$Observers[self::$genericClassName])){
 					$ObserverArray = self::$Observers[self::$genericClassName];
 				}else{
 					$ObserverArray = null;
 				}
 			}
 			if (is_array($ObserverArray)){
-				if (array_key_exists($eventName, $ObserverArray)){
+				if (isset($ObserverArray[$eventName])){
 					foreach($ObserverArray[$eventName] as $idx => $Event){
 						$Event->start();
 						call_user_func_array(array($Event, 'update'), $args);

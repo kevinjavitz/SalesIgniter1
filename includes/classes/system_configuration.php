@@ -270,15 +270,10 @@
 		 * @return void
 		 */
 		public static function load(){
-			$Qconfig = Doctrine_Query::create()
-			->select('configuration_key, configuration_value')
-			->from('Configuration')
-			->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
-			foreach($Qconfig as $cfg){
+			$Qconfig = mysql_query('select configuration_key, configuration_value from configuration');
+			while($cfg = mysql_fetch_assoc($Qconfig)){
 				self::set($cfg['configuration_key'], $cfg['configuration_value']);
 			}
-			$Qconfig = null;
-			unset($Qconfig);
 		}
 		
 		/**
@@ -333,19 +328,13 @@
 		 */
 		public static function get($k, $load = true){
 			$return = '';
-			if (array_key_exists($k, self::$config)){
+			if (isset(self::$config[$k])){
 				$return = self::$config[$k];
 			}elseif ($load === true){
-				$Qconfig = Doctrine_Query::create()
-					->select('configuration_value')
-					->from('Configuration')
-					->where('configuration_key = ?', $k)
-					->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
-				if ($Qconfig){
-					$return = $Qconfig[0]['configuration_value'];
-					$Qconfig = null;
-					unset($Qconfig);
-					self::set($k, $return);
+				$Qconfig = mysql_query('select configuration_value from configuration where configuration_key = "' . $k . '"');
+				if (mysql_num_rows($Qconfig)){
+					$cfg = mysql_fetch_assoc($Qconfig);
+					self::set($k, $cfg['configuration_value']);
 				}
 			}
 			return $return;
@@ -359,10 +348,10 @@
 		 * @return bool
 		 */
 		public static function exists($k, $load = true){
-			$exists = array_key_exists($k, self::$config);
+			$exists = isset(self::$config[$k]);
 			if ($exists === false && $load === true){
 				self::get($k, true);
-				$exists = array_key_exists($k, self::$config);
+				$exists = isset(self::$config[$k]);
 			}
 			return $exists;
 		}
@@ -401,7 +390,7 @@
 		 * @return array
 		 */
 		public static function explode($k, $glue = ','){
-			if (array_key_exists($k, self::$exploded) === false){
+			if (!isset(self::$exploded[$k])){
 				self::$exploded[$k] = explode($glue, self::get($k));
 			}
 			return self::$exploded[$k];

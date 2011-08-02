@@ -136,15 +136,11 @@ class Extension_multiStore extends ExtensionBase {
 		}
 
 		if(Session::exists('current_store_id')){
-			$Qconfig = Doctrine_Query::create()
-			->select('configuration_key, configuration_value')
-			->from('StoresConfiguration')
-			->where('stores_id = ?', Session::get('current_store_id'))
-			->execute();
-		}
-		if (isset($Qconfig) && $Qconfig->count() > 0){
-			foreach($Qconfig->toArray() as $cInfo){
-				sysConfig::set($cInfo['configuration_key'], $cInfo['configuration_value']);
+			$Qconfig = mysql_query('select configuration_key, configuration_value from stores_configuration where stores_id = "' . Session::get('current_store_id') . '"');
+			if (mysql_num_rows($Qconfig)){
+				while($cInfo = mysql_fetch_assoc($Qconfig)){
+					sysConfig::set($cInfo['configuration_key'], $cInfo['configuration_value']);
+				}
 			}
 		}
 		

@@ -2,6 +2,8 @@
 	class sysLanguage {
 		private static $defines = array();
 		private static $overwritten = array();
+		private static $javascriptDefines = array();
+		private static $javascriptOverwritten = array();
 		private static $catalog_languages = array();
 		private static $browser_languages = '';
 		private static $language = '';
@@ -34,26 +36,19 @@
 				} else {
 					$currency = (sysConfig::get('USE_DEFAULT_LANGUAGE_CURRENCY') == 'true') ? sysConfig::get('LANGUAGE_CURRENCY') : sysConfig::get('DEFAULT_CURRENCY');
 				}
-				$QcurrencyValue = Doctrine_Query::create()
-				->select('value')
-				->from('CurrenciesTable')
-				->where('code = ?', $currency)
-				->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
-				
+				$QcurrencyValue = mysql_query('select value from currencies where code = "' . $currency . '"');
+				$currencyValue = mysql_fetch_assoc($QcurrencyValue);
+
 				Session::set('currency', $currency);
-				Session::set('currency_value', $QcurrencyValue[0]['value']);
+				Session::set('currency_value', $currencyValue['value']);
 			}
 		}
 		
 		public static function getLanguages($reload = false){
 			if (empty(self::$catalog_languages) || $reload === true){
-				$Qlanguage = Doctrine_Query::create()
-				->from('Languages')
-				->where('status = ?', '1')
-				->orderBy('sort_order')
-				->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
-				if ($Qlanguage){
-					foreach($Qlanguage as $lInfo){
+				$Qlanguages = mysql_query('select * from languages where status = 1 order by sort_order');
+				if (mysql_num_rows($Qlanguages)){
+					while($lInfo = mysql_fetch_assoc($Qlanguages)){
 						self::$catalog_languages[$lInfo['code']] = array(
 							'id'        => $lInfo['languages_id'],
 							'code'      => $lInfo['code'],
@@ -139,14 +134,10 @@
 		public static function getDirectory($lang = null){
 			$dir = null;
 			if (is_null($lang) === false){
-				$Qlanguage = Doctrine_Query::create()
-				->select('directory')
-				->from('Languages')
-				->where('code = ?', $lang)
-				->orWhere('languages_id = ?', $lang)
-				->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
-				if ($Qlanguage){
-					$dir = $Qlanguage[0]['directory'];
+				$Qdir = mysql_query('select directory from languages where code = "' . $lang . '" or languages_id = "' . $lang . '"');
+				if (mysql_num_rows($Qdir)){
+					$result = mysql_fetch_assoc($Qdir);
+					$dir = $result['directory'];
 				}
 			}else{
 				$dir = self::$language['directory'];
@@ -183,17 +174,19 @@
 		public static function loadDefinitions($filePath, $forcedEnv = null){
 			global $App, $messageStack;
 			//$langFile = strtolower(self::getName()) . '.xml';
-			
+
 			if (substr($filePath, -3) != 'xml'){
 				$langFile = 'global.xml';
 				$prependPath = '';
 				if (substr($filePath, 0, 1) != '/'){
-					$prependPath = sysConfig::getDirFsCatalog();
+					if (substr($filePath, 0, strlen(sysConfig::getDirFsCatalog())) != sysConfig::getDirFsCatalog()){
+						$prependPath = sysConfig::getDirFsCatalog();
+					}
 				}
 
 				$filePath = $prependPath . $filePath . $langFile;
 			}
-			
+
 			if (file_exists($filePath)){
 				$langData = simplexml_load_file(
 					$filePath,
@@ -202,7 +195,17 @@
 				);
 
 				foreach($langData->define as $langDefine){
-					self::set((string) $langDefine['key'], (string) $langDefine[0]);
+					if (isset($langDefine['javascript']) && (string) $langDefine['javascript'] == 'true'){
+						self::setJavascript((string) $langDefine['key'], (string) $langDefine[0]);
+					}
+					
+					if (isset($langDefine['php'])){
+						if ((string) $langDefine['php'] == 'true'){
+							self::set((string) $langDefine['key'], (string) $langDefine[0]);
+						}
+					}else{
+						self::set((string) $langDefine['key'], (string) $langDefine[0]);
+					}
 				}
 			}else{
 				//trigger_error('Language file does not exist (' . $filePath . ')', E_USER_ERROR);
@@ -241,7 +244,7 @@
 		}
 		
 		public static function exists($key){
-			return array_key_exists($key, self::$defines);
+			return isset(self::$defines[$key]);
 		}
 		
 		/*
@@ -249,7 +252,7 @@
 		 */
 		public static function set($key, $val){
 			global $messageStack;
-			if (array_key_exists($key, self::$defines) === true){
+			if (isset(self::$defines[$key])){
 				self::$overwritten[$key][] = array(
 					'original' => self::$defines[$key],
 					'new'      => $val
@@ -265,6 +268,31 @@
 			}
 			
 			self::$defines[$key] = $val;
+		}
+		
+		public static function setJavascript($key, $val){
+			global $messageStack;
+			if (isset(self::$javascriptDefines[$key])){
+				self::$javascriptOverwritten[$key][] = array(
+					'original' => self::$javascriptDefines[$key],
+					'new'      => $val
+				);
+				//trigger_error('Language key already defined (' . $key . ')', E_USER_NOTICE);
+				/*$messageStack->addSession('footerStack', array(
+					'Server Message' => 'Language key already defined',
+					'Key Sent' => $key
+				), 'error');*/
+			}
+			
+			self::$javascriptDefines[$key] = $val;
+		}
+		
+		public static function hasJavascriptDefines(){
+			return !empty(self::$javascriptDefines);
+		}
+		
+		public static function getJavascriptDefines(){
+			return self::$javascriptDefines;
 		}
 		
 		/*
@@ -310,7 +338,7 @@
 
 			$langSet = false;
 			foreach($languagesSorted as $code){
-				if (array_key_exists(strtolower($code), self::$catalog_languages)){
+				if (isset(self::$catalog_languages[strtolower($code)])){
 					self::$language = self::$catalog_languages[strtolower($code)];
 					$langSet = true;
 					break;

@@ -4,7 +4,7 @@ class Session {
 	private static $cookiePath;
 	private static $cookieDomain;
 
-	public function __construct(){
+	public static function init(){
 		global $request_type;
 		self::resetSaveHandler();
 		
@@ -66,14 +66,10 @@ class Session {
 	}
 
 	public static function _read($key){
-		$Qvalue = Doctrine_Query::create()
-		->select('value')
-		->from('Sessions')
-		->where('sesskey = ?', $key)
-		->andWhere('expiry > ?', time())
-		->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
-		if ($Qvalue){
-			$value = $Qvalue[0]['value'];
+		$Qvalue = mysql_query('select value from sessions where sesskey = "' . $key .'" and expiry > "' . time() . '"');
+		if (mysql_num_rows($Qvalue)){
+			$Result = mysql_fetch_assoc($Qvalue);
+			$value = stripslashes($Result['value']);
 			if (!empty($value)){
 				return $value;
 			}
@@ -82,34 +78,24 @@ class Session {
 	}
 
 	public static function _write($key, $val){
-		$Sessions = Doctrine_Core::getTable('Sessions');
-		
-		$Session = $Sessions->findOneBySesskey($key);
-		if (!$Session){
-			$Session = $Sessions->create();
-			$Session->sesskey = $key;
+		$Qcheck = mysql_query('select count(*) as total from sessions where sesskey = "' . $key . '"');
+		$check = mysql_fetch_assoc($Qcheck);
+
+		if ($check['total'] <= 0){
+			mysql_query('insert into sessions (sesskey, value, expiry) values ("' . $key . '", "' . addslashes($val) . '", "' . (time() + self::$sessionLife) . '")') or die('ERROR:' . mysql_error());
+		}else{
+			mysql_query('update sessions set value = "' . addslashes($val) . '", expiry = "' . (time() + self::$sessionLife) . '" where sesskey = "' . $key . '"') or die('ERROR:' . mysql_error());
 		}
-		
-		$Session->value = $val;
-		$Session->expiry = (time() + self::$sessionLife);
-		
-		$Session->save();
 		return true;
 	}
 
 	public static function _destroy($key){
-		Doctrine_Query::create()
-		->delete('Sessions')
-		->where('sesskey = ?', $key)
-		->execute();
+		mysql_query('delete from sessions where sesskey = "' . $key . '"');
 		return true;
 	}
 
 	public static function _gc($maxLifetime){
-		Doctrine_Query::create()
-		->delete('Sessions')
-		->where('expiry < ?', time())
-		->execute();
+		mysql_query('delete from sessions where expiry < "' . time() . '"');
 		return true;
 	}
 
@@ -155,7 +141,7 @@ class Session {
 
 	public static function set($varName, $value, $useKey = null){
 		if (is_null($useKey) === false){
-			if (!array_key_exists($varName, $_SESSION) || !is_array($_SESSION[$varName])){
+			if (!isset($_SESSION[$varName]) || !is_array($_SESSION[$varName])){
 				$_SESSION[$varName] = array();
 			}
 			$_SESSION[$varName][$useKey] = $value;
@@ -214,9 +200,9 @@ class Session {
 	}
 
 	public static function exists($varName, $useKey = null){
-		if (array_key_exists($varName, $_SESSION)){
+		if (isset($_SESSION[$varName])){
 			if (is_null($useKey) === false){
-				if (array_key_exists($useKey, $_SESSION[$varName])){
+				if (isset($_SESSION[$varName][$useKey])){
 					return true;
 				}
 			}else{

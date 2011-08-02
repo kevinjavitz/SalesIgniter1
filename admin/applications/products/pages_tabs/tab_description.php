@@ -15,8 +15,16 @@
 		$ProductsUrl = htmlBase::newElement('input')
 		->setName('products_url[' . $lID . ']');
 
-		$ProductsDescription = htmlBase::newElement('ck_editor')
-		->setName('products_description[' . $lID . ']');
+		if(sysConfig::get('ENABLE_HTML_EDITOR') == 'false') {
+			$ProductsDescription = htmlBase::newElement('textarea')
+					->attr('rows', '8')
+					->attr('cols', '23')
+					->setName('products_description[' . $lID . ']');
+		} else {
+			$ProductsDescription = htmlBase::newElement('ck_editor')
+					->setName('products_description[' . $lID . ']');
+
+		}
 
 		$ProductsSeoUrl = htmlBase::newElement('input')
 		->setName('products_seo_url[' . $lID . ']');

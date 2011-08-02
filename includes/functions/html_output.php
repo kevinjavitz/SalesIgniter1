@@ -57,7 +57,7 @@ function buildAppLink($o){
 	if (!is_null($o['params'])){
 		parse_str($o['params'], $vars);
 		$paramsParsed = true;
-		if ($o['app'] == 'product' && array_key_exists('products_id', $vars)){
+		if ($o['app'] == 'product' && isset($vars['products_id'])){
 			if (!isset($productNameResults[(int)$vars['products_id']])){
 				$Qproduct = Doctrine_Query::create()
 				->select('products_name')
@@ -82,7 +82,7 @@ function buildAppLink($o){
 				}
 			}
 		}else{
-			if (array_key_exists('appExt', $vars)){
+			if (isset($vars['appExt'])){
 				$link .= $vars['appExt'] . '/';
 			}
 		}
@@ -91,9 +91,9 @@ function buildAppLink($o){
 	$link .= $o['app'] . '/' . $o['page'] . '.php';
 	
 	if ($paramsParsed === true){
-		if (array_key_exists('app', $vars)) unset($vars['app']);
-		if (array_key_exists('appPage', $vars)) unset($vars['appPage']);
-		if (array_key_exists('appExt', $vars)) unset($vars['appExt']);
+		if (isset($vars['app'])) unset($vars['app']);
+		if (isset($vars['appPage'])) unset($vars['appPage']);
+		if (isset($vars['appExt'])) unset($vars['appExt']);
 	}
 		
 	if (isset($vars) && sizeof($vars) > 0){
@@ -117,11 +117,11 @@ function itw_app_link($params=null, $appName=null, $appPage=null, $connection='N
 	if (!is_null($params)){
 		parse_str($params, $vars);
 		$paramsParsed = true;
-		if (array_key_exists('appExt', $vars)){
+		if (isset($vars['appExt'])){
 			$appExt = $vars['appExt'];
 		}
 
-		if (array_key_exists('rType', $vars)){
+		if (isset($vars['rType'])){
 			if ($vars['rType'] == 'ajax' && $connection == 'NONSSL' && $request_type == 'SSL'){
 				$connection = 'SSL';
 			}
@@ -142,7 +142,7 @@ function itw_catalog_app_link($params=null, $appName=null, $appPage=null, $conne
 	if (!is_null($params)){
 		parse_str($params, $vars);
 		$paramsParsed = true;
-		if (array_key_exists('appExt', $vars)){
+		if (isset($vars['appExt'])){
 			$appExt = $vars['appExt'];
 		}
 	}
@@ -161,7 +161,7 @@ function itw_admin_app_link($params=null, $appName=null, $appPage=null, $connect
 	if (!is_null($params)){
 		parse_str($params, $vars);
 		$paramsParsed = true;
-		if (array_key_exists('appExt', $vars)){
+		if (isset($vars['appExt'])){
 			$appExt = $vars['appExt'];
 		}
 	}

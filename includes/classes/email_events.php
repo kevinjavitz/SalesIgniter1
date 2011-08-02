@@ -1,5 +1,5 @@
 <?php
-if (!defined('STORE_NAME')){
+if (!class_exists('sysConfig')){
 	require_once('includes/application_top.php');
 }
 // require_once(DIR_WS_CLASSES . 'order.php');
@@ -77,6 +77,7 @@ class emailEvent {
 
 	public function parseTemplateFile(){
 		$file = '';
+		$this->templateFileUnparsed = str_replace('<--APPEND-->','',$this->templateFileUnparsed);
 		if (stristr($this->templateFileUnparsed, '{$')){
 			$file = $this->replaceVar($this->templateFileUnparsed);
 		}else{
@@ -127,6 +128,7 @@ class emailEvent {
 				}
 			}
 		}
+		$templateText = str_replace('<--APPEND-->','',$templateText);
 		return $templateText;
 	}
 
@@ -165,11 +167,13 @@ class emailEvent {
 
 				if (is_null($this->templateFileParsed) === true){
 					$this->templateFileUnparsed = $this->templateData[0]['email_templates_attach'];
+					EventManager::notify('EmailEventPreParseTemplateFile_' . $this->eventName, &$this->templateFileUnparsed);
 					$this->templateFileParsed = $this->parseTemplateFile();
 				}
 
 				if (is_null($this->templateParsed) === true){
 					$this->templateUnparsed = explode("\n", $emailInfo['email_templates_content']);
+					EventManager::notify('EmailEventPreParseTemplateText_' . $this->eventName, &$this->templateUnparsed);
 					$this->templateParsed = $this->parseTemplateText();
 				}
 			}

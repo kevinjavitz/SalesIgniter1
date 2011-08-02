@@ -26,6 +26,10 @@ class Coupons extends Doctrine_Record {
 			'foreign' => 'coupon_id',
 			'cascade' => array('delete')
 		));
+		$this->hasOne('CouponEmailTrack',array(
+			'local'	=>	'coupon_id',
+			'foreign'	=> 'coupon_id'
+		));
 	}
 	
 	public function setTableDefinition(){
@@ -71,6 +75,16 @@ class Coupons extends Doctrine_Record {
 		));
 		
 		$this->hasColumn('coupon_minimum_order', 'decimal', 8, array(
+			'type' => 'decimal',
+			'length' => 8,
+			'unsigned' => 0,
+			'primary' => false,
+			'default' => '0.0000',
+			'notnull' => true,
+			'autoincrement' => false,
+			'scale' => false,
+		));
+		$this->hasColumn('coupon_maximum_order', 'decimal', 8, array(
 			'type' => 'decimal',
 			'length' => 8,
 			'unsigned' => 0,

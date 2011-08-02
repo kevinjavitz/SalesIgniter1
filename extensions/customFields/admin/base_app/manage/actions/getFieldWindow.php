@@ -105,6 +105,14 @@
 	->setLabelPosition('after')
 	->setValue('1')
 	->setChecked(false);
+
+	$includeSearchCheckbox = htmlBase::newElement('checkbox')
+	->setId('showOnSite_' . $windowAction)
+	->setName('include_in_search')
+	->setLabel('<b>' . sysLanguage::get('ENTRY_INCLUDE_IN_SEARCH') . '</b>')
+	->setLabelPosition('after')
+	->setValue('1')
+	->setChecked(false);
 	
 	$searchKeyInput = htmlBase::newElement('input')->setName('search_key');
 	$maxCharsInput = htmlBase::newElement('input')->setSize(4)->setName('labels_max_chars');
@@ -134,6 +142,9 @@
 		$maxCharsInput->setValue($Field['labels_max_chars']);
 		
 		$finalTable->attr('field_id', $Field['field_id']);
+
+		$includeSearchCheckbox->setId('showOnSite_' . $Field['field_id'] . $windowAction)
+		->setChecked(($Field['include_in_search'] == '1'));
 	}
 			
 	$finalTable->addBodyRow(array('columns' => array(
@@ -185,7 +196,9 @@
 	$finalTable->addBodyRow(array('columns' => array(
 		array('addCls' => 'main', 'text' => $maxCharsInput)
 	)));
-
+	$finalTable->addBodyRow(array('columns' => array(
+		array('addCls' => 'main', 'text' => $includeSearchCheckbox)
+	)));
 	EventManager::notify('CustomFieldsNewOptions', $Field, &$finalTable, $windowAction);
 
 	EventManager::attachActionResponse($finalTable->draw(), 'html');

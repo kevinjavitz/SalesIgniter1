@@ -41,6 +41,228 @@ class Extension_templateManager extends ExtensionBase {
 			}
 		}
 	}
+
+	public function buildLayout(&$Construct, $layoutId){
+		$Qcontainers = mysql_query('select * from template_manager_layouts_containers where layout_id = "' . $layoutId . '" and parent_id = 0 order by sort_order');
+		if (mysql_num_rows($Qcontainers)){
+			while($cInfo = mysql_fetch_assoc($Qcontainers)){
+				$MainEl = htmlBase::newElement('div')
+					->addClass('container');
+
+				if (($cfgInfo = $this->getConfigInfo('container', $cInfo['container_id'])) !== false){
+					$this->addInputs($MainEl, $cfgInfo);
+				}
+
+				if (($cssInfo = $this->getStyleInfo('container', $cInfo['container_id'])) !== false){
+					$this->addStyles($MainEl, $cssInfo);
+				}
+
+				if (($Columns = $this->getContainerColumns($cInfo['container_id'])) !== false){
+					$this->processContainerColumns($MainEl, $Columns);
+				}
+
+				if (($Children = $this->getContainerChildren($cInfo['container_id'])) !== false){
+					$this->processContainerChildren($MainEl, $Children);
+				}
+				$Construct->append($MainEl);
+			}
+		}
+	}
+
+	private function getConfigInfo($type, $id){
+		if ($type == 'container'){
+			$idCol = 'container_id';
+			$table = 'template_manager_layouts_containers_configuration';
+		}
+		elseif ($type == 'column'){
+			$idCol = 'column_id';
+			$table = 'template_manager_layouts_columns_configuration';
+		}
+		elseif ($type == 'widget'){
+			$idCol = 'widget_id';
+			$table = 'template_manager_layouts_widgets_configuration';
+		}
+
+		$cfgInfo = false;
+		$Query = mysql_query('select * from ' . $table . ' where ' . $idCol . ' = "' . $id . '"');
+		if (mysql_num_rows($Query)){
+			$cfgInfo = array();
+			while($Result = mysql_fetch_assoc($Query)){
+				$cfgInfo[] = $Result;
+			}
+		}
+		return $cfgInfo;
+	}
+
+	private function getStyleInfo($type, $id){
+		if ($type == 'container'){
+			$idCol = 'container_id';
+			$table = 'template_manager_layouts_containers_styles';
+		}
+		elseif ($type == 'column'){
+			$idCol = 'column_id';
+			$table = 'template_manager_layouts_columns_styles';
+		}
+		elseif ($type == 'widget'){
+			$idCol = 'widget_id';
+			$table = 'template_manager_layouts_widgets_styles';
+		}
+
+		$cssInfo = false;
+		$Query = mysql_query('select * from ' . $table . ' where ' . $idCol . ' = "' . $id . '"');
+		if (mysql_num_rows($Query)){
+			$cssInfo = array();
+			while($Result = mysql_fetch_assoc($Query)){
+				$cssInfo[] = $Result;
+			}
+		}
+		return $cssInfo;
+	}
+
+	private function getContainerColumns($id){
+		$Columns = false;
+		$Query = mysql_query('select * from template_manager_layouts_columns where container_id = "' . $id . '" order by sort_order');
+		if (mysql_num_rows($Query)){
+			$Columns = array();
+			while($Result = mysql_fetch_assoc($Query)){
+				$Columns[] = $Result;
+			}
+		}
+		return $Columns;
+	}
+
+	private function getContainerChildren($id){
+		$Children = false;
+		$Query = mysql_query('select * from template_manager_layouts_containers where parent_id = "' . $id . '" order by sort_order');
+		if (mysql_num_rows($Query)){
+			$Children = array();
+			while($Result = mysql_fetch_assoc($Query)){
+				$Children[] = $Result;
+			}
+		}
+		return $Children;
+	}
+
+	private function getColumnWidgets($id){
+		$Widgets = false;
+		$Query = mysql_query('select * from template_manager_layouts_widgets where column_id = "' . $id . '" order by sort_order');
+		if (mysql_num_rows($Query)){
+			$Widgets = array();
+			while($Result = mysql_fetch_assoc($Query)){
+				$Widgets[] = $Result;
+			}
+		}
+		return $Widgets;
+	}
+
+	private function addStyles($El, $Styles) {
+		if ($El->hasAttr('id') && $El->attr('id') != ''){
+			return;
+		}
+
+		$css = array();
+		foreach($Styles as $sInfo){
+			if (substr($sInfo['definition_value'], 0, 1) == '{' || substr($sInfo['definition_value'], 0, 1) == '['){
+				$css[$sInfo['definition_key']] = json_decode($sInfo['definition_value']);
+			}
+			else {
+				$css[$sInfo['definition_key']] = $sInfo['definition_value'];
+			}
+			$El->css($sInfo['definition_key'], $css[$sInfo['definition_key']]);
+		}
+	}
+
+	private function addInputs($El, $Config) {
+		foreach($Config as $cInfo){
+			if ($cInfo['configuration_key'] != 'id') {
+				continue;
+			}
+
+			$El->attr('id', $cInfo['configuration_value']);
+		}
+	}
+
+	private function processContainerChildren(&$El, $ChildArr) {
+		foreach($ChildArr as $cInfo){
+			$NewEl = htmlBase::newElement('div')
+				->addClass('container');
+
+			if (($cfgInfo = $this->getConfigInfo('container', $cInfo['container_id'])) !== false){
+				$this->addInputs($NewEl, $cfgInfo);
+			}
+
+			if (($cssInfo = $this->getStyleInfo('container', $cInfo['container_id'])) !== false){
+				$this->addStyles($NewEl, $cssInfo);
+			}
+
+			$El->append($NewEl);
+
+			if (($Columns = $this->getContainerColumns($cInfo['container_id'])) !== false){
+				$this->processContainerColumns($NewEl, $Columns);
+			}
+
+			if (($Children = $this->getContainerChildren($cInfo['container_id'])) !== false){
+				$this->processContainerChildren($NewEl, $Children);
+			}
+		}
+	}
+
+	private function processContainerColumns(&$Container, $ColArr) {
+		foreach($ColArr as $cInfo){
+			$ColEl = htmlBase::newElement('div')
+				->addClass('column');
+
+			if (($cfgInfo = $this->getConfigInfo('column', $cInfo['column_id'])) !== false){
+				$this->addInputs($ColEl, $cfgInfo);
+			}
+
+			if (($cssInfo = $this->getStyleInfo('column', $cInfo['column_id'])) !== false){
+				$this->addStyles($ColEl, $cssInfo);
+			}
+
+			$WidgetHtml = '';
+			if (($Widgets = $this->getColumnWidgets($cInfo['column_id'])) !== false){
+				foreach($Widgets as $wInfo){
+					$WidgetSettings = '';
+					if (($cfgInfo = $this->getConfigInfo('widget', $wInfo['widget_id'])) !== false){
+						foreach($cfgInfo as $cfInfo){
+							if ($cfInfo['configuration_key'] == 'widget_settings'){
+								$WidgetSettings = json_decode($cfInfo['configuration_value']);
+							}
+						}
+					}
+
+					$className = 'InfoBox' . ucfirst($wInfo['identifier']);
+					if (!class_exists($className)){
+						$QboxPath = Doctrine_Query::create()
+							->select('box_path')
+							->from('TemplatesInfoboxes')
+							->where('box_code = ?', $wInfo['identifier'])
+							->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+						require($QboxPath[0]['box_path'] . 'infobox.php');
+					}
+					$Class = new $className;
+
+					if (isset($WidgetSettings->template_file) && !empty($WidgetSettings->template_file)){
+						$Class->setBoxTemplateFile($WidgetSettings->template_file);
+					}
+					if (isset($WidgetSettings->id) && !empty($WidgetSettings->id)){
+						$Class->setBoxId($WidgetSettings->id);
+					}
+					if (isset($WidgetSettings->widget_title) && !empty($WidgetSettings->widget_title)){
+						$Class->setBoxHeading($WidgetSettings->widget_title->{Session::get('languages_id')});
+					}
+
+					$Class->setWidgetProperties($WidgetSettings);
+
+					$WidgetHtml .= $Class->show();
+				}
+			}
+			$ColEl->html($WidgetHtml);
+
+			$Container->append($ColEl);
+		}
+	}
 }
 /* @TODO: Find a better place for this stuff */
 global $jqueryThemeDir, $jqueryThemeBG, $jqueryThemeIcons, $jqueryThemeImages, $templateDir;

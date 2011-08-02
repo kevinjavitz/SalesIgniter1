@@ -1,12 +1,17 @@
 <?php
   class dataAccess_mysql implements dataAccessConnector {
       private $dbLink;
-      private $server = DB_SERVER;
-      private $username = DB_SERVER_USERNAME;
-      private $password = DB_SERVER_PASSWORD;
-      private $databaseName = DB_DATABASE;
+      private $server;
+      private $username;
+      private $password;
+      private $databaseName;
       
       public function __construct($server = false, $user = false, $pass = false, $dbName = false){
+	      $this->server = sysConfig::get('DB_SERVER');
+	      $this->username = sysConfig::get('DB_SERVER_USERNAME');
+	      $this->password = sysConfig::get('DB_SERVER_PASSWORD');
+	      $this->databaseName = sysConfig::get('DB_DATABASE');
+
           if ($server !== false){
               $this->server = $server;
           }
