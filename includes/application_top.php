@@ -22,7 +22,7 @@
 	}
 	register_shutdown_function('onShutdown');
 
-	define('APPLICATION_ENVIRONMENT', 'catalog');
+	define('APPLICATION_ENVIRONMENT', (isset($_GET['env']) ? $_GET['env'] : 'catalog'));
 
 	// start the timer for the page parse time log
 	define('PAGE_PARSE_START_TIME', microtime());
@@ -40,12 +40,6 @@
 	 * Load system path/database settings
 	 */
 	sysConfig::init();
-
-	if (strlen(DB_SERVER) < 1) {
-		if (is_dir('install')) {
-			header('Location: install/index.php');
-		}
-	}
 
 	require(sysConfig::getDirFsCatalog() . 'ext/Doctrine.php');
 	spl_autoload_register(array('Doctrine_Core', 'autoload'));
@@ -134,6 +128,7 @@ require(sysConfig::getDirFsCatalog() . 'includes/classes/htmlBase.php');
 	// define general functions used application-wide
 	require(sysConfig::getDirFsCatalog() . 'includes/functions/general.php');
 	require(sysConfig::getDirFsCatalog() . 'includes/functions/crypt.php');
+	require(sysConfig::getDirFsCatalog() . 'includes/classes/system_modules_loader.php');
 	require(sysConfig::getDirFsCatalog() . 'includes/modules/infoboxes/InfoBoxAbstract.php');
 	require(sysConfig::getDirFsCatalog() . 'includes/functions/html_output.php');
 
@@ -257,7 +252,6 @@ require(sysConfig::getDirFsCatalog() . 'includes/classes/htmlBase.php');
 
 	$ExceptionManager->initSessionMessages();
 
-	require(sysConfig::getDirFsCatalog() . 'includes/classes/system_modules_loader.php');
 	require(sysConfig::getDirFsCatalog() . 'includes/modules/orderShippingModules/modules.php');
 	require(sysConfig::getDirFsCatalog() . 'includes/modules/orderPaymentModules/modules.php');
 	require(sysConfig::getDirFsCatalog() . 'includes/modules/orderTotalModules/modules.php');
@@ -338,8 +332,9 @@ require(sysConfig::getDirFsCatalog() . 'includes/classes/htmlBase.php');
 	EventManager::notify('ApplicationTopBeforeCartAction');
 
 	// Shopping cart actions
-	$action = (isset($_GET['action']) ? $_GET['action'] : '');
+	$action = (isset($_GET['action']) ? $_GET['action'] : (isset($_POST['action']) ? $_POST['action'] : ''));
 
+	if (!empty($action)) {
 	if (isset($_POST['update_product']))       $action = 'update_product';
 	if (isset($_POST['add_product']))          $action = 'add_product';
 	if (isset($_POST['buy_now']))              $action = 'buy_now';
@@ -354,7 +349,6 @@ require(sysConfig::getDirFsCatalog() . 'includes/classes/htmlBase.php');
 
 	EventManager::notify('ApplicationTopActionCheckPost', &$action);
 
-	if (!empty($action)) {
 		// redirect the customer to a friendly cookie-must-be-enabled page if cookies are disabled
 		if ($session_started == false) {
 			tep_redirect(itw_app_link('appExt=infoPages', 'show_page', 'cookie_usage'));
@@ -630,39 +624,28 @@ require(sysConfig::getDirFsCatalog() . 'includes/classes/htmlBase.php');
 	// add category names or the manufacturer name to the breadcrumb trail
 	if (isset($cPath_array)) {
 		for ($i=0, $n=sizeof($cPath_array); $i<$n; $i++) {
-			$Qcategory = Doctrine_Query::create()
-			->select('categories_name')
-			->from('CategoriesDescription')
-			->where('categories_id = ?', (int) $cPath_array[$i])
-			->andWhere('language_id = ?', Session::get('languages_id'))
-			->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
-			if ($Qcategory){
-				$breadcrumb->add($Qcategory[0]['categories_name'], itw_app_link('cPath=' . implode('_', array_slice($cPath_array, 0, ($i+1))), 'index', 'default'));
+			$Qcategory = mysql_query('select categories_name from categories_description where categories_id = "' . (int) $cPath_array[$i] . '" and language_id = "' . Session::get('languages_id') . '"');
+			if (mysql_num_rows($Qcategory)){
+				$Category = mysql_fetch_assoc($Qcategory);
+				$breadcrumb->add($Category['categories_name'], itw_app_link('cPath=' . implode('_', array_slice($cPath_array, 0, ($i+1))), 'index', 'default'));
 			} else {
 				break;
 			}
 		}
 	} elseif (isset($_GET['manufacturers_id'])) {
-		$Qmanufacturer = Doctrine_Query::create()
-		->select('manufacturers_name')
-		->from('Manufacturers')
-		->where('manufacturers_id = ?', (int) $_GET['manufacturers_id'])
-		->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
-		if ($Qmanufacturer){
-			$breadcrumb->add($Qmanufacturer[0]['manufacturers_name'], itw_app_link('manufacturers_id=' . $_GET['manufacturers_id'], 'index', 'default'));
+		$Qmanufacturer = mysql_query('select manufacturers_name from manufacturers where manufacturers_id = "' . (int) $_GET['manufacturers_id'] . '"');
+		if (mysql_num_rows($Qmanufacturer)){
+			$Manufacturer = mysql_fetch_assoc($Qmanufacturer);
+			$breadcrumb->add($Manufacturer['manufacturers_name'], itw_app_link('manufacturers_id=' . (int) $_GET['manufacturers_id'], 'index', 'default'));
 		}
 	}
 
 	// add the products model to the breadcrumb trail
 	if (isset($_GET['products_id'])) {
-		$Qproduct = Doctrine_Query::create()
-		->select('products_name')
-		->from('ProductsDescription')
-		->where('products_id = ?', (int)$_GET['products_id'])
-		->andWhere('language_id = ?', Session::get('languages_id'))
-		->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
-		if ($Qproduct){
-			$breadcrumb->add($Qproduct[0]['products_name'], itw_app_link('products_id=' . $_GET['products_id'], 'product', 'info'));
+		$Qproduct = mysql_query('select products_name from products_description where products_id = "' . (int)$_GET['products_id'] . '" and language_id = "' . Session::get('languages_id') . '"');
+		if (mysql_num_rows($Qproduct)){
+			$Product = mysql_fetch_assoc($Qproduct);
+			$breadcrumb->add($Product['products_name'], itw_app_link('products_id=' . (int)$_GET['products_id'], 'product', 'info'));
 		}
 	}
 

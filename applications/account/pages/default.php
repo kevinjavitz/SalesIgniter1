@@ -10,9 +10,10 @@
 
 	$orderHistoryLink = htmlBase::newElement('a')->html(sysLanguage::get('MY_ORDERS_VIEW'))
 	->setHref(itw_app_link(null, 'account', 'history', 'SSL'));
-
-	$newslettersLink = htmlBase::newElement('a')->html(sysLanguage::get('EMAIL_NOTIFICATIONS_NEWSLETTERS'))
-	->setHref(itw_app_link(null, 'account', 'newsletters', 'SSL'));
+	if(sysConfig::get('ACCOUNT_NEWSLETTER') == 'true') {
+		$newslettersLink = htmlBase::newElement('a')->html(sysLanguage::get('EMAIL_NOTIFICATIONS_NEWSLETTERS'))
+		->setHref(itw_app_link(null, 'account', 'newsletters', 'SSL'));
+	}
 
 	$listIcon = '<span class="ui-icon ui-icon-carat-1-e" style="display:inline-block;"></span>';
 
@@ -181,15 +182,15 @@
 			'<li>' . $listIcon . $orderHistoryLink->draw() . '</li>' . 
 		'</ul>' . 
 	'</div>';
-	
-	$pageContents .= '<div class="main" style="margin-top:1em;">' . 
-		'<b>' . sysLanguage::get('EMAIL_NOTIFICATIONS_TITLE') . '</b>' . 
-	'</div>' . 
-	'<div class="ui-widget ui-widget-content ui-corner-all" style="padding:1em;">' . 
-		'<ul class="accountPageLinks">' .
-			'<li>' . $listIcon . $newslettersLink->draw() . '</li>' . 
-		'</ul>' . 
-	'</div>';
-	
+	if(sysConfig::get('ACCOUNT_NEWSLETTER') == 'true') {
+		$pageContents .= '<div class="main" style="margin-top:1em;">' .
+			'<b>' . sysLanguage::get('EMAIL_NOTIFICATIONS_TITLE') . '</b>' .
+		'</div>' .
+		'<div class="ui-widget ui-widget-content ui-corner-all" style="padding:1em;">' .
+			'<ul class="accountPageLinks">' .
+				'<li>' . $listIcon . $newslettersLink->draw() . '</li>' .
+			'</ul>' .
+		'</div>';
+	}
 	$pageContent->set('pageTitle', $pageTitle);
 	$pageContent->set('pageContent', $pageContents);

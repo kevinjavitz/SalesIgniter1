@@ -123,8 +123,8 @@ class Order {
 		return $this->Order['OrdersStatusHistory'];
 	}
 
-	public function listPaymentHistory(){
-		return $this->PaymentManager->show();
+	public function listPaymentHistory($cardData = true){
+		return $this->PaymentManager->show($cardData);
 	}
 
 	public function listTotals(){

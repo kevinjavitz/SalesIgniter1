@@ -58,26 +58,34 @@ class htmlWidget_newGrid implements htmlWidgetPlugin {
 
 	public function draw(){
 		$this->gridElement->append($this->gridHeaderElement)->append($this->gridBodyElement);
-		
-		$output = '<div>';
-		
-		$output .= '<div class="ui-widget ui-widget-header ui-corner-all gridButtonBar" style="margin-bottom:.5em;text-align:right;">';
-		foreach($this->buttons as $button){
-			$output .= $button->draw();
-		}
-		$output .= '</div>';
 
-		$output .= '<div class="ui-widget ui-widget-content">';
-		
+		$output = htmlBase::newElement('div');
+
+		$buttonBar = htmlBase::newElement('div')
+			->addClass('ui-widget ui-widget-header ui-corner-all gridButtonBar')
+			->css(array(
+				'margin-bottom' => '.5em',
+				'text-align' => 'right'
+			));
+
+		foreach($this->buttons as $button){
+			$buttonBar->append($button);
+		}
+
+		$output->append($buttonBar);
+
 		if ($this->useSortBy === true){
 			$this->gridElement
 			->attr('data-sort_key', $this->sortByKey)
 			->attr('data-sort_dir_key', $this->sortByDirKey);
 		}
-		
-		$output .= $this->gridElement->draw();
-		$output .= '</div>';
-		
+
+		$gridContainer = htmlBase::newElement('div')
+			->addClass('ui-widget ui-widget-content')
+			->append($this->gridElement);
+
+		$output->append($gridContainer);
+
 		if ($this->usePages === true && isset($this->pagerBar)){
 			$pageElement = htmlBase::newElement('div')
 			->addClass('ui-widget ui-widget-header ui-corner-all')
@@ -85,9 +93,10 @@ class htmlWidget_newGrid implements htmlWidgetPlugin {
 				'margin-top' => '.5em',
 				'text-align' => 'right'
 			))->html('<span style="line-height:2em;margin-right:1em;">' . $this->pagerBar . '</span>');
-			$output .= $pageElement->draw();
+
+			$output->append($pageElement);
 		}
-		return $output;
+		return $output->draw();
 	}
 	/* Required Functions From Interface: htmlElementPlugin --END-- */
 

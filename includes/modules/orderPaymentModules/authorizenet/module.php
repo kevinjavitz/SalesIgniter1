@@ -538,7 +538,7 @@
 
 					$this->setParameter('customerPaymentProfileId', $payment_profile_id);
 					//$this->setParameter('customerShippingAddressId', $shipping_profile_id);
-					$this->createCustomerProfileTransaction();
+					$this->createCustomerProfileTransaction((($this->getConfigData('MODULE_PAYMENT_AUTHORIZENET_CCMODE') == 'Authorize Only')?'profileTransAuthOnly':'profileTransAuthCapture'));
 					$message = $this->getResponse();
 					//echo 'gs'.$message;
 					if(isset($this->params['orderInvoiceNumber'])){
@@ -586,7 +586,7 @@
 					$this->setParameter('customerProfileId', $profile_id);
 					$this->setParameter('customerPaymentProfileId', $payment_profile_id);
 					//$this->setParameter('customerShippingAddressId', $shipping_profile_id);
-					$this->createCustomerProfileTransaction();
+					$this->createCustomerProfileTransaction((($this->getConfigData('MODULE_PAYMENT_AUTHORIZENET_CCMODE') == 'Authorize Only')?'profileTransAuthOnly':'profileTransAuthCapture'));
 					$message = $this->getResponse();
 
 					if(isset($this->params['orderInvoiceNumber'])){

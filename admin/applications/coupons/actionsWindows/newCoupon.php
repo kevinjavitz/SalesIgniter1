@@ -40,8 +40,10 @@
 	
 	$infoBox->addContentRow($boxIntro);
 	$infoBox->addContentRow(sysLanguage::get('TEXT_INFO_COUPON_STATUS') . '<br>' . tep_draw_radio_field('coupon_active', 'Y', ($Coupon->coupon_active == 'Y')) . '&nbsp;' . sysLanguage::get('TEXT_ENABLED') . '&nbsp;' . tep_draw_radio_field('coupon_active', 'N', ($Coupon->coupon_active == 'N')) . '&nbsp;' . sysLanguage::get('TEXT_DISABLED'));
+	$infoBox->addContentRow(sysLanguage::get('TEXT_INFO_COUPON_FREE_SHIPPING') . '<br>' . tep_draw_checkbox_field('coupon_free_ship', 'Y', ($Coupon->coupon_type == 'S')));
 	$infoBox->addContentRow(sysLanguage::get('TEXT_INFO_COUPON_AMOUNT') . ' - ' . sysLanguage::get('TEXT_INFO_COUPON_AMOUNT_HELP') . '<br>' . tep_draw_input_field('coupon_amount', $Coupon->coupon_amount . ($Coupon->coupon_type == 'P' ? '%' : '')));
 	$infoBox->addContentRow(sysLanguage::get('TEXT_INFO_COUPON_MIN_ORDER') . ' - ' . sysLanguage::get('TEXT_INFO_COUPON_MIN_ORDER_HELP') . '<br>' . tep_draw_input_field('coupon_minimum_order', $Coupon->coupon_minimum_order));
+	$infoBox->addContentRow(sysLanguage::get('TEXT_INFO_COUPON_MAX_ORDER') . ' - ' . sysLanguage::get('TEXT_INFO_COUPON_MAX_ORDER_HELP') . '<br>' . tep_draw_input_field('coupon_maximum_order', $Coupon->coupon_maximum_order));
 	$infoBox->addContentRow(sysLanguage::get('TEXT_INFO_COUPON_CODE') . ' - ' . sysLanguage::get('TEXT_INFO_COUPON_CODE_HELP') . '<br>' . tep_draw_input_field('coupon_code', $Coupon->coupon_code));
 	$infoBox->addContentRow(sysLanguage::get('TEXT_INFO_COUPON_USES_COUPON') . ' - ' . sysLanguage::get('TEXT_INFO_COUPON_USES_COUPON_HELP') . '<br>' . tep_draw_input_field('uses_per_coupon', $Coupon->uses_per_coupon));
 	$infoBox->addContentRow(sysLanguage::get('TEXT_INFO_COUPON_USES_USER') . ' - ' . sysLanguage::get('TEXT_INFO_COUPON_USES_USER_HELP') . '<br>' . tep_draw_input_field('uses_per_user', $Coupon->uses_per_user));

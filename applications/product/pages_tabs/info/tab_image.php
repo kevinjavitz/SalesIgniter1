@@ -12,13 +12,18 @@ EventManager::notify('ProductInfoProductsImageShow', &$image, &$product);
 .productImageGallery a { border:1px solid transparent;display:inline-block;vertical-align:middle;margin:.2em; }
 </style>
 <?php
-	$productsImage = '<div style="text-align:center;float:left;margin:1em;margin-right:2em;" class="ui-widget ui-widget-content ui-corner-all">' . 
-		'<div style="margin:.5em;text-align:center;"><a id="productsImage" class="fancyBox" href="<?php echo $image;?>">' . 
-			'<img class="jqzoom" src="' . $image . '&width=250&height=250" alt="' . $image . '" /><br />' . 
-			sysLanguage::get('TEXT_CLICK_TO_ENLARGE') . 
-		'</a>' . 
-		rating_bar($productName,$productID) . 
-		'</div>';
+	$productsImage = '<div style="text-align:center;float:left;margin:1em;margin-right:2em;" class="ui-widget ui-widget-content ui-corner-all">' .
+                     '<div style="margin:.5em;text-align:center;">';
+	if(sysConfig::get('SHOW_ENLAGE_IMAGE_TEXT') == 'true') {
+		$productsImage .= '<a id="productsImage" class="fancyBox" href="' . $image . '">' .
+						  '<img class="jqzoom" src="' . $image . '&width=250&height=250" alt="' . $image . '" /><br />' .
+						  sysLanguage::get('TEXT_CLICK_TO_ENLARGE') .
+						  '</a>';
+	} else {
+		$productsImage .= '<img src="' . $image . '&width=250&height=250" alt="' . $image . '" /><br />';
+	}
+	$productsImage .= rating_bar($productName,$productID) .
+                  '</div>';
 
 	$QadditionalImages = Doctrine_Query::create()
 	->select('file_name')
@@ -170,6 +175,13 @@ EventManager::notify('ProductInfoProductsImageShow', &$image, &$product);
 		'<div style="clear:both;"></div>' . 
 	'</div>' . 
 	'<div style="clear:both;"></div>';
+
+	$contents = EventManager::notifyWithReturn('ProductInfoAfterPurchaseTypes', &$product);
+	if (!empty($contents)){
+		foreach($contents as $content){
+			echo $content;
+		}
+	}
 
 	if ($product->isBox()){
 		$discs = $product->getDiscs(false, true);

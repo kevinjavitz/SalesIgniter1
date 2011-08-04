@@ -689,6 +689,12 @@ if (!isset($WidgetSettings->linked_to)){
 				$itemTemplate .= $linkTargetMenu->draw() . $field;
 			}
 			$itemTemplate .= '</td>';
+		}else{
+			$options = '';
+			foreach($menuLinkTypes as $k => $v){
+				$options .= '<option value="' . $k . '">' . $v . '</option>';
+			}
+			$itemTemplate .= '<td valign="top"><select name="menu_item_link[' . $i . ']" class="menuLinkType">' . $options . '</select></td>';
 		}
 
 		$itemTemplate .= '<td valign="top"><span class="ui-icon ui-icon-closethick menuItemDelete" tooltip="Delete Item and Children"></span></td>';
@@ -711,6 +717,10 @@ if (!isset($WidgetSettings->linked_to)){
 		$i = 0;
 		foreach($WidgetSettings->menuSettings as $mInfo){
 			$menuItems .= parseMenuItem($mInfo, &$i);
+
+			if (empty($mInfo->children)){
+				$i++;
+			}
 		}
 	}
 

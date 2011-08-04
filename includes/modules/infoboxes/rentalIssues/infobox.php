@@ -30,8 +30,8 @@ class InfoBoxRentalIssues extends InfoBoxAbstract {
 				$customers_rented_query= "SELECT r.customers_queue_id,r.customers_id,r.products_id, p.products_name, r.shipment_date,r.products_barcode FROM ".TABLE_RENTED_QUEUE .' r, '. TABLE_PRODUCTS_DESCRIPTION.' p '. " where p.products_id = r.products_id and p.language_id='".Session::get('languages_id')."' and customers_id ='".$userAccount->getCustomerId() . "'";
 				$rs_rented_product = tep_db_query($customers_rented_query);
 				if (tep_db_num_rows($rs_rented_product) > 0) {
-					$cart_contents_string = '<form name="rental_issues" action="' . itw_app_link(null, 'account', 'rental_issues') . '" method="post">';
-					$cart_contents_string .= tep_draw_hidden_field('action', 'open_ticket');
+					$cart_contents_string = '<form name="rental_issues" action="' . itw_app_link('action=resolve_ticket', 'account', 'rental_issues') . '" method="post">';
+					$cart_contents_string .= tep_draw_hidden_field('type', 'new');
 					$cart_contents_string .= '<table border="0" width="100%" cellspacing="0" cellpadding="0">';
 					$cart_contents_string .= '<tr><td align="right" valign="top" class="infoBoxContents">';
 					//$products = $queue->get_products();

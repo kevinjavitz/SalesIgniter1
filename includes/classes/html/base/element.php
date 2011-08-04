@@ -143,7 +143,7 @@ class htmlElement
 	 * @return bool
 	 */
 	public function hasClass($cls) {
-		return array_key_exists($cls, $this->classes);
+		return isset($this->classes[$cls]);
 	}
 
 	/**

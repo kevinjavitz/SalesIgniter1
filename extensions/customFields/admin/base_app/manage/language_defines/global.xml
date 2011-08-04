@@ -20,4 +20,6 @@
 	<define key="TEXT_TRASH_BIN"><![CDATA[Drop Here To Trash]]></define>
 	<define key="TEXT_BUTTON_NEW_FIELD"><![CDATA[New Field]]></define>
 	<define key="TEXT_BUTTON_NEW_GROUP"><![CDATA[New Group]]></define>
+	<define key="ENTRY_INCLUDE_IN_SEARCH"><![CDATA[Include in quick search:]]></define>
+
 </definitions>

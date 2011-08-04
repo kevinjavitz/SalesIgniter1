@@ -1,0 +1,32 @@
+<ConfigurationGroup>
+	<title>Referral System</title>
+	<key>referral</key>
+	<description>Configuration Settings For The Referral System Extension</description>
+	<Configuration>
+		<EXTENSION_REFFERAL_SYSTEM_ENABLED>
+			<title>Enable Referral System</title>
+			<value>True</value>
+			<description>Enable Or Disable The Referral System Extension</description>
+			<sort_order>1</sort_order>
+			<set_function>tep_cfg_select_option(array('True','False'),</set_function>
+		</EXTENSION_REFFERAL_SYSTEM_ENABLED>
+		<EXTENSION_REFFERAL_SYSTEM_REWARD_POINTS>
+			<title>Number of points to award on referral</title>
+			<value>10</value>
+			<description>Number of points to award on referral</description>
+			<sort_order>1</sort_order>
+		</EXTENSION_REFFERAL_SYSTEM_REWARD_POINTS>
+		<EXTENSION_REFFERAL_SYSTEM_EMAIL_TEXT>
+			<title>Create Account Email Text</title>
+			<value>Earn free rentals. Simply give your referral code to your friends: __CODE__ and when they use it you’ll get a book credit. Earn 5 book credits and get a free rental.</value>
+			<description>Email text for referrals</description>
+			<sort_order>1</sort_order>
+		</EXTENSION_REFFERAL_SYSTEM_EMAIL_TEXT>
+		<EXTENSION_REFFERAL_SYSTEM_REDEEM_COUPON_EMAIL_TEXT>
+			<title>Redeem Coupon Email Text</title>
+			<value>We have created for you a coupon code that you can use to get free shipping the next time you checkout at %s.</value>
+			<description>Email text for referrals</description>
+			<sort_order>1</sort_order>
+		</EXTENSION_REFFERAL_SYSTEM_REDEEM_COUPON_EMAIL_TEXT>
+	</Configuration>
+</ConfigurationGroup>

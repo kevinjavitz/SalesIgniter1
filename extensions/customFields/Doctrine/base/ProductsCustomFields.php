@@ -117,5 +117,15 @@ class ProductsCustomFields extends Doctrine_Record {
 			'notnull' => true,
 			'autoincrement' => false,
 		));
+
+		$this->hasColumn('include_in_search', 'integer', 1, array(
+			'type' => 'integer',
+			'length' => 1,
+			'unsigned' => 0,
+			'primary' => false,
+			'default' => '0',
+			'notnull' => true,
+			'autoincrement' => false,
+		));
 	}
 }

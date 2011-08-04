@@ -6,14 +6,14 @@
 		$productId = $productClass->getID();
 		$productModel = $productClass->getModel();
 		$productName = $productClass->getName();
-
-		$Qreviews = Doctrine_Query::create()
-		->select('(avg(reviews_rating) / 5 * 100) as average_rating')
-		->from('Reviews r')
-		->where('r.products_id = ?', $productId)
-		->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
-		$reviews = $Qreviews[0];
-
+		if(sysConfig::exists('EXTENSION_REVIEWS_ENABLED') && sysConfig::get('EXTENSION_REVIEWS_ENABLED') == 'True') {
+			$Qreviews = Doctrine_Query::create()
+			->select('(avg(reviews_rating) / 5 * 100) as average_rating')
+			->from('Reviews r')
+			->where('r.products_id = ?', $productId)
+			->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+			$reviews = $Qreviews[0];
+		}
 		$arrowIcon = htmlBase::newElement('icon')->setType('info')
 		->setHref(itw_app_link($allGetParams . 'pID=' . $productId));
 
@@ -136,7 +136,9 @@
 
 		$infoBox->addContentRow($imageHtml->draw() . '<br />' . $productImage);
 		$infoBox->addContentRow(sysLanguage::get('TEXT_PRODUCTS_PRICE_INFO') . ' ' . $currencies->format($purchaseTypeNew->getPrice()));
-		$infoBox->addContentRow(sysLanguage::get('TEXT_PRODUCTS_AVERAGE_RATING') . ' ' . number_format($reviews['average_rating'], 2) . '%');
+		if(sysConfig::exists('EXTENSION_REVIEWS_ENABLED') && sysConfig::get('EXTENSION_REVIEWS_ENABLED') == 'True') {
+			$infoBox->addContentRow(sysLanguage::get('TEXT_PRODUCTS_AVERAGE_RATING') . ' ' . number_format($reviews['average_rating'], 2) . '%');
+		}
 
 		$infoBoxes[$productId] = $infoBox->draw();
 		unset($infoBox);
