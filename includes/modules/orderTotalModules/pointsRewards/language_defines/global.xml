@@ -1,0 +1,8 @@
+<definitions>
+	<define key="MODULE_ORDER_TOTAL_POINTSREWARDS_TITLE"><![CDATA[Points Rewards ]]></define>
+	<define key="MODULE_ORDER_TOTAL_POINTSREWARDS_HEADER"><![CDATA[Points Rewards]]></define>
+	<define key="MODULE_ORDER_TOTAL_POINTSREWARDS_DESCRIPTION"><![CDATA[Points Rewards Module]]></define>
+	<define key="TEXT_POINTS_USE"><![CDATA[Apply %s in rewards points to this order]]></define>
+<define key="TEXT_SUBMIT"><![CDATA[SUBMIT]]></define>
+	<define key="TEXT_REDEEM_LABEL"><![CDATA[ <b>Redeem Points</b> ]]></define>
+</definitions>
