@@ -22,39 +22,46 @@ class InfoBoxRentalIssues extends InfoBoxAbstract {
 
 	public function show(){
 		global $userAccount;
-		if (ALLOW_RENTALS == 'true'){
-			//**********Begin Rental Issues added by Yogesh on 15th oct
+		if (sysConfig::get('ALLOW_RENTALS') == 'true'){
+
 			if ($userAccount->isLoggedIn() === true) {
 				$cart_contents_string = '';
 
-				$customers_rented_query= "SELECT r.customers_queue_id,r.customers_id,r.products_id, p.products_name, r.shipment_date,r.products_barcode FROM ".TABLE_RENTED_QUEUE .' r, '. TABLE_PRODUCTS_DESCRIPTION.' p '. " where p.products_id = r.products_id and p.language_id='".Session::get('languages_id')."' and customers_id ='".$userAccount->getCustomerId() . "'";
-				$rs_rented_product = tep_db_query($customers_rented_query);
-				if (tep_db_num_rows($rs_rented_product) > 0) {
+				$QProdRented = Doctrine_Query::create()
+				->from('Products p')
+				->leftJoin('p.RentedProducts r')
+				->leftJoin('p.ProductsDescription pd')
+				->where('r.customers_id = ?', $userAccount->getCustomerId())
+				->andWhere('pd.language_id = ?', Session::get('languages_id'))
+				->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+
+				if ($QProdRented) {
 					$cart_contents_string = '<form name="rental_issues" action="' . itw_app_link('action=resolve_ticket', 'account', 'rental_issues') . '" method="post">';
 					$cart_contents_string .= tep_draw_hidden_field('type', 'new');
 					$cart_contents_string .= '<table border="0" width="100%" cellspacing="0" cellpadding="0">';
 					$cart_contents_string .= '<tr><td align="right" valign="top" class="infoBoxContents">';
-					//$products = $queue->get_products();
+
 
 					$cart_contents_string .= sprintf(
-						'%s: <br><select name="rented_products" style="width:100%%;">',
+						'%s: <br><select name="products_id" style="width:100%%;">',
 						sysLanguage::get('RENTALISSUES_RENTED_ITEMS')
 					);
 
-					while($dt_rented_product =tep_db_fetch_array($rs_rented_product)){
-						$cart_contents_string .= '<option value="'.$dt_rented_product['products_id'].'">'."\n";
-						$cart_contents_string .= $dt_rented_product['products_name'] . '</option>'."\n";
+					foreach($QProdRented as $iProd){
+						$cart_contents_string .= '<option value="'.$iProd['products_id'].'">'."\n";
+						$cart_contents_string .= $iProd['ProductsDescription'][0]['products_name'] . '</option>'."\n";
 					}
 					$cart_contents_string .= '</td></tr>'."\n".'<tr><td align="left" valign="top" class="infoBoxContents">';
 					$cart_contents_string .= sysLanguage::get('RENTALISSUES_PROBLEM') . '<br>' . "\n";
-					$cart_contents_string .= tep_draw_textarea_field('problem_desc', '', 30, 5)."\n";
+					$cart_contents_string .= tep_draw_textarea_field('feedback', '', 30, 5)."\n";
 					$cart_contents_string .= htmlBase::newElement('button')->setType('submit')->setText(sysLanguage::get('BUTTON_OPEN_TICKET'))->draw();
 					$cart_contents_string .= '</td></tr>'."\n".'<tr><td align="left" valign="top" class="infoBoxContents"><br><a href="'. itw_app_link(null, 'account', 'rental_issues') .'">' . sysLanguage::get('BOX_HEADING_OPEN_TICKET') . '</a>';
 					$cart_contents_string .= '</td></tr></table>';
 					$cart_contents_string .= '</form>';
 				} else {
-					$cart_contents_string .= sysLanguage::get('BOX_RENTAL_QUEUE_EMPTY');
+					$cart_contents_string = sysLanguage::get('BOX_RENTAL_QUEUE_EMPTY');
 				}
+
 
 				$boxContent = $cart_contents_string;
 				$this->setBoxContent($boxContent);
