@@ -168,7 +168,6 @@ class RentalStoreUser implements Serializable {
 			->execute();
 			if ($Qcheck->count() > 0){
 				$Qcustomer = Doctrine_Query::create()
-				->select('customers_id, customers_password, customers_default_address_id')
 				->from('Customers')
 				->where('customers_id = ?', (int)$_GET['adminCustomerId'])
 				->execute();
@@ -180,7 +179,6 @@ class RentalStoreUser implements Serializable {
 			}
 		}else{
 			$Qcustomer = Doctrine_Query::create()
-			->select('customers_id, customers_password, customers_default_address_id')
 			->from('Customers')
 			->where('customers_email_address = ?', $username)
 			->execute();
