@@ -22,7 +22,6 @@ class Extension_royaltiesSystem extends ExtensionBase {
 		if ($appExtension->isAdmin()){
 			EventManager::attachEvents(array('BoxMarketingAddLink'), null, $this);
 		}
-
 		EventManager::attachEvents(array(
 			'OrdersProductsDownloadUpdateDownloadsAfterSave',
 			'OrdersProductsStreamUpdateViewsAfterSave',

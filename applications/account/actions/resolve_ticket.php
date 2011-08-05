@@ -44,7 +44,7 @@ switch($_POST['type']){
 				$QProductName[0]['products_name'],
 				$QData[0]['shipment_date'],
 				$problemText,
-				$productID
+				$RentIssue->issue_id
 		));
 		tep_mail(sysConfig::get('STORE_OWNER'),sysConfig::get('STORE_OWNER_EMAIL_ADDRESS'), sysLanguage::get('EMAIL_SUBJECT_REPORT'), $emailText, sysConfig::get('STORE_OWNER'), sysConfig::get('STORE_OWNER_EMAIL_ADDRESS'));
 
@@ -89,7 +89,7 @@ switch($_POST['type']){
 			$QProductName[0]['products_name'],
 			$QData[0]['shipment_date'],
 			$problemText,
-			$productID
+			$_POST['issue_id']
 		));
 		tep_mail(sysConfig::get('STORE_OWNER'),sysConfig::get('STORE_OWNER_EMAIL_ADDRESS'), sysLanguage::get('EMAIL_SUBJECT_REPORT'), $emailText, sysConfig::get('STORE_OWNER'), sysConfig::get('STORE_OWNER_EMAIL_ADDRESS'));
 		break;

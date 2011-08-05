@@ -17,6 +17,7 @@ foreach($RoyaltiesSystemRoyaltiesEarnedOrders as $ordersExisting){
 	$orders[] = $ordersExisting['orders_id'];
 }
 $ordersQuery = Doctrine_Query::create()
+
 		->select('o.orders_id, o.customers_id, o.orders_status, o.date_purchased, pr.content_provider_id, pr.royalty_fee, op.products_id, op.purchase_type, op.final_price, op.products_price, op.products_quantity')
 		->from('Orders o')
 		->leftJoin('o.RoyaltiesSystemOrderStatuses os')

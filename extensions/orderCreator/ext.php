@@ -86,7 +86,7 @@ class Extension_orderCreator extends ExtensionBase {
 
 	public function ProductInventoryReportsListingQueryBeforeExecute(&$Products){
 		if(!isset($_GET['isEstimate'])){
-			$Products->andWhere('opr.is_estimate = ?', '0');
+			$Products->andWhere('opr.is_estimate = 0 or opr.is_estimate is null');
 		}
 	}
 
