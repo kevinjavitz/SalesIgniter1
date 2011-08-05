@@ -334,7 +334,6 @@ require(sysConfig::getDirFsCatalog() . 'includes/classes/htmlBase.php');
 	// Shopping cart actions
 	$action = (isset($_GET['action']) ? $_GET['action'] : (isset($_POST['action']) ? $_POST['action'] : ''));
 
-	if (!empty($action)) {
 	if (isset($_POST['update_product']))       $action = 'update_product';
 	if (isset($_POST['add_product']))          $action = 'add_product';
 	if (isset($_POST['buy_now']))              $action = 'buy_now';
@@ -348,7 +347,7 @@ require(sysConfig::getDirFsCatalog() . 'includes/classes/htmlBase.php');
 	if (isset($_POST['checkout']))             $action = 'update_product';
 
 	EventManager::notify('ApplicationTopActionCheckPost', &$action);
-
+	if (!empty($action)) {
 		// redirect the customer to a friendly cookie-must-be-enabled page if cookies are disabled
 		if ($session_started == false) {
 			tep_redirect(itw_app_link('appExt=infoPages', 'show_page', 'cookie_usage'));
