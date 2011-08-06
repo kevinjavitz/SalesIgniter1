@@ -124,11 +124,12 @@
 		<div onclick="window.document.create_account.terms.checked = !window.document.create_account.terms.checked;" style="margin-top:.5em;padding:.5em;text-align:center;"><b><?php echo sprintf(sysLanguage::get('ENTRY_PRIVACY_AGREEMENT'), itw_app_link('appExt=infoPages', 'show_page', 'conditions') . '" onclick="popupWindow(\'' . itw_app_link('appExt=infoPages&dialog=true', 'show_page', 'conditions', 'SSL') . '\',\'800\',\'600\');return false;'); ?></b>&nbsp;<?php echo tep_draw_checkbox_field('terms','1', false, 'onclick="window.document.create_account.terms.checked = !window.document.create_account.terms.checked;"'); ?></div>
 		<?php
 			}else{
-				$htmlTerms = htmlBase::newElement('input')
+				echo $htmlTerms = htmlBase::newElement('input')
 				->setType('hidden')
 				->setName('terms')
 				->attr('checked', true)
-				->setValue('1');
+				->setValue('1')
+				->draw();
 			}
 		?>
 	</div>

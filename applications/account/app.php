@@ -100,10 +100,10 @@ if ($session_started == false) {
 		function issues_getEmailText($type, $eInfo){
 			switch($type){
 				case 'newIssue':
-					$text = '%s, ' . "\n" . '%s has reported the following issue on his order/rental for: %s placed on %s:' . "\n" . '%s' . "\n" . 'You may reply at this url: ' . itw_admin_app_link('action=edit&tID='.$eInfo[5],'rental_queue','issues');
+					$text = '%s, ' . "\n" . '%s has reported the following issue on his order/rental for: %s placed on %s:' . "\n" . '%s' . "\n" . 'You may reply at this url: ' . itw_admin_app_link('action=edit&fID='.$eInfo[5],'rental_queue','issues');
 					break;
 				case 'replyIssue':
-					$text = '%s, ' . "\n" . '%s has responded to the issue on his order/rental for: %s placed on %s:' . "\n" . '%s' . "\n" . 'You may reply at this url: ' . itw_admin_app_link('action=edit&tID='.$eInfo[5],'rental_queue','issues');
+					$text = '%s, ' . "\n" . '%s has responded to the issue on his order/rental for: %s placed on %s:' . "\n" . '%s' . "\n" . 'You may reply at this url: ' . itw_admin_app_link('action=edit&fID='.$eInfo[5],'rental_queue','issues');
 					break;
 			}
 			array_unshift($eInfo, $text);
