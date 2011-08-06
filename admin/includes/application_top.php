@@ -146,7 +146,7 @@
 	$appExtension->preSessionInit();
 
 	require(sysConfig::getDirFsCatalog() . 'includes/classes/session.php');
-	new Session(); /* Initialize the session */
+	Session::init(); /* Initialize the session */
 
 // lets start our session
 	Session::start();
