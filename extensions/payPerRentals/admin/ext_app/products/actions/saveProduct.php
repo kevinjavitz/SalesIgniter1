@@ -47,13 +47,11 @@
 	/*Period Metrics*/
 	    $PricePerRentalPerProducts = Doctrine_Core::getTable('PricePerRentalPerProducts');
 		$saveArray = array();
+		Doctrine_Query::create()
+		->delete('PricePerRentalPerProducts')
+		->andWhere('pay_per_rental_id =?',$Product->ProductsPayPerRental->pay_per_rental_id)
+		->execute();
 		if (isset($_POST['pprp'])){
-
-			Doctrine_Query::create()
-			->delete('PricePerRentalPerProducts')
-			//->whereNotIn('price_per_rental_per_products_id', $saveArray)
-			->andWhere('pay_per_rental_id =?',$Product->ProductsPayPerRental->pay_per_rental_id)
-			->execute();
 			foreach($_POST['pprp'] as $pprid => $iPrice){
 
 				$PricePerProduct = $PricePerRentalPerProducts->create();
