@@ -171,7 +171,7 @@ require(sysConfig::getDirFsCatalog() . 'includes/classes/htmlBase.php');
 
 	// define how the session functions will be used
 	require(sysConfig::getDirFsCatalog() . 'includes/classes/session.php');
-	new Session(); /* Initialize the session */
+	Session::init(); /* Initialize the session */
 
 	// start the session
 	$session_started = false;
