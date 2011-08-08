@@ -59,7 +59,8 @@ class relatedProducts_admin_categories_new_category extends Extension_relatedPro
 			'columns' => array(
 				array('attr' => array('width' => '40%'), 'text' => 'Products'),
 				array('text' => '&nbsp;'),
-				array('attr' => array('width' => '40%'), 'text' => 'Related')
+				array('attr' => array('width' => '40%'), 'text' => 'Related')   ,
+				array('attr' => array('width' => '40%'), 'text' => 'Related Global')
 			)
 		));
 		
@@ -69,6 +70,21 @@ class relatedProducts_admin_categories_new_category extends Extension_relatedPro
             $related = explode(',', $cInfo->related_products);
             foreach($related as $pID){
                 $relatedProducts .= '<div><a href="#" class="ui-icon ui-icon-circle-close removeButton"></a><span class="main">' . tep_get_products_name($pID) . '</span>' . tep_draw_hidden_field('related_products[]', $pID) . '</div>';
+            }
+        }
+
+		$QrelatedGlobal = Doctrine_Query::create()			
+			->from('ProductsRelatedGlobal ')
+			->where('type = "C"')
+			->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+	
+		if (!empty($QrelatedGlobal)){  
+            $relatedG = explode(',', $QrelatedGlobal[0]['related_global']);
+			//if($relatedG == '') 
+			//$relatedG = $QrelatedGlobal['related_global'];
+
+            foreach($relatedG as $pID){
+                $relatedProductsGlobal .= '<div><a href="#" class="ui-icon ui-icon-circle-close removeButton"></a><span class="main">' . tep_get_products_name($pID) . '</span>' . tep_draw_hidden_field('related_productsGlobal[]', $pID) . '</div>';
             }
         }
 		
@@ -83,7 +99,8 @@ class relatedProducts_admin_categories_new_category extends Extension_relatedPro
 				),
 				array(
 					'addCls' => 'main',
-					'text' => '<button type="button" id="moveRight"><span>&nbsp;&nbsp;>>&nbsp;&nbsp;</span></button>'
+					'text' => '<button type="button" id="moveRight"><span>&nbsp;&nbsp;>>&nbsp;&nbsp;</span></button>'.
+								'<button type="button" id="moveRight"><span>&nbsp;&nbsp;Global >>&nbsp;&nbsp;</span></button>'
 				),
 				array(
 					'addCls' => 'main',
@@ -92,7 +109,15 @@ class relatedProducts_admin_categories_new_category extends Extension_relatedPro
 						'valign' => 'top'
 					), 
 					'text' => $relatedProducts
-				)
+				),
+				array(
+					'addCls' => 'main',
+					'attr' => array(
+						'id' => 'relatedGlobal',
+						'valign' => 'top'
+					), 
+					'text' => $relatedProductsGlobal
+				)	
 			)
 		));
 		return '<div id="tab_' . $this->getExtensionKey() . '">' . $table->draw() . '</div>';

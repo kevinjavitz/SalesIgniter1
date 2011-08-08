@@ -335,6 +335,12 @@ class Extension_relatedProducts extends ExtensionBase {
 					}
 				}
 			}
+                $ProductG = Doctrine_Core::getTable('ProductsRelatedGlobal')->findOneByType('P');
+                if (count($ProductG) > 0){ 
+                	$related = explode(',',$ProductG->related_global);
+                      	foreach($related as $qp){
+				$relatedProducts .= ",".$qp;
+			}
 		}
 
 		if (!empty($relatedProducts)){
