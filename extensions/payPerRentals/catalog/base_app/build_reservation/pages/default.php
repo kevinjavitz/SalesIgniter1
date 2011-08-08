@@ -102,15 +102,24 @@ if ($insurancePrice > 0){
 		    ->addClass('pprBack')
 		    ->setHref(itw_app_link('products_id=' . $pID_string, 'product', 'info'))
 		    ->draw();
+
+
+
+		   $pageContent->set('pageForm', array(
+			   'name' => 'build_reservation',
+			   'action' => itw_app_link(tep_get_all_get_params(array('action'))),
+			   'method' => 'post'
+		   ));
+
+		   $pageContent->set('pageTitle', $pageTitle);
+		   $pageContent->set('pageContent', $pageContents);
+		   $pageContent->set('pageButtons', $pageButtons);
+	   }else{
+		   $htmlForm = htmlBase::newElement('form')
+			->attr('name', 'build_reservation')
+			->attr('action', itw_app_link(tep_get_all_get_params(array('action'))))
+			->attr('method', 'post');
+		   $htmlDiv = htmlBase::newElement('div')
+			->html($pageContents);
+		   echo $htmlForm->append($htmlDiv)->draw();
 	   }
-
-
-	   $pageContent->set('pageForm', array(
-		   'name' => 'build_reservation',
-		   'action' => itw_app_link(tep_get_all_get_params(array('action'))),
-		   'method' => 'post'
-	   ));
-
-	   $pageContent->set('pageTitle', $pageTitle);
-	   $pageContent->set('pageContent', $pageContents);
-	   $pageContent->set('pageButtons', $pageButtons);

@@ -291,16 +291,6 @@ class ReservationUtilities {
 		while ($startTimePadding <= $endTimePadding) {
 			$dateFormatted = date('Y-n-j', $startTimePadding);
 			$paddingDays[] = '"' . $dateFormatted . '"';
-			//period
-			$op = 0;
-			foreach ($semDates as $sDate) {
-				if (strtotime($dateFormatted) >= strtotime($sDate['start_date']) && strtotime($dateFormatted) <= strtotime($sDate['end_date'])) {
-					unset($semDates[$op]);
-				}
-				$op++;
-			}
-			$semDates = array_values($semDates);
-			//end period
 			$startTimePadding += 60 * 60 * 24;
 		}
 
@@ -353,15 +343,6 @@ class ReservationUtilities {
 			}
 		}
 
-		$op = 0;
-		$dateFormatted = date('Y-n-j');
-		foreach ($semDates as $sDate) {
-			if (strtotime($dateFormatted) >= strtotime($sDate['start_date'])) {
-				unset($semDates[$op]);
-			}
-			$op++;
-		}
-		$semDates = array_values($semDates);
 		/**
 		 * Time Bookings
 		 */
@@ -410,7 +391,7 @@ class ReservationUtilities {
 	var disabledBy = <?php echo $disabledBy;?>;
 
 	$(document).ready(function () {
-		var $selfID = $('#reserv<?php echo $pID_string; ?>');
+		var $selfID = $('#reserv<?php echo $pID_string[0]; ?>');
 		$selfID.parent().find('.inCart').hide();
 
 		$selfID.find('.refreshCal').live('click', function() {
@@ -788,7 +769,7 @@ class ReservationUtilities {
 							dataType: 'json',
 							type: 'post',
 							url: <?php echo $checkRes;?>,
-							data: $('.reservationTable *, .ui-widget-footer-box *, .pprButttons *').serialize(),
+							data: $selfID.closest('form').find('.reservationTable *, .ui-widget-footer-box *, .pprButttons *').serialize(),
 							success: function (data) {
 								if (data.success == true) {
 									$selfID.parent().find('.priceQuote').html(data.price + ' ' + data.message);
@@ -928,7 +909,8 @@ class ReservationUtilities {
 		});
 		/*this part down will need some testing*/
 		$selfID.find('.selected_period').change(function() {
-			if ($(this).val() != '') {
+
+			if ($(this).val() != '' && $(this).val() != null) {
 				var selectedPeriod = $(this);
 				var startDateString = $selfID.find('.selected_period option:selected').attr('start_date');
 				var endDateString = $selfID.find('.selected_period option:selected').attr('end_date');
@@ -936,13 +918,19 @@ class ReservationUtilities {
 				$selfID.find('.end_date').val(endDateString.substr(0, endDateString.length - 9)).trigger('change');
 				$selfID.find('.days_before').val(days_before);
 				$selfID.find('.days_after').val(days_after);
+				hasDisabled = false;
+				var attrDis = $selfID.find('.selected_period').attr('disabled');
+				if (typeof attrDis !== 'undefined' && attrDis !== false) {
+					$selfID.find('.selected_period').removeAttr('disabled');
+					hasDisabled = true;
+				}
 				showAjaxLoader(selectedPeriod, 'xlarge');
 				$.ajax({
 					cache: false,
 					dataType: 'json',
 					type: 'post',
 					url: <?php echo $checkRes;?>,
-					data: $('.reservationTable *, .ui-widget-footer-box *, .pprButttons *').serialize(),//+'&price='+price,//isSemester=1&
+					data: $selfID.closest('form').find('.reservationTable *, .ui-widget-footer-box *, .pprButttons *').serialize(),//+'&price='+price,//isSemester=1&
 					success: function (data) {
 						if (data.success == true) {
 							$selfID.parent().find('.priceQuote').html(data.price + ' ' + data.message);
@@ -952,6 +940,9 @@ class ReservationUtilities {
 							$selfID.parent().find('.priceQuote').html(data.price);
 						} else {
 							alert('<?php echo sysLanguage::get('PPR_NOTICE_RESERVATION_NOT_AVAILABLE'); ?>.');
+						}
+						if(hasDisabled){
+							$('.selected_period').attr('disabled','disabled');
 						}
 						removeAjaxLoader(selectedPeriod);
 					}
@@ -1085,7 +1076,7 @@ class ReservationUtilities {
 							dataType: 'json',
 							type: 'post',
 							url: <?php echo $checkRes;?>,
-							data: $('.reservationTable *, .ui-widget-footer-box *, .pprButttons *').serialize(),
+							data: $selfID.closest('form').find('.reservationTable *, .ui-widget-footer-box *, .pprButttons *').serialize(),
 							success: function (data) {
 								if (data.success == true) {
 									removeAjaxLoader($this);
@@ -1122,6 +1113,30 @@ class ReservationUtilities {
 				$selfID.find('.selected_period').attr('name','semester_name');
 			}
         });
+
+
+
+		if($('.pricingTable table tr').size() == 0){
+
+			$selfID.find('.shippingInfoDiv').hide();
+			$selfID.find('.iscal').hide();
+			$selfID.find('.iscal').prev().hide();
+			$selfID.find('.issem').trigger('click');
+			$selfID.find('input[name="cal_or_semester"]').trigger('change');
+
+			if($selfID.find('.selected_period option').size() == 2){
+				$selfID.find('.selected_period').attr('disabled','disabled');
+			}
+
+			$selfID.find('.selected_period option:selected').removeAttr('selected');
+			$selfID.find('.selected_period option').each(function(){
+				if($(this).val() != ''){
+					$(this).attr('selected', 'selected');
+				}
+			});
+			$selfID.find('.selected_period').trigger('change');
+		}
+
 		$selfID.find('.calendarTime').hide();
 		<?php
    		if (sysConfig::get('EXTENSION_PAY_PER_RENTALS_USE_UPS_RESERVATION') == 'True') {
@@ -1256,7 +1271,7 @@ class ReservationUtilities {
 			background: #CACEE6;
 		}
 	</style>
-	<div id="reserv<?php echo $pID_string; ?>" class="reservationTable">
+	<div id="reserv<?php echo $pID_string[0]; ?>" class="reservationTable">
 		<div class="quantityDiv">
             <div>
 	            <?php echo sysLanguage::get('ENTRY_QUANTITY');?><input type="text" size="3" class="rental_qty" name="rental_qty" value="<?php echo $rQty;?>">

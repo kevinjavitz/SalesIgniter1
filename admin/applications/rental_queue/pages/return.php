@@ -42,7 +42,6 @@
 													</tr>
 												</table>
 											</td>
-											<td valign="top" class="dataTableHeadingContent"><?php echo sysLanguage::get('TABLE_HEADING_BARCODE_IMG'); ?></td>
 											<?php if (defined('EXTENSION_INVENTORY_CENTERS_ENABLED') && EXTENSION_INVENTORY_CENTERS_ENABLED == 'True'){ ?>
 											<td valign="top" class="dataTableHeadingContent"><?php echo 'Inventory Center'; ?></td>
 											<?php } ?>
@@ -106,10 +105,8 @@
 			<tr class="dataTableRow">
 				<td class="main"><?php echo $rented['ProductsDescription'][0]['products_name']; ?></td>
 				<td class="main"><?php echo $rented['full_name']; ?></td>
-				<td class="main"><?php echo $Qbarcode[0]['barcode']; ?></td>
-				<td class="main">
-					<img src="showBarcode.php?code=<?php echo $rented['products_barcode'];?>">
-				</td>
+				<td class="main"><?php echo $Qbarcode[0]['ProductsInventoryBarcodes'][0]['barcode']; ?></td>
+
 				<?php if (sysConfig::exists('EXTENSION_INVENTORY_CENTERS_ENABLED') && sysConfig::get('EXTENSION_INVENTORY_CENTERS_ENABLED') == 'True'){ ?>
 				<td class="main"><?php
 	                if ($Qbarcode[0]['use_center'] == '1'){

@@ -32,7 +32,7 @@ class formValidation extends ArrayIterator {
 		
 		$this->validationRules['telephone'] = array(
 			'validate'                => 1,
-			'validation_type'         => 'min_length',
+			'validation_type'         => 'min_length'.((sysConfig::get('ACCOUNT_TELEPHONE_REQUIRED') == 'true')?'|required':''),
 			'length'                  => sysConfig::get('ENTRY_TELEPHONE_MIN_LENGTH'),
 			'errorMessage_min_length' => sysLanguage::get('ENTRY_TELEPHONE_ERROR_MIN_LENGTH'),
 			'errorMessage_phone'      => sysLanguage::get('ENTRY_TELEPHONE_ERROR_PHONE')
@@ -85,14 +85,14 @@ class formValidation extends ArrayIterator {
 			'values'          => '0|1'
 		);
 
-		if (sysConfig::get('TERMS_CONDITIONS_CREATE_ACCOUNT') == 'true'){
+		
 			$this->validationRules['terms'] = array(
 				'validate'              => 1,
 				'validation_type'       => 'checkbox|required',
 				'values'                => '1',
 				'errorMessage_checkbox' => sysLanguage::get('ENTRY_TERMS_ERROR_CHECKBOX')
 			);
-		}
+
 		
 		$this->validationRules['password'] = array(
 			'validate'                => 1,

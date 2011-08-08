@@ -141,8 +141,9 @@ EventManager::notify('ProductInfoProductsImageShow', &$image, &$product);
 			
 			$boxObj->addButton($qtyInput);
 		}
-		
-		$boxObj->addButton($boxInfo['button']);
+		if(isset($boxInfo['button']) && is_object($boxInfo['button'])){
+			$boxObj->addButton($boxInfo['button']);
+		}
 
 		EventManager::notifyWithReturn('ProductInfoTabImageBeforeDrawPurchaseType', &$product, &$boxObj, &$boxInfo);
 

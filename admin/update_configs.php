@@ -21,6 +21,35 @@ function addConfiguration($key, $group, $title, $desc, $default, $func) {
 	$Qcheck->free();
 }
 
+function updateConfiguration($key, $group, $title, $desc, $default, $func) {
+	$Qcheck = Doctrine_Query::create()
+		->select('configuration_id')
+		->from('Configuration')
+		->where('configuration_key = ?', $key)
+		->execute();
+	if ($Qcheck->count() == 1) {
+		$newConfig = $Qcheck[0];
+		if($title != -1){
+			$newConfig->configuration_title = $title;
+		}
+		if($default != -1){
+			$newConfig->configuration_value = $default;
+		}
+		if($desc != -1){
+			$newConfig->configuration_description = $desc;
+		}
+		if($group != -1){
+			$newConfig->configuration_group_id = $group;
+		}
+		$newConfig->sort_order = 11;
+		if($func != -1){
+			$newConfig->set_function = $func;
+		}
+		$newConfig->save();
+	}
+	$Qcheck->free();
+}
+
 addConfiguration('SHOW_MANUFACTURER_ON_PRODUCT_INFO', 1, 'Show manufacturer name on product Info', 'Show manufacturer name on product Info', 'false', "tep_cfg_select_option(array('true', 'false'),");
 
 addConfiguration('ORDERS_STATUS_CANCELLED_ID', 1, 'Order Status cancel ID', 'Order Status cancel ID', '7', 'tep_cfg_pull_down_order_status_list(');
@@ -35,6 +64,8 @@ addConfiguration('ACCOUNT_CITY_BIRTH_REQUIRED', 5, 'City of birth required', 'Ci
 addConfiguration('ACCOUNT_NEWSLETTER', 5, 'Enable newsletter subscription', 'Enable newsletter subscription', 'false', "tep_cfg_select_option(array('true', 'false'),");
 addConfiguration('ENABLE_HTML_EDITOR', 1, 'Use wysiwyg editor for product description', 'Use wysiwyg editor to edit product description', 'true', "tep_cfg_select_option(array('true', 'false'),");
 addConfiguration('SHOW_ENLAGE_IMAGE_TEXT', 1, 'Show enlarge image text on product info page', 'Show enlarge image text on product info page', 'true', "tep_cfg_select_option(array('true', 'false'),");
+
+updateConfiguration('DIR_WS_TEMPLATES_DEFAULT', -1, -1, -1, -1, "tep_cfg_pull_down_template_list(");
 
 /*addConfiguration('ACCOUNT_COMPANY_REQUIRED',5, 'Company required', 'Company required','false',"tep_cfg_select_option(array('true', 'false'),");
 addConfiguration('ACCOUNT_SUBURB_REQUIRED',5, 'Suburb required', 'Suburb required','false',"tep_cfg_select_option(array('true', 'false'),");
