@@ -4,6 +4,7 @@
 	->leftJoin('f.ProductsCustomFieldsDescription fd')
 	->leftJoin('f.ProductsCustomFieldsToGroups f2g')
 	->where('f2g.group_id = ?', (int)$_GET['gID'])
+	->orderBy('sort_order')
 	->execute();
 	$rows = array();
 	if ($Qfields->count() > 0){
