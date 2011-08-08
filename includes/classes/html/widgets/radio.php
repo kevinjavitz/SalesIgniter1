@@ -12,10 +12,6 @@ class htmlWidget_radio implements htmlWidgetPlugin {
 	}
 	
 	public function __call($function, $args){
-		if ($this->isGroup === true){
-			die('Error: This is a group of radio inputs, please use data array to set button data');
-		}
-		
 		$return = call_user_func_array(array($this->inputElement, $function), $args);
 		if (!is_object($return)){
 			return $return;
@@ -29,7 +25,6 @@ class htmlWidget_radio implements htmlWidgetPlugin {
 	}
 	
 	public function setId($val){
-		if ($this->isGroup === true) die('Error: This is a group of radio inputs, please use data array to set id');
 		
 		$this->inputElement->setId($val);
 		return $this;
@@ -47,7 +42,6 @@ class htmlWidget_radio implements htmlWidgetPlugin {
 	}
 	
 	public function setValue($val){
-		if ($this->isGroup === true) die('Error: This is a group of radio inputs, please use data array to set values');
 		
 		$this->inputElement->val($val);
 		return $this;

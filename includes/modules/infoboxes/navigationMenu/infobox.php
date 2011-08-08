@@ -125,7 +125,7 @@ class InfoBoxNavigationMenu extends InfoBoxAbstract
 			$itemTemplate .= $itemLink->draw() . '<span class="ui-icon ui-icon-triangle-1-e"></span>';
 			$itemTemplate .= '<ol>';
 			foreach($item->children as $k => $childItem){
-				$itemTemplate .= parseMenuItem($childItem, false, (!isset($item->children->{$k + 1}) || empty($item->children->{$k + 1})));
+				$itemTemplate .= $this->parseMenuItem($childItem, false, (!isset($item->children->{$k + 1}) || empty($item->children->{$k + 1})));
 			}
 			$itemTemplate .= '</ol>';
 		}

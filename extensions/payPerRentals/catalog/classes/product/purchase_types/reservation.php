@@ -1173,6 +1173,7 @@ class PurchaseType_reservation extends PurchaseTypeAbstract {
 			}else{
 					ob_start();
 					require(sysConfig::getDirFsCatalog() . 'extensions/payPerRentals/catalog/base_app/build_reservation/pages/default.php');
+				        echo '<script type="text/javascript" src="'.sysConfig::getDirWsCatalog() . 'extensions/payPerRentals/catalog/base_app/build_reservation/javascript/default.js'.'"></script>';
 					$pageHtml = ob_get_contents();
 					ob_end_clean();
 					$return = array(
@@ -1308,11 +1309,13 @@ class PurchaseType_reservation extends PurchaseTypeAbstract {
 					array(
 						'label' => sysLanguage::get('TEXT_USE_CALENDAR'),
 						'labelPosition' => 'before',
+						'addCls'    =>  'iscal',
 						'value' => '1'
 					),
 					array(
 						'label' => sysLanguage::get('TEXT_USE_SEMESTER'),
 						'labelPosition' => 'before',
+						'addCls'    => 'issem',
 						'value' => '0'
 					)
 				)
@@ -1329,7 +1332,7 @@ class PurchaseType_reservation extends PurchaseTypeAbstract {
 		  	->setName('semester_name')
 		  	->setLabel(sysLanguage::get('TEXT_SELECT_PERIOD'))
 		  	->setLabelPosition('before')
-		  	->attr('id','selected_period');
+		  	->attr('class','selected_period');
 			$selectSem->addOption('',sysLanguage::get('TEXT_SELECT_SEMESTER'));
 
 			foreach($semDates as $sDate){
@@ -2003,7 +2006,7 @@ class PurchaseType_reservation extends PurchaseTypeAbstract {
 		return $date;
 	}
 
-	public function getReservationPrice($start, $end, &$rInfo = '', $semName = '', $includeInsurance = false){
+	public function getReservationPrice($start, $end, &$rInfo = '', $semName = '', $includeInsurance = false, $onlyShow = true){
 		global $currencies;
 		$productPricing = array();
 
@@ -2055,16 +2058,22 @@ class PurchaseType_reservation extends PurchaseTypeAbstract {
 
 
 			if (isset($productPricing['shipping'])){
-				$returnPrice['price'] += $productPricing['shipping'];
+				if($onlyShow){
+					$returnPrice['price'] += $productPricing['shipping'];
+				}
 				$returnPrice['message'] .= ' + '. $currencies->format($productPricing['shipping']). ' '. sysLanguage::get('EXTENSION_PAY_PER_RENTALS_CALENDAR_SHIPPING');
 			}
 			if ($this->getDepositAmount() > 0){
-				$returnPrice['price'] += $this->getDepositAmount();
+				if($onlyShow){
+					$returnPrice['price'] += $this->getDepositAmount();
+				}
 				$returnPrice['message'] .= ' + '. $currencies->format($this->getDepositAmount()).' '. sysLanguage::get('EXTENSION_PAY_PER_RENTALS_CALENDAR_DEPOSIT') ;
 			}
 
 			if (isset($rInfo['insurance'])){
-				$returnPrice['price'] += (float)$rInfo['insurance'];
+				if($onlyShow){
+					$returnPrice['price'] += (float)$rInfo['insurance'];
+				}
 			}elseif($includeInsurance){
 				$payPerRentals = Doctrine_Query::create()
 				->select('insurance')

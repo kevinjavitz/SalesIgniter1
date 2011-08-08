@@ -25,7 +25,7 @@ class productListing_productsImage {
 			->setHeight(SMALL_IMAGE_HEIGHT)
 			->thumbnailImage(true);
 			
-			return '<a href="' . htmlspecialchars(itw_app_link('products_id=' . $productClass->getID() . $addedGetVar, 'product', 'info')) . '">' . $imageHtml->draw() . '</a>';
+			return '<a style="text-decoration:none;" href="' . htmlspecialchars(itw_app_link('products_id=' . $productClass->getID() . $addedGetVar, 'product', 'info')) . '">' . $imageHtml->draw() .'<br/><span style="color:red;text-decoration:none;">Click here to select product</span>' . '</a>';
 		}
 		return false;
 	}
