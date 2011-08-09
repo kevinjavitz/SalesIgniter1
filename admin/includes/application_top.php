@@ -70,9 +70,9 @@
 	
 	$connString = 'mysql://' . sysConfig::get('DB_SERVER_USERNAME') . ':' . sysConfig::get('DB_SERVER_PASSWORD') . '@' . sysConfig::get('DB_SERVER') . '/' . sysConfig::get('DB_DATABASE');
 	$conn = Doctrine_Manager::connection($connString, 'mainConnection');
-	$cacheDriver = new Doctrine_Cache_Apc();
+	/*$cacheDriver = new Doctrine_Cache_Apc();
 	$conn->setAttribute(Doctrine_Core::ATTR_QUERY_CACHE, $cacheDriver);
-	$conn->setAttribute(Doctrine_Core::ATTR_RESULT_CACHE, $cacheDriver);
+	$conn->setAttribute(Doctrine_Core::ATTR_RESULT_CACHE, $cacheDriver);*/
 
 	$conn->setListener($profiler);
 
