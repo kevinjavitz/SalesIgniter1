@@ -61,6 +61,18 @@
 
 		$newUser->save();
 
+		//move into custom fields
+		Doctrine::getTable('ProductCustomFieldsToCustomers')->findbyCustomersId($newUser->customers_id)->delete();
+		if (isset($_POST['fields'])){
+			foreach($_POST['fields'] as $fID => $val){
+				$ProductCustomFieldsToCustomers = new ProductCustomFieldsToCustomers();
+				$ProductCustomFieldsToCustomers->customers_id = $newUser->customers_id;
+				$ProductCustomFieldsToCustomers->product_custom_field_id = $fID;
+				$ProductCustomFieldsToCustomers->options = implode($val,',');
+				$ProductCustomFieldsToCustomers->save();
+			}
+		}
+
 		sendNewCustomerEmail($newUser->customers_firstname, $newUser->customers_lastname, $newUser->customers_email_address, $newUser->customers_password);
 	}
 
