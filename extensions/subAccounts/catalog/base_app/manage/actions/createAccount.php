@@ -32,7 +32,7 @@
 		$emailAddress = $_POST['email_address'];
 	}else{
 		$error = true;
-		$messageStack->addSession('pageStack','Email Address cannot be blank or already exists','error');
+		$messageStack->addSession('pageStack','Username cannot be blank or already exists','error');
 	}
 
 	if(isset($_POST['password']) && !empty($_POST['password'])){
