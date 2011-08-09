@@ -58,9 +58,9 @@
 	$profiler = new Doctrine_Connection_Profiler();
 
 	$conn = Doctrine_Manager::connection(sysConfig::get('DOCTRINE_CONN_STRING'), 'mainConnection');
-	$cacheDriver = new Doctrine_Cache_Apc();
+	/*$cacheDriver = new Doctrine_Cache_Apc();
 	$conn->setAttribute(Doctrine_Core::ATTR_QUERY_CACHE, $cacheDriver);
-	$conn->setAttribute(Doctrine_Core::ATTR_RESULT_CACHE, $cacheDriver);
+	$conn->setAttribute(Doctrine_Core::ATTR_RESULT_CACHE, $cacheDriver);*/
 
 	$conn->setListener($profiler);
 
