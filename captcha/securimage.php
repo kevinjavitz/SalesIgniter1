@@ -653,7 +653,7 @@ class Securimage {
 		header('Content-Length: ' . strlen($audio));
 
 		echo $audio;
-		exit;
+		itwExit();
 	}
 
 	/**

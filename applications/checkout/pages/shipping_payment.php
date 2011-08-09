@@ -334,6 +334,7 @@ if (!empty($contents)){
 		echo '<br>';
 	}
 }
+if(sysConfig::get('SHOW_COMMENTS_CHECKOUT') == 'true'){
 ?>
 <div class="ui-widget">
 	<div class="ui-widget-content ui-corner-all">
@@ -346,6 +347,9 @@ if (!empty($contents)){
 		</div>
 	</div>
 </div>
+<?php
+}
+	?>
 <br>
 <div align="right"><table class="orderTotalsList" cellpadding="2" cellspacing="0" border="0" style="margin:.5em;"><?php
 	echo OrderTotalModules::output();

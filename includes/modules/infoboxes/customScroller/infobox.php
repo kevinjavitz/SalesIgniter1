@@ -32,7 +32,7 @@ abstract class InfoBoxCustomScrollerAbstract
 	}
 
 	public function buildList($products, $cInfo) {
-		$numOfLists = $cInfo->rows;
+		$numOfLists = isset($cInfo->rows)?$cInfo->rows:1;
 
 		$Lists = array();
 		for($i=0; $i<$numOfLists; $i++){
@@ -424,7 +424,7 @@ class InfoBoxCustomScroller extends InfoBoxAbstract
 					var PrevButtonWidth = parseInt($PrevButton.data('width'));
 					var NextButtonWidth = parseInt($NextButton.data('width'));
 
-					var ListWidth = ContainerWidth - PrevButtonWidth - NextButtonWidth;
+					var ListWidth = ContainerWidth - PrevButtonWidth - NextButtonWidth - 10;
 					$ListContainer.width(ListWidth + 'px');
 
 					var maxOffset;
