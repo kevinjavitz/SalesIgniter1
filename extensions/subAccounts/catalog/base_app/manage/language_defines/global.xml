@@ -166,7 +166,7 @@
 	<define key="ENTRY_PRIVACY_AGREEMENT_ERROR"><![CDATA[Please read our terms & conditions and agree to it. If you do not do so, we can not register you.]]></define>
 
 	<define key="TEXT_ACCOUNT_CREATED"><![CDATA[Congratulations! Your new account has been successfully created! You can now take advantage of member priviledges to enhance your online shopping experience with us. If you have <small><b>ANY</b></small> questions about the operation of this online shop, please email the <a href="%s">store owner</a>.<br><br>A confirmation has been sent to the provided email address. If you have not received it within the hour, please <a href="%s">contact us</a>.]]></define>
-	<define key="TEXT_SUBACCOUNT_CREATED"><![CDATA[Congratulations! Your new subaccount has been successfully created!. You can setup now his options. Click continue to view subaccounts]]></define>
+	<define key="TEXT_SUBACCOUNT_CREATED"><![CDATA[Congratulations! Your new subaccount has been successfully created!]]></define>
 
 
 	<define key="TEXT_NEW_CUSTOMER"><![CDATA[I am a new customer.]]></define>
@@ -276,6 +276,7 @@
     <define key="ENTRY_LAST_NAME_TEXT"><![CDATA[*]]></define>
     <define key="ENTRY_DATE_OF_BIRTH_TEXT"><![CDATA[* (eg. 05/21/1970)]]></define>
     <define key="ENTRY_EMAIL_ADDRESS_TEXT"><![CDATA[*]]></define>
+	<define key="ENTRY_EMAIL_ADDRESS"><![CDATA[Username:]]></define>
     <define key="ENTRY_COMPANY_TEXT"><![CDATA[]]></define>
     <define key="ENTRY_STREET_ADDRESS_TEXT"><![CDATA[*]]></define>
     <define key="ENTRY_POST_CODE_TEXT"><![CDATA[*]]></define>
