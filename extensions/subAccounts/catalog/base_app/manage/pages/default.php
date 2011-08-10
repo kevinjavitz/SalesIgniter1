@@ -63,14 +63,10 @@ $pageTitle = sysLanguage::get('HEADING_TITLE_CREATE');
 
 $pageButtons = htmlBase::newElement('button')
 	->usePreset('continue')
+	->setHref(itw_app_link(null,'account','default'))
 	->setType('submit')
 	->draw();
 
-$pageContent->set('pageForm', array(
-	'name' => 'create_account',
-	'action' => itw_app_link('action=createAccount&appExt=subAccounts', 'manage', 'default', 'SSL'),
-	'method' => 'post'
-));
 
 $pageContent->set('pageTitle', $pageTitle);
 $pageContent->set('pageContent', $pageContents);
