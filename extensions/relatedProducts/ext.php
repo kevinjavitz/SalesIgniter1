@@ -273,12 +273,12 @@ class Extension_relatedProducts extends ExtensionBase {
 					//echo "<pre>". print_r($ProductToCategories);
 					foreach($ProductToCategories as $category){
 						$QproductFromCat = Doctrine_Query::create()
-						->select('p.products_id, c.categories_id')
-						->from('Products p')
-						->leftJoin('p.ProductsToCategories c')
-						->where('c.categories_id = ?', $category['categories_id'])
-						->limit((int)sysConfig::get('EXTENSION_RELATED_PRODUCTS_DISPLAY_NUMBER'))
-						->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+								->select('p.products_id, c.categories_id')
+								->from('Products p')
+								->leftJoin('p.ProductsToCategories c')
+								->where('c.categories_id = ?', $category['categories_id'])
+								->limit((int)sysConfig::get('EXTENSION_RELATED_PRODUCTS_DISPLAY_NUMBER'))
+								->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 
 						if (count($QproductFromCat) > 0){
 
@@ -290,20 +290,20 @@ class Extension_relatedProducts extends ExtensionBase {
 							}
 
 							$Query = Doctrine_Query::create()
-							->select('g.group_name, f.*, fd.field_name, f2p.product_id, f2p.value, f2g.sort_order')
-							->from('ProductsCustomFieldsGroups g')
-							->leftJoin('g.ProductsCustomFieldsGroupsToProducts g2p')
-							->leftJoin('g.ProductsCustomFieldsToGroups f2g')
-							->leftJoin('f2g.ProductsCustomFields f')
-							->leftJoin('f.ProductsCustomFieldsDescription fd')
-							->leftJoin('f.ProductsCustomFieldsToProducts f2p')
-							->where('fd.field_name is not null')
-							->andWhere('fd.language_id = ?', (int)Session::get('languages_id'))
-							->andWhereIn('f2p.product_id', $products)
-							->andWhere('fd.field_name = "Actors"')
-							->andWhere('(f2p.value LIKE "%' . $actor . '%" OR f2p.value = ?)', $actor)
-							->orderBy('f2g.sort_order')
-							->execute(array(),Doctrine_Core::HYDRATE_ARRAY);
+									->select('g.group_name, f.*, fd.field_name, f2p.product_id, f2p.value, f2g.sort_order')
+									->from('ProductsCustomFieldsGroups g')
+									->leftJoin('g.ProductsCustomFieldsGroupsToProducts g2p')
+									->leftJoin('g.ProductsCustomFieldsToGroups f2g')
+									->leftJoin('f2g.ProductsCustomFields f')
+									->leftJoin('f.ProductsCustomFieldsDescription fd')
+									->leftJoin('f.ProductsCustomFieldsToProducts f2p')
+									->where('fd.field_name is not null')
+									->andWhere('fd.language_id = ?', (int)Session::get('languages_id'))
+									->andWhereIn('f2p.product_id', $products)
+									->andWhere('fd.field_name = "Actors"')
+									->andWhere('(f2p.value LIKE "%' . $actor . '%" OR f2p.value = ?)', $actor)
+									->orderBy('f2g.sort_order')
+									->execute(array(),Doctrine_Core::HYDRATE_ARRAY);
 
 							if (count($Query) > 0){
 								foreach($Query[0]['ProductsCustomFieldsToGroups'][0]['ProductsCustomFields']['ProductsCustomFieldsToProducts'] as $qp){
@@ -319,38 +319,39 @@ class Extension_relatedProducts extends ExtensionBase {
 						foreach($ProductToCategories as $category){
 
 							$QproductFromCat = Doctrine_Query::create()
-							->select('p.products_id, c.categories_id')
-							->from('Products p')
-							->leftJoin('p.ProductsToCategories c')
-							->where('c.categories_id = ?', $category['categories_id'])
-							->orderBy('p.products_price DESC')
-							->limit((int)sysConfig::get('EXTENSION_RELATED_PRODUCTS_DISPLAY_NUMBER'))
-							->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+									->select('p.products_id, c.categories_id')
+									->from('Products p')
+									->leftJoin('p.ProductsToCategories c')
+									->where('c.categories_id = ?', $category['categories_id'])
+									->orderBy('p.products_price DESC')
+									->limit((int)sysConfig::get('EXTENSION_RELATED_PRODUCTS_DISPLAY_NUMBER'))
+									->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 							if($QproductFromCat){
 								foreach($QproductFromCat as $qp)
-								$relatedProducts .= $qp['products_id'].",";
+									$relatedProducts .= $qp['products_id'].",";
 								$relatedProducts = substr($relatedProducts,0, strlen($relatedProducts)-2);
 							}
 						}
 					}
 				}
 			}
-                $ProductG = Doctrine_Core::getTable('ProductsRelatedGlobal')->findOneByType('P');
-                if (count($ProductG) > 0){ 
-                	$related = explode(',',$ProductG->related_global);
-                      	foreach($related as $qp){
-				$relatedProducts .= ",".$qp;
+			$ProductG = Doctrine_Core::getTable('ProductsRelatedGlobal')->findOneByType('P');
+			if (count($ProductG) > 0){
+				$related = explode(',',$ProductG->related_global);
+				foreach($related as $qp){
+					$relatedProducts .= ",".$qp;
+				}
 			}
-		}
 
-		if (!empty($relatedProducts)){
-			$listing = $this->getListing($relatedProducts);
-			if ($listing){
-				return '<div id="tab_' . $this->getExtensionKey() . '">' . $listing->draw() . '</div>';
+			if (!empty($relatedProducts)){
+				$listing = $this->getListing($relatedProducts);
+				if ($listing){
+					return '<div id="tab_' . $this->getExtensionKey() . '">' . $listing->draw() . '</div>';
+				}
 			}
-		}
 
-		return;
+			return;
+		}
 	}
 }
 ?>
