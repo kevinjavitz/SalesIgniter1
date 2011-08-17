@@ -33,12 +33,12 @@
 		}
 	
 		public function AccountDefaultAddLinksBlock($pageContents){
-			global $appExtension;
+			global $appExtension,$currencies;
 
 			$extRewards = $appExtension->getExtension('pointsRewards');
 			$pageContents = '<div id="headerText" style="margin-top:1em;">' .
-							'<b>' . sprintf(sysLanguage::get('POINTS_EARNED'), $extRewards->getPointsEarned()) . '</b>' .
-							'</div>' .
+							'<b>' . sprintf(sysLanguage::get('POINTS_EARNED'), $currencies->currencies[DEFAULT_CURRENCY]['symbol_left'].$extRewards->getPointsEarned()) . '</b>' .
+							'<br><br></div>' .
 			                $pageContents;
 		}
 	}
