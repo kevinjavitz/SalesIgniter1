@@ -24,17 +24,22 @@ class referral_catalog_checkout_default extends Extension_referral {
 		$referral = htmlBase::newElement('input')
 				->setName('referral')
 				->setType('text');
+		$referralRedeemButton = htmlBase::newElement('button')
+				->css(array('padding'=>'5px'))
+				->setName('redeemReferral')
+				->setId('redeemReferral')
+				->setText(sysLanguage::get('TEXT_REDEEM_REFERRAL'));
 		$htmlTable->addBodyRow(array(
 		                            'columns' => array(
 			                            array('addCls' => 'main',
-			                                  'css'=>array('text-align:center'),
+			                                  'css'=>array('text-align'=>'left', 'font-weight'=>'bold'),
 			                                  'text' => sysLanguage::get('TEXT_REFERRAL'))
 		                            )));
 		$htmlTable->addBodyRow(array(
 		                            'columns' => array(
 			                            array('addCls' => 'main',
-			                                  'css'=>array('text-align:center'),
-			                                  'text' => $referral->draw())
+			                                  'css'=>array('text-align'=>'left'),
+			                                  'text' => sysLanguage::get('TEXT_ENTER_REFERRAL') . '&nbsp;&nbsp;' . $referral->draw() . '&nbsp;&nbsp;' . $referralRedeemButton->draw())
 		                            )));
 		echo $htmlTable->draw();
 	}

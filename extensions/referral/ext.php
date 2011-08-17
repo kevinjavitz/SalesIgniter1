@@ -26,7 +26,7 @@ class Extension_referral extends ExtensionBase {
 		global $currencies;
 
 		$pageContents = '<div class="main" style="margin-top:1em;">' .
-		                '<b>' . sprintf(sysLanguage::get('TEXT_USE_REFERRAL_CODE'), $this->getReferralCode(), $currencies->format(sysConfig::get('EXTENSION_REFFERAL_SYSTEM_REWARD_POINTS'))) . '</b>' .
+		                '<b>' . sprintf(sysLanguage::get('TEXT_USE_REFERRAL_CODE'), $this->getReferralCode(), $currencies->currencies[DEFAULT_CURRENCY]['symbol_left'].sysConfig::get('EXTENSION_REFFERAL_SYSTEM_REWARD_POINTS')) . '</b>' .
 		                '</div>' .
 		                $pageContents;
 	}

@@ -1,5 +1,7 @@
 <definitions>
-	<define key="TEXT_REFERRAL"><![CDATA[Referral Code]]></define>
+	<define key="TEXT_REFERRAL"><![CDATA[Did a friend give you their Referral Code?]]></define>
+	<define key="TEXT_ENTER_REFERRAL"><![CDATA[Enter code here]]></define>
+	<define key="TEXT_REDEEM_REFERRAL"><![CDATA[Redeem]]></define>
 	<define key="ERROR_WRONG_REFERRAL_CODE"><![CDATA[You have entered wrong referral code.]]></define>
 
 	<define key="TEXT_VOUCHER_IS"><![CDATA[Coupon Code :]]></define>
