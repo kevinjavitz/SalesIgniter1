@@ -208,7 +208,12 @@ EventManager::notify('ProductInfoProductsImageShow', &$image, &$product);
 	}
 	
 	if (isset($discs) && sizeof($discs) > 0){
-		$productListing = new productListing_row();
+		if(sysConfig::get('PRODUCT_LISTING_TYPE') == 'row'){
+			$productListing = new productListing_row();
+		} else {
+			$productListing = new productListing_col();
+		}
+
 		$productListing->disablePaging()
 		->disableSorting()
 		->dontShowWhenEmpty()

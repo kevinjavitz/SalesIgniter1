@@ -9,8 +9,12 @@
 	->andWhere('p2b.products_id is null')
 	->andWhere('pd.language_id = ?', (int)Session::get('languages_id'))
 	->orderBy('p.products_date_added DESC, pd.products_name');
-	
-	$productListing = new productListing_row();
+
+	if(sysConfig::get('PRODUCT_LISTING_TYPE') == 'row'){
+		$productListing = new productListing_row();
+	} else {
+		$productListing = new productListing_col();
+	}
 	$productListing->setQuery($QproductsUpcoming);
 	
 	$pageContent->set('pageTitle', sysLanguage::get('HEADING_TITLE_NEW'));

@@ -22,7 +22,11 @@ if ($category_depth == 'products' || isset($_GET['manufacturers_id'])) {
 		}
 
 		// create column list
-		$featuredProductListing = new productListing_row();
+		if(sysConfig::get('PRODUCT_LISTING_TYPE') == 'row'){
+			$featuredProductListing = new productListing_row();
+		} else {
+			$featuredProductListing = new productListing_col();
+		}
 		$featuredProductListing->disableSorting()->disablePaging()->dontShowWhenEmpty()
 		->setQuery($QfeaturedProducts);
 
@@ -141,7 +145,12 @@ if ($category_depth == 'products' || isset($_GET['manufacturers_id'])) {
 		}
 	}
 
-	$productListing = new productListing_row();
+	if(sysConfig::get('PRODUCT_LISTING_TYPE') == 'row'){
+		$productListing = new productListing_row();
+	} else {
+		$productListing = new productListing_col();
+	}
+
 	$productListing->setQuery(&$Qproducts);
 	echo $productListing->draw();
 

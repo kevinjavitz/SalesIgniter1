@@ -11,7 +11,11 @@
 
  	EventManager::notify('ProductListingQueryBeforeExecute', &$Qfeatured);
 
-	$productListing = new productListing_row();
+	if(sysConfig::get('PRODUCT_LISTING_TYPE') == 'row'){
+		$productListing = new productListing_row();
+	} else {
+		$productListing = new productListing_col();
+	}
 	$productListing->setQuery($Qfeatured);
 	
 	$pageContent->set('pageTitle', sysLanguage::get('HEADING_TITLE_FEATURED'));

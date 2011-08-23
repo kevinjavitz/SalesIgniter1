@@ -1,119 +1,261 @@
 <?php
 	global $currencies;
 
-	if (is_array($listingData)){
-?>
+if (is_array($listingData)) {
+	$listingTable = htmlBase::newElement('table')->setCellPadding(3)->setCellSpacing(0)->attr('width', '100%');
+	foreach ($listingData as $row => $rowInfo) {
+		if (!is_array($rowInfo)) continue;
+
+		$rowColumns = array();
+		foreach ($rowInfo as $col => $colInfo) {
+			if (!is_array($colInfo)) continue;
+
+			$rowColumns[$col] = array(
+				'text' => $colInfo['text']
+			);
+
+			if (isset($colInfo['align'])) {
+				$rowColumns[$col]['align'] = $colInfo['align'];
+			}
+			if (isset($colInfo['valign'])) {
+				$rowColumns[$col]['valign'] = $colInfo['valign'];
+			} else {
+				$rowColumns[$col]['valign'] = 'top';
+			}
+
+			if (isset($colInfo['addCls'])) {
+				$rowColumns[$col]['addCls'] = $colInfo['addCls'];
+			}
+		}
+
+		if ($row == 0) {
+			$listingTable->addHeaderRow(array(
+			                                 'addCls' => (isset($rowInfo['addCls']) ? $rowInfo['addCls'] : false),
+			                                 'columns' => $rowColumns
+			                            ));
+		} else {
+			$listingTable->addBodyRow(array(
+			                               'addCls' => (isset($rowInfo['addCls']) ? $rowInfo['addCls'] : false),
+			                               'columns' => $rowColumns
+			                          ));
+		}
+	}
+	?>
 <div class="productListingColContainer ui-corner-all-big">
-<?php
-if (isset($pager) || isset($sorter)){
-?>
- <div class="productListingColPager ui-corner-all"><?php
- if (isset($pager)){
- 	echo '<b>'.sysLanguage::get('PRODUCT_LISTING_PAGE').':</b> ' . $pager;
- }
+	<?php
+ if (isset($sorter)) {
+	if (sysConfig::get('PRODUCT_LISTING_SHOW_PRODUCT_NAME_FILTER') == 'True') {
+		$selectedCss = array(
+			'font-weight' => 'bold',
+			'color' => '#333333'
+		);
+		$allLink = htmlBase::newElement('a')
+				->setHref(itw_app_link(tep_get_all_get_params(array('action', 'starts_with'))))
+				->html(sysLanguage::get('PRODUCT_LISTING_ALL'));
+		if (!isset($_GET['starts_with']) || $_GET['starts_with'] == '') {
+			$allLink->css($selectedCss);
+		}
 
- if (isset($sorter)){
- 	if (isset($pager)){
- 		echo '<div style="top:23%;right:1em;position:absolute;"><b>'.sysLanguage::get('PRODUCT_LISTING_SORT_BY').':</b>' . $sorter . '</div>';
- 	}else{
- 		echo '<div style="top:23%;right:1em;position:relative;"><b>'.sysLanguage::get('PRODUCT_LISTING_SORT_BY').':</b>' . $sorter . '</div>';
- 	}
- }
- ?></div>
-<?php
-}
-?>
-<script>
-/*
-$(document).ready(function (){
-	var imagesToLoad = [];
-	var i=0;
-	$('.designerImage').each(function (){
-		imagesToLoad.push(this);
-		$(this).bind('loadImage', function (){
-			var self = this;
-			var newImage = new Image();
-			newImage.src = $(this).attr('imgSrc');
-			$(newImage).bind('load', function (){
-				$(self).replaceWith($(newImage));
-				i++;
-				if (imagesToLoad[i]){
-					$(imagesToLoad[i]).trigger('loadImage');
-				}
-			});
-		});
-	});
+		$numLink = htmlBase::newElement('a')
+				->setHref(itw_app_link(tep_get_all_get_params(array('action', 'starts_with')) . 'starts_with=num'))
+				->html('0-9');
+		if (isset($_GET['starts_with']) && $_GET['starts_with'] == 'num') {
+			$numLink->css($selectedCss);
+		}
 
-	$(imagesToLoad[0]).trigger('loadImage');
-});
-*/
-</script>
- <div class="productListingColContents">
- <?php foreach($listingData as $pClass){ ?>
-  <div class="productListingColBoxContainer">
-   <div class="productListingColBoxTitle"><a href="<?php echo itw_app_link('products_id=' . $pClass->getId(), 'product', 'info');?>"><?php echo $pClass->getName();?></a></div>
-   <div class="productListingColBoxContentContainer ui-corner-all-big">
-  	<div class="productListingColBoxContent ui-corner-all-big">
-  	 <div class="productListingColBoxContent_image"><a href="<?php echo itw_app_link('products_id=' . $pClass->getId(), 'product', 'info');?>"><?php
-  	 $image = $pClass->getImage();
-  	 EventManager::notify('ProductListingProductsImageShow', &$image, &$pClass, 200, 200);
+		$letterLinks = array();
+		foreach (range('A', 'Z') as $letter) {
+			$letterLink = htmlBase::newElement('a')
+					->setHref(itw_app_link(tep_get_all_get_params(array('action', 'starts_with')) . 'starts_with=' . $letter))
+					->html($letter);
+			if (isset($_GET['starts_with']) && $_GET['starts_with'] == $letter) {
+				$letterLink->css($selectedCss);
+			}
 
-  	 $imageHtml = htmlBase::newElement('image')->setWidth(200)->setHeight(200);
-  	 if ($pClass->productInfo['product_designable'] == '1'){
-  	 	$imageHtml/*->addClass('designerImage')
-  	 	->setSource('ext/jQuery/themes/icons/ajax_loader_normal.gif')*/
-  	 	->setSource($image)
-  	 	->attr('imgSrc', $image)
-  	 	//->setWidth(36)->setHeight(36)
-  	 	->thumbnailImage(false);
-  	 }else{
-  	 	$imageHtml->setSource($image)
-  	 	->thumbnailImage(true);
-  	 }
-  	 echo $imageHtml->draw();
-  	 ?></a></div>
-  	</div>
-   </div>
-   <div class="productListingColBoxContent_price ui-corner-bottom-big"><?php
-    $discountsExt = $appExtension->getExtension('quantityDiscount');
-    //echo ($discountsExt !== false) . ' && ' . ($pClass->canBuy('new'));
-    $purchaseTypeClass = $pClass->getPurchaseType('new');
-    if ($discountsExt !== false && $purchaseTypeClass->hasInventory()){
-    	$discounts = $discountsExt->getProductsDiscounts($pClass->getID());
-    	if ($discounts->count() > 0){
-    		echo '<span style="font-size:.75em;">' . $purchaseTypeClass->displayPrice() . '</span><br><span style="color:#FF0000;font-size:.55em">Bulk Order - ' . $currencies->format($discounts[0]->price) . '</span>';
-    	}else{
-  			echo $purchaseTypeClass->displayPrice();
-    	}
-    }else{
-    	echo $purchaseTypeClass->displayPrice();
-    }
-   ?></div>
-  </div>
- <?php } ?>
- </div>
-<?php
-if (isset($pager) || isset($sorter)){
-?>
- <div class="productListingColPager ui-corner-all"><?php
- if (isset($pager)){
- 	echo '<b>'.sysLanguage::get('PRODUCT_LISTING_PAGE').':</b> ' . $pager;
- }
+			$letterLinks[] = $letterLink->draw();
+		}
+	}
 
- if (isset($sorter)){
- 	if (isset($pager)){
- 		echo '<div style="top:23%;right:1em;position:absolute;"><b>'.sysLanguage::get('PRODUCT_LISTING_SORT_BY').':</b>' . $sorter . '</div>';
- 	}else{
- 		echo '<div style="top:23%;right:1em;position:relative;"><b>'.sysLanguage::get('PRODUCT_LISTING_SORT_BY').':</b>' . $sorter . '</div>';
- 	}
- }
- ?></div>
-<?php
-}
-?>
+	if (sysConfig::get('PRODUCT_LISTING_ALLOW_RESULT_LIMIT') == 'True') {
+		$getVars = tep_get_all_get_params(array('action', 'limit'));
+		parse_str($getVars, $getArr);
+		$hiddenFields = '';
+		foreach ($getArr as $k => $v) {
+			$hiddenFields .= '<input type="hidden" name="' . $k . '" value="' . $v . '" />';
+		}
+
+		$resultsPerPageMenu = htmlBase::newElement('selectbox')
+				->setName('limit')
+				->attr('onchange', 'this.form.submit()');
+
+		$resultsPerPageMenu->addOption(10, 10);
+		$resultsPerPageMenu->addOption(25, 25);
+		$resultsPerPageMenu->addOption(50, 50);
+		$resultsPerPageMenu->addOption(75, 75);
+		$resultsPerPageMenu->addOption(100, 100);
+
+		$resultsPerPageMenu->selectOptionByValue((isset($_GET['limit']) ? $_GET['limit'] : 10));
+
+		$perPageForm = htmlBase::newElement('form')
+				->attr('name', 'limit')
+				->attr('method', 'get')
+				->attr('action', itw_app_link(tep_get_all_get_params(array('action', 'limit'))))
+				->html($hiddenFields)
+				->append($resultsPerPageMenu);
+	}
+	?>
+	<div class="productListingRowPager ui-corner-all">
+		<table cellpadding="3" cellspacing="0" border="0" width="100%">
+			<?php if (sysConfig::get('PRODUCT_LISTING_SHOW_PRODUCT_NAME_FILTER') == 'True') { ?>
+			<tr>
+				<td align="center"><?php echo $allLink->draw() . ' | ' . $numLink->draw() . ' | ' . implode(' ', $letterLinks);?></td>
+			</tr>
+			<?php } ?>
+			<tr>
+				<td align="right">
+					<table cellpadding="3" cellspacing="0" border="0">
+						<tr>
+							<td><b><?php echo sysLanguage::get('PRODUCT_LISTING_SORT_BY'); ?>:</b></td>
+							<td align="right"><?php echo $sorter;?></td>
+							<?php if (sysConfig::get('PRODUCT_LISTING_ALLOW_RESULT_LIMIT') == 'True') { ?>
+							<td><b><?php echo sysLanguage::get('PRODUCT_LISTING_RESULTS_PER_PAGE'); ?>:</b></td>
+							<td align="right"><?php echo $perPageForm->draw();?></td>
+							<?php } ?>
+						</tr>
+					</table>
+				</td>
+			</tr>
+		</table>
+	</div>
+	<br/>
+	<div class="productListingRowContents"><?php echo $listingTable->draw();?></div>
+	<?php
+	}
+	$totalWidth = sysConfig::get('PRODUCT_LISTING_TOTAL_WIDTH');
+	$productsPerRow = sysConfig::get('PRODUCT_LISTING_PRODUCTS_COLUMNS');
+	$imageWidth = ($totalWidth / $productsPerRow);
+	$imageContainerWidth = ($totalWidth / $productsPerRow) + 2;
+	if(isset($pager)) {
+
+		$productListingColPager = htmlBase::newElement('div')
+				->addClass('productListingColPager ui-corner-all')
+				->html($pager);
+		$productListingRowContents = htmlBase::newElement('div')
+				->addClass('productListingRowContents')
+				->append($productListingColPager);
+		echo '<br>' . $productListingRowContents->draw();
+	}
+
+
+	$productListingColContents = htmlBase::newElement('div')
+			->addClass('productListingColContents');
+	foreach ($listingData as $pClass) {
+
+		$productLink = htmlBase::newElement('a')
+				->setHref(itw_app_link('products_id=' . $pClass->getId(), 'product', 'info'))
+				->setId($pClass->getId())
+				->html($pClass->getName());
+		$productListingColBoxTitle = htmlBase::newElement('div')
+				->addClass('productListingColBoxTitle')
+				->css(array('height' => '60px',
+				           'display' => 'table-cell',
+				           'text-align' => 'center',
+				           'width' => $imageWidth . 'px',
+				           'vertical-align' => 'middle'))
+				->append($productLink);
+
+		EventManager::notify('ProductListingProductsImageShow', &$image, &$pClass);
+		$image = $pClass->getImage();
+
+
+
+		$imageHtml = htmlBase::newElement('image')->setWidth($imageWidth)->setHeight(120);
+		if ($pClass->productInfo['product_designable'] == '1') {
+			$imageHtml /*->addClass('designerImage')
+			//->setSource('ext/jQuery/themes/icons/ajax_loader_normal.gif')*/
+					->setSource($image)
+					->attr('imgSrc', $image)
+			//->setWidth(36)->setHeight(36)
+					->thumbnailImage(false);
+		} else {
+			$imageHtml->setSource($image)
+					->thumbnailImage(true);
+		}
+		$productImageLink = htmlBase::newElement('a')
+				->setHref(itw_app_link('products_id=' . $pClass->getId(), 'product', 'info'))
+				->html($imageHtml->draw());
+		$productListingColBoxContentImage = htmlBase::newElement('div')
+				->addClass('productListingColBoxContent_image')
+				->attr('pID',$pClass->getId())
+				->append($productImageLink);
+		$productListingColBoxContent = htmlBase::newElement('div')
+				->addClass('productListingColBoxContent ui-corner-all-big')
+				->append($productListingColBoxContentImage);
+		$productListingColBoxContentContainer = htmlBase::newElement('div')
+				->addClass('productListingColBoxContentContainer ui-corner-all-big')
+				->append($productListingColBoxContent);
+		$contents = EventManager::notifyWithReturn('ProductListingProductsBeforeShowPrice', &$pClass);
+		$contentsText = '';
+		if (!empty($contents)) {
+			foreach ($contents as $content) {
+				$contentsText .= $content;
+			}
+		}
+
+		$discountsExt = $appExtension->getExtension('quantityDiscount');
+		//echo ($discountsExt !== false) . ' && ' . ($pClass->canBuy('new'));
+		$purchaseTypeClass = $pClass->getPurchaseType('new');
+		if ($discountsExt !== false && $purchaseTypeClass->hasInventory()){
+			$discounts = $discountsExt->getProductsDiscounts($pClass->getID());
+			if ($discounts->count() > 0){
+				$priceout = '<span style="font-size:.75em;">' . $purchaseTypeClass->displayPrice() . '</span><br><span style="color:#FF0000;font-size:.55em">Bulk Order - ' . $currencies->format($discounts[0]->price) . '</span>';
+			}else{
+				$priceout = $purchaseTypeClass->displayPrice();
+			}
+		}else{
+			$priceout = $purchaseTypeClass->displayPrice();
+		}
+		$priceTable = htmlBase::newElement('table')
+				->setCellPadding(3)
+				->setCellSpacing(0);
+		$priceTable->addBodyRow(array(
+		                             'columns' => array(
+			                             array('addCls' => 'productListingColBoxContent_price_tag', 'text' => '<b>Rental Price :</b>'),
+			                             array('addCls' => 'productListingColBoxContent_price', 'text' => $priceout)
+		                             )
+		                        ));
+		$productListingColBoxInner = htmlBase::newElement('div')
+				->addClass('productListingColBoxInner')
+				->css(array('min-height' => '210px'))
+				->append($productListingColBoxTitle)
+				->append($productListingColBoxContent)
+				->html($contentsText);
+		//->append($priceTable);
+		$productListingColBoxContainer = htmlBase::newElement('div')
+				->addClass('productListingColBoxContainer')
+				->css(array(
+				           'width' => $imageContainerWidth . 'px',
+				           'float' => 'left',
+				           'margin-left' => '5px',
+				           'margin-top' => '15px',
+				           'background' => 'none',
+				           'border' => '1px dotted #CCC',
+				           'height' => '190px',
+				           'padding-bottom' => '4px'
+				      ))
+				->append($productListingColBoxInner);
+		$productListingColContents->append($productListingColBoxContainer);
+	}
+	echo htmlBase::newElement('div')
+			->addClass('productListingRowContents')
+			->append($productListingColContents)
+			->draw();
+	?>
+
 </div>
-<?php
-}else{
+	<?php
+
+} else {
 	echo $listingData;
 }
 ?>
