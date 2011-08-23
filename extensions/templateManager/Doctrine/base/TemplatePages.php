@@ -49,5 +49,11 @@ class TemplatePages extends Doctrine_Record {
 		'primary' => false,
 		'notnull' => false,
 		));
+		$this->hasColumn('page_type', 'string', null, array(
+		   'type' => 'string',
+		   'length' => null,
+		   'primary' => false,
+		   'notnull' => true,
+	    ));
 	}
 }

@@ -117,6 +117,9 @@ if (isset($_POST['applications'])){
 
 		foreach($Pages as $pageName){
 			$TemplatePage = $TemplatePages->findOneByApplicationAndPage($appName, $pageName);
+			$pageType = !empty($_POST['pagetype'][$appName][$pageName]) ? $_POST['pagetype'][$appName][$pageName] : '';
+			$currentPageTypesNew = false;
+
 			if (!$TemplatePage){
 				$TemplatePage = new TemplatePages();
 				$TemplatePage->application = $appName;
@@ -124,9 +127,27 @@ if (isset($_POST['applications'])){
 			}
 
 			$currentLayouts = explode(',', $TemplatePage->layout_id);
+			$currentPageTypes = explode(',', $TemplatePage->page_type);
+
+			foreach($currentLayouts as $key => $currentLayout) {
+				//echo 'inside ' . $layoutId . ' = ' . $currentLayout . "\n";
+				if($layoutId == $currentLayout) {
+					$currentPageTypesNew[$key] = $pageType;
+
+				} else {
+					if(isset($currentPageTypes[$key]))
+						$currentPageTypesNew[$key] = $currentPageTypes[$key];
+					else
+						$currentPageTypesNew[$key] = '';
+				}
+			}
+
 			if (!in_array($layoutId, $currentLayouts)){
 				$currentLayouts[] = $layoutId;
+				$currentPageTypesNew[] = $pageType;
 			}
+
+			$TemplatePage->page_type = implode(',', $currentPageTypesNew);
 			$TemplatePage->layout_id = implode(',', $currentLayouts);
 			$TemplatePage->save();
 		}
@@ -138,6 +159,9 @@ if (isset($_POST['applications']['ext'])){
 		foreach($Applications as $appName => $Pages){
 			foreach($Pages as $pageName){
 				$TemplatePage = $TemplatePages->findOneByApplicationAndPageAndExtension($appName, $pageName, $extName);
+				$pageType = !empty($_POST['pagetype']['ext'][$extName][$pageName]) ? $_POST['pagetype']['ext'][$extName][$pageName] : '';
+				$currentPageTypesNew = false;
+				
 				if (!$TemplatePage){
 					$TemplatePage = new TemplatePages();
 					$TemplatePage->application = $appName;
@@ -146,9 +170,24 @@ if (isset($_POST['applications']['ext'])){
 				}
 
 				$currentLayouts = explode(',', $TemplatePage->layout_id);
+				$currentPageTypes = explode(',', $TemplatePage->page_type);
+
+				foreach($currentLayouts as $key=> $currentLayout) {
+					if($layoutId == $currentLayout) {
+						$currentPageTypesNew[$key] = $pageType;
+					} else {
+						if(isset($currentPageTypes[$key]))
+							$currentPageTypesNew[$key] = $currentPageTypes[$key];
+						else
+							$currentPageTypesNew[$key] = '';
+					}
+				}
+
 				if (!in_array($layoutId, $currentLayouts)){
 					$currentLayouts[] = $layoutId;
+					$currentPageTypesNew[] = $pageType;
 				}
+				$TemplatePage->page_type = implode(',', $currentPageTypesNew);
 				$TemplatePage->layout_id = implode(',', $currentLayouts);
 				$TemplatePage->save();
 			}
