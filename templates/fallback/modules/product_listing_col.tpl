@@ -104,7 +104,7 @@ if (is_array($listingData)) {
 				->append($resultsPerPageMenu);
 	}
 	?>
-	<div class="productListingRowPager ui-corner-all">
+	<div class="productListingColPager ui-corner-all">
 		<table cellpadding="3" cellspacing="0" border="0" width="100%">
 			<?php if (sysConfig::get('PRODUCT_LISTING_SHOW_PRODUCT_NAME_FILTER') == 'True') { ?>
 			<tr>
@@ -128,7 +128,7 @@ if (is_array($listingData)) {
 		</table>
 	</div>
 	<br/>
-	<div class="productListingRowContents"><?php echo $listingTable->draw();?></div>
+	<div class="productListingColContents"><?php echo $listingTable->draw();?></div>
 	<?php
 	}
 	$totalWidth = sysConfig::get('PRODUCT_LISTING_TOTAL_WIDTH');
@@ -140,9 +140,11 @@ if (is_array($listingData)) {
 		$productListingColPager = htmlBase::newElement('div')
 				->addClass('productListingColPager ui-corner-all')
 				->html($pager);
+
 		$productListingRowContents = htmlBase::newElement('div')
-				->addClass('productListingRowContents')
+				->addClass('productListingColContents')
 				->append($productListingColPager);
+
 		echo '<br>' . $productListingRowContents->draw();
 	}
 
@@ -150,18 +152,13 @@ if (is_array($listingData)) {
 	$productListingColContents = htmlBase::newElement('div')
 			->addClass('productListingColContents');
 	foreach ($listingData as $pClass) {
-
 		$productLink = htmlBase::newElement('a')
 				->setHref(itw_app_link('products_id=' . $pClass->getId(), 'product', 'info'))
 				->setId($pClass->getId())
 				->html($pClass->getName());
 		$productListingColBoxTitle = htmlBase::newElement('div')
 				->addClass('productListingColBoxTitle')
-				->css(array('height' => '60px',
-				           'display' => 'table-cell',
-				           'text-align' => 'center',
-				           'width' => $imageWidth . 'px',
-				           'vertical-align' => 'middle'))
+				->css(array('width' => $imageWidth . 'px'))
 				->append($productLink);
 
 		EventManager::notify('ProductListingProductsImageShow', &$image, &$pClass);
@@ -169,7 +166,7 @@ if (is_array($listingData)) {
 
 
 
-		$imageHtml = htmlBase::newElement('image')->setWidth($imageWidth)->setHeight(120);
+		$imageHtml = htmlBase::newElement('image')->setWidth($imageWidth)->setHeight(150);
 		if ($pClass->productInfo['product_designable'] == '1') {
 			$imageHtml /*->addClass('designerImage')
 			//->setSource('ext/jQuery/themes/icons/ajax_loader_normal.gif')*/
@@ -226,7 +223,7 @@ if (is_array($listingData)) {
 		                        ));
 		$productListingColBoxInner = htmlBase::newElement('div')
 				->addClass('productListingColBoxInner')
-				->css(array('min-height' => '210px'))
+		//->css(array('min-height' => '210px'))
 				->append($productListingColBoxTitle)
 				->append($productListingColBoxContent)
 				->html($contentsText);
@@ -234,20 +231,13 @@ if (is_array($listingData)) {
 		$productListingColBoxContainer = htmlBase::newElement('div')
 				->addClass('productListingColBoxContainer')
 				->css(array(
-				           'width' => $imageContainerWidth . 'px',
-				           'float' => 'left',
-				           'margin-left' => '5px',
-				           'margin-top' => '15px',
-				           'background' => 'none',
-				           'border' => '1px dotted #CCC',
-				           'height' => '190px',
-				           'padding-bottom' => '4px'
+				           'width' => $imageContainerWidth . 'px'
 				      ))
 				->append($productListingColBoxInner);
 		$productListingColContents->append($productListingColBoxContainer);
 	}
 	echo htmlBase::newElement('div')
-			->addClass('productListingRowContents')
+			->addClass('productListingColContents')
 			->append($productListingColContents)
 			->draw();
 	?>

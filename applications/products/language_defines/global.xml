@@ -32,6 +32,7 @@
 	<define key="TABLE_HEADING_RENT_NOW"><![CDATA[Membership Rental]]></define>
 	<define key="TABLE_HEADING_UPCOMING_PRODUCTS"><![CDATA[Upcoming Products]]></define>
 
+	<define key="TEXT_AVAILABLITY"><![CDATA[<strong>Availability:</strong> ]]></define>
 	<define key="TEXT_ALL_CATEGORIES"><![CDATA[All Categories]]></define>
 	<define key="TEXT_ALL_MANUFACTURERS"><![CDATA[All Manufacturers]]></define>
 

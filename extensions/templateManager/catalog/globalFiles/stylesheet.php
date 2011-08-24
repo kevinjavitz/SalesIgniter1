@@ -194,7 +194,7 @@ a.productListing-heading, a.productListing-heading:hover { color: #ffffff;backgr
 
 .productListingColBoxContent_image{ padding-top:4px; }
 .productListingColBoxInner {min-height: 210px;}
-.productListingColBoxTitle {height: 60px; display: table-cell; text-align: center; }
+.productListingColBoxTitle {height: 60px; display: table-cell; text-align: center; vertical-align:middle }
 .productListingColContents { }
 .productListingColPager { color:#ffffff;background: #313131;font-size: .8em;position:relative; padding: .5em;}
 .productListingColPager a { color:#ffffff; }

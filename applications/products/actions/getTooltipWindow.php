@@ -92,21 +92,21 @@
 									   ));
 		}
 
-
 		$pageButtons = '<div style="text-align:center;">' .
 			 $purchaseTable->draw() .
 			 '<div style="clear:both;"></div>' .
 			 '</div>' .
 			 '<div style="clear:both;"></div>';
 	}
-
-	$pageHtml = '<div id="toolTipTitle">' . $product->getName() . '</div><br>' ;
-	$pageHtml .= '<div id="toolTipText">' . substr(strip_tags($product->getDescription()), 0, 300) . '</div>';
-	$pageHtml .= $pageButtons;
+	$infoBoxObj = htmlBase::newElement('infobox')
+		->setHeader($product->getName())
+		->addContentRow(substr(strip_tags($product->getDescription()), 0, 300))
+		->addContentRow($pageButtons)
+		->setButtonBarLocation('bottom');
 
 
 	EventManager::attachActionResponse(array(
 		'success' => true,
-		'pageHtml' => $pageHtml
+		'pageHtml' => $infoBoxObj->draw()
 	), 'json');
 ?>
