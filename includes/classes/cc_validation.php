@@ -118,7 +118,7 @@
               $cc_type = 'JCB';
           }elseif (preg_match('/^5610[0-9]{12}$/', $this->cc_number)){
               $cc_type = 'Australian BankCard';
-          }elseif (preg_match('/^6304[0-9]{15}$/', $this->cc_number)){
+          }elseif (preg_match('/^6[0-9]{18}$/', $this->cc_number)){
 		      $cc_type = 'Laser';
 	      }
         return $cc_type;
