@@ -262,6 +262,7 @@ jQuery.fn.extend({
 					mopTipOpened=true;
 					closeBtnClick=false;
 				}
+				setTimeout("mopTipFunc.tipClose()",4000);
 			},
 			tipClose:function(){
 				startOpenMopTip=false;
