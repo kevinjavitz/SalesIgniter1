@@ -3,6 +3,9 @@
 	$success = false;
 	$code = (isset($_POST['code']) ? $_POST['code'] : false);
  	$errMsg = '';
+	if ($onePageCheckout->isMembershipCheckout()){
+		$onePageCheckout->loadMembershipPlan();
+	}
 	if ($code) {
 		$Qcoupon = Doctrine_Query::create()
 			->from('Coupons')
@@ -52,7 +55,7 @@
 				$error = true;
 				$errMsg = sysLanguage::get('ERROR_MIN_ORDER_AMOUNT') . $Qcoupon[0]['coupon_minimum_order'];
 			}
-			if($order->info['total'] < $Qcoupon[0]['coupon_maximum_order']){
+			if($order->info['total'] > $Qcoupon[0]['coupon_maximum_order'] && $Qcoupon[0]['coupon_maximum_order'] > 0){
 				$error = true;
 				$errMsg = sysLanguage::get('ERROR_MAX_ORDER_AMOUNT') . $Qcoupon[0]['coupon_maximum_order'];
 			}
@@ -64,20 +67,26 @@
 					$allowedPurchaseTypes = array($Qcoupon[0]['restrict_to_purchase_type']);
 				}
 				$purchaseTypeTotal = 0;
-				$ShoppingCart = &Session::getReference('ShoppingCart');
-				foreach ($ShoppingCart->getProducts() as $cartProduct) {
-					$purchaseType = $cartProduct->getPurchaseType();
-
-					if ((is_array($allowedPurchaseTypes) && in_array($purchaseType, $allowedPurchaseTypes))){
+				if($onePageCheckout->isMembershipCheckout()) {
+					if ((is_array($allowedPurchaseTypes) && in_array('membership', $allowedPurchaseTypes))){
 						$foundPurchaseType = true;
+					}
+				} else {
+					$ShoppingCart = &Session::getReference('ShoppingCart');
+					foreach ($ShoppingCart->getProducts() as $cartProduct) {
+						$purchaseType = $cartProduct->getPurchaseType();
+
+						if ((is_array($allowedPurchaseTypes) && in_array($purchaseType, $allowedPurchaseTypes))){
+							$foundPurchaseType = true;
+						}
+
 					}
 				}
 				if(!$foundPurchaseType){
 					$error = true;
-					$errMsg = sysLanguage::get('ERROR_PURCHASE_TYPE_NOT_ALLOWED') . $Qcoupon[0]['coupon_maximum_order'];
+					$errMsg = sprintf(sysLanguage::get('ERROR_PURCHASE_TYPE_NOT_ALLOWED'), implode(',',$allowedPurchaseTypes));
 				}
 			}
-
 
 			if ($error === false){
 				Session::set('cc_id', $Qcoupon[0]['coupon_id']);
@@ -85,9 +94,7 @@
 			}
 		}
 	}
-	if ($onePageCheckout->isMembershipCheckout()){
-		$onePageCheckout->loadMembershipPlan();
-	}
+
 	OrderTotalModules::process();
 
 	EventManager::attachActionResponse(array(

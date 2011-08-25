@@ -143,7 +143,7 @@ class OrderTotalCoupon extends OrderTotalModule {
 	}
 
 	public function calculate_credit($amount) {
-		global $ShoppingCart, $order;
+		global $ShoppingCart, $onePageCheckout, $order;
 
 		$totalDiscount = 0;
 		if (Session::exists('cc_id') === true) {
@@ -155,7 +155,6 @@ class OrderTotalCoupon extends OrderTotalModule {
 				$Coupon = $Qcoupon[0];
 				$this->coupon_code = $Coupon['coupon_code'];
 				$couponAmount = $Coupon['coupon_amount'];
-
 				if ($Coupon['coupon_type'] == 'S'){
 					$couponAmount = $order->info['shipping_cost'];
 
@@ -164,39 +163,57 @@ class OrderTotalCoupon extends OrderTotalModule {
 					}
 				}
 
-				if (($Coupon['coupon_minimum_order'] <= $this->get_order_total() || $Coupon['coupon_minimum_order'] <= 0 ) && ($Coupon['coupon_maximum_order'] >= $this->get_order_total() || $Coupon['coupon_maximum_order'] <= 0) ){
+				if ($Coupon['coupon_minimum_order'] <= $this->get_order_total()){
 					if (!empty($Coupon['restrict_to_products']) || !empty($Coupon['restrict_to_purchase_type'])){
-						foreach($ShoppingCart->getProducts() as $cartProduct){
-							$productPrice = ($cartProduct->getFinalPrice() * $cartProduct->getQuantity());
-
+						if($onePageCheckout->isMembershipCheckout()) {
+							$success = false;
 							if (!empty($Coupon['restrict_to_purchase_type'])){
-								$purchaseTypes = explode(',', $Coupon['restrict_to_purchase_type']);
-								$purchaseType = $cartProduct->getPurchaseType();
-
-								$success = in_array($purchaseType, $purchaseTypes);
-								EventManager::notify('CouponsPurchaseTypeRestrictionCheck', $cartProduct, $Coupon, &$success);
-
-								if ($success === true){
-									if ($Coupon['coupon_type'] == 'P'){
-										$priceDiscount = round($productPrice*10)/10*$couponAmount/100;
-										$totalDiscount += $priceDiscount;
-									}elseif($purchaseType == 'reservation' && $Coupon['coupon_type'] == 'S'){
-										$resInfo = $cartProduct->getInfo('reservationInfo');
-										$totalDiscount += $resInfo['shipping']['cost'];
-										$amount += $resInfo['shipping']['cost'];
-									}else{
-										$totalDiscount = $couponAmount;
-									}
+								$allowedPurchaseTypes = explode(',', $Coupon['restrict_to_purchase_type']);
+								if(strstr($Coupon['restrict_to_purchase_type'],',')){
+									$allowedPurchaseTypes = explode(',',$Coupon['restrict_to_purchase_type']);
+								} else {
+									$allowedPurchaseTypes = array($Coupon['restrict_to_purchase_type']);
 								}
-							}elseif (!empty($Coupon['restrict_to_products'])){
-								$productIds = explode(',', $Coupon['restrict_to_products']);
-								foreach($productIds as $pID){
-									if ($pID == (int) $cartProduct->getIdString()){
+								$success = (is_array($allowedPurchaseTypes) && in_array('membership', $allowedPurchaseTypes));
+							} else {
+								$success = true;
+							}
+							if ($success && $Coupon['coupon_type'] == 'P'){
+
+								$priceDiscount = round($order->products[0]['final_price']*10)/10*$couponAmount/100;
+								$totalDiscount = $priceDiscount;
+							}else{
+								$totalDiscount = $couponAmount;
+							}
+						} else {
+							foreach($ShoppingCart->getProducts() as $cartProduct){
+								$productPrice = ($cartProduct->getFinalPrice() * $cartProduct->getQuantity());
+
+								if (!empty($Coupon['restrict_to_purchase_type'])){
+									$purchaseTypes = explode(',', $Coupon['restrict_to_purchase_type']);
+									$purchaseType = $cartProduct->getPurchaseType();
+
+									$success = in_array($purchaseType, $purchaseTypes);
+									EventManager::notify('CouponsPurchaseTypeRestrictionCheck', $cartProduct, $Coupon, &$success);
+
+									if ($success === true){
 										if ($Coupon['coupon_type'] == 'P'){
 											$priceDiscount = round($productPrice*10)/10*$couponAmount/100;
 											$totalDiscount += $priceDiscount;
 										}else{
 											$totalDiscount = $couponAmount;
+										}
+									}
+								}elseif (!empty($Coupon['restrict_to_products'])){
+									$productIds = explode(',', $Coupon['restrict_to_products']);
+									foreach($productIds as $pID){
+										if ($pID == (int) $cartProduct->getIdString()){
+											if ($Coupon['coupon_type'] == 'P'){
+												$priceDiscount = round($productPrice*10)/10*$couponAmount/100;
+												$totalDiscount += $priceDiscount;
+											}else{
+												$totalDiscount = $couponAmount;
+											}
 										}
 									}
 								}
@@ -205,27 +222,20 @@ class OrderTotalCoupon extends OrderTotalModule {
 					}else{
 						if ($Coupon['coupon_type'] != 'P'){
 							$totalDiscount = $couponAmount;
-							foreach($ShoppingCart->getProducts() as $cartProduct){
-								if($cartProduct->getPurchaseType() == 'reservation'){
-									$resInfo = $cartProduct->getInfo('reservationInfo');
-									$totalDiscount += $resInfo['shipping']['cost'];
-									$amount += $resInfo['shipping']['cost'];
-								}
-							}
-
 						} else {
 							$totalDiscount = $amount * $couponAmount / 100;
 						}
 					}
 				}
 			}
+
 			if ($totalDiscount > $amount) $totalDiscount = $amount;
 		}
 		return $totalDiscount;
 	}
 
 	public function calculate_tax_deduction($amount, $discountAmount, $method) {
-		global $userAccount, $order, $ShoppingCart;
+		global $userAccount, $order, $ShoppingCart, $onePageCheckout;
 
 		$Qcoupon = Doctrine_Query::create()
 		->from('Coupons')
@@ -239,40 +249,68 @@ class OrderTotalCoupon extends OrderTotalModule {
 				if ($Coupon['restrict_to_products'] || $Coupon['restrict_to_purchase_type']){
 					$products = $ShoppingCart->contents;
 					$valid_product = false;
-					foreach($ShoppingCart->getProducts() as $cartProduct){
-						$valid_product = false;
-						$productId = (int) $cartProduct->getIdString();
-						$taxClassId = $cartProduct->getTaxClassId();
-						$purchaseType = $cartProduct->getPurchaseType();
-						$productPrice = $cartProduct->getFinalPrice();
-						$productQty = $cartProduct->getQuantity();
-
-						if (!empty($Coupon['restrict_to_products'])){
-							$productIds = explode(',', $Coupon['restrict_to_products']);
-							if (in_array($productId, $productIds)){
-								$valid_product = true;
-							}
-						}
-
+					if($onePageCheckout->isMembershipCheckout()) {
+						$success = false;
 						if (!empty($Coupon['restrict_to_purchase_type'])){
-							$purchaseTypes = explode(',', $Coupon['restrict_to_purchase_type']);
 
-							$success = in_array($purchaseType, $purchaseTypes);
-							EventManager::notify('CouponsPurchaseTypeRestrictionCheck', $cartProduct, $Coupon, &$success);
-
-							if ($success === true){
-								$valid_product = true;
+							$allowedPurchaseTypes = explode(',', $Coupon['restrict_to_purchase_type']);
+							if(strstr($Coupon['restrict_to_purchase_type'],',')){
+								$allowedPurchaseTypes = explode(',',$Coupon['restrict_to_purchase_type']);
+							} else {
+								$allowedPurchaseTypes = array($Coupon['restrict_to_purchase_type']);
+							}
+							$success = (is_array($allowedPurchaseTypes) && in_array('membership', $allowedPurchaseTypes));
+						} else {
+							$success = true;
+						}
+						if($success) {
+							if ($Coupon['coupon_type'] == 'P'){
+								$finalPrice = $order->products[0]['final_price'];
+								$valid_array[] = array(
+									'product_id' => 0,
+									'products_price' => $finalPrice,
+									'products_tax_class' => $onePageCheckout->onePage['rentalPlan']['tax_class']
+								);
+								$totalPrice += $finalPrice; // changed
 							}
 						}
 
-						if ($valid_product === true) {
-							$finalPrice = $productPrice * $productQty;
-							$valid_array[] = array(
-								'product_id' => $productId,
-								'products_price' => $finalPrice,
-								'products_tax_class' => $taxClassId
-							);
-							$totalPrice += $finalPrice; // changed
+					} else {
+						foreach($ShoppingCart->getProducts() as $cartProduct){
+							$valid_product = false;
+							$productId = (int) $cartProduct->getIdString();
+							$taxClassId = $cartProduct->getTaxClassId();
+							$purchaseType = $cartProduct->getPurchaseType();
+							$productPrice = $cartProduct->getFinalPrice();
+							$productQty = $cartProduct->getQuantity();
+
+							if (!empty($Coupon['restrict_to_products'])){
+								$productIds = explode(',', $Coupon['restrict_to_products']);
+								if (in_array($productId, $productIds)){
+									$valid_product = true;
+								}
+							}
+
+							if (!empty($Coupon['restrict_to_purchase_type'])){
+								$purchaseTypes = explode(',', $Coupon['restrict_to_purchase_type']);
+
+								$success = in_array($purchaseType, $purchaseTypes);
+								EventManager::notify('CouponsPurchaseTypeRestrictionCheck', $cartProduct, $Coupon, &$success);
+
+								if ($success === true){
+									$valid_product = true;
+								}
+							}
+
+							if ($valid_product === true) {
+								$finalPrice = $productPrice * $productQty;
+								$valid_array[] = array(
+									'product_id' => $productId,
+									'products_price' => $finalPrice,
+									'products_tax_class' => $taxClassId
+								);
+								$totalPrice += $finalPrice; // changed
+							}
 						}
 					}
 
@@ -374,10 +412,10 @@ class OrderTotalCoupon extends OrderTotalModule {
 	}
 
 	public function get_order_total() {
-		global $order, $ShoppingCart, $userAccount;
+		global $order, $ShoppingCart, $userAccount, $onePageCheckout;
 
 		$order_total = $order->info['total'];
-		// Check if gift voucher is in cart and adjust total
+
 		foreach($ShoppingCart->getProducts() as $cartProduct){
 			if (preg_match('/^GIFT/', $cartProduct->getModel())) {
 				if ($this->include_tax =='False') {
@@ -388,6 +426,9 @@ class OrderTotalCoupon extends OrderTotalModule {
 				$order_total -= $gv_amount;
 			}
 		}
+
+		// Check if gift voucher is in cart and adjust total
+
 		if ($this->include_tax == 'False') $order_total=$order_total-$order->info['tax'];
 		if ($this->include_shipping == 'False') $order_total=$order_total-$order->info['shipping_cost'];
 		// OK thats fine for global coupons but what about restricted coupons
@@ -416,9 +457,16 @@ class OrderTotalCoupon extends OrderTotalModule {
 				if (!empty($Coupon['restrict_to_purchase_type'])){
 					$types = explode(',', $Coupon['restrict_to_purchase_type']);
 					$totalPrice = 0;
-					foreach($ShoppingCart->getProducts() as $cartProduct){
-						if (in_array($cartProduct->getPurchaseType(), $types)){
-							$totalPrice += $cartProduct->getFinalPrice(($this->include_tax == 'True')) * $cartProduct->getQuantity();
+					if($onePageCheckout->isMembershipCheckout()) {
+						if(is_array($types) && in_array('membership', $types)) {
+							$totalPrice = $order->products[0]['final_price'];
+						}
+
+					} else {
+						foreach($ShoppingCart->getProducts() as $cartProduct){
+							if (in_array($cartProduct->getPurchaseType(), $types)){
+								$totalPrice += $cartProduct->getFinalPrice(($this->include_tax == 'True')) * $cartProduct->getQuantity();
+							}
 						}
 					}
 					$order_total = $totalPrice;
