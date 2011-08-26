@@ -44,7 +44,19 @@ class ReservationUtilities {
 		global $ShoppingCart;
 		//global variable with all the attributes per product which will get the POST[id] changed and then cleaned based on the product id
 		$_POST['rental_qty'] = $rQty;
-		$ShoppingCart->addProduct($productID, 'reservation', $rQty);
+		//here i check for multiple dates and see if i can add the same product in different dates in a for...if the same product already exists i remove it and add it again with the new dates
+		//input a series of dates from which i exclude the noInvDates then transform them in start-end?
+		if(Session::exists('isppr_event_multiple_dates')){
+			$datesArr = Session::get('isppr_event_multiple_dates');
+			foreach($datesArr as $iDate){
+				$_POST['start_date'] = $iDate;
+				$_POST['end_date'] = $iDate;
+				$_POST['event_date'] = $iDate;
+				$ShoppingCart->addProduct($productID, 'reservation', $rQty);
+			}
+		} else{
+			$ShoppingCart->addProduct($productID, 'reservation', $rQty);
+		}
 	}
 
 	public static function getPeriodTime($period, $type){
@@ -366,10 +378,10 @@ class ReservationUtilities {
 	var dayShortNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 	var disabledDays = ["<?php echo implode('","', $disabledDays);?>"];
 	var disabledDates = [];
-	var minRentalPeriod = <?php echo $minRentalPeriod;?>;
+	var minRentalPeriod1 = <?php echo $minRentalPeriod;?>;
 	var maxRentalPeriod = <?php echo $maxRentalPeriod;?>;
 
-	var minRentalPeriodMessage = '<?php echo $minRentalMessage;?>';
+	var minRentalPeriodMessage1 = '<?php echo $minRentalMessage;?>';
 	var maxRentalPeriodMessage = '<?php echo $maxRentalMessage; ?>';
 	var allowSelectionBefore = true;
 	var allowSelectionAfter = true;
@@ -602,6 +614,14 @@ class ReservationUtilities {
 				var sDaysArr;
 				var shippingDaysBefore = $selfID.find('input[name=rental_shipping]:checked').attr('days_before');
 				var shippingDaysAfter = $selfID.find('input[name=rental_shipping]:checked').attr('days_after');
+				if($selfID.find('input[name=rental_shipping]:checked').attr('min_rental')){
+					minRentalPeriod = $selfID.find('input[name=rental_shipping]:checked').attr('min_rental');
+					minRentalPeriodMessage = $('#'+minRentalPeriod).html();
+				}else{
+					minRentalPeriod = minRentalPeriod1;
+					minRentalPeriodMessage = minRentalPeriodMessage1;
+				}
+
 				myclass = $(td).attr('class');
 				if (myclass) {
 					words = myclass.split(' ');

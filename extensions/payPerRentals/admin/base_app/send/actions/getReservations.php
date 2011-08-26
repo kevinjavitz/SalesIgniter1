@@ -22,18 +22,42 @@
 	->andWhere('oa.address_type = ?', 'delivery')
 	->andWhere('opr.parent_id is null');
 
+	if(isset($_GET['eventSort'])){
+		$Qreservations->orderBy('opr.event_name ' . $_GET['eventSort']);
+	}
+	if(isset($_GET['gateSort'])){
+		$Qreservations->orderBy('opr.event_gate ' . $_GET['gateSort']);
+	}
+
+	if ($_GET['filter_pay'] == 'pay'){
+		$Qreservations->andWhere('opr.amount_payed >= op.final_price');
+	}else
+	if ($_GET['filter_pay'] == 'notpay'){
+		$Qreservations->andWhere('opr.amount_payed < op.final_price');
+	}
+	if ((int)$_GET['filter_status'] > 0){
+		if($_GET['filter_status'] == 2){
+			$Qreservations->andWhere('opr.rental_status_id = '. $_GET['filter_status'].' OR opr.rental_status_id is null');
+		}else{
+			$Qreservations->andWhere('opr.rental_status_id = ?', $_GET['filter_status']);
+		}
+	}
+
+
     EventManager::notify('OrdersListingBeforeExecute', &$Qreservations);
 
 	$Qreservations = $Qreservations->execute();
 	if ($Qreservations !== false){
 		$Orders = $Qreservations->toArray(true);
 		foreach($Orders as $oInfo){
+			$html .= '<tr class="dataTableRow"><td colspan="11" style="border-bottom:1px solid #000000;">Order id:'.$oInfo['orders_id'].' </td></tr>';
 			foreach($oInfo['OrdersProducts'] as $opInfo){
 				foreach($opInfo['OrdersProductsReservation'] as $rInfo){
 					$orderAddress = $oInfo['OrdersAddresses']['delivery'];
 
 					$orderId = $oInfo['orders_id'];
 					$productName = $opInfo['products_name'];
+
 					$customersName = $orderAddress['entry_name'];
 					$trackMethod = $rInfo['track_method'];
 					$useCenter = 0;
@@ -113,7 +137,7 @@
 
 						$quantityId = $rInfo['ProductsInventoryQuantity']['quantity_id'];
 
-						$useCenter = $rInfo['ProductsInventoryQuantity']['ProductsInventory']['use_center'];
+						$useCenter = isset($rInfo['ProductsInventoryQuantity']['ProductsInventory']['use_center'])?$rInfo['ProductsInventoryQuantity']['ProductsInventory']['use_center']:'0';
 
 						$barcodeNum = 'Quantity Tracking';
 						if ($Qcheck){
@@ -182,17 +206,61 @@
 					if(!empty($oInfo['dhl_track_num2'])){
 						$trackNumber = $oInfo['dhl_track_num2'];
 					}
+					$payedAmount =
 
 					$shippingTrackingNumber = htmlBase::newElement('input')
 					->setName('shipping_number['.$rInfo['orders_products_reservations_id'].']')
 					->setValue($trackNumber);
-					//echo "kk".$invCenterName."--".print_r($rInfo);
+					$statusSelect = '<select name="rental_status['.$rInfo['orders_products_reservations_id'].']">';
+					$QrentalStatus = Doctrine_Query::create()
+						->from('RentalStatus')
+						->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+					foreach($QrentalStatus as $iStatus){
+						if(is_null($rInfo['rental_status_id']) && $iStatus['rental_status_id'] == '2'){
+							$statusSelect.= '<option selected="selected" value="'.$iStatus['rental_status_id'].'">'.$iStatus['rental_status_text'].'</option>';
+						}elseif ($rInfo['rental_status_id'] == $iStatus['rental_status_id']){
+							$statusSelect.= '<option selected="selected" value="'.$iStatus['rental_status_id'].'">'.$iStatus['rental_status_text'].'</option>';
+						}else{
+							$statusSelect.= '<option value="'.$iStatus['rental_status_id'].'">'.$iStatus['rental_status_text'].'</option>';
+						}
+					}
+
+					$statusSelect .= '</select>';
+
+					if(sysConfig::get('EXTENSION_PAY_PER_RENTALS_PROCESS_SEND') == 'True'){
+						$payedAmount = $opInfo['final_price'];
+
+						$payAmount = htmlBase::newElement('input')
+						->setName('amount_payed['.$rInfo['orders_products_reservations_id'].']');
+
+						if($rInfo['amount_payed'] > 0){
+							$payAmount->setLabel('Payed('.$currencies->format($rInfo['amount_payed']).')')
+							->setLabelPosition('after');
+							$payedAmount -= $rInfo['amount_payed'];
+						}
+
+						$payAmount->setValue($payedAmount);
+					}
+
+					$barcodeReplacement = htmlBase::newElement('input')
+					->setName('barcode_replacement['.$rInfo['orders_products_reservations_id'].']')
+					->attr('resid', $rInfo['orders_products_reservations_id'])
+					//->attr('readonly','readonly')
+					->addClass('barcodeReplacement');
+
 					$html .= '<tr class="dataTableRow">' .
 						'<td><input type="checkbox" name="sendRes[]" class="reservations" value="' . $rInfo['orders_products_reservations_id'] . '"></td>' .
 						'<td class="dataTableContent">' . $customersName . '</td>' .
 						'<td class="dataTableContent">' . $productName . '</td>' .
 						'<td class="dataTableContent">' . $barcodeNum . '</td>' .
-						'<td class="dataTableContent" align="center"><table cellpadding="2" cellspacing="0" border="0">' .
+						'<td class="dataTableContent">' . $barcodeReplacement->draw() . '</td>';
+					if (sysConfig::get('EXTENSION_PAY_PER_RENTALS_USE_EVENTS') == 'True'){
+						$html .=  '<td class="dataTableContent">' . $rInfo['event_name'] . '</td>';
+						if (sysConfig::get('EXTENSION_PAY_PER_RENTALS_USE_GATES') == 'True'){
+							$html .=  '<td class="dataTableContent">' . $rInfo['event_gate'] . '</td>';
+						}
+					}
+					$html .= '<td class="dataTableContent" align="center"><table cellpadding="2" cellspacing="0" border="0">' .
 							'<tr>' .
 								'<td class="dataTableContent">Ship On: </td>' .
 								'<td class="dataTableContent">' . $shipOn . '</td>' .
@@ -212,8 +280,12 @@
 
 						'</table></td>' .
 						'<td class="dataTableContent">' . $inventoryCenterName . '</td>' .
-						'<td class="dataTableContent">' . $shippingTrackingNumber->draw() . '</td>' .
-						'<td class="dataTableContent" align="center"><a href="' . itw_app_link('oID=' . $orderId, 'orders', 'details') . '">View Order</a></td>' .
+						'<td class="dataTableContent">' . $shippingTrackingNumber->draw() . '</td>'.
+						'<td class="dataTableContent">' . $statusSelect . '</td>';
+						if(sysConfig::get('EXTENSION_PAY_PER_RENTALS_PROCESS_SEND') == 'True'){
+							$html .= '<td class="dataTableContent">' . $payAmount->draw() . '</td>' ;
+						}
+						$html .='<td class="dataTableContent" align="center"><a href="' . itw_app_link('oID=' . $orderId, 'orders', 'details') . '">View Order</a></td>' .
 					'</tr>';
 				}
 			}

@@ -107,6 +107,14 @@ class OrdersProductsReservation extends Doctrine_Record {
 			'notnull' => true,
 			'autoincrement' => false,
 		));
+		$this->hasColumn('event_gate', 'string', 250, array(
+				'type' => 'string',
+				'length' => 250,
+				'fixed' => false,
+				'primary' => false,
+				'notnull' => true,
+				'autoincrement' => false,
+		));
 		$this->hasColumn('end_date', 'datetime', null, array(
 			'type' => 'datetime',
 			'primary' => false,
@@ -189,6 +197,18 @@ class OrdersProductsReservation extends Doctrine_Record {
 			'autoincrement' => false,
 			'scale' => false,
 		));
+
+		$this->hasColumn('amount_payed', 'decimal', 15, array(
+				'type' => 'decimal',
+				'length' => 15,
+				'unsigned' => 0,
+				'primary' => false,
+				'default' => '0.0000',
+				'notnull' => true,
+				'autoincrement' => false,
+				'scale' => false,
+		));
+
 		$this->hasColumn('shipping_days_before', 'integer', 4, array(
 			'type' => 'integer',
 			'length' => 4,

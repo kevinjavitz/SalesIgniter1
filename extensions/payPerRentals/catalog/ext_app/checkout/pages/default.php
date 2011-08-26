@@ -181,6 +181,7 @@ class payPerRentals_catalog_checkout_default extends Extension_payPerRentals {
 
 			$pInfo = $cartProduct->getInfo();
 			$pID = $cartProduct->getIdString();
+			$uniqID = $cartProduct->getUniqID();
 			$reservationInfo = $pInfo['reservationInfo'];
 
 			if (isset($reservationInfo['shipping']) && $reservationInfo['shipping'] !== false){
@@ -199,9 +200,9 @@ class payPerRentals_catalog_checkout_default extends Extension_payPerRentals {
 					}else{
 						$messageStack->addSession('pageStack','Your have changed the shipping address for a reservation product and the new address is not available.','error');
 					}
-					$ShoppingCart->updateProduct($pID, $pInfo);
+					$ShoppingCart->updateProduct($uniqID, $pInfo);
 				}
-				if($Module->getType() == 'Product'){
+				if($Module->getType() == 'Product' && sysConfig::get('EXTENSION_PAY_PER_RENTALS_SHOW_SHIPPING') == 'True'){
 					$tableRows[] = array(
 						'columns' => array(
 							array('text' => '<b>' . $cartProduct->getName() . '</b>'),

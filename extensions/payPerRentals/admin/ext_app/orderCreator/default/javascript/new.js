@@ -100,7 +100,7 @@ $(document).ready(function (){
 	});
 
 
-	$('.eventf, .reservationShipping').live('change', function(){
+	$('.eventf, .reservationShipping, .gatef').live('change', function(){
 		var $self = $(this);
 		var $Row = $(this).parent().parent().parent().parent();
 		var $ShippingInput = $Row.find('.reservationShipping option:selected');
@@ -109,11 +109,12 @@ $(document).ready(function (){
 
         var $purchaseTypeSelected = $Row.find('.purchaseType option:selected');
 		var eventS = $Row.find('.eventf option:selected');
+		var gateS = $Row.find('.gatef option:selected');
 		showAjaxLoader($self, 'x-large');
 		$.ajax({
 			cache: false,
 			dataType: 'json',
-			url: js_app_link('appExt=orderCreator&app=default&appPage=new&action=saveResInfo&id=' + $Row.attr('data-id')+ '&event=' + eventS.val() + '&shipping=' + $ShippingInput.val() + '&qty=' + selectedQty+'&purchase_type='+$purchaseTypeSelected.val()+'&days_before='+$ShippingInput.attr('days_before')+'&days_after='+$ShippingInput.attr('days_after')),
+			url: js_app_link('appExt=orderCreator&app=default&appPage=new&action=saveResInfo&id=' + $Row.attr('data-id')+ '&event=' + eventS.val()+ '&gate=' + gateS.val() + '&shipping=' + $ShippingInput.val() + '&qty=' + selectedQty+'&purchase_type='+$purchaseTypeSelected.val()+'&days_before='+$ShippingInput.attr('days_before')+'&days_after='+$ShippingInput.attr('days_after')),
 			success: function (data) {
 
 				if(data.success == true){

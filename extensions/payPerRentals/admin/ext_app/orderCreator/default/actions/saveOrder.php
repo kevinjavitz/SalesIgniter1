@@ -9,6 +9,10 @@
 			$Editor->addErrorMessage('Please check events');
 			$error = true;
 		}
+		if (isset($pInfo['reservation']['gate']) && $pInfo['reservation']['gate'] == '0'){
+			$Editor->addErrorMessage('Please check gate');
+			$error = true;
+		}
 		//$Product = $this->getContents($id);
 	}
  	if($error){

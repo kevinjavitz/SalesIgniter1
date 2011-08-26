@@ -9,4 +9,11 @@
 	<define key="TABLE_HEADING_SHIP_ON"><![CDATA[Ship On]]></define>
 	<define key="TEXT_BUTTON_SEND"><![CDATA[Send Selected]]></define>
 	<define key="TEXT_BUTTON_GET_RES"><![CDATA[Get Reservations]]></define>
+	<define key="TEXT_BUTTON_PAY_RES"><![CDATA[Pay Reservations]]></define>
+	<define key="TEXT_BUTTON_STATUS_RES"><![CDATA[Change Reservation Status]]></define>
+	<define key="TABLE_HEADING_BARCODE_REPLACE"><![CDATA[Barcode Replace]]></define>
+	<define key="TABLE_HEADING_EVENT"><![CDATA[Event]]></define>
+	<define key="TABLE_HEADING_GATE"><![CDATA[Gate]]></define>
+
+
 </definitions>

@@ -116,6 +116,7 @@ class productListing_productsPricePayPerRental {
 					$end_date = '';
 					$event_date = '';
 					$event_name = '';
+					$event_gate = '';
 					$pickup = '';
 					$dropoff = '';
 					if (Session::exists('isppr_date_start')){
@@ -129,6 +130,9 @@ class productListing_productsPricePayPerRental {
 					}
 					if (Session::exists('isppr_event_name')){
 						$event_name = Session::get('isppr_event_name');
+					}
+					if (Session::exists('isppr_event_gate')){
+						$event_gate = Session::get('isppr_event_gate');
 					}
 					if (Session::exists('isppr_inventory_pickup')){
 						$pickup = Session::get('isppr_inventory_pickup');
@@ -154,8 +158,22 @@ class productListing_productsPricePayPerRental {
 						$ship_cost = (float) Session::get('isppr_shipping_cost');
 					}
 					$depositAmount = $purchaseTypeClass->getDepositAmount();
+					$thePrice = 0;
+
 					$price = $purchaseTypeClass->getReservationPrice($start_date, $end_date);
-					$pricing = $currencies->format($qtyVal * $price['price'] - $qtyVal * $depositAmount + $ship_cost);
+					$thePrice += $price['price'];
+					if(Session::exists('isppr_event_multiple_dates')){
+						$thePrice = 0;
+						$datesArr = Session::get('isppr_event_multiple_dates');
+
+						foreach($datesArr as $iDate){
+							$price = $purchaseTypeClass->getReservationPrice($iDate, $iDate);
+							$thePrice += $price['price'];
+						}
+
+					}
+
+					$pricing = $currencies->format($qtyVal * $thePrice - $qtyVal * $depositAmount + $ship_cost);
 
 					$pageForm = htmlBase::newElement('form')
 					->attr('name', 'build_reservation')
@@ -178,6 +196,12 @@ class productListing_productsPricePayPerRental {
 						->setType('hidden')
 						->setName('event_name')
 						->setValue($event_name);
+						if (sysConfig::get('EXTENSION_PAY_PER_RENTALS_USE_GATES') == 'True') {
+							$htmlEventGates = htmlBase::newElement('input')
+							->setType('hidden')
+							->setName('event_gate')
+							->setValue($event_gate);
+						}
 					}
 					if (isset($pickup)) {
 						$htmlPickup = htmlBase::newElement('input')
@@ -225,6 +249,9 @@ class productListing_productsPricePayPerRental {
 					if (sysConfig::get('EXTENSION_PAY_PER_RENTALS_USE_EVENTS') == 'True') {
 						$pageForm->append($htmlEventDate)
 						->append($htmlEventName);
+						if (sysConfig::get('EXTENSION_PAY_PER_RENTALS_USE_GATES') == 'True') {
+							$pageForm->append($htmlEventGates);
+						}
 					}
 
 					if (Session::exists('isppr_shipping_method')) {
@@ -269,8 +296,23 @@ class productListing_productsPricePayPerRental {
 					}
 					if($start_date != '' && $end_date != ''){
 						$depositAmount = $purchaseTypeClass->getDepositAmount();
+						$thePrice = 0;
+
 						$price = $purchaseTypeClass->getReservationPrice($start_date, $end_date);
-						$pricing = $currencies->format($qtyVal * $price['price'] - $qtyVal * $depositAmount + $ship_cost);
+						$thePrice += $price['price'];
+						if(Session::exists('isppr_event_multiple_dates')){
+							$thePrice = 0;
+							$datesArr = Session::get('isppr_event_multiple_dates');
+
+							foreach($datesArr as $iDate){
+								$price = $purchaseTypeClass->getReservationPrice($iDate, $iDate);
+								$thePrice += $price['price'];
+							}
+
+						}
+
+
+						$pricing = $currencies->format($qtyVal * $thePrice - $qtyVal * $depositAmount + $ship_cost);
 						$tableRow[1] = '<tr>
 									<td class="main"><nobr>Price:</nobr></td>
 									<td class="main">' . $pricing . '</td>

@@ -18,7 +18,7 @@ foreach ($ShoppingCart->getProducts() as $cartProduct){
 					$pInfo['reservationInfo']['insurance'] = 0;
 					$isRemove = false;
 				}
-				$ShoppingCart->updateProduct($pID, $pInfo);
+				$ShoppingCart->updateProduct($cartProduct->getUniqID(), $pInfo);
 			}
 		}
 	}

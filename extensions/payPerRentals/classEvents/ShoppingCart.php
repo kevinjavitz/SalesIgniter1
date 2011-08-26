@@ -35,6 +35,10 @@
 				$pInfo['reservationInfo']['event_name'] = $_POST['event_name'];
 			}
 
+			if (isset($_POST['event_gate'])) {
+				$pInfo['reservationInfo']['event_gate'] = $_POST['event_gate'];
+			}
+
 			if (isset($_POST['semester_name'])) {
 				$pInfo['reservationInfo']['semester_name'] = $_POST['semester_name'];
 			}

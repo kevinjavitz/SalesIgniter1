@@ -249,6 +249,13 @@
 			<description>Minimum rental days allowed per product</description>
 			<sort_order>29</sort_order>
 		</EXTENSION_PAY_PER_RENTALS_MIN_RENTAL_DAYS>
+		<EXTENSION_PAY_PER_RENTALS_SHOW_SHIPPING>
+			<title>Show Shipping method with product and do not show on order totals</title>
+			<value>True</value>
+			<description>If false it would not add shipping to product</description>
+			<sort_order>29</sort_order>
+			<set_function>tep_cfg_select_option(array('True','False'),</set_function>
+		</EXTENSION_PAY_PER_RENTALS_SHOW_SHIPPING>
         <EXTENSION_PAY_PER_RENTALS_USE_GLOBAL_MIN_RENTAL_DAYS>
 			<value>True</value>
 			<title>Use minimum rental days global</title>
@@ -326,6 +333,20 @@
 			<sort_order>31</sort_order>
 			<set_function>tep_cfg_select_option(array('True','False'),</set_function>
 		</EXTENSION_PAY_PER_RENTALS_FILTER_TIME_INFOBOX>
+		<EXTENSION_PAY_PER_RENTALS_USE_GATES>
+			<value>False</value>
+			<title>Use Gates with Events</title>
+			<description>Use gates with Events</description>
+			<sort_order>31</sort_order>
+			<set_function>tep_cfg_select_option(array('True','False'),</set_function>
+		</EXTENSION_PAY_PER_RENTALS_USE_GATES>
+		<EXTENSION_PAY_PER_RENTALS_PROCESS_SEND>
+			<value>False</value>
+			<title>Process payment on send item</title>
+			<description>Process payment on send item</description>
+			<sort_order>31</sort_order>
+			<set_function>tep_cfg_select_option(array('True','False'),</set_function>
+		</EXTENSION_PAY_PER_RENTALS_PROCESS_SEND>
 		<EXTENSION_PAY_PER_RENTALS_GOOGLE_MAPS_API_KEY>
 			<value>ABQIAAAAJfeNSDfdlXtgf6gjHMTzDBT0_i__oM-cAYP-svDeQzBBv_RytBShCDbtJySULQi-i9FDwsHX8pK4aQ</value>
 			<title>Google Maps API Key</title>

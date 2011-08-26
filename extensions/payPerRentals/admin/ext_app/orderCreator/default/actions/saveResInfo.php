@@ -20,6 +20,12 @@
 		->fetchOne();
 		if($Qevent){
 			$start_date = strtotime($Qevent->events_date);
+			if(!isset($_GET['days_before'])){
+				$_GET['days_before'] = 0;
+			}
+			if(!isset($_GET['days_after'])){
+				$_GET['days_after'] = 0;
+			}
 			$starting_date = date("Y-m-d H:i:s", strtotime('- '.$_GET['days_before'].' days', mktime(date("h",$start_date),date("i",$start_date), date("s",$start_date), date("m",$start_date), date("d",$start_date), date("Y",$start_date))));
 			$ending_date = date("Y-m-d H:i:s", strtotime('+ '.$_GET['days_after'].' days',mktime(date("h",$start_date),date("i",$start_date), date("s",$start_date), date("m",$start_date), date("d",$start_date)+$event_duration, date("Y",$start_date))));
 			//$resInfo['start_date'] = $starting_date;
@@ -83,12 +89,27 @@
 		if (sysConfig::get('EXTENSION_PAY_PER_RENTALS_USE_EVENTS') == 'True' && $Qevent){
 			$resInfo['event_name'] = $Qevent->events_name;
 			$resInfo['event_date'] = $starting_date;
+			if (sysConfig::get('EXTENSION_PAY_PER_RENTALS_USE_GATES') == 'True' && isset($_GET['gate'])){
+				$Qgate = Doctrine_Query::create()
+				->from('PayPerRentalGates')
+				->where('gates_id = ?', $_GET['gate'])
+				->fetchOne();
+				if($Qgate){
+					$resInfo['event_gate'] = $Qgate->gate_name;
+				}
+			}
+
 		}
 
-
 		$PurchaseType->processAddToCartNew($reservationInfo, $resInfo);
+
 		if (sysConfig::get('EXTENSION_PAY_PER_RENTALS_USE_EVENTS') == 'True' && $Qevent){
 			$reservationInfo['reservationInfo']['event_name'] = $Qevent->events_name;
+			if (sysConfig::get('EXTENSION_PAY_PER_RENTALS_USE_GATES') == 'True' && isset($_GET['gate'])){
+				if($Qgate){
+					$reservationInfo['reservationInfo']['event_gate'] = $Qgate->gate_name;
+				}
+			}
 			$reservationInfo['reservationInfo']['event_date'] = $starting_date;
 		}
 		/*todo move into attributes*/

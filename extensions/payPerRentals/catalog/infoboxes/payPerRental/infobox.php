@@ -416,6 +416,10 @@ class InfoBoxPayPerRental extends InfoBoxAbstract {
 		->html(sysLanguage::get('INFOBOX_PAYPERRENTAL_SELECT_EVENT'))
 		->addClass('eventp');
 
+		$gatet = htmlBase::newElement('p')
+		->html(sysLanguage::get('INFOBOX_PAYPERRENTAL_SELECT_GATE'))
+		->addClass('gatep');
+
 		$br = htmlBase::newElement('br');
 		$eventb = htmlBase::newElement('selectbox')
 		->setName('event')
@@ -428,35 +432,56 @@ class InfoBoxPayPerRental extends InfoBoxAbstract {
 			$firstEvent = Session::get('isppr_event');
 		}
 
+
+		$gateb = htmlBase::newElement('selectbox')
+			->setName('gate')
+			->addClass('gatef');
+		$gateb->addOption('0', sysLanguage::get('INFOBOX_SELECT_GATE'));
+
+		$firstGate = 0;
+		if (Session::exists('isppr_gate') && tep_not_null(Session::get('isppr_gate')) && Session::get('isppr_selected') == true){
+			$gateb->selectOptionByValue(Session::get('isppr_gate'));
+			$firstGate = Session::get('isppr_gate');
+		}
+
 		$shipb->addOption('0',sysLanguage::get('INFOBOX_SELECT_LEVEL_OF_SERVICE'));
 
 		$min_date =  date("Y-m-d h:i:s", mktime(date("h"),date("i"),date("s"),date("m"),date("d")/*+$min_days*/,date("Y")));
 		$Qevent = Doctrine_Query::create()
-		->from('PayPerRentalEvents')
-		->where('events_date > ?', $min_date)
-		->orderBy('events_date')
+		->from('PayPerRentalEvents');
+		if(sysConfig::get('EXTENSION_PAY_PER_RENTALS_USE_GATES') == 'False'){
+			$Qevent = $Qevent->where('events_date > ?', $min_date);
+		}
+		$Qevent = $Qevent->orderBy('events_date')
 		->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 
-
+		$gatesArr = array();
 		if($Qevent){
 			foreach($Qevent as $eInfo){
+				if(sysConfig::get('EXTENSION_PAY_PER_RENTALS_USE_GATES') == 'False'){
+					$shippingArrA = explode(',', $eInfo['shipping']);
+					$start_dateA = strtotime($eInfo['events_date']);
+					$starting_dateA = date("Y-m-d h:i:s", mktime(date("h",$start_dateA),date("i",$start_dateA), date("s",$start_dateA), date("m",$start_dateA), date("d",$start_dateA), date("Y",$start_dateA)));
+					for($i=0, $n=sizeof($quotes['methods']); $i<$n; $i++){
+						$days = $quotes['methods'][$i]['days_before'];
+						$next_day = mktime(date("h"),date("i"),date("s"),date("m"),date("d")+$days,date("Y"));
+						if(/*$next_day < strtotime($starting_dateA) &&*/ in_array($quotes['methods'][$i]['id'], $shippingArrA)){
+							if($firstEvent == $eInfo['events_id'] || $firstEvent == 0){
+								$firstEvent = $eInfo['events_id'];
+								$shippingArr = explode(',', $eInfo['shipping']);
 
-				$shippingArrA = explode(',', $eInfo['shipping']);
-				$start_dateA = strtotime($eInfo['events_date']);
-				$starting_dateA = date("Y-m-d h:i:s", mktime(date("h",$start_dateA),date("i",$start_dateA), date("s",$start_dateA), date("m",$start_dateA), date("d",$start_dateA), date("Y",$start_dateA)));
-				for($i=0, $n=sizeof($quotes['methods']); $i<$n; $i++){
-					$days = $quotes['methods'][$i]['days_before'];
-					$next_day = mktime(date("h"),date("i"),date("s"),date("m"),date("d")+$days,date("Y"));
-					if(/*$next_day < strtotime($starting_dateA) &&*/ in_array($quotes['methods'][$i]['id'], $shippingArrA)){
-						if($firstEvent == $eInfo['events_id'] || $firstEvent == 0){
-							$firstEvent = $eInfo['events_id'];
-							$shippingArr = explode(',', $eInfo['shipping']);
-							$start_date = strtotime($eInfo['events_date']);
-							$starting_date = date("Y-m-d h:i:s", mktime(date("h",$start_date),date("i",$start_date), date("s",$start_date), date("m",$start_date), date("d",$start_date), date("Y",$start_date)));
+								$start_date = strtotime($eInfo['events_date']);
+								$starting_date = date("Y-m-d h:i:s", mktime(date("h",$start_date),date("i",$start_date), date("s",$start_date), date("m",$start_date), date("d",$start_date), date("Y",$start_date)));
+							}
+							$eventb->addOption($eInfo['events_id'],$eInfo['events_name']);
+							break;
 						}
-						$eventb->addOption($eInfo['events_id'],$eInfo['events_name']);
-						break;
 					}
+				}else{
+					if($firstEvent == $eInfo['events_id'] || $firstEvent == 0){
+						$gatesArr = explode(',', $eInfo['gates']);
+					}
+					$eventb->addOption($eInfo['events_id'],$eInfo['events_name']);
 				}
 			}
 		}
@@ -474,14 +499,25 @@ class InfoBoxPayPerRental extends InfoBoxAbstract {
 			}
 		}
 
+		$QGate = Doctrine_Query::create()
+		->from('PayPerRentalGates')
+		->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+
+		foreach($QGate as $iGate){
+			if(in_array($iGate['gates_id'], $gatesArr)){
+				$gateb->addOption($iGate['gates_id'], $iGate['gate_name']);
+			}
+		}
+
 		$separator1ev = htmlBase::newElement('div');
 		$separatortev = htmlBase::newElement('div');
 		$container_destev = htmlBase::newElement('div');
+		$container_destgate = htmlBase::newElement('div');
 		$separator1ev->append($separatortev);
 		$evText = htmlBase::newElement('a')
 		->text('More Info')
 		->addClass('myev1')
-		->attr('href',itw_app_link('appExt=payPerRentals&ev_id='.$firstEvent,'show_event','default'));
+		->attr('href',(($firstEvent != 0)?itw_app_link('appExt=payPerRentals&ev_id='.$firstEvent,'show_event','default'):itw_app_link('appExt=payPerRentals','show_event','list')));
 
 		$separator1sh = htmlBase::newElement('div');
 		$separatortsh = htmlBase::newElement('div');
@@ -499,6 +535,13 @@ class InfoBoxPayPerRental extends InfoBoxAbstract {
 			->append($evText);
 			$pprform->append($separator1ev)
 			->append($container_destev);
+			if (sysConfig::get('EXTENSION_PAY_PER_RENTALS_USE_GATES') == 'True'){
+				$container_destgate->append($gatet)
+				->append($gateb);
+				//->append($gateText);
+				$pprform->append($separator1ev)
+				->append($container_destgate);
+			}
 		}else{
 			$container_destshB = htmlBase::newElement('div')
 			->addClass('destB');
@@ -972,7 +1015,11 @@ class InfoBoxPayPerRental extends InfoBoxAbstract {
 		});
 
         $('.eventf').change(function(){
-						link = js_app_link('appExt=payPerRentals&app=show_event&appPage=default&ev_id='+$(this).val());
+						if($(this).val() != '0'){
+							link = js_app_link('appExt=payPerRentals&app=show_event&appPage=default&ev_id='+$(this).val());
+						}else{
+							link = js_app_link('appExt=payPerRentals&app=show_event&appPage=list');
+						}
 						$('.myev1').attr('href',link);
 						myel = $(this).parent();
 						showAjaxLoader(myel,'xlarge');
@@ -982,15 +1029,105 @@ class InfoBoxPayPerRental extends InfoBoxAbstract {
 							 url: js_app_link('appExt=payPerRentals&app=build_reservation&appPage=default&action=setBefore'),
 							 data: "rType=ajax&event="+self.val()+'&ship_method='+$(this).closest('form').find('.shipz').val(),
 							 success: function(data) {
+		                        hideAjaxLoader(myel);
+								if(typeof data.calendar != ''){
+									$('.myCalendar').remove();
+									$('.calDone').remove();
+									self.parent().append(data.calendar);
+									$('.calDone').css('color','#ffffff');
+									$('.calDone').css('cursor','pointer');
+									$('.calDone').click(function(){
+										if($('.myCalendar').is(':visible')){
+											$('.myCalendar').hide();
+											$(this).html('Show Calendar');
+										}else{
+											$('.myCalendar').show();
+											$(this).html('Hide Calendar');
+										}
+									});
+									$('.myCalendar').css('position','absolute');
+									$('.myCalendar').css('top', '30px');
+									$('.myCalendar').css('z-index', '1005');
+									$('.myCalendar').css('left', '50px');
+
+									var goodDates = jQuery.makeArray(data.goodDates);
+		                            $('.myCalendar').datepick({
+										useThemeRoller: true,
+										dateFormat: '<?php echo getJsDateFormat();?>',
+										multiSelect: 999,
+										multiSeparator: ',',
+										changeMonth: false,
+										firstDay:0,
+										changeYear: false,
+										numberOfMonths: 1,
+										onSelect: function (value, date, inst) {
+											var dates = value.split(',');
+		                                    html = '<div class="mydates">';
+											for(p=0;p<dates.length;p++){
+												html += '<input type="hidden" name="multiple_dates[]" value="'+dates[p]+'">';
+											}
+											html +='</div>';
+											$('.mydates').remove();
+		                                    self.parent().append(html);
+										},
+
+										beforeShowDay: function (dateObj) {
+											dateObj.setHours(0, 0, 0, 0);
+											var dateFormatted = $.datepick.formatDate('yy-m-d', dateObj);
+		                                    if ($.inArray(dateFormatted, goodDates) > -1) {
+												return [true, '', 'Available'];
+											}
+
+											return [false, '', 'Outside event days'];
+										}
+									});
+									$('.myCalendar').show();
+									if(data.selectedDates != ''){
+										var selDates =  jQuery.makeArray(data.selectedDates);
+										//var selDates = '08/21/2011,08/23/2011'.split(',');
+										$('.myCalendar').datepick('setDate', selDates);
+									}
+								}
 
 								if(typeof data.data != undefined){
-									self.parent().parent().find('.shipf').html(data.data);
-									self.parent().parent().find('.shipf').change();
+									<?php if (sysConfig::get('EXTENSION_PAY_PER_RENTALS_USE_GATES') == 'False'){?>
+										self.parent().parent().find('.shipf').html(data.data);
+										self.parent().parent().find('.shipf').change();
 									if ($.browser.msie) $('.eventf').removeClass('expand clicked');
 									if (data.nr == 0){
 										alert('<?php echo sysLanguage::get('EXTENSION_PAY_PER_RENTALS_DELIVERY_PASSED');?>');
 									}
+								<?php }else{
+			                    ?>
+								self.parent().parent().find('.gatef').html(data.data);
+								self.parent().parent().find('.gatef').change();
+								if ($.browser.msie) $('.eventf').removeClass('expand clicked');
+								if (data.nr == 0){
+									alert('<?php echo sysLanguage::get('EXTENSION_PAY_PER_RENTALS_NO_GATES');?>');
 								}
+								<?php
+									}
+								?>
+								}
+
+
+							}});
+
+        });
+
+		$('.gatef').change(function(){
+
+						myel = $(this).parent();
+						showAjaxLoader(myel,'xlarge');
+						var self = $(this);
+                        $.ajax({
+							 type: "post",
+							 url: js_app_link('appExt=payPerRentals&app=build_reservation&appPage=default&action=setBefore'),
+							 data: "rType=ajax&event="+$(this).closest('form').find('.eventf').val()+'&gate='+$(this).closest('form').find('.gatef').val(),
+							 success: function(data) {
+								$('.selectbox').remove();
+								$('.selectbox-wrapper').remove();
+		                        $('#mainppr select').selectbox();
 								hideAjaxLoader(myel);
 
 							}});
@@ -1000,6 +1137,13 @@ class InfoBoxPayPerRental extends InfoBoxAbstract {
 		$('<?php echo '#'.$WidgetProperties->boxID;?> .mysh1').attr('href',"#");
 		$('<?php echo '#'.$WidgetProperties->boxID;?> .mysh1').live('click', function(){
 				link = js_app_link('appExt=payPerRentals&app=show_shipping&appPage=default&dialog=true&sh_id='+$(this).prev('.shipz').val());
+				popupWindow(link,'400','300');
+				return false;
+		});
+
+		$('<?php echo '#'.$WidgetProperties->boxID;?> .myga1').attr('href',"#");
+		$('<?php echo '#'.$WidgetProperties->boxID;?> .myga1').live('click', function(){
+				link = js_app_link('appExt=infoPages&app=show_page&appPage=gate_info&dialog=true');
 				popupWindow(link,'400','300');
 				return false;
 		});
@@ -1017,7 +1161,7 @@ class InfoBoxPayPerRental extends InfoBoxAbstract {
                         $.ajax({
 							 type: "post",
 							 url: js_app_link('appExt=payPerRentals&app=build_reservation&appPage=default&action=setBefore'),
-							 data: "rType=ajax&ship_method="+$(this).val()+'&event='+$('#eventz').val(),
+							 data: "rType=ajax&ship_method="+$(this).val()+'&event='+$(this).closest('form').find('.eventf').val(),
 							 success: function() {
 								hideAjaxLoader(myel1);
 							 }
@@ -1095,6 +1239,8 @@ class InfoBoxPayPerRental extends InfoBoxAbstract {
 			}
 
 		});
+
+		$('.eventf').trigger('change');
 		$('#ui-datepicker-div').css('z-index','10000');
 
 	});

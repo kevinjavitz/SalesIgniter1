@@ -1,0 +1,8 @@
+<definitions>
+	<define key="HEADING_TITLE"><![CDATA[Gates]]></define>
+	<define key="TABLE_HEADING_GATE_NAME"><![CDATA[Gate Name]]></define>
+	<define key="TABLE_HEADING_ACTION"><![CDATA[Action]]></define>
+
+	<define key="TEXT_GATE"><![CDATA[Gate Name: ]]></define>
+
+</definitions>

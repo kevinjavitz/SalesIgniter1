@@ -42,6 +42,32 @@ class PayPerRentalEvents extends Doctrine_Record {
 			'autoincrement' => false,
 		));
 
+		$this->hasColumn('gates', 'string', null, array(
+				'type'          => 'string',
+				'fixed'         => false,
+				'primary'       => false,
+				'notnull'       => true,
+				'autoincrement' => false,
+		));
+
+		$this->hasColumn('default_gate', 'integer', 4, array(
+				'type'          => 'integer',
+				'length'        => 4,
+				'fixed'         => false,
+				'primary'       => false,
+				'notnull'       => true,
+				'autoincrement' => false,
+		));
+
+		$this->hasColumn('events_days', 'integer', 4, array(
+				'type'          => 'integer',
+				'length'        => 4,
+				'fixed'         => false,
+				'primary'       => false,
+				'notnull'       => true,
+				'autoincrement' => false,
+		));
+
 		$this->hasColumn('events_name', 'string', 128, array(
 			'type'          => 'string',
 			'length'        => 128,
