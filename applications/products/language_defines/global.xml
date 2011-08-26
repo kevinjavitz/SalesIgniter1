@@ -14,6 +14,7 @@
 	<define key="HEADING_TITLE_NEW"><![CDATA[New Products]]></define>
 	<define key="HEADING_TITLE_SEARCH"><![CDATA[Advanced Search]]></define>
 	<define key="HEADING_TITLE_SEARCH_RESULT"><![CDATA[Products meeting the search criteria]]></define>
+	<define key="HEADING_TITLE_TOP_RENTALS"><![CDATA[Top Rentals]]></define>
 	<define key="HEADING_TITLE_UPCOMING"><![CDATA[Coming Soon]]></define>
 
 	<define key="HEADING_SEARCH_CRITERIA"><![CDATA[Search Criteria]]></define>
