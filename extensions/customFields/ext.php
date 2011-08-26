@@ -261,7 +261,7 @@ class Extension_customFields extends ExtensionBase {
 	                $i = 0;
 				foreach($QChecked as $customField){
 					$Qproducts->leftJoin('p.ProductsCustomFieldsToProducts f2p'.$i);
-					$fieldArr = '"'. implode('","',explode(',',$customField['options'])).'"';
+					$fieldArr = '"'. implode('","',explode(';',$customField['options'])).'"';
 					$query = '(f2p'.$i.'.field_id='.$customField['product_custom_field_id'] .' AND f2p'.$i.'.value IN ('.$fieldArr.'))';
 					$Qproducts->andWhere($query);
 					$i++;
