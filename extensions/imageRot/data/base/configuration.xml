@@ -1,0 +1,22 @@
+<ConfigurationGroup>
+	<title>Image Rotator</title>
+	<key>imageRot</key>
+	<description>Configuration Settings For The Banner Manager Extension</description>
+	<Configuration>
+		<EXTENSION_BANNER_MANAGER_ENABLED>
+			<title>Enable Banner Manager</title>
+			<value>True</value>
+			<description>Enable Or Disable The Banner Manager Extension</description>
+			<sort_order>1</sort_order>
+			<set_function>tep_cfg_select_option(array('True','False'),</set_function>
+		</EXTENSION_BANNER_MANAGER_ENABLED>
+
+		<EXTENSION_BANNER_MANAGER_INFOBOX>
+			<title>Enable Banner Manager Info Box</title>
+			<value>False</value>
+			<description>Enable Or Disable The Banner Manager Info Box</description>
+			<sort_order>4</sort_order>
+			<set_function>tep_cfg_select_option(array('True','False'),</set_function>
+		</EXTENSION_BANNER_MANAGER_INFOBOX>
+	</Configuration>
+</ConfigurationGroup>
