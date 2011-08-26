@@ -74,7 +74,7 @@ if ($Qfields->count() > 0){
 				->andWhere('product_custom_field_id=?', $fieldId)
 				->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 
-				$checkedOptions = explode(',', $QChecked[0]['options']);
+				$checkedOptions = explode(';', $QChecked[0]['options']);
 				foreach($Qoptions as $option){
 					//get array of checked options
 					$name = $option['ProductsCustomFieldsOptionsDescription'][0]['option_name'];
