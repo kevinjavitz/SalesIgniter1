@@ -151,14 +151,17 @@ class OrderProcessor {
 				'purchase_type'  => $pInfo['purchase_type']
 			);
 
-			$OrdersProductsDownload = $pInfo['OrdersProductsDownload'];
-			if (sizeof($OrdersProductsDownload) > 0){
-				$this->products[$index]['download_type'] = 'download';
+			if(isset($pInfo['OrdersProductsDownload'])){
+				$OrdersProductsDownload = $pInfo['OrdersProductsDownload'];
+				if (sizeof($OrdersProductsDownload) > 0){
+					$this->products[$index]['download_type'] = 'download';
+				}
 			}
-
-			$OrdersProductsStream = $pInfo['OrdersProductsStream'];
-			if (sizeof($OrdersProductsStream) > 0){
-				$this->products[$index]['download_type'] = 'stream';
+			if(isset($pInfo['OrdersProductsStream'])){
+				$OrdersProductsStream = $pInfo['OrdersProductsStream'];
+				if (sizeof($OrdersProductsStream) > 0){
+					$this->products[$index]['download_type'] = 'stream';
+				}
 			}
 
 			EventManager::notify('OrderClassQueryFillProductArray', &$pInfo, &$this->products[$index]);

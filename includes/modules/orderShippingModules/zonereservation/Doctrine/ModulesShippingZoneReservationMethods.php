@@ -78,5 +78,17 @@ class ModulesShippingZoneReservationMethods extends Doctrine_Record {
 			'length'        => null,
 			'autoincrement' => false
 		));
+		$this->hasColumn('min_rental_number', 'integer', 4, array(
+				'type'          => 'integer',
+				'length'        => 4,
+				'default'       => '0',
+				'autoincrement' => false
+		));
+		$this->hasColumn('min_rental_type', 'integer', 4, array(
+				'type'          => 'integer',
+				'length'        => 4,
+				'default'       => '0',
+				'autoincrement' => false
+		));
 	}
 }

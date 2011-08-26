@@ -230,8 +230,8 @@ if (isset($_POST['selectedOrder']) && is_array($_POST['selectedOrder'])){
 						$pInfo['v_orders_tax'] = $otInfo['value'];
 					}
 				}else if($otInfo['module_type'] == 'ot_shipping' || $otInfo['module_type'] == 'shipping'){
-					if (isset($_POST['v_orders_shipping'])){
-						$pInfo['v_orders_shipping'] = $otInfo['value'];
+					if (isset($_POST['v_orders_shipping_price'])){
+						$pInfo['v_orders_shipping_price'] = $otInfo['value'];
 					}
 				}
 			}
@@ -240,6 +240,10 @@ if (isset($_POST['selectedOrder']) && is_array($_POST['selectedOrder'])){
 			}
 			if (isset($_POST['v_orders_payment_method'])){
 				$pInfo['v_orders_payment_method'] = $oInfo['payment_module'];
+			}
+
+			if (isset($_POST['v_orders_shipping_method'])){
+				$pInfo['v_orders_shipping_method'] = $oInfo['shipping_module'];
 			}
 
 			$i = 1;

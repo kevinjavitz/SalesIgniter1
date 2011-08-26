@@ -143,9 +143,9 @@ class PDF_Labels {
 		->where('oa.address_type = ?', 'delivery')
 		->orderBy('opr.date_shipped asc, op.products_name asc');
 
-		if (isset($settings['startDate']) && isset($settings['endDate'])){
+		/*if (isset($settings['startDate']) && isset($settings['endDate'])){
 			$query->andWhere('opr.date_shipped BETWEEN CAST("' . $settings['startDate'] . '" as DATE) AND CAST("' . $settings['endDate'] . '" as DATE)');
-		}
+		} */
 
 		if (isset($settings['bookingId'])){
 			$query->andWhere('opr.orders_products_reservations_id = ?', $settings['bookingId']);
@@ -156,6 +156,7 @@ class PDF_Labels {
 		EventManager::notify('OrdersListingBeforeExecute', &$query);
 
 		$Result = $query->execute();
+
 		$dataArray = array();
 		if ($Result->count() > 0){
 			$idx = 0;
@@ -187,7 +188,6 @@ class PDF_Labels {
 				}
 			}
 		}
-
 		return $dataArray;
 	}
 
@@ -539,7 +539,7 @@ class PDF_Labels {
 	}
 
 	function buildHTML(){
-		return $this->buildOutput('html');
+		return $this->buildOutput('pdf');
 	}
 
 	function buildPDF(){
@@ -598,7 +598,7 @@ class PDF_Labels {
 			case 'barcodes':
 				$maxCol = 1;
 				$function = 'buildLabel_Barcodes';
-				$this->buildLabel_5164($this->labels[0], 1, true);
+				//$this->buildLabel_5164($this->labels[0], 1, true);
 				$pageCells = 30;
 				break;
 			default:
@@ -670,94 +670,155 @@ class PDF_Labels {
 		}
 	}
 
-	function buildLabel_5164($lInfo, $newLine, $hideBarcode = false){
+	private function buildLabel_5164($labelInfo, $newLine){
 		$labelContent = array();
-		if (tep_not_null($lInfo['products_name'])){
-			$labelContent[] = '<b>' . $lInfo['products_name'] . '</b>';
+		if (tep_not_null($labelInfo['products_name'])){
+			$labelContent[] = '<b>' . $labelInfo['products_name'] . '</b>';
 		}
 
-		if (tep_not_null($lInfo['products_id'])){
-			$Qcheck = Doctrine_Query::create()
-			->from('ProductsCustomFields f')
-			->leftJoin('f.ProductsCustomFieldsDescription fd')
-			->leftJoin('f.ProductsCustomFieldsToProducts f2p')
-			->where('f2p.product_id = ?', $lInfo['products_id'])
-			->andWhere('fd.language_id = ?', Session::get('languages_id'))
-			->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
-			if ($Qcheck){
-				foreach($Qcheck as $fInfo){
-					if ($fInfo['show_on_labels'] == '1'){
-						$maxChars = ($fInfo['labels_max_chars'] > 0 ? $fInfo['labels_max_chars'] : 150);
-						if (strlen($fInfo['ProductsCustomFieldsToProducts']['value']) > $maxChars){
-							$labelContent[] = '<b>' . $fInfo['ProductsCustomFieldsDescription'][Session::get('languages_id')]['field_name'] . ':</b> ' . substr($fInfo['ProductsCustomFieldsToProducts']['value'], 0, $maxChars) . '...';
-						}else{
-							$labelContent[] = '<b>' . $fInfo['ProductsCustomFieldsDescription'][Session::get('languages_id')]['field_name'] . ':</b> ' . $fInfo['ProductsCustomFieldsToProducts']['value'];
-						}
-					}
+		if (tep_not_null($labelInfo['products_description'])){
+			$labelContent[] = '<b>Description:</b> ' . (strlen($labelInfo['products_description']) > 350 ? substr($labelInfo['products_description'], 0, 350) . '...' : $labelInfo['products_description']);
+		}
+
+		if (tep_not_null($labelInfo['barcode'])){
+			$labelContent[] = '<b>Barcode:</b> ' . $labelInfo['barcode'];
+			// define barcode style
+			$style = array(
+				'position' => '',
+				'align' => 'L',
+				'stretch' => false,
+				'fitwidth' => false,
+				'cellfitalign' => '',
+				'border' => false,
+				'hpadding' => '0',
+				'vpadding' => '0',
+				'fgcolor' => array(0,0,0),
+				'bgcolor' => false, //array(255,255,255),
+				'text' => true,
+				'font' => 'helvetica',
+				'fontsize' => 8,
+				'stretchtext' => 4
+			);
+
+			$styleQR = array(
+				'border' => 0,
+				'vpadding' => '0',
+				'hpadding' => '0',
+				'fgcolor' => array(0,0,0),
+				'bgcolor' => false, //array(255,255,255)
+				'module_width' => 1, // width of a single module in points
+				'module_height' => 1 // height of a single module in points
+			);
+
+
+
+			if (tep_not_null($labelInfo['barcode'])){
+				switch(sysConfig::get('BARCODE_TYPE')){
+					case 'Code 25':
+						$params = $this->pdf->serializeTCPDFtagParameters(array($labelInfo['barcode'], 'S25', '', '', '' ,1, 0.4, $style, 'N'));
+						$labelContent[] = '<tcpdf method="write1DBarcode" params="'.$params.'" />';
+						break;
+					case 'Code 25 Interleaved':
+						$params = $this->pdf->serializeTCPDFtagParameters(array($labelInfo['barcode'], 'I25', '', '', '' ,1, 0.4, $style, 'N'));
+						$labelContent[] = '<tcpdf method="write1DBarcode" params="'.$params.'" />';
+						break;
+					case 'Code 39':
+						$params = $this->pdf->serializeTCPDFtagParameters(array($labelInfo['barcode'], 'C39', '', '', '',1, 0.4, $style, 'N'));
+						$labelContent[] = '<tcpdf method="write1DBarcode" params="'.$params.'" />';
+						break;
+					case 'Code 39 Extended':
+						$params = $this->pdf->serializeTCPDFtagParameters(array($labelInfo['barcode'], 'C39E', '', '', '',1, 0.4, $style, 'N'));
+						$labelContent[] = '<tcpdf method="write1DBarcode" params="'.$params.'" />';
+						break;
+					case 'Code 128B':
+						$params = $this->pdf->serializeTCPDFtagParameters(array($labelInfo['barcode'], 'C128B', '', '', '',1, 0.4, $style, 'N'));
+						$labelContent[] = '<tcpdf method="write1DBarcode" params="'.$params.'" />';
+						break;
+					case 'QR':
+						$params = $this->pdf->serializeTCPDFtagParameters(array($labelInfo['barcode'], 'QRCODE,H', '', '', 1, 1, $styleQR, 'N'));
+						$labelContent[] = '<tcpdf method="write2DBarcode" params="'.$params.'" />';
+						break;
 				}
-			}
-		}
-		
-		if (tep_not_null($lInfo['products_description'])){
-			$labelContent[] = '<b>Description:</b> ' . (strlen($lInfo['products_description']) > 350 ? substr($lInfo['products_description'], 0, 350) . '...' : $lInfo['products_description']);
-		}
-
-		if (tep_not_null($lInfo['barcode']) && $hideBarcode === false){
-			$labelContent[] = '<b>Barcode:</b> ' . $lInfo['barcode'];
-			if (tep_not_null($lInfo['barcode_id'])){
-				$labelContent[] = '<img src="' . tep_href_link('showBarcode_' . $lInfo['barcode_id'] . '.png', Session::getSessionName() . '=' . Session::getSessionId()) . '">';
+				//$labelContent[] =  '<img src="' . tep_href_link('showBarcode_' . $labelInfo['barcode_id'] . '.png', Session::getSessionName() . '=' . Session::getSessionId()) . '">';
 			}else{
 				$labelContent[] = 'Image Not Available';
 			}
 		}
 
-		if ($this->tmpType == 'pdf'){
-			$this->pdf->MultiCell(4, 3.34, implode('<br>', $labelContent), 0, 'L', 0, $newLine, '', '', true, 0, true);
+		$this->pdf->MultiCell(4, 1.4, implode('<br>', $labelContent), 0, 'L', 0, $newLine, '', '', true, 0, true);
+		if ($newLine == 0){
+			$this->pdf->Cell(.2, 3.34, '');
+		}
+
+	}
+
+	private function buildLabel_Barcodes($labelInfo, $newLine){
+		$labelContent = array();
+		if (tep_not_null($labelInfo['barcode'])){
+			$style = array(
+				'position' => '',
+				'align' => 'L',
+				'stretch' => false,
+				'fitwidth' => false,
+				'cellfitalign' => '',
+				'border' => false,
+				'hpadding' => '0',
+				'vpadding' => '0',
+				'fgcolor' => array(0,0,0),
+				'bgcolor' => false, //array(255,255,255),
+				'text' => true,
+				'font' => 'helvetica',
+				'fontsize' => 8,
+				'stretchtext' => 4
+			);
+
+			$styleQR = array(
+				'border' => 0,
+				'vpadding' => '0',
+				'hpadding' => '0',
+				'fgcolor' => array(0,0,0),
+				'bgcolor' => false, //array(255,255,255)
+				'module_width' => 1, // width of a single module in points
+				'module_height' => 1 // height of a single module in points
+			);
+
+			if (tep_not_null($labelInfo['barcode'])){
+				switch(sysConfig::get('BARCODE_TYPE')){
+					case 'Code 25':
+						$params = $this->pdf->serializeTCPDFtagParameters(array($labelInfo['barcode'], 'S25', '', '', '' ,1, 0.4, $style, 'N'));
+						$labelContent[] = '<tcpdf method="write1DBarcode" params="'.$params.'" />';
+						break;
+					case 'Code 25 Interleaved':
+						$params = $this->pdf->serializeTCPDFtagParameters(array($labelInfo['barcode'], 'I25', '', '', '' ,1, 0.4, $style, 'N'));
+						$labelContent[] = '<tcpdf method="write1DBarcode" params="'.$params.'" />';
+						break;
+					case 'Code 39':
+						$params = $this->pdf->serializeTCPDFtagParameters(array($labelInfo['barcode'], 'C39', '', '', '',1, 0.4, $style, 'N'));
+						$labelContent[] = '<tcpdf method="write1DBarcode" params="'.$params.'" />';
+						break;
+					case 'Code 39 Extended':
+						$params = $this->pdf->serializeTCPDFtagParameters(array($labelInfo['barcode'], 'C39E', '', '', '',1, 0.4, $style, 'N'));
+						$labelContent[] = '<tcpdf method="write1DBarcode" params="'.$params.'" />';
+						break;
+					case 'Code 128B':
+						$params = $this->pdf->serializeTCPDFtagParameters(array($labelInfo['barcode'], 'C128B', '', '', '',1, 0.4, $style, 'N'));
+						$labelContent[] = '<tcpdf method="write1DBarcode" params="'.$params.'" />';
+						break;
+					case 'QR':
+						$params = $this->pdf->serializeTCPDFtagParameters(array($labelInfo['barcode'], 'QRCODE,H', '', '', 1, 1, $styleQR, 'N'));
+						$labelContent[] = '<tcpdf method="write2DBarcode" params="'.$params.'" />';
+						break;
+				}
+				//$labelContent[] =  '<img src="' . tep_href_link('showBarcode_' . $labelInfo['barcode_id'] . '.png', Session::getSessionName() . '=' . Session::getSessionId()) . '">';
+			}else{
+				$labelContent[] = 'Image Not Available';
+			}
+		}
+			$this->pdf->MultiCell(2.7, 1.3, implode('<br>', $labelContent), 0, 'L', 0, $newLine, '', '', true, 0, true);
 			if ($newLine == 0){
 				$this->pdf->Cell(.2, 3.34, '');
 			}
-		}else{
-			$this->htmlOutput .= '<div style="width:4in;height:3.34in;position:relative;float:left;">' . "\n" .
-			'<div style="padding:0.075in;">' . "\n" .
-			implode('<br>', $labelContent) . "\n" .
-			'</div>' . "\n" .
-			'</div>' . "\n";
-			if ($newLine == 1){
-				$this->htmlOutput .= '<div style="clear:both;"></div>' . "\n";
-			}else{
-				$this->htmlOutput .= '<div style="width:0.2in;height:3.34in;position:relative;float:left;"></div>' . "\n";
-			}
-		}
-	}
 
-	function buildLabel_Barcodes($lInfo, $newLine){
-		$labelContent = array(
-		$lInfo['barcode']
-		);
-
-		if (tep_not_null($lInfo['barcode_id'])){
-			$labelContent[] = '<img src="' . tep_href_link('showBarcode_' . $lInfo['barcode_id'] . '.png', Session::getSessionName() . '=' . Session::getSessionId()) . '">';
-		}else{
-			$labelContent[] = 'Image Not Available';
-		}
-
-		if ($this->tmpType == 'pdf'){
-			$this->pdf->MultiCell(2.63, 1, implode('<br>', $labelContent), 0, 'L', 0, $newLine, '', '', true, 0, true);
-			if ($newLine == 0){
-				$this->pdf->Cell(0.13, 1, '');
-			}
-		}else{
-			$this->htmlOutput .= '<div style="width:2.63in;height:1in;position:relative;float:left;">' . "\n" .
-			'<div style="padding:0.075in;">' . "\n" .
-			implode('<br>', $labelContent) . "\n" .
-			'</div>' . "\n" .
-			'</div>' . "\n";
-			if ($newLine == 1){
-				$this->htmlOutput .= '<div style="clear:both;"></div>' . "\n";
-			}else{
-				$this->htmlOutput .= '<div style="width:0.13in;height:1in;position:relative;float:left;"></div>' . "\n";
-			}
-		}
 	}
 }
 ?>

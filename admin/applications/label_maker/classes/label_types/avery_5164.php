@@ -104,8 +104,62 @@
 
 			if (tep_not_null($labelInfo['barcode']) && $hideBarcode === false){
 				$labelContent[] = '<b>Barcode:</b> ' . $labelInfo['barcode'];
-				if (tep_not_null($labelInfo['barcode_id'])){
-					$labelContent[] = '<img src="' . tep_href_link('showBarcode_' . $labelInfo['barcode_id'] . '.png', Session::getSessionName() . '=' . Session::getSessionId()) . '">';
+				// define barcode style
+				$style = array(
+					'position' => '',
+					'align' => 'L',
+					'stretch' => false,
+					'fitwidth' => false,
+					'cellfitalign' => '',
+					'border' => false,
+					'hpadding' => '0',
+					'vpadding' => '0',
+					'fgcolor' => array(0,0,0),
+					'bgcolor' => false, //array(255,255,255),
+					'text' => true,
+					'font' => 'helvetica',
+					'fontsize' => 8,
+					'stretchtext' => 4
+				);
+
+				$styleQR = array(
+					'border' => 0,
+					'vpadding' => '0',
+					'hpadding' => '0',
+					'fgcolor' => array(0,0,0),
+					'bgcolor' => false, //array(255,255,255)
+					'module_width' => 1, // width of a single module in points
+					'module_height' => 1 // height of a single module in points
+				);
+
+				if (tep_not_null($labelInfo['barcode'])){
+					switch(sysConfig::get('BARCODE_TYPE')){
+						case 'Code 25':
+							$params = $this->pdf->serializeTCPDFtagParameters(array($labelInfo['barcode'], 'S25', '', '', '' ,1, 0.4, $style, 'N'));
+							$labelContent[] = '<tcpdf method="write1DBarcode" params="'.$params.'" />';
+							break;
+						case 'Code 25 Interleaved':
+							$params = $this->pdf->serializeTCPDFtagParameters(array($labelInfo['barcode'], 'I25', '', '', '' ,1, 0.4, $style, 'N'));
+							$labelContent[] = '<tcpdf method="write1DBarcode" params="'.$params.'" />';
+							break;
+						case 'Code 39':
+							$params = $this->pdf->serializeTCPDFtagParameters(array($labelInfo['barcode'], 'C39', '', '', '',1, 0.4, $style, 'N'));
+							$labelContent[] = '<tcpdf method="write1DBarcode" params="'.$params.'" />';
+							break;
+						case 'Code 39 Extended':
+							$params = $this->pdf->serializeTCPDFtagParameters(array($labelInfo['barcode'], 'C39E', '', '', '',1, 0.4, $style, 'N'));
+							$labelContent[] = '<tcpdf method="write1DBarcode" params="'.$params.'" />';
+							break;
+						case 'Code 128B':
+							$params = $this->pdf->serializeTCPDFtagParameters(array($labelInfo['barcode'], 'C128B', '', '', '',1, 0.4, $style, 'N'));
+							$labelContent[] = '<tcpdf method="write1DBarcode" params="'.$params.'" />';
+							break;
+						case 'QR':
+							$params = $this->pdf->serializeTCPDFtagParameters(array($labelInfo['barcode'], 'QRCODE,H', '', '', 1, 1, $styleQR, 'N'));
+							$labelContent[] = '<tcpdf method="write2DBarcode" params="'.$params.'" />';
+							break;
+					}
+					//$labelContent[] =  '<img src="' . tep_href_link('showBarcode_' . $labelInfo['barcode_id'] . '.png', Session::getSessionName() . '=' . Session::getSessionId()) . '">';
 				}else{
 					$labelContent[] = 'Image Not Available';
 				}

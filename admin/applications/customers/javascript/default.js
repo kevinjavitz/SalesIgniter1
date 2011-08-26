@@ -10,6 +10,24 @@ $(document).ready(function (){
 			$('.gridButtonBar').find('.ordersButton').button('disable');
 		}
 	});
+	$('#csvFieldsTable').hide();
+	$('#showFields').click(function(){
+		if ($('#csvFieldsTable').is(':visible')){
+			$('#csvFieldsTable').hide();
+		}else{
+			$('#csvFieldsTable').show();
+		}
+		return false;
+	});
+	$('#selectAllCustomers').change(function(){
+		$('.selectedCustomer').each(function(){
+			if ($(this).is(':checked')){
+				$(this).attr('checked', false);
+			}else{
+				$(this).attr('checked', true);
+			}
+		});
+	});
 	
 	$('.gridButtonBar').find('.ordersButton').click(function (){
 		var customerId = $('.gridBodyRow.state-active').attr('data-customer_id');

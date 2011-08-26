@@ -17,7 +17,7 @@
 	$major = -1;
 	$rent_array = array();
 
-	$Qcustomers = dataAccess::setQuery('select c.customers_id, c.customers_firstname, c.customers_lastname, c.customers_email_address from {customers} c left join {customers_membership} cm using(customers_id) where cm.ismember = "M" and cm.activate = "Y" order by c.customers_id')
+	$Qcustomers = dataAccess::setQuery('select c.customers_id, c.customers_firstname, c.customers_lastname, c.customers_email_address from {customers} c left join {customers_membership} cm using(customers_id) where cm.ismember = "M" and cm.activate = "Y" and DATEDIFF(cm.next_bill_date,CURDATE()) >'.sysConfig::get('RENTAL_DAYS_CUSTOMER_PAST_DUE').' order by c.customers_id')
 	->setTable('{customers}', TABLE_CUSTOMERS)
 	->setTable('{customers_membership}', 'customers_membership');
 	while($Qcustomers->next() !== false){

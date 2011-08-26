@@ -29,21 +29,32 @@ class OrderPaymentMoneyorder extends StandardPaymentModule {
 		));
 	}
 	
-	public function processPayment(){
+	public function processPayment($orderID = null, $amount = null){
 		global $order;
-		
-		return $this->sendPaymentRequest(array(
-			'orderID' => $order->newOrder['orderID'],
-			'amount'  => $order->info['total']
-		));
+
+		if(is_null($orderID) && is_null($amount)){
+			return $this->sendPaymentRequest(array(
+					'orderID' => $order->newOrder['orderID'],
+					'amount'  => $order->info['total']
+				));
+		}else{
+			return $this->sendPaymentRequest(array(
+					'orderID' => $orderID,
+					'amount'  => $amount
+				));
+		}
 	}
 
 	public function processPaymentCron($orderID){
 		global $order;
-		$order->info['payment_method'] = $this->title;
+		$order->info['payment_method'] = $this->getTitle();
 		
 		$this->processPayment();
 		return true;
+	}
+
+	public function getCreatorRow($Editor, &$headerPaymentCols){
+
 	}
 		
 	private function onResponse($logData){

@@ -54,10 +54,11 @@
 			return $return;
 		}
 		
-		public function processPayment(){
+		public function processPayment($orderID = null, $amount = null){
 			global $order, $onePageCheckout, $userAccount;
+
 			$paymentInfo = OrderPaymentModules::getPaymentInfo();
-			
+			/*this can't be used single it needs a procesor*/
 			return $this->onResponse(array(
 				'orderID'     => $order->newOrder['orderID'],
 				'amount'      => $order->info['total'],

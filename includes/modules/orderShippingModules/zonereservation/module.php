@@ -34,6 +34,8 @@ class OrderShippingZonereservation extends OrderShippingModule {
 						'days_after'       => $mInfo['method_days_after'],
 						'sort_order' => $mInfo['sort_order'],
 						'weight_rates' => $mInfo['weight_rates'],
+						'min_rental_number' => $mInfo['min_rental_number'],
+						'min_rental_type' => $mInfo['min_rental_type'],
 						'default'    => $mInfo['method_default'],
 						'zone'       => $mInfo['method_zone']
 					);
@@ -110,6 +112,8 @@ class OrderShippingZonereservation extends OrderShippingModule {
 						'details' => $mInfo['details'],
 						'days_before'    => $mInfo['days_before'],
 						'days_after'    => $mInfo['days_after'],
+						'min_rental_number'    => $mInfo['min_rental_number'],
+						'min_rental_type'    => $mInfo['min_rental_type'],
 						'zone'    => $mInfo['zone']
 					);
 				}
@@ -142,8 +146,5 @@ class OrderShippingZonereservation extends OrderShippingModule {
 		return $selectBox->draw();
 	}
 
-	public function getTaxClass(){
-		return 0;
-	}
 }
 ?>

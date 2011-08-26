@@ -45,6 +45,13 @@
 				'text' => sysLanguage::get('BOX_RENTAL_MEMBERSHIP_RENTAL_ISSUES')
 			);
 		}
+
+		if (sysPermissions::adminAccessAllowed('rental_queue', 'pastdue') === true){
+			$contents['children'][] = array(
+				'link' => itw_app_link(null, 'rental_queue', 'pastdue', 'SSL'),
+				'text' => sysLanguage::get('BOX_RENTAL_MEMBERSHIP_RENTAL_PASTDUE')
+			);
+		}
 		
 		if (
 			sysPermissions::adminAccessAllowed('rental_queue', 'rented') === true || 

@@ -271,6 +271,17 @@ for($i=0, $n=sizeof($trackings); $i<$n; $i++){
       </tr>
      </table></td>
     </tr>
+<tr>
+	<td><?php
+
+		$contents = EventManager::notifyWithReturn('AccountHistoryAfterTracking', $_GET['order_id']);
+		if (!empty($contents)){
+			foreach($contents as $content){
+				echo $content;
+			}
+		}
+?> </td>
+</tr>
     <tr>
      <td><?php echo tep_draw_separator('pixel_trans.gif', '100%', '10'); ?></td>
     </tr>

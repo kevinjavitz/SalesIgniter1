@@ -13,7 +13,7 @@
 		<value><![CDATA[0]]></value>
 		<description><![CDATA[Use the following tax class on the shipping fee.]]></description>
 		<sort_order>2</sort_order>
-		<use_function><![CDATA[ttep_get_tax_class_title]]></use_function>
+		<use_function><![CDATA[tep_get_tax_class_title]]></use_function>
 		<set_function><![CDATA[tep_cfg_pull_down_tax_classes(]]></set_function>
 	</configuration>
 	<configuration>

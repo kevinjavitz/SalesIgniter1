@@ -31,6 +31,19 @@
 				'text' => 'Product Inventory'
 			);
 		}
+
+		if (sysPermissions::adminAccessAllowed('data_manager', 'importOrders') === true){
+			$contents['children'][] = array(
+				'link' => itw_app_link(null, 'data_manager', 'importOrders', 'SSL'),
+				'text' => 'Import Orders'
+			);
+		}
+		if (sysPermissions::adminAccessAllowed('data_manager', 'importCustomers') === true){
+			$contents['children'][] = array(
+				'link' => itw_app_link(null, 'data_manager', 'importCustomers', 'SSL'),
+				'text' => 'Import Customers'
+			);
+		}
 	}
 
 	EventManager::notify('BoxDataManagementAddLink', &$contents);

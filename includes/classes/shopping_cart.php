@@ -85,7 +85,7 @@
 			return false;
 		}
 		
-		public function addProduct($pID, $purchaseType = 'new', $qty = 0){
+		public function addProduct($pID, $purchaseType = 'new', $qty = 0, $pInfo = null){
 			global $messageStack;
 			$pID_strings = array(array(
 				'id'           => $pID,
@@ -100,7 +100,10 @@
 					$qty = $pID_info['qty'];
 					if ($qty > 0){
 						$curQty = 0;
-						$cartProduct = $this->contents->find($pID_info['id'], $purchaseType);
+
+
+						$cartProduct = $this->contents->findProduct($pID_info['id'], $purchaseType);
+
 						if ($cartProduct){
 							$curQty = $cartProduct->getQuantity();
 						}
@@ -110,12 +113,15 @@
 						}elseif ($qty == 0){
 							$curQty += 1;
 						}
-				
-						$pInfo = array(
-							'id_string'     => $pID_info['id'],
-							'purchase_type' => $purchaseType,
-							'quantity'      => $curQty
-						);
+
+				        if($pInfo == null){
+							$pInfo = array(
+								'id_string'     => $pID,
+								'uniqID'    => uniqid(),
+								'purchase_type' => $purchaseType,
+								'quantity'      => $curQty
+							);
+				        }
 				
 						EventManager::notify('ShoppingCart\AddToCartBeforeAction', $pID_info, &$pInfo, &$cartProduct);
 			
@@ -135,9 +141,10 @@
 		}
 		
 		function updateProduct($pID_string, $pInfo){
-			EventManager::notify('ShoppingCart\UpdateProductPrepare', &$pID_string, $pInfo['purchase_type']);
-			
 			$cartProduct = $this->contents->find($pID_string, $pInfo['purchase_type']);
+			EventManager::notify('ShoppingCart\UpdateProductPrepare', $cartProduct->getIdString(), $pInfo['purchase_type']);
+			
+
 			$new_pInfo = $cartProduct->getInfo();
 			foreach($pInfo as $key => $val){
 				$new_pInfo[$key] = $val;
@@ -238,7 +245,7 @@
 		public function restoreContents(){
 			$contents = $this->dbUtil->getCartFromDatabase();
 			foreach($contents as $cartProduct){
-				$this->contents->add($cartProduct, false);
+				$this->addProduct($cartProduct->getIdString(),$cartProduct->getPurchaseType(),$cartProduct->getQuantity(), $cartProduct->getInfo());
 			}
 		}
 		

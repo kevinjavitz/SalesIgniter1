@@ -1,0 +1,16 @@
+<definitions>
+	<define key="MODULE_PAYMENT_HEARTLAND_TEXT_TITLE"><![CDATA[Credit/Debit Card (via Heartland)]]></define>
+	<define key="MODULE_PAYMENT_HEARTLAND_TEXT_DESCRIPTION"><![CDATA[Heartland]]></define>
+	<define key="CONFIRMATION_BUTTON_TEXT"><![CDATA[Complete your Order Confirmation]]></define>
+	<define key="EMAIL_PAYPAL_PENDING_NOTICE"><![CDATA[Your payment is currently pending. We will send you a copy of your order once the payment has cleared.]]></define>
+	<define key="EMAIL_TEXT_SUBJECT"><![CDATA[Order Process]]></define>
+	<define key="EMAIL_TEXT_ORDER_NUMBER"><![CDATA[Order Number:]]></define>
+	<define key="EMAIL_TEXT_INVOICE_URL"><![CDATA[Detailed Invoice:]]></define>
+	<define key="EMAIL_TEXT_DATE_ORDERED"><![CDATA[Date Ordered:]]></define>
+	<define key="EMAIL_TEXT_PRODUCTS"><![CDATA[Products]]></define>
+	<define key="EMAIL_TEXT_SUBTOTAL"><![CDATA[Sub-Total:]]></define>
+	<define key="EMAIL_TEXT_TAX"><![CDATA[Tax:        ]]></define>
+	<define key="EMAIL_TEXT_SHIPPING"><![CDATA[Shipping: ]]></define>
+	<define key="EMAIL_TEXT_TOTAL"><![CDATA[Total:    ]]></define>
+
+</definitions>

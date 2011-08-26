@@ -86,7 +86,7 @@ class OrderProduct {
 				return false;
 			}
 		}
-		return $this->pInfo['barcode_id'];
+		return (isset($this->pInfo['barcode_id'])?$this->pInfo['barcode_id']:false);
 	}
 
 	public function getFinalPrice($wQty = false, $wTax = false){

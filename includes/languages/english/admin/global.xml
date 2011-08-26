@@ -293,6 +293,7 @@
 	<define key="BOX_RENTAL_MEMBERSHIP_RENTAL_QUEUE"><![CDATA[Send Rentals]]></define>
 	<define key="BOX_RENTAL_MEMBERSHIP_RENTED_QUEUE"><![CDATA[Return Rentals By Customer]]></define>
 	<define key="BOX_RENTAL_MEMBERSHIP_RENTAL_ISSUES"><![CDATA[Rental Issues]]></define>
+	<define key="BOX_RENTAL_MEMBERSHIP_RENTAL_PASTDUE"><![CDATA[Past Due Members]]></define>
 	<define key="TEXT_CLOSE_WINDOW"><![CDATA[Close Window]]></define>
 	<define key="TEXT_YES"><![CDATA[Yes]]></define>
 	<define key="TEXT_NO"><![CDATA[No]]></define>
@@ -444,4 +445,6 @@
 	
 	<define key="TEXT_ADMIN_MENU_SES_UPDATES"><![CDATA[Check Updates]]></define>
 	<define key="INVENTORY_CENTERS_SORT_ORDER"><![CDATA[Inventory Centers Sort Order:]]></define>
+	<define key="PURCHASE_TYPE_RESERVATION_NAME"><![CDATA[Reservation]]></define>
+	<define key="PURCHASE_TYPE_RESERVATION_SHOW"><![CDATA[Reservation]]></define>
 </definitions>

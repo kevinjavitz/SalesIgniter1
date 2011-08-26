@@ -24,6 +24,10 @@ class OrderCreatorProductPurchaseTypeReservation extends PurchaseType_reservatio
 		if (sysConfig::get('EXTENSION_PAY_PER_RENTALS_USE_EVENTS') == 'True'){
 			$EventName = $ResInfo['event_name'];
 			$EventDate = $ResInfo['event_date'];
+			if (sysConfig::get('EXTENSION_PAY_PER_RENTALS_USE_GATES') == 'True'){
+				$EventGate = $ResInfo['event_gate'];
+			}
+
 		}
 
 		$Reservations =& $CollectionObj->OrdersProductsReservation;
@@ -41,6 +45,9 @@ class OrderCreatorProductPurchaseTypeReservation extends PurchaseType_reservatio
 			$Reservation->end_date = $EndDateFormatted;
 			$Reservation->insurance = $Insurance;
 			$Reservation->event_name = $EventName;
+			if (sysConfig::get('EXTENSION_PAY_PER_RENTALS_USE_GATES') == 'True'){
+				$Reservation->event_gate = $EventGate;
+			}
 			$Reservation->event_date = $EventDate;
 			$Reservation->track_method = $TrackMethod;
 			$Reservation->rental_state = 'reserved';
@@ -150,24 +157,26 @@ class OrderCreatorProductPurchaseTypeReservation extends PurchaseType_reservatio
 
 		//$bookedDates = array();
 		foreach($reservArr as $iReservation){
-			if(isset($iReservation['start']) && isset($iReservation['end'])){
+			if (isset($iReservation['start']) && isset($iReservation['end'])){
 				$startTime = strtotime($iReservation['start']);
 				$endTime = strtotime($iReservation['end']);
-				while($startTime<=$endTime){
+				while($startTime <= $endTime){
 					$dateFormated = date('Y-n-j', $startTime);
-					if ($this->getTrackMethod() == 'barcode' && !in_array($iReservation['barcode'], $bookedDates[$dateFormated]['barcode'])){
+					if (isset($bookedDates[$dateFormated]['barcode']) && !is_null($bookedDates[$dateFormated]['barcode']) && $this->getTrackMethod() == 'barcode' && !in_array($iReservation['barcode'], $bookedDates[$dateFormated]['barcode'])){
 						$bookedDates[$dateFormated]['barcode'][] = $iReservation['barcode'];
 						//check if all the barcodes are already or make a new function to make checks by qty... (this function can return also the free barcode?)
-					}else{
-						if(isset($bookedDates[$dateFormated]['qty'])){
+					}
+					else {
+						if (isset($bookedDates[$dateFormated]['qty'])){
 							$bookedDates[$dateFormated]['qty'] = $bookedDates[$dateFormated]['qty'] + 1;
-						}else{
+						}
+						else {
 							$bookedDates[$dateFormated]['qty'] = 1;
 						}
 						//check if there is still qty available.
 					}
 
-					$startTime += 60*60*24;
+					$startTime += 60 * 60 * 24;
 				}
 			}
 		}
@@ -183,9 +192,11 @@ class OrderCreatorProductPurchaseTypeReservation extends PurchaseType_reservatio
 			foreach($bookedDates as $dateFormated => $iBook){
 				if ($this->getTrackMethod() == 'barcode'){
 					$myqty = 0;
-					foreach($iBook['barcode'] as $barcode){
-						if(in_array($barcode,$prodBarcodes)){
-							$myqty ++;
+					if(isset($iBook['barcode'])){
+						foreach($iBook['barcode'] as $barcode){
+							if(in_array($barcode,$prodBarcodes)){
+								$myqty ++;
+							}
 						}
 					}
 					if(count($prodBarcodes) - $myqty<$qty){
@@ -209,14 +220,23 @@ class OrderCreatorProductPurchaseTypeReservation extends PurchaseType_reservatio
 		if (isset($resInfo['rental_shipping']) && $resInfo['rental_shipping'] !== false){
 			$shippingInfo = explode('_', $resInfo['rental_shipping']);
 		}
-
-		$this->processAddToOrderOrCart(array(
-			'shipping_module' => $shippingInfo[0],
-			'shipping_method' => $shippingInfo[1],
+		$dataArray = array(
+			'shipping_module' => (isset($shippingInfo[0])?$shippingInfo[0]:''),
+			'shipping_method' => (isset($shippingInfo[1])?$shippingInfo[1]:''),
 			'start_date'      => $resInfo['start_date'],
 			'end_date'        => $resInfo['end_date'],
 			'quantity'        => $resInfo['rental_qty']
-		), $pInfo);
+		);
+		if (sysConfig::get('EXTENSION_PAY_PER_RENTALS_USE_EVENTS') == 'True'){
+			$dataArray['event_name'] = $resInfo['event_name'];
+			$dataArray['event_date'] = $resInfo['event_date'];
+			if (sysConfig::get('EXTENSION_PAY_PER_RENTALS_USE_GATES') == 'True'){
+				if(isset($resInfo['event_gate'])){
+					$dataArray['event_gate'] = $resInfo['event_gate'];
+				}
+			}
+		}
+		$this->processAddToOrderOrCart($dataArray, $pInfo);
 
 		EventManager::notify('ReservationProcessAddToCart', $pInfo['reservationInfo']);
 	}

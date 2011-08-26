@@ -44,15 +44,15 @@ if ($ShoppingCart->countContents() > 0) {
 		$qty = '';
 		/* @TODO: Get into pay per rental extension */
 		if ($purchaseType == 'reservation'){
-			$qty .= tep_draw_hidden_field('cart_quantity['.$pID_string.']['.$purchaseType.']', $purchaseQuantity, 'size="4"') . $purchaseQuantity;
+			$qty .= tep_draw_hidden_field('cart_quantity['.$cartProduct->getUniqID().']['.$purchaseType.']', $purchaseQuantity, 'size="4"') . $purchaseQuantity;
 		}else{
-			$qty .= tep_draw_input_field('cart_quantity['.$pID_string.']['.$purchaseType.']', $purchaseQuantity, 'size="4"');
+			$qty .= tep_draw_input_field('cart_quantity['.$cartProduct->getUniqID().']['.$purchaseType.']', $purchaseQuantity, 'size="4"');
 		}
 
 		$shoppingCartBodyRow = array(
 			array(
 				'addCls' => 'productListing-data',
-				'text' => tep_draw_checkbox_field('cart_delete['.$pID_string.']', $purchaseType),
+				'text' => tep_draw_checkbox_field('cart_delete['.$cartProduct->getUniqID() .']', $purchaseType),
 				'attr' => array('align' => 'center', 'valign' => 'top')
 			),
 			array(

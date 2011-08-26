@@ -182,7 +182,7 @@ class OrderPaymentUsaepay extends CreditCardModule {
 		return $process_button_string;
 	}
 
-	function processPayment(){
+	function processPayment($orderID = null, $amount = null){
 		global $order, $userAccount;
 		switch ($_GET['UMstatus']){
 			case 'Approved':

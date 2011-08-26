@@ -19,10 +19,9 @@
 		foreach($Qcheck as $zInfo){
 			$htmlField->addOption($zInfo['zone_name'], $zInfo['zone_name']);
 		}
-		if (isset($_GET['edit']) && $_GET['edit'] > -1) {
-			$addressEntry = $addressBook->getAddress($_GET['edit']);
-			$htmlField->selectOptionByValue(tep_get_zone_name($addressEntry['entry_country_id'], $addressEntry['entry_zone_id'], $addressEntry['entry_state']));
-		}
+
+		$htmlField->selectOptionByValue((isset($_GET['state'])?$_GET['state']:1));
+
 	} else {
 		$htmlField = htmlBase::newElement('input')
 					->setName($_GET['state_type'])

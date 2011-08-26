@@ -361,6 +361,8 @@ class rentalStoreUser_addressBook {
 		$cif = $address['entry_cif'];
 		$city_birth = $address['entry_city_birth'];
 		$state = $address['entry_state'];
+		$country = '';
+		$abbrstate = '';
 		if (isset($address['entry_country_id']) && tep_not_null($address['entry_country_id'])) {
 			$country = tep_get_country_name($address['entry_country_id']);
 
@@ -374,8 +376,6 @@ class rentalStoreUser_addressBook {
 			else{
 				$country = tep_output_string_protected($address['country']);
 			}
-		} else {
-			$country = '';
 		}
 		$postcode = $address['entry_postcode'];
 

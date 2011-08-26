@@ -29,16 +29,18 @@ class formValidation extends ArrayIterator {
 			'errorMessage_alpha'      => sysLanguage::get('ENTRY_LAST_NAME_ERROR_ALPHA')
 		);
 		$this->validationRules['entry_lastname'] = $this->validationRules['lastname'];
-		
-		$this->validationRules['telephone'] = array(
-			'validate'                => 1,
-			'validation_type'         => 'min_length'.((sysConfig::get('ACCOUNT_TELEPHONE_REQUIRED') == 'true')?'|required':''),
-			'length'                  => sysConfig::get('ENTRY_TELEPHONE_MIN_LENGTH'),
-			'errorMessage_min_length' => sysLanguage::get('ENTRY_TELEPHONE_ERROR_MIN_LENGTH'),
-			'errorMessage_phone'      => sysLanguage::get('ENTRY_TELEPHONE_ERROR_PHONE')
-		);
 
-		$this->validationRules['entry_telephone'] = $this->validationRules['telephone'];
+		if(sysConfig::get('ACCOUNT_TELEPHONE') == 'true'){
+			$this->validationRules['telephone'] = array(
+				'validate'                => 1,
+				'validation_type'         => 'min_length'.((sysConfig::get('ACCOUNT_TELEPHONE_REQUIRED') == 'true')?'|required':''),
+				'length'                  => sysConfig::get('ENTRY_TELEPHONE_MIN_LENGTH'),
+				'errorMessage_min_length' => sysLanguage::get('ENTRY_TELEPHONE_ERROR_MIN_LENGTH'),
+				'errorMessage_phone'      => sysLanguage::get('ENTRY_TELEPHONE_ERROR_PHONE')
+			);
+
+			$this->validationRules['entry_telephone'] = $this->validationRules['telephone'];
+		}
 		
 		$this->validationRules['fax'] = array(
 			'validate'                => 1,
@@ -57,10 +59,10 @@ class formValidation extends ArrayIterator {
 			'errorMessage_email'      => sysLanguage::get('ENTRY_EMAIL_ADDRESS_ERROR_EMAIL')
 		);
 
-		if(sysConfig::get('ACCOUNT_FISCAL_CODE_REQUIRED') == 'true'){
+		if(sysConfig::get('ACCOUNT_FISCAL_CODE') == 'true'){
 			$this->validationRules['fiscal_code'] = array(
 			'validate'                => 1,
-			'validation_type'         => 'min_length|fiscal_code|required',
+			'validation_type'         => ''.((sysConfig::get('ACCOUNT_FISCAL_CODE_REQUIRED') == 'true')?'min_length|fiscal_code|required':''),
 			'length'                  => 16,
 			'errorMessage_min_length' => sysLanguage::get('ENTRY_FISCAL_CODE_ERROR'),
 			'errorMessage_cif'      => sysLanguage::get('ENTRY_FISCAL_CODE_ERROR')
@@ -68,10 +70,10 @@ class formValidation extends ArrayIterator {
 			$this->validationRules['entry_cif'] = $this->validationRules['fiscal_code'];
 		}
 
-		if(sysConfig::get('ACCOUNT_VAT_NUMBER_REQUIRED') == 'true'){
+		if(sysConfig::get('ACCOUNT_VAT_NUMBER') == 'true'){
 			$this->validationRules['vat_number'] = array(
 			'validate'                => 1,
-			'validation_type'         => 'min_length|vat_number|required',
+			'validation_type'         => ''.((sysConfig::get('ACCOUNT_VAT_NUMBER_REQUIRED') == 'true')?'min_length|vat_number|required':''),
 			'length'                  => 11,
 			'errorMessage_min_length' => sysLanguage::get('ENTRY_VAT_NUMBER_ERROR'),
 			'errorMessage_vat'      => sysLanguage::get('ENTRY_VAT_NUMBER_ERROR')
@@ -107,27 +109,32 @@ class formValidation extends ArrayIterator {
 			'length'                  => sysConfig::get('ENTRY_PASSWORD_MIN_LENGTH'),
 			'errorMessage_min_length' => sysLanguage::get('ENTRY_PASSWORD_CONFIRM_ERROR_MIN_LENGTH')
 		);
-		
-		$this->validationRules['gender'] = array(
-			'validate'           => 1,
-			'validation_type'    => 'radio',
-			'values'             => 'm|f',
-			'errorMessage_radio' => sysLanguage::get('ENTRY_GENDER_ERROR_RADIO')
-		);
-		
-		$this->validationRules['dob'] = array(
-			'validate'          => 1,
-			'validation_type'   => 'date',
-			'values'            => 'm|f',
-			'errorMessage_date' => sysLanguage::get('ENTRY_DATE_OF_BIRTH_ERROR_DATE')
-		);
+		if(sysConfig::get('ACCOUNT_GENDER') == 'true'){
+			$this->validationRules['gender'] = array(
+				'validate'           => 1,
+				'validation_type'    => 'radio'.((sysConfig::get('ACCOUNT_GENDER_REQUIRED') == 'true')?'|required':''),
+				'values'             => 'm|f',
+				'errorMessage_radio' => sysLanguage::get('ENTRY_GENDER_ERROR_RADIO'),
+				'errorMessage_required'   => sysLanguage::get('ENTRY_GENDER_ERROR_REQUIRED'),
+			);
+			$this->validationRules['entry_gender'] = $this->validationRules['gender'];
+		}
+		if(sysConfig::get('ACCOUNT_DOB') == 'true'){
+			$this->validationRules['dob'] = array(
+				'validate'          => 1,
+				'validation_type'   => 'date'.((sysConfig::get('ACCOUNT_DOB_REQUIRED') == 'true')?'|required':''),
+				'errorMessage_date' => sysLanguage::get('ENTRY_DATE_OF_BIRTH_ERROR_DATE'),
+				'errorMessage_required'   => sysLanguage::get('ENTRY_DOB_ERROR_REQUIRED'),
+			);
+			$this->validationRules['entry_dob'] = $this->validationRules['dob'];
+		}
 		
 		$this->validationRules['street_address'] = array(
 			'validate'                  => 1,
 			'validation_type'           => 'min_length|required',
 			'length'                    => sysConfig::get('ENTRY_STREET_ADDRESS_MIN_LENGTH'),
 			'errorMessage_min_length'   => sysLanguage::get('ENTRY_STREET_ADDRESS_ERROR_MIN_LENGTH'),
-			'errorMessage_alphanumeric' => sysLanguage::get('ENTRY_STREET_ADDRESS_ERROR_ALPHANUMERIC')
+			'errorMessage_alpha' => sysLanguage::get('ENTRY_STREET_ADDRESS_ERROR_ALPHANUMERIC')
 		);
 		$this->validationRules['entry_street_address'] = $this->validationRules['street_address'];
 		
@@ -147,24 +154,46 @@ class formValidation extends ArrayIterator {
 			'errorMessage_alpha'      => sysLanguage::get('ENTRY_CITY_ERROR_ALPHA')
 		);
 		$this->validationRules['entry_city'] = $this->validationRules['city'];
-		
-		$this->validationRules['suburb'] = array(
-			'validate'                => 1,
-			'validation_type'         => 'min_length',
-			'length'                  => sysConfig::get('ENTRY_SUBURB_MIN_LENGTH'),
-			'errorMessage_min_length' => sysLanguage::get('ENTRY_SUBURB_ERROR_MIN_LENGTH'),
-			'errorMessage_alpha'      => sysLanguage::get('ENTRY_SUBURB_ERROR_ALPHA')
-		);
-		$this->validationRules['entry_suburb'] = $this->validationRules['suburb'];
-		
-		$this->validationRules['state'] = array(
-			'validate'                => 1,
-			'validation_type'         => 'min_length|required',
-			'length'                  => sysConfig::get('ENTRY_STATE_MIN_LENGTH'),
-			'errorMessage_min_length' => sysLanguage::get('ENTRY_STATE_ERROR_MIN_LENGTH'),
-			'errorMessage_alpha'      => sysLanguage::get('ENTRY_STATE_ERROR_ALPHA')
-		);
-		$this->validationRules['entry_state'] = $this->validationRules['state'];
+
+		if(sysConfig::get('ACCOUNT_SUBURB') == 'true'){
+			$this->validationRules['suburb'] = array(
+				'validate'                => 1,
+				'validation_type'         => 'min_length'.((sysConfig::get('ACCOUNT_SUBURB_REQUIRED') == 'true')?'|required':''),
+				'length'                  => sysConfig::get('ENTRY_SUBURB_MIN_LENGTH'),
+				'errorMessage_min_length' => sysLanguage::get('ENTRY_SUBURB_ERROR_MIN_LENGTH'),
+				'errorMessage_alpha'      => sysLanguage::get('ENTRY_SUBURB_ERROR_ALPHA')
+			);
+			$this->validationRules['entry_suburb'] = $this->validationRules['suburb'];
+		}
+
+		if(sysConfig::get('ACCOUNT_COMPANY') == 'true'){
+			$this->validationRules['company'] = array(
+				'validate'                => 1,
+				'validation_type'         => ((sysConfig::get('ACCOUNT_COMPANY_REQUIRED') == 'true')?'required':''),
+				'errorMessage_required'   => sysLanguage::get('ENTRY_COMPANY_ERROR_REQUIRED')
+			);
+			$this->validationRules['entry_company'] = $this->validationRules['company'];
+		}
+
+		if(sysConfig::get('ACCOUNT_CITY_BIRTH') == 'true'){
+			$this->validationRules['city_birth'] = array(
+				'validate'                => 1,
+				'validation_type'         => ((sysConfig::get('ACCOUNT_CITY_BIRTH_REQUIRED') == 'true')?'required':''),
+				'errorMessage_required'   => sysLanguage::get('ENTRY_CITY_BIRTH_ERROR_REQUIRED')
+			);
+			$this->validationRules['entry_city_birth'] = $this->validationRules['city_birth'];
+		}
+
+		if(sysConfig::get('ACCOUNT_STATE') == 'true'){
+			$this->validationRules['state'] = array(
+				'validate'                => 1,
+				'validation_type'         => 'min_length'.((sysConfig::get('ACCOUNT_STATE_REQUIRED') == 'true')?'|required':''),
+				'length'                  => sysConfig::get('ENTRY_STATE_MIN_LENGTH'),
+				'errorMessage_min_length' => sysLanguage::get('ENTRY_STATE_ERROR_MIN_LENGTH'),
+				'errorMessage_alpha'      => sysLanguage::get('ENTRY_STATE_ERROR_ALPHA')
+			);
+			$this->validationRules['entry_state'] = $this->validationRules['state'];
+		}
 		
 		$this->validationRules['country'] = array(
 			'validate'               => 1,
@@ -269,6 +298,12 @@ class formValidation extends ArrayIterator {
 						$error = true;
 					}
 					break;
+				case 'required':
+					if(isset($fieldValue) && empty($fieldValue)){
+						$error = true;
+					}
+
+					break;
 				default:
 					if (array_key_exists($validationType, $this->validationRulesRegEx)){
 						if (!preg_match($this->validationRulesRegEx[$validationType], $fieldValue)){
@@ -294,11 +329,11 @@ class formValidation extends ArrayIterator {
 		}
 		
 		if ($error === true){
-			if (!in_array('required', $validations) && empty($fieldValue)){
+			/*if (!in_array('required', $validations) && empty($fieldValue)){
 				return false;
-			}else{
+			}else{*/
 				return $errorMessage;
-			}
+			//}
 		}
 		return false;
 	}

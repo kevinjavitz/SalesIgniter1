@@ -157,7 +157,7 @@ function tep_output_string_protected($string) {
 }
 
 function tep_sanitize_string($string) {
-	$string = ereg_replace(' +', ' ', $string);
+	$string = preg_replace('/ +/', ' ', $string);
 
 	return preg_replace("/[<>]/", '_', $string);
 }
@@ -243,7 +243,7 @@ function tep_date_long($raw_date) {
 // $raw_date needs to be in this format: YYYY-MM-DD HH:MM:SS
 // NOTE: Includes a workaround for dates before 01/01/1970 that fail on windows servers
 function tep_date_short($raw_date) {
-	if ( ($raw_date == '0000-00-00 00:00:00') || ($raw_date == '') ) return false;
+	if ( ($raw_date == '0000-00-00 00:00:00') || ($raw_date == '') || $raw_date == '0000-00-00') return false;
 
 	$year = substr($raw_date, 0, 4);
 	$month = (int)substr($raw_date, 5, 2);
@@ -255,7 +255,7 @@ function tep_date_short($raw_date) {
 	if (@date('Y', mktime($hour, $minute, $second, $month, $day, $year)) == $year) {
 		return date(sysLanguage::getDateFormat(), mktime($hour, $minute, $second, $month, $day, $year));
 	} else {
-		return ereg_replace('2037' . '$', $year, date(sysLanguage::getDateFormat(), mktime($hour, $minute, $second, $month, $day, 2037)));
+		return false;
 	}
 
 }
@@ -434,14 +434,14 @@ function tep_address_format($address_format_id, $address, $html, $boln, $eoln, $
 	$cif = $address['entry_cif'];
 	$city_birth = $address['entry_city_birth'];
 	$state = $address['entry_state'];
+	$abbrstate = '';
+	$country = '';
 	if (isset($address['entry_country_id']) && tep_not_null($address['entry_country_id'])) {
 		$country = tep_get_country_name($address['entry_country_id']);
 
 		if (isset($address['entry_zone_id']) && tep_not_null($address['entry_zone_id'])) {
 			$abbrstate = tep_get_zone_code($address['entry_country_id'], $address['entry_zone_id'], $state);
 		}
-	} else {
-		$country = '';
 	}
 	$postcode = $address['entry_postcode'];
 
@@ -1543,9 +1543,7 @@ function tep_cfg_pull_down_template_list($templateName){
 	->selectOptionByValue($templateName);
 	foreach($templatesArray as $dir){
 		$lowered = strtolower($dir);
-		if (file_exists(sysConfig::getDirFsCatalog().'templates/'.$lowered.'/templateData.tms')){
-			$switcher->addOption($lowered, $dir);
-		}
+		$switcher->addOption($lowered, $dir);
 	}
 	return $switcher->draw();
 }

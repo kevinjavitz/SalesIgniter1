@@ -1,7 +1,9 @@
 <definitions>
 	<define key="HEADING_TITLE"><![CDATA[Customers]]></define>
 	<define key="HEADING_TITLE_SEARCH"><![CDATA[Search:]]></define>
+	<define key="TABLE_HEADING_SELECT"><![CDATA[Select]]></define>
 	<define key="TABLE_HEADING_CUSTOMERS_ID"><![CDATA[ID]]></define>
+
 	<define key="TABLE_HEADING_FIRSTNAME"><![CDATA[First Name]]></define>
 	<define key="TABLE_HEADING_LASTNAME"><![CDATA[Last Name]]></define>
 	<define key="TABLE_HEADING_ACCOUNT_CREATED"><![CDATA[Account Created]]></define>

@@ -297,30 +297,23 @@
 			}
 		}
 
-		public function processPayment(){
-			global $order, $onePageCheckout;
+		public function processPayment($orderID = null, $amount = null){
+			global $order, $onePageCheckout, $ShoppingCart, $Editor;
 
 			$this->removeOrderOnFail = true;
 			if(isset($_POST['canReuse'])){
 				$onePageCheckout->onePage['info']['payment']['cardDetails']['canReuse'] = true;
 			}
 
-			$paymentAmount = $order->info['total'];
-			if ($this->getConfigData('MODULE_PAYMENT_AUTHORIZENET_CCMODE') == 'AUTH_ONLY'){
-				$paymentAmount -= $order->info['subtotal'];
-				$prods = $order->products;
-				for($i=0; $i<sizeof($prods); $i++){
-					if ($prods[$i]['auth_method'] == 'auth'){
-						if ($prods[$i]['auth_charge'] > 0){
-							$paymentAmount += $prods[$i]['auth_charge'] * $prods[$i]['quantity'];
-						}else{
-							$paymentAmount += $prods[$i]['final_price'] * $prods[$i]['quantity'];
-						}
-					}else{
-						$paymentAmount += $prods[$i]['final_price'] * $prods[$i]['quantity'];
-					}
-				}
+			if($this->getConfigData('MODULE_PAYMENT_AUTHORIZENET_CCMODE') == 'Authorize Only'){
+				$xType = 'AUTH_ONLY';
+			}elseif($this->getConfigData('MODULE_PAYMENT_AUTHORIZENET_CCMODE') == 'Authorize And Capture'){
+				$xType = 'AUTH_CAPTURE';
+			}else{
+				$xType = 'PRIOR_AUTH_CAPTURE';
 			}
+
+
 
 			$userAccount = OrderPaymentModules::getUserAccount();
 			$paymentInfo = OrderPaymentModules::getPaymentInfo();
@@ -331,29 +324,118 @@
 
 			$xExpDate = $paymentInfo['cardDetails']['cardExpMonth'] . $paymentInfo['cardDetails']['cardExpYear'];
 			$expirationDate = $paymentInfo['cardDetails']['cardExpYear'].'-'. $paymentInfo['cardDetails']['cardExpMonth'];
-			return $this->sendPaymentRequest(array(
-				'amount' => $paymentAmount,
-				'currencyCode' => $order->info['currency'],
-				'orderID' => $order->newOrder['orderID'],
-				'description' => 'description',
-				'cardNum' => $paymentInfo['cardDetails']['cardNumber'],
-				'cardExpDate' => $xExpDate,
-				'cardExpDateCIM' => $expirationDate,
-				'customerId' => $userAccount->getCustomerId(),
-				'customerEmail' => $userAccount->getEmailAddress(),
-				'customerIp' => $_SERVER['REMOTE_ADDR'],
-				'customerFirstName' => $billingAddress['entry_firstname'],
-				'customerLastName' => $billingAddress['entry_lastname'],
-				'customerCompany' => $billingAddress['entry_company'],
-				'customerStreetAddress' => $billingAddress['entry_street_address'],
-				'customerPostcode' => $billingAddress['entry_postcode'],
-				'customerCity' => $billingAddress['entry_city'],
-				'customerState' => $billingAddress['entry_state'],
-				'customerTelephone' => $userAccount->getTelephoneNumber(),
-				'customerFax' => $userAccount->getFaxNumber(),
-				'customerCountry' => $countryInfo['countries_name'],
-				'cardCvv' => $paymentInfo['cardDetails']['cardCvvNumber']
-			));
+
+			/*For each product i calculate deposit amount and make the sum for auth type and then substract for auth and sale*/
+			/*if on editor i get all product from editor too*/
+			$totalDeposit = 0;
+			if(isset($ShoppingCart)){
+				foreach($ShoppingCart->getProducts() as $iProduct){
+					$resInfo = $iProduct->getInfo();
+					if(isset($resInfo['reservationInfo']['deposit_amount'])){
+						$totalDeposit += $resInfo['reservationInfo']['deposit_amount'];
+					}
+					//can be for insurance too
+				}
+			}elseif(isset($Editor)){
+				foreach($Editor->ProductManager->getContents() as $iProduct){
+					$resInfo = $iProduct->getPInfo();
+					if(isset($resInfo['reservationInfo']['deposit_amount'])){
+						$totalDeposit += $resInfo['reservationInfo']['deposit_amount'];
+					}
+				}
+			}
+
+			if(is_null($orderID)){
+				$total = $order->info['total'];
+				$dataArray = array(
+					'currencyCode' => $order->info['currency'],
+					'orderID' => $order->newOrder['orderID'],
+					'description' => 'description',
+					'cardNum' => $paymentInfo['cardDetails']['cardNumber'],
+					'cardExpDate' => $xExpDate,
+					'cardExpDateCIM' => $expirationDate,
+					'customerId' => $userAccount->getCustomerId(),
+					'customerEmail' => $userAccount->getEmailAddress(),
+					'customerIp' => $_SERVER['REMOTE_ADDR'],
+					'customerFirstName' => $billingAddress['entry_firstname'],
+					'customerLastName' => $billingAddress['entry_lastname'],
+					'customerCompany' => $billingAddress['entry_company'],
+					'customerStreetAddress' => $billingAddress['entry_street_address'],
+					'customerPostcode' => $billingAddress['entry_postcode'],
+					'customerCity' => $billingAddress['entry_city'],
+					'customerState' => $billingAddress['entry_state'],
+					'customerTelephone' => $userAccount->getTelephoneNumber(),
+					'customerFax' => $userAccount->getFaxNumber(),
+					'customerCountry' => $countryInfo['countries_name'],
+					'cardCvv' => $paymentInfo['cardDetails']['cardCvvNumber']
+				);
+			}else{
+				$Qorder = Doctrine_Query::create()
+					->from('Orders o')
+					->leftJoin('o.OrdersPaymentHistory oph')
+					->leftJoin('o.Customers c')
+					->leftJoin('o.OrdersAddresses oa')
+					->leftJoin('o.OrdersTotal ot')
+					->where('o.orders_id = ?', $orderID)
+					->andWhere('oa.address_type = ?', 'billing')
+					->andWhereIn('ot.module_type', array('total', 'ot_total'))
+					->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+
+				if(!is_null($amount)){
+					$total = $amount;
+				}else{
+					$total = $Qorder[0]['OrdersTotal'][0]['value'];
+				}
+				$cardDetails = cc_decrypt($Qorder[0]['OrdersPaymentHistory']['card_details']);
+
+				$xExpDate = $cardDetails['exp_date'];
+
+
+				$dataArray = array(
+					'currencyCode' => $Qorder[0]['currency'],
+					'orderID' => $orderID,
+					'description' => sysConfig::get('STORE_NAME') . ' Subscription Payment',
+					'cardNum' => $cardDetails['card_num'],
+					'cardExpDate' => $xExpDate,
+					'customerId' => $Qorder[0]['customers_id'],
+					'customerEmail' => $Qorder[0]['customers_email_address'],
+					'customerFirstName' => $Qorder[0]['Customers']['customers_firstname'],
+					'customerLastName' => $Qorder[0]['Customers']['customers_lastname'],
+					'customerCompany' => $Qorder[0]['OrdersAddresses'][0]['entry_company'],
+					'customerStreetAddress' => $Qorder[0]['OrdersAddresses'][0]['entry_street_address'],
+					'customerPostcode' => $Qorder[0]['OrdersAddresses'][0]['entry_postcode'],
+					'customerCity' => $Qorder[0]['OrdersAddresses'][0]['entry_city'],
+					'customerState' => $Qorder[0]['OrdersAddresses'][0]['entry_state'],
+					'customerTelephone' => $Qorder[0]['customers_telephone'],
+					'customerCountry' => $Qorder[0]['OrdersAddresses'][0]['entry_country'],
+					'cardCvv' => $cardDetails['card_cvv']
+				);
+
+			}
+
+			if($totalDeposit > 0){
+				$xType = 'AUTH_ONLY';
+				$dataArray['amount'] = $totalDeposit;
+				$dataArray['xType'] = $xType;
+
+
+				$f = $this->sendPaymentRequest($dataArray);
+				if($f){
+					$restAmount = $total - $totalDeposit;
+
+					$xType = 'AUTH_CAPTURE';
+					$dataArray['amount'] = $restAmount;
+					$dataArray['xType'] = $xType;
+
+					$f = $this->sendPaymentRequest($dataArray);
+				}
+				return $f;
+			}else{
+				$dataArray['amount'] =  $total;
+				$dataArray['xType'] = $xType;
+				return $this->sendPaymentRequest($dataArray);
+			}
+
 		}
 		
 		public function processPaymentCron($orderID){
@@ -376,7 +458,15 @@
 			$xEmailMerchant = $this->getConfigData('MODULE_PAYMENT_AUTHORIZENET_EMAIL_MERCHANT') == 'True' ? 'TRUE': 'FALSE';
 			$xExpDate = cc_decrypt($Qorder[0]['Customers']['CustomersMembership']['exp_date']);
 
-			return $this->sendPaymentRequest(array(
+			if($this->getConfigData('MODULE_PAYMENT_AUTHORIZENET_CCMODE') == 'Authorize Only'){
+				$xType = 'AUTH_ONLY';
+			}elseif($this->getConfigData('MODULE_PAYMENT_AUTHORIZENET_CCMODE') == 'Authorize And Capture'){
+				$xType = 'AUTH_CAPTURE';
+			}else{
+				$xType = 'PRIOR_AUTH_CAPTURE';
+			}
+
+			$dataArray = array(
 				'amount' => $Qorder[0]['OrdersTotal'][0]['value'],
 				'currencyCode' => $Qorder[0]['currency'],
 				'orderID' => $orderID,
@@ -394,22 +484,20 @@
 				'customerState' => $Qorder[0]['OrdersAddresses'][0]['entry_state'],
 				'customerTelephone' => $Qorder[0]['customers_telephone'],
 				'customerCountry' => $Qorder[0]['OrdersAddresses'][0]['entry_country'],
-				'cardCvv' => cc_decrypt($Qorder[0]['Customers']['CustomersMembership']['card_cvv'])
-			));
+				'cardCvv' => cc_decrypt($Qorder[0]['Customers']['CustomersMembership']['card_cvv']),
+				'xType' => $xType
+			);
+
+			return $this->sendPaymentRequest($dataArray, true);
 		}
 
-		public function sendPaymentRequest($requestParams){
+		public function sendPaymentRequest($requestParams, $isCron = false){
 			global $messageStack;
-			if($this->getConfigData('MODULE_PAYMENT_AUTHORIZENET_CCMODE') == 'Authorize Only'){
-				$xType = 'AUTH_ONLY';
-			}elseif($this->getConfigData('MODULE_PAYMENT_AUTHORIZENET_CCMODE') == 'Authorize And Capture'){
-				$xType = 'AUTH_CAPTURE';
-			}else{
-				$xType = 'PRIOR_AUTH_CAPTURE';
-			}
+
 			$xMethod = $this->getConfigData('MODULE_PAYMENT_AUTHORIZENET_METHOD') == 'Credit Card' ? 'CC' : 'ECHECK';
 			$xEmailCustomer = $this->getConfigData('MODULE_PAYMENT_AUTHORIZENET_EMAIL_CUSTOMER') == 'True' ? 'TRUE': 'FALSE';
 			$xEmailMerchant = $this->getConfigData('MODULE_PAYMENT_AUTHORIZENET_EMAIL_MERCHANT') == 'True' ? 'TRUE': 'FALSE';
+			$xType = $requestParams['xType'];
 
 			$dataArray = array(
 				'x_login'          => $this->login,
@@ -538,7 +626,7 @@
 
 					$this->setParameter('customerPaymentProfileId', $payment_profile_id);
 					//$this->setParameter('customerShippingAddressId', $shipping_profile_id);
-					$this->createCustomerProfileTransaction((($this->getConfigData('MODULE_PAYMENT_AUTHORIZENET_CCMODE') == 'Authorize Only')?'profileTransAuthOnly':'profileTransAuthCapture'));
+					$this->createCustomerProfileTransaction((($xType == 'AUTH_ONLY')?'profileTransAuthOnly':'profileTransAuthCapture'));
 					$message = $this->getResponse();
 					//echo 'gs'.$message;
 					if(isset($this->params['orderInvoiceNumber'])){
@@ -568,10 +656,10 @@
 					if($message == 'Successful.'){
 						$info['message'] = 'Approval Code:'.$this->getAuthCode();
 						$info['transId'] = (isset($this->transactionId)?$this->transactionId:'');
-						return $this->CIMSuccess($info);
+						return $this->CIMSuccess($info, $isCron);
 					}else{
 						$info['message'] = $this->getResponse();
-						return $this->CIMFail($info);
+						return $this->CIMFail($info, $isCron);
 					}
 
 				}else{
@@ -586,7 +674,7 @@
 					$this->setParameter('customerProfileId', $profile_id);
 					$this->setParameter('customerPaymentProfileId', $payment_profile_id);
 					//$this->setParameter('customerShippingAddressId', $shipping_profile_id);
-					$this->createCustomerProfileTransaction((($this->getConfigData('MODULE_PAYMENT_AUTHORIZENET_CCMODE') == 'Authorize Only')?'profileTransAuthOnly':'profileTransAuthCapture'));
+					$this->createCustomerProfileTransaction((($xType == 'AUTH_ONLY')?'profileTransAuthOnly':'profileTransAuthCapture'));
 					$message = $this->getResponse();
 
 					if(isset($this->params['orderInvoiceNumber'])){
@@ -616,10 +704,10 @@
 					if($message == 'Successful.'){
 						$info['message'] = 'Approval Code:'.$this->getAuthCode();
 						$info['transId'] = (isset($this->transactionId)?$this->transactionId:'');
-						return $this->CIMSuccess($info);
+						return $this->CIMSuccess($info, $isCron);
 					}else{
 						$info['message'] = $this->getResponse();
-						return $this->CIMFail($info);
+						return $this->CIMFail($info, $isCron);
 					}
 				}
 			}else{
@@ -627,7 +715,7 @@
 				$CurlRequest->setData($dataArray);
 				$CurlResponse = $CurlRequest->execute();
 
-				return $this->onResponse($CurlResponse);
+				return $this->onResponse($CurlResponse, $isCron);
 			}
 		}
 
@@ -679,12 +767,16 @@
 			return $success;
 		}
 
-		private function CIMSuccess($info){
+		private function CIMSuccess($info, $isCron = false){
 			$cardDetails = array(
 					'customerProfile'    => $info['profileID'],
 					'paymentProfile'     => $info['paymentProfile'],
 					'transId'            => $info['transId']
 			);
+
+			if ($isCron === true){
+				$this->cronMsg = 'Successful Transaction';
+			}
 
 			$this->logPayment(array(
 				'orderID' => $info['orderID'],
@@ -694,12 +786,16 @@
 				'can_reuse' => (isset($_POST['canReuse'])?1:0),
 				'cardDetails' => $cardDetails
 			));
+
 			return true;
 		}
 
-		private function CIMFail($info){
+		private function CIMFail($info, $isCron = false){
 			global $messageStack;
 			$this->setErrorMessage($this->getTitle() . ' : ' . $info['message']);
+			if ($isCron === true){
+				$this->cronMsg = $this->getTitle() . ' : ' . $info['message'];
+			}
 			$orderId = $info['orderID'];
 			if ($this->removeOrderOnFail === true){
 				$Order = Doctrine_Core::getTable('Orders')->find($orderId);
@@ -720,6 +816,7 @@
 					)
 				));
 			}
+
 			return false;
 		}
 

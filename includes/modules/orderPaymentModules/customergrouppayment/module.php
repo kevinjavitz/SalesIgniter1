@@ -70,13 +70,20 @@ class OrderPaymentCustomergrouppayment extends StandardPaymentModule {
 		));
 	}
 
-	public function processPayment(){
+	public function processPayment($orderID = null, $amount = null){
 		global $order;
 	    $this->removeOrderOnFail = true;
-		return $this->sendPaymentRequest(array(
-			'orderID' => $order->newOrder['orderID'],
-			'amount'  => $order->info['total']
-		));
+	    if(is_null($orderID) && is_null($amount)){
+		    return $this->sendPaymentRequest(array(
+				    'orderID' => $order->newOrder['orderID'],
+				    'amount'  => $order->info['total']
+			    ));
+	    }else{
+		    return $this->sendPaymentRequest(array(
+				    'orderID' => $orderID,
+				    'amount'  => $amount
+			    ));
+	    }
 	}
 
 	public function processPaymentCron($orderID){

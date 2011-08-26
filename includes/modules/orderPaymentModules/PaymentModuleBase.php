@@ -266,7 +266,7 @@
 			return true;
 		}
 		
-		public function processPayment(){
+		public function processPayment($orderID = null, $amount = null){
 			return false;
 		}
 

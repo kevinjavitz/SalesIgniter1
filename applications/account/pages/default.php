@@ -1,4 +1,5 @@
 <?php
+    $beforeText = '';
 	$accountEditLink = htmlBase::newElement('a')->html(sysLanguage::get('MY_ACCOUNT_INFORMATION'))
 	->setHref(itw_app_link(null, 'account', 'edit', 'SSL'));
 
@@ -69,6 +70,10 @@
 					$ex='';
 				}
 
+				if($membership->isPastDue()){
+					$beforeText .= $errorMsg = sprintf(sysLanguage::get('RENTAL_CUSTOMER_IS_PAST_DUE'), itw_app_link('edit='.$membership->getRentalAddressId(),'account','billing_address_book','SSL'));
+				}
+
 				$cancel_mesg = '';
 				if ($membership->membershipInfo['canceled']) $cancel_mesg = '<br><span style="color:red">' . sysLanguage::get('TEXT_INFO_PACKAGE_CANCELED') . '</span>';
 
@@ -76,7 +81,7 @@
 				->setHref(itw_app_link(null, 'account', 'membership_info', 'SSL'));
 
 				$links[] = htmlBase::newElement('a')->html(sysLanguage::get('MY_ACCOUNT_MEMBERSHIP_BILLING_INFO_EDIT'))
-				->setHref(itw_app_link('edit=' . $membership->getRentalAddressId(), 'account', 'address_book_process', 'SSL'));
+				->setHref(itw_app_link('edit=' . $membership->getRentalAddressId(), 'account', 'billing_address_book', 'SSL'));
 
 				$links[] = htmlBase::newElement('a')->html(sysLanguage::get('MY_ACCOUNT_MEMBERSHIP_UPGRADE'))
 				->setHref(itw_app_link(null, 'account', 'membership_upgrade', 'SSL'));
@@ -108,7 +113,7 @@
 	
 	$pageContents = '<div>' . 
 		sprintf(sysLanguage::get('TEXT_LOGGED_IN_AS'), $userAccount->getFirstName(), itw_app_link(null, 'account', 'logoff')) . 
-	'</div>';
+	'</div>'.'<div class="main" style="margin-top:1em;">' . $beforeText . '</div>';
 	
 	if (isset($ordersTable)){
 		$pageContents .= '<div class="main" style="margin-top:1em;">' . 

@@ -44,6 +44,8 @@
 			}
 			if (array_key_exists('billing_suburb', $_POST)) $accountValidation['entry_suburb'] = $_POST['billing_suburb'];
 			if (array_key_exists('billing_state', $_POST)) $accountValidation['entry_state'] = $_POST['billing_state'];
+			if (array_key_exists('billing_gender', $_POST)) $accountValidation['entry_gender'] = $_POST['billing_gender'];
+			if (array_key_exists('billing_dob', $_POST)) $accountValidation['entry_dob'] = $_POST['billing_dob'];
 			if (array_key_exists('billing_fiscal_code', $_POST)) $accountValidation['entry_cif'] = $_POST['billing_fiscal_code'];
 			if (array_key_exists('billing_vat_number', $_POST)) $accountValidation['entry_vat'] = $_POST['billing_vat_number'];
 			if (array_key_exists('billing_city_birth', $_POST)) $accountValidation['entry_city_birth'] = $_POST['billing_city_birth'];
@@ -59,6 +61,7 @@
 
 			$billingAddressArray = array(
 					'entry_gender' => (isset($_POST['billing_gender']) ? $_POST['billing_gender'] : 'm'),
+					'entry_dob' => (isset($_POST['billing_dob']) ? $_POST['billing_dob'] : ''),
 					'entry_company' => (isset($_POST['billing_company'])?$_POST['billing_company']:''),
 					'entry_firstname' => $_POST['billing_firstname'],
 					'entry_lastname' => $_POST['billing_lastname'],
@@ -86,6 +89,8 @@
 						'entry_country_id'     => $_POST['shipping_country'],
 					);
 
+					if (array_key_exists('shipping_gender', $_POST)) $accountValidation['entry_gender'] = $_POST['shipping_gender'];
+					if (array_key_exists('shipping_dob', $_POST)) $accountValidation['entry_dob'] = $_POST['shipping_dob'];
 					if (array_key_exists('shipping_suburb', $_POST)) $accountValidation['entry_suburb'] = $_POST['shipping_suburb'];
 					if (array_key_exists('shipping_state', $_POST)) $accountValidation['entry_state'] = $_POST['shipping_state'];
 					if (array_key_exists('shipping_fiscal_code', $_POST)) $accountValidation['entry_cif'] = $_POST['shipping_fiscal_code'];
@@ -98,6 +103,7 @@
 
 					$shippingAddressArray = array(
 						'entry_gender' => (isset($_POST['shipping_gender']) ? $_POST['shipping_gender'] : 'm'),
+						'entry_dob' => (isset($_POST['shipping_dob']) ? $_POST['shipping_dob'] : ''),
 						'entry_company' => (isset($_POST['shipping_company'])?$_POST['shipping_company']:''),
 						'entry_firstname' => $_POST['shipping_firstname'],
 						'entry_lastname' => $_POST['shipping_lastname'],
@@ -127,6 +133,8 @@
 						'entry_country_id'     => $_POST['pickup_country'],
 					);
 
+					if (array_key_exists('pickup_gender', $_POST)) $accountValidation['entry_gender'] = $_POST['pickup_gender'];
+					if (array_key_exists('pickup_dob', $_POST)) $accountValidation['entry_dob'] = $_POST['pickup_dob'];
 					if (array_key_exists('pickup_suburb', $_POST)) $accountValidation['entry_suburb'] = $_POST['pickup_suburb'];
 					if (array_key_exists('pickup_state', $_POST)) $accountValidation['entry_state'] = $_POST['pickup_state'];
 					if (array_key_exists('pickup_fiscal_code', $_POST)) $accountValidation['entry_cif'] = $_POST['pickup_fiscal_code'];
@@ -139,6 +147,7 @@
 
 					$pickupAddressArray = array(
 						'entry_gender' => (isset($_POST['pickup_gender']) ? $_POST['pickup_gender'] : 'm'),
+						'entry_dob' => (isset($_POST['pickup_dob']) ? $_POST['pickup_dob'] : ''),
 						'entry_company' => $_POST['pickup_company'],
 						'entry_firstname' => $_POST['pickup_firstname'],
 						'entry_lastname' => $_POST['pickup_lastname'],
@@ -337,7 +346,10 @@
 				} else {
 					if (!$onePageCheckout->isMembershipCheckout()){
 						$order->createOrder();
-						$PaymentModule->processPayment();
+						if(sysConfig::get('EXTENSION_PAY_PER_RENTALS_PROCESS_SEND') == 'True'){
+						}else{
+							$PaymentModule->processPayment();
+						}
 						if ($messageStack->size('pageStack') > 0){
 							$error = true;
 							ob_start();

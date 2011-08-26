@@ -36,6 +36,8 @@
 			$Method->method_default = (isset($_POST['method_default']) && $_POST['method_default'] == $methodId ? '1' : '0');
 			$Method->sort_order = $mInfo['sort_order'];
 			$Method->weight_rates = $mInfo['weight_rates'];
+			$Method->min_rental_number = $mInfo['min_rental_number'];
+			$Method->min_rental_type = $mInfo['min_rental_type'];
 			$Method->method_zone = $mInfo['zone'];
 			
 			$Method->save();

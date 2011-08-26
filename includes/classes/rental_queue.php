@@ -23,7 +23,23 @@
       }
       
       function rentalAllowed($cID){
-	      $Qcheck = Doctrine_Query::create()
+	      global $userAccount;
+
+	      if ($userAccount->isRentalMember()){
+		      if ($userAccount->membershipIsActivated()){
+			      $membership =& $userAccount->plugins['membership'];
+			      if($membership->isPastDue()){
+				      return 'pastdue';
+			      }else{
+				      return true;
+			      }
+		      }else{
+			      return 'inactive';
+		      }
+	      }else{
+		      return 'membership';
+	      }
+	      /*$Qcheck = Doctrine_Query::create()
 		      ->select('activate')
 		      ->from('CustomersMembership')
 		      ->where('ismember = ?', 'M')
@@ -36,7 +52,7 @@
                   return 'inactive';
               }
           }
-        return 'membership';
+        return 'membership'; */
       }
       
       function updatePriority($pID_string, $priority, $prevPriority = '', $attributes = ''){

@@ -48,7 +48,7 @@
 		
 		$contactTable->addBodyRow(array(
 			'columns' => array(
-				array('text' => '<img src="securimage_show.php?' . session_name() . '=' . session_id() . '" style="vertical-align:middle;">&nbsp;&nbsp;<input type="text" name="code" style="width:175px;vertical-align:middle;" />')
+				array('text' => '<img src="'.sysConfig::getDirWsCatalog().'securimage_show.php" style="vertical-align:middle;">&nbsp;&nbsp;<input type="text" name="code" style="width:175px;vertical-align:middle;" />')
 			)
 		));
 	}

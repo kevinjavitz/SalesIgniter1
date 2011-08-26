@@ -21,6 +21,32 @@ function addConfiguration($key, $group, $title, $desc, $default, $func) {
 	$Qcheck->free();
 }
 
+function add_extra_fields($table, $column, $column_attr = 'VARCHAR(255) NULL'){
+
+	$db=sysConfig::get('DB_DATABASE');
+	$link = mysql_connect(sysConfig::get('DB_SERVER'), sysConfig::get('DB_SERVER_USERNAME'), sysConfig::get('DB_SERVER_PASSWORD'));
+	if (! $link){
+		die(mysql_error());
+	}
+	mysql_select_db($db , $link) or die("Select Error: ".mysql_error());
+
+	$exists = false;
+	$columns = mysql_query("show columns from $table");
+	while($c = mysql_fetch_assoc($columns)){
+		if($c['Field'] == $column){
+			$exists = true;
+			break;
+		}
+	}
+
+	if(!$exists){
+		mysql_query("ALTER TABLE `$table` ADD `$column`  $column_attr");
+	}
+
+}
+
+
+
 function updateConfiguration($key, $group, $title, $desc, $default, $func) {
 	$Qcheck = Doctrine_Query::create()
 		->select('configuration_id')
@@ -58,6 +84,7 @@ addConfiguration('ORDERS_STATUS_APPROVED_ID', 1, 'Order Status Order Approved ID
 addConfiguration('ORDERS_STATUS_PROCESSING_ID', 1, 'Order Status order Processing ID', 'Order Status order Processing ID', '1', 'tep_cfg_pull_down_order_status_list(');
 addConfiguration('ORDERS_STATUS_DELIVERED_ID', 1, 'Order Status order Delivered ID', 'Order Status order Delivered ID', '3', 'tep_cfg_pull_down_order_status_list(');
 addConfiguration('ORDERS_STATUS_ESTIMATE_ID', 1, 'Order Status order Estimate ID', 'Order Status order estimate ID', '9', 'tep_cfg_pull_down_order_status_list(');
+addConfiguration('ORDERS_STATUS_SHIPPED_ID', 1, 'Order Status Order Shipped ID', 'Order Status order Shipped ID', '10', 'tep_cfg_pull_down_order_status_list(');
 addConfiguration('ACCOUNT_FISCAL_CODE_REQUIRED', 5, 'Fiscal Code required', 'Fiscal Code required', 'false', "tep_cfg_select_option(array('true', 'false'),");
 addConfiguration('ACCOUNT_VAT_NUMBER_REQUIRED', 5, 'VAT Number required', 'VAT Number required', 'false', "tep_cfg_select_option(array('true', 'false'),");
 addConfiguration('ACCOUNT_CITY_BIRTH_REQUIRED', 5, 'City of birth required', 'City of birth required', 'false', "tep_cfg_select_option(array('true', 'false'),");
@@ -65,16 +92,20 @@ addConfiguration('ACCOUNT_NEWSLETTER', 5, 'Enable newsletter subscription', 'Ena
 addConfiguration('ENABLE_HTML_EDITOR', 1, 'Use wysiwyg editor for product description', 'Use wysiwyg editor to edit product description', 'true', "tep_cfg_select_option(array('true', 'false'),");
 addConfiguration('SHOW_ENLAGE_IMAGE_TEXT', 1, 'Show enlarge image text on product info page', 'Show enlarge image text on product info page', 'true', "tep_cfg_select_option(array('true', 'false'),");
 
+addConfiguration('RENTAL_DAYS_CUSTOMER_PAST_DUE', 16, 'How many days past due the customer is allowed to rent and receive items', 'How many days past due the customer is allowed to rent and receive items', '3', '');
 updateConfiguration('DIR_WS_TEMPLATES_DEFAULT', -1, -1, -1, -1, "tep_cfg_pull_down_template_list(");
 addConfiguration('SHOW_COMMENTS_CHECKOUT', 1, 'Show comments on checkout', 'Show comments on checkout page', 'true', "tep_cfg_select_option(array('true', 'false'),");
 
-/*addConfiguration('ACCOUNT_COMPANY_REQUIRED',5, 'Company required', 'Company required','false',"tep_cfg_select_option(array('true', 'false'),");
+addConfiguration('ACCOUNT_COMPANY_REQUIRED',5, 'Company required', 'Company required','false',"tep_cfg_select_option(array('true', 'false'),");
 addConfiguration('ACCOUNT_SUBURB_REQUIRED',5, 'Suburb required', 'Suburb required','false',"tep_cfg_select_option(array('true', 'false'),");
+addConfiguration('ACCOUNT_GENDER_REQUIRED',5, 'Gender required', 'Gender required','false',"tep_cfg_select_option(array('true', 'false'),");
+addConfiguration('ACCOUNT_DOB_REQUIRED',5, 'DOB required', 'DOB required','false',"tep_cfg_select_option(array('true', 'false'),");
 addConfiguration('ACCOUNT_STATE_REQUIRED',5, 'State required', 'State required','false',"tep_cfg_select_option(array('true', 'false'),");
 addConfiguration('ACCOUNT_VAT_NUMBER',5, 'VAT Number', 'VAT Number','false',"tep_cfg_select_option(array('true', 'false'),");
 addConfiguration('ACCOUNT_TELEPHONE',5, 'Telephone Number', 'Telephone Number','false',"tep_cfg_select_option(array('true', 'false'),");
-addConfiguration('ACCOUNT_FISCAL_CODE',5, 'VAT Number', 'Fiscal Code','false',"tep_cfg_select_option(array('true', 'false'),");
-*/
+addConfiguration('ACCOUNT_FISCAL_CODE',5, 'Fiscal Code', 'Fiscal Code','false',"tep_cfg_select_option(array('true', 'false'),");
+addConfiguration('ACCOUNT_CITY_BIRTH', 5, 'City of birth', 'City of birth', 'false', "tep_cfg_select_option(array('true', 'false'),");
+
 /*
 		* This part is for completing with the remaining orders statuses if don't exists. In future updates they should be filled
 		* */
@@ -102,7 +133,22 @@ addStatus('Waiting Confirmation');
 addStatus('Cancelled');
 addStatus('Approved');
 addStatus('Estimate');
+addStatus('Shipped');
 
+
+add_extra_fields('modules_shipping_zone_reservation_methods','weight_rates','TEXT NULL');
+add_extra_fields('modules_shipping_zone_reservation_methods','min_rental_number','INTEGER 0');
+add_extra_fields('modules_shipping_zone_reservation_methods','min_rental_type','INTEGER 0');
+
+
+//update bannerManger
+
+Doctrine_Query::create()
+	->update('TemplatesInfoboxes')
+	->set('box_path', '?', 'extensions/imageRot/catalog/infoboxes/banner/')
+	->set('ext_name', '?', 'imageRot')
+	->where('box_code = ?', 'banner')
+	->execute();
 
 $pageName = basename($_SERVER['PHP_SELF']);
 $pageContent = substr($pageName, 0, strpos($pageName, '.'));

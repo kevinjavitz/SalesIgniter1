@@ -18,9 +18,12 @@
 			isset($QlastOrder[0]['OrdersProducts'][0]['OrdersProductsReservation']) && 
 			isset($QlastOrder[0]['OrdersProducts'][0]['OrdersProductsReservation'][0])
 		){
-		$evInfo = ReservationUtilities::getEvent($QlastOrder[0]['OrdersProducts'][0]['OrdersProductsReservation'][0]['event_name']);
-		//$htmlEventLink = '<a href="'.itw_app_link('appExt=payPerRentals&ev_id='.$evInfo['events_id'],'show_event','default').'">View Event Details</a>';
-		$htmlEventDetails = '<br/><br/><b>Event Details:</b><br/>' .  trim($evInfo['events_details']);
+			$evInfo = ReservationUtilities::getEvent($QlastOrder[0]['OrdersProducts'][0]['OrdersProductsReservation'][0]['event_name']);
+			//$htmlEventLink = '<a href="'.itw_app_link('appExt=payPerRentals&ev_id='.$evInfo['events_id'],'show_event','default').'">View Event Details</a>';
+			$htmlEventDetails = '<br/><br/><b>Event Details:</b><br/>' .  trim($evInfo['events_details']);
+			if (sysConfig::get('EXTENSION_PAY_PER_RENTALS_USE_GATES') == 'True'){
+				$htmlEventGates = '<br/><br/><b>Event Gate:</b><br/>' .  trim($QlastOrder[0]['OrdersProducts'][0]['OrdersProductsReservation'][0]['event_gate']);
+			}
 		}
 	}
 
@@ -314,15 +317,19 @@ for($i=0, $n=sizeof($trackings); $i<$n; $i++){
     		<?php
 				echo '<input type="hidden" name="currentPage" id="currentPage" value="success">';
 				echo htmlBase::newElement('a')->html(sysLanguage::get('TEXT_PRINT_ORDER'))->attr('id','printOrder')->draw();
-		
-				if (isset($htmlEventDetails) || isset($htmlTermsDetails)){
-					if (isset($htmlEventDetails) && !empty($htmlEventDetails)){
-						echo '<br/>' . $htmlEventDetails . '<br>';
-					}
-					if (isset($htmlTermsDetails) && !empty($htmlTermsDetails)){
-						echo '<br/>' . $htmlTermsDetails;
-					}
+
+				if (isset($htmlEventGates) && !empty($htmlEventGates)){
+					echo '<br/>' . $htmlEventGates . '<br>';
 				}
+
+				if (isset($htmlEventDetails) && !empty($htmlEventDetails)){
+					echo '<br/>' . $htmlEventDetails . '<br>';
+				}
+
+				if (isset($htmlTermsDetails) && !empty($htmlTermsDetails)){
+					echo '<br/>' . $htmlTermsDetails;
+				}
+
 			?>
 		</div>
 	</div>
