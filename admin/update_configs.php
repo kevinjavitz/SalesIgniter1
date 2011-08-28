@@ -102,7 +102,17 @@ function addStatus($status_name) {
 		$Status->save();
 	}
 }
+$EmailTemplatesVariables = Doctrine_Core::getTable('EmailTemplatesVariables');
+$EmailTemplatesVariableCheck = $EmailTemplatesVariables->findOneByEmailTemplatesIdAndEventVariable(17,'adminEditLink');
 
+if($EmailTemplatesVariableCheck == false)
+{
+	$Variable = new EmailTemplatesVariables();
+	$Variable->event_variable = 'adminEditLink';
+	$Variable->is_conditional = '0';
+	$Variable->email_templates_id = '17';
+	$Variable->save();
+}
 addStatus('Waiting Confirmation');
 addStatus('Cancelled');
 addStatus('Approved');
