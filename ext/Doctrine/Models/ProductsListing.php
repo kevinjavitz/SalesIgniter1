@@ -98,6 +98,15 @@ class ProductsListing extends Doctrine_Record {
 		'notnull' => false,
 		'autoincrement' => false,
 		));
+		$this->hasColumn('products_listing_heading_valign', 'string', 12, array(
+		'type' => 'string',
+		'length' => 12,
+		'fixed' => false,
+		'primary' => false,
+		'default' => '',
+		'notnull' => false,
+		'autoincrement' => false,
+		));
 		$this->hasColumn('products_listing_module', 'string', 64, array(
 		'type' => 'string',
 		'length' => 64,

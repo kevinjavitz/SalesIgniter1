@@ -81,8 +81,13 @@
 	->andWhere('fp2c.categories_id = ?', $current_fcategory_id)
 	->andWhere('p2b.products_id is null')
 	->andWhere('pd.language_id = ?', (int)Session::get('languages_id'));
-	
-	$productListing = new productListing_row();
+
+	if(sysConfig::get('PRODUCT_LISTING_TYPE') == 'row'){
+		$productListing = new productListing_row();
+	} else {
+		$productListing = new productListing_col();
+	}
+
 	$productListing->setQuery($Qfunways);
 	$pageContents .= $productListing->draw();
 	

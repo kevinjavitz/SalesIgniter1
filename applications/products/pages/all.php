@@ -22,8 +22,11 @@
 		//$Qproducts->andWhere($sortingSettings[$_GET['sortBy']]['where']);
 		$Qproducts->orderBy($sortingSettings[$_GET['sortBy']]['orderby']);
 	}
-	
-	$productListing = new productListing_row();
+	if(sysConfig::get('PRODUCT_LISTING_TYPE') == 'row'){
+		$productListing = new productListing_row();
+	} else {
+		$productListing = new productListing_col();
+	}
 	$productListing->setQuery($Qproducts);
 	
 	$pageContent->set('pageTitle', sysLanguage::get('HEADING_TITLE_ALL'));

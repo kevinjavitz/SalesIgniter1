@@ -7,6 +7,7 @@
 	<define key="MODULE_ORDER_TOTAL_COUPON_USER_PROMPT"><![CDATA[]]></define>
 	<define key="ERROR_NO_INVALID_REDEEM_COUPON"><![CDATA[Invalid Coupon Code]]></define>
 	<define key="ERROR_REDEEMED_AMOUNT_ZERO"><![CDATA[<BR>***HOWEVER:No reducion available, please see the coupon restrictions***]]></define>
+	<define key="ERROR_PURCHASE_TYPE_NOT_ALLOWED"><![CDATA[Purchase type %s is not allowed for this coupon]]></define>
 	<define key="ERROR_INVALID_STARTDATE_COUPON"><![CDATA[This coupon is not available yet]]></define>
 	<define key="ERROR_INVALID_FINISDATE_COUPON"><![CDATA[This coupon has expired]]></define>
 	<define key="ERROR_INVALID_USES_COUPON"><![CDATA[This coupon could only be used ]]></define>  

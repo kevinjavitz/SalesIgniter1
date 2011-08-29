@@ -9,6 +9,7 @@
 				$headingData[] = array(
 					'heading'       => $_POST['products_listing_name']['new'][$randomKey],
 					'headingAlign'  => $_POST['products_listing_heading_align']['new'][$randomKey],
+					'headingValign'  => $_POST['products_listing_heading_valign']['new'][$randomKey],
 					'status'        => $newColStatus,
 					'sortOrder'     => $_POST['products_listing_sort_order']['new'][$randomKey],
 					'listingModule' => $_POST['products_listing_module']['new'][$randomKey],
@@ -22,6 +23,7 @@
 				'listing_id'    => $listingId,
 				'heading'       => $_POST['products_listing_name'][$listingId],
 				'headingAlign'  => $_POST['products_listing_heading_align'][$listingId],
+				'headingValign'  => $_POST['products_listing_heading_valign'][$listingId],
 				'status'        => $colStatus,
 				'sortOrder'     => $_POST['products_listing_sort_order'][$listingId],
 				'listingModule' => $_POST['products_listing_module'][$listingId],
@@ -51,6 +53,7 @@
 			$listingCol->products_listing_status = $data['status'];
 			$listingCol->products_listing_sort_order = $data['sortOrder'];
 			$listingCol->products_listing_heading_align = $data['headingAlign'];
+			$listingCol->products_listing_heading_valign = $data['headingValign'];
 			$listingCol->products_listing_module = $data['listingModule'];
 			$listingCol->products_listing_template = implode(',', $data['templates']);
 

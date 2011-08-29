@@ -23,7 +23,12 @@
 			'Visa' => 'Visa',
 			'Mastercard' => 'Mastercard',
 			'Discover' => 'Discover',
-			'Amex' => 'American Express'
+			'Amex' => 'American Express',
+			'Delta' => 'Delta',
+			'Switch' => 'Switch',
+			'Diners' => 'Diners',
+			'Solo' => 'Solo',
+			'Laser' => 'Laser'
 		);
 		
 		public function getCardImages(){
