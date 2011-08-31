@@ -79,7 +79,7 @@
 				$ProductCustomFieldsToCustomers = new ProductCustomFieldsToCustomers();
 				$ProductCustomFieldsToCustomers->customers_id = $cID;
 				$ProductCustomFieldsToCustomers->product_custom_field_id = $fID;
-				$ProductCustomFieldsToCustomers->options = implode($val,',');
+				$ProductCustomFieldsToCustomers->options = implode($val,';');
 				$ProductCustomFieldsToCustomers->save();
 			//}
 		}

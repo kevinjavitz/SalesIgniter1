@@ -38,10 +38,13 @@
 		}
 		
 		if ($key == 'billing'){
-			$FieldsArray['telephone'] = array(
-				'required' => ((sysConfig::get('ACCOUNT_TELEPHONE_REQUIRED') == 'true')?true:false),
-				'value' => (isset($onePageCheckout->onePage['info']['telephone']) ? $onePageCheckout->onePage['info']['telephone'] : '')
-			);
+
+			if (sysConfig::get('ACCOUNT_TELEPHONE') == 'true'){
+				$FieldsArray['telephone'] = array(
+					'required' => ((sysConfig::get('ACCOUNT_TELEPHONE_REQUIRED') == 'true')?true:false),
+					'value' => (isset($onePageCheckout->onePage['info']['telephone']) ? $onePageCheckout->onePage['info']['telephone'] : '')
+				);
+			}
 
 			if ($userAccount->isLoggedIn() === false){
 				$FieldsArray['email_address'] = array(
@@ -58,51 +61,56 @@
 
 	
 			if (sysConfig::get('ACCOUNT_GENDER') == 'true'){
-				$FieldsArray['gender'] = array('value' => $values['entry_gender']);
+				$FieldsArray['gender'] = array(
+					'required' => ((sysConfig::get('ACCOUNT_GENDER_REQUIRED') == 'true')?true:false),
+					'value' => $values['entry_gender']);
 			}
 	
 			if (sysConfig::get('ACCOUNT_DOB') == 'true'){
 				$FieldsArray['dob'] = array(
+					'required' => ((sysConfig::get('ACCOUNT_DOB_REQUIRED') == 'true')?true:false),
 					'value' => (isset($onePageCheckout->onePage['info']['dob']) ? $onePageCheckout->onePage['info']['dob'] : '')
 				);
 			}
 		}
 		
 		if (sysConfig::get('ACCOUNT_SUBURB') == 'true'){
-			$FieldsArray['suburb'] = array('value' => $values['entry_suburb']);
+			$FieldsArray['suburb'] = array(
+				'required' => ((sysConfig::get('ACCOUNT_SUBURB_REQUIRED') == 'true')?true:false),
+				'value' => $values['entry_suburb']);
 		}
 	
 		if (sysConfig::get('ACCOUNT_STATE') == 'true'){
 			$FieldsArray['state'] = array(
-				'required' => true,
+				'required' => ((sysConfig::get('ACCOUNT_STATE_REQUIRED') == 'true')?true:false),
 				'value' => $values['entry_state']
 			);
 		}
 		
 		if (sysConfig::get('ACCOUNT_COMPANY') == 'true'){
 			$FieldsArray['company'] = array(
-				'required' => false,
+				'required' => ((sysConfig::get('ACCOUNT_COMPANY_REQUIRED') == 'true')?true:false),
 				'value' => $values['entry_company']
 			);
 		}
 
-		if (sysConfig::get('ACCOUNT_FISCAL_CODE_REQUIRED') == 'true'){
+		if (sysConfig::get('ACCOUNT_FISCAL_CODE') == 'true'){
 			$FieldsArray['fiscal_code'] = array(
-				'required' => true,
+				'required' => ((sysConfig::get('ACCOUNT_FISCAL_CODE_REQUIRED') == 'true')?true:false),
 				'value' => $values['entry_cif']
 			);
 		}
 
-		if (sysConfig::get('ACCOUNT_VAT_NUMBER_REQUIRED') == 'true'){
+		if (sysConfig::get('ACCOUNT_VAT_NUMBER') == 'true'){
 			$FieldsArray['vat_number'] = array(
-				'required' => true,
+				'required' => ((sysConfig::get('ACCOUNT_VAT_NUMBER_REQUIRED') == 'true')?true:false),
 				'value' => $values['entry_vat']
 			);
 		}
 
-		if (sysConfig::get('ACCOUNT_CITY_BIRTH_REQUIRED') == 'true'){
+		if (sysConfig::get('ACCOUNT_CITY_BIRTH') == 'true'){
 			$FieldsArray['city_birth'] = array(
-				'required' => false,
+				'required' => ((sysConfig::get('ACCOUNT_CITY_BIRTH_REQUIRED') == 'true')?true:false),
 				'value' => $values['entry_city_birth']
 			);
 		}

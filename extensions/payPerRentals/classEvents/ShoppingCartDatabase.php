@@ -12,12 +12,16 @@
 		}
 		
 		public function InsertBasketBeforeProcess(&$insert, &$pInfo){
-			$insert->reservation_info = (isset($pInfo['reservationInfo']) ? serialize($pInfo['reservationInfo']) : '');
+			$insert->reservation_info = (isset($pInfo) ? serialize($pInfo) : '');
 		}
 		
 		public function GetCartFromDatabase(&$cartContent, $basketId, $product){
 			if (!empty($product['reservation_info'])){
-				$cartContent['reservationInfo'] = unserialize($product['reservation_info']);
+				$dataArr = unserialize($product['reservation_info']);
+				$cartContent['reservationInfo'] = $dataArr['reservationInfo'];
+				$cartContent['price'] = $dataArr['price'];
+				$cartContent['final_price'] = $dataArr['final_price'];
+
 			}
 		}
 	}

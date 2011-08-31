@@ -1,5 +1,18 @@
 <?php
 
+
+foreach($_POST['barcode_replacement'] as $resId => $barcode){
+		$Qres = Doctrine_Core::getTable('OrdersProductsReservation')->find($resId);
+		$QBarcode = Doctrine_Query::create()
+		->from('ProductsInventoryBarcodes')
+		->andWhere('barcode = ?', $barcode)
+		->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+		if($QBarcode){
+			$Qres->barcode_id = $QBarcode[0]['barcode_id'];
+			$Qres->save();
+		}
+}
+
 $Qreservations = Doctrine_Query::create()
 	->from('Orders o')
 	->leftJoin('o.Customers c')
@@ -20,6 +33,17 @@ $Qreservations = Doctrine_Query::create()
 
 			foreach($oInfo->OrdersProducts as $opInfo){
 				foreach($opInfo->OrdersProductsReservation as $oprInfo){
+
+					if (sysConfig::get('EXTENSION_PAY_PER_RENTALS_PROCESS_SEND') == 'True'){
+						$payedAmount = (isset($_POST['amount_payed'][$oprInfo->orders_products_reservations_id])?$_POST['amount_payed'][$oprInfo->orders_products_reservations_id]:'');
+
+						if($payedAmount - $opInfo['final_price'] >= 0){
+
+						}else{
+							continue;
+						}
+					}
+
 					$shippingNumber = (isset($_POST['shipping_number'][$oprInfo->orders_products_reservations_id])?$_POST['shipping_number'][$oprInfo->orders_products_reservations_id]:'');
 					if(!empty($shippingNumber)){
 						if(preg_match('/\b(1Z ?[0-9A-Z]{3} ?[0-9A-Z]{3} ?[0-9A-Z]{2} ?[0-9A-Z]{4} ?[0-9A-Z]{3} ?[0-9A-Z]|[\dT]\d\d\d ?\d\d\d\d ?\d\d\d)\b/i', $shippingNumber)){
@@ -45,18 +69,6 @@ $Qreservations = Doctrine_Query::create()
 						}
 					}
 
-					if (isset($oprInfo->Packaged)){
-						foreach($oprInfo->Packaged as $opprInfo){
-							$opprInfo->rental_state = 'out';
-							if ($opprInfo->track_method == 'barcode'){
-								$opprInfo->ProductsInventoryBarcodes->status = 'O';
-							}elseif ($opprInfo->track_method == 'quantity'){
-								$opprInfo->track_method->ProductsInventoryQuantity->reserved -= 1;
-								$opprInfo->track_method->ProductsInventoryQuantity->qty_out += 1;
-							}
-						}
-					}
-
 					$oprInfo->rental_state = 'out';
 					$oprInfo->date_shipped = date('Y-m-d');
 
@@ -65,7 +77,7 @@ $Qreservations = Doctrine_Query::create()
 					}elseif ($oprInfo->track_method == 'quantity'){
 						$oprInfo->ProductsInventoryQuantity->reserved -= 1;
 						$oprInfo->ProductsInventoryQuantity->qty_out += 1;
-					}					
+					}
 					if (isset($oInfo->Customers)){
 						$emailEvent = new emailEvent('reservation_sent', $oInfo->Customers->language_id);
 
@@ -73,7 +85,7 @@ $Qreservations = Doctrine_Query::create()
 							'full_name' => $oInfo->OrdersAddresses['customer']->entry_name,
 							'rented_product' => $opInfo->products_name,
 							'due_date' => tep_date_long($oprInfo->end_date),
-	 						'shipping_number'=> $shippingURL,
+	 						'shipping_number'=> (isset($shippingURL)?$shippingURL:''),
 							'email_address' => $oInfo->customers_email_address
 						));
 
@@ -88,6 +100,8 @@ $Qreservations = Doctrine_Query::create()
 		}
 		$Qreservations->save();
 	}
+
+
 
 	EventManager::attachActionResponse(array(
 		'success' => true

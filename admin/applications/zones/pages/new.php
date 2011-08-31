@@ -30,3 +30,4 @@
    echo $saveButton->draw() . $cancelButton->draw();
 ?></div>
 </form>
+	<script type="text/javascript" src="http://maps.google.com/maps?file=api&amp;v=2&amp;sensor=false&amp;key=<?php echo sysConfig::get('GOOGLE_MAPS_API_KEY');?>"></script>

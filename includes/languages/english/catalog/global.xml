@@ -310,6 +310,10 @@
 	<define key="ENTRY_SUBURB_ERROR_ALPHA"><![CDATA[Your Suburb can only contain letters.]]></define>
 	<define key="ENTRY_STATE_ERROR_MIN_LENGTH"><![CDATA[Your State must contain a minimum of %s characters.]]></define>
 	<define key="ENTRY_STATE_ERROR_ALPHA"><![CDATA[Your State can only contain letters.]]></define>
+	<define key="ENTRY_COMPANY_ERROR_REQUIRED"><![CDATA[Your company is required.]]></define>
+	<define key="ENTRY_CITY_BIRTH_ERROR_REQUIRED"><![CDATA[Your city of birth is required.]]></define>
+	<define key="ENTRY_DOB_ERROR_REQUIRED"><![CDATA[Your date of birth is required.]]></define>
+	<define key="ENTRY_GENDER_ERROR_REQUIRED"><![CDATA[Your gender is required.]]></define>
 	<define key="ENTRY_COUNTRY_ERROR_NUMERIC"><![CDATA[You must select a country from the Countries pull down menu.]]></define>
 	<define key="ENTRY_FAX_ERROR_MIN_LENGTH"><![CDATA[Your Fax number must contain a minimum of %s characters.]]></define>
 	<define key="ENTRY_FAX_ERROR_PHONE"><![CDATA[Your Fax number must be in this format: 555-444-2222]]></define>

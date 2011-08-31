@@ -47,6 +47,9 @@ class payPerRentals_admin_orderCreator_estimates_new extends Extension_payPerRen
 							"\n\t" . 'Event Date: ' . strftime(sysLanguage::getDateFormat('long'), strtotime($rInfo->event_date)) .
 							"\n\t" . 'Event Name: ' . $rInfo->event_name
 							;
+						if (sysConfig::get('EXTENSION_PAY_PER_RENTALS_USE_GATES') == 'True'){
+							$products_ordered .= "\n\t" . 'Event Gate: ' . $rInfo->event_gate;
+						}
 					}
 
 					if (!empty($rInfo->shipping_method_title)){

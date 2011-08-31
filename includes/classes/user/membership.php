@@ -192,7 +192,7 @@ class rentalStoreUser_membership extends StandardClass {
 		->update('CustomersMembership')
 		->set('card_num', '?', cc_encrypt($cardNum))
 		->set('exp_date', '?', cc_encrypt($expDate))
-		->set('card_cvv', '?', ($cardCvv !== false ? cc_encrypt($expDate) : ''))
+		->set('card_cvv', '?', ($cardCvv !== false ? cc_encrypt($cardCvv) : ''))
 		->where('customers_id = ?', $this->customerId)
 		->execute();
 	}
@@ -448,6 +448,10 @@ class rentalStoreUser_membership extends StandardClass {
 
 	public function isRentalMember(){
 		return (isset($this->membershipInfo['ismember']) && $this->membershipInfo['ismember'] == 'M');
+	}
+
+	public function isPastDue(){
+		return ($this->isRentalMember() && (strtotime($this->getNextBillDate()) - strtotime(date('Y-m-d H:i:s')) < sysConfig::get('RENTAL_DAYS_CUSTOMER_PAST_DUE')*60*60*1000*24));
 	}
 
 	public function isActivated(){

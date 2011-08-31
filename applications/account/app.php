@@ -18,7 +18,7 @@ if ($session_started == false) {
 		$breadcrumb->add(constant('NAVBAR_TITLE_' . strtoupper($App->getPageName())), itw_app_link(null, 'account', $App->getPageName(), 'SSL'));
 	}
 	
-	if ($App->getPageName() == 'address_book_process'){
+	if ($App->getPageName() == 'address_book_process' || $App->getPageName() == 'billing_address_book'){
 		if (isset($_GET['edit']) && is_numeric($_GET['edit'])){
 			$addressEntry = $addressBook->getAddress($_GET['edit']);
 			if (empty($addressEntry)){

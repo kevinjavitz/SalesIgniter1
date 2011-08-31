@@ -127,6 +127,17 @@
 					array('label' => 'Right', 'labelPosition' => 'after', 'value' => 'right')
 				)
 			));
+
+			$headingValign = htmlBase::newElement('radio')
+					->addGroup(array(
+					                'name'      => 'products_listing_heading_valign[' . $listingId . ']',
+					                'checked'   => $listing['products_listing_heading_valign'],
+					                'data'      => array(
+						                array('label' => 'Top', 'labelPosition' => 'after', 'value' => 'top'),
+						                array('label' => 'Middle', 'labelPosition' => 'after', 'value' => 'middle'),
+						                array('label' => 'Bottom', 'labelPosition' => 'after', 'value' => 'bottom')
+					                )
+					           ));
 			
 			$sortOrder = htmlBase::newElement('input')
 			->setLabel(htmlBase::newElement('b')->html('<u>Display Order:</u><br />')->draw())
@@ -176,6 +187,8 @@
 			->append(htmlBase::newElement('div')->css('padding', '.2em'))
 			->append(htmlBase::newElement('b')->html('<u>Heading Align:</u><br />'))
 			->append($headingAlign)
+			->append(htmlBase::newElement('b')->html('<u>Heading Vertical Align:</u><br />'))
+			->append($headingValign)
 			->append(htmlBase::newElement('div')->css('padding', '.2em'))
 			->append($sortOrder)
 			->append(htmlBase::newElement('div')->css('padding', '.2em'))
@@ -252,6 +265,18 @@
 			array('label' => 'Right', 'value' => 'right')
 		)
 	));
+
+	$headingValign = htmlBase::newElement('radio')
+		 ->setLabel(htmlBase::newElement('b')->html('<u>Heading Vertical Align:</u><br />')->draw())
+		 ->setLabelPosition('before')
+		 ->addGroup(array(
+						 'name'      => 'products_listing_heading_valign[new][RandomNumber]',
+						 'data'      => array(
+							 array('label' => 'Top', 'value' => 'top'),
+							 array('label' => 'Middle', 'value' => 'middle'),
+							 array('label' => 'Bottom', 'value' => 'bottom')
+						 )
+					));
 			
 	$sortOrder = htmlBase::newElement('input')
 	->setLabel(htmlBase::newElement('b')->html('<u>Display Order:</u><br />')->draw())
@@ -300,6 +325,8 @@
 	$column->append($nameInputs)
 	->append(htmlBase::newElement('div')->css('padding', '.2em'))
 	->append($headingAlign)
+	->append(htmlBase::newElement('div')->css('padding', '.2em'))
+	->append($headingValign)
 	->append(htmlBase::newElement('div')->css('padding', '.2em'))
 	->append($sortOrder)
 	->append(htmlBase::newElement('div')->css('padding', '.2em'))

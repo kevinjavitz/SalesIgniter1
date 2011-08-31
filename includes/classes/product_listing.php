@@ -34,6 +34,7 @@ class productListing {
 					'sort_sql'      => $cInfo['products_listing_sort_column'],
 					'heading'       => $cInfo['ProductsListingDescription'][Session::get('languages_id')]['products_listing_heading_text'],
 					'heading_align' => $cInfo['products_listing_heading_align'],
+					'heading_valign' => $cInfo['products_listing_heading_valign'],
 					'showModule'    => new $className
 				);
 				if ($cInfo['products_listing_default_sorting'] == '1'){

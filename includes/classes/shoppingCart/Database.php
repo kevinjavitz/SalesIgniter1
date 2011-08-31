@@ -110,6 +110,7 @@
 
 					$pInfo = array(
 						'id_string'     => $pID_string,
+						'uniqID' => uniqid(),
 						'quantity'      => $quantity,
 						'purchase_type' => $purchaseType
 					);

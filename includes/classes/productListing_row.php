@@ -229,7 +229,7 @@ class productListing_row extends productListing {
 
 				$boxContents[0][$col] = array(
 					'align'  => $header['align'],
-					'valign' => 'middle',
+					'valign' => $header['valign'],
 					'addCls' => (isset($this->templateData['headerSettings']['addCls']) ? $this->templateData['headerSettings']['addCls'] : false),
 					'text'   => $header['text']
 				);

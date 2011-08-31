@@ -160,5 +160,20 @@ class htmlWidget_radio implements htmlWidgetPlugin {
 	public function isChecked(){
 		return $this->inputElement->hasAttr('checked');
 	}
+
+	public function setRequired($val){
+		$i = 0;
+		foreach($this->groupElements as $button){
+			if($i == count($this->groupElements) - 1){
+				if ($val === true){
+					$button->addClass('required');
+				}else{
+					$button->removeClass('required');
+				}
+			}
+			$i++;
+		}
+		return $this;
+	}
 }
 ?>

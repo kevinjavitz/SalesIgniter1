@@ -190,10 +190,17 @@ h4 { font-size: 13px;color: #c30;margin: 10px;font-weight: bold; }
 
 .productListing-heading { height: 34px;font-weight: normal;font-family: Arial;font-size: 14px;color: #ffffff;background: url(<?php echo $templateDir; ?>images/infobox_header.png) repeat-x top left; }
 a.productListing-heading, a.productListing-heading:hover { color: #ffffff;background: none;height: 15px; }
-.productListingColBoxContainer{ width:110px;float:left;margin-left:15px;margin-top:15px;background-color:#f2f2f2;border:1px solid #cccccc;padding-bottom:4px; }
+.productListingColBoxContainer{text-align:center;margin:.5em; width:110px;float:left;margin-left:5px;margin-top:15px;background-color:#f2f2f2;border:1px solid #cccccc;padding-bottom:4px; }
 
-.productListingColBoxContainer { text-align:center;margin:.5em; }
 .productListingColBoxContent_image{ padding-top:4px; }
+.productListingColBoxInner {min-height: 210px;}
+.productListingColBoxTitle {height: 60px; display: table-cell; text-align: center; vertical-align:middle }
+.productListingColContents { }
+.productListingColPager { color:#ffffff;background: #313131;font-size: .8em;position:relative; padding: .5em;}
+.productListingColPager a { color:#ffffff; }
+.productListingColPagerLink { font-size:1em;padding: .4em .6em;background-color:#cccccc; }
+a.productListingColPagerLink:hover { text-decoration:none; }
+.productListingColPagerLinkActive { font-size:1em;padding: .4em .6em;font-weight: bold; }
 
 .productListingRowContainer { padding: .5em; }
 .productListingRowContents { }
@@ -210,7 +217,7 @@ a.productListingRowPagerLink:hover { text-decoration:none; }
 .pageHeaderContainer .ui-icon { margin-left:.3em;display:inline-block;vertical-align:middle; }
 .pageContent { margin:.2em; }
 .pageButtonBar { text-align:right; padding:.3em; margin-top:.5em; }
-
+.ui-dialog .ui-dialog-buttonpane button {padding: 5px;}
 <?php
  /*
 	 * @TODO: Move to pay per rentals infobox buildStylesheet function

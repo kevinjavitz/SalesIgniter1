@@ -12,6 +12,8 @@
 
     <define key="EXTENSION_PAY_PER_RENTALS_NOW_PLEASE_CLICK"><![CDATA[Now please click %s button]]></define>
     <define key="EXTENSION_PAY_PER_RENTALS_DELIVERY_PASSED"><![CDATA[The delivery deadline for this event has passed; please call us for options]]></define>
+
+	<define key="EXTENSION_PAY_PER_RENTALS_NO_GATES"><![CDATA[No Gates ]]></define>
 	<define key="TEXT_QTY"><![CDATA[Quantity: ]]></define>
 	<define key="INFOBOX_CATEGORIES_VIEW_PRODUCTS"><![CDATA[View All Surfboards]]></define>
 
@@ -40,9 +42,11 @@
 
 	<define key="INFOBOX_PAYPERRENTAL_SELECT_CATEGORY"><![CDATA[Select Category ]]></define>
 	<define key="INFOBOX_PAYPERRENTAL_SELECT_DATES"><![CDATA[2. Select Dates ]]></define>
-	<define key="INFOBOX_PAYPERRENTAL_SELECT_EVENT"><![CDATA[<span style="color:#D31820"><span class="icon1"></span> Select Event</span>]]></define>
+	<define key="INFOBOX_PAYPERRENTAL_SELECT_EVENT"><![CDATA[<span style="color:#ffffff;font-size:18px;font-family:'Trebuchet Ms'">Event/Fair Reservations</span>]]></define>
+	<define key="INFOBOX_PAYPERRENTAL_SELECT_GATE"><![CDATA[<span style="display:inline-block;color:#ffffff;font-size:18px;font-family:'Trebuchet Ms'">Select Gate</span><span class="icon1 myga1" style="display:inline-block;"></span>]]></define>
 
 	<define key="INFOBOX_SELECT_EVENT"><![CDATA[Select your event]]></define>
+	<define key="INFOBOX_SELECT_GATE"><![CDATA[Autoselect Gate]]></define>
 	<define key="INFOBOX_SELECT_LEVEL_OF_SERVICE"><![CDATA[Select Level of Service]]></define>
 	<define key="INFOBOX_PAYPERRENTAL_SELECT_LEVEL_OF_SERVICE"><![CDATA[<span style="color:#D31820;float:left;"><span class="icon2"></span>Select Level of Service</span>]]></define>
 

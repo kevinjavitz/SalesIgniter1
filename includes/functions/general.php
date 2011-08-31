@@ -402,7 +402,7 @@ function tep_get_all_get_params($exclude_array = '') {
 // Returns the tax rate for a zone / class
 // TABLES: tax_rates, zones_to_geo_zones
   function tep_get_tax_rate($class_id, $country_id = -1, $zone_id = -1) {
-    $userAccount = &Session::getReference('userAccount');
+    global $userAccount;
     if ( ($country_id == -1) && ($zone_id == -1) ) {
       if ($userAccount->isLoggedIn() === false) {
         $country_id = sysConfig::get('STORE_COUNTRY');
@@ -427,26 +427,14 @@ function tep_get_all_get_params($exclude_array = '') {
 	->orderBy('r.tax_priority')
 	->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 
-	//echo 'ff'. $zone_id.$userAccount .'--'.$country_id;
-	  $taxes = 0;
-	  if (count($QtaxRates) > 0) {
-
-	  	foreach($QtaxRates as $trInfo) {
-
-			$taxes += $trInfo['tax_rate'];
+	 $taxes = 0;
+	 if (count($QtaxRates) > 0) {
+	    foreach($QtaxRates as $trInfo) {
+    		$taxes += $trInfo['tax_rate'];
 	 	}
 		return $taxes;
-	  }
-	  return $taxes;
-   /* if (tep_db_num_rows($tax_query)) {
-      $tax_multiplier = 1.0;
-      while ($tax = tep_db_fetch_array($tax_query)) {
-        $tax_multiplier *= 1.0 + ($tax['tax_rate'] / 100);
-      }
-      return ($tax_multiplier - 1.0) * 100;
-    } else {
-      return 0;
-    }*/
+	 }
+	 return $taxes;
   }
 
 ////
@@ -588,14 +576,14 @@ function tep_get_all_get_params($exclude_array = '') {
 		$cif = $address['entry_cif'];
 		$city_birth = $address['entry_city_birth'];
 		$state = $address['entry_state'];
+	    $country = '';
+	    $abbrstate = '';
 		if (isset($address['entry_country_id']) && tep_not_null($address['entry_country_id'])) {
 			$country = tep_get_country_name($address['entry_country_id']);
 
 			if (isset($address['entry_zone_id']) && tep_not_null($address['entry_zone_id'])) {
 				$abbrstate = tep_get_zone_code($address['entry_country_id'], $address['entry_zone_id'], $state);
 			}
-		} else {
-			$country = '';
 		}
 		$postcode = $address['entry_postcode'];
 

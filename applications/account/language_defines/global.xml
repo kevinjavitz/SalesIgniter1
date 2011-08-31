@@ -310,5 +310,10 @@
 	<define key="TEXT_REOPEN_TICKET"><![CDATA[Reopen Ticket]]></define>
 	<define key="TEXT_CONVERSATION"><![CDATA[<b>Conversation</b>]]></define>
 	<define key="TEXT_REPLY"><![CDATA[Reply]]></define>
-
+	<define key="CREDIT_CARD_NUMBER"><![CDATA[Credit Card Number]]></define>
+	<define key="CREDIT_CARD_EXPIRY"><![CDATA[Expiry Month / Year]]></define>
+	<define key="CREDIT_CARD_CVV"><![CDATA[CVV]]></define>
+	<define key="CREDIT_CARD_NUMBER_TEXT"><![CDATA[*]]></define>
+	<define key="CREDIT_CARD_EXPIRY_TEXT"><![CDATA[*]]></define>
+	<define key="CREDIT_CARD_CVV_TEXT"><![CDATA[*]]></define>
 </definitions>

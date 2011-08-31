@@ -38,6 +38,8 @@ class Extension_payPerRentals extends ExtensionBase {
 			'ApplicationTopAction_add_reservation_product',
 			'CouponEditPurchaseTypeBeforeOutput',
 			'CouponEditBeforeSave',
+			'ShoppingCartFind',
+			'ShoppingCartFindKey',
 			'UpdateTotalsCheckout',
 			'CouponsPurchaseTypeRestrictionCheck'
 		), null, $this);
@@ -100,11 +102,11 @@ class Extension_payPerRentals extends ExtensionBase {
 
 
 		$onePageCheckout->onePage['info']['reservationshipping'] = array(
-								'id'     => 'zonereservation_'.$quotes[0]['methods'][0]['id'],
+								'id'     => 'zonereservation_' .(isset($quotes[0]['methods'][0]['id'])?$quotes[0]['methods'][0]['id']:''),
 								'module' => 'zonereservation',
 								'method' => 'zonereservation',
-								'title'  => $quotes[0]['methods'][0]['title'],
-								'cost'   => $quotes[0]['methods'][0]['cost']
+								'title'  => isset($quotes[0]['methods'][0]['title'])?$quotes[0]['methods'][0]['title']:'',
+								'cost'   => isset($quotes[0]['methods'][0]['cost'])?$quotes[0]['methods'][0]['cost']:''
 		);
 	}
 	
@@ -294,6 +296,34 @@ class Extension_payPerRentals extends ExtensionBase {
 		tep_redirect(itw_app_link(null, 'shoppingCart', 'default'));
 	}
 
+	public function ShoppingCartFind(&$cartProduct, &$returnVal){
+
+		if($cartProduct->hasInfo('reservationInfo') && isset($_POST['start_date']) && isset($_POST['end_date'])){
+			    $pInfo = $cartProduct->getInfo('reservationInfo');
+				if(($pInfo['start_date'] == $_POST['start_date']) && ($pInfo['end_date'] == $_POST['end_date'])){
+					$returnVal = true;
+				}else{
+					$returnVal = false;
+				}
+		}
+
+	}
+
+	public function ShoppingCartFindKey($iProduct, &$cartProduct, &$returnVal){
+		if($cartProduct->hasInfo('reservationInfo')){
+			$returnVal = false;
+				if($iProduct->hasInfo('reservationInfo')){
+					$pInfo = $cartProduct->getInfo('reservationInfo');
+					$qInfo = $iProduct->getInfo('reservationInfo');
+					if(($pInfo['start_date'] == $qInfo['start_date']) && ($pInfo['end_date'] == $qInfo['end_date'])){
+						$returnVal = true;
+					}
+				}
+
+		}
+
+	}
+
 	public function OrderClassQueryFillProductArray(&$pInfo, &$product){
 		$Reservations = $pInfo['OrdersProductsReservation'];
 		if (sizeof($Reservations) > 0){
@@ -320,6 +350,9 @@ class Extension_payPerRentals extends ExtensionBase {
 				if (sysConfig::get('EXTENSION_PAY_PER_RENTALS_USE_EVENTS') == 'True'){
 					$product['reservationInfo']['event_date'] = $mainReservation['event_date'];
 				    $product['reservationInfo']['event_name'] = $mainReservation['event_name'];
+				    if (sysConfig::get('EXTENSION_PAY_PER_RENTALS_USE_GATES') == 'True'){
+					    $product['reservationInfo']['event_gate'] = $mainReservation['event_gate'];
+				    }
 			    }
 				$product['reservationInfo']['semester_name'] = $mainReservation['semester_name'];
 
@@ -349,6 +382,49 @@ class Extension_payPerRentals extends ExtensionBase {
 			'link'       => itw_app_link('appExt=payPerRentals','reservations_reports','default','SSL'),
 			'text' => 'Rental Inventory Report'
 		);
+	}
+
+	public function BeforeShowShippingOrderTotals(&$orderTotals){
+		global $ShoppingCart, $order, $userAccount;
+
+		if(sysConfig::get('EXTENSION_PAY_PER_RENTALS_SHOW_SHIPPING') == 'False' && isset($ShoppingCart)){
+			$shippingCost = 0;
+			foreach($ShoppingCart->getProducts() as $cartProduct){
+				$resInfo = $cartProduct->getInfo('reservationInfo');
+				if(isset($resInfo['shipping'])){
+					$shippingCost += $resInfo['shipping']['cost'];
+
+				}
+			}
+			$order->info['total'] += $shippingCost;
+			$addressBook =& $userAccount->plugins['addressBook'];
+			if ($addressBook->entryExists('delivery') === true){
+				$deliveryAddress = $addressBook->getAddress('delivery');
+			}else{
+				$deliveryAddress = $addressBook->getAddress('billing');
+			}
+			$module = OrderShippingModules::getModule('zonereservation');
+			$taxClassId = $module->getTaxClass();
+			if ($taxClassId > 0) {
+				$shipping_tax = tep_get_tax_rate($taxClassId, $deliveryAddress['entry_country_id'], $deliveryAddress['entry_zone_id']);
+				$shipping_tax_description = tep_get_tax_description($taxClassId, $deliveryAddress['entry_country_id'], $deliveryAddress['entry_zone_id']);
+			    //echo 'hh'.$shipping_tax.'--'.$shipping_tax_description;
+				$order->info['tax'] += tep_calculate_tax($shippingCost, $shipping_tax);
+				$order->info['tax_groups']["$shipping_tax_description"] += tep_calculate_tax($shippingCost, $shipping_tax);
+				$order->info['total'] += tep_calculate_tax($shippingCost, $shipping_tax);
+
+				if (sysConfig::get('DISPLAY_PRICE_WITH_TAX') == 'true'){
+					$shippingCost += tep_calculate_tax($shippingCost, $shipping_tax);
+				}
+			}
+			$orderTotals->addOutput(array(
+					'module' => 'zonereservation',
+					'method' => 'zonereservation',
+					'title'  =>  'Shipping:',
+					'text'   => $orderTotals->formatAmount($shippingCost),
+					'value'  => $shippingCost
+			));
+		}
 	}
 
 	public function ProductListingQueryBeforeExecute(&$Qproducts){
@@ -418,7 +494,11 @@ class Extension_payPerRentals extends ExtensionBase {
 				if (sysConfig::get('EXTENSION_PAY_PER_RENTALS_USE_EVENTS') == 'True' && sysConfig::get('EXTENSION_PAY_PER_RENTALS_SHOW_EVENT_EMAIL') == 'True'){
 					if (isset($Qorders[0]['OrdersProducts'][0]['OrdersProductsReservation'][0]['event_name'])){
 						$evInfo = ReservationUtilities::getEvent($Qorders[0]['OrdersProducts'][0]['OrdersProductsReservation'][0]['event_name']);
-						$emailEvent->setVar('event_description', $evInfo['events_details']);
+						$details = $evInfo['events_details'];
+						if(sysConfig::get('EXTENSION_PAY_PER_RENTALS_USE_GATES') == 'True'){
+							$details .= 'Event Gate: '. $Qorders[0]['OrdersProducts'][0]['OrdersProductsReservation'][0]['event_gate'];
+						}
+						$emailEvent->setVar('event_description', $details);
 					}
 				}
 				if (sysConfig::get('EXTENSION_PAY_PER_RENTALS_SHOW_TERMS_EMAIL') == 'True'){
@@ -438,6 +518,11 @@ class Extension_payPerRentals extends ExtensionBase {
 			if (sysConfig::get('EXTENSION_PAY_PER_RENTALS_USE_EVENTS') == 'True'){
 				$evInfo = ReservationUtilities::getEvent($QOrder[0]['OrdersProducts'][0]['OrdersProductsReservation'][0]['event_name']);
 				$htmlEventDetails = '<br/><br/><b>Event Details:</b><br/>' .  trim($evInfo['events_details']);
+				if (sysConfig::get('EXTENSION_PAY_PER_RENTALS_USE_GATES') == 'True'){
+					$htmlEventDetails .= '<br/><br/><b>Event Gate:</b><br/>' .  trim($QOrder[0]['OrdersProducts'][0]['OrdersProductsReservation'][0]['event_gate']);
+				}
+
+
 				$htmlTermsDetails = $QOrder[0]['terms'];
 			}
 

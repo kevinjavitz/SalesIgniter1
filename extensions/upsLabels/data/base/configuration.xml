@@ -1,0 +1,115 @@
+<ConfigurationGroup>
+	<title>upsLabels</title>
+	<key>upsLabels</key>
+	<description>Configuration Settings For The upsLabels Extension</description>
+	<Configuration>
+		<EXTENSION_UPSLABELS_ENABLED>
+			<title>Enable upsLabels</title>
+			<value>True</value>
+			<description>Enable Or Disable The upsLabels Extension</description>
+			<sort_order>1</sort_order>
+			<set_function>tep_cfg_select_option(array('True','False'),</set_function>
+		</EXTENSION_UPSLABELS_ENABLED>
+		<EXTENSION_UPSLABELS_SERVER>
+			<title>upsLabels server type</title>
+            <value>test</value>
+			<description>upsLabels server type.</description>
+			<sort_order>2</sort_order>
+            <set_function>tep_cfg_select_option(array('test','production'),</set_function>
+		</EXTENSION_UPSLABELS_SERVER>
+        <EXTENSION_UPSLABELS_ACCOUNT_NUMBER>
+			<title>upsLabels ACCOUNT NUMBER</title>
+            <value>364A1E</value>
+			<description>Enter the upsLabels account number</description>
+			<sort_order>2</sort_order>
+		</EXTENSION_UPSLABELS_ACCOUNT_NUMBER>
+        <EXTENSION_UPSLABELS_ACCESS_KEY>
+			<title>upsLabels access key</title>
+            <value>3C82EB206783E3F0</value>
+			<description>Enter the upsLabels access key</description>
+			<sort_order>2</sort_order>
+		</EXTENSION_UPSLABELS_ACCESS_KEY>
+		<EXTENSION_UPSLABELS_USERNAME>
+			<title>upsLabels username</title>
+			<value>kjavitz</value>
+			<description>Enter the upsLabels username</description>
+			<sort_order>2</sort_order>
+		</EXTENSION_UPSLABELS_USERNAME>
+		<EXTENSION_UPSLABELS_PASSWORD>
+			<title>upsLabels password</title>
+			<value>r1uCbd1g</value>
+			<description>Enter the upsLabels password</description>
+			<sort_order>2</sort_order>
+		</EXTENSION_UPSLABELS_PASSWORD>
+        <EXTENSION_UPSLABELS_WEIGHT>
+			<title>upsLabels Weight</title>
+            <value>LBS</value>
+			<description>upsLabels Weight.</description>
+			<sort_order>2</sort_order>
+            <set_function>tep_cfg_select_option(array('LBS','KGS'),</set_function>
+		</EXTENSION_UPSLABELS_WEIGHT>
+		<EXTENSION_UPSLABELS_PACKAGE_SIZE>
+			<title>upsLabels Package size measure</title>
+			<value>IN</value>
+			<description>upsLabels Package size.</description>
+			<sort_order>2</sort_order>
+			<set_function>tep_cfg_select_option(array('IN','CM'),</set_function>
+		</EXTENSION_UPSLABELS_PACKAGE_SIZE>
+		<EXTENSION_UPSLABELS_COMPANY_NAME>
+			<title>upsLabels Company Name</title>
+			<value>none</value>
+			<description>upsLabels Company name.</description>
+			<sort_order>2</sort_order>
+		</EXTENSION_UPSLABELS_COMPANY_NAME>
+		<EXTENSION_UPSLABELS_SHIPPER_NAME>
+			<title>upsLabels shipper name</title>
+			<value>none</value>
+			<description>upsLabels shipper name.</description>
+			<sort_order>2</sort_order>
+		</EXTENSION_UPSLABELS_SHIPPER_NAME>
+        <EXTENSION_UPSLABELS_ADDRESS1>
+			<title>upsLabels address1</title>
+            <value>NONE</value>
+			<description>Enter the first line of your ship from street address</description>
+			<sort_order>2</sort_order>
+		</EXTENSION_UPSLABELS_ADDRESS1>
+         <EXTENSION_UPSLABELS_ADDRESS2>
+			<title>upsLabels address2</title>
+            <value>NONE</value>
+			<description>Enter the second line of your ship from street address, leave set to NONE if you do not need to specify a second line</description>
+			<sort_order>2</sort_order>
+		</EXTENSION_UPSLABELS_ADDRESS2>
+        <EXTENSION_UPSLABELS_CITY>
+			<title>upsLabels CITY</title>
+            <value>NONE</value>
+			<description>Enter the city name for the ship from street address</description>
+			<sort_order>2</sort_order>
+		</EXTENSION_UPSLABELS_CITY>
+        <EXTENSION_UPSLABELS_STATE>
+			<title>upsLabels STATE</title>
+            <value>NONE</value>
+			<description>Enter the 2 letter state or province name for the ship from street address, required for Canada and US</description>
+			<sort_order>2</sort_order>
+		</EXTENSION_UPSLABELS_STATE>
+		<EXTENSION_UPSLABELS_COUNTRY>
+			<title>upsLabels COUNTRY</title>
+			<value>NONE</value>
+			<description>Enter the 2 letter COUNTRY</description>
+			<sort_order>2</sort_order>
+		</EXTENSION_UPSLABELS_COUNTRY>
+        <EXTENSION_UPSLABELS_POSTAL>
+			<title>upsLabels POSTAL CODE</title>
+            <value>NONE</value>
+			<description>Enter the postal code for the ship from street address</description>
+			<sort_order>2</sort_order>
+		</EXTENSION_UPSLABELS_POSTAL>
+        <EXTENSION_UPSLABELS_PHONE>
+			<title>upsLabels PHONE</title>
+            <value>NONE</value>
+			<description>Enter a contact phone number for your company</description>
+			<sort_order>2</sort_order>
+		</EXTENSION_UPSLABELS_PHONE>
+
+
+	</Configuration>
+</ConfigurationGroup>

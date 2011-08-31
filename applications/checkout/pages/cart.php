@@ -31,7 +31,7 @@
 			array('text' => $qty, 'align' => 'left'),
 			array('text' => $currencies->display_price($productPrice, $productTax), 'align' => 'right'),
 			array('text' => $currencies->display_price($productFinalPrice, $productTax, $productQuantity), 'align' => 'right'),
-			array('text' => '<a pID="'.$pID_string.'" type="'.$purchaseType.'" href="#" class="ui-icon ui-icon-closethick removeFromCart"></a>', 'align' => 'right')
+			array('text' => '<a pID="'.$cartProduct->getUniqID().'" type="'.$purchaseType.'" href="#" class="ui-icon ui-icon-closethick removeFromCart"></a>', 'align' => 'right')
 		);
 
 		EventManager::notify('ShoppingCartListingAddBodyColumn', &$productRows, $cartProduct);

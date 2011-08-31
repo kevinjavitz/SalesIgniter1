@@ -22,7 +22,7 @@
 
 	if (sysConfig::get('ACCOUNT_COMPANY') == 'true'){
 		$FormTable->addRow(sysLanguage::get('ENTRY_COMPANY'));
-		$FormTable->addRow(tep_draw_input_field('company'));
+		$FormTable->addRow(tep_draw_input_field('company').'&nbsp;'. ((sysConfig::get('ACCOUNT_COMPANY_REQUIRED') == 'true')?'<a style="display: inline-block;" tooltip="Input Required" class="ui-icon ui-icon-gear ui-icon-required"></a>':''));
 	}
 
 	$FormTable->addRow(sysLanguage::get('ENTRY_EMAIL_ADDRESS'));
@@ -30,11 +30,11 @@
 
 	if (sysConfig::get('ACCOUNT_GENDER') == 'true'){
 		$FormTable->addRow(sysLanguage::get('ENTRY_GENDER'));
-		$FormTable->addRow(tep_draw_radio_field('gender', 'm') . '&nbsp;&nbsp;' . sysLanguage::get('MALE') . '&nbsp;&nbsp;' . tep_draw_radio_field('gender', 'f') . '&nbsp;&nbsp;' . sysLanguage::get('FEMALE') . '&nbsp;' );
+		$FormTable->addRow(tep_draw_radio_field('gender', 'm', true) . '&nbsp;&nbsp;' . sysLanguage::get('MALE') . '&nbsp;&nbsp;' . tep_draw_radio_field('gender', 'f') . '&nbsp;&nbsp;' . sysLanguage::get('FEMALE') . '&nbsp;' . ((sysConfig::get('ACCOUNT_GENDER_REQUIRED') == 'true')?'<a style="display: inline-block;" tooltip="Input Required" class="ui-icon ui-icon-gear ui-icon-required"></a>':''));
 	}
 	if (sysConfig::get('ACCOUNT_DOB') == 'true'){
 		$FormTable->addRow(sysLanguage::get('ENTRY_DATE_OF_BIRTH'));
-		$FormTable->addRow(tep_draw_input_field('dob') . '&nbsp;');
+		$FormTable->addRow(tep_draw_input_field('dob') . '&nbsp;'. ((sysConfig::get('ACCOUNT_DOB_REQUIRED') == 'true')?'<a style="display: inline-block;" tooltip="Input Required" class="ui-icon ui-icon-gear ui-icon-required"></a>':''));
 	}
 
 	$FormTable->addRow(sysLanguage::get('ENTRY_FIRST_NAME'), sysLanguage::get('ENTRY_LAST_NAME'));
@@ -45,22 +45,22 @@
 
 	if (sysConfig::get('ACCOUNT_SUBURB') == 'true'){
 		$FormTable->addRow(sysLanguage::get('ENTRY_SUBURB'));
-		$FormTable->addRow(tep_draw_input_field('suburb') . '&nbsp;' . '<a style="display: inline-block;" tooltip="Input Required" class="ui-icon ui-icon-gear ui-icon-required"></a>');
+		$FormTable->addRow(tep_draw_input_field('suburb') . '&nbsp;' . ((sysConfig::get('ACCOUNT_SUBURB_REQUIRED') == 'true')?'<a style="display: inline-block;" tooltip="Input Required" class="ui-icon ui-icon-gear ui-icon-required"></a>':''));
 	}
 
-	if (sysConfig::get('ACCOUNT_FISCAL_CODE_REQUIRED') == 'true'){
+	if (sysConfig::get('ACCOUNT_FISCAL_CODE') == 'true'){
 		$FormTable->addRow(sysLanguage::get('ENTRY_FISCAL_CODE'));
-		$FormTable->addRow(tep_draw_input_field('fiscal_code') . '&nbsp;' . '<a style="display: inline-block;" tooltip="Input Required" class="ui-icon ui-icon-gear ui-icon-required"></a>');
+		$FormTable->addRow(tep_draw_input_field('fiscal_code') . '&nbsp;' . ((sysConfig::get('ACCOUNT_FISCAL_CODE_REQUIRED') == 'true')?'<a style="display: inline-block;" tooltip="Input Required" class="ui-icon ui-icon-gear ui-icon-required"></a>':''));
 	}
 
-	if (sysConfig::get('ACCOUNT_VAT_NUMBER_REQUIRED') == 'true'){
+	if (sysConfig::get('ACCOUNT_VAT_NUMBER') == 'true'){
 		$FormTable->addRow(sysLanguage::get('ENTRY_VAT_NUMBER'));
-		$FormTable->addRow(tep_draw_input_field('vat_number') . '&nbsp;' . '<a style="display: inline-block;" tooltip="Input Required" class="ui-icon ui-icon-gear ui-icon-required"></a>');
+		$FormTable->addRow(tep_draw_input_field('vat_number') . '&nbsp;' . ((sysConfig::get('ACCOUNT_VAT_NUMBER_REQUIRED') == 'true')?'<a style="display: inline-block;" tooltip="Input Required" class="ui-icon ui-icon-gear ui-icon-required"></a>':''));
 	}
 
-	if (sysConfig::get('ACCOUNT_CITY_BIRTH_REQUIRED') == 'true'){
+	if (sysConfig::get('ACCOUNT_CITY_BIRTH') == 'true'){
 		$FormTable->addRow(sysLanguage::get('ENTRY_CITY_BIRTH'));
-		$FormTable->addRow(tep_draw_input_field('city_birth'));
+		$FormTable->addRow(tep_draw_input_field('city_birth'). '&nbsp;' .((sysConfig::get('ACCOUNT_CITY_BIRTH_REQUIRED') == 'true')?'<a style="display: inline-block;" tooltip="Input Required" class="ui-icon ui-icon-gear ui-icon-required"></a>':''));
 	}
 
 	$FormTable->addRow(sysLanguage::get('ENTRY_CITY'));
@@ -68,7 +68,7 @@
 
 	if (sysConfig::get('ACCOUNT_STATE') == 'true'){
 		$FormTable->addRow(sysLanguage::get('ENTRY_STATE'));
-		$FormTable->addRow( tep_draw_input_field('state','','id="state"'). '<a style="display: inline-block;" tooltip="Input Required" class="ui-icon ui-icon-gear ui-icon-required"></a>');
+		$FormTable->addRow( tep_draw_input_field('state','','id="state"'). '&nbsp;' .((sysConfig::get('ACCOUNT_STATE_REQUIRED') == 'true')?'<a style="display: inline-block;" tooltip="Input Required" class="ui-icon ui-icon-gear ui-icon-required"></a>':''));
 	}
 
 	$FormTable->addRow(sysLanguage::get('ENTRY_POST_CODE'));
@@ -76,10 +76,10 @@
 
 	$FormTable->addRow(sysLanguage::get('ENTRY_COUNTRY'));
 	$FormTable->addRow(tep_get_country_list('country', sysLanguage::get('STORE_COUNTRY')) . '&nbsp;' . '<a style="display: inline-block;" tooltip="Input Required" class="ui-icon ui-icon-gear ui-icon-required"></a>');
-
-	$FormTable->addRow(sysLanguage::get('ENTRY_TELEPHONE_NUMBER'));
-	$FormTable->addRow(tep_draw_input_field('telephone') . '&nbsp;' . ((sysConfig::get('ACCOUNT_TELEPHONE_REQUIRED') == 'true')?'<a style="display: inline-block;" tooltip="Input Required" class="ui-icon ui-icon-gear ui-icon-required"></a>':''));
-
+    if (sysConfig::get('ACCOUNT_TELEPHONE') == 'true'){
+		$FormTable->addRow(sysLanguage::get('ENTRY_TELEPHONE_NUMBER'));
+		$FormTable->addRow(tep_draw_input_field('telephone') . '&nbsp;' . ((sysConfig::get('ACCOUNT_TELEPHONE_REQUIRED') == 'true')?'<a style="display: inline-block;" tooltip="Input Required" class="ui-icon ui-icon-gear ui-icon-required"></a>':''));
+    }
 	ob_start();
 
 	echo '<table border="0" width="100%" cellspacing="0" cellpadding="2">

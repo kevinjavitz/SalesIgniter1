@@ -464,7 +464,7 @@ class OrderPaymentPaypalipn extends StandardPaymentModule {
 		return $data;
 	}
 
-	function processPayment(){
+	function processPayment($orderID = null, $amount = null){
 		Session::remove('cart_PayPal_IPN_ID');
 		/*global $ShoppingCart;
 

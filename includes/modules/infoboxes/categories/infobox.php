@@ -22,11 +22,13 @@ class infoBoxCategories extends InfoBoxAbstract {
 	public function show(){
 		global $cPath, $cPath_array, $tree, $categoriesString, $current_category_id;
 
+		$boxWidgetProperties = $this->getWidgetProperties();
+
 		$Qcategories = Doctrine_Query::create()
 		->select('c.categories_id, cd.categories_name, c.parent_id')
 		->from('Categories c')
 		->leftJoin('c.CategoriesDescription cd')
-		->where('c.parent_id = ?', '0')
+		->where('c.parent_id = ?', $boxWidgetProperties->selected_category)
 		->andWhere('(c.categories_menu = "infobox" or c.categories_menu = "both")')
 		->andWhere('cd.language_id = ?', (int)Session::get('languages_id'))
 		->orderBy('c.sort_order, cd.categories_name');

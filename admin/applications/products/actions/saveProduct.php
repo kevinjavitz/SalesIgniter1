@@ -60,6 +60,8 @@
 
 	if(isset($_POST['rental_membership_enabled'])){
 		$Product->membership_enabled = implode(';',$_POST['rental_membership_enabled']);
+	} else {
+		$Product->membership_enabled = '';
 	}
 
 	/*

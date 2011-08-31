@@ -10,7 +10,8 @@
      <div id="main">
       <table width="75%" border="0">
        <tr>
-        <td width="75%"><form enctype="multipart/form-data" action="<?php echo itw_app_link('action=importProducts','data_manager','default');?>" method="post">
+        <td width="75%">
+	    <form enctype="multipart/form-data" action="<?php echo itw_app_link('action=importProducts','data_manager','default');?>" method="post">
         <div align="left">
           <p><b><?php echo sysLanguage::get('HEADING_UPLOAD_FILE');?></b></p>
            <INPUT TYPE="hidden" name="MAX_FILE_SIZE" value="100000000">

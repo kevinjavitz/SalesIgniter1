@@ -1,0 +1,14 @@
+<data>
+	<Orders>
+		<ups_ship_identification>
+			<type>string</type>
+			<length>999</length>
+			<collation>utf8_general_ci</collation>
+		</ups_ship_identification>
+		<ups_return_ship_identification>
+			<type>string</type>
+			<length>999</length>
+			<collation>utf8_general_ci</collation>
+		</ups_return_ship_identification>
+	</Orders>
+</data>

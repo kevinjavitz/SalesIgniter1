@@ -9,7 +9,7 @@
 					<td class="main"><?php echo sysLanguage::get('ENTRY_EMAIL_ADDRESS');?></td>
 					<td><?php
 						echo htmlBase::newElement('input')
-							->setType('email')
+							//->setType('email')
 							->setName('email_address')
 							->attr('required', '')
 							->css('width', '200px')

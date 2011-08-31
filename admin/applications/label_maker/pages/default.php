@@ -18,6 +18,11 @@
   </fieldset></td>
  </tr>
 </table>
+	<div class="" style="font-weight: bold; color:red;text-align: justify;margin-left:200px;">
+		Please check that your product barcodes are according with the barcode type choosed.<br/>
+		For Code128B, Code 39 Extended and QR is no need to check since most characters are allowed.<br/>
+		Code 25 and Code 25 Interleaved allow only numbers and Code 39 allow only numbers and uppercase chars.<br/>
+	</div>
 <div class="hideForPrint main" style="text-align:right;margin:.5em;"><?php
 	$selectBox = htmlBase::newElement('selectbox')
 	->setName('filter')

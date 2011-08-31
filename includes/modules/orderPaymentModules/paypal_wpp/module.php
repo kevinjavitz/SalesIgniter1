@@ -138,7 +138,7 @@
 			}
 		}
 
-		public function processPayment(){
+		public function processPayment($orderID = null, $amount = null){
 			global $order, $onePageCheckout;
 
 			$this->removeOrderOnFail = false;

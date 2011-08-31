@@ -1,6 +1,9 @@
 <?php
 	$html = '';
+	$html2  =  '';
  	$nr = 0;
+	$goodDates = '';
+	$selectedDates = array();
 	if(sysConfig::get('EXTENSION_PAY_PER_RENTALS_ENABLE_TIME') == 'True'){
 
 			$hours = $_POST['hstart'];
@@ -87,7 +90,6 @@
 	        }
 	}else if(sysConfig::get('EXTENSION_PAY_PER_RENTALS_USE_EVENTS') == 'True'){
 		if(isset($_POST['event']) && $_POST['event'] != 0){
-
 			//transform event date in start_date - end_date =start_date+1day
 			$event_duration = 1;//in days
 			$Qevent = Doctrine_Query::create()
@@ -103,8 +105,37 @@
 			Session::set('isppr_event_name', $Qevent->events_name);
 			Session::set('isppr_date_end', $ending_date);
 			Session::set('isppr_selected', true);
+
+			if(isset($_POST['multiple_dates'])){
+				Session::set('isppr_event_multiple_dates', $_POST['multiple_dates']);
+			}else{
+				if(Session::exists('isppr_event') && Session::get('isppr_event') != $_POST['event']){
+					Session::remove('isppr_event_multiple_dates');
+				}
+
+			}
 			Session::set('isppr_event', $_POST['event']);
 		}
+
+		if(isset($_POST['gate']) && isset($Qevent)){
+			if($_POST['gate'] == 0){
+				$_POST['gate'] = $Qevent->default_gate;
+			}
+			$Qgate = Doctrine_Query::create()
+			->from('PayPerRentalGates')
+			->where('gates_id = ?', $_POST['gate'])
+			->fetchOne();
+
+			Session::set('isppr_gate', $_POST['gate']);
+			Session::set('isppr_event_gate', $Qgate->gate_name);
+		}
+
+		if(isset($_POST['qty']) && !empty($_POST['qty']) && is_numeric($_POST['qty'])){
+			Session::set('isppr_product_qty', $_POST['qty']);
+		}else{
+			Session::set('isppr_product_qty', 1);
+		}
+
 	}else{
 		Session::set('isppr_selected', false);
 	}
@@ -156,37 +187,102 @@
 	}else{
 		if(sysConfig::get('EXTENSION_PAY_PER_RENTALS_USE_EVENTS') == 'True'){
 			//get all modules padding days and add to current day if is bigger than start date exclude
-
-			if (sysConfig::get('EXTENSION_PAY_PER_RENTALS_USE_UPS_RESERVATION') == 'False'){
-				$module = OrderShippingModules::getModule('zonereservation');
-			} else{
-				$module = OrderShippingModules::getModule('upsreservation');
-			}
 			$Qevent = Doctrine_Query::create()
 				->from('PayPerRentalEvents')
 				->where('events_id = ?', $_POST['event'])
 				->fetchOne();
-			$shippingArr = explode(',', $Qevent->shipping);
 
-
-			$html.='<option value="0">Select Level of Service</option>';
-			$nr = 0;
-			if(isset($module) && is_object($module)){
-				$quotes = $module->quote();
-				for($i=0, $n=sizeof($quotes['methods']); $i<$n; $i++){
-					$days = $quotes['methods'][$i]['days_before'];
-					$next_day = mktime(0,0,0,date("m"),date("d")+$days,date("Y"));
-					if ($next_day < strtotime($starting_date) && in_array($quotes['methods'][$i]['id'], $shippingArr)){
-						$html.='<option value="' . $quotes['methods'][$i]['id'] . '">' . $quotes['methods'][$i]['title'] . ' ('.$currencies->format($quotes['methods'][$i]['cost']).')</option>';
-						$nr++;
+			if($Qevent->events_days>1){
+				$myDates = '';
+				if(Session::exists('isppr_event_multiple_dates')){
+					$datesArr = Session::get('isppr_event_multiple_dates');
+					$selectedDates = $datesArr;
+					$myDates = '<div class="mydates">';
+					foreach($datesArr as $iDate){
+						$myDates .= '<input type="hidden" name="multiple_dates[]" value="'.$iDate.'">';
 					}
+					$myDates .= '</div>';
+				}
+				$html2 = '<div style="position:relative"><div class="myCalendar"></div> </div><div class="calDone">Hide Calendar</div>'.$myDates;
+				$startTimePadding = strtotime($Qevent->events_date);
+				$endTimePadding = strtotime('+' . $Qevent->events_days . ' days', $startTimePadding);
+				$booked = array();
+				while ($startTimePadding <= $endTimePadding) {
+					$dateFormatted = date('Y-n-j', $startTimePadding);
+					$booked[] = $dateFormatted;
+					$startTimePadding += 60 * 60 * 24;
+				}
+				$goodDates =  $booked;
+			}
+			if (sysConfig::get('EXTENSION_PAY_PER_RENTALS_USE_GATES') == 'False'){
+				if (sysConfig::get('EXTENSION_PAY_PER_RENTALS_USE_UPS_RESERVATION') == 'False'){
+					$module = OrderShippingModules::getModule('zonereservation');
+				} else{
+					$module = OrderShippingModules::getModule('upsreservation');
+				}
+				$shippingArr = explode(',', $Qevent->shipping);
+
+
+				$html.='<option value="0">Select Level of Service</option>';
+				$nr = 0;
+				if(isset($module) && is_object($module)){
+					$quotes = $module->quote();
+					for($i=0, $n=sizeof($quotes['methods']); $i<$n; $i++){
+						$days = $quotes['methods'][$i]['days_before'];
+						$next_day = mktime(0,0,0,date("m"),date("d")+$days,date("Y"));
+						if ($next_day < strtotime($starting_date) && in_array($quotes['methods'][$i]['id'], $shippingArr)){
+							if(Session::exists('isppr_shipping_method') && Session::get('isppr_shipping_method') == $quotes['methods'][$i]['id']){
+								$html.='<option selected="selected" value="' . $quotes['methods'][$i]['id'] . '">' . $quotes['methods'][$i]['title'] . ' ('.$currencies->format($quotes['methods'][$i]['cost']).')</option>';
+							}else{
+								$html.='<option value="' . $quotes['methods'][$i]['id'] . '">' . $quotes['methods'][$i]['title'] . ' ('.$currencies->format($quotes['methods'][$i]['cost']).')</option>';
+							}
+							$nr++;
+						}
+					}
+				}
+			}else{
+				$Qevent = Doctrine_Query::create()
+				->from('PayPerRentalEvents')
+				->where('events_id = ?', $_POST['event'])
+				->fetchOne();
+				$gatesArr = explode(',', $Qevent->gates);
+				$html .= '<option value="0">Autoselect Gate</option>';
+				$nr = 0;
+
+				$QGate =Doctrine_Query::create()
+				->from('PayPerRentalGates')
+				->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+
+				$defaultGate = $Qevent->default_gate;
+				foreach($QGate as $iGate){
+					if(in_array($iGate['gates_id'], $gatesArr)){
+						if(Session::exists('isppr_gate') && Session::get('isppr_gate') == $iGate['gates_id']){
+							$defaultGate = $iGate['gates_id'];
+							break;
+						}
+					}
+				}
+
+				foreach($QGate as $iGate){
+					if(in_array($iGate['gates_id'], $gatesArr)){
+						if($iGate['gates_id'] != $defaultGate){
+							$html .= '<option value="' . $iGate['gates_id'] . '">' . $iGate['gate_name'] .'</option>';
+						}else{
+							$html .= '<option value="' . $iGate['gates_id'] . '" selected="selected">' . $iGate['gate_name'] .'</option>';
+						}
+					}
+					$nr++;
+
 				}
 			}
 
 			EventManager::attachActionResponse(array(
 				'success' => true,
 				'nr'	=> $nr,
-				'data'     => $html
+				'data'     => $html,
+				'calendar' => $html2,
+				'selectedDates' => $selectedDates,
+				'goodDates' => $goodDates
 			), 'json');
 		}else{
 			//echo 'kk';
@@ -266,7 +362,10 @@
 				$html = ReservationUtilities::inventoryCenterAddon($isHome, true, false, false)->draw();
 				EventManager::attachActionResponse(array(
 					'success' => true,
-					'data'     => $html
+					'data'     => $html,
+					'calendar' => $html2,
+					'selectedDates' =>$selectedDates,
+					'goodDates' => $goodDates
 				), 'json');
 			}else{
 				if(isset($_POST['cPath']) && ($_POST['cPath'] != '-1')){

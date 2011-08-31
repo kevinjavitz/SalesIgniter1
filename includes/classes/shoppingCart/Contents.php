@@ -69,7 +69,7 @@
 			$purchaseType = $cartProduct->getPurchaseType();
 			$pInfo = $cartProduct->getInfo();
 			
-			$check = $this->findKey($pID_string, $purchaseType);
+			$check = $this->findProductAsKey($cartProduct, $purchaseType);
 			if ($check !== false){
 				$action = 'update';
 				$this->contents[$check] =& $cartProduct;
@@ -112,26 +112,54 @@
 		
 		public function &find($pID_string, $purchaseType = null){
 			foreach($this->contents as $cartProduct){
-				if ($cartProduct->getIdString() == $pID_string){
-					if (is_null($purchaseType)){
-						return $cartProduct;
-					}elseif ($cartProduct->getPurchaseType() == $purchaseType){
-						return $cartProduct;
+				if($cartProduct->getUniqID() == $pID_string){
+					return $cartProduct;
+				}
+			}
+			return false;
+		}
+
+		public function findProductAsKey($cartProduct, $purchaseType = false){
+			foreach($this->contents as $key => $iProduct){
+				if ($iProduct->getIdString() == $cartProduct->getIdString()){
+					if (($purchaseType == false)){
+						return $key;
+					}elseif ($iProduct->getPurchaseType() == $purchaseType){
+						$returnVal = true;
+						EventManager::notify('ShoppingCartFindKey', $iProduct, &$cartProduct, &$returnVal);
+						if($returnVal){
+							return $key;
+						}
 					}
 				}
 			}
-			$false = false;
-			return $false;
+			return false;
+
+		}
+
+		public function findProduct($pid, $purchaseType = false){
+
+			foreach($this->contents as $key => $iProduct){
+				if ($iProduct->getIdString() == $pid){
+					if (($purchaseType == false)){
+						return $iProduct;
+					}elseif ($iProduct->getPurchaseType() == $purchaseType){
+						$returnVal = true;
+						EventManager::notify('ShoppingCartFind', $iProduct, &$returnVal);
+						if($returnVal){
+							return $iProduct;
+						}
+					}
+				}
+			}
+			return false;
+
 		}
 		
 		private function findKey($pID_string, $purchaseType = false){
 			foreach($this->contents as $key => $cartProduct){
-				if ($cartProduct->getIdString() == $pID_string){
-					if ($purchaseType === false){
-						return $key;
-					}elseif ($cartProduct->getPurchaseType() == $purchaseType){
-						return $key;
-					}
+				if($cartProduct->getUniqID() == $pID_string){
+					return $key;
 				}
 			}
 			return false;

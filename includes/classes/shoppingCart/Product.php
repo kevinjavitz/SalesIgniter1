@@ -12,9 +12,9 @@
 
 	class ShoppingCartProduct implements Serializable {
 		private $pInfo = array();
-		
 		public function __construct($pInfo){
 			$this->productClass = new Product((int) $pInfo['id_string']);
+			$this->uniqID = $pInfo['uniqID'];
 			$this->purchaseTypeClass = $this->productClass->getPurchaseType($pInfo['purchase_type']);
 			$this->purchaseTypeClass->processAddToCart(&$pInfo);
 			
@@ -30,11 +30,15 @@
 		public function unserialize($data){
 			$this->pInfo = unserialize($data);
 		}
+
+		public function getUniqID(){
+			return $this->uniqID;
+		}
 		
 		public function init(){
 			$this->productClass = new Product((int) $this->pInfo['id_string']);
 			$this->purchaseTypeClass = $this->productClass->getPurchaseType($this->pInfo['purchase_type']);
-			
+			$this->uniqID = $this->pInfo['uniqID'];
 			if (isset($this->pInfo['aID_string'])){
 				$this->purchaseTypeClass->inventoryCls->invMethod->trackMethod->aID_string = $this->pInfo['aID_string'];
 			}

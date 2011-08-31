@@ -10,7 +10,7 @@ $(document).ready(function (){
                     url: js_app_link('app=account&appPage=create&action=getCountryZones'),
                     cache: false,
                     dataType: 'html',
-                    data: 'cID=' + $(this).val()+'&state_type='+stateType,
+                    data: 'cID=' + $(this).val()+'&state_type='+stateType+'&state='+$stateColumn.val(),
                     success: function (data){
                         removeAjaxLoader($stateColumn);
                         $('#'+stateType).replaceWith(data);

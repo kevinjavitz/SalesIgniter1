@@ -61,6 +61,17 @@
 				}
 			}
 			$genBarcode = $nameFix . '_' . $type . '_' . $numberString;
+			if(sysConfig::get('BARCODE_TYPE') == 'Code 39'){
+				$genBarcode = strtoupper($genBarcode);
+				$genBarcode = str_replace('_','-', $genBarcode);
+			}
+			if(sysConfig::get('BARCODE_TYPE') == 'Code 25' || sysConfig::get('BARCODE_TYPE') == 'Code 25 Interleaved'){
+				$genBarcode = strtotime(date('Y-m-d H:i:s')).$endNumber;
+				if(strlen($genBarcode) % 2 == 1){
+					$genBarcode = '0'.$genBarcode;
+				}
+
+			}
 			$endNumber++; 
 			
 			$Barcodes[$nextIndex]->barcode = $genBarcode;
@@ -90,20 +101,45 @@
 			->execute(array(), Doctrine::HYDRATE_ARRAY);
 			$json = array(
 				'success' => true,
-				'errorMsg' => 'This barcode already exsits under product "' . tep_get_products_name($Qproduct[0]['products_id']) . '"'
+				'errorMsg' => 'This barcode already exists under product "' . tep_get_products_name($Qproduct[0]['products_id']) . '"'
 			);
 		}else{
-			$Barcodes[$nextIndex]->barcode = $barcode;
-			$Barcodes[$nextIndex]->status = $status;
-			
-			/* ????Put in extension???? */
-			if (isset($aID_string)){
-				$Barcodes[$nextIndex]->attributes = $aID_string;
+			if(sysConfig::get('BARCODE_TYPE') == 'Code 39'){
+				if(preg_match('/[^0-9A-Z]/', $barcode)){
+					$json = array(
+						'success' => true,
+						'errorMsg' => 'This barcode is not Code 39'
+					);
+				}
+			}else
+			if(sysConfig::get('BARCODE_TYPE') == 'Code 25' || sysConfig::get('BARCODE_TYPE') == 'Code 25 Interleaved'){
+				if(preg_match('/[^0-9]/', $barcode)){
+					$json = array(
+						'success' => true,
+						'errorMsg' => 'This barcode is not Code 25 or code 25 Interleaved'
+					);
+				}
+				if(strlen($barcode) % 2 == 1 && sysConfig::get('BARCODE_TYPE') == 'Code 25 Interleaved'){
+					$json = array(
+						'success' => true,
+						'errorMsg' => 'This barcode is not Code 25 Interleaved'
+					);
+				}
+
 			}
-			
-			EventManager::notify('ProductBarcodeNewBeforeExecute', &$Barcodes[$nextIndex]);
-		
-			$newBarcodes[] = $nextIndex;
+			if(!isset($json['errorMsg'])){
+				$Barcodes[$nextIndex]->barcode = $barcode;
+				$Barcodes[$nextIndex]->status = $status;
+
+				/* ????Put in extension???? */
+				if (isset($aID_string)){
+					$Barcodes[$nextIndex]->attributes = $aID_string;
+				}
+
+				EventManager::notify('ProductBarcodeNewBeforeExecute', &$Barcodes[$nextIndex]);
+
+				$newBarcodes[] = $nextIndex;
+			}
 		}
 	}
 	$ProductsInventory->save();

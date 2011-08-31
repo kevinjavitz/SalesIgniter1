@@ -15,7 +15,7 @@
 									->fetchOne();
 					$pInfo['reservationInfo']['insurance'] = $payPerRentals->insurance;//getInsurance from db
 				}
-				$ShoppingCart->updateProduct($pID, $pInfo);
+				$ShoppingCart->updateProduct($cartProduct->getUniqID(), $pInfo);
 			}
 		}
 	}

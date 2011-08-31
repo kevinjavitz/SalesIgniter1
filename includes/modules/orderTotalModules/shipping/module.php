@@ -18,9 +18,8 @@ class OrderTotalShipping extends OrderTotalModule {
 	}
 
 	public function process() {
-		global $order, $shippingModules, $ShoppingCart, $onePageCheckout;
+		global $order, $shippingModules, $ShoppingCart, $onePageCheckout, $userAccount;
 
-		$userAccount = &Session::getReference('userAccount');
 		$addressBook = $userAccount->plugins['addressBook'];
 		if ($addressBook->entryExists('delivery') === true){
 			$deliveryAddress = $addressBook->getAddress('delivery');
@@ -30,9 +29,6 @@ class OrderTotalShipping extends OrderTotalModule {
 
 		if (is_object($onePageCheckout)){
 			$shippingInfo = $onePageCheckout->onePage['info']['shipping'];
-		}elseif (Session::exists('pointOfSale')){
-			$pointOfSale = &Session::getReference('pointOfSale');
-			$shippingInfo = $pointOfSale->order['info']['shipping'];
 		}
 
 		if (!empty($shippingInfo)){
@@ -40,7 +36,8 @@ class OrderTotalShipping extends OrderTotalModule {
 			$shippingModule = $shippingInfo['id'];
 			$shippingTitle = $shippingInfo['title'];
 		}
-		
+
+		EventManager::notify('BeforeShowShippingOrderTotals', &$this);
 		if (isset($shippingTitle)){
 			if ($this->allowFreeShipping == 'True') {
 				switch ($this->freeShipDestination) {
@@ -72,8 +69,8 @@ class OrderTotalShipping extends OrderTotalModule {
 
 			$taxClassId = $module->getTaxClass();
 			if ($taxClassId > 0) {
-				$shipping_tax = tep_get_tax_rate($taxClassId, $deliveryAddress['country_id'], $deliveryAddress['zone_id']);
-				$shipping_tax_description = tep_get_tax_description($taxClassId, $deliveryAddress['country_id'], $deliveryAddress['zone_id']);
+				$shipping_tax = tep_get_tax_rate($taxClassId, $deliveryAddress['entry_country_id'], $deliveryAddress['entry_zone_id']);
+				$shipping_tax_description = tep_get_tax_description($taxClassId, $deliveryAddress['entry_country_id'], $deliveryAddress['entry_zone_id']);
 
 				$order->info['tax'] += tep_calculate_tax($shippingCost, $shipping_tax);
 				$order->info['tax_groups']["$shipping_tax_description"] += tep_calculate_tax($shippingCost, $shipping_tax);

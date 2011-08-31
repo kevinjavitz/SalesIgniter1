@@ -23,6 +23,10 @@
 
 	}
 
+	if(isset($_GET['select_newletter'])){
+		$Qcustomers->andWhere('customers_newsletter = ?', '1');
+	}
+
 	EventManager::notify('CustomersListingQueryBeforeExecute', &$Qcustomers);
 
 	$tableGrid = htmlBase::newElement('newGrid')
@@ -39,6 +43,7 @@
 	));
 
 	$tableGridHeader = array(
+		array('text' => sysLanguage::get('TABLE_HEADING_SELECT')),
 		array('text' => sysLanguage::get('TABLE_HEADING_CUSTOMERS_ID')),
 		array('text' => sysLanguage::get('TABLE_HEADING_LASTNAME')),
 		array('text' => sysLanguage::get('TABLE_HEADING_FIRSTNAME')),
@@ -59,18 +64,25 @@
 		foreach($customers as $customer){
 			$customerId = $customer['customers_id'];
 
+			$htmlCheckbox = htmlBase::newElement('checkbox')
+				->setName('selectedCustomer[]')
+				->addClass('selectedCustomer')
+				->setValue($customerId);
+
 			if ((!isset($_GET['cID']) || $_GET['cID'] == $customerId) && !isset($cInfo)){
 				$cInfo = new objectInfo($customer);
-
-				$Qreviews = Doctrine_Query::create()
-				->select('count(*) as number_of_reviews')
-				->from('Reviews')
-				->where('customers_id = ?', (int)$customerId)
-				->execute()->toArray();
-				if (!$Qreviews){
-					$cInfo->number_of_reviews = 0;
-				}else{
-					$cInfo->number_of_reviews = (int)$Qreviews[0]['number_of_reviews'];
+				$cInfo->number_of_reviews = 0;
+				if(sysConfig::exists('EXTENSION_REVIEWS_ENABLED') && sysConfig::get('EXTENSION_REVIEWS_ENABLED') == 'True'){
+					$Qreviews = Doctrine_Query::create()
+					->select('count(*) as number_of_reviews')
+					->from('Reviews')
+					->where('customers_id = ?', (int)$customerId)
+					->execute()->toArray();
+					if (!$Qreviews){
+						$cInfo->number_of_reviews = 0;
+					}else{
+						$cInfo->number_of_reviews = (int)$Qreviews[0]['number_of_reviews'];
+					}
 				}
 			}
 
@@ -113,6 +125,7 @@
 			}
 
 			$tableGridBody = array(
+				array('text' => $htmlCheckbox->draw()),
 				array('text' => $customer['customers_id']),
 				array('text' => $customer['customers_lastname']),
 				array('text' => $customer['customers_firstname']),
@@ -129,7 +142,7 @@
 				'rowAttr' => array(
 					'data-customer_id'    => $customerId,
 					'data-customer_email' => $customer['customers_email_address'],
-					'data-has_orders'     => ($Qorders[0]['total'] > 0 ? 'true' : 'false')
+					'data-has_customers'     => ($Qorders[0]['total'] > 0 ? 'true' : 'false')
 				),
 				'columns' => $tableGridBody
 			));
@@ -236,16 +249,108 @@
 	     if (isset($_GET['search'])){
 		     $searchField->setValue($_GET['search']);
 	     }
+	     $selectNewsLetter = htmlBase::newElement('checkbox')
+		     ->setName('select_newletter')
+		     ->setId('selectNewsLetter')
+		     ->setLabel('Select NewsLetter')
+		     ->setLabelPosition('after');
 	     $searchForm->append($pageLimit);
+	     $searchForm->append($selectNewsLetter);
 	     $searchForm->append($searchField);
 	     echo $searchForm->draw();
+
+
+
+	     $htmlSelectAll = htmlBase::newElement('checkbox')
+		     ->setName('select_all')
+		     ->setId('selectAllCustomers')
+		     ->setLabel('Select All')
+		     ->setLabelPosition('after');
+
+
+	     $htmlSelectFieldsButton = '<a href="#" id="showFields"><img src="'.sysConfig::getDirWsCatalog().'images/addbut.png"/></a>';
+
+	     $htmlSelectFieldsDiv = htmlBase::newElement('div')
+		     ->css(array(
+			     'margin-top' => '.5em'
+		     ))
+		     ->attr('id','csvFieldsTable');
+
+	     $fieldsArray =	array(
+		     'v_customers_id',
+		     'v_customers_gender',
+		     'v_customers_firstname',
+		     'v_customers_lastname',
+		     'v_customers_dob',
+		     'v_customers_email_address',
+		     'v_customers_telephone',
+		     'v_customers_fax',
+		     'v_customers_newsletter',
+		     'v_customers_addressbook_firstname',
+		     'v_customers_addressbook_company',
+		     'v_customers_addressbook_lastname',
+		     'v_customers_addressbook_gender',
+		     'v_customers_addressbook_address',
+		     'v_customers_addressbook_city',
+		     'v_customers_addressbook_state',
+		     'v_customers_addressbook_country',
+		     'v_customers_addressbook_postcode'
+
+	     );
+
+	     EventManager::notify('AdminCustomersListingExportFields', &$fieldsArray);
+
+	     $i = 1;
+	     $fieldsTable = htmlBase::newElement('table')
+		     ->setCellSpacing(0)
+		     ->setCellPadding(1);
+
+	     $fieldsTable->addHeaderRow(array(
+			     'columns' => array(
+				     array('colspan' => 5, 'text' => 'Uncheck to exclude from export')
+			     )
+		     ));
+	     foreach($fieldsArray as $field){
+		     $br = htmlBase::newElement('br');
+		     $fieldName = explode('_', $field);
+		     unset($fieldName[0]);
+		     $fieldName = ucwords(implode(' ',$fieldName));
+
+		     $fieldCheckbox = htmlBase::newElement('checkbox')
+			     ->setName($field)
+			     ->setChecked(true)
+			     ->setLabel($fieldName)
+			     ->setLabelPosition('after');
+
+		     $columns[] = array('text' => $fieldCheckbox->draw());
+		     if (sizeof($columns) == 5){
+			     $fieldsTable->addBodyRow(array(
+					     'columns' => $columns
+				     ));
+			     $columns = array();
+		     }
+	     }
+	     if (sizeof($columns) > 0){
+		     $fieldsTable->addBodyRow(array(
+				     'columns' => $columns
+			     ));
+	     }
+	     $htmlSelectFieldsDiv->append($fieldsTable);
+
+
+	     $csvButton = htmlBase::newElement('button')
+		     ->setType('submit')
+		     ->usePreset('save')
+		     ->setText('Save CSV');
 	     ?>
      </td>
     </tr>
    </table></td>
   </tr>
  </table>
+<form action="<?php echo itw_app_link('action=exportCustomers','customers','default');?>" method="post">
  <div style="width:100%;float:left;">
+	 <div style="margin-left:30px;display:block;"><?php echo $htmlSelectAll->draw();?></div>
   <div class="ui-widget ui-widget-content ui-corner-all" style="width:99%;margin-right:5px;margin-left:5px;">
    <div style="width:99%;margin:5px;"><?php echo $tableGrid->draw();?></div>
   </div>
@@ -262,3 +367,10 @@ if (isset($_GET['search']) && tep_not_null($_GET['search'])) {
 }
 ?>
  </div>
+<?php
+		echo $htmlSelectFieldsDiv->draw();
+echo $htmlSelectFieldsButton;
+echo $csvButton->draw();
+EventManager::notify('AdminCustomersAfterTableDraw');
+?>
+</form>

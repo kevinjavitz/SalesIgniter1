@@ -454,6 +454,7 @@ require(sysConfig::getDirFsCatalog() . 'includes/classes/htmlBase.php');
 					}
 
 					$customerCanRent = $rentalQueue->rentalAllowed($userAccount->getCustomerId());
+					$membership =& $userAccount->plugins['membership'];
 					if ($customerCanRent !== true){
 						switch($customerCanRent){
 							case 'membership':
@@ -466,6 +467,10 @@ require(sysConfig::getDirFsCatalog() . 'includes/classes/htmlBase.php');
 							case 'inactive':
 								$errorMsg = sprintf(sysLanguage::get('TEXT_NOT_ACTIVE_CUSTOMER'), itw_app_link('checkoutType=rental','checkout','default','SSL'));
 								break;
+							case 'pastdue':
+								$errorMsg = sprintf(sysLanguage::get('RENTAL_CUSTOMER_IS_PAST_DUE'), itw_app_link((isset($membership)?'edit='.$membership->getRentalAddressId():''),'account','billing_address_book','SSL'));//
+								break;
+
 						}
 						$messageStack->addSession('pageStack', $errorMsg, 'warning');
 						tep_redirect(itw_app_link(tep_get_all_get_params(array('action')), 'product', 'info'));
@@ -500,6 +505,8 @@ require(sysConfig::getDirFsCatalog() . 'includes/classes/htmlBase.php');
 						$rentalQueue->addBoxSet((int)$pID);
 						tep_redirect( itw_app_link(tep_get_all_get_params($parameters),'rentals','queue'));
 					}else{
+						$membership =& $userAccount->plugins['membership'];
+
 						switch($customerCanRent){
 							case 'membership':
 								if (Session::exists('account_action') === true){
@@ -510,6 +517,9 @@ require(sysConfig::getDirFsCatalog() . 'includes/classes/htmlBase.php');
 								break;
 							case 'inactive':
 								$errorMsg = sprintf(sysLanguage::get('TEXT_NOT_ACTIVE_CUSTOMER'), itw_app_link('checkoutType=rental','checkout','default','SSL'));
+								break;
+							case 'pastdue':
+								$errorMsg = sprintf(sysLanguage::get('RENTAL_CUSTOMER_IS_PAST_DUE'), itw_app_link((isset($membership)?'edit='.$membership->getRentalAddressId():''),'account','billing_address_book','SSL'));//
 								break;
 						}
 						$messageStack->addSession('pageStack', $errorMsg, 'warning');
