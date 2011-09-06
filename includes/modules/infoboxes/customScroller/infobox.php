@@ -98,7 +98,7 @@ abstract class InfoBoxCustomScrollerAbstract
 		return $ListContainer;
 	}
 
-	public function getQueryResults($queryType, $queryLimit) {
+	public function getQueryResults($queryType, $queryLimit) {				
 		$Query = Doctrine_Query::create()
 			->select('p.products_id, p.products_image, pd.products_name')
 			->from('Products p')
@@ -134,13 +134,16 @@ abstract class InfoBoxCustomScrollerAbstract
 				EventManager::notify('ScrollerSpecialsQueryBeforeExecute', &$Query);
 				break;
 			case 'related':
+				global $current_product_id;				
 				EventManager::notify('ScrollerRelatedQueryBeforeExecute', &$Query);
 				break;
 			case 'category':
-				if (Session::exists('current_category_id')){
+				global $current_category_id;
+				
+				if ($current_category_id>0){
 					$Query->leftJoin('p.ProductsToCategories p2c')
 						->leftJoin('p2c.Categories c')
-						->andWhere('c.parent_id = ?', Session::get('current_category_id'));
+						->andWhere('c.parent_id = ? OR p2c.categories_id= ?', array($current_category_id, $current_category_id));
 				}
 
 				EventManager::notify('ScrollerCategoryQueryBeforeExecute', &$Query);
@@ -166,15 +169,18 @@ class InfoBoxCustomScrollerStack extends InfoBoxCustomScrollerAbstract
 			$PrevButton = $this->buildPrevButton($cInfo->prev_image);
 			$NextButton = $this->buildNextButton($cInfo->next_image);
 			$Results = $this->getQueryResults($cInfo->query, $cInfo->query_limit);
-			$ProductsList = $this->buildList($Results, $cInfo);
+			
+			if (!empty($Results)) {
+				$ProductsList = $this->buildList($Results, $cInfo);
 
-			$Scoller = htmlBase::newElement('div')
-				->addClass('scrollBoxStacked')
-				->append($PrevButton)
-				->append($ProductsList)
-				->append($NextButton);
+				$Scoller = htmlBase::newElement('div')
+					->addClass('scrollBoxStacked')
+					->append($PrevButton)
+					->append($ProductsList)
+					->append($NextButton);
 
-			$ScrollInterface->append($Scoller);
+				$ScrollInterface->append($Scoller);
+			}
 		}
 
 		return $ScrollInterface->draw();

@@ -82,6 +82,14 @@
 	->setValue('1')
 	->setChecked(false);
 	
+	$showTabCheckbox = htmlBase::newElement('checkbox')
+	->setId('showOnTab_' . $windowAction)
+	->setName('show_on_tab')
+	->setLabel('<b>' . sysLanguage::get('ENTRY_SHOW_ON_TAB') . '</b>')
+	->setLabelPosition('after')
+	->setValue('1')
+	->setChecked(false);	
+	
 	$showListingCheckbox = htmlBase::newElement('checkbox')
 	->setId('showOnSite_' . $windowAction)
 	->setName('show_on_listing')
@@ -128,6 +136,9 @@
 
 		$showSiteCheckbox->setId('showOnSite_' . $Field['field_id'] . $windowAction)
 		->setChecked(($Field['show_on_site'] == '1'));
+		
+		$showTabCheckbox->setId('showOnTab_' . $Field['field_id'] . $windowAction)
+		->setChecked(($Field['show_on_tab'] == '1'));
 
 		$showListingCheckbox->setId('showOnListing_' . $Field['field_id'] . $windowAction)
 		->setChecked(($Field['show_on_listing'] == '1'));
@@ -178,6 +189,10 @@
 	$finalTable->addBodyRow(array('columns' => array(
 		array('addCls' => 'main', 'text' => $showSiteCheckbox)
 	)));
+
+	$finalTable->addBodyRow(array('columns' => array(
+		array('addCls' => 'main', 'text' => $showTabCheckbox)
+	)));		
 	
 	$finalTable->addBodyRow(array('columns' => array(
 		array('addCls' => 'main', 'text' => $showListingCheckbox)

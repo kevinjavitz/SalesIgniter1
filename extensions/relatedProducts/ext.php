@@ -24,8 +24,21 @@ class Extension_relatedProducts extends ExtensionBase {
 			'ShoppingCartAfterListing',
 			'ProductInfoTabHeader',
 			'ProductInfoAfterPurchaseTypes',
-			'ProductInfoTabBody'
+			'ProductInfoTabBody',
+			'ScrollerRelatedQueryBeforeExecute'
 		), null, $this);
+	}
+	
+	public function ScrollerRelatedQueryBeforeExecute(&$Query)
+	{
+		global $product;
+		
+		if ($product!==null) {			
+			$productsArr = explode(',', $product->productInfo['related_products']);
+			$Query->where('products_status=1')
+				->andWhereIn('products_id', $productsArr)
+				->limit((int)sysConfig::get('EXTENSION_RELATED_PRODUCTS_DISPLAY_NUMBER'));
+		}
 	}
 
 	public function getListing($relatedProducts){
