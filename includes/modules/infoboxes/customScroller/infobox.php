@@ -461,24 +461,74 @@ class InfoBoxCustomScroller extends InfoBoxAbstract
 
 
 					var listOffset = 0;
-					$PrevButton.click(function (){
-						if (listOffset == 0) return;
 
-						listOffset += $ListContainer.outerWidth();
-						$ListContainer.find('ul').animate({
-							left: listOffset
-						});
-					});
+					
+					function scrollPrev(){
+						if (listOffset == 0) return false;
 
-					$NextButton.click(function (){
-						if ((listOffset - $ListContainer.outerWidth()) <= $Scroller.data('maxOffset')) return;
+							listOffset += $ListContainer.outerWidth();
+							$ListContainer.find('ul').animate({
+								left: listOffset
+							});
+							
+						return true;
+					}
+					
+					function scrollNext(){
+						if ((listOffset - $ListContainer.outerWidth()) <= $Scroller.data('maxOffset')) return false;
 
 						listOffset -= $ListContainer.outerWidth();
 
 						$ListContainer.find('ul').animate({
 							left: listOffset
 						});
+						
+						return true;
+					}
+					
+
+					$PrevButton.click(function (){
+						scrollPrev();
 					});
+					
+					$NextButton.click(function (){
+						scrollNext();
+					});					
+					
+					//Autoscroll
+					var autoScrollNext = true;									
+					
+					function scroll(){
+						if (autoScrollNext===true) {
+							if (!scrollNext()) {
+								autoScrollNext = false;
+							}
+						} 
+						
+						
+						if (!autoScrollNext) {
+							if (!scrollPrev()) {
+								autoScrollNext = true;
+								scrollNext();
+							}
+						}
+						
+					}
+					
+					var autoscroll = true;
+					if (autoscroll===true) {
+						var itervalId = setInterval(scroll, 10000);
+						$Scroller.hover(
+							function(){
+								clearInterval(itervalId);
+							}, 
+
+							function() {
+								itervalId = setInterval(scroll, 10000);
+							}
+						);
+					}										
+					
 				});
 				$Container.trigger('containerReady');
 			});
