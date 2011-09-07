@@ -38,6 +38,9 @@ class Extension_relatedProducts extends ExtensionBase {
 			$Query->where('products_status=1')
 				->andWhereIn('products_id', $productsArr)
 				->limit((int)sysConfig::get('EXTENSION_RELATED_PRODUCTS_DISPLAY_NUMBER'));
+		} else {
+			//Force empty result (related products can only show if we're browsing some product)
+			$Query->where('0');
 		}
 	}
 

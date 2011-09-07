@@ -434,27 +434,14 @@ class InfoBoxCustomScroller extends InfoBoxAbstract
 					$ListContainer.width(ListWidth + 'px');
 
 					var maxOffset;
-					var blockWidth = parseInt($ListContainer.find('.scrollBlock').first().outerWidth(true));
-					if (blockWidth > 0){
-						ListWidth = $ListContainer.innerWidth();
-						var blocks = 0;
-						var totalBlockWidth = 0;
-						while(totalBlockWidth < ListWidth){
-							totalBlockWidth += blockWidth;
-							if (totalBlockWidth < ListWidth){
-								if ((totalBlockWidth + blockWidth) <= ListWidth){
-									blocks++;
-								}
-								if (blocks >= $ListContainer.find('.scrollBlock').size()){
-									break;
-								}
-							}
-						}
+					
+					//Calculate actual width of scroll elements
+					var blocksWidth = 0;
+					$ListContainer.find('.scrollerList li').each(function(){
+						blocksWidth += $(this).outerWidth(true);
+					});
+					$Scroller.data('maxOffset', -blocksWidth);
 
-						blockWidth = (ListWidth / blocks);
-						$ListContainer.find('.scrollBlock').width(blockWidth);
-						$Scroller.data('maxOffset', -($ListContainer.find('.scrollBlock').size() * blockWidth));
-					}
 					$ListContainer.find('.scrollerReflectImage').reflect();
 
 					$Scroller.trigger('scrollerReady');
@@ -474,8 +461,8 @@ class InfoBoxCustomScroller extends InfoBoxAbstract
 						return true;
 					}
 					
-					function scrollNext(){
-						if ((listOffset - $ListContainer.outerWidth()) <= $Scroller.data('maxOffset')) return false;
+					function scrollNext(){					
+						if ((listOffset - $ListContainer.outerWidth()) < $Scroller.data('maxOffset')) return false;
 
 						listOffset -= $ListContainer.outerWidth();
 
@@ -515,16 +502,17 @@ class InfoBoxCustomScroller extends InfoBoxAbstract
 						
 					}
 					
-					var autoscroll = true;
-					if (autoscroll===true) {
-						var itervalId = setInterval(scroll, 10000);
+					var autoscroll_interval = 10000;
+					
+					if (autoscroll_interval>0) {
+						var itervalId = setInterval(scroll, autoscroll_interval);
 						$Scroller.hover(
 							function(){
 								clearInterval(itervalId);
 							}, 
 
 							function() {
-								itervalId = setInterval(scroll, 10000);
+								itervalId = setInterval(scroll, autoscroll_interval);
 							}
 						);
 					}										
