@@ -1,0 +1,60 @@
+<configurations>
+	<configuration>
+		<title><![CDATA[Enable Valitor Module]]></title>
+		<key><![CDATA[MODULE_PAYMENT_VALITOR_STATUS]]></key>
+		<value><![CDATA[True]]></value>
+		<description><![CDATA[Do you want to accept Valitor payments?]]></description>
+		<sort_order>1</sort_order>
+		<set_function><![CDATA[tep_cfg_select_option(array('True', 'False'),]]></set_function>
+	</configuration>
+	<configuration>
+		<title><![CDATA[Sort order of display]]></title>
+		<key><![CDATA[MODULE_PAYMENT_VALITOR_SORT_ORDER]]></key>
+		<value><![CDATA[0]]></value>
+		<description><![CDATA[Sort order of display. Lowest is displayed first.]]></description>
+		<sort_order>2</sort_order>
+	</configuration>
+
+
+	<configuration>
+		<title><![CDATA[Gateway URL]]></title>
+		<key><![CDATA[MODULE_PAYMENT_VALITOR_GATEWAY_URL]]></key>
+		<value><![CDATA[https://testgreidslugatt.valitor.is/greidslugatt.asmx/FramkvaemaAdgerd]]></value>
+		<description><![CDATA[Gateway URL]]></description>
+		<sort_order>3</sort_order>
+	</configuration>
+	
+	<configuration>
+		<title><![CDATA[POSTermID]]></title>
+		<key><![CDATA[MODULE_PAYMENT_VALITOR_POSTermID]]></key>
+		<value><![CDATA[5]]></value>
+		<description><![CDATA[POSTermID]]></description>
+		<sort_order>4</sort_order>
+	</configuration>
+	
+	<configuration>
+		<title><![CDATA[Login Username]]></title>
+		<key><![CDATA[MODULE_PAYMENT_VALITOR_USERNAME]]></key>
+		<value><![CDATA[visatest]]></value>
+		<description><![CDATA[The login username used for the Valitor service]]></description>
+		<sort_order>5</sort_order>
+	</configuration>
+	
+	<configuration>
+		<title><![CDATA[PASSWORD]]></title>
+		<key><![CDATA[MODULE_PAYMENT_VALITOR_PASSWORD]]></key>
+		<value><![CDATA[visatest123]]></value>
+		<description><![CDATA[Password used for the Valitor service]]></description>
+		<sort_order>6</sort_order>
+	</configuration>
+		
+	<configuration>
+		<title><![CDATA[Accepted Credit Cards]]></title>
+		<key><![CDATA[MODULE_PAYMENT_VALITOR_ACCEPTED_CC]]></key>
+		<value><![CDATA[Visa, Mastercard]]></value>
+		<description><![CDATA[The credit cards you currently accept]]></description>
+		<sort_order>7</sort_order>
+		<set_function><![CDATA[tep_cfg_select_multioption(array('Visa','Mastercard','Amex','Discover'),]]></set_function>
+	</configuration>
+
+</configurations>

@@ -9,6 +9,7 @@
 	<define key="ENTRY_GROUP_NAME"><![CDATA[Group Name: ]]></define>
 	<define key="ENTRY_FIELD_NAME"><![CDATA[Field Name: ]]></define>
 	<define key="ENTRY_SHOW_ON_SITE"><![CDATA[ Show On Product Info]]></define>
+	<define key="ENTRY_SHOW_ON_TAB"><![CDATA[ Show On Tab]]></define>
 	<define key="ENTRY_SHOW_ON_PRODUCT_LISTING"><![CDATA[ Show On Product Listing]]></define>
 	<define key="ENTRY_SHOW_NAME_ON_PRODUCT_LISTING"><![CDATA[ Show Name On Product Listing]]></define>
 	<define key="ENTRY_SHOW_ON_LABELS"><![CDATA[ Show On PDF Labels]]></define>

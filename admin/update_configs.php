@@ -40,7 +40,7 @@ function add_extra_fields($table, $column, $column_attr = 'VARCHAR(255) NULL'){
 	}
 
 	if(!$exists){
-		mysql_query("ALTER TABLE `$table` ADD `$column`  $column_attr");
+		mysql_query("ALTER TABLE `$table` ADD `$column`  $column_attr") or die("An error occured when running \n ALTER TABLE `$table` ADD `$column`  $column_attr \n" . mysql_error());
 	}
 
 }
@@ -124,7 +124,8 @@ function addStatus($status_name) {
 	->orderBy('s.orders_status_id')
 	->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 	if (count($Qstatus) <= 0) {
-		$Status = new OrdersStatus();
+        $Status = new OrdersStatus();
+
 		$Description = $Status->OrdersStatusDescription;
 		foreach (sysLanguage::getLanguages() as $lInfo) {
 			$Description[$lInfo['id']]->language_id = $lInfo['id'];
@@ -152,8 +153,8 @@ addStatus('Shipped');
 
 
 add_extra_fields('modules_shipping_zone_reservation_methods','weight_rates','TEXT NULL');
-add_extra_fields('modules_shipping_zone_reservation_methods','min_rental_number','INTEGER 0');
-add_extra_fields('modules_shipping_zone_reservation_methods','min_rental_type','INTEGER 0');
+add_extra_fields('modules_shipping_zone_reservation_methods','min_rental_number'," INT( 1 ) NOT NULL DEFAULT  '0'");
+add_extra_fields('modules_shipping_zone_reservation_methods','min_rental_type'," INT( 1 ) NOT NULL DEFAULT  '0'");
 
 
 //update bannerManger

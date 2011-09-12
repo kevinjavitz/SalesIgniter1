@@ -3,6 +3,7 @@ require(sysConfig::getDirFsCatalog() . 'includes/classes/template.php');
 $thisApp = $App->getAppName();
 $thisAppPage = $App->getAppPage() . '.php';
 $thisExtension = (isset($_GET['appExt']) ? $_GET['appExt'] : '');
+$thisTemplate = Session::get('tplDir');
 
 $layoutPath = sysConfig::getDirFsCatalog() . 'extensions/templateManager/mainFiles';
 if (file_exists(sysConfig::getDirFsCatalog() . 'templates/' . Session::get('tplDir') . '/layout.tpl')){

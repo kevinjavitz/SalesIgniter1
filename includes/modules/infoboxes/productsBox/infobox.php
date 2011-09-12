@@ -25,10 +25,14 @@ class InfoBoxProductsBox extends InfoBoxAbstract {
 
 		$cInfo = $boxWidgetProperties->config;
 		$Results = $this->getQueryResults($cInfo->query, $cInfo->query_limit);
-		$ProductsList = $this->buildList($Results, $cInfo);
 		
-		$this->setBoxContent($ProductsList->draw());
-		return $this->draw();
+		if (!empty($Results)) {
+			$ProductsList = $this->buildList($Results, $cInfo);		
+			$this->setBoxContent($ProductsList->draw());
+			return $this->draw();
+		} else {
+			return '';
+		}
 	}
 	
 	public function buildList($products, $cInfo){
