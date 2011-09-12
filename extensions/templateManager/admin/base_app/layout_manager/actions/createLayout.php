@@ -100,7 +100,7 @@ foreach($Reset as $rInfo){
 				unset($layouts[$idx]);
 			}
 
-			if ($id = ''){
+			if ($id == ''){
 				unset($layouts[$idx]);
 			}
 		}

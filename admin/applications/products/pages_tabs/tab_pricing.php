@@ -17,6 +17,7 @@
  		'new' => 'New',
  		'used' => 'Used',
  		'stream' => 'Streaming',
+         'member_stream' => sysLanguage::get('TEXT_STREAMING_MEMBERSHIP'),
  		'download' => 'Download',
  		'rental' => 'Member Rental'
  	);
@@ -45,7 +46,7 @@
 			                             array('text' => $productTypeEnabled->draw())
 		                             )
 		                        ));
-		if($pricingTypeName !== 'rental'){
+        if($pricingTypeName !== 'rental' && $pricingTypeName !== 'member_stream'){
 			$inputNet = htmlBase::newElement('input')->addClass('netPricing');
 			$inputGross = htmlBase::newElement('input')->addClass('grossPricing');
 			if ($pricingTypeName == 'new'){
