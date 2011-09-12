@@ -33,11 +33,13 @@
 		}
 		
 		$contents = EventManager::notifyWithReturn('ProductInfoBeforeInfo', &$product);
+		
 		if (!empty($contents)){
 			foreach($contents as $content){
 				$pageContents .= $content;
 			}
 		}
+		
 
 		$pageContents .= '<div id="tabs"><ul>';
 		$pageContents .= '<li><a href="#tabImage"><span>'.sysLanguage::get('TAB_OVERVIEW').'</span></a></li>';

@@ -29,6 +29,8 @@ class Extension_customFields extends ExtensionBase {
 			'ProductSearchQueryBeforeExecute',
 			'AdvancedSearchAddSearchFields',
 			'SearchBoxAddGuidedOptions',
+			'ProductInfoTabHeader',
+			'ProductInfoTabBody'
 		), null, $this);
 
 		if ($appExtension->isAdmin()){
@@ -37,6 +39,45 @@ class Extension_customFields extends ExtensionBase {
 		if ($appExtension->isCatalog()){
 			EventManager::attachEvent('ProductListingQueryBeforeExecute', null, $this);
 		}
+	}
+	
+	public function ProductInfoTabHeader(&$product){
+			//Add tabs for custom fields:
+
+			$Query = $this->_getFieldsQuery(array(
+				'product_id' => $product->productInfo['products_id'],
+				'language_id' => Session::get('languages_id'),
+				'show_on_tab' => true,
+			));
+			$groups = $Query->execute()->toArray(true);
+		
+			$return = '';
+			$groups_content = array();			
+			foreach($groups as $groupInfo){
+				$fieldsToGroups = $groupInfo['ProductsCustomFieldsToGroups'];
+				foreach($fieldsToGroups as $fieldToGroup){
+					if (!empty($fieldToGroup['ProductsCustomFields']['ProductsCustomFieldsToProducts'][0]['value'])) {
+						$name = $fieldToGroup['ProductsCustomFields']['ProductsCustomFieldsDescription'][Session::get('languages_id')]['field_name'];					
+						$return .= '<li><a href="#tab'.$name.'"><span>' . $name . '</span></a></li>';										
+						$groups_content['tab'.$name] = $fieldToGroup['ProductsCustomFields']['ProductsCustomFieldsToProducts'][0]['value'];
+					}
+				}
+			}			
+			$product->custom_tabs_content = $groups_content;
+
+			return $return;
+	}	
+	
+	function ProductInfoTabBody(&$product)
+	{			
+		$return = '';
+		if (!empty($product->custom_tabs_content)) {
+			foreach ($product->custom_tabs_content as $tabName=>$tabContent) {
+			    $return .= '<div id="'.$tabName.'">' . $tabContent . '</div>';
+			}
+		}
+		
+		return $return;
 	}
 	
 	public function SearchBoxAddGuidedOptions(&$boxContent, $fieldId){
@@ -272,7 +313,8 @@ class Extension_customFields extends ExtensionBase {
 		}
 	}
 
-	public function getFields($pId = null, $languageId = null, $shownOnProductInfo = false, $shownOnLabels = false, $shownOnListing = false){
+	protected function _getFieldsQuery($settings=array())
+	{
 		$Query = Doctrine_Query::create()
 		->select('g.group_name, f.*, fd.field_name, f2p.value, f2g.sort_order')
 		->from('ProductsCustomFieldsGroups g')
@@ -284,28 +326,51 @@ class Extension_customFields extends ExtensionBase {
 		->where('fd.field_name is not null')
 		->orderBy('f2g.sort_order');
 		
-		if (is_null($pId) === false){
-			$Query->andWhere('f2p.product_id = ?', (int)$pId)
-			->andWhere('g2p.product_id = ?', (int)$pId);
+		if (!empty($settings['product_id'])){
+			$Query->andWhere('f2p.product_id = ?', (int)$settings['product_id'])
+			->andWhere('g2p.product_id = ?', (int)$settings['product_id']);
 		}
 		
-		if ($shownOnProductInfo === true){
-			$Query->andWhere('f.show_on_site = ?', '1');
+		if (!empty($settings['group_id'])){
+			$Query->andWhere('g.group_id = ?', (int)$settings['group_id']);
+		}		
+		
+		if (isset($settings['show_on_site']) && $settings['show_on_site']===true){
+			$Query->andWhere('f.show_on_site = 1');
 		}
 		
-		if ($shownOnLabels === true){
-			$Query->andWhere('f.show_on_labels = ?', '1');
+		if (isset($settings['show_on_tab']) && $settings['show_on_tab']===true){
+			$Query->andWhere('f.show_on_tab = 1');
 		}
 		
-		if ($shownOnListing === true){
-			$Query->andWhere('f.show_on_listing = ?', '1');
+		if (isset($settings['show_on_labels']) && $settings['show_on_labels']===true){
+			$Query->andWhere('f.show_on_labels = 1');
 		}
 		
-		if (is_null($languageId) === false){
-			$Query->andWhere('fd.language_id = ?', (int)$languageId);
+		if (isset($settings['show_on_listing']) && $settings['show_on_listing']===true){
+			$Query->andWhere('f.show_on_listing = 1');
 		}
+		
+		if (!empty($settings['language_id'])){
+			$Query->andWhere('fd.language_id = ?', (int)$settings['language_id']);
+		}
+
+		return $Query;
+	}
+	
+	public function getFields($pId = null, $languageId = null, $shownOnProductInfo = false, $shownOnLabels = false, $shownOnListing = false, $groupId=null){
+	    
+		$Query = $this->_getFieldsQuery(array(
+		    'product_id' => $pId,
+		    'group_id' => $groupId,
+		    'language_id' => $languageId,
+		    'show_on_site' => $shownOnProductInfo,
+		    'show_on_labels' => $shownOnLabels,
+		    'show_on_listing' => $shownOnListing
+		));
 		
 		$Result = $Query->execute()->toArray(true);
+		
 		return $Result;
 	}
 	
@@ -318,7 +383,13 @@ class Extension_customFields extends ExtensionBase {
 		->setCellPadding(3)
 		->setCellSpacing(0);
 
-		$groups = $this->getFields($productInfo['products_id'], Session::get('languages_id'), true, false, false);
+		$Query = $this->_getFieldsQuery(array(
+			'product_id' => $productInfo['products_id'],
+			'language_id' => Session::get('languages_id'),
+			'show_on_site' => true,
+		));
+		$groups = $Query->execute()->toArray(true);
+		
 		foreach($groups as $groupInfo){
 			$fieldsToGroups = $groupInfo['ProductsCustomFieldsToGroups'];
 			foreach($fieldsToGroups as $fieldToGroup){
@@ -364,7 +435,7 @@ class Extension_customFields extends ExtensionBase {
 		}
 		return $table->draw();
 	}
-	
+
 	public function CustomProductInfoGetFields(&$product){
 		$productInfo = $product->productInfo;
 

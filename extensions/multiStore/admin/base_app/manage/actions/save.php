@@ -21,6 +21,8 @@
 	$Store->stores_ssl_domain = $_POST['stores_ssl_domain'];
 	$Store->stores_email = $_POST['stores_email'];
 	$Store->stores_template = $_POST['stores_template'];
+	$Store->stores_zip = $_POST['stores_zip'];
+	$Store->stores_location = $_POST['stores_location'];
 
 /* Auto Upgrade ( Version 1.0 to 1.1 ) --BEGIN-- */
 				$Store->stores_owner = $_POST['stores_owner'];
