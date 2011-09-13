@@ -21,6 +21,22 @@
 	if ($Configuration !== false){
 		$Configuration->configuration_value = $configurationValue;
 		$Configuration->save();
+        if($Configuration->configuration_key == 'CFG_SORT_IGNORE_WORDS'){
+            $findString = array($configurationValue);
+            if(strstr($configurationValue,',') !== false){
+                $findString = explode(',',$configurationValue);
+            }
+
+            $allProducts = Doctrine_Query::create()
+                    ->from('ProductsDescription')
+                    ->fetchArray();
+            foreach($allProducts as $currentProduct) {
+                $currentProductSave = Doctrine_Core::getTable('ProductsDescription')->findOneByProductsDescriptionId($currentProduct['products_description_id']);
+                $currentProductSave->products_sname = trim(strtolower(str_ireplace($findString,'', $currentProduct['products_sname'])));
+
+                $currentProductSave->save();
+            }
+        }
 	}else{
 		$messageStack->addSession('Configuration not found by id=' . $configurationId);
 	}

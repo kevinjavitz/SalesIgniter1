@@ -4,7 +4,7 @@ class productListing_productsName {
 	public function sortColumns(){
 		$selectSortKeys = array(
 								array(
-									'value' => 'pd.products_name',
+									'value' => 'pd.products_sname',
 									'name'  => sysLanguage::get('PRODUCT_LISTING_NAME')
 								)
 		);
