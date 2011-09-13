@@ -218,6 +218,8 @@ a.productListingRowPagerLink:hover { text-decoration:none; }
 .pageContent { margin:.2em; }
 .pageButtonBar { text-align:right; padding:.3em; margin-top:.5em; }
 .ui-dialog .ui-dialog-buttonpane button {padding: 5px;}
+a.readMore, a.readMore:link, a.readMore:visited, a.readMore:active {color: #c40000; text-decoration: underline; font-weight: bold; }
+a.readMore:hover{color: black;}
 <?php
  /*
 	 * @TODO: Move to pay per rentals infobox buildStylesheet function
