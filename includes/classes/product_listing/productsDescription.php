@@ -12,7 +12,7 @@ class productListing_productsDescription {
     }
 
     public function show(&$productClass){
-        return implode(' ', array_slice(str_word_count($productClass->getDescription(), 1), 0, 50)) . ' <a class="readMore" href="' . itw_app_link('products_id=' . $productClass->getID(), 'product', 'info') . '">Read More</a>';
+        return implode(' ', array_slice(str_word_count(strip_tags($productClass->getDescription()), 1), 0, 50)) . ' <a class="readMore" href="' . itw_app_link('products_id=' . $productClass->getID(), 'product', 'info') . '">Read More</a>';
     }
 }
 ?>
