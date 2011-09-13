@@ -145,6 +145,49 @@ if($EmailTemplatesVariableCheck == false)
 	$Variable->email_templates_id = '17';
 	$Variable->save();
 }
+
+function addEmailTemplateVariables($variableName,$event, $is_conditional = 0, $condition_check = ''){
+    $emailTemplates = Doctrine_Core::getTable('EmailTemplates')->findOneByEmailTemplatesEvent($event);
+    if($emailTemplates){
+        $EmailTemplatesVariables = Doctrine_Core::getTable('EmailTemplatesVariables');
+        $EmailTemplatesVariableCheck = $EmailTemplatesVariables->findOneByEmailTemplatesIdAndEventVariable($emailTemplates->email_templates_id,$variableName);
+        if(!$EmailTemplatesVariableCheck){
+            $emailTemplatesVariable = new EmailTemplatesVariables();
+            $emailTemplatesVariable->email_templates_id = $emailTemplates->email_templates_id;
+            $emailTemplatesVariable->event_variable = $variableName;
+            $emailTemplatesVariable->is_conditional = $is_conditional;
+            $emailTemplatesVariable->condition_check = $condition_check;
+            $emailTemplatesVariable->save();
+        }
+    }
+}
+
+addEmailTemplateVariables('customerFirstName','membership_activated_admin');
+addEmailTemplateVariables('customerLastName','membership_activated_admin');
+addEmailTemplateVariables('currentPlanPackageName','membership_activated_admin');
+addEmailTemplateVariables('currentPlanMembershipDays','membership_activated_admin');
+addEmailTemplateVariables('currentPlanNumberOfTitles','membership_activated_admin');
+addEmailTemplateVariables('currentPlanFreeTrial','membership_activated_admin');
+addEmailTemplateVariables('currentPlanPrice','membership_activated_admin');
+addEmailTemplateVariables('previousPlanPackageName','membership_activated_admin');
+addEmailTemplateVariables('previousPlanMembershipDays','membership_activated_admin',1);
+addEmailTemplateVariables('previousPlanNumberOfTitles','membership_activated_admin');
+addEmailTemplateVariables('previousPlanFreeTrial','membership_activated_admin');
+addEmailTemplateVariables('previousPlanPrice','membership_activated_admin');
+
+addEmailTemplateVariables('customerFirstName','membership_upgraded_admin');
+addEmailTemplateVariables('customerLastName','membership_upgraded_admin');
+addEmailTemplateVariables('currentPlanPackageName','membership_upgraded_admin');
+addEmailTemplateVariables('currentPlanMembershipDays','membership_upgraded_admin');
+addEmailTemplateVariables('currentPlanNumberOfTitles','membership_upgraded_admin');
+addEmailTemplateVariables('currentPlanFreeTrial','membership_upgraded_admin');
+addEmailTemplateVariables('currentPlanPrice','membership_upgraded_admin');
+addEmailTemplateVariables('previousPlanPackageName','membership_upgraded_admin');
+addEmailTemplateVariables('previousPlanMembershipDays','membership_upgraded_admin',1);
+addEmailTemplateVariables('previousPlanNumberOfTitles','membership_upgraded_admin');
+addEmailTemplateVariables('previousPlanFreeTrial','membership_upgraded_admin');
+addEmailTemplateVariables('previousPlanPrice','membership_upgraded_admin');
+
 addStatus('Waiting Confirmation');
 addStatus('Cancelled');
 addStatus('Approved');
