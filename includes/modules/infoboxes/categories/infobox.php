@@ -28,7 +28,7 @@ class infoBoxCategories extends InfoBoxAbstract {
 		->select('c.categories_id, cd.categories_name, c.parent_id')
 		->from('Categories c')
 		->leftJoin('c.CategoriesDescription cd')
-		->where('c.parent_id = ?', $boxWidgetProperties->selected_category)
+		->where('c.parent_id = ?', ((int)$boxWidgetProperties->selected_category > 0) ? $boxWidgetProperties->selected_category : 0)
 		->andWhere('(c.categories_menu = "infobox" or c.categories_menu = "both")')
 		->andWhere('cd.language_id = ?', (int)Session::get('languages_id'))
 		->orderBy('c.sort_order, cd.categories_name');
