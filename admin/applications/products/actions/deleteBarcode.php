@@ -12,12 +12,14 @@
 				'errorMsg' => sysLanguage::get('TEXT_BARCODE_PURCHASED')
 			);
 		}else{
-			$Qproducts = Doctrine_Query::create()
-			->from('ProductsInventoryBarcodes pib')
-			->leftJoin('pib.OrdersProductsReservation opr')
-			->where('pib.barcode_id=?', $_GET['bID'])
-			->andWhere('opr.start_date >= ?', date('Y-m-d'))
-			->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+            $QproductsRaw = Doctrine_Query::create()
+                    ->from('ProductsInventoryBarcodes pib')
+                    ->where('pib.barcode_id=?', $_GET['bID'])
+                    ->andWhere('opr.start_date >= ?', date('Y-m-d'));
+            if(sysConfig::get('EXTENSION_PAY_PER_RENTALS_ENABLED') == 'True') {
+                $QproductsRaw->leftJoin('pib.OrdersProductsReservation opr');
+            }
+            $Qproducts = $QproductsRaw->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 
 			if(count($Qproducts) > 0){
 				$response = array(
