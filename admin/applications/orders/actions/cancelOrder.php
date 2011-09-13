@@ -4,7 +4,6 @@
 	->from('Orders o')
 	->leftJoin('o.OrdersAddresses oa')
 	->leftJoin('o.OrdersProducts op')
-	->leftJoin('op.OrdersProductsReservation opr')
 	->leftJoin('opr.ProductsInventoryBarcodes ib')
 	->leftJoin('ib.ProductsInventory ibi')
 	->leftJoin('opr.ProductsInventoryQuantity iq')
@@ -12,6 +11,9 @@
 	->where('o.orders_id = ?', $oID)
 	->andWhere('oa.address_type = ?', 'customer')
 	->andWhere('parent_id IS NULL');
+    if(sysConfig::get('EXTENSION_PAY_PER_RENTALS_ENABLED') == 'True') {
+        $QOrdersQuery->leftJoin('op.OrdersProductsReservation opr');
+    }
 
 	$Qorders = $QOrdersQuery->execute();
 	foreach ($Qorders as $oInfo) {
