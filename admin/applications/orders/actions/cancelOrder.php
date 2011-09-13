@@ -4,25 +4,28 @@
 	->from('Orders o')
 	->leftJoin('o.OrdersAddresses oa')
 	->leftJoin('o.OrdersProducts op')
-	->leftJoin('opr.ProductsInventoryBarcodes ib')
+	->leftJoin('op.ProductsInventoryBarcodes ib')
 	->leftJoin('ib.ProductsInventory ibi')
-	->leftJoin('opr.ProductsInventoryQuantity iq')
+	->leftJoin('op.ProductsInventoryQuantity iq')
 	->leftJoin('iq.ProductsInventory iqi')
 	->where('o.orders_id = ?', $oID)
-	->andWhere('oa.address_type = ?', 'customer')
-	->andWhere('parent_id IS NULL');
+	->andWhere('oa.address_type = ?', 'customer');
     if(sysConfig::get('EXTENSION_PAY_PER_RENTALS_ENABLED') == 'True') {
-        $QOrdersQuery->leftJoin('op.OrdersProductsReservation opr');
+        $QOrdersQuery->leftJoin('op.OrdersProductsReservation opr')
+                ->andWhere('parent_id IS NULL');
     }
 
 	$Qorders = $QOrdersQuery->execute();
 	foreach ($Qorders as $oInfo) {
 		foreach ($oInfo->OrdersProducts as $opInfo) {
 			$productClass = new product($opInfo['products_id']);
-			$purchaseClass = $productClass->getPurchaseType($opInfo['purchase_type']); //what happens for rental
-			$trackMethod = $purchaseClass->getTrackMethod();
-			$invItems = $purchaseClass->getInventoryItems();
-			if ($opInfo['purchase_type'] == 'new ' || $opInfo['purchase_type'] == 'used') {
+
+            if ($opInfo['purchase_type'] !== 'membership') {
+                $purchaseClass = $productClass->getPurchaseType($opInfo['purchase_type']); //what happens for rental
+                $trackMethod = $purchaseClass->getTrackMethod();
+                $invItems = $purchaseClass->getInventoryItems();
+            }
+			if ($opInfo['purchase_type'] == 'new' || $opInfo['purchase_type'] == 'used') {
 				if (!empty($opInfo['barcode_id']) && $trackMethod == 'barcode') {
 					$ProductInventoryBarcodes = Doctrine_Core::getTable('ProductsInventoryBarcodes')->findOneByBarcodeId($opInfo['barcode_id']);
 					$ProductInventoryBarcodes->status = 'A';
