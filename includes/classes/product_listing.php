@@ -231,9 +231,9 @@ class productListing {
 		
 			if (isset($_GET['starts_with']) && !empty($_GET['starts_with'])){
 				if ($_GET['starts_with'] == 'num'){
-					$this->query->andWhere('pd.products_name LIKE "0%" OR pd.products_name LIKE "1%" OR pd.products_name LIKE "2%" OR pd.products_name LIKE "3%" OR pd.products_name LIKE "4%" OR pd.products_name LIKE "5%" OR pd.products_name LIKE "6%" OR pd.products_name LIKE "7%" OR pd.products_name LIKE "8%" OR pd.products_name LIKE "9%" OR pd.products_name LIKE "#%"');
+					$this->query->andWhere('pd.products_sname LIKE "0%" OR pd.products_sname LIKE "1%" OR pd.products_sname LIKE "2%" OR pd.products_sname LIKE "3%" OR pd.products_sname LIKE "4%" OR pd.products_sname LIKE "5%" OR pd.products_sname LIKE "6%" OR pd.products_sname LIKE "7%" OR pd.products_sname LIKE "8%" OR pd.products_sname LIKE "9%" OR pd.products_sname LIKE "#%"');
 				}else{
-					$this->query->andWhere('pd.products_name LIKE ?', $_GET['starts_with'] . '%');
+					$this->query->andWhere('pd.products_sname LIKE ?', $_GET['starts_with'] . '%');
 				}
 			}
 		}
