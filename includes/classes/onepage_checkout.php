@@ -248,6 +248,9 @@ class osC_onePageCheckout {
 
 	public function loadMembershipPlan(){
 		global $order;
+
+        	$order->info['tax'] = 0;
+        	$order->info['tax_groups'] = false;
 		
 		$userAccount = &$this->getUserAccount();
 		$addressBook =& $userAccount->plugins['addressBook'];
