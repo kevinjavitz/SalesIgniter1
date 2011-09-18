@@ -29,6 +29,7 @@ class Extension_customFields extends ExtensionBase {
 			'ProductSearchQueryBeforeExecute',
 			'AdvancedSearchAddSearchFields',
 			'SearchBoxAddGuidedOptions',
+            'ProductListingFilterBarDraw'
 		), null, $this);
 
 		if ($appExtension->isAdmin()){
@@ -38,6 +39,68 @@ class Extension_customFields extends ExtensionBase {
 			EventManager::attachEvent('ProductListingQueryBeforeExecute', null, $this);
 		}
 	}
+    public function ProductListingFilterBarDraw(&$listingTable, &$listingData){
+        $table = htmlBase::newElement('table')
+                ->setCellPadding(3)
+                ->setCellSpacing(0);
+        $groups = $this->getFields(null, Session::get('languages_id'), false, false, true);
+        echo '<!--';
+        print_r($groups);
+        echo '-->';
+        foreach($groups as $groupInfo){
+            $fieldsToGroups = $groupInfo['ProductsCustomFieldsToGroups'];
+            foreach($fieldsToGroups as $fieldToGroup){
+                if ($fieldToGroup['ProductsCustomFields']['show_name_on_listing'] == '1'){
+                    $name = $fieldToGroup['ProductsCustomFields']['ProductsCustomFieldsDescription'][Session::get('languages_id')]['field_name'] . ': ';
+                }else{
+                    $name = '';
+                }
+                $value = $fieldToGroup['ProductsCustomFields']['ProductsCustomFieldsToProducts'][0]['value'];
+                $inputType = $fieldToGroup['ProductsCustomFields']['input_type'];
+                $searchKey = $fieldToGroup['ProductsCustomFields']['search_key'];
+
+                $fieldValue = $value;
+                if ($inputType == 'upload'){
+                    $fieldValue = htmlBase::newElement('a')
+                            ->setHref(itw_app_link('appExt=customFields&filename=' . $value, 'simpleDownload', 'default'))
+                            ->attr('target', '_blank')
+                            ->text('<u>' . $value . '</u>')
+                            ->draw();
+                }else {
+                    $values = $fieldToGroup['ProductsCustomFields']['ProductsCustomFieldsToProducts'];
+                    if (sizeof($values) > 0){
+                        $fieldValues = array();
+                        foreach($values as $val){
+                            $thisVal = array($val['value']);
+                            if(stristr($val['value'], ';'))
+                                $thisVal = explode(';',$val['value']);
+                            foreach($thisVal as $finalVal) {
+                                $searchLink = htmlBase::newElement('a')
+                                        ->setHref(itw_app_link($searchKey . '[]=' . trim($finalVal), 'products', 'search_result'))
+                                        ->text('<u>' . trim($finalVal) . '</u>');
+
+                                $fieldValues[] = $searchLink->draw();
+                            }
+
+                        }
+                        $fieldValue = implode(', ', $fieldValues);
+                    }
+                }
+
+                $table->addBodyRow(array(
+                                        'columns' => array(
+                                            array('text' => '<b>' . $name . '</b>'),
+                                            array('text' => $fieldValue)
+                                        )
+                                   ));
+            }
+        }
+        $listingTable->addBodyRow(array(
+                             'columns' => array(
+                                 array('text' => $table->draw())
+                             )
+                        ));
+    }
 	
 	public function SearchBoxAddGuidedOptions(&$boxContent, $fieldId){
 		$searchItemDisplay = 4;
@@ -194,7 +257,7 @@ class Extension_customFields extends ExtensionBase {
 	 * Searches on all field/value pairs
 	 */
 	public function ProductSearchQueryBeforeExecute(&$Qproducts){
-		//echo '<pre>';print_r($this->validSearchKeys);
+
 
 		$Qcheck = Doctrine_Query::create()
 			->select('search_key')
@@ -205,16 +268,22 @@ class Extension_customFields extends ExtensionBase {
 			->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 		if ($Qcheck && sizeof($Qcheck) > 0){
 			foreach($Qcheck as $cInfo){
-				$this->validSearchKeys[$cInfo['search_key']] = $_GET['keywords'];
+                if((isset($_GET['keywords']) && !empty($_GET['keywords'])) || (isset($_GET[$cInfo['search_key']]) && !empty($_GET[$cInfo['search_key']]))){
+                    $this->validSearchKeys[$cInfo['search_key']] = (isset($_GET['keywords']) && !empty($_GET['keywords'])) ? $_GET['keywords'] : $_GET[$cInfo['search_key']];
+                }
 			}
 		}
+        //echo '<pre>';print_r($this->validSearchKeys);
+        //print_r($Qcheck);
 
 
 		if (isset($this->validSearchKeys) && sizeof($this->validSearchKeys) > 0){
+
 			$fieldsSearch = array();
 			$i = 1;
 			$j = 1;
 			foreach($this->validSearchKeys as $k => $v){
+                if(empty($v))   continue;
 				if ($k == 'field_val'){
 					$fieldsSearch[] = '(SELECT count(*) FROM ProductsCustomFieldsToProducts f2p' . $i . ' LEFT JOIN f2p' . $i . '.ProductsCustomFields f' . $j . ' WHERE f' . $j . '.field_id = "' . $this->validSearchKeys['field_id'] . '" AND f2p' . $i . '.value LIKE "%' . str_replace('.', '%', $v) . '%") > 0';
 					$i++;$j++;
@@ -232,9 +301,10 @@ class Extension_customFields extends ExtensionBase {
 					$i++;$j++;
 				}
 			}
+            //print_r($fieldsSearch);
 			$Qproducts->leftJoin('p.ProductsCustomFieldsToProducts f2p')
 			->leftJoin('f2p.ProductsCustomFields f')
-			->orWhere('((' . implode(') OR (', $fieldsSearch) . '))');
+			->andWhere('((' . implode(') OR (', $fieldsSearch) . '))');
 		}
 	}
 
@@ -261,7 +331,7 @@ class Extension_customFields extends ExtensionBase {
 	                $i = 0;
 				foreach($QChecked as $customField){
 					$Qproducts->leftJoin('p.ProductsCustomFieldsToProducts f2p'.$i);
-					$fieldArr = '"'. implode('","',explode(';',$customField['options'])).'"';
+					$fieldArr = '"'. implode('","',explode(',',$customField['options'])).'"';
 					$query = '(f2p'.$i.'.field_id='.$customField['product_custom_field_id'] .' AND f2p'.$i.'.value IN ('.$fieldArr.'))';
 					$Qproducts->andWhere($query);
 					$i++;
@@ -287,7 +357,10 @@ class Extension_customFields extends ExtensionBase {
 		if (is_null($pId) === false){
 			$Query->andWhere('f2p.product_id = ?', (int)$pId)
 			->andWhere('g2p.product_id = ?', (int)$pId);
-		}
+		} else {
+            $Query->andWhere('f.include_in_search = ?','1')
+                ->addGroupBy('f2p.value');
+        }
 		
 		if ($shownOnProductInfo === true){
 			$Query->andWhere('f.show_on_site = ?', '1');
@@ -304,6 +377,8 @@ class Extension_customFields extends ExtensionBase {
 		if (is_null($languageId) === false){
 			$Query->andWhere('fd.language_id = ?', (int)$languageId);
 		}
+        echo '<!--',$Query->getSqlQuery(),'-->';
+        //return;
 		
 		$Result = $Query->execute()->toArray(true);
 		return $Result;
