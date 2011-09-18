@@ -6,6 +6,7 @@
  * July 18, 2009
 */
 
+var timeOut = false;
 var mopTipCount=0;
 var startOpenMopTip=false;
 var mopTipWindW,mopTipWindH,mopTipStyle;
@@ -89,33 +90,42 @@ jQuery.fn.extend({
 			}
 			$("#mopTip01 .content").html(mopTipContent);
 			mopTipFunc.findPosi(evt);
+            if(timeOut) clearTimeout(timeOut);
+            timeOut = setTimeout("mopTipFunc.tipClose()",5000);
 			$("#mopTip01 table").hover(
 				function(){mopTipHover=true;},
 				function(){mopTipHover=false;}
 			);
 		});
 		$(this).mouseout(function(){
+            /*
 			if(mopTipStyle=="overOut"){
 				mopTipFunc.tipClose();
 			}
+
 			startOpenMopTip=false;
 			mopTipStyle=false;
 			mopTipPin=false;
+			*/
 		});
 		$(this).click(function(){
 			if(mopTipOpened==true){
 				mopTipPin=true;
 			}
 		});
-		/*
+
 		$(this).mousemove(function(evt){
+            if(timeOut) clearTimeout(timeOut);
+            timeOut = setTimeout("mopTipFunc.tipClose()",5000);
+            /*
 				$(".dForIe").hide();			   
 				$(".dForIe").html(mopTipMouseX+mopTipxOffset);
 				if((mopTipStyle!=false)&&(mopTipPin==false)){
 					mopTipFunc.findPosi(evt);
 				}
+		    */
 		});
-		*/
+
 		mopTipFunc={
 			tipInit:function(){
 				$("body").append(
@@ -253,7 +263,9 @@ jQuery.fn.extend({
 				if(mopTipStyle!="overOut"){
 					$("#mopTip01 .close").show();
 				}
-				setTimeout("mopTipFunc.tipOpen()",500);
+				//setTimeout("mopTipFunc.tipOpen()",10);
+				mopTipFunc.tipOpen();
+
 			},
 			tipOpen:function(){
 				if(startOpenMopTip==true){
@@ -262,13 +274,14 @@ jQuery.fn.extend({
 					mopTipOpened=true;
 					closeBtnClick=false;
 				}
-				setTimeout("mopTipFunc.tipClose()",4000);
+                timeOut = setTimeout("mopTipFunc.tipClose()",5000);
 			},
 			tipClose:function(){
 				startOpenMopTip=false;
 				mopTipOpened=false;
 				mopTipH=null;
-				setTimeout("mopTipFunc.tipClosing()",150);
+				//setTimeout("mopTipFunc.tipClosing()",10);
+				mopTipFunc.tipClosing();
 			},
 			tipClosing:function(){
 				$("#mopTip01 table").focus();
