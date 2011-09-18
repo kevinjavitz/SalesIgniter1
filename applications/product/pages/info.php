@@ -96,16 +96,20 @@
 	}
 	
 	$link = itw_app_link('cPath=' . tep_get_product_path($product->getID()), 'index', 'default');
-	if (sizeof($navigation->snapshot)){
+        $lastPath = $navigation->getPath(1);
+	if ($lastPath){
 		$getVars = array();
-		if (is_array($navigation->snapshot['get'])){
-			foreach($navigation->snapshot['get'] as $k => $v){
+		if (is_array($lastPath['get'])){
+			foreach($lastPath['get'] as $k => $v){
+                if($k == 'app' || $k == 'appPage')
+                    continue;
 				$getVars[] = $k . '=' . $v;
 			}
 		}else{
-			$getVars[] = $navigation->snapshot['get'];
+			$getVars[] = $lastPath['get'];
 		}
-		$link = tep_href_link($navigation->snapshot['page'], implode('&', $getVars), $navigation->snapshot['mode']);
+
+		$link = itw_app_link(implode('&', $getVars), $lastPath['app'], $lastPath['appPage'], $lastPath['mode']);
 	}
 	
 	$pageButtons .= htmlBase::newElement('button')
