@@ -44,9 +44,6 @@ class Extension_customFields extends ExtensionBase {
                 ->setCellPadding(3)
                 ->setCellSpacing(0);
         $groups = $this->getFields(null, Session::get('languages_id'), false, false, true);
-        echo '<!--';
-        print_r($groups);
-        echo '-->';
         foreach($groups as $groupInfo){
             $fieldsToGroups = $groupInfo['ProductsCustomFieldsToGroups'];
             foreach($fieldsToGroups as $fieldToGroup){
