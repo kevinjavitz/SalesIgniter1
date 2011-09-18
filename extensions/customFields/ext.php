@@ -374,7 +374,7 @@ class Extension_customFields extends ExtensionBase {
 		if (is_null($languageId) === false){
 			$Query->andWhere('fd.language_id = ?', (int)$languageId);
 		}
-        echo '<!--',$Query->getSqlQuery(),'-->';
+        //echo '<!--',$Query->getSqlQuery(),'-->';
         //return;
 		
 		$Result = $Query->execute()->toArray(true);
