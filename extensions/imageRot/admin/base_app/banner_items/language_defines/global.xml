@@ -28,6 +28,7 @@
 	<define key="TEXT_BANNER_MANUFACTURER"><![CDATA[Banners Manufacturer:]]></define>
 	<define key="TEXT_BANNER_NAME"><![CDATA[Banners Name:]]></define>
 	<define key="TEXT_BANNER_DESCRIPTION"><![CDATA[Banner Description HTML(not yet implemented):]]></define>
+	<define key="TEXT_SELECT_CMS_PAGE_AS_POPUP"><![CDATA[Select a cms page to show as popup instead of redirecting to the page:]]></define>
 	<define key="TEXT_BANNER_QUANTITY"><![CDATA[Banners Quantity:]]></define>
 	<define key="TEXT_BANNER_MODEL"><![CDATA[Banners Model:]]></define>
 	<define key="TEXT_BANNER_IMAGE"><![CDATA[Banners Image:]]></define>
