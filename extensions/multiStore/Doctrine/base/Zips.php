@@ -10,12 +10,12 @@
 	This script and it's source is not redistributable
 */
 
-class Stores extends Doctrine_Record {
+class Zips extends Doctrine_Record {
 
 	public function setTableDefinition(){
-		$this->setTableName('stores');
+		$this->setTableName('zips');
 		
-		$this->hasColumn('stores_id', 'integer', 4, array(
+		$this->hasColumn('id', 'integer', 4, array(
 			'type'          => 'integer',
 			'length'        => 4,
 			'unsigned'      => 0,
@@ -24,88 +24,113 @@ class Stores extends Doctrine_Record {
 			'autoincrement' => true,
 		));
 
-/* Auto Upgrade ( Version 1.0 to 1.1 ) --BEGIN-- */
-		$this->hasColumn('stores_owner', 'string', 128, array(
+		$this->hasColumn('country_code', 'string', 2, array(
 			'type'          => 'string',
-			'length'        => 128,
-			'fixed'         => false,
+			'length'        => 2,
+			'fixed'         => true,
 			'primary'       => false,
 			'notnull'       => true,
 			'autoincrement' => false,
 		));
-/* Auto Upgrade ( Version 1.0 to 1.1 ) --END-- */
 
-		$this->hasColumn('stores_name', 'string', 128, array(
+		$this->hasColumn('zip', 'string', 20, array(
 			'type'          => 'string',
-			'length'        => 128,
+			'length'        => 20,
 			'fixed'         => false,
 			'primary'       => false,
 			'notnull'       => true,
 			'autoincrement' => false,
 		));
 		
-		$this->hasColumn('stores_email', 'string', 128, array(
+		$this->hasColumn('place_name', 'string', 180, array(
 			'type'          => 'string',
-			'length'        => 128,
+			'length'        => 180,
 			'fixed'         => false,
 			'primary'       => false,
 			'notnull'       => true,
 			'autoincrement' => false,
 		));
 		
-		$this->hasColumn('stores_domain', 'string', 128, array(
-			'type'          => 'string',
-			'length'        => 128,
-			'fixed'         => false,
-			'primary'       => false,
-			'notnull'       => true,
-			'autoincrement' => false,
-		));
-		
-		$this->hasColumn('stores_ssl_domain', 'string', 128, array(
-			'type'          => 'string',
-			'length'        => 128,
-			'fixed'         => false,
-			'primary'       => false,
-			'notnull'       => true,
-			'autoincrement' => false,
-		));
-		
-		$this->hasColumn('stores_template', 'string', 128, array(
-			'type'          => 'string',
-			'length'        => 128,
-			'fixed'         => false,
-			'primary'       => false,
-			'notnull'       => true,
-			'autoincrement' => false,
-		));
-		
-		$this->hasColumn('google_key', 'string', 255, array(
-			'type'          => 'string',
-			'length'        => 255,
-			'fixed'         => false,
-			'primary'       => false,
-			'notnull'       => true,
-			'autoincrement' => false,
-		));
-		
-		$this->hasColumn('stores_zip', 'string', 10, array(
-			'type'          => 'string',
-			'length'        => 10,
-			'fixed'         => false,
-			'primary'       => false,
-			'notnull'       => true,
-			'autoincrement' => false,
-		));		
-		
-		$this->hasColumn('stores_location', 'string', 100, array(
+		$this->hasColumn('admin_name1', 'string', 100, array(
 			'type'          => 'string',
 			'length'        => 100,
 			'fixed'         => false,
 			'primary'       => false,
 			'notnull'       => true,
 			'autoincrement' => false,
-		));			
+		));
+		
+		$this->hasColumn('admin_code1', 'string', 20, array(
+			'type'          => 'string',
+			'length'        => 20,
+			'fixed'         => false,
+			'primary'       => false,
+			'notnull'       => true,
+			'autoincrement' => false,
+		));		
+		
+		$this->hasColumn('admin_name2', 'string', 100, array(
+			'type'          => 'string',
+			'length'        => 100,
+			'fixed'         => false,
+			'primary'       => false,
+			'notnull'       => true,
+			'autoincrement' => false,
+		));
+		
+		$this->hasColumn('admin_code2', 'string', 20, array(
+			'type'          => 'string',
+			'length'        => 20,
+			'fixed'         => false,
+			'primary'       => false,
+			'notnull'       => true,
+			'autoincrement' => false,
+		));		
+		
+		$this->hasColumn('admin_name3', 'string', 100, array(
+			'type'          => 'string',
+			'length'        => 100,
+			'fixed'         => false,
+			'primary'       => false,
+			'notnull'       => true,
+			'autoincrement' => false,
+		));
+		
+		$this->hasColumn('admin_code3', 'string', 20, array(
+			'type'          => 'string',
+			'length'        => 20,
+			'fixed'         => false,
+			'primary'       => false,
+			'notnull'       => true,
+			'autoincrement' => false,
+		));		
+		
+		$this->hasColumn('latitude', 'float', 4, array(
+			'type'          => 'float',
+			'length'        => 4,
+			'fixed'         => false,
+			'primary'       => false,
+			'notnull'       => true,
+			'autoincrement' => false,
+		));
+		
+		$this->hasColumn('longitude', 'float', 4, array(
+			'type'          => 'float',
+			'length'        => 4,
+			'fixed'         => false,
+			'primary'       => false,
+			'notnull'       => true,
+			'autoincrement' => false,
+		));
+				
+		$this->hasColumn('accuracy', 'boolean', 1, array(
+			'type'          => 'boolean',
+			'length'        => 1,
+			'fixed'         => false,
+			'primary'       => false,
+			'notnull'       => true,
+			'autoincrement' => false,
+		));		
 	}
 	
 }

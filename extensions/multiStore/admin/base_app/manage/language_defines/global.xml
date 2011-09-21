@@ -9,6 +9,8 @@
 	<define key="TEXT_STORES_DOMAIN"><![CDATA[<b>Stores Domain:</b>]]></define>
 	<define key="TEXT_STORES_SSL_DOMAIN"><![CDATA[<b>Stores SSL Domain:</b>]]></define>
 	<define key="TEXT_STORES_TEMPLATE"><![CDATA[<b>Stores Template:</b>]]></define>
+	<define key="TEXT_STORES_ZIP"><![CDATA[<b>Stores Zip:</b>]]></define>
+	<define key="TEXT_STORES_LOCATION"><![CDATA[<b>Stores Location:</b>]]></define>
 	<define key="BOX_HEADING_NEW_STORE"><![CDATA[Create A New Store]]></define>
 	<define key="TEXT_BUTTON_NEW_STORE"><![CDATA[New Store]]></define>
 

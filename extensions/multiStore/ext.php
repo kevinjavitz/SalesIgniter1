@@ -361,5 +361,68 @@ class Extension_multiStore extends ExtensionBase {
 			}
 		}
 	}
+	
+	
+	/**
+	 * Calculates distance between two points on Earth
+	 * 
+	 * @param array From point (array containing 'lat' and 'long' parameters describing a point)
+	 * @param array To point (array containing 'lat' and 'long' parameters describing a point)
+	 * 
+	 * return distance between points (in miles)
+	 */
+	protected function _calculateDistance($point1, $point2) {
+	    $radius      = 3958;      // Earth's radius (miles)
+	    $pi          = 3.1415926;
+	    $deg_per_rad = 57.29578;  // Number of degrees/radian (for conversion)
+
+	    $distance = ($radius * $pi * sqrt(
+			($point1['lat'] - $point2['lat'])
+			* ($point1['lat'] - $point2['lat'])
+			+ cos($point1['lat'] / $deg_per_rad)  // Convert these to
+			* cos($point2['lat'] / $deg_per_rad)  // radians for cos()
+			* ($point1['long'] - $point2['long'])
+			* ($point1['long'] - $point2['long'])
+		) / 180);
+
+	    return $distance;  // Returned using the units used for $radius.	    
+	}
+	
+	public function getClosestStoreByZip($zip) {
+	    if (empty($zip)) {
+		return null;
+	    }
+	    
+	    //Find location by zip
+	    $location = Doctrine::getTable('Zips')->findOneByZip($zip);
+	    if (empty($location)) {
+		return null;
+	    }
+	    $from_point = array('lat'=>$location->latitude, 'long'=>$location->longitude);
+	    
+	    
+	    //Calculate distance from each store to the given zip and find store with minimal distance
+	    $min_distance = null;
+	    $closest_store = null;
+	    $stores = Doctrine::getTable('Stores')->findAll();
+	    
+	    foreach ($stores as $current_store) {
+		if (!empty($current_store->stores_zip)) {
+		    $store_location = Doctrine::getTable('Zips')->findOneByZip($current_store->stores_zip);
+		    if (!empty($store_location)) {
+			$to_point = array('lat'=>$store_location->latitude, 'long'=>$store_location->longitude);
+			$distance = $this->_calculateDistance($from_point, $to_point);
+		
+			
+			if ($min_distance===null || $distance<$min_distance) {
+			    $min_distance = $distance;
+			    $closest_store = $current_store;
+			}
+		    }
+		}	
+	    }
+	    
+	    return $closest_store;
+	}
 }
 ?>

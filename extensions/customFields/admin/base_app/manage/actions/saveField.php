@@ -9,6 +9,7 @@
 	$Field->input_type = $_POST['input_type'];
 	$Field->search_key = $_POST['search_key'];
 	$Field->show_on_site = (isset($_POST['show_on_site']) ? '1' : '0');
+	$Field->show_on_tab = (isset($_POST['show_on_tab']) ? '1' : '0');
 	$Field->show_on_listing = (isset($_POST['show_on_listing']) ? '1' : '0');
 	$Field->show_name_on_listing = (isset($_POST['show_name_on_listing']) ? '1' : '0');
 	$Field->show_on_labels = (isset($_POST['show_on_labels']) ? '1' : '0');

@@ -98,7 +98,7 @@ abstract class InfoBoxCustomScrollerAbstract
 		return $ListContainer;
 	}
 
-	public function getQueryResults($queryType, $queryLimit) {
+	public function getQueryResults($queryType, $queryLimit) {				
 		$Query = Doctrine_Query::create()
 			->select('p.products_id, p.products_image, pd.products_name')
 			->from('Products p')
@@ -134,13 +134,16 @@ abstract class InfoBoxCustomScrollerAbstract
 				EventManager::notify('ScrollerSpecialsQueryBeforeExecute', &$Query);
 				break;
 			case 'related':
+				global $current_product_id;				
 				EventManager::notify('ScrollerRelatedQueryBeforeExecute', &$Query);
 				break;
 			case 'category':
-				if (Session::exists('current_category_id')){
+				global $current_category_id;
+				
+				if ($current_category_id>0){
 					$Query->leftJoin('p.ProductsToCategories p2c')
 						->leftJoin('p2c.Categories c')
-						->andWhere('c.parent_id = ?', Session::get('current_category_id'));
+						->andWhere('c.parent_id = ? OR p2c.categories_id= ?', array($current_category_id, $current_category_id));
 				}
 
 				EventManager::notify('ScrollerCategoryQueryBeforeExecute', &$Query);
@@ -166,15 +169,18 @@ class InfoBoxCustomScrollerStack extends InfoBoxCustomScrollerAbstract
 			$PrevButton = $this->buildPrevButton($cInfo->prev_image);
 			$NextButton = $this->buildNextButton($cInfo->next_image);
 			$Results = $this->getQueryResults($cInfo->query, $cInfo->query_limit);
-			$ProductsList = $this->buildList($Results, $cInfo);
+			
+			if (!empty($Results)) {
+				$ProductsList = $this->buildList($Results, $cInfo);
 
-			$Scoller = htmlBase::newElement('div')
-				->addClass('scrollBoxStacked')
-				->append($PrevButton)
-				->append($ProductsList)
-				->append($NextButton);
+				$Scoller = htmlBase::newElement('div')
+					->addClass('scrollBoxStacked')
+					->append($PrevButton)
+					->append($ProductsList)
+					->append($NextButton);
 
-			$ScrollInterface->append($Scoller);
+				$ScrollInterface->append($Scoller);
+			}
 		}
 
 		return $ScrollInterface->draw();
@@ -428,51 +434,89 @@ class InfoBoxCustomScroller extends InfoBoxAbstract
 					$ListContainer.width(ListWidth + 'px');
 
 					var maxOffset;
-					var blockWidth = parseInt($ListContainer.find('.scrollBlock').first().outerWidth(true));
-					if (blockWidth > 0){
-						ListWidth = $ListContainer.innerWidth();
-						var blocks = 0;
-						var totalBlockWidth = 0;
-						while(totalBlockWidth < ListWidth){
-							totalBlockWidth += blockWidth;
-							if (totalBlockWidth < ListWidth){
-								if ((totalBlockWidth + blockWidth) <= ListWidth){
-									blocks++;
-								}
-								if (blocks >= $ListContainer.find('.scrollBlock').size()){
-									break;
-								}
-							}
-						}
+					
+					//Calculate actual width of scroll elements
+					var blocksWidth = 0;
+					$ListContainer.find('.scrollerList li').each(function(){
+						blocksWidth += $(this).outerWidth(true);
+					});
+					$Scroller.data('maxOffset', -blocksWidth);
 
-						blockWidth = (ListWidth / blocks);
-						$ListContainer.find('.scrollBlock').width(blockWidth);
-						$Scroller.data('maxOffset', -($ListContainer.find('.scrollBlock').size() * blockWidth));
-					}
 					$ListContainer.find('.scrollerReflectImage').reflect();
 
 					$Scroller.trigger('scrollerReady');
 
 
 					var listOffset = 0;
-					$PrevButton.click(function (){
-						if (listOffset == 0) return;
 
-						listOffset += $ListContainer.outerWidth();
-						$ListContainer.find('ul').animate({
-							left: listOffset
-						});
-					});
+					
+					function scrollPrev(){
+						if (listOffset == 0) return false;
 
-					$NextButton.click(function (){
-						if ((listOffset - $ListContainer.outerWidth()) <= $Scroller.data('maxOffset')) return;
+							listOffset += $ListContainer.outerWidth();
+							$ListContainer.find('ul').animate({
+								left: listOffset
+							});
+							
+						return true;
+					}
+					
+					function scrollNext(){					
+						if ((listOffset - $ListContainer.outerWidth()) < $Scroller.data('maxOffset')) return false;
 
 						listOffset -= $ListContainer.outerWidth();
 
 						$ListContainer.find('ul').animate({
 							left: listOffset
 						});
+						
+						return true;
+					}
+					
+
+					$PrevButton.click(function (){
+						scrollPrev();
 					});
+					
+					$NextButton.click(function (){
+						scrollNext();
+					});					
+					
+					//Autoscroll
+					var autoScrollNext = true;									
+					
+					function scroll(){
+						if (autoScrollNext===true) {
+							if (!scrollNext()) {
+								autoScrollNext = false;
+							}
+						} 
+						
+						
+						if (!autoScrollNext) {
+							if (!scrollPrev()) {
+								autoScrollNext = true;
+								scrollNext();
+							}
+						}
+						
+					}
+					
+					var autoscroll_interval = 10000;
+					
+					if (autoscroll_interval>0) {
+						var itervalId = setInterval(scroll, autoscroll_interval);
+						$Scroller.hover(
+							function(){
+								clearInterval(itervalId);
+							}, 
+
+							function() {
+								itervalId = setInterval(scroll, autoscroll_interval);
+							}
+						);
+					}										
+					
 				});
 				$Container.trigger('containerReady');
 			});

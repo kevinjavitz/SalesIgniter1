@@ -18,6 +18,8 @@
 	$storeDomain = htmlBase::newElement('input')->setName('stores_domain');
 	$storeSslDomain = htmlBase::newElement('input')->setName('stores_ssl_domain');
 	$storeEmail = htmlBase::newElement('input')->setName('stores_email');
+	$storeZip = htmlBase::newElement('input')->setName('stores_zip');
+	$storeLocation = htmlBase::newElement('input')->setName('stores_location');
 
 /* Auto Upgrade ( Version 1.0 to 1.1 ) --BEGIN-- */
 				$storeOwner = htmlBase::newElement('input')->setName('stores_owner');
@@ -28,6 +30,8 @@
 		$storeDomain->setValue($Qstore['stores_domain']);
 		$storeSslDomain->setValue($Qstore['stores_ssl_domain']);
 		$storeEmail->setValue($Qstore['stores_email']);
+		$storeZip->setValue($Qstore['stores_zip']);
+		$storeLocation->setValue($Qstore['stores_location']);
 
 /* Auto Upgrade ( Version 1.0 to 1.1 ) --BEGIN-- */
 				$storeOwner->setValue($Qstore['stores_owner']);
@@ -113,6 +117,20 @@
 			array('addCls' => 'main','text' => $templatesSet->draw())
 		)
 	));
+	
+	$storeInfoTable->addBodyRow(array(
+		'columns' => array(
+			array('addCls' => 'main','text' => sysLanguage::get('TEXT_STORES_ZIP')),
+			array('addCls' => 'main','text' => $storeZip->draw())
+		)
+	));
+	
+	$storeInfoTable->addBodyRow(array(
+		'columns' => array(
+			array('addCls' => 'main','text' => sysLanguage::get('TEXT_STORES_LOCATION')),
+			array('addCls' => 'main','text' => $storeLocation->draw())
+		)
+	));	
 	/* Build the store info table --END-- */
 
 	/* Build the tabbed interface --BEGIN-- */
