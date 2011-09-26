@@ -1,7 +1,13 @@
 <?php
 	$groupId = $_GET['group_id'];
 
-	$newOrders = $_GET['field'];
+	if(strstr($_GET['field'],',')){
+		$newOrders = explode(',',$_GET['field']);
+	}
+	else{
+		$newOrders = $_GET['field'];
+	}
+
 	for($i=0; $i<sizeof($newOrders); $i++){
 		Doctrine_Query::create()
 		->update('ProductsCustomFieldsToGroups')

@@ -61,6 +61,7 @@ class customFields_admin_products_new_product extends Extension_customFields {
 		$Qtypes = Doctrine_Query::create()
 		->select('g.group_id, g.group_name')
 		->from('ProductsCustomFieldsGroups g')
+		->orderBy('sort_order')
 		->orderBy('g.group_name')
 		->execute(array(), Doctrine::HYDRATE_ARRAY);
 		if ($Qtypes){
