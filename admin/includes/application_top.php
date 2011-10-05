@@ -176,6 +176,7 @@ require(sysConfig::getDirFsCatalog() . 'includes/classes/eventManager/EventActio
 // initialize the message stack for output messages
 	require(sysConfig::getDirFsCatalog() . 'includes/classes/system_modules_loader.php');
 	require(sysConfig::getDirFsCatalog() . 'includes/modules/infoboxes/InfoBoxAbstract.php');
+	require(sysConfig::getDirFsCatalog() . 'includes/modules/pdfinfoboxes/PDFInfoBoxAbstract.php');
 	require(sysConfig::getDirFsCatalog() . 'includes/modules/orderShippingModules/modules.php');
 	require(sysConfig::getDirFsCatalog() . 'includes/modules/orderPaymentModules/modules.php');
 	require(sysConfig::getDirFsCatalog() . 'includes/modules/orderTotalModules/modules.php');
