@@ -19,6 +19,7 @@
 	<define key="HEADING_TITLE_STATUS"><![CDATA[Status:]]></define>
 	<define key="TABLE_HEADING_COMMENTS"><![CDATA[Comments]]></define>
 	<define key="TABLE_HEADING_QUANTITY"><![CDATA[Qty.]]></define>
+	<define key="TABLE_HEADING_INSURANCE"><![CDATA[Insurance]]></define>
 	<define key="TABLE_HEADING_PRODUCTS_MODEL"><![CDATA[Model]]></define>
 	<define key="TABLE_HEADING_PRODUCTS"><![CDATA[Products]]></define>
 	<define key="TABLE_HEADING_TAX"><![CDATA[Tax]]></define>
@@ -31,11 +32,14 @@
 	<define key="TABLE_HEADING_DATE_ADDED"><![CDATA[Date Added]]></define>
 	<define key="TABLE_HEADING_EVENT"><![CDATA[Event]]></define>
 	<define key="TABLE_HEADING_DATE"><![CDATA[Date ordered]]></define>
+	<define key="TABLE_HEADING_DATE_RESERVED"><![CDATA[Date reserved]]></define>
+
 	<define key="TABLE_HEADING_GATE"><![CDATA[Gate]]></define>
 	<define key="TABLE_HEADING_LASTNAME"><![CDATA[Customer Lastname]]></define>
 	<define key="TABLE_HEADING_FIRSTNAME"><![CDATA[Customer firstname]]></define>
 	<define key="TABLE_HEADING_PRODUCT_NAME"><![CDATA[Product Name]]></define>
 	<define key="TABLE_HEADING_PRICE"><![CDATA[Price Paid]]></define>
+	<define key="HEADING_TITLE_START_DATE"><![CDATA[Date]]></define>
 
 
 

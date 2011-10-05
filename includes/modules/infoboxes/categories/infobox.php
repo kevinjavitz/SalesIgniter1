@@ -22,8 +22,7 @@ class infoBoxCategories extends InfoBoxAbstract {
 	public function show(){
 		global $cPath, $cPath_array, $tree, $categoriesString, $current_category_id;
 
-		$boxWidgetProperties = $this->getWidgetProperties();
-
+		$boxWidgetProperties = $this->getWidgetProperties();		
 		$Qcategories = Doctrine_Query::create()
 		->select('c.categories_id, cd.categories_name, c.parent_id')
 		->from('Categories c')

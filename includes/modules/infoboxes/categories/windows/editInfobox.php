@@ -29,8 +29,12 @@ function getCategoryTree($parentId, $namePrefix = '', &$categoriesTree){
 	}
 }
 
-$categoryTreeList = false;
+$categoryTreeList[] = array(
+	'categoryId'           => '0',
+	'categoryName'         => 'Root'
+);
 getCategoryTree(0,'',&$categoryTreeList);
+
 $selectedCategory = isset($WidgetSettings->selected_category)?$WidgetSettings->selected_category:'';
 
 $categoryTree = htmlBase::newElement('selectbox')

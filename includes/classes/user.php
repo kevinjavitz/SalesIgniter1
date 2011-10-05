@@ -547,8 +547,11 @@ class RentalStoreUser implements Serializable {
 	}
 
 	public function setDateOfBirth($val){
-		$date = date_parse($val);
-		$this->customerInfo['dob'] = date('m/d/Y', mktime(0,0,0,$date['month'],$date['day'],$date['year'])); 
+		$date = strptime($val, sysLanguage::getDateFormat('short'));
+		$mm = $date['tm_mon']+1;
+		$dd = $date['tm_mday'];
+		$yy = 1900 + $date['tm_year'];
+		$this->customerInfo['dob'] = date('Y-m-d', mktime(0,0,0,$mm, $dd, $yy));
 	}
 
 	public function setNewsletter($val){

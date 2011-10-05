@@ -159,18 +159,34 @@ class productListing_productsPricePayPerRental {
 					}
 					$depositAmount = $purchaseTypeClass->getDepositAmount();
 					$thePrice = 0;
-
-					$price = $purchaseTypeClass->getReservationPrice($start_date, $end_date);
+					$rInfo = '';
+					$price = $purchaseTypeClass->getReservationPrice($start_date, $end_date, $rInfo,'', (sysConfig::get('EXTENSION_PAY_PER_RENTALS_INSURE_ALL_PRODUCTS_AUTO') == 'True'));
 					$thePrice += $price['price'];
 					if(Session::exists('isppr_event_multiple_dates')){
 						$thePrice = 0;
 						$datesArr = Session::get('isppr_event_multiple_dates');
 
 						foreach($datesArr as $iDate){
-							$price = $purchaseTypeClass->getReservationPrice($iDate, $iDate);
+							$price = $purchaseTypeClass->getReservationPrice($iDate, $iDate,$rInfo,'',(sysConfig::get('EXTENSION_PAY_PER_RENTALS_INSURE_ALL_PRODUCTS_AUTO') == 'True'));
 							$thePrice += $price['price'];
 						}
 
+					}
+					$i2 = 1;
+					if(Session::exists('noInvDates')){
+						$myNoInvDates = Session::get('noInvDates');
+						if(isset($myNoInvDates[$productClass->getID()]) && is_array($myNoInvDates[$productClass->getID()]) && count($myNoInvDates[$productClass->getID()]) > 0){
+							$tableRow[$i2] = '<tr>
+										<td class="main" colspan="2">' . '<b>Item not available:</b>' . '</td>
+									  </tr>';
+							$i2++;
+							foreach($myNoInvDates[$productClass->getID()] as $iDate){
+								$tableRow[$i2] = '<tr>
+										<td class="main" colspan="2" style="color:red">' . strftime(sysLanguage::getDateFormat('long'),$iDate) . '</td>
+									  </tr>';
+								$i2++;
+							}
+						}
 					}
 
 					$pricing = $currencies->format($qtyVal * $thePrice - $qtyVal * $depositAmount + $ship_cost);
@@ -219,6 +235,15 @@ class productListing_productsPricePayPerRental {
 					->setType('hidden')
 					->setName('rental_qty')
 					->setValue($qtyVal);
+
+					if(sysConfig::get('EXTENSION_PAY_PER_RENTALS_INSURE_ALL_PRODUCTS_AUTO') == 'True'){
+						$htmlHasInsurance = htmlBase::newElement('input')
+						->setType('hidden')
+						->setName('hasInsurance')
+						->setValue('1');
+						$pageForm->append($htmlHasInsurance);
+					}
+
 					$htmlProductsId = htmlBase::newElement('input')
 					->setType('hidden')
 					->setName('products_id')
@@ -262,9 +287,24 @@ class productListing_productsPricePayPerRental {
 						$pageForm->append($htmlShippingDays);
 					}
 
-					$tableRow[1] = '<tr>
-									<td class="main"><nobr>Price:</nobr></td>
-									<td class="main">' . $pricing . '</td>
+					if(sysConfig::get('EXTENSION_PAY_PER_RENTALS_SHOW_RATES_PPR_BEFORE') == 'True'){
+						$QPricePerRentalProducts = Doctrine_Query::create()
+							->from('PricePerRentalPerProducts pprp')
+							->leftJoin('pprp.PricePayPerRentalPerProductsDescription pprpd')
+							->where('pprp.pay_per_rental_id =?',$purchaseTypeClass->getId())
+							->andWhere('pprpd.language_id =?', Session::get('languages_id'))
+							->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+
+						foreach($QPricePerRentalProducts as $iPrices){
+							$tableRow[$i2] = '<tr>
+										<td class="main" colspan="2">' .$iPrices['PricePayPerRentalPerProductsDescription'][0]['price_per_rental_per_products_name'].': '. $purchaseTypeClass->displayReservePrice($iPrices['price']) . '</td>
+									  </tr>';
+							$i2++;
+						}
+					}
+
+					$tableRow[$i2] = '<tr>
+									<td class="main" colspan="2">Select the quantity of this unit <br/>needed and click Reserve' . /*$pricing .*/ '</td>
 								</tr>';
 					if (sizeof($tableRow) > 0){
 						$tableRow[0] = '<tr>

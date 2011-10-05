@@ -129,7 +129,7 @@ class OrderProduct {
 		);
 	}
 
-	public function getNameHtml(){
+	public function getNameHtml($showExtraInfo = true) {
 		$nameHref = htmlBase::newElement('a')
 		->setHref(itw_catalog_app_link('products_id=' . $this->getProductsId(), 'product', 'info'))
 		->css(array(
@@ -153,9 +153,9 @@ class OrderProduct {
 			'<br />' .
 			$purchaseTypeHtml;
 
-		$name .= $this->purchaseTypeClass->orderAfterProductName($this);
+		$name .= $this->purchaseTypeClass->orderAfterProductName($this, $showExtraInfo);
 
-		$Result = EventManager::notifyWithReturn('OrderProductAfterProductName', &$this);
+		$Result = EventManager::notifyWithReturn('OrderProductAfterProductName', &$this, $showExtraInfo);
 		foreach($Result as $html){
 			$name .= $html;
 		}

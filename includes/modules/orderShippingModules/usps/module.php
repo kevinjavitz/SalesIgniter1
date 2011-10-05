@@ -18,6 +18,11 @@ class OrderShippingUsps extends OrderShippingModule {
 			$this->selectedTypes = $this->getConfigData('MODULE_ORDER_SHIPPING_USPS_TYPES');
 			$this->selectedIntlTypes = $this->getConfigData('MODULE_ORDER_SHIPPING_USPS_INTL_TYPES');
 
+			$this->nationalTitle = $this->getConfigData('MODULE_ORDER_SHIPPING_USPS_NATIONAL_ERROR_DESC');
+			$this->nationalCost = $this->getConfigData('MODULE_ORDER_SHIPPING_USPS_NATIONAL_ERROR_COST');
+			$this->intnationalTitle = $this->getConfigData('MODULE_ORDER_SHIPPING_USPS_INTNATIONAL_ERROR_DESC');
+			$this->intnationalCost = $this->getConfigData('MODULE_ORDER_SHIPPING_USPS_INTNATIONAL_ERROR_COST');
+
 			$this->types = array('EXPRESS' => 'Express Mail',
 			        'FIRST CLASS' => 'First-Class Mail',
 			        'PRIORITY' => 'Priority Mail',
@@ -119,7 +124,21 @@ class OrderShippingUsps extends OrderShippingModule {
 				}
 			}
 		}else{
-			$this->quotes['error'] = sysLanguage::get('MODULE_ORDER_SHIPPING_USPS_TEXT_ERROR');
+			$deliveryAddress = $this->getDeliveryAddress();
+			if($deliveryAddress['entry_country_id'] == sysConfig::get('STORE_COUNTRY')){
+				$this->quotes['methods'][] = array(
+					'id'    => 'usps_error_national',
+					'title' => $this->nationalTitle,
+					'cost'  => $this->nationalCost
+				);
+			}else{
+				$this->quotes['methods'][] = array(
+					'id'    => 'usps_error_intnational',
+					'title' => $this->intnationalTitle,
+					'cost'  => $this->intnationalCost
+				);
+			}
+			//$this->quotes['error'] = sysLanguage::get('MODULE_ORDER_SHIPPING_USPS_TEXT_ERROR');
 		}
 
 		return $this->quotes;

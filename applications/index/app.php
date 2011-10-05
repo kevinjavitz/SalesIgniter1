@@ -2,7 +2,9 @@
 	$appContent = $App->getAppContentFile();
 
 	$category_depth = 'top';
+	$navigation->clear_snapshot();
 	if (isset($cPath) && tep_not_null($cPath)){
+		$navigation->set_snapshot();
 		$categories_products_query = tep_db_query("select count(*) as total from " . TABLE_PRODUCTS_TO_CATEGORIES . " where categories_id = '" . (int) $current_category_id . "'");
 		$cateqories_products = tep_db_fetch_array($categories_products_query);
 

@@ -849,7 +849,7 @@ function tep_reset_cache_block($cache_block) {
 						$cached_file = $cache_blocks[$i]['file'];
 						$languages = tep_get_languages();
 						for ($j=0, $k=sizeof($languages); $j<$k; $j++) {
-							$cached_file_unlink = ereg_replace('-language', '-' . $languages[$j]['directory'], $cached_file);
+							$cached_file_unlink = preg_replace('/-language/', '-' . $languages[$j]['directory'], $cached_file);
 							if (ereg('^' . $cached_file_unlink, $cache_file)) {
 								@unlink(DIR_FS_CACHE . $cache_file);
 							}
@@ -861,7 +861,7 @@ function tep_reset_cache_block($cache_block) {
 				$cached_file = $cache_blocks[$i]['file'];
 				$languages = tep_get_languages();
 				for ($i=0, $n=sizeof($languages); $i<$n; $i++) {
-					$cached_file = ereg_replace('-language', '-' . $languages[$i]['directory'], $cached_file);
+					$cached_file = preg_replace('/-language/', '-' . $languages[$i]['directory'], $cached_file);
 					@unlink(DIR_FS_CACHE . $cached_file);
 				}
 			}

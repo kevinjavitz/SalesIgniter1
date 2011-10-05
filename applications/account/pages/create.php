@@ -33,7 +33,7 @@
 		$FormTable->addRow(tep_draw_radio_field('gender', 'm', true) . '&nbsp;&nbsp;' . sysLanguage::get('MALE') . '&nbsp;&nbsp;' . tep_draw_radio_field('gender', 'f') . '&nbsp;&nbsp;' . sysLanguage::get('FEMALE') . '&nbsp;' . ((sysConfig::get('ACCOUNT_GENDER_REQUIRED') == 'true')?'<a style="display: inline-block;" tooltip="Input Required" class="ui-icon ui-icon-gear ui-icon-required"></a>':''));
 	}
 	if (sysConfig::get('ACCOUNT_DOB') == 'true'){
-		$FormTable->addRow(sysLanguage::get('ENTRY_DATE_OF_BIRTH'));
+		$FormTable->addRow(sprintf(sysLanguage::get('ENTRY_DATE_OF_BIRTH'),'('.str_replace('%Y','yy',str_replace('%m','mm',str_replace('%d','dd',sysLanguage::getDateFormat('short')))).')'));
 		$FormTable->addRow(tep_draw_input_field('dob') . '&nbsp;'. ((sysConfig::get('ACCOUNT_DOB_REQUIRED') == 'true')?'<a style="display: inline-block;" tooltip="Input Required" class="ui-icon ui-icon-gear ui-icon-required"></a>':''));
 	}
 

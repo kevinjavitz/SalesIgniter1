@@ -76,7 +76,7 @@
 		$dobInput = htmlBase::newElement('input')
 		->setName('customers_dob')
 		->setId('customers_dob')
-		->val($Customer->customers_dob);
+		->val(strftime(sysLanguage::getDateFormat('short'),strtotime($Customer->customers_dob)));
 	}
 	
 	if (sysConfig::get('ACCOUNT_COMPANY') == 'true'){
@@ -85,19 +85,19 @@
 		->val($Customer->AddressBook[0]->entry_company);
 	}
 
-if (sysConfig::get('ACCOUNT_VAT_REQUIRED') == 'true'){
+if (sysConfig::get('ACCOUNT_VAT_NUMBER') == 'true'){
 	$vatInput = htmlBase::newElement('input')
 		->setName('entry_vat')
 		->val($Customer->AddressBook[0]->entry_vat);
 }
 
-if (sysConfig::get('ACCOUNT_CIF_REQUIRED') == 'true'){
+if (sysConfig::get('ACCOUNT_FISCAL_CODE') == 'true'){
 	$cifInput = htmlBase::newElement('input')
 		->setName('entry_cif')
 		->val($Customer->AddressBook[0]->entry_cif);
 }
 
-if (sysConfig::get('ACCOUNT_CITY_BIRTH_REQUIRED') == 'true'){
+if (sysConfig::get('ACCOUNT_CITY_BIRTH') == 'true'){
 	$cityBirthInput = htmlBase::newElement('input')
 		->setName('entry_city_birth')
 		->val($Customer->AddressBook[0]->entry_city_birth);

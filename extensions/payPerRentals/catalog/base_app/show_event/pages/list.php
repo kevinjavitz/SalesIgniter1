@@ -1,14 +1,13 @@
 <?php
 	$events = Doctrine_Query::create()
-	->select('events_name, events_date, events_id')
 	->from('PayPerRentalEvents')
-	->where('events_date > ?', date("Y-m-d h:i:s"))
+	->where('DATE_ADD(events_date,INTERVAL events_days DAY) > ?', date("Y-m-d h:i:s"))
 	->orderBy('events_date')
 	->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 	$contentHtml = '';
 	foreach($events as $evInfo){
 		$contentHtml .= "<div class='list_ev' style='margin-bottom:20px;'><b>Event Name:</b> ".$evInfo['events_name']."<br/>";
-		$contentHtml .= '<b>Date:</b> '. tep_date_short($evInfo['events_date'])."<br/>";
+		$contentHtml .= '<b>Date:</b> '. (($evInfo['events_days'] <= 0)?strftime(sysLanguage::getDateFormat('short'), strtotime($evInfo['events_date'])):strftime(sysLanguage::getDateFormat('short'), strtotime($evInfo['events_date'])).' - '.strftime(sysLanguage::getDateFormat('short'), strtotime('+'.$evInfo['events_days'].' day', strtotime($evInfo['events_date']))))."<br/>";
 		$contentHtml .= "<a class='moreinfo' href='".itw_app_link('appExt=payPerRentals&ev_id='.$evInfo['events_id'],'show_event','default')."'><b>More info</b></a>"."</div>";
 	}
 

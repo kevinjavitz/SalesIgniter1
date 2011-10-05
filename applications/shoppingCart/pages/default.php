@@ -104,6 +104,18 @@ if ($ShoppingCart->countContents() > 0) {
      ->setText(sysLanguage::get('TEXT_BUTTON_UPDATE_CART'))
      ->setType('submit');
 
+	$link = itw_app_link(null,'products','all');
+	if (isset($navigation->snapshot['get']) && sizeof($navigation->snapshot['get']) > 0) {
+		if(isset($navigation->snapshot['get']['cPath'])){
+			$link = itw_app_link('cPath='.$navigation->snapshot['get']['cPath'],'index','default');
+		}
+	}
+
+	$continueButtonHtml = htmlBase::newElement('button')
+		->setName('continue')
+		->setText(sysLanguage::get('TEXT_BUTTON_CONTINUE_CART'))
+		->setHref($link);
+
      $checkoutFormButton = htmlBase::newElement('button')
      ->setText(sysLanguage::get('TEXT_BUTTON_CHECKOUT'))
      ->setHref(itw_app_link(null, 'checkout','default','SSL'));
@@ -163,7 +175,7 @@ if (sysConfig::exists('MODULE_SHIPPING_FREE_SHOW_TEXT')){
 	->css(array(
 		'margin-top' => '15px'
     ));
-	$div2->append($pageButtonsHtml)->append($checkoutFormButton);
+	$div2->append($pageButtonsHtml)->append($checkoutFormButton)->append($continueButtonHtml);
 
 	$div4 = htmlBase::newElement('div')
     ->css(array(

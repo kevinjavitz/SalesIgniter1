@@ -13,40 +13,69 @@
 	->andWhereIn('ot.module_type', array('total', 'ot_total'))
 	->andWhereIn('opr.rental_state', array('out', 'reserved'));
 
+$f = false;
+if (isset($_GET['start_date'])){
+	$Qorders->andWhere('opr.start_date=?', $_GET['start_date']);
+}
+
 if (isset($_GET['event_name']) && !empty($_GET['event_name'])){
 	$Qorders->andWhere('opr.event_name = ?', $_GET['event_name']);
 }
 
 if(isset($_GET['sortEvent'])){
 	$Qorders->orderBy('opr.event_name '.$_GET['sortEvent']);
+	$f = true;
 }
 
 if(isset($_GET['sortDate'])){
 	$Qorders->orderBy('o.date_purchased '.$_GET['sortDate']);
+	$f = true;
 }
+
+if(isset($_GET['sortDateReserved'])){
+	$Qorders->orderBy('opr.start_date '.$_GET['sortDateReserved']);
+	$f = true;
+}
+
 
 if(isset($_GET['sortGate'])){
 	$Qorders->orderBy('opr.event_gate '.$_GET['sortGate']);
+	$f = true;
 }
 
-if(isset($_GET['sortLastname'])){
+if(isset($_GET['sortLastname'])|| !is_array($_GET)){
 	$Qorders->orderBy('c.customers_lastname '.$_GET['sortLastname']);
+	$f = true;
 }
 
 if(isset($_GET['sortFirstname'])){
 	$Qorders->orderBy('c.customers_firstname '.$_GET['sortFirstname']);
+	$f = true;
 }
 
 if(isset($_GET['sortProduct'])){
 	$Qorders->orderBy('pd.products_name '.$_GET['sortProduct']);
+	$f = true;
 }
 
 if(isset($_GET['sortPrice'])){
 	$Qorders->orderBy('ot.value '.$_GET['sortPrice']);
+	$f = true;
 }
 
 if(isset($_GET['sortQty'])){
 	$Qorders->orderBy('op.products_quantity '.$_GET['sortQty']);
+	$f = true;
+}
+
+if(isset($_GET['sortInsurance'])){
+	$Qorders->orderBy('opr.insurance '.$_GET['sortInsurance']);
+	$f = true;
+}
+
+if($f == false){
+	$Qorders->orderBy('opr.start_date '.$_GET['sortDateReserved']);
+	$Qorders->orderBy('c.customers_lastname '.$_GET['sortLastname']);
 }
 
 
@@ -58,12 +87,14 @@ $tableGrid = htmlBase::newElement('newGrid')
 
 $gridHeaderColumns = array(
 	array('text' => '<a href="'.itw_app_link('appExt=payPerRentals&sortEvent='.(isset($_GET['sortEvent'])?($_GET['sortEvent'] == 'ASC'?'DESC':'ASC'):'ASC').(isset($_GET['event_name'])?'&event_name='.$_GET['event_name']:''),null,null).'">'.sysLanguage::get('TABLE_HEADING_EVENT').'</a>'),
-	array('text' => '<a href="'.itw_app_link('appExt=payPerRentals&sortDate='.(isset($_GET['sortDate'])?($_GET['sortDate'] == 'ASC'?'DESC':'ASC'):'ASC').(isset($_GET['event_name'])?'&event_name='.$_GET['event_name']:''),null,null).'">'.sysLanguage::get('TABLE_HEADING_DATE').'</a>'),
+	//array('text' => '<a href="'.itw_app_link('appExt=payPerRentals&sortDate='.(isset($_GET['sortDate'])?($_GET['sortDate'] == 'ASC'?'DESC':'ASC'):'ASC').(isset($_GET['event_name'])?'&event_name='.$_GET['event_name']:''),null,null).'">'.sysLanguage::get('TABLE_HEADING_DATE').'</a>'),
+	array('text' => '<a href="'.itw_app_link('appExt=payPerRentals&sortDateReserved='.(isset($_GET['sortDateReserved'])?($_GET['sortDateReserved'] == 'ASC'?'DESC':'ASC'):'ASC').(isset($_GET['event_name'])?'&event_name='.$_GET['event_name']:''),null,null).'">'.sysLanguage::get('TABLE_HEADING_DATE_RESERVED').'</a>'),
 	array('text' => '<a href="'.itw_app_link('appExt=payPerRentals&sortGate='.(isset($_GET['sortGate'])?($_GET['sortGate'] == 'ASC'?'DESC':'ASC'):'ASC').(isset($_GET['event_name'])?'&event_name='.$_GET['event_name']:''),null,null).'">'.sysLanguage::get('TABLE_HEADING_GATE').'</a>'),
 	array('text' => '<a href="'.itw_app_link('appExt=payPerRentals&sortLastname='.(isset($_GET['sortLastname'])?($_GET['sortLastname'] == 'ASC'?'DESC':'ASC'):'ASC').(isset($_GET['event_name'])?'&event_name='.$_GET['event_name']:''),null,null).'">'.sysLanguage::get('TABLE_HEADING_LASTNAME').'</a>'),
 	array('text' => '<a href="'.itw_app_link('appExt=payPerRentals&sortFirstname='.(isset($_GET['sortFirstname'])?($_GET['sortFirstname'] == 'ASC'?'DESC':'ASC'):'ASC').(isset($_GET['event_name'])?'&event_name='.$_GET['event_name']:''),null,null).'">'.sysLanguage::get('TABLE_HEADING_FIRSTNAME').'</a>'),
 	array('text' => '<a href="'.itw_app_link('appExt=payPerRentals&sortProduct='.(isset($_GET['sortProduct'])?($_GET['sortProduct'] == 'ASC'?'DESC':'ASC'):'ASC').(isset($_GET['event_name'])?'&event_name='.$_GET['event_name']:''),null,null).'">'.sysLanguage::get('TABLE_HEADING_PRODUCT_NAME').'</a>'),
 	array('text' => '<a href="'.itw_app_link('appExt=payPerRentals&sortQty='.(isset($_GET['sortQty'])?($_GET['sortQty'] == 'ASC'?'DESC':'ASC'):'ASC').(isset($_GET['event_name'])?'&event_name='.$_GET['event_name']:''),null,null).'">'.sysLanguage::get('TABLE_HEADING_QUANTITY').'</a>'),
+	array('text' => '<a href="'.itw_app_link('appExt=payPerRentals&sortInsurance='.(isset($_GET['sortInsurance'])?($_GET['sortInsurance'] == 'ASC'?'DESC':'ASC'):'ASC').(isset($_GET['event_name'])?'&event_name='.$_GET['event_name']:''),null,null).'">'.sysLanguage::get('TABLE_HEADING_INSURANCE').'</a>'),
 	array('text' => '<a href="'.itw_app_link('appExt=payPerRentals&sortPrice='.(isset($_GET['sortPrice'])?($_GET['sortPrice'] == 'ASC'?'DESC':'ASC'):'ASC').(isset($_GET['event_name'])?'&event_name='.$_GET['event_name']:''),null,null).'">'.sysLanguage::get('TABLE_HEADING_PRICE').'</a>')
 );
 
@@ -85,6 +116,13 @@ $searchForm = htmlBase::newElement('form')
 	->attr('id', 'searchFormOrders')
 	->attr('action', itw_app_link('appExt=payPerRentals','event_reports', 'default'))
 	->attr('method', 'get');
+
+$startdateField = htmlBase::newElement('input')->setName('start_date')
+	->setLabel(sysLanguage::get('HEADING_TITLE_START_DATE'))->setLabelPosition('before')->setId('start_date');
+
+if (isset($_GET['start_date'])){
+	$startdateField->setValue($_GET['start_date']);
+}
 
 $eventSelect = htmlBase::newElement('selectbox')
 	->setName('event_name')
@@ -121,6 +159,7 @@ $submitButton = htmlBase::newElement('button')
 $searchForm
 ->append($limitField)
 ->append($eventSelect)
+->append($startdateField)
 ->append($submitButton);
 
 $tableGrid->addHeaderRow(array(
@@ -130,6 +169,7 @@ $tableGrid->addHeaderRow(array(
 $rentedProd = array();
 
 $orders = &$tableGrid->getResults();
+$total = 0;
 if ($orders){
 	foreach($orders as $order){
 		$orderId = $order['orders_id'];
@@ -139,15 +179,18 @@ if ($orders){
 				$ores = $orderp['OrdersProductsReservation'][0];
 				$gridBodyColumns = array(
 					array('text' => $ores['event_name']),
-					array('text' => $order['date_purchased']),
+					//array('text' => $order['date_purchased']),
+					array('text' => $ores['start_date']),
 					array('text' => $ores['event_gate']),
 					array('text' => $order['Customers']['customers_lastname']),
 					array('text' => $order['Customers']['customers_firstname']),
 					array('text' => $orderp['Products']['ProductsDescription'][Session::get('languages_id')]['products_name']),
 					array('text' => $orderp['products_quantity']),
-					array('text' => $order['OrdersTotal'][0]['text'])
+					array('text' => $ores['insurance']),
+					array('text' => $currencies->format($orderp['final_price']*$orderp['products_quantity']))
 
 				);
+				$total += $orderp['final_price']*$orderp['products_quantity'];
 				if(!isset($rentedProd[$orderp['Products']['products_model']])){
 					$rentedProd[$orderp['Products']['products_model']][$ores['event_name']] = 0;
 				}
@@ -207,6 +250,22 @@ if (isset($_GET['event_name']) && !empty($_GET['event_name'])){
 	}
 }
 
+$gridBodyColumns = array(
+	array('text' => ''),
+	array('text' => ''),
+	array('text' => ''),
+	array('text' => ''),
+	array('text' => ''),
+	array('text' => ''),
+	array('text' => ''),
+	array('text' => ''),
+	array('text' =>'<b>Total for the day:</b>'. $currencies->format($total))
+
+);
+$tableGrid->addBodyRow(array(
+		'columns' => $gridBodyColumns
+));
+
 ?>
 <div class="pageHeading"><?php echo sysLanguage::get('HEADING_TITLE');?></div>
 <div style="width:100%"><?php
@@ -216,7 +275,7 @@ if (isset($_GET['event_name']) && !empty($_GET['event_name'])){
 	<div style="width:100%;float:left;">
 		<div class="ui-widget ui-widget-content ui-corner-all" style="width:99%;margin-right:5px;margin-left:5px;">
 			<div style="width:99%;margin:5px;"><?php echo $tableGrid->draw();?></div>
-			<div style="height:20px;margin-left:30px;margin-top:10px;"><?php echo $avail;?></div>
+			<div style="margin-left:30px;margin-top:10px;"><?php echo $avail;?></div>
 			<br style="clear:both;"/> <br/>
 		</div>
 	</div>

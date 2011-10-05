@@ -14,6 +14,19 @@ class RentedProducts extends Doctrine_Record {
 	
 	public function setUp(){
 		$this->setUpParent();
+		$this->hasOne('Products', array(
+				'local' => 'products_id',
+				'foreign' => 'products_id'
+		));
+		$this->hasOne('Customers', array(
+				'local' => 'customers_id',
+				'foreign' => 'customers_id'
+		));
+		$this->hasOne('ProductsInventoryBarcodes', array(
+				'local' => 'products_barcode',
+				'foreign' => 'barcode_id'
+		));
+
 	}
 	
 	public function setUpParent(){

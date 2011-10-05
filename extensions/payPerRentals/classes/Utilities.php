@@ -41,22 +41,44 @@ class ReservationUtilities {
 
 
 	public static function addReservationProductToCart($productID, $rQty){
-		global $ShoppingCart;
+		global $ShoppingCart, $messageStack;
 		//global variable with all the attributes per product which will get the POST[id] changed and then cleaned based on the product id
 		$_POST['rental_qty'] = $rQty;
-		//here i check for multiple dates and see if i can add the same product in different dates in a for...if the same product already exists i remove it and add it again with the new dates
-		//input a series of dates from which i exclude the noInvDates then transform them in start-end?
-		if(Session::exists('isppr_event_multiple_dates')){
-			$datesArr = Session::get('isppr_event_multiple_dates');
-			foreach($datesArr as $iDate){
-				$_POST['start_date'] = $iDate;
-				$_POST['end_date'] = $iDate;
-				$_POST['event_date'] = $iDate;
+
+		$product = new product($productID);
+		$purchaseTypeClass = $product->getPurchaseType('reservation');
+		//if($purchaseTypeClass->hasInventory($rQty)){
+			if(Session::exists('isppr_event_multiple_dates')){
+				$datesArr = Session::get('isppr_event_multiple_dates');
+
+				if(Session::exists('noInvDates')){
+					$myNoInvDates = Session::get('noInvDates');
+					if(isset($myNoInvDates[$productID]) && is_array($myNoInvDates[$productID]) && count($myNoInvDates[$productID]) > 0){
+
+						foreach($myNoInvDates[$productID] as $iDate){
+							foreach($datesArr as $k => $iDate1){
+								if(strtotime($iDate1) == $iDate){
+									unset($datesArr[$k]);
+									break;
+								}
+							}
+						}
+					}
+				}
+
+
+				foreach($datesArr as $iDate){
+					$_POST['start_date'] = $iDate;
+					$_POST['end_date'] = $iDate;
+					$_POST['event_date'] = $iDate;
+					$ShoppingCart->addProduct($productID, 'reservation', $rQty);
+				}
+			} else{
 				$ShoppingCart->addProduct($productID, 'reservation', $rQty);
 			}
-		} else{
-			$ShoppingCart->addProduct($productID, 'reservation', $rQty);
-		}
+		/*} else{
+			$messageStack->addSession('pageStack', 'Not enough inventory for one or multiple selected dates for the selected quantity');
+		}*/
 	}
 
 	public static function getPeriodTime($period, $type){
@@ -1159,8 +1181,10 @@ class ReservationUtilities {
 
 		$selfID.find('.calendarTime').hide();
 		<?php
-   		if (sysConfig::get('EXTENSION_PAY_PER_RENTALS_USE_UPS_RESERVATION') == 'True') {
+   		if (sysConfig::get('EXTENSION_PAY_PER_RENTALS_USE_UPS_RESERVATION') == 'True' && sysConfig::get('EXTENSION_PAY_PER_RENTALS_CHECK_GOOGLE_ZONES_BEFORE') == 'False') {
 			?>
+			var $calLoader2 = $selfID.find('.datePicker');
+			showAjaxLoader($calLoader2, 'noloader');
 			$('#getQuotes').click(function(){
 			 showAjaxLoader($('#getQuotes'), 'xlarge');
 			 $('#shipMethods').hide();
@@ -1213,8 +1237,7 @@ class ReservationUtilities {
 		$('#fullAddress').hide();
 		$('#shipMethods').hide();
 		$('#zipAddress').show();
-		var $calLoader2 = $selfID.find('.datePicker');
-		showAjaxLoader($calLoader2, 'noloader');
+
 
 
 		/*$selfID.find('.datePicker').bind('EventAfterLoadedCalendar', function(){
@@ -1358,7 +1381,7 @@ class ReservationUtilities {
 	 <div class="dateRow">
       <div><table cellpadding="3" cellspacing="0" border="0" width="100%">
        <tr>
-        <td valign="top"><div type="text" class="datePicker"></div>
+        <td valign="top"><div class="datePicker"></div>
 		<div class="calendarTime">
 
 		</div>

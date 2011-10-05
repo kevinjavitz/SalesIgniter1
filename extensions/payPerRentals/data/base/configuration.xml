@@ -130,6 +130,15 @@
 			<set_function>tep_cfg_select_option(array('True','False'),</set_function>
 		</EXTENSION_PAY_PER_RENTALS_USE_EVENTS>
 
+		<EXTENSION_PAY_PER_RENTALS_USE_EVENTS_QTY>
+			<value>True</value>
+			<title>If false it will not take into account the qtys declared in the edit event </title>
+			<description>If false it will not take into account the qtys declared in the edit event</description>
+			<sort_order>20</sort_order>
+			<set_function>tep_cfg_select_option(array('True','False'),</set_function>
+		</EXTENSION_PAY_PER_RENTALS_USE_EVENTS_QTY>
+
+
 		<EXTENSION_PAY_PER_RENTALS_USE_SHIP>
 			<value>True</value>
 			<title>Use ship methods</title>
@@ -340,6 +349,13 @@
 			<sort_order>31</sort_order>
 			<set_function>tep_cfg_select_option(array('True','False'),</set_function>
 		</EXTENSION_PAY_PER_RENTALS_USE_GATES>
+		<EXTENSION_PAY_PER_RENTALS_SHOW_RATES_PPR_BEFORE>
+			<value>False</value>
+			<title>Show rates with total price for ppr before</title>
+			<description>Show rates with total price for ppr before</description>
+			<sort_order>31</sort_order>
+			<set_function>tep_cfg_select_option(array('True','False'),</set_function>
+		</EXTENSION_PAY_PER_RENTALS_SHOW_RATES_PPR_BEFORE>
 		<EXTENSION_PAY_PER_RENTALS_PROCESS_SEND>
 			<value>False</value>
 			<title>Process payment on send item</title>

@@ -12,6 +12,7 @@
 	<define key="TABLE_HEADING_PRODUCT_MODEL"><![CDATA[Model ]]></define>
 	<define key="TABLE_HEADING_QTY"><![CDATA[Qty]]></define>
 	<define key="TEXT_EVENTS_QTY"><![CDATA[Qty per product: ]]></define>
+	<define key="TEXT_EVENTS_GATES_DETAILS"><![CDATA[Gates Details]]></define>
 
 
 

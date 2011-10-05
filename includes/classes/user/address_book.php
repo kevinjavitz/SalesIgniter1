@@ -277,9 +277,8 @@ class rentalStoreUser_addressBook {
 
 	/* @TODO: getinto extension */
 	public function getAddressInventoryCenter($address = false){
-		
+		require(sysConfig::getDirFsCatalog() . 'includes/functions/google_maps.php');
 		if (!class_exists('Services_JSON')){
-			require(sysConfig::getDirFsCatalog() . 'includes/functions/google_maps.php');
 			require(sysConfig::getDirFsCatalog() . 'includes/classes/json.php');
 		}
 

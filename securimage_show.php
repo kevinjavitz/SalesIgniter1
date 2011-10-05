@@ -1,7 +1,6 @@
 <?php
-include('includes/application_top.php');
-
-include 'captcha/securimage.php';
+require('includes/application_top.php');
+include sysConfig::getDirFsCatalog(). 'captcha/securimage.php';
 
 $img = new securimage();
 
@@ -28,6 +27,5 @@ $img->signature_color = new Securimage_Color(rand(0, 64), rand(64, 128), rand(12
 $img->use_wordlist = false; 
 
 $img->show('backgrounds/bg3.jpg'); // alternate use:  $img->show('/path/to/background_image.jpg');
-
-include('includes/application_bottom.php');
+require('includes/application_bottom.php');
 ?>

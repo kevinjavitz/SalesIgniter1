@@ -138,7 +138,8 @@ class PurchaseType_reservation extends PurchaseTypeAbstract {
 		return $returningArray;
 	}
 
-	public function orderAfterProductName(&$orderedProduct){
+	public function orderAfterProductName(&$orderedProduct, $showExtraInfo = true){
+		if($showExtraInfo){
 		$resData = $orderedProduct->getInfo('OrdersProductsReservation');
 		if ($resData && !empty($resData[0]['start_date'])){
 			$resInfo = $this->formatOrdersReservationArray($resData);
@@ -147,6 +148,8 @@ class PurchaseType_reservation extends PurchaseTypeAbstract {
 				$resInfo
 			);
 		}
+	}
+		return '';
 	}
 
 	public function orderAfterEditProductName(&$orderedProduct){
@@ -346,7 +349,7 @@ class PurchaseType_reservation extends PurchaseTypeAbstract {
 		return $return;
 	}
 
-	public function hasInventory(){
+	public function hasInventory($myQty = 1){
 
 		if ($this->enabled === false) return false;
 		if (is_null($this->inventoryCls)) return true;
@@ -356,7 +359,7 @@ class PurchaseType_reservation extends PurchaseTypeAbstract {
 			return false;
 		}
 
-		if (sysConfig::get('EXTENSION_PAY_PER_RENTALS_USE_EVENTS') == 'True'){
+		if (sysConfig::get('EXTENSION_PAY_PER_RENTALS_USE_EVENTS') == 'True' && sysConfig::get('EXTENSION_PAY_PER_RENTALS_USE_EVENTS_QTY') == 'True'){
 
 			if(Session::exists('isppr_event')){
 				$QModel = Doctrine_Query::create()
@@ -369,11 +372,11 @@ class PurchaseType_reservation extends PurchaseTypeAbstract {
 					->where('events_id = ?', Session::get('isppr_event'))
 					->andWhere('products_model = ?', $QModel[0]['products_model'])
 					->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
-					if($QProductEvents){
+					if($QProductEvents && $QProductEvents[0]['qty'] > 0){
 						if(Session::exists('isppr_product_qty')){
 							$checkedQty = Session::get('isppr_product_qty');
 						}else{
-							$checkedQty = 1;
+							$checkedQty = $myQty;
 						}
 						$QRes = Doctrine_Query::create()
 						->select('count(*) as total')
@@ -389,6 +392,8 @@ class PurchaseType_reservation extends PurchaseTypeAbstract {
 							}
 						}
 
+					} else{
+						return false;
 					}
 				}
 
@@ -397,18 +402,38 @@ class PurchaseType_reservation extends PurchaseTypeAbstract {
 		}
 
 		if(isset($invItems) && ($invItems != false)){
-			$timesArr = array();
-			$i1 = 0;
-			if (Session::exists('isppr_date_start')){
-				$startCheck = Session::get('isppr_date_start');
-				if (!empty($startCheck)){
-					$startDate = date_parse($startCheck);
-					$endDate = date_parse(Session::get('isppr_date_end'));
-					if(Session::exists('isppr_event_multiple_dates')){
-						$datesArr = Session::get('isppr_event_multiple_dates');
-						foreach($datesArr as $iDate){
-							$startDate = date_parse($iDate);
-							$endDate = date_parse($iDate);
+			if(sysConfig::get('EXTENSION_PAY_PER_RENTALS_DATE_SELECTION') != 'Using calendar after browsing products and clicking Reserve'){
+				$timesArr = array();
+				$i1 = 0;
+				if (Session::exists('isppr_date_start')){
+					$startCheck = Session::get('isppr_date_start');
+					if (!empty($startCheck)){
+						$startDate = date_parse($startCheck);
+						$endDate = date_parse(Session::get('isppr_date_end'));
+						if(Session::exists('isppr_event_multiple_dates')){
+							$datesArr = Session::get('isppr_event_multiple_dates');
+							foreach($datesArr as $iDate){
+								$startDate = date_parse($iDate);
+								$endDate = date_parse($iDate);
+								$timesArr[$i1]['start_date'] = mktime(
+									$startDate['hour'],
+									$startDate['minute'],
+									$startDate['second'],
+									$startDate['month'],
+									$startDate['day'],
+									$startDate['year']
+								);
+								$timesArr[$i1]['end_date'] = mktime(
+									$endDate['hour'],
+									$endDate['minute'],
+									$endDate['second'],
+									$endDate['month'],
+									$endDate['day'],
+									$endDate['year']
+								);
+								$i1++;
+							}
+						}else{
 							$timesArr[$i1]['start_date'] = mktime(
 								$startDate['hour'],
 								$startDate['minute'],
@@ -425,83 +450,76 @@ class PurchaseType_reservation extends PurchaseTypeAbstract {
 								$endDate['day'],
 								$endDate['year']
 							);
-							$i1++;
+							$i1 ++;
 						}
-					}else{
-						$timesArr[$i1]['start_date'] = mktime(
-							$startDate['hour'],
-							$startDate['minute'],
-							$startDate['second'],
-							$startDate['month'],
-							$startDate['day'],
-							$startDate['year']
-						);
-						$timesArr[$i1]['end_date'] = mktime(
-							$endDate['hour'],
-							$endDate['minute'],
-							$endDate['second'],
-							$endDate['month'],
-							$endDate['day'],
-							$endDate['year']
-						);
-						$i1 ++;
 					}
 				}
-			}
-			$noInvDates = array();
-			foreach($timesArr as $iTime){
+				$noInvDates = array();
+				foreach($timesArr as $iTime){
+					$hasInv = false;
+					foreach($invItems as $invInfo){
+						$bookingInfo = array(
+							'item_type' => 'barcode',
+							'item_id'   => $invInfo['id']
+						);
+						$bookingInfo['start_date'] = $iTime['start_date'];
+						$bookingInfo['end_date'] = $iTime['end_date'];
+
+						if (Session::exists('isppr_inventory_pickup')){
+							$pickupCheck = Session::get('isppr_inventory_pickup');
+							if (!empty($pickupCheck)){
+								$bookingInfo['inventory_center_pickup'] = $pickupCheck;
+							}
+						}else{
+							//check here if the invInfo has a specific inventory. If there are two or more
+						}
+						if (Session::exists('isppr_product_qty')){
+							$bookingInfo['quantity'] = (int)Session::get('isppr_product_qty');
+						}else{
+							$bookingInfo['quantity'] = $myQty;
+						}
+
+						if (Session::exists('isppr_shipping_days_before')){
+							$bookingInfo['start_date'] = strtotime('- '. Session::get('isppr_shipping_days_before').' days', $bookingInfo['start_date']);
+						}
+						if (Session::exists('isppr_shipping_days_after')){
+							$bookingInfo['end_date'] = strtotime('+ '. Session::get('isppr_shipping_days_after').' days', $bookingInfo['end_date']);
+						}
+
+
+						$numBookings = ReservationUtilities::CheckBooking($bookingInfo);
+						if ($numBookings == 0){
+							$hasInv = true;
+							break;
+						}
+					}
+					if($hasInv == false){
+						$noInvDates[] = $iTime['start_date'];
+					}
+				}
 				$hasInv = false;
-				foreach($invItems as $invInfo){
-					$bookingInfo = array(
-						'item_type' => 'barcode',
-						'item_id'   => $invInfo['id']
-					);
-
-					if (Session::exists('isppr_inventory_pickup')){
-						$pickupCheck = Session::get('isppr_inventory_pickup');
-						if (!empty($pickupCheck)){
-							$bookingInfo['inventory_center_pickup'] = $pickupCheck;
-						}
+				if($i1 - count($noInvDates) > 0 ){
+					$hasInv = true;
+					if(Session::exists('noInvDates')){
+						$myNoInvDates = Session::get('noInvDates');
+						$myNoInvDates[$this->productInfo['id']] = $noInvDates;
 					}else{
-						//check here if the invInfo has a specific inventory. If there are two or more
+						$myNoInvDates[$this->productInfo['id']] = $noInvDates;
 					}
-					if (Session::exists('isppr_product_qty')){
-						$bookingInfo['quantity'] = (int)Session::get('isppr_product_qty');
-					}else{
-						$bookingInfo['quantity'] = 1;
+					if(is_array($myNoInvDates) && count($myNoInvDates) > 0){
+						Session::set('noInvDates', $myNoInvDates);
+					}
+					if(Session::exists('isppr_event_multiple_dates')){
+						$datesArrb = Session::get('isppr_event_multiple_dates');
+
+
+						array_filter($datesArrb, array('this','isIn'));
+						Session::set('isppr_event_multiple_dates', $datesArrb);
 					}
 
-					if (Session::exists('isppr_shipping_days_before')){
-						$bookingInfo['start_date'] = strtotime('- '. Session::get('isppr_shipping_days_before').' days', $bookingInfo['start_date']);
-					}
-					if (Session::exists('isppr_shipping_days_after')){
-						$bookingInfo['end_date'] = strtotime('+ '. Session::get('isppr_shipping_days_after').' days', $bookingInfo['end_date']);
-					}
-
-					$bookingInfo['start_date'] = $iTime['start_date'];
-					$bookingInfo['end_date'] = $iTime['end_date'];
-					$numBookings = ReservationUtilities::CheckBooking($bookingInfo);
-					if ($numBookings == 0){
-						$hasInv = true;
-						break;
-					}
 				}
-				if($hasInv == false){
-					$noInvDates[] = $iTime['start_date'];
-				}
-			}
-			$hasInv = false;
-			if($i1 - count($noInvDates) > 0 ){
-				$hasInv = true;
-				Session::set('noInvDates', $noInvDates);
-				if(Session::exists('isppr_event_multiple_dates')){
-					$datesArrb = Session::get('isppr_event_multiple_dates');
-
-
-					array_filter($datesArrb, array('this','isIn'));
-					Session::set('isppr_event_multiple_dates', $datesArrb);
-				}
-
+			}else{
+				return true;
 			}
 		}
 
@@ -1234,16 +1252,15 @@ class PurchaseType_reservation extends PurchaseTypeAbstract {
 								$payPerRentalButton->disable();
 							}
 							$thePrice = 0;
-
-							$price = $this->getReservationPrice($start_date, $end_date);
+							$rInfo = '';
+							$price = $this->getReservationPrice($start_date, $end_date, $rInfo,'',(sysConfig::get('EXTENSION_PAY_PER_RENTALS_INSURE_ALL_PRODUCTS_AUTO') == 'True'));
 							$thePrice += $price['price'];
 							if(Session::exists('isppr_event_multiple_dates')){
 								$thePrice = 0;
 								$datesArr = Session::get('isppr_event_multiple_dates');
 
 								foreach($datesArr as $iDate){
-									echo $iDate.'hh';
-									$price = $this->getReservationPrice($iDate, $iDate);
+									$price = $this->getReservationPrice($iDate, $iDate, $rInfo,'',(sysConfig::get('EXTENSION_PAY_PER_RENTALS_INSURE_ALL_PRODUCTS_AUTO') == 'True'));
 									$thePrice += $price['price'];
 								}
 
@@ -1291,6 +1308,13 @@ class PurchaseType_reservation extends PurchaseTypeAbstract {
 							->setType('hidden')
 							->setName('rental_qty')
 							->setValue($qtyVal);
+							if(sysConfig::get('EXTENSION_PAY_PER_RENTALS_INSURE_ALL_PRODUCTS_AUTO') == 'True'){
+								$htmlHasInsurance = htmlBase::newElement('input')
+									->setType('hidden')
+									->setName('hasInsurance')
+									->setValue('1');
+								$pageForm->append($htmlHasInsurance);
+							}
 							$htmlProductsId = htmlBase::newElement('input')
 							->setType('hidden')
 							->setName('products_id')
@@ -1632,7 +1656,7 @@ class PurchaseType_reservation extends PurchaseTypeAbstract {
 			}
 			$table .= '</div>';
 
-		}else{
+		}elseif (sysConfig::get('EXTENSION_PAY_PER_RENTALS_USE_UPS_RESERVATION') == 'True' && sysConfig::get('EXTENSION_PAY_PER_RENTALS_CHECK_GOOGLE_ZONES_BEFORE') == 'False') {
 			$table = '<div class="shippingUPS"><table cellpadding="0" cellspacing="0" border="0">';
 
 			$table .= '<tr id="shipMethods">' .
@@ -1816,23 +1840,23 @@ class PurchaseType_reservation extends PurchaseTypeAbstract {
 				$checkAddressBox->html('<table border="0" cellspacing="2" cellpadding="2" id="googleAddress">' .
 					'<tr>' .
 						'<td>' . sysLanguage::get('ENTRY_STREET_ADDRESS') . '</td>' .
-						'<td>' . tep_draw_input_field('street_address', $street,'id="street_address"') . '</td>' .
+						'<td>' . tep_draw_input_field('street_address', $street,'id="street_addressCheck"') . '</td>' .
 					'</tr>' .
 					'<tr>' .
 						'<td>' . sysLanguage::get('ENTRY_CITY') . '</td>' .
-						'<td>' . tep_draw_input_field('city', $city,'id="city"') . '</td>' .
+						'<td>' . tep_draw_input_field('city', $city,'id="cityCheck"') . '</td>' .
 					'</tr>' .
 					'<tr>' .
 						'<td>' . sysLanguage::get('ENTRY_STATE') . '</td>' .
-						'<td id="stateCol">' . tep_draw_input_field('state', $state,'id="state"') . '</td>' .
+						'<td id="stateColCheck">' . tep_draw_input_field('state', $state,'id="stateCheck"') . '</td>' .
 					'</tr>' .
 					'<tr>' .
 						'<td>' . sysLanguage::get('ENTRY_POST_CODE') . '</td>' .
-						'<td>' . tep_draw_input_field('postcode', $zip,'id="postcode1"') . '</td>' .
+						'<td>' . tep_draw_input_field('postcode', $zip,'id="postcode1Check"') . '</td>' .
 					'</tr>' .
 					'<tr>' .
 						'<td>' . sysLanguage::get('ENTRY_COUNTRY') . '</td>' .
-						'<td>' . tep_get_country_list('country', $country, 'id="countryDrop"') . '</td>' .
+						'<td>' . tep_get_country_list('country', $country, 'id="countryDropCheck"') . '</td>' .
 					'</tr>' .
 				'</table>');
 
@@ -1848,6 +1872,80 @@ class PurchaseType_reservation extends PurchaseTypeAbstract {
 								$('#checkAddress').show();
 								$('#changeAddress').hide();
 								$('.dateRow').hide();
+
+								$('#checkAddress').click(function (e){
+									e.preventDefault();
+									var $this = $(this);
+									showAjaxLoader($this, 'small');
+
+									$.ajax({
+										cache: false,
+										dataType: 'json',
+										url: js_app_link('appExt=payPerRentals&app=build_reservation&appPage=default&rType=ajax&action=checkAddress'),
+										data: $('*', $('#googleAddress')).serialize(),
+										type: 'post',
+										success: function (data){
+											removeAjaxLoader($this);
+											if(data.success == true){
+												$('#checkAddress').hide();
+												$('#googleAddress').hide();
+												$('#changeAddress').show();
+												$('.dateRow').show();
+												var isHidden = false;
+												$('.shipmethod').each(function(){
+													var hidemethod = true;
+													for(i=0;i<data.methods.length;i++){
+														if($(this).hasClass('row_'+data.methods[i]) == true){
+															hidemethod = false;
+															break;
+														}
+													}
+													if(hidemethod == true){
+														$(this).find('input').removeAttr('checked');
+														isHidden = true;
+														$(this).hide();
+													}else{
+														$(this).show();
+													}
+												});
+
+												$('.shipmethod').each(function(){
+													if(isHidden){
+														if($(this).is(':visible')){
+															$(this).find('input').attr('checked','checked');
+															return false;
+														}
+													}
+												});
+
+
+
+											}else{
+												alert(data.message);
+											}
+
+										}
+									});
+								});
+
+								$('#countryDropCheck').change(function (){
+									var $stateColumn = $('#stateColCheck');
+									showAjaxLoader($stateColumn);
+
+									$.ajax({
+										cache: true,
+										url: js_app_link('appExt=payPerRentals&app=build_reservation&appPage=default&rType=ajax&action=getCountryZones'),
+										data: 'cID=' + $(this).val() + '&zName='+$('#stateColCheck input').val(),
+										dataType: 'html',
+										success: function (data){
+											removeAjaxLoader($stateColumn);
+											$('#stateColCheck').html(data);
+										}
+									});
+								});
+
+								$('#countryDropCheck').trigger('change');
+
 								<?php
 							}else{
 								?>
@@ -1856,7 +1954,12 @@ class PurchaseType_reservation extends PurchaseTypeAbstract {
 								$('#googleAddress').hide();
 								$('#changeAddress').show();
 								$('.dateRow').show();
-
+								$('#changeAddress').click(function(){
+									$('#googleAddress').show();
+									$('#checkAddress').show();
+									$('#changeAddress').hide();
+									$('.dateRow').hide();
+								});
 								<?php
 							}
 
@@ -2324,7 +2427,7 @@ class PurchaseType_reservation extends PurchaseTypeAbstract {
 			$rInfo =& $pID_string;
 		}
 
-		$pricing = $this->getReservationPrice($rInfo['start_date'], $rInfo['end_date'], &$rInfo);
+		$pricing = $this->getReservationPrice($rInfo['start_date'], $rInfo['end_date'], &$rInfo,(isset($_POST['semester_name'])?$_POST['semester_name']:''),(isset($_POST['hasInsurance'])?true:false));
 
 		return $pricing;
 	}
