@@ -1,6 +1,4 @@
 <?php
-	$appContent = $App->getAppContentFile();
-
 	$category_depth = 'top';
 	if (isset($cPath) && tep_not_null($cPath)){
 		$categories_products_query = tep_db_query("select count(*) as total from " . TABLE_PRODUCTS_TO_CATEGORIES . " where categories_id = '" . (int) $current_category_id . "'");
@@ -33,4 +31,5 @@
 		$App->setAppPage('default');
 		//$appContent = sysConfig::getDirFsCatalog() . 'applications/index/pages/default.php';
 	}
+    $appContent = $App->getAppContentFile();
 ?>
