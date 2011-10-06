@@ -1,6 +1,4 @@
 <?php
-	$appContent = $App->getAppContentFile();
-
 	$category_depth = 'top';
 	$navigation->clear_snapshot();
 	if (isset($cPath) && tep_not_null($cPath)){
@@ -35,4 +33,5 @@
 		$App->setAppPage('default');
 		//$appContent = sysConfig::getDirFsCatalog() . 'applications/index/pages/default.php';
 	}
+    $appContent = $App->getAppContentFile();
 ?>

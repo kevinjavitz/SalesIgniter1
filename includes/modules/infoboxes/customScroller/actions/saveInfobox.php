@@ -9,6 +9,7 @@
 				'headings' => $_POST['scroller_heading'][$id],
 				'rows' => $_POST['scroller_rows'][$id],
 				'query' => $val,
+				'selected_category' => ($val == 'category_featured' ? (isset($_POST['selected_category'][$id]) ? $_POST['selected_category'][$id] : '0') : ''),
 				'query_limit' => $_POST['scroller_query_limit'][$id],
 				'show_product_name' => (isset($_POST['scroller_show_product_name'][$id]) ? true : false),
 				'reflect_blocks' => (isset($_POST['scroller_block_reflect'][$id]) ? true : false),
