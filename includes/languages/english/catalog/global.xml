@@ -87,7 +87,7 @@
 	<define key="ENTRY_GENDER"><![CDATA[Gender:]]></define>
 	<define key="ENTRY_FIRST_NAME"><![CDATA[First Name:]]></define>
 	<define key="ENTRY_LAST_NAME"><![CDATA[Last Name:]]></define>
-	<define key="ENTRY_DATE_OF_BIRTH"><![CDATA[Date of Birth:]]></define>
+	<define key="ENTRY_DATE_OF_BIRTH"><![CDATA[Date of Birth %s:]]></define>
 	<define key="ENTRY_EMAIL_ADDRESS"><![CDATA[E-Mail Address:]]></define>
 	<define key="ENTRY_STREET_ADDRESS"><![CDATA[Street Address:]]></define>
 	<define key="ENTRY_SUBURB"><![CDATA[Suburb:]]></define>
@@ -308,11 +308,13 @@
 	<define key="ENTRY_CITY_ERROR_ALPHA"><![CDATA[Your City can only contain letters.]]></define>
 	<define key="ENTRY_SUBURB_ERROR_MIN_LENGTH"><![CDATA[Your Suburb must contain a minimum of %s characters.]]></define>
 	<define key="ENTRY_SUBURB_ERROR_ALPHA"><![CDATA[Your Suburb can only contain letters.]]></define>
+	<define key="ENTRY_GENDER_ERROR_REQUIRED"><![CDATA[Gender required.]]></define>
+	<define key="ENTRY_DOB_ERROR_REQUIRED"><![CDATA[DOB required.]]></define>
+	<define key="ENTRY_COMPANY_ERROR_REQUIRED"><![CDATA[Company required.]]></define>
+	<define key="ENTRY_CITY_BIRTH_ERROR_REQUIRED"><![CDATA[City Birth required.]]></define>
 	<define key="ENTRY_STATE_ERROR_MIN_LENGTH"><![CDATA[Your State must contain a minimum of %s characters.]]></define>
 	<define key="ENTRY_STATE_ERROR_ALPHA"><![CDATA[Your State can only contain letters.]]></define>
 	<define key="ENTRY_COMPANY_ERROR_REQUIRED"><![CDATA[Your company is required.]]></define>
-	<define key="ENTRY_CITY_BIRTH_ERROR_REQUIRED"><![CDATA[Your city of birth is required.]]></define>
-	<define key="ENTRY_DOB_ERROR_REQUIRED"><![CDATA[Your date of birth is required.]]></define>
 	<define key="ENTRY_GENDER_ERROR_REQUIRED"><![CDATA[Your gender is required.]]></define>
 	<define key="ENTRY_COUNTRY_ERROR_NUMERIC"><![CDATA[You must select a country from the Countries pull down menu.]]></define>
 	<define key="ENTRY_FAX_ERROR_MIN_LENGTH"><![CDATA[Your Fax number must contain a minimum of %s characters.]]></define>
@@ -594,6 +596,6 @@
 	<define key="TEXT_CHANGE_ADDRESS"><![CDATA[Change Address]]></define>
 	<define key="TEXT_MIN"><![CDATA[Min rental ]]></define>
 	<define key="TEXT_OUT_OF_STOCK"><![CDATA[Out of Stock ]]></define>
-
+	<define key="RENTAL_CUSTOMER_IS_PAST_DUE"><![CDATA[We have not been able to process your membership payment. Please update your credit card on file by  <a style="color:red;" href="%s">clicking here</a> ]]></define>
 
 </definitions>

@@ -143,8 +143,8 @@ class Order {
 		return $this->ProductManager->getContents();
 	}
 
-	public function listProducts(){
-		return $this->ProductManager->listProducts();
+	public function listProducts($showTableHeading = true, $showQty = true, $showBarcode = true, $showModel = true, $showName = true, $showExtraInfo = true, $showPrice = true, $showPriceWithTax = true, $showTotal = true, $showTotalWithTax = true, $showTax = true) {
+		return $this->ProductManager->listProducts($showTableHeading, $showQty, $showBarcode, $showModel, $showName, $showExtraInfo, $showPrice, $showPriceWithTax, $showTotal, $showTotalWithTax, $showTax, $this);
 	}
 
 	public function getTelephone(){

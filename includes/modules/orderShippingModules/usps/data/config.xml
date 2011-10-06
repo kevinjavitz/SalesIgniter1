@@ -63,6 +63,38 @@
 	</configuration>
 
 	<configuration>
+		<title><![CDATA[Fallback error national description]]></title>
+		<key><![CDATA[MODULE_ORDER_SHIPPING_USPS_NATIONAL_ERROR_DESC]]></key>
+		<value><![CDATA[National Cost]]></value>
+		<description><![CDATA[Fallback error national description]]></description>
+		<sort_order>8</sort_order>
+	</configuration>
+
+	<configuration>
+		<title><![CDATA[Fallback error national cost]]></title>
+		<key><![CDATA[MODULE_ORDER_SHIPPING_USPS_NATIONAL_ERROR_COST]]></key>
+		<value><![CDATA[0]]></value>
+		<description><![CDATA[Fallback error national cost]]></description>
+		<sort_order>8</sort_order>
+	</configuration>
+
+	<configuration>
+		<title><![CDATA[Fallback error international description]]></title>
+		<key><![CDATA[MODULE_ORDER_SHIPPING_USPS_INTNATIONAL_ERROR_DESC]]></key>
+		<value><![CDATA[National Cost]]></value>
+		<description><![CDATA[Fallback error international description]]></description>
+		<sort_order>8</sort_order>
+	</configuration>
+
+	<configuration>
+		<title><![CDATA[Fallback error international cost]]></title>
+		<key><![CDATA[MODULE_ORDER_SHIPPING_USPS_INTNATIONAL_ERROR_COST]]></key>
+		<value><![CDATA[0]]></value>
+		<description><![CDATA[Fallback error international cost]]></description>
+		<sort_order>8</sort_order>
+	</configuration>
+
+	<configuration>
 		<title><![CDATA[Select Allowable Shipping Types]]></title>
 		<key><![CDATA[MODULE_ORDER_SHIPPING_USPS_TYPES]]></key>
 		<value><![CDATA[0]]></value>

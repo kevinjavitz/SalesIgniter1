@@ -10,7 +10,7 @@ div.selectbox-wrapper {
   text-align:left;
   max-height:200px;
   overflow:auto;
-	z-index: 1500;
+	z-index: 30500;
 }
 
 /*Drop down list styles*/

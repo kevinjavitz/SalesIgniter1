@@ -439,7 +439,7 @@ function buildLinearGradient($deg, $colorStops, $images = false, &$styleObj = fa
 				$cssData['background'][] = 'url(' . $iInfo['image'] . ')';
 				$cssData['background-repeat'][] = $iInfo['repeat'];
 				$cssData['background-attachment'][] = (isset($iInfo['attachment']) ? $iInfo['attachment'] : 'scroll');
-				$cssData['background-position'][] = $iInfo['pos_x'] . ' ' . $iInfo['pos_y'];
+				$cssData['background-position'][] = $iInfo['pos_x'].'%' . ' ' . $iInfo['pos_y'].'%';
 			}
 		}
 		
@@ -475,7 +475,7 @@ function buildLinearGradient($deg, $colorStops, $images = false, &$styleObj = fa
 				$cssData['background'][] = 'url(' . $iInfo['image'] . ')';
 				$cssData['background-repeat'][] = $iInfo['repeat'];
 				$cssData['background-attachment'][] = (isset($iInfo['attachment']) ? $iInfo['attachment'] : 'scroll');
-				$cssData['background-position'][] = $iInfo['pos_x'] . ' ' . $iInfo['pos_y'];
+				$cssData['background-position'][] = $iInfo['pos_x'].'%' . ' ' . $iInfo['pos_y'].'%';
 			}
 		}
 	}
@@ -489,7 +489,7 @@ function buildLinearGradient($deg, $colorStops, $images = false, &$styleObj = fa
 				$cssData['background'][] = 'url(' . $iInfo['image'] . ')';
 				$cssData['background-repeat'][] = $iInfo['repeat'];
 				$cssData['background-attachment'][] = (isset($iInfo['attachment']) ? $iInfo['attachment'] : 'scroll');
-				$cssData['background-position'][] = $iInfo['pos_x'] . ' ' . $iInfo['pos_y'];
+				$cssData['background-position'][] = $iInfo['pos_x'].'%' . ' ' . $iInfo['pos_y'].'%';
 			}
 		}
 
@@ -557,7 +557,7 @@ function buildLinearGradient($deg, $colorStops, $images = false, &$styleObj = fa
 				$cssData['background'][] = 'url(' . $iInfo['image'] . ')';
 				$cssData['background-repeat'][] = $iInfo['repeat'];
 				$cssData['background-attachment'][] = (isset($iInfo['attachment']) ? $iInfo['attachment'] : 'scroll');
-				$cssData['background-position'][] = $iInfo['pos_x'] . ' ' . $iInfo['pos_y'];
+				$cssData['background-position'][] = $iInfo['pos_x'].'%' . ' ' . $iInfo['pos_y'].'%';
 			}
 		}
 	}

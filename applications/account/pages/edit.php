@@ -54,7 +54,7 @@
 		
 		$formTable->addBodyRow(array(
 			'columns' => array(
-				array('addCls' => 'main', 'text' => sysLanguage::get('ENTRY_DATE_OF_BIRTH')),
+				array('addCls' => 'main', 'text' => sprintf(sysLanguage::get('ENTRY_DATE_OF_BIRTH'),'('.str_replace('%Y','yy',str_replace('%m','mm',str_replace('%d','dd',sysLanguage::getDateFormat('short')))).')')),
 				array('addCls' => 'main', 'text' => $dobInput->draw())
 			)
 		));

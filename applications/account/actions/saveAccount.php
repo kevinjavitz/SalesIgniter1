@@ -38,10 +38,10 @@
 		}
 
 		if (sysConfig::get('ACCOUNT_DOB') == 'true'){
-			$parsed = date_parse($accountValidation['dob']);
-			$dob = date('Y-m-d', mktime(0,0,0,$parsed['month'],$parsed['day'],$parsed['year']));
+			$parsed = strptime($accountValidation['dob'], sysLanguage::getDateFormat('short'));
+			$dob = date('Y-m-d',mktime(0,0,0,($parsed['tm_mon']+1),$parsed['tm_mday'],(1900+$parsed['tm_year'])));
 			if ($dob != $userAccount->getDateOfBirth()){
-				$userAccount->setDateOfBirth($dob);
+				$userAccount->setDateOfBirth($accountValidation['dob']);
 			}
 		}
 

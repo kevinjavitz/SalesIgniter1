@@ -36,12 +36,13 @@
 				'entry_city'           => $_POST['billing_city'],
 				'entry_country_id'     => $_POST['billing_country'],
 			);
-
-			if (array_key_exists('terms', $_POST)){
-				$accountValidation['terms'] = $_POST['terms'];
-			}else{
-				$accountValidation['terms'] = 0;
-			}
+	            	if (sysConfig::get('TERMS_CONDITIONS_CHECKOUT') !== 'false'){
+	                	if (array_key_exists('terms', $_POST)){
+	                    		$accountValidation['terms'] = $_POST['terms'];
+	                	}else{
+	                    		$accountValidation['terms'] = 0;
+	                	}
+	            	}
 			if (array_key_exists('billing_suburb', $_POST)) $accountValidation['entry_suburb'] = $_POST['billing_suburb'];
 			if (array_key_exists('billing_state', $_POST)) $accountValidation['entry_state'] = $_POST['billing_state'];
 			if (array_key_exists('billing_gender', $_POST)) $accountValidation['entry_gender'] = $_POST['billing_gender'];

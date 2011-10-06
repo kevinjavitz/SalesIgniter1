@@ -19,5 +19,6 @@
 	<define key="OUT_OF_STOCK_CAN_CHECKOUT"><![CDATA[Products marked with *** dont exist in desired quantity in our stock.<br>You can buy them anyway and check the quantity we have in stock for immediate deliver in the checkout process.]]></define>
 
 	<define key="TEXT_BUTTON_UPDATE_CART"><![CDATA[Update Cart]]></define>
+	<define key="TEXT_BUTTON_CONTINUE_CART"><![CDATA[Continue Shopping]]></define>
 	<define key="TEXT_AGREE_TO_TERMS"><![CDATA[I agree to the terms and conditions]]></define>
 </definitions>

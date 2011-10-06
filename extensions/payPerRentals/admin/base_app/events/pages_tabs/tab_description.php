@@ -9,6 +9,7 @@
 		$zoneId = $Event->events_zone_id;
 		$state = $Event->events_state;
 	    $gates = $Event->gates;
+	    $gates_details = $Event->gates_details;
 	    $default_gate = $Event->default_gate;
 	}else{
 		$name = "";
@@ -18,6 +19,7 @@
 		$gates = '';
 		$state = '';
 		$default_gate = 0;
+		$gates_details = '';
 		$days = 0;
 		$countryId = '223';
 	}
@@ -107,6 +109,13 @@ if(sysConfig::get('EXTENSION_PAY_PER_RENTALS_USE_GATES') == 'True'){
 	<tr>
 		 <td class="main" valign="top"><?php echo sysLanguage::get('TEXT_EVENTS_GATES'); ?></td>
 		 <td class="main"><?php echo $gatesGroup->draw(); ?></td>
+	 </tr>
+	 <tr>
+		 <td colspan="2"><?php echo tep_draw_separator('pixel_trans.gif', '1', '10'); ?></td>
+	 </tr>
+	 <tr>
+		 <td class="main" valign="top"><?php echo sysLanguage::get('TEXT_EVENTS_GATES_DETAILS'); ?></td>
+		 <td class="main"><?php echo tep_draw_textarea_field('gates_details', 'soft', 30, 5, $gates_details, 'class="makeFCK"'); ?></td>
 	 </tr>
 	 <?php
 }

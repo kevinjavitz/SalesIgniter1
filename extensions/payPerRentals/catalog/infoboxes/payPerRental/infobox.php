@@ -449,9 +449,9 @@ class InfoBoxPayPerRental extends InfoBoxAbstract {
 		$min_date =  date("Y-m-d h:i:s", mktime(date("h"),date("i"),date("s"),date("m"),date("d")/*+$min_days*/,date("Y")));
 		$Qevent = Doctrine_Query::create()
 		->from('PayPerRentalEvents');
-		if(sysConfig::get('EXTENSION_PAY_PER_RENTALS_USE_GATES') == 'False'){
-			$Qevent = $Qevent->where('events_date > ?', $min_date);
-		}
+		//if(sysConfig::get('EXTENSION_PAY_PER_RENTALS_USE_GATES') == 'False'){
+			$Qevent = $Qevent->where('DATE_ADD(events_date,INTERVAL events_days DAY) > ?', $min_date);
+		//}
 		$Qevent = $Qevent->orderBy('events_date')
 		->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 
@@ -481,7 +481,10 @@ class InfoBoxPayPerRental extends InfoBoxAbstract {
 					if($firstEvent == $eInfo['events_id'] || $firstEvent == 0){
 						$gatesArr = explode(',', $eInfo['gates']);
 					}
-					$eventb->addOption($eInfo['events_id'],$eInfo['events_name']);
+
+					$myDate = date('M d',strtotime($eInfo['events_date'])).'-'.date('M d Y', strtotime('+'.$eInfo['events_days'].' DAY', strtotime($eInfo['events_date'])));
+
+					$eventb->addOption($eInfo['events_id'],$eInfo['events_name'].'_'.$myDate);
 				}
 			}
 		}
@@ -519,6 +522,16 @@ class InfoBoxPayPerRental extends InfoBoxAbstract {
 		->addClass('myev1')
 		->attr('href',(($firstEvent != 0)?itw_app_link('appExt=payPerRentals&ev_id='.$firstEvent,'show_event','default'):itw_app_link('appExt=payPerRentals','show_event','list')));
 
+		$ev2Text = htmlBase::newElement('a')
+		->text('Click for info')
+		->addClass('myev2')
+		->attr('href',(($firstEvent != 0)?itw_app_link('appExt=payPerRentals&dialog=true&ev_id='.$firstEvent,'show_event','default'):itw_app_link('appExt=infoPages','show_page','event_info')));
+
+		$gateText = htmlBase::newElement('a')
+		->text('Click for info')
+		->addClass('myga1')
+		->attr('href',(($firstEvent != 0)?itw_app_link('appExt=payPerRentals&isgate=1&dialog=true&ev_id='.$firstEvent,'show_event','default'):itw_app_link('appExt=infoPages','show_page','gate_info')));
+
 		$separator1sh = htmlBase::newElement('div');
 		$separatortsh = htmlBase::newElement('div');
 		$container_destsh = htmlBase::newElement('div');
@@ -532,13 +545,14 @@ class InfoBoxPayPerRental extends InfoBoxAbstract {
 		if (sysConfig::get('EXTENSION_PAY_PER_RENTALS_USE_EVENTS') == 'True'){
 			$container_destev->append($eventt)
 			->append($eventb)
-			->append($evText);
+			->append($evText)
+			->append($ev2Text);
 			$pprform->append($separator1ev)
 			->append($container_destev);
 			if (sysConfig::get('EXTENSION_PAY_PER_RENTALS_USE_GATES') == 'True'){
 				$container_destgate->append($gatet)
-				->append($gateb);
-				//->append($gateText);
+				->append($gateb)
+				->append($gateText);
 				$pprform->append($separator1ev)
 				->append($container_destgate);
 			}
@@ -941,8 +955,29 @@ class InfoBoxPayPerRental extends InfoBoxAbstract {
 	});
 
 
-	$('button[name="no_dates_selected"]').each(function(){$(this).click(function(){alert('<?php echo sysLanguage::get('EXTENSION_PAY_PER_RENTALS_ERROR_RESERVE');?>');return false;})});
-	$('button[name="no_inventory"]').each(function(){$(this).click(function(){alert('<?php echo sysLanguage::get('EXTENSION_PAY_PER_RENTALS_ERROR_NO_INVENTORY_FOR_SELECTED_DATES');?>');return false;})});
+	$('button[name="no_dates_selected"]').each(function(){$(this).click(function(){
+		$( '<div id="dialog-mesage" title="No Inventory"><span style="color:red;font-size:18px;"><?php echo sysLanguage::get('EXTENSION_PAY_PER_RENTALS_ERROR_RESERVE');?></span></div>' ).dialog({
+			modal: true,
+			buttons: {
+				Ok: function() {
+					$( this ).dialog( "close" );
+				}
+			}
+		});
+		return false;
+	})});
+	$('button[name="no_inventory"]').each(function(){$(this).click(function(){
+
+		$( '<div id="dialog-mesage" title="No Inventory"><span style="color:red;font-size:18px;"><?php echo sysLanguage::get('EXTENSION_PAY_PER_RENTALS_ERROR_NO_INVENTORY_FOR_SELECTED_DATES');?></span></div>' ).dialog({
+			modal: true,
+			buttons: {
+				Ok: function() {
+					$( this ).dialog( "close" );
+				}
+			}
+		});
+		return false;
+	})});
 	$('button[name="double_dates_selected"]').each(function(){$(this).click(function(){alert('<?php echo sysLanguage::get('TEXT_CHOOSE_INVENTORY');?>');return false;})});
 		var selectedDateId = null;
         var startSelectedDate;
@@ -1013,7 +1048,16 @@ class InfoBoxPayPerRental extends InfoBoxAbstract {
 
         			}
 		});
-
+		$('<?php echo '#'.$WidgetProperties->boxID;?> .myev2').attr('href',"#");
+		$('<?php echo '#'.$WidgetProperties->boxID;?> .myev2').click(function(){
+								if($('.eventf').val() != '0'){
+									link = js_app_link('appExt=payPerRentals&app=show_event&appPage=default&dialog=true&ev_id='+$('.eventf').val());
+								}else{
+									link = js_app_link('appExt=infoPages&app=show_page&appPage=event_info&dialog=true');
+								}
+								popupWindow(link,'400','300');
+								return false;
+		});
         $('.eventf').change(function(){
 						if($(this).val() != '0'){
 							link = js_app_link('appExt=payPerRentals&app=show_event&appPage=default&ev_id='+$(this).val());
@@ -1032,30 +1076,75 @@ class InfoBoxPayPerRental extends InfoBoxAbstract {
 		                        hideAjaxLoader(myel);
 								if(typeof data.calendar != ''){
 									$('.myCalendar').remove();
+									$('.myTextCalendar').remove();
 									$('.calDone').remove();
+									$('.closeCal').remove();
+
 									self.parent().append(data.calendar);
 									$('.calDone').css('color','#ffffff');
 									$('.calDone').css('cursor','pointer');
 									$('.calDone').click(function(){
 										if($('.myCalendar').is(':visible')){
 											$('.myCalendar').hide();
-											$(this).html('Show Calendar');
+											$(this).html('Choose Dates');
+											$(this).css('position','relative');
+											$(this).css('top', '-14px');
+											$(this).css('z-index', '10005');
+											$(this).css('left', '110px');
+											$(this).css('color', '#ffffff');
+											$('.myTextCalendar').hide();
+											$('.allCalendar').hide();
+											$('.closeCal').hide();
+											if(myInitialDates != $('.mydates').html()){
+												$( '<div id="dialog-mesage1" title="Date Selection Changed"><span style="color:red;font-size:16px;">Date selection changed. Do you want us to update this page with your new dates?</span></div>' ).dialog({
+													modal: true,
+													buttons: {
+														No: function() {
+															$( this ).dialog( "close" );
+														},
+														Yes: function() {
+															$('.rentbbut').trigger('click');
+														}
+													}
+												});
+											}
 										}else{
+											$('.myTextCalendar').show();
 											$('.myCalendar').show();
-											$(this).html('Hide Calendar');
+											$(this).css('position','relative');
+											$(this).css('top', '290px');
+											$(this).css('color', '#000000');
+											$(this).css('z-index', '10005');
+											$(this).css('left', '30px');
+											$('.closeCal').css('position','relative');
+											$('.closeCal').css('top', '-30px');
+											$('.closeCal').css('z-index', '10005');
+											$('.closeCal').css('left', '230px');
+											$('.closeCal').css('cursor', 'pointer');
+											$('.closeCal').css('width', '15px');
+											$('.allCalendar').show();
+											$('.closeCal').show();
+											$(this).html('<div class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-primary"><span class="ui-button-text">Done Selecting Dates</span></div>');
 										}
 									});
-									$('.myCalendar').css('position','absolute');
-									$('.myCalendar').css('top', '30px');
-									$('.myCalendar').css('z-index', '1005');
-									$('.myCalendar').css('left', '50px');
-
+									$('.closeCal').click(function(){
+										$('.calDone').trigger('click');
+									});
+									$('.allCalendar').css('position','absolute');
+									$('.allCalendar').css('top', '0px');
+									$('.allCalendar').css('padding', '10px');
+									$('.allCalendar').css('padding-bottom', '55px');
+									$('.allCalendar').css('background-color','#ffffff');
+									$('.allCalendar').css('z-index', '1005');
+									$('.allCalendar').css('left', '10px');
+		                            var myInitialDates = $('.mydates').html();
 									var goodDates = jQuery.makeArray(data.goodDates);
 		                            $('.myCalendar').datepick({
 										useThemeRoller: true,
 										dateFormat: '<?php echo getJsDateFormat();?>',
 										multiSelect: 999,
 										multiSeparator: ',',
+										defaultDate: data.events_date,
 										changeMonth: false,
 										firstDay:0,
 										changeYear: false,
@@ -1081,11 +1170,19 @@ class InfoBoxPayPerRental extends InfoBoxAbstract {
 											return [false, '', 'Outside event days'];
 										}
 									});
-									$('.myCalendar').show();
+									$('.myCalendar').hide();
+									$('.myTextCalendar').hide();
+
 									if(data.selectedDates != ''){
 										var selDates =  jQuery.makeArray(data.selectedDates);
 										//var selDates = '08/21/2011,08/23/2011'.split(',');
 										$('.myCalendar').datepick('setDate', selDates);
+										$('.calDone').trigger('click');
+										$('.calDone').trigger('click');
+									}else{
+
+										$('.calDone').trigger('click');
+										//$('.calDone').trigger('click');
 									}
 								}
 
@@ -1135,15 +1232,20 @@ class InfoBoxPayPerRental extends InfoBoxAbstract {
         });
 
 		$('<?php echo '#'.$WidgetProperties->boxID;?> .mysh1').attr('href',"#");
-		$('<?php echo '#'.$WidgetProperties->boxID;?> .mysh1').live('click', function(){
+		$('<?php echo '#'.$WidgetProperties->boxID;?> .mysh1').click(function(){
 				link = js_app_link('appExt=payPerRentals&app=show_shipping&appPage=default&dialog=true&sh_id='+$(this).prev('.shipz').val());
 				popupWindow(link,'400','300');
 				return false;
 		});
 
 		$('<?php echo '#'.$WidgetProperties->boxID;?> .myga1').attr('href',"#");
-		$('<?php echo '#'.$WidgetProperties->boxID;?> .myga1').live('click', function(){
+		$('<?php echo '#'.$WidgetProperties->boxID;?> .myga1').click(function(){
 				link = js_app_link('appExt=infoPages&app=show_page&appPage=gate_info&dialog=true');
+				if($('.eventf').val() != '0'){
+					link = js_app_link('appExt=payPerRentals&app=show_event&isgate=1&appPage=default&dialog=true&ev_id='+$('.eventf').val());
+				}else{
+					link = js_app_link('appExt=infoPages&app=show_page&appPage=gate_info&dialog=true');
+				}
 				popupWindow(link,'400','300');
 				return false;
 		});

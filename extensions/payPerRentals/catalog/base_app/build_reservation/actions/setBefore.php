@@ -3,6 +3,7 @@
 	$html2  =  '';
  	$nr = 0;
 	$goodDates = '';
+	$events_date = '';
 	$selectedDates = array();
 	if(sysConfig::get('EXTENSION_PAY_PER_RENTALS_ENABLE_TIME') == 'True'){
 
@@ -191,6 +192,7 @@
 				->from('PayPerRentalEvents')
 				->where('events_id = ?', $_POST['event'])
 				->fetchOne();
+			$events_date = date('m/d/Y', strtotime($Qevent->events_date));
 
 			if($Qevent->events_days>1){
 				$myDates = '';
@@ -203,7 +205,7 @@
 					}
 					$myDates .= '</div>';
 				}
-				$html2 = '<div style="position:relative"><div class="myCalendar"></div> </div><div class="calDone">Hide Calendar</div>'.$myDates;
+				$html2 = '<div style="position:relative"><div class="allCalendar"><div class="myTextCalendar" style="color:red;background-color:#ffffff;width:200px;padding:10px;padding-top:5px;padding-bottom:5px;">Please click the dates you want to reserve. Then click the Done Selecting Dates button, and then chose your gate (optional) and click view rentals</div><div class="myCalendar"></div> </div><div class="calDone">Choose Dates</div><span class="closeCal ui-icon ui-icon-closethick"></span></div>'.$myDates;
 				$startTimePadding = strtotime($Qevent->events_date);
 				$endTimePadding = strtotime('+' . $Qevent->events_days . ' days', $startTimePadding);
 				$booked = array();
@@ -281,6 +283,7 @@
 				'nr'	=> $nr,
 				'data'     => $html,
 				'calendar' => $html2,
+				'events_date' => $events_date,
 				'selectedDates' => $selectedDates,
 				'goodDates' => $goodDates
 			), 'json');
@@ -364,6 +367,7 @@
 					'success' => true,
 					'data'     => $html,
 					'calendar' => $html2,
+					'events_date' => $events_date,
 					'selectedDates' =>$selectedDates,
 					'goodDates' => $goodDates
 				), 'json');

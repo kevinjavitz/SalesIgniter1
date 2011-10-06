@@ -23,9 +23,11 @@
 		$htmlField->selectOptionByValue((isset($_GET['state'])?$_GET['state']:1));
 
 	} else {
+		$addressEntry = $addressBook->getAddress($_GET['edit']);
 		$htmlField = htmlBase::newElement('input')
 					->setName($_GET['state_type'])
-					->attr('id',$_GET['state_type']);
+					->attr('id',$_GET['state_type'])
+					->setValue($addressEntry['entry_state']);
 	}
 
 	

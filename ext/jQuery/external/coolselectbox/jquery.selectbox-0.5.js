@@ -178,9 +178,17 @@ jQuery.SelectBox = function(selectobj, options) {
 		$select.children('option').each(function() {
 			var li = document.createElement('li');
 			li.setAttribute('id', parentid + '_' + $(this).val());
-			li.innerHTML = $(this).html();
+			arr = $(this).html().split('_');
+			if(typeof arr[1] != 'undefined'){
+				text = arr[0] + '<br/>' + arr[1];
+				text1 = arr[0];
+			}else{
+				text = $(this).html();
+				text1 = $(this).html();
+			}
+			li.innerHTML = text;
 			if ($(this).is(':selected')) {
-				$input.val($(this).html());
+				$input.val(text1);
 				$(li).addClass(opt.currentClass);
 			}
 			ul.appendChild(li);

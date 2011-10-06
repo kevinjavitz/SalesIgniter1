@@ -43,7 +43,7 @@
 			$userAccount->setGender($accountValidation['entry_gender']);
 		}
 		if (isset($accountValidation['dob'])){
-			$userAccount->setDateOfBirth($accountValidation['dob']);
+			$userAccount->setDateOfBirth(strftime(sysLanguage::getDateFormat('short'),strtotime($accountValidation['dob'])));
 		}
 		$userAccount->updateCustomerAccount();
 

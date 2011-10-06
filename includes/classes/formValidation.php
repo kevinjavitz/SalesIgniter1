@@ -123,7 +123,7 @@ class formValidation extends ArrayIterator {
 			$this->validationRules['dob'] = array(
 				'validate'          => 1,
 				'validation_type'   => 'date'.((sysConfig::get('ACCOUNT_DOB_REQUIRED') == 'true')?'|required':''),
-				'errorMessage_date' => sysLanguage::get('ENTRY_DATE_OF_BIRTH_ERROR_DATE'),
+				'errorMessage_date' => sprintf(sysLanguage::get('ENTRY_DATE_OF_BIRTH_ERROR_DATE'),str_replace('%Y','yy',str_replace('%m','mm',str_replace('%d','dd',sysLanguage::getDateFormat('short'))))),
 				'errorMessage_required'   => sysLanguage::get('ENTRY_DOB_ERROR_REQUIRED'),
 			);
 			$this->validationRules['entry_dob'] = $this->validationRules['dob'];
@@ -267,7 +267,7 @@ class formValidation extends ArrayIterator {
 					}
 					break;
 				case 'date':
-					$rawDate = date_parse($fieldValue);
+					$rawDate = date_parse(strftime(sysLanguage::getDateFormat('short'),$fieldValue));
 					if (checkdate($rawDate['month'], $rawDate['day'], $rawDate['year']) == false){
 						$error = true;
 					}

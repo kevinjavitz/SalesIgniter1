@@ -111,6 +111,8 @@ addConfiguration('ACCOUNT_TELEPHONE',5, 'Telephone Number', 'Telephone Number','
 addConfiguration('ACCOUNT_FISCAL_CODE',5, 'Fiscal Code', 'Fiscal Code','false',"tep_cfg_select_option(array('true', 'false'),");
 addConfiguration('ACCOUNT_CITY_BIRTH', 5, 'City of birth', 'City of birth', 'false', "tep_cfg_select_option(array('true', 'false'),");
 
+addConfiguration('BARCODE_TYPE', 1, 'Choose barcode type to use in the store', 'Choose barcode type to use in the store', 'Code 39', "tep_cfg_select_option(array('Code 128B', 'Code 39 Extended', 'QR', 'Code 39', 'Code 25', 'Code 25 Interleaved'),");
+
 /*
 		* This part is for completing with the remaining orders statuses if don't exists. In future updates they should be filled
 		* */
@@ -124,8 +126,7 @@ function addStatus($status_name) {
 	->orderBy('s.orders_status_id')
 	->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 	if (count($Qstatus) <= 0) {
-        $Status = new OrdersStatus();
-
+		$Status = new OrdersStatus();
 		$Description = $Status->OrdersStatusDescription;
 		foreach (sysLanguage::getLanguages() as $lInfo) {
 			$Description[$lInfo['id']]->language_id = $lInfo['id'];
@@ -196,8 +197,8 @@ addStatus('Shipped');
 
 
 add_extra_fields('modules_shipping_zone_reservation_methods','weight_rates','TEXT NULL');
-add_extra_fields('modules_shipping_zone_reservation_methods','min_rental_number'," INT( 1 ) NOT NULL DEFAULT  '0'");
-add_extra_fields('modules_shipping_zone_reservation_methods','min_rental_type'," INT( 1 ) NOT NULL DEFAULT  '0'");
+add_extra_fields('modules_shipping_zone_reservation_methods','min_rental_number','INT NOT NULL DEFAULT  "0"');
+add_extra_fields('modules_shipping_zone_reservation_methods','min_rental_type','INT NOT NULL DEFAULT  "0"');
 
 
 //update bannerManger

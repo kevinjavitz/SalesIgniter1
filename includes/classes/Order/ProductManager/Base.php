@@ -69,16 +69,35 @@ class OrderProductManager {
 		global $Order, $currencies, $typeNames;
 		$productsTable = htmlBase::newElement('table')->setCellPadding(3)->setCellSpacing(0)->css('width', '100%');
 
-		$productTableHeaderColumns = array(
-			array('colspan' => 2, 'text' => sysLanguage::get('TABLE_HEADING_PRODUCTS')),
-			array('text' => 'Barcode'),
-			array('text' => sysLanguage::get('TABLE_HEADING_PRODUCTS_MODEL')),
-			array('text' => sysLanguage::get('TABLE_HEADING_TAX')),
-			array('text' => sysLanguage::get('TABLE_HEADING_PRICE_EXCLUDING_TAX')),
-			array('text' => sysLanguage::get('TABLE_HEADING_PRICE_INCLUDING_TAX')),
-			array('text' => sysLanguage::get('TABLE_HEADING_TOTAL_EXCLUDING_TAX')),
-			array('text' => sysLanguage::get('TABLE_HEADING_TOTAL_INCLUDING_TAX'))
-		);
+		$productTableHeaderColumns = array();
+		if($showQty){
+			$productTableHeaderColumns[] = array('text' => sysLanguage::get('TABLE_HEADING_PRODUCTS_QTY'));
+		}
+		if($showName){
+			$productTableHeaderColumns[] = array('text' => sysLanguage::get('TABLE_HEADING_PRODUCTS_NAME'));
+		}
+		if($showBarcode){
+			$productTableHeaderColumns[] = array('text' => sysLanguage::get('TABLE_HEADING_PRODUCTS_BARCODE'));
+		}
+		if($showModel){
+			$productTableHeaderColumns[] = array('text' => sysLanguage::get('TABLE_HEADING_PRODUCTS_MODEL'));
+		}
+		if($showTax){
+			$productTableHeaderColumns[] = array('text' => sysLanguage::get('TABLE_HEADING_TAX'));
+		}
+		if($showPrice){
+			$productTableHeaderColumns[] = array('text' => sysLanguage::get('TABLE_HEADING_PRICE_EXCLUDING_TAX'));
+		}
+		if($showPriceWithTax){
+			$productTableHeaderColumns[] = array('text' => sysLanguage::get('TABLE_HEADING_PRICE_INCLUDING_TAX'));
+		}
+		if($showTotal){
+			$productTableHeaderColumns[] = array('text' => sysLanguage::get('TABLE_HEADING_TOTAL_EXCLUDING_TAX'));
+		}
+		if($showTotalWithTax){
+			$productTableHeaderColumns[] = array('text' => sysLanguage::get('TABLE_HEADING_TOTAL_INCLUDING_TAX'));
+		}
+
 
 		foreach($productTableHeaderColumns as $i => $cInfo){
 			$productTableHeaderColumns[$i]['addCls'] = 'main ui-widget-header';
@@ -116,43 +135,60 @@ class OrderProductManager {
 				$i++;
 			}
 
-			$productsName = $orderedProduct->getNameHtml();
+			$productsName = $orderedProduct->getNameHtml($showExtraInfo);
 
-			$bodyColumns = array(
-				array(
+			$bodyColumns = array();
+			if($showQty){
+				$bodyColumns[] = array(
 					'align' => 'right',
 					'text' => $productQty . '&nbsp;x'
-				),
-				array(
+				);
+			}
+			if($showName){
+				$bodyColumns[] = array(
 					'text' => $productsName
-				),
-				array(
+				);
+			}
+			if($showBarcode){
+				$bodyColumns[] = array(
 					'text' => $barcode
-				),
-				array(
+				);
+			}
+			if($showModel){
+				$bodyColumns[] = array(
 					'text' => $productModel
-				),
-				array(
+				);
+			}
+			if($showTax){
+				$bodyColumns[] = array(
 					'align' => 'right',
 					'text' => $taxRate . '%'
-				),
-				array(
+				);
+			}
+			if($showPrice){
+				$bodyColumns[] = array(
 					'align' => 'right',
 					'text' => '<b>' . $currencies->format($finalPrice, true, $Order->getCurrency(), $Order->getCurrencyValue()) . '</b>'
-				),
-				array(
+				);
+			}
+			if($showPriceWithTax){
+				$bodyColumns[] = array(
 					'align' => 'right',
 					'text' => '<b>' . $currencies->format($finalPriceWithTax, true, $Order->getCurrency(), $Order->getCurrencyValue()) . '</b>'
-				),
-				array(
+				);
+			}
+			if($showTotal){
+				$bodyColumns[] = array(
 					'align' => 'right',
 					'text' => '<b>' . $currencies->format($finalPrice * $productQty, true, $Order->getCurrency(), $Order->getCurrencyValue()) . '</b>'
-				),
-				array(
+				);
+			}
+			if($showTotalWithTax){
+				$bodyColumns[] = array(
 					'align' => 'right',
 					'text' => '<b>' . $currencies->format($finalPriceWithTax * $productQty, true, $Order->getCurrency(), $Order->getCurrencyValue()) . '</b>'
-				)
-			);
+				);
+			}
 
 			$sizeOf = sizeof($bodyColumns);
 			foreach($bodyColumns as $idx => $colInfo){

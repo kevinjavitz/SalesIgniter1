@@ -14,6 +14,7 @@ $Banners = Doctrine_Core::getTable('BannerManagerBanners');
 $Banner = $Banners->findOneByBannersId($bid);
 $Banner->banners_clicks = $Banner->banners_clicks + 1;
 $Banner->save();
-
-EventManager::attachActionResponse($url, 'redirect');
+if(!empty($url)) {
+	EventManager::attachActionResponse($url, 'redirect');
+}
 ?>

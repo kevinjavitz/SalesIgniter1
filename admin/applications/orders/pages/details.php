@@ -11,8 +11,18 @@
 	
 	$backButton = htmlBase::newElement('button')->usePreset('back')
 	->setHref(itw_app_link(tep_get_all_get_params(array('action')), null, 'default'));
-	
-	echo $invoiceButton->draw() . $packingSlipButton->draw() . $backButton->draw() . '<br>';
+
+	$infobox = htmlBase::newElement('div');
+
+	$infobox->append($invoiceButton)
+	->append($packingSlipButton)
+	->append($backButton);
+
+	EventManager::notify('AdminOrderDetailsAddButton', $oID, &$infobox);
+
+	echo $infobox->draw(). '<br>';
+
+
 ?></div>
 <br />
 <?php

@@ -447,4 +447,8 @@
 	<define key="INVENTORY_CENTERS_SORT_ORDER"><![CDATA[Inventory Centers Sort Order:]]></define>
 	<define key="PURCHASE_TYPE_RESERVATION_NAME"><![CDATA[Reservation]]></define>
 	<define key="PURCHASE_TYPE_RESERVATION_SHOW"><![CDATA[Reservation]]></define>
+	<define key="ENTRY_GENDER_ERROR_REQUIRED"><![CDATA[Gender required.]]></define>
+	<define key="ENTRY_DOB_ERROR_REQUIRED"><![CDATA[DOB required.]]></define>
+	<define key="ENTRY_COMPANY_ERROR_REQUIRED"><![CDATA[Company required.]]></define>
+	<define key="ENTRY_CITY_BIRTH_ERROR_REQUIRED"><![CDATA[City Birth required.]]></define>
 </definitions>

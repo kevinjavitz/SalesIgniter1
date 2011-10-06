@@ -173,7 +173,6 @@ class osC_onePageCheckout {
 		if ($this->onePage['createAccount'] == 'true'){
 			$addressBook =& $userAccount->plugins['addressBook'];
 			$customerAddress = $addressBook->getAddress('billing');
-			
 			$userAccount->setFirstName($customerAddress['entry_firstname']);
 			$userAccount->setLastName($customerAddress['entry_lastname']);
 			$userAccount->setEmailAddress($this->onePage['info']['email_address']);
@@ -181,7 +180,6 @@ class osC_onePageCheckout {
 			$userAccount->setTelephoneNumber($this->onePage['info']['telephone']);
 			$userAccount->setPassword($this->onePage['info']['password']);
 			$userAccount->setGender($customerAddress['entry_gender']);
-			$userAccount->setDateOfBirth((isset($customerAddress['dob']) ? tep_date_raw($customerAddress['dob']) : ''));
 			$userAccount->setNewsletter((isset($this->onePage['info']['newsletter']) ? $this->onePage['info']['newsletter'] : '0'));
 			$userAccount->setLanguageId(Session::get('languages_id'));
 			$customerId = $userAccount->createNewAccount();

@@ -14,6 +14,7 @@
 	$eventDate = $_POST['events_date'];
 	$eventDays = $_POST['events_days'];
 	$eventDetails = $_POST['events_details'];
+	$gateDetails = $_POST['gates_details'];
 	$countryId = $_POST['events_country'];
 	$state = $_POST['events_state'];
 	
@@ -44,6 +45,7 @@
 	$Event->events_date = $eventDate;
 	$Event->events_days = $eventDays;
 	$Event->events_details = $eventDetails;
+	$Event->gates_details = $gateDetails;
 	$Event->shipping = $shipping;
 	$Event->gates = $gates;
 	$Event->default_gate = $default_gate;

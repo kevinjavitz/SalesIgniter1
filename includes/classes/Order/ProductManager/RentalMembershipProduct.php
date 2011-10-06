@@ -172,7 +172,7 @@ class OrderRentalMembershipProduct implements Serializable {
 		return '<input type="text" size="3" class="ui-widget-content productQty" name="product[' . $this->id . '][qty]" value="' . $this->getQuantity() . '">&nbsp;x';
 	}
 
-	public function getNameHtml(){
+	public function getNameHtml($showExtraInfo = true){
 
 		$nameHref = htmlBase::newElement('a')
 		//->setHref(itw_catalog_app_link('products_id=' . $this->getProductsId(), 'product', 'info'))

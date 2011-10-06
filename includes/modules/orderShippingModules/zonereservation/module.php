@@ -90,12 +90,14 @@ class OrderShippingZonereservation extends OrderShippingModule {
 				if ($mInfo['status'] == 'True' && ($method == 'method' . $methodId || $method == '')){
 
 					$shippingCost =  $mInfo['cost'];
-					$tableRates = explode(',', $mInfo['weight_rates']);
-					foreach($tableRates as $rate){
-						$rInfo = explode(':', $rate);
-						if ($shipping_weight_prod <= $rInfo[0]) {
-							$shippingCost = $rInfo[1];
-							break;
+					if(!empty($mInfo['weight_rates'])){
+						$tableRates = explode(',', $mInfo['weight_rates']);
+						foreach($tableRates as $rate){
+							$rInfo = explode(':', $rate);
+							if ($shipping_weight_prod <= $rInfo[0]) {
+								$shippingCost = $rInfo[1];
+								break;
+							}
 						}
 					}
 					$showCost = $shippingCost;
@@ -146,5 +148,8 @@ class OrderShippingZonereservation extends OrderShippingModule {
 		return $selectBox->draw();
 	}
 
+	public function getTaxClass(){
+		return 0;
+	}
 }
 ?>

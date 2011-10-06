@@ -54,6 +54,11 @@ $(document).ready(function (){
 		var orderId = $('.gridBodyRow.state-active').attr('data-order_id');
 		js_redirect(js_app_link('app=orders&appPage=invoice&oID=' + orderId));
 	});
+
+	$('.gridButtonBar').find('.pdfinvoiceButton').click(function (){
+		var orderId = $('.gridBodyRow.state-active').attr('data-order_id');
+		js_redirect(js_catalog_app_link('appExt=pdfPrinter&app=generate_pdf&appPage=default&oID=' + orderId));
+	});
 	
 	$('.gridButtonBar').find('.packingSlipButton').click(function (){
 		var orderId = $('.gridBodyRow.state-active').attr('data-order_id');

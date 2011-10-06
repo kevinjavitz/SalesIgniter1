@@ -98,7 +98,7 @@
 		));
 	}
 
-	if (sysConfig::get('ACCOUNT_FISCAL_CODE_REQUIRED') == 'true'){
+	if (sysConfig::get('ACCOUNT_FISCAL_CODE') == 'true'){
 		$fiscalCodeInput = htmlBase::newElement('input')
 		->setName('fiscal_code');
 		if (isset($addressEntry)){
@@ -113,7 +113,7 @@
 		));
 	}
 
-	if (sysConfig::get('ACCOUNT_VAT_NUMBER_REQUIRED') == 'true'){
+	if (sysConfig::get('ACCOUNT_VAT_NUMBER') == 'true'){
 		$vatInput = htmlBase::newElement('input')
 		->setName('vat_number');
 		if (isset($addressEntry)){
@@ -128,7 +128,7 @@
 		));
 	}
 
-	if (sysConfig::get('ACCOUNT_CITY_BIRTH_REQUIRED') == 'true'){
+	if (sysConfig::get('ACCOUNT_CITY_BIRTH') == 'true'){
 		$citybirthInput = htmlBase::newElement('input')
 		->setName('city_birth');
 		if (isset($addressEntry)){
@@ -169,7 +169,7 @@
 		)
 	));
 	
-	if (ACCOUNT_STATE == 'true'){
+	if (sysConfig::get('ACCOUNT_STATE') == 'true'){
 
 		$country = (isset($addressEntry)?$addressEntry['entry_country_id']:sysConfig::get('ONEPAGE_DEFAULT_COUNTRY'));
 		$stateInput = htmlBase::newElement('selectbox');

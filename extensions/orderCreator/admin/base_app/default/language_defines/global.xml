@@ -56,5 +56,9 @@
 	<define key="TEXT_NEW_ORDER"><![CDATA[New Order]]></define>
 	<define key="TEXT_EDIT_ORDER"><![CDATA[Edit Order]]></define>
 
+	<define key="ENTRY_CITY_BIRTH"><![CDATA[City of birth:]]></define>
+	<define key="ENTRY_CIF"><![CDATA[Fiscal code:]]></define>
+	<define key="ENTRY_VAT"><![CDATA[VAT:]]></define>
+	<define key="ENTRY_DOB"><![CDATA[Date Of Birth:]]></define>
 
 </definitions>

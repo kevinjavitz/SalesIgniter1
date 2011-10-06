@@ -23,7 +23,11 @@
 	
 	foreach($Addresses as $key => $aInfo){
 		$values = $aInfo['valueArray'];
-		
+		if(!isset($values['entry_firstname']) && !isset($values['entry_lastname'])){
+			$entryArr = explode(' ', $values['entry_name']);
+			$values['entry_firstname'] = $entryArr[0];
+			$values['entry_lastname'] = $entryArr[1];
+		}
 		$FieldsArray = array(
 			'first_name' => array('required' => true, 'value' => $values['entry_firstname']),
 			'last_name' => array('required' => true, 'value' => $values['entry_lastname']),
@@ -219,7 +223,7 @@
 				}
 
 				if (isset($Fields['dob'])){
-					$FormTable->addRow(sysLanguage::get('ENTRY_DATE_OF_BIRTH'));
+					$FormTable->addRow(sprintf(sysLanguage::get('ENTRY_DATE_OF_BIRTH'),'('.str_replace('%Y','yy',str_replace('%m','mm',str_replace('%d','dd',sysLanguage::getDateFormat('short')))).')'));
 					$FormTable->addRow($Fields['dob']);
 				}
 
