@@ -348,6 +348,10 @@
 					if (!$onePageCheckout->isMembershipCheckout()){
 						$order->createOrder();
 						if(sysConfig::get('EXTENSION_PAY_PER_RENTALS_PROCESS_SEND') == 'True'){
+							$temp = $order->info['total'];
+							$order->info['total'] = 0;
+							$PaymentModule->processPayment();
+							$order->info['total'] = $temp;
 						}else{
 							$PaymentModule->processPayment();
 						}

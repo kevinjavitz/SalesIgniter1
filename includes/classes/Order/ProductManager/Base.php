@@ -65,8 +65,8 @@ class OrderProductManager {
 		return $total_weight;
 	}
 
-	public function listProducts(){
-		global $Order, $currencies, $typeNames;
+	public function listProducts($showTableHeading = true, $showQty = true, $showBarcode = true, $showModel = true, $showName = true, $showExtraInfo = true, $showPrice = true, $showPriceWithTax = true, $showTotal = true, $showTotalWithTax = true, $showTax = true) {
+		global  $currencies, $typeNames, $Order;
 		$productsTable = htmlBase::newElement('table')->setCellPadding(3)->setCellSpacing(0)->css('width', '100%');
 
 		$productTableHeaderColumns = array();
