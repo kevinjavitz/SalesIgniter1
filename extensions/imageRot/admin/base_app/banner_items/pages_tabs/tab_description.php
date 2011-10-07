@@ -131,6 +131,25 @@ $BannerStatusExpired = htmlBase::newElement('radio')
 			$BannerExpiresClicks->setValue(stripslashes($Banner['banners_expires_clicks']));
 			$BannerSortOrder->setValue(stripslashes($Banner['banners_sort_order']));
 		}
+$Qpages = Doctrine_Query::create()
+		->select('page_key')
+		->from('Pages')
+		->where('page_type = ?', 'page')
+		->orderBy('page_key asc')
+		->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+if ($Qpages){
+	$cmsPages = htmlBase::newElement('selectbox')
+			->setName('banners_cms_page')
+			->addOption('','-- Select Page --');
+
+	if($cmsPages){
+		foreach($Qpages as $pInfo){
+			if($pInfo['page_key'])
+				$cmsPages->addOption($pInfo['page_key'],$pInfo['page_key']);
+		}
+		$cmsPages->selectOptionByValue(stripslashes($Banner['banners_cms_page']));
+	}
+}
 ?>
 
  <table cellpadding="0" cellspacing="0" border="0">
@@ -146,7 +165,11 @@ $BannerStatusExpired = htmlBase::newElement('radio')
   <tr>
    <td colspan="2"><?php echo tep_draw_separator('pixel_trans.gif', '1', '10'); ?></td>
   </tr>
-	<tr>
+  <tr>
+   <td class="main" valign="top"><?php echo sysLanguage::get('TEXT_SELECT_CMS_PAGE_AS_POPUP'); ?></td>
+   <td class="main"><?php echo $cmsPages->draw(); ?></td>
+  </tr>
+  <tr>
    <td class="main" valign="top"><?php echo sysLanguage::get('TEXT_BANNER_URL'); ?></td>
    <td class="main"><?php echo $BannerURL->draw(); ?></td>
   </tr>

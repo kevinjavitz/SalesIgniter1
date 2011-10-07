@@ -6,7 +6,7 @@
  	$uploaded = false;
 	if (isset($_FILES['usrfl'])){
 		$upload = new upload('usrfl');
-		$upload->set_extensions(array('txt', 'xls', 'csv'));
+		$upload->set_extensions(array('txt', 'xls', 'csv', 'tsv'));
 		$upload->set_destination($dataExport->tempDir);
 		if ($upload->parse() && $upload->save()) {
 			$uploaded = true;

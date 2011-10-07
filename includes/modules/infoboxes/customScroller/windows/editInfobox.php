@@ -1,5 +1,33 @@
 <?php
 ob_start();
+function getCategoryTree($parentId, $namePrefix = '', &$categoriesTree){
+    global $lID, $allGetParams, $cInfo;
+    $Qcategories = Doctrine_Query::create()
+            ->select('c.*, cd.categories_name')
+            ->from('Categories c')
+            ->leftJoin('c.CategoriesDescription cd')
+            ->where('cd.language_id = ?', (int)Session::get('languages_id'))
+            ->andWhere('c.parent_id = ?', $parentId)
+            ->orderBy('c.sort_order, cd.categories_name');
+
+    EventManager::notify('CategoryListingQueryBeforeExecute', &$Qcategories);
+
+    $Result = $Qcategories->execute();
+    if ($Result->count() > 0){
+        foreach($Result->toArray(true) as $Category){
+            if ($Category['parent_id'] > 0){
+                //$namePrefix .= '&nbsp;';
+            }
+
+            $categoriesTree[] = array(
+                'categoryId'           => $Category['categories_id'],
+                'categoryName'         => $namePrefix . $Category['CategoriesDescription'][Session::get('languages_id')]['categories_name'],
+            );
+
+            getCategoryTree($Category['categories_id'], '&nbsp;&nbsp;&nbsp;' . $namePrefix, &$categoriesTree);
+        }
+    }
+}
 $scrollerQueryTypes = array(
 	'best_sellers' => 'Best Selling Products',
 	'featured' => 'Featured Products',
@@ -7,7 +35,8 @@ $scrollerQueryTypes = array(
 	'top_rentals' => 'Top Rented Products',
 	'specials' => 'Specials Products',
 	'related' => 'Current Product Related Products',
-	'category' => 'Current Category Products'
+	'category' => 'Current Category Products',
+    'category_featured' => 'Featured Products From Selected Category'
 );
 
 $scrollerTypes = array(
@@ -93,6 +122,15 @@ $scrollerTypes = array(
 			toleranceElement: '> div'
 		});
 
+        $('select[name="new_scroller_query"]').change(function (){
+            if($(this).val() == 'category_featured') {
+                $('select[name="new_selected_category"]').parent().parent().show();
+            } else {
+                $('select[name="new_selected_category"]').parent().parent().hide();
+            }
+        });
+        $('select[name="new_scroller_query"]').trigger('change');
+
 		$('.addScroller').click(function () {
 			var inputKey = $('ol.scrollerSortable > li').size();
 
@@ -133,7 +171,16 @@ $scrollerTypes = array(
 			$li.find('.configTable').append($configTable);
 
 			$('.scrollerSortable').append($li);
-
+            $li.find('select[name="scroller_query[' + inputKey + ']"]').change(function (){
+                var thisName = $(this).attr('name');
+                thisName = (thisName.substr(thisName.indexOf('['), thisName.lastIndexOf(']')));
+                if($(this).val() == 'category_featured') {
+                    $('select[name="selected_category' + thisName + '"]').parent().parent().show();
+                } else {
+                    $('select[name="selected_category' + thisName + '"]').parent().parent().hide();
+                }
+            });
+            $li.find('select[name="scroller_query[' + inputKey + ']"]').trigger('change');
 			$li.find('input[name="scroller_heading[' + inputKey + '][' + languageId + ']"]').keyup(function () {
 				$(this).parent().parent().parent().parent().parent().parent().find('.langHeading').html($(this).val());
 			});
@@ -156,6 +203,20 @@ $scrollerTypes = array(
 			});
 		});
 
+        var inputKey = $('ol.scrollerSortable > li').size();
+        for(var i=0; i < inputKey; i++){
+            $('select[name="scroller_query\\[' + i + '\\]"]').change(function (){
+                var thisName = $(this).attr('name');
+                thisName = (thisName.substr(thisName.indexOf('['), thisName.lastIndexOf(']')));
+                if($(this).val() == 'category_featured') {
+                    $('select[name="selected_category' + thisName + '"]').parent().parent().show();
+                } else {
+                    $('select[name="selected_category' + thisName + '"]').parent().parent().hide();
+                }
+            });
+            $('select[name="scroller_query\\[' + i + '\\]"]').trigger('change');
+        }
+
 		$('.tableExpander').click(
 			function () {
 				if (!$(this).hasClass('showing')){
@@ -165,6 +226,7 @@ $scrollerTypes = array(
 				else {
 					$(this).parent().find('.configTable').hide();
 					$(this).removeClass('showing').html('[ Show Settings ]');
+
 				}
 			}).mouseover(
 			function () {
@@ -220,11 +282,21 @@ $editTable->addBodyRow(array(
 	)
 ));
 
+
 echo $editTable->draw();
 
 $headingInputs = '';
 foreach(sysLanguage::getLanguages() as $lInfo){
 	$headingInputs .= $lInfo['showName']('&nbsp;') . ': <input type="text" name="new_scroller_heading_' . $lInfo['id'] . '"><br>';
+}
+$categoryTreeList = false;
+getCategoryTree(0,'',&$categoryTreeList);
+$categoryTreeNew = htmlBase::newElement('selectbox')
+        ->setName('new_selected_category')
+        ->setId('new_selected_category');
+$categoryTreeNew->addOption('', sysLanguage::get('--select--'));
+foreach($categoryTreeList as $category){
+    $categoryTreeNew->addOption($category['categoryId'], $category['categoryName']);
 }
 ?>
 <fieldset>
@@ -240,6 +312,13 @@ foreach(sysLanguage::getLanguages() as $lInfo){
 			<td><select name="new_scroller_query" class="scrollerQuery"><?php echo $scrollerQueryOptions;?></select>
 			</td>
 		</tr>
+        <tr>
+            <td>Show featured products from selected category:</td>
+            <td><?php
+                echo $categoryTreeNew->draw();
+                ?>
+            </td>
+        </tr>
 		<tr>
 			<td>Scroller Rows:</td>
 			<td><input type="text" name="new_scroller_rows" value="1" size="3"></td>
@@ -299,6 +378,18 @@ foreach(sysLanguage::getLanguages() as $lInfo){
 			$scrollerQueryOptions .= '<option value="' . $k . '"' . ($k == $cInfo->query ? ' selected' : '') . '>' . $v . '</option>';
 		}
 
+        $selectedCategory = isset($cInfo->selected_category) ? $cInfo->selected_category : '';
+
+        $categoryTree = htmlBase::newElement('selectbox')
+                ->setName('selected_category[' . $i . ']');
+        $categoryTree->addOption('', sysLanguage::get('--select--'));
+        foreach($categoryTreeList as $category){
+            $categoryTree->addOption($category['categoryId'], $category['categoryName']);
+        }
+        if(isset($selectedCategory)){
+            $categoryTree->selectOptionByValue($selectedCategory);
+        }
+
 		echo '<li id="scroller_config_' . $i . '" data-input_key="' . $i . '">' .
 			'<div>' .
 			'<span class="ui-icon ui-icon-closethick scrollerDelete" tooltip="Delete Scroller"></span>' .
@@ -314,6 +405,12 @@ foreach(sysLanguage::getLanguages() as $lInfo){
 			'<td>Scroller Type: </td>' .
 			'<td><select name="scroller_query[' . $i . ']" class="scrollerQuery">' . $scrollerQueryOptions . '</select></td>' .
 			'</tr>' .
+            '<tr>' .
+            '<td>Show featured products from selected category: </td>' .
+            '<td>' .
+             $categoryTree->draw() .
+             '</td>' .
+            '</tr>' .
 			'<tr>' .
 			'<td>Scroller Rows:</td>' .
 			'<td><input type="text" name="scroller_rows[' . $i . ']" value="' . (!isset($cInfo->rows) ? 1 : $cInfo->rows) . '" size="3"></td>' .

@@ -9,7 +9,28 @@
 		echo '<script type="text/javascript">';
 ?>
 	$(document).ready(function (){
-
+		$('.banner').each(function (){
+			$(this).unbind('hover').bind('hover',function (){
+				$(this).css('cursor','pointer');
+			});
+			$(this).unbind('click').bind('click',function (){
+				var bannerId = $(this).attr('bid');
+				var bannerType = $(this).attr('type');
+				if(bannerType == 'cmsPage') {
+					var link = js_app_link('appExt=infoPages&dialog=true&app=show_page&appPage=' + $(this).attr('page'));
+					popupWindow(link,'800','600');
+					$.ajax({
+						url: js_app_link('appExt=bannerManager&app=banner_actions&appPage=default'+'&action=clickBanner&bid='+bannerId),
+						cache: false,
+						type: 'get',
+						dataType: 'html',
+						success: function (html){
+						}
+					});
+					return false;
+				}
+			});
+		});
 <?php if( !$bannerG[0]["banner_group_is_rotator"]){ ?>
 		$('#<?php echo $bannerG[0]["banner_group_name"]; ?>').rentalslide({
 
@@ -93,25 +114,30 @@ setInterval(function(){$.ajax({
 	if( !$bannerG[0]["banner_group_is_rotator"]){ 
 		$k1 = 0;
 		foreach($bannerD as $banners){
+			$attributes = " onClick='return false;' bid=" . $banners['banners_id'] . " type='normal' ";
+			if(tep_not_null($banners['banners_cms_page'])) {
+				$banners['banners_url'] = '';
+				$attributes = ' bid=' . $banners['banners_id'] . ' type="cmsPage" ';
+			}
 
 		if (tep_not_null($banners['banners_html'])){
 
 			if(tep_not_null($banners['banners_url']))
-				echo "<a id='".$bannerG[0]['banner_group_name']."chtml".$k1."' href='".itw_app_link('appExt=imageRot&action=clickBanner&bid='.$banners['banners_id']."&url=".$banners['banners_url'],'banner_actions','default')."'>".$banners['banners_html']."</a>";
+				echo "<a class='banner' page='".$banners['banners_cms_page']."' id='".$bannerG[0]['banner_group_name']."chtml".$k1."' href='".itw_app_link('appExt=imageRot&action=clickBanner&bid='.$banners['banners_id']."&url=".$banners['banners_url'],'banner_actions','default')."'>".$banners['banners_html']."</a>";
 			else
-				echo "<a id='".$bannerG[0]['banner_group_name']."chtml".$k1."' onClick='return false;' style='cursor:default;' href='".itw_app_link('appExt=imageRot&action=clickBanner&bid='.$banners['banners_id']."&url=".$banners['banners_url'],'banner_actions','default')."'>".$banners['banners_html']."</a>";
+				echo "<a class='banner' page='".$banners['banners_cms_page']."' id='".$bannerG[0]['banner_group_name']."chtml".$k1."' " . $attributes . " href='".itw_app_link('appExt=imageRot&action=clickBanner&bid='.$banners['banners_id']."&url=".$banners['banners_url'],'banner_actions','default')."'>".$banners['banners_html']."</a>";
 		}else if(tep_not_null($banners['banners_body']) && substr($banners['banners_body'],strlen($banners['banners_html'])-3,3) == 'swf'){
 
 			if(tep_not_null($banners['banners_url']))
-				echo "<a id='".$bannerG[0]['banner_group_name']."chtml".$k1."' href='".itw_app_link('appExt=imageRot&action=clickBanner&bid='.$banners['banners_id']."&url=".$banners['banners_url'],'banner_actions','default')."'>".getFlashMovie(sysConfig::getDirWsCatalog().'extensions/imageRot/images/'.$banners['banners_body'],$banners['banners_small_description'],$bannerG[0]['banner_group_width'],$bannerG[0]['banner_group_height'])."</a>";
+				echo "<a class='banner' page='".$banners['banners_cms_page']."' id='".$bannerG[0]['banner_group_name']."chtml".$k1."' href='".itw_app_link('appExt=imageRot&action=clickBanner&bid='.$banners['banners_id']."&url=".$banners['banners_url'],'banner_actions','default')."'>".getFlashMovie(sysConfig::getDirWsCatalog().'extensions/imageRot/images/'.$banners['banners_body'],$banners['banners_small_description'],$bannerG[0]['banner_group_width'],$bannerG[0]['banner_group_height'])."</a>";
 			else
-				echo "<a id='".$bannerG[0]['banner_group_name']."chtml".$k1."' onClick='return false;' style='cursor:default;' href='".itw_app_link('appExt=imageRot&action=clickBanner&bid='.$banners['banners_id']."&url=".$banners['banners_url'],'banner_actions','default')."'>".getFlashMovie(sysConfig::getDirWsCatalog().'extensions/imageRot/images/'.$banners['banners_body'],$banners['banners_small_description'],$bannerG[0]['banner_group_width'],$bannerG[0]['banner_group_height'])."</a>";
+				echo "<a class='banner' page='".$banners['banners_cms_page']."' id='".$bannerG[0]['banner_group_name']."chtml".$k1."' " . $attributes . " href='".itw_app_link('appExt=imageRot&action=clickBanner&bid='.$banners['banners_id']."&url=".$banners['banners_url'],'banner_actions','default')."'>".getFlashMovie(sysConfig::getDirWsCatalog().'extensions/imageRot/images/'.$banners['banners_body'],$banners['banners_small_description'],$bannerG[0]['banner_group_width'],$bannerG[0]['banner_group_height'])."</a>";
 		}else{
 
 			if(tep_not_null($banners['banners_url']))
-				echo "<a id='".$bannerG[0]['banner_group_name']."chtml".$k1."' href='".itw_app_link('appExt=imageRot&action=clickBanner&bid='.$banners['banners_id']."&url=".$banners['banners_url'],'banner_actions','default')."'><img src='imagick_thumb.php?path=rel&imgSrc=". 'extensions/imageRot/images/'.$banners['banners_body']."&width=".$bannerG[0]['banner_group_width']."&height=".$bannerG[0]['banner_group_height']."'/><span>".$banners['banners_small_description']."</span></a>";
+				echo "<a class='banner'  page='".$banners['banners_cms_page']."' id='".$bannerG[0]['banner_group_name']."chtml".$k1."' href='".itw_app_link('appExt=imageRot&action=clickBanner&bid='.$banners['banners_id']."&url=".$banners['banners_url'],'banner_actions','default')."'><img src='imagick_thumb.php?path=rel&imgSrc=". 'extensions/imageRot/images/'.$banners['banners_body']."&width=".$bannerG[0]['banner_group_width']."&height=".$bannerG[0]['banner_group_height']."'/><span>".$banners['banners_small_description']."</span></a>";
 			else
-				echo "<a id='".$bannerG[0]['banner_group_name']."chtml".$k1."' onClick='return false;' style='cursor:default;' href='".itw_app_link('appExt=imageRot&action=clickBanner&bid='.$banners['banners_id']."&url=".$banners['banners_url'],'banner_actions','default')."'><img src='imagick_thumb.php?path=rel&imgSrc=". 'extensions/imageRot/images/'.$banners['banners_body']."&width=".$bannerG[0]['banner_group_width']."&height=".$bannerG[0]['banner_group_height']."'/><span>".$banners['banners_small_description']."</span></a>";
+				echo "<a class='banner' page='".$banners['banners_cms_page']."' id='".$bannerG[0]['banner_group_name']."chtml".$k1."' " . $attributes . " href='".itw_app_link('appExt=imageRot&action=clickBanner&bid='.$banners['banners_id']."&url=".$banners['banners_url'],'banner_actions','default')."'><img src='imagick_thumb.php?path=rel&imgSrc=". 'extensions/imageRot/images/'.$banners['banners_body']."&width=".$bannerG[0]['banner_group_width']."&height=".$bannerG[0]['banner_group_height']."'/><span>".$banners['banners_small_description']."</span></a>";
 		}
 		$k1++;
 		}
