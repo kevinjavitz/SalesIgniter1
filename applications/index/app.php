@@ -27,6 +27,11 @@
 		$App->setAppPage('nested');
 		//$appContent = sysConfig::getDirFsCatalog() . 'applications/index/pages/nested.php';
 	}elseif ($category_depth == 'products' || isset($_GET['manufacturers_id'])){
+        if(sysConfig::get('TOOLTIP_DESCRIPTION_ENABLED') == 'true'){
+            $App->addStylesheetFile('ext/jQuery/external/mopTip/mopTip-2.2.css');
+            $App->addJavascriptFile('ext/jQuery/external/mopTip/mopTip-2.2.js');
+            $App->addJavascriptFile('applications/products/javascript/common.js');
+        }
 		$App->setAppPage('products');
 		//$appContent = sysConfig::getDirFsCatalog() . 'applications/index/pages/products.php';
 	}else{ // default page
