@@ -232,9 +232,8 @@ class membershipUpdate_cron {
 
 			$return = false;
 
-			$this->order->updateBillAttempts();
 			$historyArray['customer_notified'] = 0;
-			if ($this->order->getBillingAttempts() < $this->retryMaxTimes){
+			//if ($this->order->getBillingAttempts() < $this->retryMaxTimes){
 				$historyArray['customer_notified'] = 1;
 
 				$emailEvent = new emailEvent('membership_renewal_failed', $this->userAccount->getLanguageId());
@@ -247,7 +246,7 @@ class membershipUpdate_cron {
 					'name'  => $this->userAccount->getFullName()
 				));
 			}
-		}
+		//}
 
 		if ($this->isRetry()){
 			$billingArray['error'] = 'RETRY:: ' . $billingArray['error'];
@@ -259,11 +258,6 @@ class membershipUpdate_cron {
 
 	public function insertOrder(){
 		global $currencies;
-		if ($this->isRetry()){
-			$this->order->updateBillAttempts();
-			return true;
-		}
-
 		$order = new OrderProcessor;
 		$OrderTotalModules = new OrderTotalModules;
 
@@ -285,7 +279,7 @@ class membershipUpdate_cron {
 
 		$order->createOrder();
 
-		if (CRON_BILL_METHOD == 'current'){
+		if (sysConfig::get('CRON_BILL_METHOD') == 'current'){
 			$planPrice = $membership->getPlanPrice();
 			$planName = $membership->getPlanName();
 			$taxRate = $membership->getPlanTaxRate($rentalAddress['entry_country_id'], $rentalAddress['entry_zone_id']);

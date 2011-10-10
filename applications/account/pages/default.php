@@ -55,8 +55,8 @@
 	if (sysConfig::get('ALLOW_RENTALS') == 'true'){
 		if ($userAccount->isRentalMember()){
 			$links = array();
+			$membership =& $userAccount->plugins['membership'];
 			if ($userAccount->membershipIsActivated()){
-				$membership =& $userAccount->plugins['membership'];
 				$Qcheck = Doctrine_Query::create()
 				->from('MembershipUpdate mu')
 				->leftJoin('mu.Membership m')
@@ -90,9 +90,16 @@
 				->setHref(itw_app_link(null, 'account', 'membership_cancel', 'SSL'));
 			} elseif($userAccount->needsRenewal()) {
 				Session::set('account_action', 'renew');
+				if($membership->isPastDue()){
+					$links[] = htmlBase::newElement('a')->html(sysLanguage::get('MY_ACCOUNT_MEMBERSHIP_BILLING_INFO'))
+					->setHref(itw_app_link(null, 'account', 'membership_info', 'SSL'));
+					$links[] = htmlBase::newElement('a')->html(sysLanguage::get('MY_ACCOUNT_MEMBERSHIP_BILLING_INFO_EDIT'))
+					->setHref(itw_app_link('edit=' . $membership->getRentalAddressId(), 'account', 'billing_address_book', 'SSL'));
+				}else{
+					$links[] = htmlBase::newElement('a')->html(sysLanguage::get('TEXT_CLICK_HERE'))
+					->setHref(itw_app_link('checkoutType=rental', 'checkout', 'default', 'SSL'));
+				}
 
-				$links[] = htmlBase::newElement('a')->html(sysLanguage::get('TEXT_CLICK_HERE'))
-				->setHref(itw_app_link(null, 'account', 'membership', 'SSL'));
 			}else{
 				$links[] = htmlBase::newElement('a')->html(sysLanguage::get('BOX_HEADING_RENTED_PRODUCTS'))
 				->setHref(itw_app_link(null, 'account', 'rented_products', 'SSL'));

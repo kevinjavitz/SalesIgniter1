@@ -75,11 +75,11 @@
 			}
 			$membership->setNextBillDate($next_bill_date);
 			
-			if ($_POST['activate'] == 'N'){
+			/*if ($_POST['activate'] == 'N'){
 				$membership->setMembershipStatus('U');
 			}else{
 				$membership->setMembershipStatus('M');
-			}
+			}*/
 
 			if (array_key_exists('make_member', $_POST)){
 				$membership->createNewMembership();
