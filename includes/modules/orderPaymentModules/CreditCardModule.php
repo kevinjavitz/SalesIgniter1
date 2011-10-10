@@ -200,7 +200,9 @@
 		}
 
 		public function validateCreditCard($arr, $useCvv = false){
-			include(sysConfig::getDirFsCatalog() . 'includes/classes/cc_validation.php');
+			if(!class_exists('cc_validation')){
+				include(sysConfig::getDirFsCatalog() . 'includes/classes/cc_validation.php');
+			}
 			$validator = new cc_validation();
 			if ($useCvv === true){
 				$result = $validator->validate(

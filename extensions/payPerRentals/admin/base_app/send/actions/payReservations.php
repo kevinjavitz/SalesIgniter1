@@ -33,7 +33,10 @@ $Qreservations = Doctrine_Query::create()
 
 						if (sysConfig::get('EXTENSION_PAY_PER_RENTALS_PROCESS_SEND') == 'True'){
 							$payedAmount = (isset($_POST['amount_payed'][$oprInfo->orders_products_reservations_id])?$_POST['amount_payed'][$oprInfo->orders_products_reservations_id]:'');
-							//getpayment history for order..get payment data for order..uiset hem to pay add a new message for the reservation barcode
+
+							include_once(sysConfig::getDirFsCatalog() . 'includes/functions/crypt.php');
+							include_once(sysConfig::getDirFsCatalog() . 'includes/classes/http_client.php');
+
 							$paymentModule->processPayment($oInfo['orders_id'], $payedAmount);
 							$QhistoryLast = Doctrine_Query::create()
 							->from('OrdersPaymentsHistory')

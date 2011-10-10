@@ -300,7 +300,6 @@
 		public function processPayment($orderID = null, $amount = null){
 			global $order, $onePageCheckout, $ShoppingCart, $Editor;
 
-			$this->removeOrderOnFail = true;
 			if(isset($_POST['canReuse'])){
 				$onePageCheckout->onePage['info']['payment']['cardDetails']['canReuse'] = true;
 			}
@@ -313,22 +312,14 @@
 				$xType = 'PRIOR_AUTH_CAPTURE';
 			}
 
-
-
-			$userAccount = OrderPaymentModules::getUserAccount();
 			$paymentInfo = OrderPaymentModules::getPaymentInfo();
-
-			$addressBook =& $userAccount->plugins['addressBook'];
-			$billingAddress = $addressBook->getAddress('billing');
-			$countryInfo = $userAccount->plugins['addressBook']->getCountryInfo($billingAddress['entry_country_id']);
-
 			$xExpDate = $paymentInfo['cardDetails']['cardExpMonth'] . $paymentInfo['cardDetails']['cardExpYear'];
 			$expirationDate = $paymentInfo['cardDetails']['cardExpYear'].'-'. $paymentInfo['cardDetails']['cardExpMonth'];
 
 			/*For each product i calculate deposit amount and make the sum for auth type and then substract for auth and sale*/
 			/*if on editor i get all product from editor too*/
 			$totalDeposit = 0;
-			if(isset($ShoppingCart)){
+			if(isset($ShoppingCart) && !is_null($ShoppingCart) && is_object($ShoppingCart)){
 				foreach($ShoppingCart->getProducts() as $iProduct){
 					$resInfo = $iProduct->getInfo();
 					if(isset($resInfo['reservationInfo']['deposit_amount'])){
@@ -346,6 +337,12 @@
 			}
 
 			if(is_null($orderID)){
+				$userAccount = OrderPaymentModules::getUserAccount();
+
+				$addressBook =& $userAccount->plugins['addressBook'];
+				$billingAddress = $addressBook->getAddress('billing');
+				$countryInfo = $userAccount->plugins['addressBook']->getCountryInfo($billingAddress['entry_country_id']);
+
 				$total = $order->info['total'];
 				$dataArray = array(
 					'currencyCode' => $order->info['currency'],
@@ -372,7 +369,7 @@
 			}else{
 				$Qorder = Doctrine_Query::create()
 					->from('Orders o')
-					->leftJoin('o.OrdersPaymentHistory oph')
+					->leftJoin('o.OrdersPaymentsHistory oph')
 					->leftJoin('o.Customers c')
 					->leftJoin('o.OrdersAddresses oa')
 					->leftJoin('o.OrdersTotal ot')
@@ -386,16 +383,13 @@
 				}else{
 					$total = $Qorder[0]['OrdersTotal'][0]['value'];
 				}
-				$cardDetails = cc_decrypt($Qorder[0]['OrdersPaymentHistory']['card_details']);
-
-				$xExpDate = $cardDetails['exp_date'];
-
-
+				$cardDetails = unserialize(cc_decrypt($Qorder[0]['OrdersPaymentsHistory'][0]['card_details']));
+				$xExpDate = $cardDetails['cardExpMonth']. $cardDetails['cardExpYear'];
 				$dataArray = array(
 					'currencyCode' => $Qorder[0]['currency'],
 					'orderID' => $orderID,
 					'description' => sysConfig::get('STORE_NAME') . ' Subscription Payment',
-					'cardNum' => $cardDetails['card_num'],
+					'cardNum' => $cardDetails['cardNumber'],
 					'cardExpDate' => $xExpDate,
 					'customerId' => $Qorder[0]['customers_id'],
 					'customerEmail' => $Qorder[0]['customers_email_address'],
@@ -408,7 +402,7 @@
 					'customerState' => $Qorder[0]['OrdersAddresses'][0]['entry_state'],
 					'customerTelephone' => $Qorder[0]['customers_telephone'],
 					'customerCountry' => $Qorder[0]['OrdersAddresses'][0]['entry_country'],
-					'cardCvv' => $cardDetails['card_cvv']
+					'cardCvv' => $cardDetails['cardCvvNumber']
 				);
 
 			}
@@ -653,8 +647,12 @@
 						$info['amount'] = '';
 					}
 
-					if($message == 'Successful.'){
-						$info['message'] = 'Approval Code:'.$this->getAuthCode();
+					if($message == 'Successful.' || (isset($order) && sysConfig::get('EXTENSION_PAY_PER_RENTALS_PROCESS_SEND') == 'True' && $order->info['total'] == 0)){
+						if(isset($order) &&sysConfig::get('EXTENSION_PAY_PER_RENTALS_PROCESS_SEND') == 'True' && $order->info['total'] == 0){
+							$info['message'] = 'Payment on hold';
+						}else{
+							$info['message'] = 'Approval Code:'.$this->getAuthCode();
+						}
 						$info['transId'] = (isset($this->transactionId)?$this->transactionId:'');
 						return $this->CIMSuccess($info, $isCron);
 					}else{
@@ -720,6 +718,7 @@
 		}
 
 		private function onResponse($CurlResponse, $isCron = false){
+			global $order;
 			$response = $CurlResponse->getResponse();
 			$response = explode(',', $response);
 
@@ -753,7 +752,10 @@
 				$this->cronMsg = $errMsg;
 			}
 
-			if ($success === true){
+			if ($success === true || (isset($order) && sysConfig::get('EXTENSION_PAY_PER_RENTALS_PROCESS_SEND') == 'True' && $order->info['total'] == 0)){
+				if(isset($order) && sysConfig::get('EXTENSION_PAY_PER_RENTALS_PROCESS_SEND') == 'True' && $order->info['total'] == 0){
+					$errMsg = 'Payment on hold';
+				}
 				$this->onSuccess(array(
 					'curlResponse' => $CurlResponse,
 					'message'      => $errMsg
@@ -829,6 +831,7 @@
 					'cardNumber'   => $RequestData['x_card_num'],
 					'cardExpMonth' => substr($RequestData['x_exp_date'], 0, 2),
 					'cardExpYear'  => substr($RequestData['x_exp_date'], 2),
+					'cardCvvNumber'  => $RequestData['x_card_code'],
 					'transId'      => (isset($this->transactionId)?$this->transactionId:'')
 			);
 

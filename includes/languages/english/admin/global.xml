@@ -451,4 +451,10 @@
 	<define key="ENTRY_DOB_ERROR_REQUIRED"><![CDATA[DOB required.]]></define>
 	<define key="ENTRY_COMPANY_ERROR_REQUIRED"><![CDATA[Company required.]]></define>
 	<define key="ENTRY_CITY_BIRTH_ERROR_REQUIRED"><![CDATA[City Birth required.]]></define>
+	<define key="TABLE_HEADING_PRODUCTS_QTY"><![CDATA[Quantity]]></define>
+	<define key="TABLE_HEADING_PRODUCTS_NAME"><![CDATA[Product Name]]></define>
+	<define key="TABLE_HEADING_PRODUCTS_BARCODE"><![CDATA[Barcode]]></define>
+	<define key="PAYMENT_MODULE_MO_AWAITING_PAYMENT"><![CDATA[Awaiting Payment]]></define>
+	
+
 </definitions>
