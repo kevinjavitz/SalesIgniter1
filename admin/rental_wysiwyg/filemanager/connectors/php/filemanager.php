@@ -109,6 +109,6 @@ if(!isset($_GET)) {
 }
 
 echo json_encode($response);
-die();
+require($basePath . 'includes/application_bottom.php');
 
 ?>
