@@ -59,3 +59,7 @@
 		</div>
 	</body>
 </html>
+<?php
+require($basePath . 'includes/application_bottom.php');
+
+?>
