@@ -20,7 +20,7 @@
 					var link = js_app_link('appExt=infoPages&dialog=true&app=show_page&appPage=' + $(this).attr('page'));
 					popupWindow(link,'800','600');
 					$.ajax({
-						url: js_app_link('appExt=bannerManager&app=banner_actions&appPage=default'+'&action=clickBanner&bid='+bannerId),
+						url: js_app_link('appExt=imageRot&app=banner_actions&appPage=default'+'&action=clickBanner&bid='+bannerId),
 						cache: false,
 						type: 'get',
 						dataType: 'html',
