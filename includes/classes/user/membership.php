@@ -451,7 +451,7 @@ class rentalStoreUser_membership extends StandardClass {
 	}
 
 	public function isPastDue(){
-		return ($this->isRentalMember() && (strtotime($this->getNextBillDate()) - strtotime(date('Y-m-d H:i:s')) < sysConfig::get('RENTAL_DAYS_CUSTOMER_PAST_DUE')*60*60*1000*24));
+		return ($this->isRentalMember() && (($this->getNextBillDate() - strtotime(date('Y-m-d'))) < sysConfig::get('RENTAL_DAYS_CUSTOMER_PAST_DUE')*60*60*24));
 	}
 
 	public function isActivated(){

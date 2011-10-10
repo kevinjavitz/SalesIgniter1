@@ -62,4 +62,6 @@
 	<define key="EMAIL_TEXT_EXTRA"><![CDATA[Please return the rental before expiry of your package billing cycle.]]></define>
 	<define key="TEXT_RARE"><![CDATA[ <span style="color:red">(rare/out of print)</span>]]></define>
 	<define key="TEXT_MEMBER_SINCE"><![CDATA[<br>Member Since: %s<br>]]></define>
+	<define key="TEXT_BUTTON_CONTINUE_CART"><![CDATA[Continue Searching]]></define>
+
 </definitions>

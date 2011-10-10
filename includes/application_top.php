@@ -465,7 +465,7 @@ require(sysConfig::getDirFsCatalog() . 'includes/classes/htmlBase.php');
 								$errorMsg = sprintf(sysLanguage::get('TEXT_NOT_RENTAL_CUSTOMER'),itw_app_link('checkoutType=rental','checkout','default','SSL'), itw_app_link(null,'account','login'));
 								break;
 							case 'inactive':
-								$errorMsg = sprintf(sysLanguage::get('TEXT_NOT_ACTIVE_CUSTOMER'), itw_app_link('checkoutType=rental','checkout','default','SSL'));
+								$errorMsg = sprintf(sysLanguage::get('TEXT_NOT_ACTIVE_CUSTOMER'), ($membership->isPastDue()?itw_app_link((isset($membership)?'edit='.$membership->getRentalAddressId():''),'account','billing_address_book','SSL'):itw_app_link('checkoutType=rental','checkout','default','SSL')));
 								break;
 							case 'pastdue':
 								$errorMsg = sprintf(sysLanguage::get('RENTAL_CUSTOMER_IS_PAST_DUE'), itw_app_link((isset($membership)?'edit='.$membership->getRentalAddressId():''),'account','billing_address_book','SSL'));//
@@ -516,7 +516,7 @@ require(sysConfig::getDirFsCatalog() . 'includes/classes/htmlBase.php');
 								$errorMsg = sprintf(sysLanguage::get('TEXT_NOT_RENTAL_CUSTOMER'),itw_app_link('checkoutType=rental','checkout','default','SSL'), itw_app_link(null,'account','login'));
 								break;
 							case 'inactive':
-								$errorMsg = sprintf(sysLanguage::get('TEXT_NOT_ACTIVE_CUSTOMER'), itw_app_link('checkoutType=rental','checkout','default','SSL'));
+								$errorMsg = sprintf(sysLanguage::get('TEXT_NOT_ACTIVE_CUSTOMER'), ($membership->isPastDue()?itw_app_link((isset($membership)?'edit='.$membership->getRentalAddressId():''),'account','billing_address_book','SSL'):itw_app_link('checkoutType=rental','checkout','default','SSL')));
 								break;
 							case 'pastdue':
 								$errorMsg = sprintf(sysLanguage::get('RENTAL_CUSTOMER_IS_PAST_DUE'), itw_app_link((isset($membership)?'edit='.$membership->getRentalAddressId():''),'account','billing_address_book','SSL'));//

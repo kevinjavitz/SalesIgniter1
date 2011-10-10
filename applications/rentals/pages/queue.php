@@ -241,11 +241,24 @@
 		'action' => itw_app_link('action=updateQueue', 'rentals', 'queue'),
 		'method' => 'post'
 	));
-	
-	$pageButtons = htmlBase::newElement('button')
+
+	$link = itw_app_link(null, 'products', 'all');
+	if (isset($navigation->snapshot['get']) && sizeof($navigation->snapshot['get']) > 0){
+		if (isset($navigation->snapshot['get']['cPath'])){
+			$link = itw_app_link('cPath=' . $navigation->snapshot['get']['cPath'], 'index', 'default');
+		}
+	}
+
+	$continueButtonHtml = htmlBase::newElement('button')
+	->setName('continue')
+	->setText(sysLanguage::get('TEXT_BUTTON_CONTINUE_CART'))
+	->setHref($link);
+
+	$updateQueueButton = htmlBase::newElement('button')
 	->setText(sysLanguage::get('TEXT_BUTTON_UPDATE_QUEUE'))
-	->setType('submit')
-	->draw();
+	->setType('submit');
+
+	$pageButtons = $continueButtonHtml->draw(). ' '.$updateQueueButton->draw();
 }else{
 	$pageContents .= sysLanguage::get('TEXT_QUEUE_EMPTY');
 
