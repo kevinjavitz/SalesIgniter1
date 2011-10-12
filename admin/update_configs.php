@@ -164,25 +164,33 @@ function addEmailTemplateVariables($variableName,$event, $is_conditional = 0, $c
 }
 
 function addEmailTemplate($name, $event, $attach, $subject, $content){
-	$emailTemplate = new EmailTemplates;
-	$emailTemplate->email_templates_name = $name;
-	$emailTemplate->email_templates_event = $event;
-	if(!empty($attach)){
-		$emailTemplate->email_templates_attach = $attach;
-	}
-	$emailTemplate->save();
-	$emailTemplateDescription = new EmailTemplatesDescription;
-	$emailTemplateDescription->email_templates_id = $emailTemplate->email_templates_id;
-	$emailTemplateDescription->email_templates_subject = $subject;
-	$emailTemplateDescription->email_templates_content = $content;
-	$emailTemplateDescription->language_id = Session::get('languages_id');
+	$emailTemplates = Doctrine_Core::getTable('EmailTemplates')->findOneByEmailTemplatesEvent($event);
+	if(!$emailTemplates){
+		$emailTemplate = new EmailTemplates;
+		$emailTemplate->email_templates_name = $name;
+		$emailTemplate->email_templates_event = $event;
+		if(!empty($attach)){
+			$emailTemplate->email_templates_attach = $attach;
+		}
+		$emailTemplate->save();
+		$emailTemplateDescription = new EmailTemplatesDescription;
+		$emailTemplateDescription->email_templates_id = $emailTemplate->email_templates_id;
+		$emailTemplateDescription->email_templates_subject = $subject;
+		$emailTemplateDescription->email_templates_content = $content;
+		$emailTemplateDescription->language_id = Session::get('languages_id');
 
-	$emailTemplateDescription->save();
+		$emailTemplateDescription->save();
+	}
 }
 addEmailTemplate('Return Reminders','return_reminder','','Return Reminder Alert','Hello {$firstname},<br/><br/>The following products are to be returned {$rented_list}<br/><br/>Regards,<br/>{$store_owner}');
 addEmailTemplateVariables('firstname','return_reminder');
 addEmailTemplateVariables('email_address','return_reminder');
 addEmailTemplateVariables('rented_list','return_reminder');
+
+addEmailTemplate('Shipment Due Reminders','ship_reminder','','Shipment Due Reminder','Hello {$firstname},<br/><br/>The following products are due to be shipped {$rented_list}<br/><br/>Regards,<br/>{$store_owner}');
+addEmailTemplateVariables('firstname','ship_reminder');
+addEmailTemplateVariables('rented_list','ship_reminder');
+
 
 
 addEmailTemplateVariables('customerFirstName','membership_activated_admin');

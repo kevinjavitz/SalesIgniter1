@@ -455,6 +455,6 @@
 	<define key="TABLE_HEADING_PRODUCTS_NAME"><![CDATA[Product Name]]></define>
 	<define key="TABLE_HEADING_PRODUCTS_BARCODE"><![CDATA[Barcode]]></define>
 	<define key="PAYMENT_MODULE_MO_AWAITING_PAYMENT"><![CDATA[Awaiting Payment]]></define>
-	
+		<define key="TEXT_BEFORE_QUOTES"><![CDATA[First, please enter your zip code so we can calculate shipping and availability :<br/>]]></define>
 
 </definitions>

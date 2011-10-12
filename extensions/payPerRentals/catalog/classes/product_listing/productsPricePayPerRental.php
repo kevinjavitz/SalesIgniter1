@@ -119,6 +119,14 @@ class productListing_productsPricePayPerRental {
 					$event_gate = '';
 					$pickup = '';
 					$dropoff = '';
+					$days_before = '';
+					$days_after = '';
+					if (Session::exists('isppr_shipping_days_before')){
+						$days_before = Session::get('isppr_shipping_days_before');
+					}
+					if (Session::exists('isppr_shipping_days_after')){
+						$days_after = Session::get('isppr_shipping_days_after');
+					}
 					if (Session::exists('isppr_date_start')){
 						$start_date = Session::get('isppr_date_start');
 					}
@@ -203,6 +211,20 @@ class productListing_productsPricePayPerRental {
 						->setValue($start_date);
 					}
 
+					if (isset($days_before)) {
+						$htmlDaysBefore = htmlBase::newElement('input')
+							->setType('hidden')
+							->setName('days_before')
+							->setValue($days_before);
+					}
+
+					if (isset($days_after)) {
+						$htmlDaysAfter = htmlBase::newElement('input')
+							->setType('hidden')
+							->setName('days_after')
+							->setValue($days_after);
+					}
+
 					if (sysConfig::get('EXTENSION_PAY_PER_RENTALS_USE_EVENTS') == 'True') {
 						$htmlEventDate = htmlBase::newElement('input')
 						->setType('hidden')
@@ -261,6 +283,14 @@ class productListing_productsPricePayPerRental {
 					if (isset($htmlEndDate)) {
 						$pageForm->append($htmlEndDate);
 					}
+
+					if (isset($htmlDaysBefore)) {
+						$pageForm->append($htmlDaysBefore);
+					}
+
+					if (isset($htmlDaysAfter)) {
+						$pageForm->append($htmlDaysAfter);
+					}
 					if (isset($htmlPickup)) {
 						$pageForm->append($htmlPickup);
 					}
@@ -278,12 +308,27 @@ class productListing_productsPricePayPerRental {
 							$pageForm->append($htmlEventGates);
 						}
 					}
-
+					$ship_cost = 0;
+					$isR = false;
+					$isRV = '';
 					if (Session::exists('isppr_shipping_method')) {
 						$htmlShippingDays = htmlBase::newElement('input')
 						->setType('hidden')
-						->setName('rental_shipping')
-						->setValue("zonereservation_" . Session::get('isppr_shipping_method'));
+						->setName('rental_shipping');
+						if (sysConfig::get('EXTENSION_PAY_PER_RENTALS_USE_UPS_RESERVATION') == 'False'){
+							$htmlShippingDays->setValue("zonereservation_" . Session::get('isppr_shipping_method'));
+							if (Session::exists('isppr_shipping_cost')) {
+								$ship_cost = (float) Session::get('isppr_shipping_cost');
+							}
+
+						}else{
+							$htmlShippingDays->setValue("upsreservation_" . Session::get('isppr_shipping_method'));
+							if(isset($_POST['rental_shipping'])){
+								$isR = true;
+								$isRV = $_POST['rental_shipping'];
+							}
+							$_POST['rental_shipping'] = 'upsreservation_'. Session::get('isppr_shipping_method');
+						}
 						$pageForm->append($htmlShippingDays);
 					}
 
@@ -336,6 +381,24 @@ class productListing_productsPricePayPerRental {
 					}
 					if($start_date != '' && $end_date != ''){
 						$depositAmount = $purchaseTypeClass->getDepositAmount();
+						$isR = false;
+						$isRV = '';
+						if (Session::exists('isppr_shipping_method')) {
+
+							if (sysConfig::get('EXTENSION_PAY_PER_RENTALS_USE_UPS_RESERVATION') == 'False'){
+								if (Session::exists('isppr_shipping_cost')) {
+									$ship_cost = (float) Session::get('isppr_shipping_cost');
+								}
+
+							}else{
+								if(isset($_POST['rental_shipping'])){
+									$isR = true;
+									$isRV = $_POST['rental_shipping'];
+								}
+								$_POST['rental_shipping'] = 'upsreservation_'. Session::get('isppr_shipping_method');
+							}
+						}
+
 						$thePrice = 0;
 
 						$price = $purchaseTypeClass->getReservationPrice($start_date, $end_date);
@@ -353,6 +416,11 @@ class productListing_productsPricePayPerRental {
 
 
 						$pricing = $currencies->format($qtyVal * $thePrice - $qtyVal * $depositAmount + $ship_cost);
+						if(!$isR){
+							unset($_POST['rental_shipping']);
+						}else{
+							$_POST['rental_shipping'] = $isRV;
+						}
 						$tableRow[1] = '<tr>
 									<td class="main"><nobr>Price:</nobr></td>
 									<td class="main">' . $pricing . '</td>

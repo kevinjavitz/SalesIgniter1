@@ -653,13 +653,13 @@ class OrderProcessor {
 			$currentOrder['productsOrdered'] = (isset($this->newOrder['productsOrdered']) ? $this->newOrder['productsOrdered'] : ((isset($products_ordered)&&(!empty($products_ordered)))?$products_ordered:$this->products_ordered) );
 		}
 
-		EventManager::notify('OrderBeforeSendEmail', &$currentOrder, &$emailEvent, &$products_ordered);
+		$sendVariables = array();
+		EventManager::notify('OrderBeforeSendEmail', &$currentOrder, &$emailEvent, &$products_ordered, &$sendVariables);
 
+		$sendVariables['email'] = $userAccount->getEmailAddress();
+		$sendVariables['name'] = $userAccount->getFullName();
 
-		$emailEvent->sendEmail(array(
-				'email' => $userAccount->getEmailAddress(),
-				'name'  => $userAccount->getFullName()
-			));
+		$emailEvent->sendEmail($sendVariables);
 
 		// send emails to other people
 		if (sysConfig::get('SEND_EXTRA_ORDER_EMAILS_TO') != '') {

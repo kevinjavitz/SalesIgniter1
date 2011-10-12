@@ -481,7 +481,7 @@ class Extension_payPerRentals extends ExtensionBase {
             }
         }
     }
-	public function OrderBeforeSendEmail(&$order, &$emailEvent, &$products_ordered){
+	public function OrderBeforeSendEmail(&$order, &$emailEvent, &$products_ordered, &$sendVaribles){
 
 			$Qorders = Doctrine_Query::create()
 			->from('Orders o')

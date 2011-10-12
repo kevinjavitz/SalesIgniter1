@@ -1127,9 +1127,16 @@ function tep_get_prid($uprid) {
     }
 	if(!empty($attachments)){
 		//check for application extensions zip, pdf etc
-		$attachment = fread(fopen(sysConfig::getDirFsCatalog().$attachments, "r"), filesize(sysConfig::getDirFsCatalog() . $attachments));
+		if(!is_array($attachments)){
+			$attachment = fread(fopen(sysConfig::getDirFsCatalog().$attachments, "r"), filesize(sysConfig::getDirFsCatalog() . $attachments));
+			$message->add_attachment($attachment,basename($attachments));
+		}else{
+			foreach($attachments as $attach){
+				$attachment = fread(fopen(sysConfig::getDirFsCatalog().$attach, "r"), filesize(sysConfig::getDirFsCatalog() . $attach));
+				$message->add_attachment($attachment,basename($attach));
+			}
+		}
 
-        $message->add_attachment($attachment,basename($attachments));
 	}
 
     // Send message

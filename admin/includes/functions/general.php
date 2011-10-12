@@ -939,7 +939,7 @@ function tep_display_tax_value($value, $padding = TAX_DECIMAL_PLACES) {
 	return $value;
 }
 
-function tep_mail($to_name, $to_email_address, $email_subject, $email_text, $from_email_name, $from_email_address) {
+function tep_mail($to_name, $to_email_address, $email_subject, $email_text, $from_email_name, $from_email_address, $attachments = '') {
 	if (SEND_EMAILS != 'true') return false;
 
 	// Instantiate a new mail object
@@ -951,6 +951,17 @@ function tep_mail($to_name, $to_email_address, $email_subject, $email_text, $fro
 		$message->add_html($email_text, $text);
 	} else {
 		$message->add_text($text);
+	}
+	if(!empty($attachments)){
+		if(!is_array($attachments)){
+			$attachment = fread(fopen(sysConfig::getDirFsCatalog().$attachments, "r"), filesize(sysConfig::getDirFsCatalog() . $attachments));
+			$message->add_attachment($attachment,basename($attachments));
+		}else{
+			foreach($attachments as $attach){
+				$attachment = fread(fopen(sysConfig::getDirFsCatalog().$attach, "r"), filesize(sysConfig::getDirFsCatalog() . $attach));
+				$message->add_attachment($attachment,basename($attach));
+			}
+		}
 	}
 
 	// Send message
