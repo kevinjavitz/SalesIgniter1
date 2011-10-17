@@ -351,13 +351,12 @@ class OrderCreator extends Order implements Serializable {
 				$emailEvent->setVar('po_number', 'P.O. Number: ' . $CollectionObj->po_number);
 			}
 		}
+		$sendVariables = array();
+		EventManager::notify('OrderCreatorBeforeSendNewEmail', $CollectionObj, $emailEvent, &$products_ordered, &$sendVariables);
+		$sendVariables['email'] = $CollectionObj->customers_email_address;
+		$sendVariables['name'] = $BillingAddress->getName();
 
-		EventManager::notify('OrderCreatorBeforeSendNewEmail', $CollectionObj, $emailEvent, &$products_ordered);
-
-		$emailEvent->sendEmail(array(
-			'email' => $CollectionObj->customers_email_address,
-			'name'  => $BillingAddress->getName()
-		));
+		$emailEvent->sendEmail($sendVariables);
 
 		// send emails to other people
 		if (sysConfig::get('SEND_EXTRA_ORDER_EMAILS_TO') != '') {
@@ -415,17 +414,17 @@ class OrderCreator extends Order implements Serializable {
 			$orderTotals .= strip_tags($tInfo['title']) . ' ' . strip_tags($tInfo['text']) . "\n";
 		}
 		$emailEvent->setVar('orderTotals', $orderTotals);
-
-		EventManager::notify('OrderCreatorBeforeSendNewEmail', $CollectionObj, $emailEvent, &$products_ordered);
+		$sendVariables = array();
+		EventManager::notify('OrderCreatorBeforeSendNewEmail', $CollectionObj, $emailEvent, &$products_ordered, &$sendVariables);
 		if($emailAddress == ''){
 			$email = $CollectionObj->customers_email_address;
 		}else{
 			$email = $emailAddress;
 		}
-		$emailEvent->sendEmail(array(
-			'email' => $email,
-			'name'  => $BillingAddress->getName()
-		));
+		$sendVariables['email'] = $email;
+		$sendVariables['name'] = $BillingAddress->getName();
+
+		$emailEvent->sendEmail($sendVariables);
 
 		// send emails to other people
 		if (sysConfig::get('SEND_EXTRA_ORDER_EMAILS_TO') != '') {

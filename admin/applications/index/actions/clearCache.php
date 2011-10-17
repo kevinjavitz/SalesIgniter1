@@ -1,8 +1,7 @@
 <?php
-	apc_clear_cache('opcode');
-	$json = array(
-			'success' => true
-	);
-
-	EventManager::attachActionResponse($json, 'json');
+apc_clear_cache('opcode');
+$dir = sysConfig::getDirFsCatalog().'cache/';
+foreach(glob($dir.'*.*') as $v){
+	unlink($v);
+}
 ?>

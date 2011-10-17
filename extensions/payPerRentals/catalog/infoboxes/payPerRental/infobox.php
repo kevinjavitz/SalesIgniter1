@@ -72,7 +72,7 @@ class InfoBoxPayPerRental extends InfoBoxAbstract {
 	}
 
 	public function getPprForm($hasUpdateButton = true, $hasHeaders = false, $hasGeographic = true, $showCategories = false, $showSubmit = false, $showShipping = false, $showTimes = false, $showQty = false, $showPickup = false, $showDropoff = false){
-		global $appExtension, $currencies, $cPath, $cPath_array, $tree, $categoriesString, $current_category_id, $App;
+		global $appExtension, $userAccount, $currencies, $cPath, $cPath_array, $tree, $categoriesString, $current_category_id, $App;
 
 		$getv = '';
 		if (isset($_GET['cPath'])){
@@ -389,12 +389,29 @@ class InfoBoxPayPerRental extends InfoBoxAbstract {
 		->addClass('shipp');
 
 		$br = htmlBase::newElement('br');
+
+		$shipUps = htmlBase::newElement('input')
+		->setName('zipCode')
+		->addClass('zipf');
+
+
+
+		$shipUpsBut = htmlBase::newElement('button')
+		->setName('changeZip')
+		->setText('Get Quote')
+		->addClass('changeZip');
+		$shipUpsMethods = htmlBase::newElement('selectbox')
+		->setName('ship_method')
+		->addClass('shipf shipz shipups');
+
+
+
 		$shipb = htmlBase::newElement('selectbox')
 		->setName('ship_method')
 		->addClass('shipf shipz');
 
 		$firstShippingMethod = 0;
-		if (Session::exists('isppr_shipping_method') && tep_not_null(Session::get('isppr_shipping_method')) && Session::get('isppr_selected') == true){
+		if (Session::exists('isppr_shipping_method') && (Session::get('isppr_shipping_method') != '') && Session::get('isppr_selected') == true){
 			$shipb->selectOptionByValue(Session::get('isppr_shipping_method'));
 			$firstShippingMethod = Session::get('isppr_shipping_method');
 		}
@@ -402,6 +419,24 @@ class InfoBoxPayPerRental extends InfoBoxAbstract {
 		if (sysConfig::get('EXTENSION_PAY_PER_RENTALS_USE_UPS_RESERVATION') == 'False'){
 			$Module = OrderShippingModules::getModule('zonereservation');
 		} else{
+			if(Session::exists('isppr_shipping_zip') && Session::get('isppr_shipping_zip') != ''){
+				$postcode = Session::get('isppr_shipping_zip');
+				$shipUps->setValue(Session::get('isppr_shipping_zip'));
+				/*$shippingAddressArray = array(
+					'entry_street_address' => (isset($_POST['street_address']) && !empty($_POST['street_address']))
+						? $_POST['street_address'] : '',
+					'entry_postcode' => $postcode,
+					'entry_city' => (isset($_POST['city']) && !empty($_POST['city'])) ? $_POST['city'] : '',
+					'entry_state' => (isset($_POST['state']) && ($_POST['state'] != 'undefined')) ? $_POST['state']
+						: '',
+					'entry_country_id' => (isset($_POST['country']) && !empty($_POST['country'])) ? $_POST['country']
+						: sysConfig::get('STORE_COUNTRY'),
+					'entry_zone_id' => (isset($_POST['state']) && ($_POST['state'] != 'undefined')) ? $_POST['state']
+						: ''
+				);
+				$addressBook =& $userAccount->plugins['addressBook'];
+				$addressBook->addAddressEntry('delivery', $shippingAddressArray);*/
+			}
 			$Module = OrderShippingModules::getModule('upsreservation');
 		}
 		$quotes = $Module->quote();
@@ -637,7 +672,11 @@ class InfoBoxPayPerRental extends InfoBoxAbstract {
 
 		//here is for the level of service or reservation shipping methods
 		if ($showShipping){
-			$container_destsh->append($shipt)->append($shipb)->append($shText);
+			if (sysConfig::get('EXTENSION_PAY_PER_RENTALS_USE_UPS_RESERVATION') == 'False'){
+				$container_destsh->append($shipt)->append($shipb)->append($shText);
+			}else{
+				$container_destsh->append($shipt)->append($shipUps)->append($shipUpsMethods)->append($shText)->append($shipUpsBut);
+			}
 			$pprform->append($separator1sh)->append($container_destsh);
 		}
 		if ($showSubmit){
@@ -1095,7 +1134,7 @@ class InfoBoxPayPerRental extends InfoBoxAbstract {
 											$('.myTextCalendar').hide();
 											$('.allCalendar').hide();
 											$('.closeCal').hide();
-											if(myInitialDates != $('.mydates').html()){
+											if(myInitialDates != $('.mydates').html() && myInitialDates != null){
 												$( '<div id="dialog-mesage1" title="Date Selection Changed"><span style="color:red;font-size:16px;">Date selection changed. Do you want us to update this page with your new dates?</span></div>' ).dialog({
 													modal: true,
 													buttons: {
@@ -1211,6 +1250,37 @@ class InfoBoxPayPerRental extends InfoBoxAbstract {
 							}});
 
         });
+		$('.shipups').hide();
+		$('.changeZip').click(function(){
+		    if($(this).find('.ui-button-text').html() == 'Get Quote'){
+				var myel = $(this).parent();
+				$ellem = $(this).closest('form');
+				showAjaxLoader(myel,'xlarge');
+							var self = $(this);
+							$.ajax({
+								 type: "post",
+								 url: js_app_link('appExt=payPerRentals&app=build_reservation&appPage=default&action=setBefore'),
+								 data: "rType=ajax&isZip=true&zipCode="+$(this).closest('form').find('.zipf').val()+'&ship_method='+$(this).closest('form').find('.shipz').val(),
+								 success: function(data) {
+									hideAjaxLoader(myel);
+									if(data.nr != 0){
+										$('.shipups').html(data.data);
+										$('.shipups').show();
+										$('.zipf').hide();
+										$('.changeZip').find('.ui-button-text').html('Change Zip');
+									}
+								}
+							});
+			}else{
+				$('.zipf').show();
+				$('.changeZip').find('.ui-button-text').html('Get Quote');
+				$('.shipups').hide();
+			}
+		});
+
+		if($('.zipf').val() != ''){
+			$('.changeZip').trigger('click');
+		}
 
 		$('.gatef').change(function(){
 
