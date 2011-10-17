@@ -23,12 +23,53 @@ class Extension_pdfPrinter extends ExtensionBase {
 
 		EventManager::attachEvents(array(
 			'AdminOrderDefaultInfoBoxAddButton',
-			'AdminOrderDetailsAddButton' ,
+			'AdminOrderDetailsAddButton',
 			'AdminOrderCreatorAddButton',
-			'OrdersGridButtonsBeforeAdd'
+			'OrdersGridButtonsBeforeAdd',
+			'OrderCreatorBeforeSendNewEmail',
+			'OrderBeforeSendEmail'
 			), null, $this);
 	}
 
+	public function OrderBeforeSendEmail(&$order, &$emailEvent, &$products_ordered, &$sendVariables){
+		$oID = $order['orderID'];
+		$file = '';
+		if(sysConfig::get('EXTENSION_PDF_INVOICE_ATTACH_TO_ORDER_EMAIL') == 'True'){
+			$file = (itw_catalog_app_link('appExt=pdfPrinter&suffix='.$oID.'&oID=' . $oID, 'generate_pdf', 'default'));
+			$sendVariables['attach'] = 'temp/pdf/saved_pdf'.$oID.'.pdf';
+		}elseif(sysConfig::get('EXTENSION_PDF_AGREEMENT_ATTACH_TO_ORDER_EMAIL') == 'True'){
+			$file = (itw_catalog_app_link('appExt=pdfPrinter&type=a&suffix='.$oID.'&oID=' . $oID, 'generate_pdf', 'default'));
+			$sendVariables['attach'] = 'temp/pdf/saved_apdf'.$oID.'.pdf';
+		}
+		if(!empty($file)){
+			$ch=curl_init();
+			curl_setopt($ch,CURLOPT_URL, $file);
+			curl_exec($ch);
+			curl_close($ch);
+		}
+
+	}
+
+	public function OrderCreatorBeforeSendNewEmail(&$order, &$emailEvent, &$products_ordered, &$sendVariables){
+		$oID =  $order->orders_id;
+		$file = '';
+		if(sysConfig::get('EXTENSION_PDF_INVOICE_ATTACH_TO_ORDER_EMAIL') == 'True'){
+			$file = (itw_catalog_app_link('appExt=pdfPrinter&suffix='.$oID.'&oID=' . $oID, 'generate_pdf', 'default'));
+			$sendVariables['attach'] = 'temp/pdf/saved_pdf'.$oID.'.pdf';
+		}elseif(sysConfig::get('EXTENSION_PDF_AGREEMENT_ATTACH_TO_ORDER_EMAIL') == 'True'){
+			$file = (itw_catalog_app_link('appExt=pdfPrinter&type=a&suffix='.$oID.'&oID=' . $oID, 'generate_pdf', 'default'));
+			$sendVariables['attach'] = 'temp/pdf/saved_apdf'.$oID.'.pdf';
+		}
+
+		if(!empty($file)){
+			$ch=curl_init();
+			curl_setopt($ch,CURLOPT_URL, $file);
+			curl_exec($ch);
+			curl_close($ch);
+		}
+
+	}
+	
 	public function AdminOrderDefaultInfoBoxAddButton(&$oInfo, &$infoBox){
 
 		$pdfinvoiceButton = htmlBase::newElement('button')->setText(sysLanguage::get('TEXT_BUTTON_INVOICE_PDF'))
@@ -60,8 +101,6 @@ class Extension_pdfPrinter extends ExtensionBase {
 	}
 
 }
-
-
 
 
 function tep_cfg_get_layout_name($layoutName){

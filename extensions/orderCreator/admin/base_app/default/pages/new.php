@@ -48,14 +48,20 @@
 
 	$cancelButton = htmlBase::newElement('button')->usePreset('cancel')
 	->setHref(itw_app_link(null, 'orders', 'default'));
-	
-	echo $saveButton->draw() . $estimateButton->draw() . $cancelButton->draw();
-	echo '<br>';
+	$infobox = htmlBase::newElement('div');
+	$infobox->append($saveButton)->append($estimateButton)->append($cancelButton);
+
+	EventManager::notify('AdminOrderCreatorAddButton', &$infobox);
+
 	if (isset($_GET['oID'])){
 		if(isset($_GET['isEstimate'])){
-			echo $EmailInput->draw().' '.$emailButton->draw();
+			$br = htmlBase::newElement('br');
+			$infobox->append($br)->append($EmailInput)->append($emailButton);
 		}
 	}
+
+	echo $infobox->draw();
+
 ?></div>
 <br />
 <div class="ui-widget">

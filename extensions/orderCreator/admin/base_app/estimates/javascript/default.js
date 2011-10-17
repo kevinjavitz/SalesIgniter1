@@ -8,7 +8,7 @@ $(document).ready(function (){
 	
 	$('.gridButtonBar').find('.detailsButton').click(function (){
 		var orderId = $('.gridBodyRow.state-active').attr('data-order_id');
-		js_redirect(js_app_link('app=orders&appPage=details&oID=' + orderId));
+		js_redirect(js_app_link('app=orders&appPage=details&isEstimate=1&oID=' + orderId));
 	});
 	
 	$('.gridButtonBar').find('.deleteButton').live('click', function (){

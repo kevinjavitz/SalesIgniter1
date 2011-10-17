@@ -31,7 +31,7 @@ if(isset($_GET['oID']) && !isset($_GET['type'])){
 
 $layout_id = $invLayout;
 
-function addStyles($El, $Styles) {
+function addStylesPDF($El, $Styles) {
 	if ($El->hasAttr('id') && $El->attr('id') != ''){
 		return;
 	}
@@ -70,7 +70,7 @@ function addStyles($El, $Styles) {
 	}
 }
 
-function addInputs($El, $Config) {
+function addInputsPDF($El, $Config) {
 	foreach($Config as $cInfo){
 		if ($cInfo->configuration_key != 'id') {
 			continue;
@@ -80,28 +80,28 @@ function addInputs($El, $Config) {
 	}
 }
 
-function processContainerChildren($MainObj, &$El) {
+function processContainerChildrenPDF($MainObj, &$El) {
 	foreach($MainObj->Children as $childObj){
 		$NewEl = htmlBase::newElement('div')
 			->addClass('container');
 
 		if ($childObj->Configuration->count() > 0){
-			addInputs($NewEl, $childObj->Configuration);
+			addInputsPDF($NewEl, $childObj->Configuration);
 		}
 
 		if ($childObj->Styles->count() > 0){
-			addStyles($NewEl, $childObj->Styles);
+			addStylesPDF($NewEl, $childObj->Styles);
 		}
 
 		$El->append($NewEl);
 		processContainerColumns($NewEl, $childObj->Columns);
 		if ($childObj->Children->count() > 0){
-			processContainerChildren($childObj, $NewEl);
+			processContainerChildrenPDF($childObj, $NewEl);
 		}
 	}
 }
 
-function processContainerColumns(&$Container, $Columns) {
+function processContainerColumnsPDF(&$Container, $Columns) {
 	if (!$Columns) {
 		return;
 	}
@@ -111,11 +111,11 @@ function processContainerColumns(&$Container, $Columns) {
 			->addClass('column');
 
 		if ($col->Configuration->count() > 0){
-			addInputs($ColEl, $col->Configuration);
+			addInputsPDF($ColEl, $col->Configuration);
 		}
 
 		if ($col->Styles->count() > 0){
-			addStyles($ColEl, $col->Styles);
+			addStylesPDF($ColEl, $col->Styles);
 		}
 
 		$WidgetHtml = '';
@@ -176,16 +176,16 @@ if ($Layout->Containers->count() > 0){
 			->addClass('container');
 
 		if ($MainObj->Configuration->count() > 0){
-			addInputs($MainEl, $MainObj->Configuration);
+			addInputsPDF($MainEl, $MainObj->Configuration);
 		}
 
 		if ($MainObj->Styles->count() > 0){
-			addStyles($MainEl, $MainObj->Styles);
+			addStylesPDF($MainEl, $MainObj->Styles);
 		}
 
-		processContainerColumns($MainEl, $MainObj->Columns);
+		processContainerColumnsPDF($MainEl, $MainObj->Columns);
 		if ($MainObj->Children->count() > 0){
-			processContainerChildren($MainObj, $MainEl);
+			processContainerChildrenPDF($MainObj, $MainEl);
 		}
 		$Construct->append($MainEl);
 	}
@@ -194,7 +194,7 @@ if ($Layout->Containers->count() > 0){
 
 $boxStylesEntered = array();
 $addCss = '';
-function parseContainer($Container) {
+function parseContainerPDF($Container) {
 	global $boxStylesEntered, $addCss;
 
 	if ($Container->Configuration['id'] && $Container->Configuration['id']->configuration_value != ''){
@@ -208,7 +208,7 @@ function parseContainer($Container) {
 
 	if ($Container->Children->count() > 0){
 		foreach($Container->Children as $ChildObj){
-			parseContainer($ChildObj);
+			parseContainerPDF($ChildObj);
 		}
 	}
 	else {
@@ -273,7 +273,7 @@ if ($Layout){
 	}
 
 	foreach($Layout->Containers as $Container){
-		parseContainer($Container);
+		parseContainerPDF($Container);
 	}
 }
 
@@ -324,6 +324,6 @@ $dompdf->load_html($myPdf);
 $dompdf->render();
 //$dompdf->stream('saved_pdf.pdf', array("Attachment" => 0));
 $pdf = $dompdf->output();
-file_put_contents(sysConfig::getDirFsCatalog(). 'temp/pdf/saved_pdf.pdf', $pdf);
-header("Location: " .sysConfig::getDirWsCatalog(). 'temp/pdf/saved_pdf.pdf');
+file_put_contents(sysConfig::getDirFsCatalog(). 'temp/pdf/saved_'.(isset($_GET['type'])?$_GET['type']:'').'pdf'.(isset($_GET['suffix'])?$_GET['suffix']:'').'.pdf', $pdf);
+header("Location: " .sysConfig::getDirWsCatalog(). 'temp/pdf/saved_'.(isset($_GET['type'])?$_GET['type']:'').'pdf'.(isset($_GET['suffix'])?$_GET['suffix']:'').'.pdf');
 itwExit();

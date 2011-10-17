@@ -61,21 +61,23 @@
 		}
 
 		$module = OrderShippingModules::getModule('inventorycenter');
-		$quotes = $module->quote();
-		for($i=0, $n=sizeof($quotes['methods']); $i<$n; $i++){
-			$shippingInputs[] = array(
-				'value' => $quotes['methods'][$i]['id'],
-				'label' => 'Shipping: ' . $quotes['methods'][$i]['title'],
-				'labelPosition' => 'after'
-			);
-		}
+		if(isset($module) && is_object($module)){
+			$quotes = $module->quote();
+			for($i=0, $n=sizeof($quotes['methods']); $i<$n; $i++){
+				$shippingInputs[] = array(
+					'value' => $quotes['methods'][$i]['id'],
+					'label' => 'Shipping: ' . $quotes['methods'][$i]['title'],
+					'labelPosition' => 'after'
+				);
+			}
 
-		$shippingGroup = htmlBase::newElement('checkbox')->addGroup(array(
-			'separator' => '<br />',
-			'name' => 'inventory_center_shipping[]',
-			'checked' => $methods,
-			'data' => $shippingInputs
-		));
+			$shippingGroup = htmlBase::newElement('checkbox')->addGroup(array(
+				'separator' => '<br />',
+				'name' => 'inventory_center_shipping[]',
+				'checked' => $methods,
+				'data' => $shippingInputs
+			));
+		}
 
 	}
 
@@ -178,7 +180,7 @@
    <td colspan="2"><?php echo tep_draw_separator('pixel_trans.gif', '1', '10'); ?></td>
   </tr>
  <?php
- if(sysConfig::get('EXTENSION_INVENTORY_CENTERS_SHIPPING_PER_INVENTORY') == 'True'){
+ if(sysConfig::get('EXTENSION_INVENTORY_CENTERS_SHIPPING_PER_INVENTORY') == 'True' && isset($module) && is_object($module)){
 	 ?>
   <tr>
         <td class="main" valign="top"><?php echo sysLanguage::get('TEXT_INVENTORY_SHIPPING'); ?></td>

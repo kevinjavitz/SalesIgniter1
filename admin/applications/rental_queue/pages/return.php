@@ -57,7 +57,7 @@
 		$invCenterArray = array();
 		$QinvCenters = Doctrine_Query::create()
 			->select('inventory_center_id, inventory_center_name')
-			->from('InventoryCenters')
+			->from('ProductsInventoryCenters')
 			->orderBy('inventory_center_name')
 			->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 		foreach($QinvCenters as $invCenter){

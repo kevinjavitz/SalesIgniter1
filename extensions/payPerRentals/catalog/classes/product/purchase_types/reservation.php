@@ -412,26 +412,28 @@ class PurchaseType_reservation extends PurchaseTypeAbstract {
 						$endDate = date_parse(Session::get('isppr_date_end'));
 						if(Session::exists('isppr_event_multiple_dates')){
 							$datesArr = Session::get('isppr_event_multiple_dates');
-							foreach($datesArr as $iDate){
-								$startDate = date_parse($iDate);
-								$endDate = date_parse($iDate);
-								$timesArr[$i1]['start_date'] = mktime(
-									$startDate['hour'],
-									$startDate['minute'],
-									$startDate['second'],
-									$startDate['month'],
-									$startDate['day'],
-									$startDate['year']
-								);
-								$timesArr[$i1]['end_date'] = mktime(
-									$endDate['hour'],
-									$endDate['minute'],
-									$endDate['second'],
-									$endDate['month'],
-									$endDate['day'],
-									$endDate['year']
-								);
-								$i1++;
+							if(isset($datesArr[0]) && !empty($datesArr[0])){
+								foreach($datesArr as $iDate){
+									$startDate = date_parse($iDate);
+									$endDate = date_parse($iDate);
+									$timesArr[$i1]['start_date'] = mktime(
+										$startDate['hour'],
+										$startDate['minute'],
+										$startDate['second'],
+										$startDate['month'],
+										$startDate['day'],
+										$startDate['year']
+									);
+									$timesArr[$i1]['end_date'] = mktime(
+										$endDate['hour'],
+										$endDate['minute'],
+										$endDate['second'],
+										$endDate['month'],
+										$endDate['day'],
+										$endDate['year']
+									);
+									$i1++;
+								}
 							}
 						}else{
 							$timesArr[$i1]['start_date'] = mktime(
@@ -549,14 +551,14 @@ class PurchaseType_reservation extends PurchaseTypeAbstract {
 		global $App, $ShoppingCart;
 		$shippingMethod = $resInfo['shipping_method'];
 		$rShipping = false;
-		if (isset($shippingMethod) && !empty($shippingMethod) && ($shippingMethod != 'zonereservation')){
+		if (isset($shippingMethod) && !empty($shippingMethod) && ($shippingMethod != 'zonereservation')&& ($shippingMethod != 'upsreservation')){
 			$shippingModule = $resInfo['shipping_module'];
 			$Module = OrderShippingModules::getModule($shippingModule);
 			if(is_object($Module) && $Module->getType() == 'Order' && $App->getEnv() == 'catalog'){
 				foreach($ShoppingCart->getProducts() as $cartProduct) {
 					if ($cartProduct->hasInfo('reservationInfo') === true){
 						$reservationInfo1 = $cartProduct->getInfo();
-						if(isset($reservationInfo1['reservationInfo']['shipping']) && isset($reservationInfo1['reservationInfo']['shipping']['module']) && $reservationInfo1['reservationInfo']['shipping']['module'] == 'zonereservation'){
+						if(isset($reservationInfo1['reservationInfo']['shipping']) && isset($reservationInfo1['reservationInfo']['shipping']['module']) && $reservationInfo1['reservationInfo']['shipping']['module'] == 'zonereservation'&& $reservationInfo1['reservationInfo']['shipping']['module'] == 'upsreservation'){
 							$reservationInfo1['reservationInfo']['shipping']['id']  = $shippingMethod;
 							$ShoppingCart->updateProduct($cartProduct->getUniqID(), $reservationInfo1);
 						}
@@ -637,7 +639,6 @@ class PurchaseType_reservation extends PurchaseTypeAbstract {
 	public function processAddToOrder(&$pInfo){
 		if (isset($pInfo['OrdersProductsReservation'])){
 			$infoArray = array(
-				'shipping_module' => 'zonereservation',
 				'shipping_method' => $pInfo['OrdersProductsReservation'][0]['shipping_method'],
 				'start_date'      => $pInfo['OrdersProductsReservation'][0]['start_date'],
 				'end_date'        => $pInfo['OrdersProductsReservation'][0]['end_date'],
@@ -645,6 +646,11 @@ class PurchaseType_reservation extends PurchaseTypeAbstract {
 				'days_after'        => $pInfo['OrdersProductsReservation'][0]['days_after'],
 				'quantity'        => $pInfo['products_quantity']
 			);
+			if (sysConfig::get('EXTENSION_PAY_PER_RENTALS_USE_UPS_RESERVATION') == 'False'){
+				$infoArray['shipping_module'] = 'zonereservation';
+			}else{
+				$infoArray['shipping_module'] = 'upsreservation';
+			}
 			if (sysConfig::get('EXTENSION_PAY_PER_RENTALS_USE_EVENTS') == 'True'){
 				$infoArray['event_date'] = $pInfo['OrdersProductsReservation'][0]['event_date'];
 				$infoArray['event_name'] = $pInfo['OrdersProductsReservation'][0]['event_name'];
@@ -657,7 +663,6 @@ class PurchaseType_reservation extends PurchaseTypeAbstract {
 			//$shipping_modules = OrderShippingModules::getModule('zonereservation');
 			//$quotes = $shipping_modules->quote('method');
 			$infoArray = array(
-				'shipping_module' => 'zonereservation',
 				'shipping_method' => 'method1',//?
 				'start_date'      => date('Ymd'),
 				'end_date'        => date('Ymd'),
@@ -665,6 +670,11 @@ class PurchaseType_reservation extends PurchaseTypeAbstract {
 				'days_after'        => 0,
 				'quantity'        => $pInfo['products_quantity']
 			);
+			if (sysConfig::get('EXTENSION_PAY_PER_RENTALS_USE_UPS_RESERVATION') == 'False'){
+				$infoArray['shipping_module'] = 'zonereservation';
+			}else{
+				$infoArray['shipping_module'] = 'upsreservation';
+			}
 			if (sysConfig::get('EXTENSION_PAY_PER_RENTALS_USE_EVENTS') == 'True'){
 				$infoArray['event_date'] = date('Ymd');
 				$infoArray['event_name'] = '';
@@ -680,10 +690,18 @@ class PurchaseType_reservation extends PurchaseTypeAbstract {
 	}
 
 	public function processAddToCart(&$pInfo){
-		$shippingInfo = array(
-			'zonereservation',
-			'zonereservation'
-		);
+		if (sysConfig::get('EXTENSION_PAY_PER_RENTALS_USE_UPS_RESERVATION') == 'False'){
+			$shippingInfo = array(
+				'zonereservation',
+				'zonereservation'
+			);
+		}else{
+			$shippingInfo = array(
+				'upsreservation',
+				'upsreservation'
+			);
+		}
+
 		if (isset($_POST['rental_shipping']) && $_POST['rental_shipping'] !== false){
 			$shippingInfo = explode('_', $_POST['rental_shipping']);
 		}
@@ -1208,6 +1226,14 @@ class PurchaseType_reservation extends PurchaseTypeAbstract {
 						$event_gate = '';
 						$pickup = '';
 						$dropoff = '';
+						$days_before = '';
+						$days_after = '';
+						if (Session::exists('isppr_shipping_days_before')){
+							$days_before = Session::get('isppr_shipping_days_before');
+						}
+						if (Session::exists('isppr_shipping_days_after')){
+							$days_after = Session::get('isppr_shipping_days_after');
+						}
 						if (Session::exists('isppr_date_start')){
 							$start_date = Session::get('isppr_date_start');
 						}
@@ -1246,9 +1272,25 @@ class PurchaseType_reservation extends PurchaseTypeAbstract {
 						->setName('add_reservation_product');
 
 						if ($this->hasInventory()){
-							if(Session::exists('isppr_shipping_cost')){
-								$ship_cost = (float)Session::get('isppr_shipping_cost');
+
+							$isR = false;
+							$isRV = '';
+							if (Session::exists('isppr_shipping_method')) {
+
+								if (sysConfig::get('EXTENSION_PAY_PER_RENTALS_USE_UPS_RESERVATION') == 'False'){
+									if (Session::exists('isppr_shipping_cost')) {
+										$ship_cost = (float) Session::get('isppr_shipping_cost');
+									}
+
+								}else{
+									if(isset($_POST['rental_shipping'])){
+										$isR = true;
+										$isRV = $_POST['rental_shipping'];
+									}
+									$_POST['rental_shipping'] = 'upsreservation_'. Session::get('isppr_shipping_method');
+								}
 							}else{
+								//here i should check for use_ship
 								$payPerRentalButton->disable();
 							}
 							$thePrice = 0;
@@ -1267,7 +1309,11 @@ class PurchaseType_reservation extends PurchaseTypeAbstract {
 							}
 
 							$pricing = $currencies->format($qtyVal*$thePrice+ $ship_cost);
-
+							if(!$isR){
+								unset($_POST['rental_shipping']);
+							}else{
+								$_POST['rental_shipping'] = $isRV;
+							}
 							$pageForm =  htmlBase::newElement('div');
 
 							if (isset($start_date)) {
@@ -1276,6 +1322,21 @@ class PurchaseType_reservation extends PurchaseTypeAbstract {
 								->setName('start_date')
 								->setValue($start_date);
 							}
+
+							if (isset($days_before)) {
+								$htmlDaysBefore = htmlBase::newElement('input')
+									->setType('hidden')
+									->setName('days_before')
+									->setValue($days_before);
+							}
+
+							if (isset($days_after)) {
+								$htmlDaysAfter = htmlBase::newElement('input')
+									->setType('hidden')
+									->setName('days_after')
+									->setValue($days_after);
+							}
+
 							if (sysConfig::get('EXTENSION_PAY_PER_RENTALS_USE_EVENTS') == 'True'){
 								$htmlEventDate = htmlBase::newElement('input')
 								->setType('hidden')
@@ -1332,6 +1393,13 @@ class PurchaseType_reservation extends PurchaseTypeAbstract {
 							if (isset($htmlEndDate)) {
 								$pageForm->append($htmlEndDate);
 							}
+							if (isset($htmlDaysBefore)) {
+								$pageForm->append($htmlDaysBefore);
+							}
+
+							if (isset($htmlDaysAfter)) {
+								$pageForm->append($htmlDaysAfter);
+							}
 							if (isset($htmlPickup)) {
 								$pageForm->append($htmlPickup);
 							}
@@ -1352,8 +1420,12 @@ class PurchaseType_reservation extends PurchaseTypeAbstract {
 							if (Session::exists('isppr_shipping_method')){
 								$htmlShippingDays = htmlBase::newElement('input')
 								->setType('hidden')
-								->setName('rental_shipping')
-								->setValue("zonereservation_" . Session::get('isppr_shipping_method'));
+								->setName('rental_shipping');
+								if (sysConfig::get('EXTENSION_PAY_PER_RENTALS_USE_UPS_RESERVATION') == 'False'){
+									$htmlShippingDays->setValue("zonereservation_" . Session::get('isppr_shipping_method'));
+								}else{
+									$htmlShippingDays->setValue("upsreservation_" . Session::get('isppr_shipping_method'));
+								}
 								$pageForm->append($htmlShippingDays);
 							}
 

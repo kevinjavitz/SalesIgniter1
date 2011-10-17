@@ -197,6 +197,10 @@ class emailEvent {
 			$sendFrom = $sendTo['from_name'];
 		}
 
+		if(isset($sendTo['attach'])){
+			$this->templateFileParsed = $sendTo['attach'];
+		}
+
 		//echo 'tep_mail(' . $sendTo['name'] . ', ' . $sendTo['email'] . ', ' . $this->templateSubjectParsed . ', ' . $this->templateParsed . ', ' . STORE_OWNER . ', ' . STORE_OWNER_EMAIL_ADDRESS . ')';
 		tep_mail($sendTo['name'], $sendTo['email'], $this->templateSubjectParsed, $this->templateParsed, $sendFrom, $sendFromEmail, $this->templateFileParsed);
 	}

@@ -5,6 +5,9 @@ $(document).ready(function (){
 	$('#limit').change(function(){
 		$('#search').submit();
 	});
+	$('.copyButton').click(function(){
+		window.location = js_app_link('app=products&appPage=default&action=copyProduct&products_id=' + $(this).attr('products_id'));
+	});
 	$('.deleteProductButton').click(function (){
 		var $selfButton = $(this);
 		$('<div></div>').dialog({

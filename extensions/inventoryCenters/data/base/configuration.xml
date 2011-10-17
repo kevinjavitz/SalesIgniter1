@@ -106,7 +106,26 @@
 			<set_function>tep_cfg_select_option(array('True','False'),</set_function>
 		</EXTENSION_INVENTORY_CENTERS_SHOW_STATE_ON_PPR_INFOBOX>
 
-
+		<EXTENSION_INVENTORY_CENTERS_REMINDERS_SHIPPING>
+			<value>3</value>
+			<title>How many days before the date to ship do you want start sending reminder emails</title>
+			<description>Number of days before the shipping do you want start sending reminder emails</description>
+			<sort_order>32</sort_order>
+		</EXTENSION_INVENTORY_CENTERS_REMINDERS_SHIPPING>
+		<EXTENSION_INVENTORY_CENTERS_USE_LOCATION>
+			<value>False</value>
+			<title>If set to true location based will show on ppr infobox</title>
+			<description>If set to true location based will show on ppr infobox</description>
+			<sort_order>13</sort_order>
+			<set_function>tep_cfg_select_option(array('True','False'),</set_function>
+		</EXTENSION_INVENTORY_CENTERS_USE_LOCATION>
+		<EXTENSION_INVENTORY_CENTERS_ENABLE_REMINDERS>
+			<value>False</value>
+			<title>If set to true shipment reminders will be enabled</title>
+			<description>If set to true shipment reminders will be enabled</description>
+			<sort_order>13</sort_order>
+			<set_function>tep_cfg_select_option(array('True','False'),</set_function>
+		</EXTENSION_INVENTORY_CENTERS_ENABLE_REMINDERS>
 		
 	</Configuration>
 </ConfigurationGroup>
