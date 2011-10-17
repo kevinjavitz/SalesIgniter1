@@ -4,7 +4,7 @@
 
 	if (isset($_GET['zID'])){
 		$name = $GoogleZones->google_zones_name;
-		$address = STORE_NAME_ADDRESS;
+		$address = tep_get_country_name(sysConfig::get('STORE_COUNTRY'))."\n".tep_get_zone_name(sysConfig::get('STORE_COUNTRY'), sysConfig::get('STORE_ZONE'));
 
 		if (tep_not_null($GoogleZones->gmaps_polygon)){
 			$address = '';
@@ -19,7 +19,7 @@
 		}
 	}else{
 		$name = "";
-		$address = STORE_NAME_ADDRESS;
+		$address = tep_get_country_name(sysConfig::get('STORE_COUNTRY'))."\n".tep_get_zone_name(sysConfig::get('STORE_COUNTRY'), sysConfig::get('STORE_ZONE'));
 		$script = '<script>$(document).ready(function (){';
 		$script .= 'recenterMap();});</script>';
 	}

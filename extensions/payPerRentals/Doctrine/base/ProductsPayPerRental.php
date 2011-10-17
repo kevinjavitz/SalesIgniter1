@@ -13,6 +13,7 @@ This script and it's source is not redistributable
 class ProductsPayPerRental extends Doctrine_Record {
 	
 	public function setUp(){
+		parent::setUp();
 		$this->setUpParent();
 		
 		$this->hasOne('Products', array(
@@ -46,7 +47,7 @@ class ProductsPayPerRental extends Doctrine_Record {
 			'type' => 'integer',
 			'length' => 4,
 			'unsigned' => 0,
-			'primary' => true,
+			'primary' => false,
 			'default' => '0',
 			'notnull' => true,
 			'autoincrement' => false,
