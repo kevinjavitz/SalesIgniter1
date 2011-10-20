@@ -382,9 +382,11 @@
 			<td><?php echo sysLanguage::get('ENTRY_PASSWORD_CONFIRMATION'); ?></td>
 			<td colspan="2"><?php echo $BillingPasswordConfirmInput->draw(); ?></td>
 		</tr>
+		<?php if(sysConfig::get('ACCOUNT_NEWSLETTER') == 'true') { ?>
 		<tr>
 			<td colspan="3"><?php echo $NewsletterInput->draw(); ?></td>
 		</tr>
+		<?php } ?>
 	</table>
 </div>
 
