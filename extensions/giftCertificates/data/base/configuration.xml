@@ -1,0 +1,32 @@
+<ConfigurationGroup>
+    <title>Gift Certificates</title>
+    <key>giftCertificates</key>
+    <description>Configuration Settings For The Gift Certificates Extension</description>
+    <Configuration>
+        <EXTENSION_GIFT_CERTIFICATES_ENABLED>
+            <title>Enable Gift Certificates</title>
+            <value>True</value>
+            <description>Enable Or Disable Gift Certificates Extension</description>
+            <sort_order>1</sort_order>
+            <set_function>tep_cfg_select_option(array('True','False'),</set_function>
+        </EXTENSION_GIFT_CERTIFICATES_ENABLED>
+        <EXTENSION_GIFT_CERTIFICATES_VALUTEC_CLIENT_KEY>
+            <title>Valutec Client Key</title>
+            <value></value>
+            <description>Enter the clientKey provided by valutec</description>
+            <sort_order>2</sort_order>
+        </EXTENSION_GIFT_CERTIFICATES_VALUTEC_CLIENT_KEY>
+        <EXTENSION_GIFT_CERTIFICATES_VALUTEC_TID>
+            <title>Valutec Terminal ID</title>
+            <value></value>
+            <description>Enter the Terminal ID provided by valutec</description>
+            <sort_order>2</sort_order>
+        </EXTENSION_GIFT_CERTIFICATES_VALUTEC_TID>
+        <EXTENSION_GIFT_CERTIFICATES_SERVER_ID>
+            <title>Valutec Server ID</title>
+            <value></value>
+            <description>Enter the Server ID provided by valutec</description>
+            <sort_order>2</sort_order>
+        </EXTENSION_GIFT_CERTIFICATES_SERVER_ID>
+    </Configuration>
+</ConfigurationGroup>

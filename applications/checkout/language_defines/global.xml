@@ -10,7 +10,11 @@
 	<define key="TABLE_HEADING_PRODUCTS_QTY"><![CDATA[Quantity]]></define>
 	<define key="TABLE_HEADING_PRODUCTS_PRICE"><![CDATA[Price Each]]></define>
 	<define key="TABLE_HEADING_PRODUCTS_FINAL_PRICE"><![CDATA[Total Price]]></define>
-	<define key="TABLE_HEADING_PRODUCTS"><![CDATA[Products]]></define>
+    	<define key="TABLE_HEADING_PRODUCTS"><![CDATA[Products]]></define>
+	<define key="TABLE_HEADING_GIFT_CERTIFICATES_NAME"><![CDATA[Name]]></define>
+	<define key="TABLE_HEADING_GIFT_CERTIFICATES_DESCRIPTION"><![CDATA[Description]]></define>
+	<define key="TABLE_HEADING_GIFT_CERTIFICATES_PRICE"><![CDATA[Price]]></define>
+	<define key="TABLE_HEADING_GIFT_CERTIFICATES_VALUE"><![CDATA[Value]]></define>
 	<define key="TABLE_HEADING_TAX"><![CDATA[Tax]]></define>
 	<define key="TABLE_HEADING_TOTAL"><![CDATA[Total]]></define>
 	<define key="ENTRY_TELEPHONE"><![CDATA[Telephone: ]]></define>

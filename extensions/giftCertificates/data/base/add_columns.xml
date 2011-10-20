@@ -1,0 +1,22 @@
+<data>
+    <Orders>
+        <is_gift_certificate>
+            <type>integer</type>
+            <length>1</length>
+            <unsigned>0</unsigned>
+            <primary>false</primary>
+            <default>0</default>
+            <notnull>true</notnull>
+        </is_gift_certificate>
+    </Orders>
+    <OrdersProducts>
+        <gift_certificates_id>
+            <type>integer</type>
+            <length>4</length>
+            <unsigned>1</unsigned>
+            <primary>false</primary>
+            <default>0</default>
+            <notnull>true</notnull>
+        </gift_certificates_id>
+    </OrdersProducts>
+</data>

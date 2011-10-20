@@ -1,0 +1,9 @@
+<definitions>
+    <define key="TEXT_REDEEM_LABEL_NEW"><![CDATA[]]></define>
+    <define key="TEXT_GIFT_CERTIFICATES_USE_NEW"><![CDATA[Apply %s Gift certificates balance to new products]]></define>
+    <define key="TEXT_REDEEM_LABEL_USED"><![CDATA[]]></define>
+    <define key="TEXT_GIFT_CERTIFICATES_USE_USED"><![CDATA[Apply %s Gift certificates balance to used products]]></define>
+    <define key="TEXT_REDEEM_LABEL_GLOBAL"><![CDATA[]]></define>
+    <define key="TEXT_GIFT_CERTIFICATES_USE_GLOBAL"><![CDATA[Apply %s Gift certificates balance]]></define>
+    <define key="TEXT_REDEEM_VALUTEC_COUPON"><![CDATA[If you have a gift voucher code please enter below and click redeem.]]></define>
+</definitions>

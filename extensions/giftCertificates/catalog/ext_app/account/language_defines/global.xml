@@ -1,0 +1,17 @@
+<!--
+	Info Pages Extension Version 1
+
+	I.T. Web Experts, Rental Store v2
+	http://www.itwebexperts.com
+
+	Copyright (c) 2009 I.T. Web Experts
+
+	This script and it's source is not redistributable
+-->
+<definitions>
+    <define key="GIFT_CERTIFICATES_BALANCE"><![CDATA[You have %s gift certificates balace]]></define>
+    <define key="VIEW_GIFT_CERTIFICATES_TRANSACTIONS_HISTORY"><![CDATA[View Gift Certificates Transactions History]]></define>
+    <define key="TABLE_HEADING_PURCHASE_TYPE"><![CDATA[Product Type]]></define>
+    <define key="TABLE_HEADING_PURCHASE_TYPE_VALUE"><![CDATA[Balance Available]]></define>
+
+</definitions>

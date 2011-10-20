@@ -9,22 +9,30 @@
 
 require(dirname(__FILE__) . '/Product.php');
 require(dirname(__FILE__) . '/RentalMembershipProduct.php');
+require(dirname(__FILE__) . '/OrderGiftCertificateProduct.php');
 
 class OrderProductManager {
 	protected $orderId = null;
 	protected $Contents = array();
 
-	public function __construct($orderedProducts = null){
+	public function __construct($orderedProducts = null, $order = null){
 		if (is_null($orderedProducts) === false){
-			foreach($orderedProducts as $i => $pInfo){
+            	$is_gift_certificate = 0;
+            	if(is_null($order) === false && $order['is_gift_certificate']){
+                	$is_gift_certificate = $order['is_gift_certificate'];
+            	}
 
-				if(isset($pInfo['purchase_type']) && $pInfo['purchase_type'] != 'membership'){
-					$orderedProduct = new OrderProduct($pInfo);
-				}else{
-					$orderedProduct = new OrderRentalMembershipProduct($pInfo);
-				}
-				$this->add($orderedProduct);
-			}
+            foreach($orderedProducts as $i => $pInfo){
+                if($is_gift_certificate) {
+                    $orderedProduct = new OrderGiftCertificateProduct($pInfo);
+                } else if(isset($pInfo['purchase_type']) && $pInfo['purchase_type'] != 'membership'){
+                    $orderedProduct = new OrderProduct($pInfo);
+                } else {
+                    $orderedProduct = new OrderRentalMembershipProduct($pInfo);
+                }
+                $this->add($orderedProduct);
+            }
+
 		}
 	}
 

@@ -9,7 +9,7 @@
     $navigation->set_snapshot();
 	if (sysConfig::get('ONEPAGE_LOGIN_REQUIRED') == 'true'){
 		if ($userAccount->isLoggedIn() === false){
-			if (!isset($_GET['checkoutType']) || (isset($_GET['checkoutType']) && $_GET['checkoutType'] != 'rental')){
+			if (!isset($_GET['checkoutType']) || (isset($_GET['checkoutType']) && $_GET['checkoutType'] == 'default')){
 				$navigation->set_snapshot(array('mode' => 'SSL', 'page' => 'application.php', 'get' => 'app=checkout&appPage=default'));
 				tep_redirect(itw_app_link(null, 'account', 'login', 'SSL'));
 			}
@@ -40,6 +40,26 @@
 	require('includes/classes/onepage_checkout.php');
 	$onePageCheckout = new osC_onePageCheckout();
 
+    if (isset($_GET['checkoutType'])){
+        switch($_GET['checkoutType']){
+            case 'rental':
+                if ($onePageCheckout->getMode() == ''){
+                    $onePageCheckout->setMode('membership');
+                }
+                break;
+            case 'giftCertificate':
+                if ($onePageCheckout->getMode() == ''){
+                    $onePageCheckout->setMode('giftCertificate');
+                }
+                break;
+            default:
+                if ($onePageCheckout->getMode() == ''){
+                    $onePageCheckout->setMode('default');
+                }
+                break;
+        }
+    }
+    /*
 	if (isset($_GET['checkoutType']) && $_GET['checkoutType'] == 'rental'){
 		if ($onePageCheckout->getMode() == ''){
 			$onePageCheckout->setMode('membership');
@@ -48,7 +68,8 @@
 		if ($onePageCheckout->getMode() == ''){
 			$onePageCheckout->setMode('default');
 		}
-	}    
+	}
+    */
 	if ($isPostPage === false && $action != 'remotePaymentProcess'){
 		EventManager::notify('CheckoutPreInit');
 
@@ -60,7 +81,7 @@
 	}
 	
 	if ($onePageCheckout->onePage['shippingEnabled'] === true){
-		if ($onePageCheckout->isMembershipCheckout() === false){
+		if ($onePageCheckout->isNormalCheckout() === true){
 			$total_weight = $ShoppingCart->showWeight();
 			$total_count = $ShoppingCart->countContents();
 		}else{
@@ -89,7 +110,9 @@
 	OrderTotalModules::loadModules();
 	if ($onePageCheckout->isMembershipCheckout() === true){
 		$onePageCheckout->loadMembershipPlan();
-	}
+	} else if($onePageCheckout->isGiftCertificateCheckout() === true){
+            $onePageCheckout->loadGiftCertificates();
+        }
 	
 	$breadcrumb->add('Checkout');
 	$breadcrumb->add('Address Entry');

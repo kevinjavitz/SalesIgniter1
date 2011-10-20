@@ -1,14 +1,14 @@
 <input type="hidden" name="currentPage" id="currentPage" value="payment_shipping">
 
 <div class="ui-widget ui-widget-content ui-corner-all">
-<?php if (!$onePageCheckout->isMembershipCheckout()){
+<?php if ($onePageCheckout->isNormalCheckout()){
 
 	ob_start();
 	require(sysConfig::getDirFsCatalog() . 'applications/checkout/pages/cart.php');
 	$pageHtml = ob_get_contents();
 	ob_end_clean();
 	echo $pageHtml;
-}else{
+}else if ($onePageCheckout->isMembershipCheckout()){
 	?>
 <div id="rentalMembership"><?php
 	 /*This part needs revised*/
@@ -110,6 +110,12 @@
 ?></div>
 <?php
 }
+    $contents = EventManager::notifyWithReturn('CheckoutAddBlockBeforeOrderTotalsTop');
+	if (!empty($contents)){
+        foreach($contents as $content){
+                 echo $content;
+        }
+    }
 	?>
 	<div align="right"><table class="orderTotalsList" cellpadding="2" cellspacing="0" border="0" style="margin:.3em;"><?php
 		OrderTotalModules::process();
@@ -202,7 +208,7 @@
 				
 				echo '</div>';
 			}
-			
+
 			// Start - CREDIT CLASS Gift Voucher Contribution
 			if ($userAccount->isLoggedIn() && OrderTotalModules::isEnabled('giftvoucher')) {
 				$gvModule = OrderTotalModules::getModule('giftvoucher');

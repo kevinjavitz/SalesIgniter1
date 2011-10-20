@@ -280,6 +280,7 @@ $(document).ready(function (){
                 if ($('#currentPage').val() != 'addresses'){	              
 
                      $('#voucherRedeem').button();
+                     $('#gcRedeem').button();
                      $('#agreeMessage').hide();
                      $('#bar_step1').hide();
                      $('#bar_step2').show();
@@ -324,9 +325,12 @@ $(document).ready(function (){
 						}
 	                }catch(err){
 	                }
-                	 if ($('.rentalPlans').length <= 0){
-                    	updateTotals();
-                	 }
+                	if ($('.rentalPlans').length <= 0){
+                        updateTotals();
+                	}
+                    if ($('.giftCertificates').length <= 0){
+                        updateTotals();
+                    }
                 }
                 $('#loginButton').button();
                 $('#changeBillingAddress').button();

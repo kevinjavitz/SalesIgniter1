@@ -44,7 +44,7 @@ class Order {
 			$this->AddressManager = new OrderAddressManager($this->Order['OrdersAddresses']);
 			$this->AddressManager->setOrderId($this->Order['orders_id']);
 
-			$this->ProductManager = new OrderProductManager($this->Order['OrdersProducts']);
+			$this->ProductManager = new OrderProductManager($this->Order['OrdersProducts'], $this->Order);
 			$this->ProductManager->setOrderId($this->Order['orders_id']);
 
 			$this->TotalManager = new OrderTotalManager($this->Order['OrdersTotal']);

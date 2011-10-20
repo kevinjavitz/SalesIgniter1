@@ -227,8 +227,8 @@ addStatus('Shipped');
 
 
 add_extra_fields('modules_shipping_zone_reservation_methods','weight_rates','TEXT NULL');
-add_extra_fields('modules_shipping_zone_reservation_methods','min_rental_number','INT NOT NULL DEFAULT  "0"');
-add_extra_fields('modules_shipping_zone_reservation_methods','min_rental_type','INT NOT NULL DEFAULT  "0"');
+add_extra_fields('modules_shipping_zone_reservation_methods','min_rental_number'," INT( 1 ) NOT NULL DEFAULT  '0'");
+add_extra_fields('modules_shipping_zone_reservation_methods','min_rental_type'," INT( 1 ) NOT NULL DEFAULT  '0'");
 
 
 //update bannerManger

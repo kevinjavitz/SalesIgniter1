@@ -1,0 +1,18 @@
+<definitions>
+    <define key="NAVBAR_TITLE"><![CDATA[Redeem Gift Certificate]]></define>
+    <define key="HEADING_TITLE"><![CDATA[Redeem Gift Certificate]]></define>
+    <define key="ENTRY_NAME"><![CDATA[Recipients Name:]]></define>
+    <define key="ENTRY_EMAIL"><![CDATA[Recipients E-Mail Address:]]></define>
+    <define key="ENTRY_MESSAGE"><![CDATA[Message to Recipients:]]></define>
+    <define key="ENTRY_AMOUNT"><![CDATA[Amount of Gift Voucher:]]></define>
+    <define key="ERROR_ENTRY_AMOUNT_CHECK"><![CDATA[&nbsp;&nbsp;<span class="errorText">Invalid Amount</span>]]></define>
+    <define key="ERROR_ENTRY_EMAIL_ADDRESS_CHECK"><![CDATA[&nbsp;&nbsp;<span class="errorText">Invalid Email Address</span>]]></define>
+    <define key="PERSONAL_MESSAGE"><![CDATA[%s says]]></define>
+    <define key="MAIN_MESSAGE"><![CDATA[You have decided to post a gift voucher worth %s to %s who\'s email address is %s<br><br>The text accompanying the email will read<br><br>Dear %s<br><br>
+                        You have been sent a Gift Voucher worth %s by %s]]></define>
+    <define key="TEXT_SUCCESS"><![CDATA[Congratulations, your Gift Voucher has successfully been sent]]></define>
+    <define key="TEXT_BUTTON_SEND"><![CDATA[Send]]></define>
+    <define key="TEXT_INFORMATION"><![CDATA[For more information regarding Gift Certificates, please see our <a href="%s">F.A.Q.</a>]]></define>
+    <define key="TEXT_INVALID_GV"><![CDATA[The Gift Certificate number may be invalid or has already been redeemed. To contact the shop owner please use the Contact Page]]></define>
+    <define key="TEXT_VALID_GV"><![CDATA[Congratulations, you have redeemed a Gift Certificate worth %s]]></define>
+</definitions>

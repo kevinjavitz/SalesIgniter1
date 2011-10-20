@@ -1,0 +1,8 @@
+<definitions>
+    <define key="MODULE_ORDER_TOTAL_GIFT_CERTIFICATES_TITLE"><![CDATA[Gift Certificates ]]></define>
+    <define key="MODULE_ORDER_TOTAL_GIFT_CERTIFICATES_HEADER"><![CDATA[Gift Certificates]]></define>
+    <define key="MODULE_ORDER_TOTAL_GIFT_CERTIFICATES_DESCRIPTION"><![CDATA[Gift Certificates Module]]></define>
+    <define key="TEXT_GIFT_CERTIFICATES_USE"><![CDATA[Apply %s in gift certificates balance to this order]]></define>
+    <define key="TEXT_SUBMIT"><![CDATA[SUBMIT]]></define>
+    <define key="TEXT_REDEEM_LABEL"><![CDATA[ <b>Redeem Gift Certificates Balance</b> ]]></define>
+</definitions>

@@ -188,13 +188,12 @@
 			$type = (array)$type;
 			foreach($type as $iInfo){
 				$iInfo = (array)$iInfo;
-                foreach($iInfo['search_title'] as $key => $search_title ){
-                    //$heading = $search_title;
-                    if((int)$key == (int)Session::get('languages_id')){
-                        $heading = $search_title;
-                        break;
-                    }
-                }
+				foreach($iInfo['search_title'] as $key => $search_title ){
+					if((int)$key == (int)Session::get('languages_id')){
+						$heading = $search_title;
+						break;
+					}
+				}
 				$optionId = $iInfo['option_id'];
 				$optionType = $iInfo['option_type'];
 				$optionSort = $iInfo['option_sort'];

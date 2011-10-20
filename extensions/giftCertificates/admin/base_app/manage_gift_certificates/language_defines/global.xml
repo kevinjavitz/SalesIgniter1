@@ -1,0 +1,111 @@
+<!--
+	Royalties Extension Version 1
+
+	I.T. Web Experts, Rental Store v2
+	http://www.itwebexperts.com
+
+	Copyright (c) 2009 I.T. Web Experts
+
+	This script and it's source is not redistributable
+-->
+
+<definitions>
+    <define key="HEADING_TITLE_DEFAULT"><![CDATA[Gift Certificates]]></define>
+    <define key="TEXT_INFO_HEADING_EDIT_GIFT_CERTIFICATE"><![CDATA[Edit Gift Certificate]]></define>
+    <define key="TEXT_INFO_EDIT_INTRO"><![CDATA[]]></define>
+    <define key="TABLE_HEADING_GIFT_CERTIFICATES_NAME"><![CDATA[Name]]></define>
+    <define key="TABLE_HEADING_GIFT_CERTIFICATES_PRICE"><![CDATA[Price]]></define>
+    <define key="TABLE_HEADING_GIFT_CERTIFICATES_GLOBAL_VALUE"><![CDATA[Value]]></define>
+    <define key="TABLE_HEADING_GIFT_CERTIFICATES_VALUE"><![CDATA[Value]]></define>
+    <define key="TABLE_HEADING_GIFT_CERTIFICATES_STATUS"><![CDATA[Status]]></define>
+    <define key="HEADING_TITLE_STATUS"><![CDATA[Status]]></define>
+    <define key="TEXT_INFO_HEADING_NEW_GIFT_CERTIFICATE"><![CDATA[Add New Gift Certificate]]></define>
+    <define key="TEXT_GIFT_CERTIFICATES_ACTIVE"><![CDATA[Active]]></define>
+    <define key="TEXT_INFO_GIFT_CERTIFICATE_NAME"><![CDATA[Name of the gift certificate]]></define>
+    <define key="TEXT_INFO_GIFT_CERTIFICATE_NAME_HELP"><![CDATA[]]></define>
+    <define key="TEXT_INFO_GIFT_CERTIFICATE_DESC"><![CDATA[Description]]></define>
+    <define key="TEXT_INFO_GIFT_CERTIFICATE_DESC_HELP"><![CDATA[]]></define>
+    <define key="TEXT_INFO_INSERT_INTRO"><![CDATA[]]></define>
+    <define key="TEXT_INFO_GIFT_CERTIFICATE_STATUS"><![CDATA[Status]]></define>
+    <define key="TEXT_INFO_GIFT_CERTIFICATE_PRICE"><![CDATA[Price]]></define>
+    <define key="TEXT_INFO_GIFT_CERTIFICATE_PRICE_HELP"><![CDATA[]]></define>
+    <define key="TEXT_INFO_GIFT_CERTIFICATE_PURCHASE_TYPE"><![CDATA[Select purchase type]]></define>
+    <define key="TEXT_INFO_GIFT_CERTIFICATE_PURCHASE_TYPE_HELP"><![CDATA[Select purchase type to enable this gift certificate for and enter the redeem value for each purchase type]]></define>
+    <define key="TEXT_INFO_GIFT_CERTIFICATE_GLOBAL_VALUE"><![CDATA[Enter Value]]></define>
+    <define key="TEXT_INFO_GIFT_CERTIFICATE_GLOBAL_VALUE_HELP"><![CDATA[Global value for this gift certificate if it is not restricted to a purchase type]]></define>
+    <define key="TEXT_DISABLED"><![CDATA[Disabled]]></define>
+    <define key="TEXT_ENABLED"><![CDATA[Enabled]]></define>
+    <define key="TEXT_GIFT_CERTIFICATES_INACTIVE"><![CDATA[Inactive]]></define>
+    <define key="TEXT_GIFT_CERTIFICATES_ALL"><![CDATA[All]]></define>
+    <define key="TEXT_GIFT_CERTIFICATES_PURCHASE_TYPE_VALUE"><![CDATA[<br>Value for %s ]]></define>
+    <define key="TEXT_ENTRY_TAX_CLASS"><![CDATA[<br>Tax class ]]></define>
+    <!-- BOF NEW DEFS-->
+    <define key="HEADING_TITLE_SEND_GIFT_CERTIFICATES"><![CDATA[Send Gift Voucher To Customers]]></define>
+
+    <define key="TEXT_CUSTOMER"><![CDATA[Customer:]]></define>
+    <define key="TEXT_SUBJECT"><![CDATA[Subject:]]></define>
+    <define key="TEXT_FROM"><![CDATA[From:]]></define>
+    <define key="TEXT_TO"><![CDATA[Email To:]]></define>
+    <define key="TEXT_AMOUNT"><![CDATA[Amount]]></define>
+    <define key="TEXT_MESSAGE"><![CDATA[Message:]]></define>
+    <define key="TEXT_SINGLE_EMAIL"><![CDATA[<span class="smallText">Use this for sending single emails, otherwise use dropdown above</span>]]></define>
+    <define key="TEXT_SELECT_CUSTOMER"><![CDATA[Select Customer]]></define>
+    <define key="TEXT_ALL_CUSTOMERS"><![CDATA[All Customers]]></define>
+    <define key="TEXT_NEWSLETTER_CUSTOMERS"><![CDATA[To All Newsletter Subscribers]]></define>
+
+    <define key="NOTICE_EMAIL_SENT_TO"><![CDATA[Notice: Email sent to: %s]]></define>
+    <define key="ERROR_NO_CUSTOMER_SELECTED"><![CDATA[Error: No customer has been selected.]]></define>
+    <define key="ERROR_NO_AMOUNT_SELECTED"><![CDATA[Error: No amount has been selected.]]></define>
+
+    <define key="TEXT_GV_WORTH"><![CDATA[The Gift Voucher is worth ]]></define>
+    <define key="TEXT_TO_REDEEM"><![CDATA[To redeem this Gift Voucher, please click on the link below. Please also write down the redemption code]]></define>
+    <define key="TEXT_WHICH_IS"><![CDATA[ which is ]]></define>
+    <define key="TEXT_IN_CASE"><![CDATA[ in case you have any problems.]]></define>
+    <define key="TEXT_OR_VISIT"><![CDATA[or visit ]]></define>
+    <define key="TEXT_ENTER_CODE"><![CDATA[ and enter the code during the checkout process]]></define>
+    <define key="TEXT_REDEEM_GIFT_CERTIFICATES_MESSAGE_HEADER"><![CDATA[You recently purchasd a Gift Voucher from our site, for security reasons, the amount of the Gift Voucher was not immediatley credited to you. The shop owner has now released this amount.]]></define>
+    <define key="TEXT_REDEEM_GIFT_CERTIFICATES_MESSAGE_AMOUNT"><![CDATA[The value of the Gift Voucher was %s]]></define>
+    <define key="TEXT_REDEEM_GIFT_CERTIFICATES_MESSAGE_BODY"><![CDATA[You can now visit our site, login and send the Gift Voucher amount to anyone you want.]]></define>
+    <define key="TEXT_REDEEM_GIFT_CERTIFICATES_MESSAGE_FOOTER"><![CDATA[\n\n]]></define>
+    <define key="HEADING_TITLE_RELEASE_QUEUE"><![CDATA[Gift Voucher Release Queue]]></define>
+
+    <define key="TABLE_HEADING_CUSTOMERS"><![CDATA[Customers]]></define>
+    <define key="TABLE_HEADING_ORDERS_ID"><![CDATA[Order-No.]]></define>
+    <define key="TABLE_HEADING_VOUCHER_VALUE"><![CDATA[Voucher Value]]></define>
+    <define key="TABLE_HEADING_DATE_PURCHASED"><![CDATA[Date Purchased]]></define>
+    <define key="TABLE_HEADING_ACTION"><![CDATA[Action]]></define>
+    <define key="TEXT_REDEEM_GIFT_CERTIFICATES_MESSAGE_HEADER"><![CDATA[You recently purchased a Gift Voucher from our online store.\nFor security reasons this was not made immediately available to you.\nHowever this amount has now been released. You can now visit our store\n and send the value via email to someone else\n\n]]></define>
+    <define key="TEXT_REDEEM_GIFT_CERTIFICATES_MESSAGE_AMOUNT"><![CDATA[The Gift Voucher(s) you purchased are worth %s\n\n]]></define>
+    <define key="TEXT_REDEEM_GIFT_CERTIFICATES_MESSAGE_BODY"><![CDATA[]]></define>
+    <define key="TEXT_REDEEM_GIFT_CERTIFICATES_MESSAGE_FOOTER"><![CDATA[]]></define>
+    <define key="TEXT_REDEEM_GIFT_CERTIFICATES_SUBJECT"><![CDATA[Gift Voucher Purchase]]></define>
+    <define key="HEADING_TITLE_GIFT_CERTIFICATES_SENT"><![CDATA[Gift Voucher\'s Sent]]></define>
+
+    <define key="TABLE_HEADING_SENDERS_NAME"><![CDATA[Senders Name]]></define>
+    <define key="TABLE_HEADING_VOUCHER_VALUE"><![CDATA[Voucher Value]]></define>
+    <define key="TABLE_HEADING_VOUCHER_CODE"><![CDATA[Voucher Code]]></define>
+    <define key="TABLE_HEADING_DATE_SENT"><![CDATA[Date Sent]]></define>
+    <define key="TABLE_HEADING_ACTION"><![CDATA[Action]]></define>
+
+    <define key="TEXT_INFO_SENDERS_ID"><![CDATA[Senders ID:]]></define>
+    <define key="TEXT_INFO_AMOUNT_SENT"><![CDATA[Amount Sent:]]></define>
+    <define key="TEXT_INFO_DATE_SENT"><![CDATA[Date Sent:]]></define>
+    <define key="TEXT_INFO_VOUCHER_CODE"><![CDATA[Voucher Code:]]></define>
+    <define key="TEXT_INFO_EMAIL_ADDRESS"><![CDATA[Email Addr:]]></define>
+    <define key="TEXT_INFO_DATE_REDEEMED"><![CDATA[Date Redeemed:]]></define>
+    <define key="TEXT_INFO_IP_ADDRESS"><![CDATA[IP Address:]]></define>
+    <define key="TEXT_INFO_CUSTOMERS_ID"><![CDATA[Customer Id:]]></define>
+    <define key="TEXT_INFO_NOT_REDEEMED"><![CDATA[Not Redeemed]]></define>
+    <define key="NONE"><![CDATA[None]]></define>
+
+    <define key="TEXT_INFO_GIFT_CERTIFICATES"><![CDATA[GiftCertificate Name: ]]></define>
+    <define key="ENTRY_EMAIL_CUSTOMER"><![CDATA[Customer: ]]></define>
+    <define key="ENTRY_EMAIL_SUBJECT"><![CDATA[Subject:]]></define>
+    <define key="ENTRY_EMAIL_FROM"><![CDATA[From:]]></define>
+    <define key="ENTRY_EMAIL_MESSAGE"><![CDATA[Message:]]></define>
+    <define key="TEXT_SELECT_CUSTOMER"><![CDATA[Select Customer]]></define>
+    <define key="TEXT_ALL_CUSTOMERS"><![CDATA[All Customers]]></define>
+    <define key="TEXT_NEWSLETTER_CUSTOMERS"><![CDATA[To All Newsletter Subscribers]]></define>
+    <define key="TEXT_CONFIRM_DELETE"><![CDATA[Are you sure you want to delete this GiftCertificate?]]></define>
+    <!-- EOF NEW DEFS-->
+</definitions>

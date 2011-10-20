@@ -38,8 +38,12 @@ class osC_onePageCheckout {
 	}
 
 	public function isNormalCheckout(){
-		return ($this->getMode() == 'default');
+		return ($this->getMode() == 'default' || $this->getMode() == '');
 	}
+
+    public function isGiftCertificateCheckout(){
+        return ($this->getMode() == 'giftCertificate');
+    }
 
 	public function buildSession($forceReset = false){
 		if (Session::exists('onepage') === false || $forceReset === true){
@@ -115,7 +119,7 @@ class osC_onePageCheckout {
 	public function setShippingStatus(){
 		global $order, $ShoppingCart;
 
-		if ($this->isMembershipCheckout() === true){
+		if ($this->isMembershipCheckout() === true || $this->isGiftCertificateCheckout() === true){
 			$this->onePage['shippingEnabled'] = false;
 			return;
 		}
@@ -139,6 +143,8 @@ class osC_onePageCheckout {
 		global $order;
 		if ($this->isMembershipCheckout() === true){
 			$this->loadMembershipPlan();
+		}else if($this->isGiftCertificateCheckout() === true){
+			$this->loadGiftCertificates();
 		}else{
 			$order->loadOrderInfo();
 		}
@@ -242,6 +248,71 @@ class osC_onePageCheckout {
 			}
 		}
 		return $fields;
+	}
+
+	public function loadGiftCertificates(){
+		global $order;
+
+		$order->info['tax'] = 0;
+		$order->info['tax_groups'] = false;
+
+		$userAccount = &$this->getUserAccount();
+		$addressBook =& $userAccount->plugins['addressBook'];
+		$billingAddress = $addressBook->getAddress('billing');
+		if ($billingAddress['entry_country_id'] == ''){
+		    	$countryId = 0;
+		    	$zoneId = 0;
+		}else{
+		    	$countryId = $billingAddress['entry_country_id'];
+		    	$zoneId = $billingAddress['entry_zone_id'];
+		}
+
+		$order->products = array(
+			array(
+				'quantity'                => 1,
+				'name'                    => $this->onePage['giftCertificate']['name'],
+				'model'                   => '',
+				'tax'                     => tep_get_tax_rate($this->onePage['giftCertificate']['tax_class'], $countryId, $zoneId),
+				'tax_description'         => tep_get_tax_description($this->onePage['giftCertificate']['tax_class'], $countryId, $zoneId),
+				'price'                   => $this->onePage['giftCertificate']['price'],
+				'final_price'             => $this->onePage['giftCertificate']['price'],
+				'weight'                  => 0,
+				'gift_certificates_id'    => $this->onePage['giftCertificate']['gift_certificates_id'],
+				'id'                      => 0,
+				'products_ptype'          => 'NR',
+				'date_available'          => '',
+				//'products_recurring_time' => '',
+				//'products_recurring_days' => '',
+				'purchase_type'           => ''
+			)
+		);
+
+		$shown_price = tep_add_tax($order->products[0]['price'], $order->products[0]['tax']) * $order->products[0]['quantity'];
+		$order->info['subtotal'] = $shown_price;
+
+		$products_tax = $order->products[0]['tax'];
+		$products_tax_description = $order->products[0]['tax_description'];
+		if (sysConfig::get('DISPLAY_PRICE_WITH_TAX') == 'true') {
+			$order->info['tax'] += $shown_price - ($shown_price / (($products_tax < 10) ? "1.0" . str_replace('.', '', $products_tax) : "1." . str_replace('.', '', $products_tax)));
+			if (isset($order->info['tax_groups']["$products_tax_description"])) {
+				$order->info['tax_groups']["$products_tax_description"] += $shown_price - ($shown_price / (($products_tax < 10) ? "1.0" . str_replace('.', '', $products_tax) : "1." . str_replace('.', '', $products_tax)));
+			} else {
+				$order->info['tax_groups']["$products_tax_description"] = $shown_price - ($shown_price / (($products_tax < 10) ? "1.0" . str_replace('.', '', $products_tax) : "1." . str_replace('.', '', $products_tax)));
+			}
+		} else {
+			$order->info['tax'] += ($products_tax / 100) * $shown_price;
+			if (isset($order->info['tax_groups']["$products_tax_description"])) {
+				$order->info['tax_groups']["$products_tax_description"] += ($products_tax / 100) * $shown_price;
+			} else {
+				$order->info['tax_groups']["$products_tax_description"] = ($products_tax / 100) * $shown_price;
+			}
+		}
+
+		if (sysConfig::get('DISPLAY_PRICE_WITH_TAX') == 'true') {
+			$order->info['total'] = $order->info['subtotal'];
+		} else {
+			$order->info['total'] = $order->info['subtotal'] + $order->info['tax'];
+		}
 	}
 
 	public function loadMembershipPlan(){

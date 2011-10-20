@@ -33,7 +33,7 @@ class InfoBoxSearch extends InfoBoxAbstract {
 		sysLanguage::get('INFOBOX_SEARCH_TEXT') .
 		'<br><a href="' . itw_app_link(null, 'products', 'search') . '"><b>' . sysLanguage::get('INFOBOX_SEARCH_ADVANCED_SEARCH') . '</b></a>' .
 		'</form><br />';
-        $boxContent = '';
+        	$boxContent = '';
 
 		$boxWidgetProperties = $this->getWidgetProperties();
 		if(isset($boxWidgetProperties->searchOptions)){
@@ -48,12 +48,12 @@ class InfoBoxSearch extends InfoBoxAbstract {
 				foreach($type as $sInfo){
 					$sInfo = (array)$sInfo;
 					$sInfo['search_title'] = (array)$sInfo['search_title'];
-                    foreach($sInfo['search_title'] as $key => $search_title){
-                        if((int)$key == (int)Session::get('languages_id')){
-                            $heading = $search_title;
-                            break;
-                        }
-                    }
+					foreach($sInfo['search_title'] as $key => $search_title){
+						if((int)$key == (int)Session::get('languages_id')){
+							$heading = $search_title;
+							break;
+						}
+					}
 					$boxContent .= '<br /><b>' . $heading . '</b><ul style="list-style:none;margin:.5em;padding:0;">';
 
 					switch($sInfo['option_type']){
