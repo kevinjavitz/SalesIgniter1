@@ -60,10 +60,19 @@ class Extension_inventoryCenters extends ExtensionBase {
 	}
 	
 	public function ProductListingQueryBeforeExecute(&$Qproducts){
+        global $appExtension;
 		$Qproducts->leftJoin('p.ProductsInventory i')
 			->leftJoin('i.ProductsInventoryBarcodes b')
 			->leftJoin('b.ProductsInventoryBarcodesToInventoryCenters b2c')
 			->leftJoin('b2c.ProductsInventoryCenters ic');
+        if ($appExtension->isEnabled('streamProducts') === true){
+            $Qproducts->leftJoin('p.ProductsStreams ps')
+                ->orwhere('p.products_id = ps.products_id');
+        }
+        if ($appExtension->isEnabled('ProductsDownloads') === true){
+            $Qproducts->leftJoin('p.ProductsDownloads pdl')
+                ->orwhere('p.products_id = pdl.products_id');
+        }
 		if (Session::exists('isppr_inventory_pickup') === true && Session::get('isppr_inventory_pickup') != ''){
 			$Qproducts->andWhere('ic.inventory_center_id = ?', Session::get('isppr_inventory_pickup'));
 		}
@@ -83,10 +92,19 @@ class Extension_inventoryCenters extends ExtensionBase {
 	}
 
 	public function ProductSearchQueryBeforeExecute(&$Qproducts){
+        global $appExtension;
 		$Qproducts->leftJoin('p.ProductsInventory i')
 		->leftJoin('i.ProductsInventoryBarcodes b')
 		->leftJoin('b.ProductsInventoryBarcodesToInventoryCenters b2c')
 		->leftJoin('b2c.ProductsInventoryCenters ic');
+        if ($appExtension->isEnabled('streamProducts') === true){
+            $Qproducts->leftJoin('p.ProductsStreams ps')
+                ->orwhere('p.products_id = ps.products_id');
+        }
+        if ($appExtension->isEnabled('ProductsDownloads') === true){
+            $Qproducts->leftJoin('p.ProductsDownloads pdl')
+                ->orwhere('p.products_id = pdl.products_id');
+        }
 	}
 
 	public function BoxMarketingAddLink(&$contents){
