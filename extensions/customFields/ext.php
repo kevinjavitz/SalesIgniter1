@@ -182,7 +182,8 @@ class Extension_customFields extends ExtensionBase {
                                 ->from('ProductsCustomFieldsToProducts')
                                 ->where('value LIKE ?', '%' . $fieldInfo['id'] . '%')
                                 ->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
-
+                        if($QproductCount[0]['total'] <= 0)
+	                        continue;
                         $searchVal = trim($fieldInfo['id']);
                         $searchText = trim($fieldInfo['text']);
                         $searchKey = $fInfo['search_key'];

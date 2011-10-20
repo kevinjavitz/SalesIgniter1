@@ -91,7 +91,8 @@ class Extension_attributes extends ExtensionBase {
 							->andWhere('options_values_id = ?', $attrInfo['id'])
 							->andWhere('purchase_types is not NULL and purchase_types <> "" ')
 							->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
-
+					if($QproductCount[0]['total'] <= 0)
+						continue;
 					$checkIcon = '<span class="ui-icon ui-icon-check" style="display:inline-block;height:14px;background:none;"></span>';
 					$link = itw_app_link(tep_get_all_get_params(array('values[' . $optionId . ']', 'options[' . $optionId . ']')) . 'options[' . $optionId . ']=' . $optionId . '&values[' . $optionId . ']=' . $attrInfo['id'], 'products', 'search_result');
 					if(isset($_GET['options'][$optionId]) && isset($_GET['values'][$optionId]) && $_GET['values'][$optionId] == $attrInfo['id']){

@@ -111,7 +111,8 @@ class InfoBoxSearch extends InfoBoxAbstract {
 			->from('Products')
 			->where('FIND_IN_SET(?, products_type)', $k)
 			->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
-			
+			if($QproductCount[0]['total'] <= 0)
+				continue;
 			$checkIcon = '<span class="ui-icon ui-icon-check" style="display:inline-block;height:14px;background:none;"></span>';
 			$link = itw_app_link(tep_get_all_get_params(array('ptype')) . 'ptype=' . $k, 'products', 'search_result');
 			if (isset($_GET['ptype']) && $_GET['ptype'] == $k){
