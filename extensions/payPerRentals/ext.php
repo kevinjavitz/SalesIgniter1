@@ -452,11 +452,24 @@ class Extension_payPerRentals extends ExtensionBase {
 			                      CAST("'.date('Y-m-d', strtotime(Session::get('isppr_date_end'))).'" AS DATE) NOT BETWEEN hidden_start_date AND hidden_end_date
 			');
 		}
+	        if(isset($_GET['pprfp_start']) && (int)$_GET['pprfp_start'] > 0){
+	            $Qproducts->andWhere('ppprp.price >= ? ', (int)$_GET['pprfp_start']);
+	        }
+	        if(isset($_GET['pprfp_stop']) && (int)$_GET['pprfp_stop'] > 0){
+	            $Qproducts->andWhere('ppprp.price <= ? ', (int)$_GET['pprfp_stop']);
+	        }
 	}
 
 	public function ProductSearchQueryBeforeExecute(&$Qproducts){
 		$Qproducts->leftJoin('p.ProductsPayPerRental pppr');
 		$Qproducts->leftJoin('pppr.PricePerRentalPerProducts ppprp');
+	        if(isset($_GET['pprfp_start']) && (int)$_GET['pprfp_start'] > 0){
+	            $Qproducts->andWhere('ppprp.price >= ? ', (int)$_GET['pprfp_start']);
+	        }
+	        if(isset($_GET['pprfp_stop']) && (int)$_GET['pprfp_stop'] > 0){
+	            $Qproducts->andWhere('ppprp.price <= ? ', (int)$_GET['pprfp_stop']);
+	        }
+
 	}
 
 	public function NewProductAddBarcodeListingBody(&$bInfo, &$currentBarcodesTableBody){
