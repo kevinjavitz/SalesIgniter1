@@ -32,7 +32,8 @@ class InfoBoxSearch extends InfoBoxAbstract {
 		'<br>' .
 		sysLanguage::get('INFOBOX_SEARCH_TEXT') .
 		'<br><a href="' . itw_app_link(null, 'products', 'search') . '"><b>' . sysLanguage::get('INFOBOX_SEARCH_ADVANCED_SEARCH') . '</b></a>' .
-		'</form>';
+		'</form><br />';
+        $boxContent = '';
 
 		$boxWidgetProperties = $this->getWidgetProperties();
 		if(isset($boxWidgetProperties->searchOptions)){
@@ -40,14 +41,20 @@ class InfoBoxSearch extends InfoBoxAbstract {
 		}
 
 		if (isset($Qitems) && count($Qitems) > 0){
-			$boxContent .= '<div class="ui-widget-header ui-infobox-header guidedHeader" ><div class="ui-infobox-header-text">'.sysLanguage::get('INFOBOX_SEARCH_GUIDED_SEARCH').'</div></div><form name="guided_search" action="' . itw_app_link(null, 'products', 'search_result') . '" method="get">';
+			$boxContent .= '<div class="ui-widget ui-widget-content ui-infobox ui-corner-all-medium"><div class="ui-widget-header ui-infobox-header guidedHeader" ><div class="ui-infobox-header-text">'.sysLanguage::get('INFOBOX_SEARCH_GUIDED_SEARCH').'</div></div><form name="guided_search" action="' . itw_app_link(null, 'products', 'search_result') . '" method="get">';
 			$this->searchItemDisplay = 4;
 			foreach($Qitems as $type){
 				$type = (array)$type;
 				foreach($type as $sInfo){
 					$sInfo = (array)$sInfo;
 					$sInfo['search_title'] = (array)$sInfo['search_title'];
-					$boxContent .= '<br /><b>' . $sInfo['search_title'][Session::get('languages_id')] . '</b><ul style="list-style:none;margin:.5em;padding:0;">';
+                    foreach($sInfo['search_title'] as $key => $search_title){
+                        if((int)$key == (int)Session::get('languages_id')){
+                            $heading = $search_title;
+                            break;
+                        }
+                    }
+					$boxContent .= '<br /><b>' . $heading . '</b><ul style="list-style:none;margin:.5em;padding:0;">';
 
 					switch($sInfo['option_type']){
 						case 'attribute':
@@ -69,7 +76,7 @@ class InfoBoxSearch extends InfoBoxAbstract {
 					$boxContent .= '</ul>';
 				}
 			}
-			$boxContent .= '</form>';
+			$boxContent .= '</form></div>';
 		}
 
 		//EventManager::notify('SearchBoxAddGuidedOptions', &$boxContent);
