@@ -33,7 +33,8 @@ $(document).ready(function (){
   				wrap.css({width: width, height: height}); 
 			};
 
-			flowPlayerObj = $f('streamPlayer', 'streamer/flowplayer/flowplayer.commercial-3.2.5.swf', data.config);
+			//flowPlayerObj = $f('streamPlayer', 'streamer/flowplayer/flowplayer.commercial-3.2.5.swf', data.config);
+            flowPlayerObj = $f('streamPlayer', 'streamer/flowplayer/flowplayer-3.2.5.swf', data.config);
 		}
 	});
 });
