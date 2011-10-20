@@ -12,19 +12,14 @@ function fnPaymentChange(val){
 	}
 }
 function fnClicked() {
-	if (document.customers.make_member.checked) {
+	if ($('select[name="activate"]').val() == 'Y') {
 		var moveDays = plans[document.customers.planid.options[document.customers.planid.options.selectedIndex].value];
 
-		document.customers.make_member.value = 1;
-		document.customers.activate.disabled = false;
 		document.customers.planid.disabled = false;
-		document.customers.payment_method[0].disabled = false;
-		document.customers.payment_method[1].disabled = false;
-		document.customers.payment_method[2].disabled = false;
-		document.customers.payment_method[3].disabled = false;
-		document.customers.cc_number.disabled = false;
-		document.customers.cc_expires_month.disabled = false;
-		document.customers.cc_expires_year.disabled = false;
+        $('select[name="payment_method"], input[name="cc_number"], select[name="cc_expires_month"], select[name="cc_expires_year"], select[name="next_billing_day"], select[name="next_billing_month"], select[name="next_billing_year"]').each( function (){
+            $(this).removeAttr('disabled');
+            $(this).removeClass('ui-state-disabled');
+        });
 
 		var daysMonths = new Array(0,31,28,31,30,31,30,31,31,30,31,30,31);
 		var actualDay = <?php echo (int)date("d");?>;
@@ -43,26 +38,15 @@ function fnClicked() {
 				endingYear++;
 			}
 		}
-		document.customers.next_billing_day.disabled = false;
-		document.customers.next_billing_month.disabled = false;
-		document.customers.next_billing_year.disabled = false;
 		document.customers.next_billing_day.options.selectedIndex = endingDay - 1;
 		document.customers.next_billing_month.options.selectedIndex = endingMonth - 1;
 		document.customers.next_billing_year.options.selectedIndex = endingYear - <?php echo (int)date("y");?>;
-	}else if(document.customers.make_member.checked==false){
-		document.customers.next_billing_day.disabled = true;
-		document.customers.next_billing_month.disabled = true;
-		document.customers.next_billing_year.disabled = true;
-		document.customers.make_member.value = 0;
-		document.customers.activate.disabled = true;
+	}else if($('select[name="activate"]').val() == 'N'){
+        $('select[name="payment_method"], input[name="cc_number"], select[name="cc_expires_month"], select[name="cc_expires_year"], select[name="next_billing_day"], select[name="next_billing_month"], select[name="next_billing_year"]').each( function (){
+            $(this).attr('disabled','true');
+            $(this).addClass('ui-state-disabled');
+        });
 		document.customers.planid.disabled = true;
-		document.customers.payment_method[0].disabled = true;
-		document.customers.payment_method[1].disabled = true;
-		document.customers.payment_method[2].disabled = true;
-		document.customers.payment_method[3].disabled = true;
-		document.customers.cc_number.disabled = true;
-		document.customers.cc_expires_month.disabled = true;
-		document.customers.cc_expires_year.disabled = true;
 	}
 
 }
@@ -149,7 +133,7 @@ function check_form() {
 	error_message = error_message + "<?php echo sysLanguage::get('JS_TELEPHONE'); ?>";
 	error = 1;
 	}*/
-
+    /*
 	if(document.customers.make_member.checked){
 		if(document.customers.payment_method[1].checked){
 			if(document.customers.cc_number.value==''){
@@ -168,6 +152,7 @@ function check_form() {
 			}
 		}
 	}
+	*/
 
 	with(document.customers){
 		if(payment_method.value=="authorizenet"){

@@ -113,36 +113,51 @@
 						$nextBillDate = date_parse($CustomersMembership->next_bill_date);
 						
 						$NextBillDayBox = htmlBase::newElement('selectbox')
-						->setName('next_billing_day')
-						->selectOptionByValue($nextBillDate['day']);
+						->setName('next_billing_day');
+
 						for($i=1; $i<=31; $i++){
 							$NextBillDayBox->addOption(sprintf('%02d', $i), sprintf('%02d', $i));
 						}
-						
+                        $NextBillDayBox->selectOptionByValue($nextBillDate['day']);
+
 						$NextBillMonthBox = htmlBase::newElement('selectbox')
-						->setName('next_billing_month')
-						->selectOptionByValue($nextBillDate['month']);
+						->setName('next_billing_month');
+                        $CCExpiresMonth = htmlBase::newElement('selectbox')
+						->setName('cc_expires_month');
+                            
 						for ($i=1; $i<13; $i++) {
 							$NextBillMonthBox->addOption(sprintf('%02d', $i), strftime('%B',mktime(0,0,0,$i,1,2000)));
+                            $CCExpiresMonth->addOption(sprintf('%02d', $i), strftime('%B',mktime(0,0,0,$i,1,2000)));
 						}
-						
+
+                        $NextBillMonthBox->selectOptionByValue($nextBillDate['month']);
+
 						$NextBillYearBox = htmlBase::newElement('selectbox')
-						->setName('next_billing_year')
-						->selectOptionByValue($nextBillDate['year']);
-						$today = getdate();
+						->setName('next_billing_year');
+
+                        $CCExpiresYear = htmlBase::newElement('selectbox')
+						->setName('cc_expires_year');
+                            
+						$today['year'] = date('Y');
+
 						for ($i=$today['year']; $i < $today['year']+10; $i++) {
 							$NextBillYearBox->addOption(
-								strftime('%y',mktime(0,0,0,1,1,$i)),
+								strftime('%Y',mktime(0,0,0,1,1,$i)),
+								strftime('%Y',mktime(0,0,0,1,1,$i))
+							);
+                            $CCExpiresYear->addOption(
+								strftime('%Y',mktime(0,0,0,1,1,$i)),
 								strftime('%Y',mktime(0,0,0,1,1,$i))
 							);
 						}
+                        $NextBillYearBox->selectOptionByValue($nextBillDate['year']);
 					?></td>
 				</tr>
 				<tr>
 					<td class="main"><?php echo sysLanguage::get('TEXT_NEXT_BILL_DATE');?></td>
 					<td class="main"><?php
-						echo $NextBillDayBox->draw() . '&nbsp;' . 
-							$NextBillMonthBox->draw() . '&nbsp;' . 
+						echo $NextBillDayBox->draw() . '&nbsp;' .
+							$NextBillMonthBox->draw() . '&nbsp;' .
 							$NextBillYearBox->draw();
 					?></td>
 				</tr>
@@ -163,12 +178,7 @@
 							$expYear = substr($exp_date, -2);
 						}
 						
-						$CCExpiresMonth = clone $NextBillMonthBox;
-						$CCExpiresMonth->setName('cc_expires_month');
-						$CCExpiresMonth->selectOptionByValue((isset($expMonth) ? $expMonth : ''));
-						
-						$CCExpiresYear = clone $NextBillYearBox;
-						$CCExpiresYear->setName('cc_expires_year');
+                        $CCExpiresMonth->selectOptionByValue((isset($expMonth) ? $expMonth : ''));
 						$CCExpiresYear->selectOptionByValue((isset($expYear) ? $expYear : ''));
 						
 						echo $CCExpiresMonth->draw() . '&nbsp;' . $CCExpiresYear->draw();
@@ -196,7 +206,7 @@
 				</tr>
 				<tr>
 					<td class="main"><?php echo sysLanguage::get('TEXT_MAKE_MEMBER');?></td>
-					<td class="main"><?php echo tep_draw_selection_field('make_member','checkbox','1',false,'','onclick=fnClicked();');?></td>
+					<td class="main"><?php echo tep_draw_selection_field('make_member','checkbox','1',false,'');?></td>
 				</tr>
 				<tr>
 					<td class="main"><?php echo sysLanguage::get('TEXT_CHOOSE_PLAN');?></td>
@@ -206,7 +216,7 @@
 						->leftJoin('m.MembershipPlanDescription md')
 						->where('md.language_id = ?', Session::get('languages_id'))
 						->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
-						
+
 						$i = 0;
 						$jsMBM = '';
 						foreach($Qmembership as $row_plans){
@@ -253,29 +263,38 @@
 						
 	$NextBillMonthBox = htmlBase::newElement('selectbox')
 	->setName('next_billing_month')
-	->selectOptionByValue($nextBillDate['month'])
 	->disable();
+    $CCExpiresMonth = htmlBase::newElement('selectbox')
+        ->setName('cc_expires_month')
+        ->selectOptionByValue($nextBillDate['month'])
+        ->disable();
 	for ($i=1; $i<13; $i++) {
 		$NextBillMonthBox->addOption(sprintf('%02d', $i), strftime('%B',mktime(0,0,0,$i,1,2000)));
+        $CCExpiresMonth->addOption(sprintf('%02d', $i), strftime('%B',mktime(0,0,0,$i,1,2000)));
 	}
-						
+
+    $NextBillMonthBox->selectOptionByValue($nextBillDate['month']);
+
 	$NextBillYearBox = htmlBase::newElement('selectbox')
 	->setName('next_billing_year')
-	->selectOptionByValue($nextBillDate['year'])
 	->disable();
-	$today = getdate();
+    $CCExpiresYear = htmlBase::newElement('selectbox')
+	->setName('cc_expires_year')
+	->disable();
+    $today['year'] = date('Y');
 	for ($i=$today['year']; $i < $today['year']+10; $i++) {
 		$NextBillYearBox->addOption(
 			strftime('%y',mktime(0,0,0,1,1,$i)),
 			strftime('%Y',mktime(0,0,0,1,1,$i))
 		);
+        $CCExpiresYear->addOption(
+			strftime('%y',mktime(0,0,0,1,1,$i)),
+			strftime('%Y',mktime(0,0,0,1,1,$i))
+		);
 	}
-
-	$CCExpiresMonth = clone $NextBillMonthBox;
-	$CCExpiresMonth->setName('cc_expires_month')->disable();
-						
-	$CCExpiresYear = clone $NextBillYearBox;
-	$CCExpiresYear->setName('cc_expires_year')->disable();
+    $NextBillYearBox->selectOptionByValue($nextBillDate['year']);
+	$CCExpiresMonth->disable();
+	$CCExpiresYear->disable();
 ?>
 		<tr>
 			<td class="formArea"><table border="0" cellspacing="2" cellpadding="2">
@@ -311,6 +330,14 @@
 					<td class="main"><?php echo sysLanguage::get('TEXT_CARD_NUM');?></td>
 					<td class="main"><?php echo tep_draw_input_field('cc_number','',' disabled ');?></td>
 				</tr>
+                <tr>
+                    <td class="main"><?php echo tep_draw_radio_field('payment_method','moneyorder',true,'',' disabled ');?></td>
+                    <td class="main"><?php echo sysLanguage::get('TEXT_MONEY_ORDER');?></td>
+                </tr>
+                <tr>
+                    <td class="main"><?php echo tep_draw_radio_field('payment_method','cod',true,'',' disabled ');?></td>
+                    <td class="main"><?php echo sysLanguage::get('TEXT_COD');?></td>
+                </tr>
 				<tr>
 					<td class="main"><?php echo sysLanguage::get('TEXT_EXP_DATE');?></td>
 					<td class="main"><?php echo $CCExpiresMonth->draw() . '&nbsp;' . $CCExpiresYear->draw();?></td>

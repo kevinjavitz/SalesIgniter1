@@ -47,6 +47,8 @@
 	<define key="TEXT_PAYPAL"><![CDATA[Paypal]]></define>
 	<define key="TEXT_AUTHORIZE"><![CDATA[Authorize.Net]]></define>
 	<define key="TEXT_USAEPAY"><![CDATA[USAePay]]></define>
+	<define key="TEXT_MONEY_ORDER"><![CDATA[Money Order]]></define>
+	<define key="TEXT_COD"><![CDATA[Cash on Delivery]]></define>
 	<define key="TEXT_CVVNO"><![CDATA[CVV number]]></define>
 	<define key="TEXT_CHOOSE_PLAN"><![CDATA[Choose plan:]]></define>
 	<define key="TEXT_CREDIT_CARD"><![CDATA[Credit card]]></define>

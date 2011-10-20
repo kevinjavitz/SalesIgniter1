@@ -11,8 +11,10 @@ class rentalStoreUser_addressBook {
 	}
 	
 	public function &getUserAccount(){
-		global $userAccount;
-		if (Session::exists('userAccount') === true){
+		global $userAccount, $appExtension;
+		if($appExtension->isAdmin()){
+            return $userAccount;
+        }elseif (Session::exists('userAccount') === true){
 			$userAccountCheck = &Session::getReference('userAccount');
 			if (is_object($userAccountCheck)){
 				$userAccount =& $userAccountCheck;
