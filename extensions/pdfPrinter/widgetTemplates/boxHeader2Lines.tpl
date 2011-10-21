@@ -1,6 +1,6 @@
-    <span style="text-decoration: underline;font-size:24px;font-weight:bold;margin-bottom:10px;margin-top:15px;">
+    <div style="text-decoration: underline;font-size:20px;font-weight:bold;margin-bottom:10px;margin-top:5px;">
 		<?php
   		echo $boxHeading;
-		echo '</span><br/>';
+		echo '</div>';
 		echo $boxContent;
 	?>

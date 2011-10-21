@@ -106,8 +106,8 @@
 		<Code>'.sysConfig::get('EXTENSION_UPSLABELS_PACKAGE_SIZE').'</Code>
 		</UnitOfMeasurement>
 		<Length>'.(!empty($_POST['dim_length'])?$_POST['dim_length']:'0').'</Length>
-		<Width>'.(!empty($_POST['dim_length'])?$_POST['dim_width']:'0').'</Width>
-		<Height>'.(!empty($_POST['dim_length'])?$_POST['dim_height']:'0').'</Height>
+		<Width>'.(!empty($_POST['dim_width'])?$_POST['dim_width']:'0').'</Width>
+		<Height>'.(!empty($_POST['dim_height'])?$_POST['dim_height']:'0').'</Height>
 		</Dimensions>';
 	}
 	$xmlRequest1 .= '
@@ -328,8 +328,8 @@
 		<Code>'.sysConfig::get('EXTENSION_UPSLABELS_PACKAGE_SIZE').'</Code>
 		</UnitOfMeasurement>
 		<Length>'.(!empty($_POST['dim_length'])?$_POST['dim_length']:'0').'</Length>
-		<Width>'.(!empty($_POST['dim_length'])?$_POST['dim_width']:'0').'</Width>
-		<Height>'.(!empty($_POST['dim_length'])?$_POST['dim_height']:'0').'</Height>
+		<Width>'.(!empty($_POST['dim_width'])?$_POST['dim_width']:'0').'</Width>
+		<Height>'.(!empty($_POST['dim_height'])?$_POST['dim_height']:'0').'</Height>
 		</Dimensions>';
 	}
 	$xmlRequest1 .= '

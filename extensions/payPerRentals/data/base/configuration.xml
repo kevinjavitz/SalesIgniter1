@@ -356,6 +356,13 @@
 			<sort_order>31</sort_order>
 			<set_function>tep_cfg_select_option(array('True','False'),</set_function>
 		</EXTENSION_PAY_PER_RENTALS_SHOW_RATES_PPR_BEFORE>
+		<EXTENSION_PAY_PER_RENTALS_CALCULATE_DISABLED_DAYS>
+			<value>True</value>
+			<title>Add disabled days to ppr price calculation</title>
+			<description>Add disabled days to ppr price calculation</description>
+			<sort_order>31</sort_order>
+			<set_function>tep_cfg_select_option(array('True','False'),</set_function>
+		</EXTENSION_PAY_PER_RENTALS_CALCULATE_DISABLED_DAYS>
 		<EXTENSION_PAY_PER_RENTALS_PROCESS_SEND>
 			<value>False</value>
 			<title>Process payment on send item</title>

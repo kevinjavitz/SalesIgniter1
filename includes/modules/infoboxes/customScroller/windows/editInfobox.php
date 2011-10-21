@@ -294,7 +294,7 @@ getCategoryTree(0,'',&$categoryTreeList);
 $categoryTreeNew = htmlBase::newElement('selectbox')
         ->setName('new_selected_category')
         ->setId('new_selected_category');
-$categoryTreeNew->addOption('', sysLanguage::get('--select--'));
+$categoryTreeNew->addOption('', '--select--');
 foreach($categoryTreeList as $category){
     $categoryTreeNew->addOption($category['categoryId'], $category['categoryName']);
 }
@@ -382,7 +382,7 @@ foreach($categoryTreeList as $category){
 
         $categoryTree = htmlBase::newElement('selectbox')
                 ->setName('selected_category[' . $i . ']');
-        $categoryTree->addOption('', sysLanguage::get('--select--'));
+        $categoryTree->addOption('', '--select--');
         foreach($categoryTreeList as $category){
             $categoryTree->addOption($category['categoryId'], $category['categoryName']);
         }
@@ -429,7 +429,7 @@ foreach($categoryTreeList as $category){
 			'</tr>' .
 			'<tr>' .
 			'<td>Show Product Name: </td>' .
-			'<td><input type="checkbox" name="scroller_show_product_name[' . $i . ']" value="1"' . ($cInfo->show_product_name === true ? ' checked=checked' : '') . '></td>' .
+			'<td><input type="checkbox" name="scroller_show_product_name[' . $i . ']" value="1"' . ((isset($cInfo->show_product_name)?$cInfo->show_product_name:false) === true ? ' checked=checked' : '') . '></td>' .
 			'</tr>' .
 			'<tr>' .
 			'<td>Reflect Blocks: </td>' .
