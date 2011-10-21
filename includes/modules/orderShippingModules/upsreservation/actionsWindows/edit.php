@@ -36,7 +36,7 @@
     $typesString = '<table cellpadding="1" width="500"><tr><td><b>UPS Code</b></td><td><b> Value</b></td></tr><tr>';
 	$tI = 0;
   	foreach($typesArray as $key => $value){
-		$typesString .= '<td>'. $key. '</td></td> '. $value . '</td>';
+		$typesString .= '<td>'. $key. '</td><td> '. $value . '</td>';
 		//$tI++;
 		//if ($tI % 2 == 0){
 		$typesString .= '</tr><tr>';

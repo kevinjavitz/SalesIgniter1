@@ -1202,7 +1202,8 @@ class InfoBoxPayPerRental extends InfoBoxAbstract {
 										beforeShowDay: function (dateObj) {
 											dateObj.setHours(0, 0, 0, 0);
 											var dateFormatted = $.datepick.formatDate('yy-m-d', dateObj);
-		                                    if ($.inArray(dateFormatted, goodDates) > -1) {
+											today = new Date();
+		                                    if ($.inArray(dateFormatted, goodDates) > -1 && (today.getTime() <= dateObj.getTime() - (1000 * 60 * 60 * 24 - (24 - dateObj.getHours()) * 1000 * 60 * 60))){
 												return [true, '', 'Available'];
 											}
 

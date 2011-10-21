@@ -231,9 +231,10 @@ if (!isset($WidgetSettings->linked_to)){
 
 		$('#navMenuTable').find('.addMainBlock').click(function () {
 			var inputKey = 0;
-			while($('#navMenuTable').find('ol.sortable > li[data-input_key=' + inputKey + ']').size() > 0){
+			/*while($('#navMenuTable').find('ol.sortable > li[data-input_key=' + inputKey + ']').size() > 0){
 				inputKey++;
-			}
+			} */
+			$('#navMenuTable li[id^="menu_item_"]').each(function() { inputKey++;});
 
 			var menuIconOptions = '';
 			$.each(menuIcons, function (k, v) {
@@ -557,9 +558,16 @@ if (!isset($WidgetSettings->linked_to)){
 		}
 		$textInputs = '<table cellpadding="2" cellspacing="0" border="0">';
 		foreach(sysLanguage::getLanguages() as $lInfo){
+
+            if(mb_detect_encoding($item->{Session::get('languages_id')}->text, array('UTF-8')) === 'UTF-8'){
+                $text = utf8_decode($item->{$lInfo['id']}->text);
+            } else {
+                $text = utf8_decode($item->{$lInfo['id']}->text);
+            }
+
 			$textInput = htmlBase::newElement('input')
 				->setName('menu_item_text[' . $lInfo['id'] . '][' . $i . ']')
-				->val($item->{$lInfo['id']}->text);
+				->val($text);
 			$textInputs .= '<tr>' .
 				'<td>' . $lInfo['showName']('&nbsp;') . '</td>' .
 				'<td>' . $textInput->draw() . '</td>' .

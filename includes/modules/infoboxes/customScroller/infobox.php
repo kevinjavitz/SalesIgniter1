@@ -176,7 +176,7 @@ class InfoBoxCustomScrollerStack extends InfoBoxCustomScrollerAbstract
 		foreach($this->ScrollersConfig as $i => $cInfo){
 			$PrevButton = $this->buildPrevButton($cInfo->prev_image);
 			$NextButton = $this->buildNextButton($cInfo->next_image);
-			$Results = $this->getQueryResults($cInfo->query, $cInfo->query_limit, $cInfo->selected_category);
+			$Results = $this->getQueryResults($cInfo->query, $cInfo->query_limit, (isset($cInfo->selected_category)?$cInfo->selected_category:''));
 			
 			if (!empty($Results)) {
 				$ProductsList = $this->buildList($Results, $cInfo);
@@ -211,7 +211,7 @@ class InfoBoxCustomScrollerTabs extends InfoBoxCustomScrollerAbstract
 		foreach($this->ScrollersConfig as $i => $cInfo){
 			$PrevButton = $this->buildPrevButton($cInfo->prev_image);
 			$NextButton = $this->buildNextButton($cInfo->next_image);
-			$Results = $this->getQueryResults($cInfo->query, $cInfo->query_limit, $cInfo->selected_category);
+			$Results = $this->getQueryResults($cInfo->query, $cInfo->query_limit, (isset($cInfo->selected_category)?$cInfo->selected_category:''));
 			$ProductsList = $this->buildList($Results, $cInfo);
 
 			$Scoller = htmlBase::newElement('div')
@@ -247,7 +247,7 @@ class InfoBoxCustomScrollerButtons extends InfoBoxCustomScrollerAbstract
 		foreach($this->ScrollersConfig as $i => $cInfo){
 			$PrevButton = $this->buildPrevButton($cInfo->prev_image);
 			$NextButton = $this->buildNextButton($cInfo->next_image);
-			$Results = $this->getQueryResults($cInfo->query, $cInfo->query_limit, $cInfo->selected_category);
+			$Results = $this->getQueryResults($cInfo->query, $cInfo->query_limit, isset($cInfo->selected_category)?$cInfo->selected_category:'');
 			$ProductsList = $this->buildList($Results, $cInfo);
 
 			$uniquePageNum = floor(time() / ($i + 1));

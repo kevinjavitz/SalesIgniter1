@@ -4,8 +4,82 @@
 	if(isset($_GET['oID'])){
 	$QOrders = Doctrine_Query::create()
 	->from('Orders o')
+	->leftJoin('o.OrdersProducts op')
+	->leftJoin('o.OrdersTotal ot')
+	->leftJoin('o.OrdersAddresses a')
 	->andWhere('o.orders_id = ?', $_GET['oID'])
 	->fetchOne();
+
+if(empty($QOrders->ups_track_num) && empty($QOrders->ups_track_num2)){
+	$orderInfo['customers_telephone'] = $QOrders->customers_telephone;
+	$orderInfo['customers_email_address'] = $QOrders->customers_email_address;
+	foreach($QOrders->OrdersAddresses as $oaInfo){
+		if($oaInfo['address_type'] == 'billing'){
+			$orderInfo['customers_name'] = $oaInfo['entry_name'];
+			$orderInfo['customers_company'] = $oaInfo['entry_company'];
+			$orderInfo['customers_address'] = $oaInfo['entry_street_address'];
+			$orderInfo['customers_city'] = $oaInfo['entry_city'];
+			$orderInfo['customers_state'] = $oaInfo['entry_state'];
+			$orderInfo['customers_country'] = $oaInfo['entry_country'];
+			$orderInfo['customers_postcode'] = $oaInfo['entry_postcode'];
+		}else if($oaInfo['address_type'] == 'delivery'){
+			$orderInfo['delivery_name'] = $oaInfo['entry_name'];
+			$orderInfo['delivery_company'] = $oaInfo['entry_company'];
+			$orderInfo['delivery_address'] = $oaInfo['entry_street_address'];
+			$orderInfo['delivery_city'] = $oaInfo['entry_city'];
+			$orderInfo['delivery_state'] = $oaInfo['entry_state'];
+			$orderInfo['delivery_country'] = $oaInfo['entry_country'];
+			$orderInfo['delivery_postcode'] = $oaInfo['entry_postcode'];
+		}
+	}
+
+	$delivery_country = $orderInfo['delivery_country'];
+
+	if (!empty($orderInfo['delivery_phone'])){
+		$phone = $orderInfo['delivery_phone'];
+	}else{
+		if (!empty($orderInfo['customers_telephone'])){
+			$phone = $orderInfo['customers_telephone'];
+		}else{
+			$phone = sysConfig::get('EXTENSION_UPSLABELS_PHONE');
+		}
+	}
+
+	$order_qty_query = mysql_query("select * from orders_products where orders_id = '" . $_GET['oID']. "'");
+	$order_qty = 0;
+	$order_weight = 0;
+	$order_item_html = '';
+	if (mysql_num_rows($order_qty_query)) {
+		while ($order_qtys = mysql_fetch_array($order_qty_query)){
+			$order_item_html = $order_item_html . '          <tr>' . "\n" .
+				'            <td class="smallText" align="left"><b>Product:</b><br>' . $order_qtys['products_quantity'] . ' * ' .
+				$order_qtys['products_name'] . '</td>' . "\n" .
+				'            <td class="smallText" align="left">';
+			$order_qty = $order_qty + $order_qtys['products_quantity'];
+			$products_id = $order_qtys['products_id'];
+			$products_weight_query = mysql_query("select * from products where products_id = '" . $products_id . "'");
+			if (mysql_num_rows($products_weight_query)) {
+				$products_weights = mysql_fetch_array($products_weight_query);
+				$order_weight = $order_weight + ($order_qtys['products_quantity'] * ($products_weights['products_weight']));
+				$item_weights[] = $products_weights['products_weight'];
+			}
+		}
+
+		$order_weight_tar = $order_weight + (float)sysConfig::get('SHIPPING_BOX_WEIGHT');
+		$order_weight_percent = ($order_weight * ((float)sysConfig::get('SHIPPING_BOX_PADDING') / 100 + 1));
+
+		if ($order_weight_percent < $order_weight_tar) {
+			$order_weight = $order_weight_tar;
+		} else {
+			$order_weight = $order_weight_percent;
+		}
+
+		$order_weight = round($order_weight,1);
+		$order_weight = sprintf("%01.1f", $order_weight);
+	}
+	$package_num = $order_qty;
+
+
 
 	$xmlRequest1 = '<?xml version="1.0"?>
 	<AccessRequest xml:lang="en-US">
@@ -52,23 +126,23 @@
 	</Shipper>
 	<ShipTo>';
 
-	if(!empty($_POST['delivery_company'])){
-		$xmlRequest1 .= '<CompanyName>'.$_POST['delivery_company'].'</CompanyName>';
+	if(!empty($orderInfo['delivery_company'])){
+		$xmlRequest1 .= '<CompanyName>'.$orderInfo['delivery_company'].'</CompanyName>';
 	}else{
-		$xmlRequest1 .= '<CompanyName>'.$_POST['delivery_name'].'</CompanyName>';
+		$xmlRequest1 .= '<CompanyName>'.$orderInfo['delivery_name'].'</CompanyName>';
 	}
 
-	$xmlRequest1 .= '<AttentionName>'.$_POST['delivery_name'].'</AttentionName>';
+	$xmlRequest1 .= '<AttentionName>'.$orderInfo['delivery_name'].'</AttentionName>';
 
-	if(!empty($_POST['delivery_phone'])){
-		$xmlRequest1 .= '<PhoneNumber>'.$_POST['delivery_phone'].'</PhoneNumber>';
+	if(!empty($phone)){
+		$xmlRequest1 .= '<PhoneNumber>'.$phone.'</PhoneNumber>';
 	}
 	$xmlRequest1 .= '<Address>
-	<AddressLine1>'.$_POST['delivery_address'].'</AddressLine1>
-	<City>'.$_POST['delivery_city'].'</City>
-	<StateProvinceCode>'.$_POST['zone_code'].'</StateProvinceCode>
-	<PostalCode>'.$_POST['delivery_postcode'].'</PostalCode>
-	<CountryCode>'.  $_POST['country_code'].'</CountryCode>
+	<AddressLine1>'.$orderInfo['delivery_address'].'</AddressLine1>
+	<City>'.$orderInfo['delivery_city'].'</City>
+	<StateProvinceCode>'.$orderInfo['zone_code'].'</StateProvinceCode>
+	<PostalCode>'.$orderInfo['delivery_postcode'].'</PostalCode>
+	<CountryCode>'.  $orderInfo['country_code'].'</CountryCode>
 	</Address>
 	</ShipTo>
 	<ShipFrom>
@@ -92,22 +166,22 @@
 	</Prepaid>
 	</PaymentInformation>
 	<Service>
-	<Code>'.$_POST['service_type'].'</Code>
+	<Code>'.sysConfig::get('EXTENSION_UPSLABELS_DEFAULT_SERVICE_TYPE').'</Code>
 	<Description/>
 	</Service>
 	<Package>
 	<PackagingType>
-	<Code>'.$_POST['packaging_type'].'</Code>
+	<Code>'.sysConfig::get('EXTENSION_UPSLABELS_DEFAULT_PACKAGING_TYPE').'</Code>
 	<Description/>
 	</PackagingType>';
-	if(!empty($_POST['dim_width'])){
+	if(sysConfig::get('EXTENSION_UPSLABELS_DEFAULT_DIM_WIDTH') != ''){
 	$xmlRequest1 .= '<Dimensions>
 		<UnitOfMeasurement>
 		<Code>'.sysConfig::get('EXTENSION_UPSLABELS_PACKAGE_SIZE').'</Code>
 		</UnitOfMeasurement>
-		<Length>'.(!empty($_POST['dim_length'])?$_POST['dim_length']:'0').'</Length>
-		<Width>'.(!empty($_POST['dim_width'])?$_POST['dim_width']:'0').'</Width>
-		<Height>'.(!empty($_POST['dim_height'])?$_POST['dim_height']:'0').'</Height>
+		<Length>'.((sysConfig::get('EXTENSION_UPSLABELS_DEFAULT_DIM_LENGTH') != '')?sysConfig::get('EXTENSION_UPSLABELS_DEFAULT_DIM_LENGTH'):'0').'</Length>
+		<Width>'.((sysConfig::get('EXTENSION_UPSLABELS_DEFAULT_DIM_WIDTH') != '')?sysConfig::get('EXTENSION_UPSLABELS_DEFAULT_DIM_WIDTH'):'0').'</Width>
+		<Height>'.((sysConfig::get('EXTENSION_UPSLABELS_DEFAULT_DIM_HEIGHT') != '')?sysConfig::get('EXTENSION_UPSLABELS_DEFAULT_DIM_HEIGHT'):'0').'</Height>
 		</Dimensions>';
 	}
 	$xmlRequest1 .= '
@@ -116,7 +190,7 @@
 	<UnitOfMeasurement>
 	<Code>'.sysConfig::get('EXTENSION_UPSLABELS_WEIGHT').'</Code>
 	</UnitOfMeasurement>
-	<Weight>'.$_POST['package_weight'].'</Weight>
+	<Weight>'.$order_weight.'</Weight>
 	</PackageWeight>
 	<AdditionalHandling>0</AdditionalHandling>
 	</Package>
@@ -287,23 +361,23 @@
 	</Address>
 	</ShipTo>
 	<ShipFrom>';
-	if(!empty($_POST['delivery_company'])){
-		$xmlRequest1 .= '<CompanyName>'.$_POST['delivery_company'].'</CompanyName>';
+	if(!empty($orderInfo['delivery_company'])){
+		$xmlRequest1 .= '<CompanyName>'.$orderInfo['delivery_company'].'</CompanyName>';
 	}else{
-		$xmlRequest1 .= '<CompanyName>'.$_POST['delivery_name'].'</CompanyName>';
+		$xmlRequest1 .= '<CompanyName>'.$orderInfo['delivery_name'].'</CompanyName>';
 	}
 
-	$xmlRequest1 .= '<AttentionName>'.$_POST['delivery_name'].'</AttentionName>';
+	$xmlRequest1 .= '<AttentionName>'.$orderInfo['delivery_name'].'</AttentionName>';
 
-	if(!empty($_POST['delivery_phone'])){
-		$xmlRequest1 .= '<PhoneNumber>'.$_POST['delivery_phone'].'</PhoneNumber>';
+	if(!empty($orderInfo['delivery_phone'])){
+		$xmlRequest1 .= '<PhoneNumber>'.$orderInfo['delivery_phone'].'</PhoneNumber>';
 	}
 	$xmlRequest1 .= '<Address>
-	<AddressLine1>'.$_POST['delivery_address'].'</AddressLine1>
-	<City>'.$_POST['delivery_city'].'</City>
-	<StateProvinceCode>'.$_POST['zone_code'].'</StateProvinceCode>
-	<PostalCode>'.$_POST['delivery_postcode'].'</PostalCode>
-	<CountryCode>'.  $_POST['country_code'].'</CountryCode>
+	<AddressLine1>'.$orderInfo['delivery_address'].'</AddressLine1>
+	<City>'.$orderInfo['delivery_city'].'</City>
+	<StateProvinceCode>'.$orderInfo['zone_code'].'</StateProvinceCode>
+	<PostalCode>'.$orderInfo['delivery_postcode'].'</PostalCode>
+	<CountryCode>'.  $orderInfo['country_code'].'</CountryCode>
 	</Address>';
 	$xmlRequest1 .= '</ShipFrom>
 	<PaymentInformation>
@@ -314,31 +388,32 @@
 	</Prepaid>
 	</PaymentInformation>
 	<Service>
-	<Code>'.$_POST['service_type'].'</Code>
+	<Code>'.sysConfig::get('EXTENSION_UPSLABELS_DEFAULT_SERVICE_TYPE').'</Code>
 	<Description>return</Description>
 	</Service>
 	<Package>
 	<PackagingType>
-	<Code>'.$_POST['packaging_type'].'</Code>
+	<Code>'.sysConfig::get('EXTENSION_UPSLABELS_DEFAULT_PACKAGING_TYPE').'</Code>
 	<Description>return</Description>
 	</PackagingType>';
-	if(!empty($_POST['dim_width'])){
+	if(sysConfig::get('EXTENSION_UPSLABELS_DEFAULT_DIM_WIDTH') != ''){
 		$xmlRequest1 .= '<Dimensions>
 		<UnitOfMeasurement>
 		<Code>'.sysConfig::get('EXTENSION_UPSLABELS_PACKAGE_SIZE').'</Code>
 		</UnitOfMeasurement>
-		<Length>'.(!empty($_POST['dim_length'])?$_POST['dim_length']:'0').'</Length>
-		<Width>'.(!empty($_POST['dim_width'])?$_POST['dim_width']:'0').'</Width>
-		<Height>'.(!empty($_POST['dim_height'])?$_POST['dim_height']:'0').'</Height>
+		<Length>'.((sysConfig::get('EXTENSION_UPSLABELS_DEFAULT_DIM_LENGTH') != '')?sysConfig::get('EXTENSION_UPSLABELS_DEFAULT_DIM_LENGTH'):'0').'</Length>
+		<Width>'.((sysConfig::get('EXTENSION_UPSLABELS_DEFAULT_DIM_WIDTH') != '')?sysConfig::get('EXTENSION_UPSLABELS_DEFAULT_DIM_WIDTH'):'0').'</Width>
+		<Height>'.((sysConfig::get('EXTENSION_UPSLABELS_DEFAULT_DIM_HEIGHT') != '')?sysConfig::get('EXTENSION_UPSLABELS_DEFAULT_DIM_HEIGHT'):'0').'</Height>
 		</Dimensions>';
 	}
+
 	$xmlRequest1 .= '
 	<Description>return</Description>
 	<PackageWeight>
 	<UnitOfMeasurement>
 	<Code>'.sysConfig::get('EXTENSION_UPSLABELS_WEIGHT').'</Code>
 	</UnitOfMeasurement>
-	<Weight>'.$_POST['package_weight'].'</Weight>
+	<Weight>'.$order_weight.'</Weight>
 	</PackageWeight>
 	<AdditionalHandling>0</AdditionalHandling>
 	</Package>
@@ -439,6 +514,7 @@
 	imagepng($image, sysConfig::getDirFsCatalog().'extensions/upsLabels/tracking/'. $trakingNumber.".png");
 	imagedestroy($image);
 	}
+}
 
 
 EventManager::attachActionResponse(itw_app_link('appExt=upsLabels&oID='.$_GET['oID'],'ship_ups','default'), 'redirect');

@@ -2404,6 +2404,18 @@ class PurchaseType_reservation extends PurchaseTypeAbstract {
 					break;
 			}
         }
+	    if(sysConfig::get('EXTENSION_PAY_PER_RENTALS_CALCULATE_DISABLED_DAYS') == 'False'){
+		    $startTime = strtotime($sdate);
+		    $endTime = strtotime($edate);
+		    $disabledDays = array_filter(sysConfig::explode('EXTENSION_PAY_PER_RENTALS_DISABLED_DAYS', ','));
+		    while ($startTime <= $endTime) {
+			    $dayOfWeek = date('D', $startTime);
+			    if(in_array($dayOfWeek, $disabledDays)){
+				    $sdate = date('Y-m-d H:i:s', strtotime('+1 days', strtotime($sdate)));
+			    }
+			    $startTime += 60 * 60 * 24;
+		    }
+	    }
 	}
 
 	public function getReservationPrice($start, $end, &$rInfo = '', $semName = '', $includeInsurance = false, $onlyShow = true){

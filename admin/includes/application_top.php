@@ -84,8 +84,12 @@
 	$conn->setAttribute(Doctrine_Core::ATTR_QUERY_CACHE, $cacheDriver);
 	$conn->setAttribute(Doctrine_Core::ATTR_RESULT_CACHE, $cacheDriver);
 	$conn->setAttribute(Doctrine_Core::ATTR_RESULT_CACHE_LIFESPAN, 3600);*/
+    $conn->setCharset('utf8');
+    $conn->setCollate('utf8_general_ci');
+    $manager->setCurrentConnection('mainConnection');
+    $manager->setCollate('utf8_general_ci');
+    $manager->setCharset('utf8');
 
-	$manager->setCurrentConnection('mainConnection');
 
 // Define how do we update currency exchange rates
 // Possible values are 'oanda' 'xe' or ''

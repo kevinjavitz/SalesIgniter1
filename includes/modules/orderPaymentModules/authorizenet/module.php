@@ -612,11 +612,42 @@
 
 					$this->createCustomerPaymentProfile();
 					if(strpos($this->getResponse(), 'A duplicate customer payment profile already exists') !== false){
-					 	$this->setErrorMessage('Payment Profile already exists');
-						$messageStack->addSession('pageStack', 'Payment Profile already exists', 'error');
-						return false;
+						$this->createCustomerProfile();
+						$profileID = '';
+						if(strpos($this->getResponse(), 'A duplicate record with ID') !== false){
+							$profileID = substr($this->getResponse(),strlen('A duplicate record with ID '), strpos($this->getResponse(),' already') - strlen('A duplicate record with ID '));
+							$this->profileId = $profileID;
+							$this->setParameter('customerProfileId', $profileID);
+						}
+						$paymentCardsArr = array();
+						$paymentProfilesArr = array();
+						if($profileID != ''){
+							$this->getCustomerProfile();
+							if(isset($this->paymentProfiles)){
+								foreach($this->paymentProfiles as $profile){
+									$paymentCardsArr[] = (string)$profile->payment->creditCard->cardNumber;
+									$paymentProfilesArr[] = (string)$profile->customerPaymentProfileId;
+								}
+							}
+						}
+
+						$payment_profile_id = -1;
+						foreach($paymentCardsArr as $key => $card){
+							if(substr($paymentCardsArr[$key], -4, 4) == substr($requestParams['cardNum'], -4, 4)){
+								$payment_profile_id = $paymentProfilesArr[$key];
+								break;
+							}
+
+						}
+						if($payment_profile_id == -1){
+							$this->setErrorMessage('Payment Profile already exists');
+							$messageStack->addSession('pageStack', 'Payment Profile already exists', 'error');
+							return false;
+						}
+
+					}else{
+						$payment_profile_id = $this->getPaymentProfileId();
 					}
-					$payment_profile_id = $this->getPaymentProfileId();
 
 					$this->setParameter('customerPaymentProfileId', $payment_profile_id);
 					//$this->setParameter('customerShippingAddressId', $shipping_profile_id);

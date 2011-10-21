@@ -18,7 +18,7 @@ class PDFInfoBoxPageBreak extends PDFInfoBoxAbstract {
 	public function show(){
 			global $appExtension;
 			//$boxWidgetProperties = $this->getWidgetProperties();
-			$this->setBoxContent('<hr>');
+			$this->setBoxContent('<span style="page-break-after: always;"></span>');
 			return $this->draw();
 	}
 }

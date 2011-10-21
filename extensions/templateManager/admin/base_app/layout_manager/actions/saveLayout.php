@@ -280,7 +280,7 @@ function parseElement(&$el, &$parent) {
 				}
 				$Widget->identifier = $wInfo->attr('data-widget_code');
 				$Widget->sort_order = $wInfo->attr('data-sort_order');
-				$Widget->Configuration['widget_settings']->configuration_value = $wInfo->attr('data-widget_settings');
+				$Widget->Configuration['widget_settings']->configuration_value = json_encode(json_decode(utf8_encode($wInfo->attr('data-widget_settings'))));
 
 				if ($wInfo->attr('tmid')){
 					$newElementHolder[$wInfo->attr('tmid')] = $Widget;
