@@ -99,7 +99,7 @@
 					<td class="main"><?php
 						$PaymentMethodBox = htmlBase::newElement('selectbox')
 						->setName('payment_method')
-						->selectOptionByValue($CustomersMembership->payment_method)
+
 						->attr('onchange', 'fnPaymentChange(this.value);')
 						->addOption('authorizenet', 'Authorize.Net')
 						->addOption('paypalipn', 'Paypal')
@@ -108,9 +108,9 @@
 						->addOption('cashondelivery', 'Cash On Delivery')
 						->addOption('moneyorder', 'Money Order');
 						
-						echo $PaymentMethodBox->draw();
+
 						
-						$nextBillDate = date_parse($CustomersMembership->next_bill_date);
+						$nextBillDate = date_parse(date('Y-m-d',$CustomersMembership->next_bill_date));
 						
 						$NextBillDayBox = htmlBase::newElement('selectbox')
 						->setName('next_billing_day');
@@ -118,7 +118,7 @@
 						for($i=1; $i<=31; $i++){
 							$NextBillDayBox->addOption(sprintf('%02d', $i), sprintf('%02d', $i));
 						}
-                        $NextBillDayBox->selectOptionByValue($nextBillDate['day']);
+
 
 						$NextBillMonthBox = htmlBase::newElement('selectbox')
 						->setName('next_billing_month');
@@ -130,7 +130,7 @@
                             $CCExpiresMonth->addOption(sprintf('%02d', $i), strftime('%B',mktime(0,0,0,$i,1,2000)));
 						}
 
-                        $NextBillMonthBox->selectOptionByValue($nextBillDate['month']);
+
 
 						$NextBillYearBox = htmlBase::newElement('selectbox')
 						->setName('next_billing_year');
@@ -150,7 +150,11 @@
 								strftime('%Y',mktime(0,0,0,1,1,$i))
 							);
 						}
+						$NextBillDayBox->selectOptionByValue($nextBillDate['day']);
+						$NextBillMonthBox->selectOptionByValue($nextBillDate['month']);
                         $NextBillYearBox->selectOptionByValue($nextBillDate['year']);
+						$PaymentMethodBox->selectOptionByValue($CustomersMembership->payment_method);
+						echo $PaymentMethodBox->draw();
 					?></td>
 				</tr>
 				<tr>
@@ -175,7 +179,7 @@
 						if (tep_not_null($CustomersMembership->exp_date)){
 							$exp_date = cc_decrypt($CustomersMembership->exp_date);
 							$expMonth = substr($exp_date, 0, 2);
-							$expYear = substr($exp_date, -2);
+							$expYear = substr($exp_date, -4);
 						}
 						
                         $CCExpiresMonth->selectOptionByValue((isset($expMonth) ? $expMonth : ''));
@@ -314,7 +318,7 @@
 							$NextBillYearBox->selectOptionByValue($nextBillDate['year']);
 							$NextBillMonthBox->selectOptionByValue($nextBillDate['month']);
 							$NextBillDayBox->selectOptionByValue($nextBillDate['day']);
-							$nextBillDate = date_parse($CustomersMembership->next_bill_date);
+							$nextBillDate = date_parse(date('Y-m-d',$CustomersMembership->next_bill_date));
 						}
 
 						echo $PaymentMethodBox->draw();
@@ -342,7 +346,7 @@
 						if (tep_not_null($CustomersMembership->exp_date)){
 						$exp_date = cc_decrypt($CustomersMembership->exp_date);
 						$expMonth = substr($exp_date, 0, 2);
-						$expYear = substr($exp_date, -2);
+						$expYear = substr($exp_date, -4);
 					}
 
 						$CCExpiresMonth->selectOptionByValue((isset($expMonth) ? $expMonth : ''));
