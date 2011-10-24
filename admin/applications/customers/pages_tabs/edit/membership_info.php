@@ -109,9 +109,9 @@
 						->addOption('moneyorder', 'Money Order');
 						
 
-						
-						$nextBillDate = date_parse(date('Y-m-d',$CustomersMembership->next_bill_date));
-						
+
+						$nextBillDate = date_parse($CustomersMembership->next_bill_date);
+
 						$NextBillDayBox = htmlBase::newElement('selectbox')
 						->setName('next_billing_day');
 
@@ -318,7 +318,7 @@
 							$NextBillYearBox->selectOptionByValue($nextBillDate['year']);
 							$NextBillMonthBox->selectOptionByValue($nextBillDate['month']);
 							$NextBillDayBox->selectOptionByValue($nextBillDate['day']);
-							$nextBillDate = date_parse(date('Y-m-d',$CustomersMembership->next_bill_date));
+							$nextBillDate = date_parse($CustomersMembership->next_bill_date);
 						}
 
 						echo $PaymentMethodBox->draw();
