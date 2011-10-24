@@ -110,6 +110,42 @@
 			<sort_order>2</sort_order>
 		</EXTENSION_UPSLABELS_PHONE>
 
+		<EXTENSION_UPSLABELS_DEFAULT_PACKAGING_TYPE>
+			<title>Select default pckaging type</title>
+			<value>24</value>
+			<description>Select default pckaging type</description>
+			<sort_order>1</sort_order>
+			<use_function><![CDATA[tep_cfg_get_packaging_type]]></use_function>
+			<set_function><![CDATA[tep_cfg_pull_down_packaging_types(]]></set_function>
+		</EXTENSION_UPSLABELS_DEFAULT_PACKAGING_TYPE>
+
+		<EXTENSION_UPSLABELS_DEFAULT_SERVICE_TYPE>
+			<title>Select default service type</title>
+			<value>03</value>
+			<description>Select default service type</description>
+			<sort_order>1</sort_order>
+			<use_function><![CDATA[tep_cfg_get_service_type]]></use_function>
+			<set_function><![CDATA[tep_cfg_pull_down_service_types(]]></set_function>
+		</EXTENSION_UPSLABELS_DEFAULT_SERVICE_TYPE>
+
+		<EXTENSION_UPSLABELS_DEFAULT_DIM_WIDTH>
+			<title>Default package width</title>
+			<value></value>
+			<description>Default package width</description>
+			<sort_order>2</sort_order>
+		</EXTENSION_UPSLABELS_DEFAULT_DIM_WIDTH>
+		<EXTENSION_UPSLABELS_DEFAULT_DIM_HEIGHT>
+			<title>Default package height</title>
+			<value></value>
+			<description>Default package height</description>
+			<sort_order>2</sort_order>
+		</EXTENSION_UPSLABELS_DEFAULT_DIM_HEIGHT>
+		<EXTENSION_UPSLABELS_DEFAULT_DIM_LENGTH>
+			<title>Default package length</title>
+			<value></value>
+			<description>Default package length</description>
+			<sort_order>2</sort_order>
+		</EXTENSION_UPSLABELS_DEFAULT_DIM_LENGTH>
 
 	</Configuration>
 </ConfigurationGroup>

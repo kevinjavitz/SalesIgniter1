@@ -1184,7 +1184,7 @@ class ReservationUtilities {
    		if (sysConfig::get('EXTENSION_PAY_PER_RENTALS_USE_UPS_RESERVATION') == 'True' && sysConfig::get('EXTENSION_PAY_PER_RENTALS_CHECK_GOOGLE_ZONES_BEFORE') == 'False') {
 			?>
 			var $calLoader2 = $selfID.find('.datePicker');
-			showAjaxLoader($calLoader2, 'noloader');
+
 			$('#getQuotes').click(function(){
 			 showAjaxLoader($('#getQuotes'), 'xlarge');
 			 $('#shipMethods').hide();
@@ -1233,22 +1233,15 @@ class ReservationUtilities {
 				}
 			})
 		});
+		$(window).load(function () {
+			showAjaxLoader($calLoader2, 'noloader');
+		});
+
 		$('#countryDrop').val('223').trigger('change');
 		$('#fullAddress').hide();
 		$('#shipMethods').hide();
 		$('#zipAddress').show();
 
-
-
-		/*$selfID.find('.datePicker').bind('EventAfterLoadedCalendar', function(){
-			$('#countryDrop').val('223').trigger('change');
-			$('#fullAddress').hide();
-			$('#shipMethods').hide();
-			$('#zipAddress').show();
-			var $calLoader2 = $selfID.find('.datePicker');
-			showAjaxLoader($calLoader2, 'noloader');
-
-		});*/
 		<?php
 
 		}

@@ -27,11 +27,30 @@ class Extension_ordersProductsNotes extends ExtensionBase {
 		EventManager::attachEvents(array(
 			'ShoppingCartListingAddHeaderColumn',
 			'ShoppingCartListingAddNewBodyColumn',
+			'ShoppingCartListingAddBodyColumn',
+			'ShoppingCartListingAddBodyColumnText',
 			'InsertOrderedProductBeforeSave',
 			'CheckoutProcessInsertOrderedProduct',
 			'OrderClassQueryFillProductArray',
 			'OrderProductAfterProductName',
 		), null, $this);
+	}
+
+	public function ShoppingCartListingAddBodyColumn(&$productRows, $cartProduct){
+			$rInfo = $cartProduct->getInfo();
+			$el = '';
+			if (array_key_exists('note', $rInfo)){
+				$el = $rInfo['note'];
+				array_splice($productRows, 2, 0, array(
+						'text'   => $el)
+
+				);
+			}
+
+	}
+
+	public function ShoppingCartListingAddBodyColumnText(&$shoppingCartBodyRow, $rInfo){
+
 	}
 	
 	public function ShoppingCartListingAddHeaderColumn(&$shoppingCartHeader){
@@ -43,23 +62,7 @@ class Extension_ordersProductsNotes extends ExtensionBase {
 	}
 	
 	public function ShoppingCartListingAddNewBodyColumn(&$shoppingCartBodyRow, $product){
-		$rInfo = $product->getInfo();
-
-		if ($_GET['app'] == 'checkout'){
-			$el = '';
-			if (array_key_exists('note', $rInfo)){
-				$el = $rInfo['note'];
-			}
-
-			array_splice($shoppingCartBodyRow, 2, 0, array(array(
-				'addCls' => 'main',
-				'align'  => 'center',
-				'valign' => 'top',
-				'text'   => $el)
-			)
-		);
-		}else{
-
+			$rInfo = $product->getInfo();
 			$inputElement = htmlBase::newElement('input')
 			->setName('products_note[' . $product->getIdString() . ']')
 			->addClass('productsNote')
@@ -72,7 +75,7 @@ class Extension_ordersProductsNotes extends ExtensionBase {
 				'text' => $inputElement->draw(),
 				'attr' => array('align' => 'left', 'valign' => 'top')
 			)));
-		}
+
 	}
 	
 	public function InsertOrderedProductBeforeSave(&$newOrdersProduct, &$product){

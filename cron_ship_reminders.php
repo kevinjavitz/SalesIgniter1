@@ -57,8 +57,25 @@ $invExt = $appExtension->getExtension('inventoryCenters');
 				}
 				foreach($list as $email=>$val){
 					$rented_list[$email]['list'] .= 'Order ID: '. $oInfo->orders_id.'<br/>'.implode('<br/>',$val);
+
 					if(file_exists(sysConfig::getDirFsCatalog(). 'extensions/upsLabels/tracking/'.$oInfo->ups_track_num.'.png')){
 						$rented_list[$email]['attach'][] = 'extensions/upsLabels/tracking/'.$oInfo->ups_track_num.'.png';
+					}else{
+						$file = (itw_admin_app_link('appExt=upsLabels&action=shipOrdersAuto&oID=' . $oInfo->orders_id, 'ship_ups', 'default'));
+						if(!empty($file)){
+							$ch=curl_init();
+							curl_setopt($ch,CURLOPT_URL, $file);
+							curl_exec($ch);
+							curl_close($ch);
+						}
+
+						$QNewOrder = Doctrine_Query::create()
+						->from('Orders o')
+						->andWhere('o.orders_id = ?', $oInfo->orders_id)
+						->fetchOne();
+						if(file_exists(sysConfig::getDirFsCatalog(). 'extensions/upsLabels/tracking/'.$QNewOrder->ups_track_num.'.png')){
+							$rented_list[$email]['attach'][] = 'extensions/upsLabels/tracking/'.$QNewOrder->ups_track_num.'.png';
+						}
 					}
 				}
 			}
