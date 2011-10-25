@@ -235,6 +235,7 @@
 		'ot_subtotal',
 		'ot_tax',
 		'ot_shipping',
+		'reservationshipping',
 		'total',
 		'tax',
 		'shipping',
@@ -246,6 +247,7 @@
 		'subtotal',
 		'loworderfee'
 	);
+	$shippingModules = array('ot_shipping','shipping','reservationshipping');
 	$QclassCheck = Doctrine_Query::create()
 	->select('value')
 	->from('OrdersTotal')
@@ -413,7 +415,7 @@
 			->select('SUM(ot.value) as total')
 			->from('Orders o')
 			->leftJoin('o.OrdersTotal ot')
-			->whereIn('ot.module_type', array('ot_shipping','shipping'));
+			->whereIn('ot.module_type', $shippingModules);
 
 			if ($loworder) {
 				$Queries['lowOrderFees'] = Doctrine_Query::create()
