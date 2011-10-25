@@ -36,10 +36,10 @@
 			}
 
 			$tableGrid->addBodyRow(array(
-				'onclick' => 'js_redirect(\'' . tep_href_link(FILENAME_CUSTOMERS, 'search=' . $cInfo['customers_lastname'], 'NONSSL') . '\')',
+				'onclick' => 'js_redirect(\'' . itw_app_link('search=' . $cInfo['customers_lastname'], 'customers', 'default') . '\')',
 				'columns' => array(
 					array('text' => $rowNum),
-					array('text' => '<a href="' . tep_href_link(FILENAME_CUSTOMERS, 'search=' . $cInfo['customers_lastname'], 'NONSSL') . '">' . $cInfo['customers_firstname'] . ' ' . $cInfo['customers_lastname'] . '</a>'),
+					array('text' => '<a href="' . itw_app_link('search=' . $cInfo['customers_lastname'], 'customers', 'default') . '">' . $cInfo['customers_firstname'] . ' ' . $cInfo['customers_lastname'] . '</a>'),
 					array('text' => $currencies->format($cInfo['ordersum']), 'align' => 'right')
 				)
 			));
