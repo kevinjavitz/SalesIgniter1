@@ -482,7 +482,7 @@ class PDF_Labels {
 					'products_name'        => $product->getName(),
 					'barcode'              => $Qbarcode[0]['barcode'],
 					'barcode_id'           => $Qbarcode[0]['barcode_id'],
-					'products_description' => $product->getDescription(),
+					'products_description' => strip_tags($product->getDescription()),
 					'customers_address'    => false
 				);
 			}
