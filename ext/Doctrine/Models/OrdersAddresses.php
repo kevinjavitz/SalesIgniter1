@@ -49,6 +49,12 @@ class OrdersAddresses extends Doctrine_Record {
 			'notnull' => true,
 			'autoincrement' => false,
 		));
+		$this->hasColumn('entry_dob', 'timestamp', null, array(
+			'type' => 'timestamp',
+			'primary' => false,
+			'notnull' => true,
+			'autoincrement' => false,
+		));
 		$this->hasColumn('entry_company', 'string', 32, array(
 			'type' => 'string',
 			'length' => 32,
