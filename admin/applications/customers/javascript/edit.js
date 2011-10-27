@@ -10,4 +10,15 @@ $(document).ready(function (){
     $('select[name="activate"]').live('change',function (){
         fnClicked();
     });
+	$('input[name="make_member"]').live('change',function (){
+		if($('input[name="make_member"]').is(':checked') == true) {
+			$('select[name="activate"]').removeAttr('disabled');
+			$('select[name="activate"]').val('Y');
+		} else {
+			$('select[name="activate"]').attr('disabled','disabled');
+			$('select[name="activate"]').val('N');
+
+		}
+		fnClicked();
+	});
 }); 

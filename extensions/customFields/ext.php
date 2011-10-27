@@ -338,7 +338,7 @@ class Extension_customFields extends ExtensionBase {
             }
             $Qproducts->leftJoin('p.ProductsCustomFieldsToProducts f2p')
                     ->leftJoin('f2p.ProductsCustomFields f')
-                    ->andWhere('((' . implode(') OR (', $fieldsSearch) . '))');
+                    ->orWhere('((' . implode(') OR (', $fieldsSearch) . '))');
         }
     }
 

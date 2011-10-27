@@ -351,9 +351,9 @@ class formValidation extends ArrayIterator {
         $fieldValue = $this->_currentElement['original_field_value'];
         $this->_trim($fieldValue);
         if (is_array($fieldValue)){
-        	array_map('addslashes', $fieldValue);
+        	//array_map('addslashes', $fieldValue);
         }else{
-     	   $fieldValue = addslashes($fieldValue);
+     	   //$fieldValue = addslashes($fieldValue);
         }
         return strip_tags(urldecode($fieldValue));
 	}

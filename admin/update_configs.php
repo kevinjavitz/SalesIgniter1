@@ -138,7 +138,7 @@ function addStatus($status_name) {
 	->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 	if (count($Qstatus) <= 0) {
 		$Status = new OrdersStatus();
-		$Description = $Status->OrdersStatusDescription;
+		$Description = &$Status->OrdersStatusDescription;
 		foreach (sysLanguage::getLanguages() as $lInfo) {
 			$Description[$lInfo['id']]->language_id = $lInfo['id'];
 			$Description[$lInfo['id']]->orders_status_name = $status_name;
@@ -236,10 +236,11 @@ addStatus('Approved');
 addStatus('Estimate');
 addStatus('Shipped');
 
-
-add_extra_fields('modules_shipping_zone_reservation_methods','weight_rates','TEXT NULL');
-add_extra_fields('modules_shipping_zone_reservation_methods','min_rental_number'," INT( 1 ) NOT NULL DEFAULT  '0'");
-add_extra_fields('modules_shipping_zone_reservation_methods','min_rental_type'," INT( 1 ) NOT NULL DEFAULT  '0'");
+if(sysConfig::get('MODULE_ORDER_SHIPPING_ZONERESERVATION_STATUS') == 'True'){
+	add_extra_fields('modules_shipping_zone_reservation_methods','weight_rates','TEXT NULL');
+	add_extra_fields('modules_shipping_zone_reservation_methods','min_rental_number','INT(1) NOT NULL DEFAULT  "0"');
+	add_extra_fields('modules_shipping_zone_reservation_methods','min_rental_type','INT(1) NOT NULL DEFAULT  "0"');
+}
 
 updatePagesDescription();
 
