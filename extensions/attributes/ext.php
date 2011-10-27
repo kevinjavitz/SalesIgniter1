@@ -155,7 +155,7 @@ class Extension_attributes extends ExtensionBase {
 			if (!$attributeDefined){
 				$Qproducts->leftJoin('p.ProductsAttributes pa');
 			}
-			$Qproducts->andWhere('((' . implode(') or (', $fieldsSearch) . '))');
+			$Qproducts->orWhere('((' . implode(') or (', $fieldsSearch) . '))');
 			$Qproducts->andWhere('pa.groups_id is not NULL');
 		}
 	}
