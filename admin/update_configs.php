@@ -45,6 +45,17 @@ function add_extra_fields($table, $column, $column_attr = 'VARCHAR(255) NULL'){
 
 }
 
+function updatePagesDescription(){
+	$db=sysConfig::get('DB_DATABASE');
+	$link = mysql_connect(sysConfig::get('DB_SERVER'), sysConfig::get('DB_SERVER_USERNAME'), sysConfig::get('DB_SERVER_PASSWORD'));
+	if (! $link){
+		die(mysql_error());
+	}
+	mysql_select_db($db , $link) or die("Select Error: ".mysql_error());
+	mysql_query("ALTER TABLE  `pages_description` CHANGE  `pages_html_text`  `pages_html_text` TEXT CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL") or die('An error occured when running updating pages_description table'.mysql_error());
+	mysql_query("ALTER TABLE  `pages_description` CHANGE  `pages_title`  `pages_title` TEXT CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL") or die('An error occured when running updating pages_description table'.mysql_error());
+}
+
 
 
 function updateConfiguration($key, $group, $title, $desc, $default, $func) {
@@ -230,6 +241,7 @@ add_extra_fields('modules_shipping_zone_reservation_methods','weight_rates','TEX
 add_extra_fields('modules_shipping_zone_reservation_methods','min_rental_number'," INT( 1 ) NOT NULL DEFAULT  '0'");
 add_extra_fields('modules_shipping_zone_reservation_methods','min_rental_type'," INT( 1 ) NOT NULL DEFAULT  '0'");
 
+updatePagesDescription();
 
 //update bannerManger
 

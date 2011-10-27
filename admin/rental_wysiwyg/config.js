@@ -12,6 +12,7 @@ CKEDITOR.editorConfig = function( config )
 	config.contentsCss = ['../ext/jQuery/themes/smoothness/ui.all.css'];
 	config.scayt_autoStartup = false;
 	config.disableNativeSpellChecker = false;
+	config.extraPlugins = 'font';
 
 	/* Allow php code in fck - not needed right now
 		config.protectedSource.push( /<\?[\s\S]*?\?>/g ) ;

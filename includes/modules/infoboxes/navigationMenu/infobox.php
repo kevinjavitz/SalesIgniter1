@@ -59,13 +59,8 @@ class InfoBoxNavigationMenu extends InfoBoxAbstract
 		elseif ($item->icon == 'custom') {
 			$icon = '<img src="' . $item->icon_src . '">';
 		}
-        if(mb_detect_encoding($item->{Session::get('languages_id')}->text, array('utf-8')) === 'UTF-8') {
-            $menuText = '<span class="menu_text">' . utf8_decode($item->{Session::get('languages_id')}->text) . '</span>';
-        } else {
-            $menuText = '<span class="menu_text">' . $item->{Session::get('languages_id')}->text . '</span>';
-        }
 
-
+            	$menuText = '<span class="menu_text">' . $item->{Session::get('languages_id')}->text . '</span>';
 		$itemLink = htmlBase::newElement('a')
 			->addClass('ui-corner-all');
 		if ($item->link !== false){

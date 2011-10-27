@@ -52,17 +52,9 @@ function parseChildren($itemId, $itemArr, &$childArr) {
 			'children' => array()
 		);
 		foreach(sysLanguage::getLanguages() as $lInfo){
-            /*
-            $encoding = mb_detect_encoding( $_POST['menu_item_text'][$lInfo['id']][$itemId], mb_list_encodings() );
-            $encoded = mb_convert_encoding( $_POST['menu_item_text'][$lInfo['id']][$itemId], 'UTF-8', $encoding);
-            $childArr[$itemId][$lInfo['id']]['text'] = $encoded;
-            */
-			//$childArr[$itemId][$lInfo['id']]['text'] = $_POST['menu_item_text'][$lInfo['id']][$itemId];
-            if(mb_detect_encoding($_POST['menu_item_text'][$lInfo['id']][$itemId], array('UTF-8')) !== 'UTF-8'){
-                $childArr[$itemId][$lInfo['id']]['text'] = utf8_encode($_POST['menu_item_text'][$lInfo['id']][$itemId]);
-            } else {
-                $childArr[$itemId][$lInfo['id']]['text'] = $_POST['menu_item_text'][$lInfo['id']][$itemId];
-            }
+		
+             $childArr[$itemId][$lInfo['id']]['text'] = $_POST['menu_item_text'][$lInfo['id']][$itemId];
+            
 
 		}
 
@@ -88,11 +80,9 @@ if (!isset($_POST['linked_to'])){
 				);
 
 				foreach(sysLanguage::getLanguages() as $lInfo){
-                  if(mb_detect_encoding($_POST['menu_item_text'][$lInfo['id']][$itemId], array('UTF-8')) !== 'UTF-8'){
-                        $menuConfig[$i][$lInfo['id']]['text'] = utf8_encode($_POST['menu_item_text'][$lInfo['id']][$itemId]);
-                    } else {
-                        $menuConfig[$i][$lInfo['id']]['text'] = $_POST['menu_item_text'][$lInfo['id']][$itemId];
-                    } 					
+                
+                       			 $menuConfig[$i][$lInfo['id']]['text'] = $_POST['menu_item_text'][$lInfo['id']][$itemId];
+                  				
 				}
 
 				if (in_array($itemId, $items['menu_item'])){

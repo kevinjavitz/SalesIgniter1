@@ -558,16 +558,9 @@ if (!isset($WidgetSettings->linked_to)){
 		}
 		$textInputs = '<table cellpadding="2" cellspacing="0" border="0">';
 		foreach(sysLanguage::getLanguages() as $lInfo){
-
-            if(mb_detect_encoding($item->{Session::get('languages_id')}->text, array('UTF-8')) === 'UTF-8'){
-                $text = utf8_decode($item->{$lInfo['id']}->text);
-            } else {
-                $text = utf8_decode($item->{$lInfo['id']}->text);
-            }
-
 			$textInput = htmlBase::newElement('input')
 				->setName('menu_item_text[' . $lInfo['id'] . '][' . $i . ']')
-				->val($text);
+				->val($item->{$lInfo['id']}->text);
 			$textInputs .= '<tr>' .
 				'<td>' . $lInfo['showName']('&nbsp;') . '</td>' .
 				'<td>' . $textInput->draw() . '</td>' .

@@ -154,7 +154,7 @@ function runLayoutAction(action) {
 	if (rType == 'post'){
 		var postVars = [];
 		postVars.push($('#templatePages *').serialize());
-		postVars.push('templateData=' + escape(getMarkup()));
+		postVars.push('templateData=' + encodeURIComponent(getMarkup()));
 	}
 
 	showAjaxLoader($Column, 'xlarge');
