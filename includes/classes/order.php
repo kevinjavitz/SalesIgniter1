@@ -589,7 +589,7 @@ class OrderProcessor {
 	}
 
 	public function sendNewOrderEmail(){
-		global $appExtension, $paymentModules, $products_ordered;
+		global $appExtension, $paymentModules, $products_ordered, $order_has_streaming_or_download;
 		$userAccount = &$this->getUserAccount();
 		$addressBook =& $userAccount->plugins['addressBook'];
 		$sendToFormatted = $addressBook->formatAddress('delivery', false);
@@ -602,6 +602,9 @@ class OrderProcessor {
 		$emailEvent->setVar('ordered_products', (isset($this->newOrder['productsOrdered']) ? $this->newOrder['productsOrdered'] : ((isset($products_ordered)&&(!empty($products_ordered)))?$products_ordered:$this->products_ordered) ));
 		$emailEvent->setVar('billing_address', $billToFormatted);
 		$emailEvent->setVar('shipping_address', $sendToFormatted);
+		if($order_has_streaming_or_download){
+			$emailEvent->setVar('order_has_streaming_or_download', sysLanguage::get('TEXT_ORDER_SUCCESS_EMAIL_STREAM_OR_DOWNLOAD'));
+		}
 		if (sysConfig::get('ONEPAGE_CHECKOUT_PICKUP_ADDRESS') == 'true'){
 			$pickUpFormatted = $addressBook->formatAddress('pickup');
 			$emailEvent->setVar('pickup_address', $pickUpFormatted);

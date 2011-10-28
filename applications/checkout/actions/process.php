@@ -346,6 +346,7 @@
 						'';
 				} else {
 					if ($onePageCheckout->isNormalCheckout()){
+						$cartProducts = $ShoppingCart->getProducts();
 						$order->createOrder();
 						if(sysConfig::get('EXTENSION_PAY_PER_RENTALS_PROCESS_SEND') == 'True'){
 							$temp = $order->info['total'];
@@ -372,9 +373,13 @@
 
 							// initialized for the email confirmation
 							$products_ordered = '';
+							$order_has_streaming_or_download = false;
+
 							foreach ($ShoppingCart->getProducts() as $cartProduct) {
 								$order->insertOrderedProduct($cartProduct, &$products_ordered);
-
+								if($cartProduct->getPurchaseType() == 'download' || $cartProduct->getPurchaseType() == 'stream'  || $cartProduct->getPurchaseType() == 'new'){
+									$order_has_streaming_or_download = true;
+								}
 								EventManager::notify('CheckoutProcessInsertOrderedProduct', $cartProduct, &$products_ordered);
 
 								// #################### Added CCGV ######################

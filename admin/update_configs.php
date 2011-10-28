@@ -202,6 +202,8 @@ addEmailTemplate('Shipment Due Reminders','ship_reminder','','Shipment Due Remin
 addEmailTemplateVariables('firstname','ship_reminder');
 addEmailTemplateVariables('rented_list','ship_reminder');
 
+addEmailTemplateVariables('order_has_streaming_or_download','order_success', '1', 'order_has_streaming_or_download');
+
 
 
 addEmailTemplateVariables('customerFirstName','membership_activated_admin');
