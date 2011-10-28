@@ -349,8 +349,9 @@ class productListing_productsPricePayPerRental {
 					}
 
 					$tableRow[$i2] = '<tr>
-									<td class="main" colspan="2">Select the quantity of this unit <br/>needed and click Reserve' . /*$pricing .*/ '</td>
-								</tr>';
+									<td class="main"><nobr>Price:</nobr></td>
+									<td class="main">' . $pricing . '</td>
+					</tr>';
 					if (sizeof($tableRow) > 0){
 						$tableRow[0] = '<tr>
 						   <td class="main" colspan="2" style="font-size:.8em;" align="center">' .  $pageForm->draw() . '</td>
