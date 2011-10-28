@@ -1,12 +1,24 @@
 <?php
 	echo '<ul>';
+	$lang_tab_header = '';
+	$lang_tab_headers = '';
 	foreach(sysLanguage::getLanguages() as $lInfo){
 		$lID = $lInfo['id'];
-		echo '<li class="ui-tabs-nav-item"><a href="#langTab_' . $lID . '"><span>' . $lInfo['showName']() . '</span></a></li>';
+		$lang_tab_header =  '<li class="ui-tabs-nav-item"><a href="#langTab_' . $lID . '"><span>' . $lInfo['showName']() . '</span></a></li>';
+		if($lInfo['id'] === sysLanguage::getId()){
+			$lang_tab_headers =  $lang_tab_header . $lang_tab_headers;
+		} else {
+			$lang_tab_headers .=  $lang_tab_header;
+		}
 	}
+	echo $lang_tab_headers;
 	echo '</ul>';
 
+	$lang_tab_contents = '';
+	$lang_tab_content = '';
+
 	foreach(sysLanguage::getLanguages() as $lInfo){
+		ob_start();
 		$lID = $lInfo['id'];
 
 		$ProductsName = htmlBase::newElement('input')
@@ -111,5 +123,13 @@
  </table>
 </div>
 <?php
-    }
+		$lang_tab_contents = ob_get_contents();
+		ob_end_clean();
+		if($lInfo['id'] === sysLanguage::getId()){
+			$lang_tab_contents =  $lang_tab_content . $lang_tab_contents;
+		} else {
+			$lang_tab_contents .=  $lang_tab_contents;
+		}
+	}
+	echo $lang_tab_contents;
 ?>
