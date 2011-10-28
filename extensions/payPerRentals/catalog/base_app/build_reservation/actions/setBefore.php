@@ -335,6 +335,7 @@ else {
 				'selectedDates' => $selectedDates,
 				'goodDates' => $goodDates
 			), 'json');
+		}
 	else {
 
 		if (isset($_POST['zipCode']) && !empty($_POST['zipCode'])){
@@ -483,6 +484,7 @@ else {
 				}
 			}
 		}
+	}
 	}
  
 ?>

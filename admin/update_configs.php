@@ -63,28 +63,27 @@ function updateConfiguration($key, $group, $title, $desc, $default, $func) {
 		->select('configuration_id')
 		->from('Configuration')
 		->where('configuration_key = ?', $key)
-		->execute();
-	if ($Qcheck->count() == 1) {
-		$newConfig = $Qcheck[0];
+		->fetchOne();
+
+	if ($Qcheck) {
 		if($title != -1){
-			$newConfig->configuration_title = $title;
+			$Qcheck->configuration_title = $title;
 		}
 		if($default != -1){
-			$newConfig->configuration_value = $default;
+			$Qcheck->configuration_value = $default;
 		}
 		if($desc != -1){
-			$newConfig->configuration_description = $desc;
+			$Qcheck->configuration_description = $desc;
 		}
 		if($group != -1){
-			$newConfig->configuration_group_id = $group;
+			$Qcheck->configuration_group_id = $group;
 		}
-		$newConfig->sort_order = 11;
+		$Qcheck->sort_order = 11;
 		if($func != -1){
-			$newConfig->set_function = $func;
+			$Qcheck->set_function = $func;
 		}
-		$newConfig->save();
+		$Qcheck->save();
 	}
-	$Qcheck->free();
 }
 
 addConfiguration('SHOW_MANUFACTURER_ON_PRODUCT_INFO', 1, 'Show manufacturer name on product Info', 'Show manufacturer name on product Info', 'false', "tep_cfg_select_option(array('true', 'false'),");
