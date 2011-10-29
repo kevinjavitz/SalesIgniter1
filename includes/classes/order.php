@@ -589,7 +589,7 @@ class OrderProcessor {
 	}
 
 	public function sendNewOrderEmail(){
-		global $appExtension, $paymentModules, $products_ordered;
+		global $appExtension, $paymentModules, $products_ordered, $onePageCheckout;
 		$userAccount = &$this->getUserAccount();
 		$addressBook =& $userAccount->plugins['addressBook'];
 		$sendToFormatted = $addressBook->formatAddress('delivery', false);
@@ -626,10 +626,48 @@ class OrderProcessor {
 		 */
 		if (!empty($this->info['payment_module'])){
 			$emailEvent->setVar('paymentTitle', $this->info['payment_module']);
+                        
+                                                
 			if ($this->info['payment_module'] == 'po'){
 				$emailEvent->setVar('po_number', 'P.O. Number: ' . $this->info['po_number']);
 			}
+                        
+                    
+                        /*
+                        if (is_array($this->paymentHistory)) {
+                            
+                            $payment_history = $this->paymentHistory;
+                            $last_payment_history = array_pop($payment_history);
+                            
+                            $card_details = unserialize(cc_decrypt($last_payment_history['card_details']));
+                            $emailEvent->setVar('card_details', 'Card Type: '.$card_details['cardType']);
+                        
+                            
+                        }
+                         */
+                        
+                        //Get latest payment history for the order
+                        $QPaymentHistory = Doctrine_Query::create()
+                                ->from('OrdersPaymentsHistory oph')                                
+                                ->where('oph.orders_id = ?', $onePageCheckout->onePage['info']['order_id'])
+                                ->orderBy('oph.payment_history_id DESC')
+                                ->limit(1)
+                                ->setHydrationMode(Doctrine::HYDRATE_ARRAY);
 
+                        $payment_history = $QPaymentHistory->fetchOne();
+         
+                        
+                        if (isset($payment_history['card_details'])) {
+                            $card_details = unserialize(cc_decrypt($details = $payment_history['card_details']));
+                            
+                            if (!empty($card_details['transId'])) {
+                                $emailEvent->setVar('card_details', 'Auth ID: '.$card_details['authId'].' <br/> Card Type:'.$card_details['cardType']);
+                            } else {
+                                $emailEvent->setVar('card_details', 'Failed to proccess credit card');
+                            }
+                        }
+                        
+                        
 		}
 
 		/*to debug
@@ -652,7 +690,8 @@ class OrderProcessor {
 			$currentOrder['orderID'] = (isset($this->newOrder['orderID'])?$this->newOrder['orderID']:$this->orderId);
 			$currentOrder['productsOrdered'] = (isset($this->newOrder['productsOrdered']) ? $this->newOrder['productsOrdered'] : ((isset($products_ordered)&&(!empty($products_ordered)))?$products_ordered:$this->products_ordered) );
 		}
-
+                
+                
 		EventManager::notify('OrderBeforeSendEmail', &$currentOrder, &$emailEvent, &$products_ordered);
 
 

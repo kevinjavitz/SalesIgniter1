@@ -1,7 +1,28 @@
 <?php
 	$json = array('success' => false);
 	
-	if (isset($_POST['oID'])){
+	
+	if (isset($_GET['provider'])) {
+		$provider_id = (int)$_GET['provider'];		
+		
+		$extStream = $appExtension->getExtension('streamProducts');
+		$Provider = $extStream->getProviderModuleById($provider_id);
+		
+		if ($Provider!==null) {
+			$config = $Provider->getFlowplayerConfig(array(
+				'stream_type' => $_GET['type'],
+				'file_name' => $_GET['file'],
+			));
+
+			$json = array(
+				'success' => true,
+				'config' => $config
+			);
+		} else {
+			$json = array('success'=>false);
+		}
+		
+	} elseif (isset($_POST['oID'])){
 		$orderId = (int) $_POST['oID'];
 		$orderProductId = (int) $_POST['opID'];
 		$productId = (int) $_POST['pID'];

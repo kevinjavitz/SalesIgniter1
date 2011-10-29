@@ -195,6 +195,25 @@ class Extension_streamProducts extends ExtensionBase {
 		
 		return $return;
 	}
+		
+	
+	public function getProviderModuleById($providerId)
+	{
+		$return = false;
+
+		$Qcheck = Doctrine_Query::create()
+			->from('ProductsStreamProviders p')
+			->where('provider_id=?', $providerId)
+			->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+		
+		if ($Qcheck){
+			$settings = $Qcheck[0];
+			return $this->getProviderModule($settings['provider_module'], $settings['provider_module_settings']);
+		} else {
+			return null;
+		}
+	}
+	
 	
 	public function getProviderModule($moduleName, $providerSettings = array()){
 		$Module = null;

@@ -21,4 +21,9 @@ if ($App->getAppPage() == 'default'){
 		//$javascriptFiles[] =  'admin/rental_wysiwyg/ckeditor.js';
 		//$javascriptFiles[] = 'admin/rental_wysiwyg/adapters/jquery.js';
 	}
+	
+	//if ($App->getAppPage() == 'view'){
+		$App->addJavascriptFile('streamer/flowplayer/flowplayer-3.2.4.min.js');
+	//}
+	
 ?>

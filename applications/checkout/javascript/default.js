@@ -245,6 +245,8 @@ $(document).ready(function (){
         }
 		showAjaxLoader($('.checkoutContent'), 'xlarge', 'dialog');
 		var linkParams = js_get_all_get_params(['app', 'appPage', 'action']);
+                $('#continueButton').hide();
+                
 		$.ajax({
 			url: js_app_link(linkParams + 'rType=ajax&app=checkout&appPage=default&action=process'),
 			cache: false,
