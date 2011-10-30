@@ -47,7 +47,7 @@
 		}
 		$userAccount->updateCustomerAccount();
 
-		if (array_key_exists('planid', $_POST)){
+		if (array_key_exists('planid', $_POST) || array_key_exists('activate', $_POST) || array_key_exists('make_member', $_POST)){
 			if (array_key_exists('activate', $_POST)) $membership->setActivationStatus($_POST['activate']);
 			$membership->setPlanId($_POST['planid']);
 			$membership->setPaymentMethod($_POST['payment_method']);
