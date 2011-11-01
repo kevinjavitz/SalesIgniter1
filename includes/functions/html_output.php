@@ -114,6 +114,11 @@ function buildAppLink($o){
 function itw_app_link($params=null, $appName=null, $appPage=null, $connection='NONSSL'){
 	global $request_type;
 	$appExt = null;
+
+	if($appName == 'account' && sysConfig::get('ENABLE_SSL') == true && ($connection !== 'SSL')){
+		$connection = 'SSL';
+	}
+	
 	if (!is_null($params)){
 		parse_str($params, $vars);
 		$paramsParsed = true;
