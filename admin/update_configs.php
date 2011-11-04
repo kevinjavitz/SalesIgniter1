@@ -237,6 +237,12 @@ addStatus('Approved');
 addStatus('Estimate');
 addStatus('Shipped');
 
+if(sysConfig::get('MODULE_ORDER_SHIPPING_ZONERESERVATION_STATUS') == 'True'){
+	add_extra_fields('modules_shipping_zone_reservation_methods','weight_rates','TEXT NULL');
+	add_extra_fields('modules_shipping_zone_reservation_methods','min_rental_number','INT(1) NOT NULL DEFAULT  "0"');
+	add_extra_fields('modules_shipping_zone_reservation_methods','min_rental_type','INT(1) NOT NULL DEFAULT  "0"');
+}
+
 updatePagesDescription();
 
 //update bannerManger
@@ -247,11 +253,6 @@ Doctrine_Query::create()
 	->set('ext_name', '?', 'imageRot')
 	->where('box_code = ?', 'banner')
 	->execute();
-
-/*these should be at the end in case they error*/
-add_extra_fields('modules_shipping_zone_reservation_methods','weight_rates','TEXT NULL');
-add_extra_fields('modules_shipping_zone_reservation_methods','min_rental_number','INT(1) NOT NULL DEFAULT  "0"');
-add_extra_fields('modules_shipping_zone_reservation_methods','min_rental_type','INT(1) NOT NULL DEFAULT  "0"');
 
 $pageName = basename($_SERVER['PHP_SELF']);
 $pageContent = substr($pageName, 0, strpos($pageName, '.'));
