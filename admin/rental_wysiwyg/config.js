@@ -12,7 +12,10 @@ CKEDITOR.editorConfig = function( config )
 	config.contentsCss = ['../ext/jQuery/themes/smoothness/ui.all.css'];
 	config.scayt_autoStartup = false;
 	config.disableNativeSpellChecker = false;
-	config.extraPlugins = 'font';
+
+	config.extraPlugins = 'streaming';
+	config.toolbar_Full.push(['Streaming']);
+	config.toolbar_Basic.push(['Streaming']);
 
 	/* Allow php code in fck - not needed right now
 		config.protectedSource.push( /<\?[\s\S]*?\?>/g ) ;

@@ -52,10 +52,7 @@ function parseChildren($itemId, $itemArr, &$childArr) {
 			'children' => array()
 		);
 		foreach(sysLanguage::getLanguages() as $lInfo){
-		
-             $childArr[$itemId][$lInfo['id']]['text'] = $_POST['menu_item_text'][$lInfo['id']][$itemId];
-            
-
+			$childArr[$itemId][$lInfo['id']]['text'] = $_POST['menu_item_text'][$lInfo['id']][$itemId];
 		}
 
 		if (in_array($itemId, $itemArr)){
@@ -80,9 +77,7 @@ if (!isset($_POST['linked_to'])){
 				);
 
 				foreach(sysLanguage::getLanguages() as $lInfo){
-                
-                       			 $menuConfig[$i][$lInfo['id']]['text'] = $_POST['menu_item_text'][$lInfo['id']][$itemId];
-                  				
+					$menuConfig[$i][$lInfo['id']]['text'] = $_POST['menu_item_text'][$lInfo['id']][$itemId];
 				}
 
 				if (in_array($itemId, $items['menu_item'])){
