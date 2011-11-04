@@ -15,6 +15,7 @@ class Extension_downloadProducts extends ExtensionBase {
 			'ApplicationTopAction_buy_download_product',
 			'TemplateHeaderNavAddButton',
 			'OrderQueryBeforeExecute',
+			'PullDownloadAfterUpdate',
 			'AccountDefaultAddLinksBlock'
 		), null, $this);
 		
@@ -37,6 +38,23 @@ class Extension_downloadProducts extends ExtensionBase {
 			$return = $Qcheck[0];
 		}
 		
+		return $return;
+	}
+
+	public function getOrderDownload($orderProductId){
+		$return = false;
+
+		$Qcheck = Doctrine_Query::create()
+			->select('d.*')
+			->from('ProductsDownloads d')
+			->leftJoin('OrdersProductsDownloads opd')
+			->where('opd.download_id = d.download_id')
+			->andWhere('opd.orders_products_id = ?', (int) $orderProductId)
+			->fetchArray();
+		if ($Qcheck){
+			$return = $Qcheck[0];
+		}
+
 		return $return;
 	}
 
@@ -149,6 +167,17 @@ class Extension_downloadProducts extends ExtensionBase {
 		$productsId = (isset($_POST['products_id']) ? $_POST['products_id'] : (isset($_GET['products_id']) ? $_GET['products_id'] : null));
 		$ShoppingCart->addProduct($productsId, 'download', 1);
 		tep_redirect(itw_app_link(null, 'shoppingCart', 'default'));
+	}
+
+	public function PullDownloadAfterUpdate(&$Download, $ordersId, $ordersProductsId){
+		$Download = $this->getOrderDownload($ordersProductsId);
+		$Qcheck = tep_db_query('select download_count, download_maxcount from ' . TABLE_ORDERS_PRODUCTS_DOWNLOAD . ' where orders_id = "' . $ordersId . '" and orders_products_id = "' . $ordersProductsId . '" and orders_products_filename = "' . $Download['file_name'] . '"');
+		$check = tep_db_fetch_array($Qcheck);
+		if ($check['download_count'] >= $check['download_maxcount']){
+			die('Exceeded number of downloads');
+			exit;
+		}
+		tep_db_query('update ' . TABLE_ORDERS_PRODUCTS_DOWNLOAD . ' set download_count = download_count + 1 where orders_id = "' . $ordersId . '" and orders_products_id = "' . $ordersProductsId . '" and orders_products_filename = "' . $Download['file_name'] . '"');
 	}
 	
 	public function ProductQueryBeforeExecute(&$productQuery){
