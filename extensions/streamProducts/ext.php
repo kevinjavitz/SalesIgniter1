@@ -18,6 +18,7 @@ class Extension_streamProducts extends ExtensionBase {
 		/* Membership Class Events --BEGIN-- */
 			'ProductQueryBeforeExecute',
 			'OrderQueryBeforeExecute',
+			'PullStreamAfterUpdate',
 			'ApplicationTopActionCheckPost',
 			'ApplicationTopAction_buy_stream_product',
 			'ApplicationTopAction_stream_product',
@@ -195,7 +196,29 @@ class Extension_streamProducts extends ExtensionBase {
 		
 		return $return;
 	}
-	
+
+	public function getOrderStream($orderProductId){
+		$return = false;
+
+		$Qcheck = Doctrine_Query::create()
+			->select('ps.*')
+			->from('ProductsStreams ps')
+			->leftJoin('OrdersProductsStream ops')
+			->where('ops.stream_id = ps.stream_id')
+			->andWhere('ops.orders_products_id = ?', (int) $orderProductId)
+			->fetchArray();
+		if ($Qcheck){
+			$return = $Qcheck[0];
+		}
+
+		return $return;
+	}
+
+	public function PullStreamAfterUpdate(&$Stream, $ordersId, $ordersProductsId){
+		$Stream = $this->getOrderStream($ordersProductsId);
+		tep_db_query('update ' . TABLE_ORDERS_PRODUCTS_STREAM . ' set stream_count = stream_count + 1 where orders_id = "' . (int)$ordersId . '" and orders_products_id = "' . (int)$ordersProductsId . '" and orders_products_filename = "' . $Stream['file_name'] . '"');
+	}
+
 	public function getProviderModule($moduleName, $providerSettings = array()){
 		$Module = null;
 		$file = sysConfig::getDirFsCatalog() . 'extensions/streamProducts/providerModules/' . $moduleName . '/module.php';

@@ -15,7 +15,10 @@
 				$Stream['ProductsStreamProviders']['provider_module'],
 				$Stream['ProductsStreamProviders']['provider_module_settings']
 			);
-			$config = $Provider->getFlowplayerConfig($Stream);
+			$StreamInfo = $Stream;
+			$StreamInfo['oID'] = $orderId;
+			$StreamInfo['opID'] = $orderProductId;
+			$config = $Provider->getFlowplayerConfig($StreamInfo);
 			
 			$json = array(
 				'success' => true,

@@ -23,8 +23,12 @@ class StreamProviderLocal extends StreamProviderModule {
 		$previewFile = $sInfo['file_name'];
 		$ext = substr($previewFile, strpos($previewFile, '.')+1);
 		$movieName = 'preview.' . $ext;
-		
-		$link = itw_app_link(null, 'pullStream', $sInfo['products_id'] . '/' . $movieName);
+		$movieName = $sInfo['file_name'];
+		$params = '';
+		if(isset($sInfo['oID']) && $sInfo['oID'] > 0){
+			$params = $sInfo['oID'] . '/' . $sInfo['opID'] . '/';
+		}
+		$link = itw_app_link(null, 'pullStream', $sInfo['products_id'] . '/' . $params . $movieName);
 		$link = str_replace('.php', '', $link);
 		
 		return array(
