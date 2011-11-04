@@ -1,4 +1,5 @@
 <definitions>
 	<define key="MODULE_PAYMENT_CASHONDELIVERY_TEXT_TITLE"><![CDATA[Cash on Delivery]]></define>
 	<define key="MODULE_PAYMENT_CASHONDELIVERY_TEXT_DESCRIPTION"><![CDATA[Cash on Delivery]]></define>
+	<define key="PAYMENT_MODULE_COD_AWAITING_PAYMENT"><![CDATA[Awaiting Payment]]></define>
 </definitions>
