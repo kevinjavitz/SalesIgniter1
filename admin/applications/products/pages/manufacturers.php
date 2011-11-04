@@ -2,7 +2,7 @@
 	$Qmanufacturers = Doctrine_Query::create()
 	->from('Manufacturers m')
 	->leftJoin('m.ManufacturersInfo mi')
-	//->where('mi.languages_id = ?', Session::get('languages_id'))
+	->where('mi.languages_id = ?', Session::get('languages_id'))
 	->orderBy('m.manufacturers_name');
 
 	$tableGrid = htmlBase::newElement('grid')
