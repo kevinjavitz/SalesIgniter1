@@ -15,7 +15,7 @@ class OrderTotalGiftCertificate extends OrderTotalModule {
     }
 
     public function process(){
-        global $order;
+        global $order, $onePageCheckout;
         $ShoppingCart = &Session::getReference('ShoppingCart');
         $userAccount = &Session::getReference('userAccount');
 
@@ -31,6 +31,9 @@ class OrderTotalGiftCertificate extends OrderTotalModule {
             $purchaseType = $cartProduct->getPurchaseType();
             $purchaseTypes[$purchaseType] += $cartProduct->getPrice();
             $purchaseTypes['global'] += $cartProduct->getPrice();
+        }
+        if (is_object($onePageCheckout) && count($onePageCheckout->onePage['info']['shipping']) > 0){
+	        $purchaseTypes['global'] += $onePageCheckout->onePage['info']['shipping']['cost'];
         }
         $discountAmount = 0;
         if ($purchaseTypes) {

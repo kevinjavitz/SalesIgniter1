@@ -117,6 +117,10 @@
                     $purchaseTypes['global'] += $cartProduct->getPrice();
                 }
 
+                if (is_object($onePageCheckout) && count($onePageCheckout->onePage['info']['shipping']) > 0){
+	                $purchaseTypes['global'] += $onePageCheckout->onePage['info']['shipping']['cost'];
+                }
+
                 $htmlTable = htmlBase::newElement('table')
                         ->setCellPadding(0)
                         ->setCellSpacing(0)
