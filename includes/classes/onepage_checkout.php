@@ -316,14 +316,13 @@ class osC_onePageCheckout {
 	}
 
 	public function loadMembershipPlan(){
-		global $order;
+		global $order, $userAccount;
 
-        	$order->info['tax'] = 0;
-        	$order->info['tax_groups'] = false;
+        $order->info['tax'] = 0;
+        $order->info['tax_groups'] = false;
 		
-		$userAccount = &$this->getUserAccount();
 		$addressBook =& $userAccount->plugins['addressBook'];
-		$billingAddress = $addressBook->getAddress('billing');
+		$billingAddress =& $addressBook->getAddress('billing');
 		if ($billingAddress['entry_country_id'] == ''){
 			$countryId = 0;
 			$zoneId = 0;
