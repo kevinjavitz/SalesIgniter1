@@ -275,24 +275,66 @@ class rentalStoreUser_membership extends StandardClass {
 		$billingAddress = $addressBook->getAddress('billing');
 
 		$CustomersMembership = Doctrine_Core::getTable('CustomersMembership')->findOneByCustomersId($this->customerId);
-		$CustomersMembership->plan_id = $this->planInfo['plan_id'];
+		if(isset($this->membershipInfo['next_bill_date']) && !empty($this->membershipInfo['next_bill_date'])){
+			$CustomersMembership->plan_id = $this->planInfo['plan_id'];
+		}
 		$CustomersMembership->plan_name = $this->planInfo['package_name'];
 		$CustomersMembership->plan_price = $this->planInfo['price'];
 		$CustomersMembership->plan_tax_class_id = $this->planInfo['rent_tax_class_id'];
 		$CustomersMembership->ismember = $this->membershipInfo['ismember'];
 		$CustomersMembership->activate = $this->membershipInfo['activate'];
-		$CustomersMembership->next_bill_date = (!empty($this->membershipInfo['next_bill_date']) ? date('Y-m-d', $this->membershipInfo['next_bill_date']) : '');
+
+		if(isset($this->membershipInfo['next_bill_date']) && !empty($this->membershipInfo['next_bill_date'])){
+			$CustomersMembership->next_bill_date = date('Y-m-d', $this->membershipInfo['next_bill_date']);
+		}
 		$CustomersMembership->free_trial_flag = $this->membershipInfo['free_trial_flag'];
 		$CustomersMembership->free_trial_ends = (!empty($this->membershipInfo['free_trial_ends']) ? date('Y-m-d', $this->membershipInfo['free_trial_ends']) : '');
-		$CustomersMembership->payment_method = $this->membershipInfo['payment_method'];
-		$CustomersMembership->payment_term = $this->membershipInfo['payment_term'];
-		$CustomersMembership->card_num = $this->membershipInfo['card_num'];
-		$CustomersMembership->exp_date = $this->membershipInfo['exp_date'];
-		$CustomersMembership->card_cvv = $this->membershipInfo['card_cvv'];
+		if(isset($this->membershipInfo['payment_method']) && !empty($this->membershipInfo['payment_method'])){
+			$CustomersMembership->payment_method = $this->membershipInfo['payment_method'];
+		}
+		if(isset($this->membershipInfo['payment_term']) && !empty($this->membershipInfo['payment_term'])){
+			$CustomersMembership->payment_term = $this->membershipInfo['payment_term'];
+		}
+
+		if(isset($this->membershipInfo['card_num']) && !empty($this->membershipInfo['card_num'])){
+			$CustomersMembership->card_num = $this->membershipInfo['card_num'];
+		}
+		if(isset($this->membershipInfo['exp_date']) && !empty($this->membershipInfo['exp_date'])){
+			$CustomersMembership->exp_date = $this->membershipInfo['exp_date'];
+		}
+		if(isset($this->membershipInfo['card_cvv']) && !empty($this->membershipInfo['card_cvv'])){
+			$CustomersMembership->card_cvv = $this->membershipInfo['card_cvv'];
+		}
 		
 		EventManager::notify('UpdateUserMembershipAccountBeforeSave', $this, $CustomersMembership);
 		
 		$CustomersMembership->save();
+	}
+
+	public function needsRetry($cID){
+		$Qcheck = Doctrine_Query::create()
+			->from('MembershipBillingReport')
+			->where('customers_id = ?', $cID)
+			->orderBy('date desc')
+			->limit('1')
+			->fetchOne();
+		if ($Qcheck){
+			$LastReport = $Qcheck->toArray();
+
+			$orderProcess = new OrderProcessor($LastReport['orders_id']);
+			if ($LastReport['status'] == 'D'){
+				$dateAdded = date_parse($LastReport['date']);
+				$timeAdded = mktime(0,0,0,$dateAdded['month'],$dateAdded['day'],$dateAdded['year']);
+				$timeNow = time();
+				$daysDiff = ($timeNow - $timeAdded) / (60*60*24);
+				if ($daysDiff <= sysConfig::get('MAX_RECURRING_BILLING_DAYS')){
+					if ($orderProcess->getBillingAttempts() < sysConfig::get('MAX_RECURRING_BILLING_DAYS')){
+						return true;
+					}
+				}
+			}
+		}
+		return false;
 	}
 
 	public function sendMembershipEmail($sendAdmin = true){

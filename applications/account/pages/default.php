@@ -88,18 +88,15 @@
 
 				$links[] = htmlBase::newElement('a')->html(sysLanguage::get('MY_ACCOUNT_MEMBERSHIP_CANCEL'))
 				->setHref(itw_app_link(null, 'account', 'membership_cancel', 'SSL'));
-			} elseif($userAccount->needsRenewal()) {
+			} elseif($userAccount->needsRetry()) {
 				Session::set('account_action', 'renew');
-				if($membership->isPastDue()){
-					$links[] = htmlBase::newElement('a')->html(sysLanguage::get('MY_ACCOUNT_MEMBERSHIP_BILLING_INFO'))
-					->setHref(itw_app_link(null, 'account', 'membership_info', 'SSL'));
-					$links[] = htmlBase::newElement('a')->html(sysLanguage::get('MY_ACCOUNT_MEMBERSHIP_BILLING_INFO_EDIT'))
-					->setHref(itw_app_link('edit=' . $membership->getRentalAddressId(), 'account', 'billing_address_book', 'SSL'));
-				}else{
-					$links[] = htmlBase::newElement('a')->html(sysLanguage::get('TEXT_CLICK_HERE'))
-					->setHref(itw_app_link('checkoutType=rental', 'checkout', 'default', 'SSL'));
-				}
 
+				$links[] = htmlBase::newElement('a')->html(sysLanguage::get('MY_ACCOUNT_MEMBERSHIP_BILLING_INFO_EDIT'))
+				->setHref(itw_app_link('edit=' . $membership->getRentalAddressId(), 'account', 'billing_address_book', 'SSL'));
+
+			}elseif($userAccount->needsRenewal()){
+				$links[] = htmlBase::newElement('a')->html(sysLanguage::get('TEXT_CURRENT_RENEW_ACCOUNT_MEMBERSHIP'))
+				->setHref(itw_app_link('checkoutType=rental','checkout','default','SSL'));
 			}else{
 				$links[] = htmlBase::newElement('a')->html(sysLanguage::get('BOX_HEADING_RENTED_PRODUCTS'))
 				->setHref(itw_app_link(null, 'account', 'rented_products', 'SSL'));

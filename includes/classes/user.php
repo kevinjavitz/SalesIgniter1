@@ -612,6 +612,10 @@ class RentalStoreUser implements Serializable {
 		return $this->plugins['membership']->needsRenewal();
 	}
 
+	public function needsRetry(){
+		return $this->plugins['membership']->needsRetry($this->getCustomerId());
+	}
+
       public function validateEmailAddress($emailAddress){
 		$validAddress = true;
 		$mail_pat = '^(.+)@(.+)$';

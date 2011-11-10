@@ -21,4 +21,6 @@ $(document).ready(function (){
 		}
 		fnClicked();
 	});
+	$('select[name="payment_method"]').trigger('change');
+	$('select[name="activate"]').trigger('change');
 }); 

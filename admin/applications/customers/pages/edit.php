@@ -1,14 +1,17 @@
 <script type="text/javascript"><!--
 var plans = [];
 function fnPaymentChange(val){
-	if (val!='paypal_ipn'){
-		document.customers.cc_number.disabled = false;
-		document.customers.cc_expires_month.disabled = false;
-		document.customers.cc_expires_year.disabled = false;
+	if (val!='paypalipn'){
+		$('input[name="cc_number"], input[name="cc_cvv"], select[name="cc_expires_month"], select[name="cc_expires_year"]').each( function (){
+			$(this).removeAttr('disabled');
+			$(this).removeClass('ui-state-disabled');
+		});
 	}else{
-		document.customers.cc_number.disabled = true;
-		document.customers.cc_expires_month.disabled = true;
-		document.customers.cc_expires_year.disabled = true;
+		$('input[name="cc_number"], input[name="cc_cvv"], select[name="cc_expires_month"], select[name="cc_expires_year"]').each( function (){
+			$(this).attr('disabled','true');
+			$(this).addClass('ui-state-disabled');
+		});
+
 	}
 }
 function fnClicked() {
@@ -16,7 +19,7 @@ function fnClicked() {
 		var moveDays = plans[document.customers.planid.options[document.customers.planid.options.selectedIndex].value];
 
 		document.customers.planid.disabled = false;
-        $('select[name="payment_method"], input[name="cc_number"], select[name="cc_expires_month"], select[name="cc_expires_year"], select[name="next_billing_day"], select[name="next_billing_month"], select[name="next_billing_year"]').each( function (){
+        $('select[name="payment_method"], input[name="cc_number"], input[name="cc_cvv"], select[name="cc_expires_month"], select[name="cc_expires_year"], select[name="next_billing_day"], select[name="next_billing_month"], select[name="next_billing_year"]').each( function (){
             $(this).removeAttr('disabled');
             $(this).removeClass('ui-state-disabled');
         });
@@ -25,7 +28,14 @@ function fnClicked() {
 		var actualDay = <?php echo (int)date("d");?>;
 		var actualMonth = <?php echo (int)date("m");?>;
 		var actualYear = <?php echo (int)date("y");?>;
-		var calculatedDay = actualDay + moveDays;
+		var calculatedDay;
+		if( moveDays != undefined){
+			calculatedDay = actualDay + moveDays;
+		}else{
+			calculatedDay = $('select[name="next_billing_day"]').val();//document.customers.next_billing_day.selectedValue;
+			actualMonth = $('select[name="next_billing_month"]').val();
+			actualYear = $('select[name="next_billing_year"]').val();
+		}
 
 		var endingDay = calculatedDay;
 		var endingMonth = actualMonth;
@@ -42,7 +52,7 @@ function fnClicked() {
 		document.customers.next_billing_month.options.selectedIndex = endingMonth - 1;
 		document.customers.next_billing_year.options.selectedIndex = endingYear - <?php echo (int)date("y");?>;
 	}else if($('select[name="activate"]').val() == 'N'){
-        $('select[name="payment_method"], input[name="cc_number"], select[name="cc_expires_month"], select[name="cc_expires_year"], select[name="next_billing_day"], select[name="next_billing_month"], select[name="next_billing_year"]').each( function (){
+        $('select[name="payment_method"], input[name="cc_number"], input[name="cc_cvv"], select[name="cc_expires_month"], select[name="cc_expires_year"], select[name="next_billing_day"], select[name="next_billing_month"], select[name="next_billing_year"]').each( function (){
             $(this).attr('disabled','true');
             $(this).addClass('ui-state-disabled');
         });

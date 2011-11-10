@@ -94,6 +94,7 @@
 	<define key="TEXT_MEMBERSHIP_CURRENT"><![CDATA[My Current Membership]]></define>
 	<define key="TEXT_MEMBERSHIP_CHANGE"><![CDATA[Upgrade / Downgrade Membership]]></define>
 	<define key="TEXT_CURRENT_MEMBERSHIP"><![CDATA[Current]]></define>
+	<define key="TEXT_CURRENT_RENEW_ACCOUNT_MEMBERSHIP"><![CDATA[Renew Membership]]></define>
 
 	<define key="TEXT_ORDER_DETAILS"><![CDATA[View Order]]></define>
 	<define key="TEXT_ORDER_NUMBER"><![CDATA[Order Number:]]></define>

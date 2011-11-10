@@ -482,9 +482,32 @@ class OrderPaymentPaypalipn extends StandardPaymentModule {
 
 	function processPaymentCron($orderID){
 		global $order;
+		$order_status_id = OrderPaymentModules::getModule('paypalipn')->getConfigData('MODULE_PAYMENT_PAYPALIPN_COMP_ORDER_STATUS_ID');
+		$newStatus = new OrdersPaymentsHistory();
+		$newStatus->orders_id = $orderID;
+		$newStatus->payment_module = 'paypal_ipn';
+		$newStatus->payment_method = 'Paypal';
+		$newStatus->gateway_message = 'Successfull payment';
+		$newStatus->payment_amount = $order->info['total'];
+		$newStatus->card_details = 'NULL';
+		$newStatus->save();
+
+		Doctrine_Query::create()
+		->update('Orders')
+		->set('orders_status', '?', $order_status_id)
+		->set('last_modified', '?', date('Y-m-d H:i:s'))
+		->where('orders_id = ?', $orderID)
+		->execute();
+
+		$newOrdersStatus = new OrdersStatusHistory();
+		$newOrdersStatus->orders_id = $orderID;
+		$newOrdersStatus->orders_status_id = $order_status_id;
+		$newOrdersStatus->date_added = date('Y-m-d H:i:s');
+		$newOrdersStatus->customer_notified = '0';
+		$newOrdersStatus->comments = 'PayPal IPN (Not Verified Transaction)';
+		$newOrdersStatus->save();
 		$order->info['payment_method'] = $this->getTitle();
-		
-		//$this->processPayment();
+
 		return true;
 	}
 

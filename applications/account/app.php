@@ -111,5 +111,7 @@ if ($session_started == false) {
 			array_unshift($eInfo, $text);
 			return call_user_func_array('sprintf', $eInfo);
 		}
+	}elseif($App->getPageName() == 'default'){
+		require(sysConfig::getDirFsCatalog() . 'includes/classes/order.php');
 	}
 ?>

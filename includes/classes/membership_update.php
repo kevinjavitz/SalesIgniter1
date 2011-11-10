@@ -145,7 +145,7 @@ class membershipUpdate_cron {
 					$endTime = strtotime('+' . (int)$streamViewTime . ' ' . $period, $now);
 				}else{
 					$membershipMonths = $membership->getMembershipMonths();
-					$membershipDays = $membership->getMembershipMonths();
+					$membershipDays = $membership->getMembershipDays();
 					$endTime = strtotime('+' . (int)$membershipMonths . ' month ' . (int)$membershipDays . ' day', $now);
 				}
 				$newStart = date('Y-m-d', $now);
@@ -158,7 +158,7 @@ class membershipUpdate_cron {
 	public function updateCustomersNextBillDate(){
 		$membership =& $this->userAccount->plugins['membership'];
 		$membershipMonths = $membership->getMembershipMonths();
-		$membershipDays = $membership->getMembershipMonths();
+		$membershipDays = $membership->getMembershipDays();
 		$nextTime = strtotime('+' . (int)$membershipMonths . ' month ' . (int)$membershipDays . ' day');
 		$nextBillDate = date('Y-m-d', $nextTime);
 
@@ -170,7 +170,7 @@ class membershipUpdate_cron {
 	public function addAdminEmailContent(){
 		$membership =& $this->userAccount->plugins['membership'];
 		$membershipMonths = $membership->getMembershipMonths();
-		$membershipDays = $membership->getMembershipMonths();
+		$membershipDays = $membership->getMembershipDays();
 		$currentNextBill = $membership->getNextBillDate();
 		$currentPlanName = $membership->getPlanName();
 		$currentPlanPrice = $membership->getPlanPrice();
@@ -233,7 +233,7 @@ class membershipUpdate_cron {
 			$return = false;
 
 			$historyArray['customer_notified'] = 0;
-			//if ($this->order->getBillingAttempts() < $this->retryMaxTimes){
+			if (!is_object($this->order) || $this->order->getBillingAttempts() < $this->retryMaxTimes){
 				$historyArray['customer_notified'] = 1;
 
 				$emailEvent = new emailEvent('membership_renewal_failed', $this->userAccount->getLanguageId());
@@ -246,7 +246,7 @@ class membershipUpdate_cron {
 					'name'  => $this->userAccount->getFullName()
 				));
 			}
-		//}
+		}
 
 		if ($this->isRetry()){
 			$billingArray['error'] = 'RETRY:: ' . $billingArray['error'];
@@ -259,6 +259,10 @@ class membershipUpdate_cron {
 	public function insertOrder(){
 		global $currencies;
 		$order = new OrderProcessor;
+		if ($this->isRetry()){
+			$this->order->updateBillingAttempts();
+			return $this->order->orderId;
+		}
 		$OrderTotalModules = new OrderTotalModules;
 
 		$addressBook =& $this->userAccount->plugins['addressBook'];

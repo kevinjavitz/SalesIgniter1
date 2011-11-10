@@ -342,7 +342,7 @@ class OrderProcessor {
 		$this->info['bill_attempts'] += 1;
 		$Qupdate = Doctrine_Query::create()
 			->update('Orders')
-			->set('bill_attempts', 'bill_attempts+1')
+			->set('bill_attempts', '?', $this->info['bill_attempts'])
 			->where('orders_id = ?', $this->orderId)
 			->execute();
 	}

@@ -192,6 +192,7 @@
   if ($CustomersMembership['payment_method'] == 'paypal_ipn' || $CustomersMembership['payment_method'] == 'cod' || $CustomersMembership['payment_method'] == 'moneyorder' || $CustomersMembership['payment_method'] == 'dotpay'){
       echo "<script language='javascript'>
              document.customers.cc_number.disabled=true;
+             document.customers.cc_cvv.disabled=true;
              document.customers.cc_expires_month.disabled=true;
              document.customers.cc_expires_year.disabled=true;
             </script>";
@@ -356,7 +357,7 @@
 						?></td>
 				</tr>
 				<script language='javascript'>
-					$('select[name="payment_method"], input[name="cc_number"], select[name="cc_expires_month"], select[name="cc_expires_year"], select[name="next_billing_day"], select[name="next_billing_month"], select[name="next_billing_year"]').each( function (){
+					$('select[name="payment_method"], input[name="cc_number"], input[name="cc_cvv"],  select[name="cc_expires_month"], select[name="cc_expires_year"], select[name="next_billing_day"], select[name="next_billing_month"], select[name="next_billing_year"]').each( function (){
 						$(this).attr('disabled','true');
 						$(this).addClass('ui-state-disabled');
 					});

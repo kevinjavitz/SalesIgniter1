@@ -48,39 +48,36 @@
 		$userAccount->updateCustomerAccount();
 
 		if (array_key_exists('planid', $_POST) || array_key_exists('activate', $_POST) || array_key_exists('make_member', $_POST)){
-			if (array_key_exists('activate', $_POST)) $membership->setActivationStatus($_POST['activate']);
-			$membership->setPlanId($_POST['planid']);
-			$membership->setPaymentMethod($_POST['payment_method']);
-			
+			if (array_key_exists('activate', $_POST)){
+				$membership->setActivationStatus($_POST['activate']);
+			}
+			if(isset($_POST['planid'])){
+				$membership->setPlanId($_POST['planid']);
+			}
+			if(isset($_POST['payment_method'])){
+				$membership->setPaymentMethod($_POST['payment_method']);
+			}
+
 			if (array_key_exists('cc_number', $_POST)){
 				$membership->setCreditCardNumber($_POST['cc_number']);
 				$membership->setCreditCardExpirationDate($_POST['cc_expires_month'] . $_POST['cc_expires_year']);
 				$membership->setCreditCardCvvNumber($_POST['cc_cvv']);
 			}
 
-			$planInfo = $membership->getPlanInfo($_POST['planid']);
-			
-			if (isset($_POST['member']) && $_POST['member'] == 'Y' && $_POST['payment_method'] != 'paypal_ipn'){
-				$next_bill_date = mktime(0,0,0,
-				$_POST['next_billing_month'],
-				$_POST['next_billing_day'],
-				$_POST['next_billing_year']
-				);
-			}else{
-				$next_bill_date = mktime(0,0,0,
-				date('m'),
-				date('d') + $planInfo['membership_days'],
-				date('Y')
-				);
+			if(isset($_POST['planid'])){
+				$planInfo = $membership->getPlanInfo($_POST['planid']);
 			}
-			$membership->setNextBillDate($next_bill_date);
 			
-			/*if ($_POST['activate'] == 'N'){
-				$membership->setMembershipStatus('U');
-			}else{
-				$membership->setMembershipStatus('M');
-			}*/
-
+			if (isset($_POST['member']) && $_POST['member'] == 'Y'){
+				if(isset($_POST['next_billing_month']) && isset($_POST['next_billing_day']) && isset($_POST['next_billing_year'])){
+					$next_bill_date = mktime(0,0,0,
+						$_POST['next_billing_month'],
+						$_POST['next_billing_day'],
+						$_POST['next_billing_year']
+					);
+					$membership->setNextBillDate($next_bill_date);
+				}
+			}
 			if (array_key_exists('make_member', $_POST)){
 				$membership->createNewMembership();
 			}else{
@@ -89,7 +86,7 @@
 		
 			/* Send email based on certian conditions - BEGIN */
 
-		
+
 			$emailEventName = false;
 			if ($_POST['activate'] == 'Y'){
 				if (array_key_exists('make_member', $_POST)){
