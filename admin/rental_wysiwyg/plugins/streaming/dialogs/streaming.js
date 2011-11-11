@@ -167,17 +167,50 @@ CKEDITOR.dialog.add( 'streaming', function ( editor )
 				[
 					{
 						type : 'select',
-						'default' : '',
 						items :
 						[
-							[ 'Please Select', '' ],
-							[ 'Amazon Cloudfront #1', '1' ]
+							[ 'Please Select', '' ]
 						],
 
 						id : 'provider',
 						label : 'Stream Provider',
 						commit : commitValue,
-						setup : loadValue,
+						setup : function (videoNode){
+							//loadValue(videoNode);
+							//$(videoNode).attr('name','stream_provider');
+							if ( videoNode ) {
+								this.setValue( videoNode.getAttribute( this.id ) );
+							} else {
+								if ( this.id == 'id')
+									this.setValue( generateId() );
+							}
+							$.ajax({
+								cache: false,
+								dataType: 'html',
+								url: js_app_link('app=products&appPage=new_product&action=getStreamProviders'),
+								success: function (data){
+
+									$('#cke_112_select')
+										.html($(data).html());
+									$("#cke_112_select option:first").attr('selected','selected');
+									$('#cke_112_select').trigger('change');
+									$.ajax({
+										cache: false,
+										dataType: 'html',
+										url: js_app_link('app=products&appPage=new_product&action=getProviderStreamTypes&pID=' + $('#cke_112_select').val()),
+										success: function (data){
+											var oldVal = $('#cke_115_select').val();
+											$('#cke_115_select')
+												.html($(data).html());
+											if(oldVal)
+												$('#cke_115_select').val(oldval);
+
+										}
+									});
+
+								}
+							});
+						},
 						onChange : function()
 						{
 							var dialog = this.getDialog(),
@@ -194,6 +227,7 @@ CKEDITOR.dialog.add( 'streaming', function ( editor )
 								url: js_app_link('app=products&appPage=new_product&action=getProviderStreamTypes&pID=' + newValue),
 								success: function (data){
 									//populate stream types
+									/*
 									var regexp = /\<select name="new_stream_provider_type"\>(.*)\<\/select\>/;									
 									
 									var oldval = $('#cke_108_select').val();
@@ -201,6 +235,12 @@ CKEDITOR.dialog.add( 'streaming', function ( editor )
 									$('#cke_108_select')
 										.html(data.replace(regexp, '$1'))
 										.val(oldval);
+									*/
+									var oldVal = $('#cke_115_select').val();
+									$('#cke_115_select')
+										.html($(data).html());
+									if(oldVal)
+										$('#cke_115_select').val(oldval);
 									
 								}
 							});
@@ -212,7 +252,6 @@ CKEDITOR.dialog.add( 'streaming', function ( editor )
 					{
 						type : 'select',
 						items : [[ 'Please choose stream provider first', '' ]],
-						'default' : '',
 						id : 'type',
 						label : 'Stream Type',
 						commit : commitValue,
