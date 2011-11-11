@@ -1,5 +1,0 @@
-<definitions>
-    <define key="INFOBOX_HEADING_PPR_SEARCH_FILTER_TEXT"><![CDATA[PPR search filter]]></define>
-    <define key="INFOBOX_HEADING_PPR_SEARCH_FILTER_PRICE_START_TEXT"><![CDATA[Price Start:]]></define>
-    <define key="INFOBOX_HEADING_PPR_SEARCH_FILTER_PRICE_STOP_TEXT"><![CDATA[Price End:]]></define>
-</definitions>
