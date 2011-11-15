@@ -73,21 +73,34 @@
 			}
 			$xmlData = null;
 			unset($xmlData);
+			if(isset($_SERVER['HTTP_X_FORWARDED_HOST'])){
+				self::set(
+					(string) 'HTTP_HOST',
+					(string) $_SERVER['HTTP_X_FORWARDED_HOST'],
+					'true'
+				);
+			} elseif( isset($_SERVER['HTTP_HOST'])){
+				self::set(
+					(string) 'HTTP_HOST',
+					(string) $_SERVER['HTTP_HOST'],
+					'true'
+				);
+			}
 
 			$httpDomainName = self::get('HTTP_DOMAIN_NAME');
-			if(isset($_SERVER['HTTP_HOST'])){
-				if (substr($_SERVER['HTTP_HOST'], 0, 4) == 'www.' && substr($httpDomainName, 0, 4) != 'www.'){
+			if(self::exists('HTTP_HOST')){
+				if (substr(self::get('HTTP_HOST'), 0, 4) == 'www.' && substr($httpDomainName, 0, 4) != 'www.'){
 					$httpDomainName = 'www.' . $httpDomainName;
-				}elseif (substr($_SERVER['HTTP_HOST'], 0, 4) != 'www.' && substr($httpDomainName, 0, 4) == 'www.'){
+				}elseif (substr(self::get('HTTP_HOST'), 0, 4) != 'www.' && substr($httpDomainName, 0, 4) == 'www.'){
 					$httpDomainName = substr($httpDomainName, 4);
 				}
 			}
 
 			$httpsDomainName = self::get('HTTPS_DOMAIN_NAME');
-			if(isset($_SERVER['HTTP_HOST'])){
-				if (substr($_SERVER['HTTP_HOST'], 0, 4) == 'www.' && substr($httpsDomainName, 0, 4) != 'www.'){
+			if(self::exists('HTTP_HOST')){
+				if (substr(self::get('HTTP_HOST'), 0, 4) == 'www.' && substr($httpsDomainName, 0, 4) != 'www.'){
 					$httpsDomainName = 'www.' . $httpsDomainName;
-				}elseif (substr($_SERVER['HTTP_HOST'], 0, 4) != 'www.' && substr($httpsDomainName, 0, 4) == 'www.'){
+				}elseif (substr(self::get('HTTP_HOST'), 0, 4) != 'www.' && substr($httpsDomainName, 0, 4) == 'www.'){
 					$httpsDomainName = substr($httpsDomainName, 4);
 				}
 			}

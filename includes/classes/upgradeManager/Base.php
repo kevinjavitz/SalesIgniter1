@@ -29,7 +29,7 @@ class UpgradeManager {
 	 * Class constructor
 	 */
 	public function __construct($newVersion, $upgradeDir = ''){
-		$this->domain = $_SERVER['HTTP_HOST'];
+		$this->domain = sysConfig::get('HTTP_HOST');
 		$this->upgradeServer = 'https://' . sysConfig::get('SYSTEM_UPGRADE_SERVER') . '/';
 		$this->upgradeUsername = sysConfig::get('SYSTEM_UPGRADE_USERNAME');
 		$this->upgradePassword = sysConfig::get('SYSTEM_UPGRADE_PASSWORD');

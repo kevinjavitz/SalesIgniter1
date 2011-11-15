@@ -11,7 +11,7 @@
 		$Download->setRequestData(array(
 			'action' => 'process',
 			'update_num' => $updateNumber,
-			'domain' => $_SERVER['HTTP_HOST'],
+			'domain' => sysConfig::get('HTTP_HOST'),
 			'version' => 1,
 			'last_update' => sysConfig::get('SYSTEM_LAST_UPDATE')
 		));

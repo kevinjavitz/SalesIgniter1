@@ -268,7 +268,14 @@ function explode_url($url) {
       // generate a url to access the file if no real path found.
       $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https://' : 'http://';
 
-      $host = isset($_SERVER["HTTP_HOST"]) ? $_SERVER["HTTP_HOST"] : php_uname("n");
+      //$host = isset($_SERVER["HTTP_HOST"]) ? $_SERVER["HTTP_HOST"] : php_uname("n");
+      if(isset($_SERVER['HTTP_X_FORWARDED_HOST'])){
+	      $host = $_SERVER['HTTP_X_FORWARDED_HOST'];
+      } else if(isset($_SERVER['HTTP_HOST'])){
+	      $host = $_SERVER['HTTP_HOST'];
+      } else {
+	      $host = php_uname("n");
+      }
 
       if ( substr($arr["path"], 0, 1) === '/' ) {
         $path = dirname($arr["path"]);

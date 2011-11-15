@@ -26,7 +26,7 @@ echo '		' . $html . "\n";
 	<link rel="stylesheet" type="text/css" href="<?php echo sysConfig::getDirWsCatalog();?>extensions/templateManager/catalog/globalFiles/stylesheet.php?import=<?php echo implode(',', $stylesheets);?>&layout_id=<?php echo $templateLayoutId;?>" />
 	<script type="text/javascript">
 		var thisFile = '<?php echo basename($_SERVER['PHP_SELF']);?>';
-		var serverName = '<?php echo $_SERVER['SERVER_NAME'];?>';
+		var serverName = '<?php echo sysConfig::get('HTTP_HOST');?>';
 		var DIR_WS_CATALOG = '<?php echo DIR_WS_CATALOG;?>';
 		var ENABLE_SSL = '<?php echo sysConfig::get('ENABLE_SSL');?>';
 		var SID = '<?php echo SID;?>';

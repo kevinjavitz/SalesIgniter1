@@ -61,7 +61,7 @@ foreach($templates as $tplName){
 	$Download->setRequestData(array(
 		'action' => 'process',
 		'template' => $tplName,
-		'domain' => $_SERVER['HTTP_HOST'],
+		'domain' => sysConfig::get('HTTP_HOST'),
 		'version' => 1
 	));
 	$Download->setAuthMethod('post');

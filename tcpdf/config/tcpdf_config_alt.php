@@ -51,13 +51,18 @@ if (substr($k_path_main, -1) != '/') {
 define ('K_PATH_MAIN', $k_path_main);
 
 // Automatic calculation for the following K_PATH_URL constant
-if (isset($_SERVER['HTTP_HOST']) AND (!empty($_SERVER['HTTP_HOST']))) {
+if(isset($_SERVER['HTTP_X_FORWARDED_HOST'])){
+	$thisHttpHost = $_SERVER['HTTP_X_FORWARDED_HOST'];
+} else if(isset($_SERVER['HTTP_HOST'])){
+	$thisHttpHost = $_SERVER['HTTP_HOST'];
+}
+if (isset($thisHttpHost) AND (!empty($thisHttpHost))) {
 	if(isset($_SERVER['HTTPS']) AND (!empty($_SERVER['HTTPS'])) AND strtolower($_SERVER['HTTPS'])!='off') {
 		$k_path_url = 'https://';
 	} else {
 		$k_path_url = 'http://';
 	}
-	$k_path_url .= $_SERVER['HTTP_HOST'];
+	$k_path_url .= $thisHttpHost;
 	$k_path_url .= str_replace( '\\', '/', substr(K_PATH_MAIN, (strlen($_SERVER['DOCUMENT_ROOT']) - 1)));
 }
 
