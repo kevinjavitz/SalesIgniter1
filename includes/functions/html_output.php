@@ -458,6 +458,16 @@ function itw_template_button($text, $parameters = ''){
 	return '<button class="ui-button ui-state-default ui-corner-all" type="button"' . ($parameters != '' ? ' ' . $parameters : '') . '><span>' . $text . '</span></button>';
 }
 
+function create_hidden_fields($getArr, &$hiddenFields, $prependName = '', $appendName = ''){
+	foreach ($getArr as $k => $v) {
+		if(is_array($v)){
+			create_hidden_fields($v,&$hiddenFields,$k . '[', ']');
+		} else {
+			$hiddenFields .= '<input type="hidden" name="' . $prependName . $k . $appendName . '" value="' . $v . '" />' . "\n";
+		}
+	}
+}
+
 function itw_template_submit_button($text, $parameters = ''){
 	return '<button class="ui-button ui-state-default ui-corner-all" type="submit"' . ($parameters != '' ? ' ' . $parameters : '') . '><span>' . $text . '</span></button>';
 }

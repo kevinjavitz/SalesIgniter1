@@ -42,9 +42,7 @@ class productListing_col extends productListing {
 			$getVars = tep_get_all_get_params(array('action', 'sort'));
 			parse_str($getVars, $getArr);
 			$hiddenFields = '';
-			foreach($getArr as $k => $v){
-				$hiddenFields .= '<input type="hidden" name="' . $k . '" value="' . $v . '" />';
-			}
+			create_hidden_fields($getArr,&$hiddenFields);
 
 			$sortForm = htmlBase::newElement('form')
 			->attr('name', 'sorter')
