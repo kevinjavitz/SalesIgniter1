@@ -131,7 +131,20 @@
 				
 				$queryAdd[] = $queryAddString;
 			}
-			$Qproducts->andWhere('(' . implode(' or ', $queryAdd) . ')');
+			$priceFiltersCheck = Doctrine_Query::create()
+				->select('p.products_id')
+				->from('Products p')
+				->where('(' . implode(' or ', $queryAdd) . ')')
+				->fetchArray();
+			if(count($priceFiltersCheck) > 0) {
+				foreach($priceFiltersCheck as $priceFilterProductID){
+					$priceFilters[$priceFilterProductID['products_id']] = $priceFilterProductID['products_id'];
+				}
+			}
+			EventManager::notify('ProductSearchQueryPriceFilterBeforeExecute', &$priceFilters);
+			$Qproducts->andWhere('p.products_id in (' . implode(', ', $priceFilters) . ')');
+
+
 		}else{
 			if ($currencies->is_set(Session::get('currency'))){
 				$rate = $currencies->get_value(Session::get('currency'));
