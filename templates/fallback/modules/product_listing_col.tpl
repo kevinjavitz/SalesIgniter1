@@ -87,12 +87,17 @@ if (is_array($listingData)) {
 		$resultsPerPageMenu = htmlBase::newElement('selectbox')
 				->setName('limit')
 				->attr('onchange', 'this.form.submit()');
-
+		$limitsArray = explode(',',sysConfig::get('PRODUCT_LISTING_PRODUCTS_LIMIT_ARRAY'));
+		foreach($limitsArray as $resultLimitOption){
+			$resultsPerPageMenu->addOption($resultLimitOption, $resultLimitOption);
+		}
+		/*
 		$resultsPerPageMenu->addOption(10, 10);
 		$resultsPerPageMenu->addOption(25, 25);
 		$resultsPerPageMenu->addOption(50, 50);
 		$resultsPerPageMenu->addOption(75, 75);
 		$resultsPerPageMenu->addOption(100, 100);
+		*/
 
 		$resultsPerPageMenu->selectOptionByValue((isset($_GET['limit']) ? $_GET['limit'] : 10));
 

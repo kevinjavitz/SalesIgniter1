@@ -104,6 +104,8 @@ addConfiguration('SHOW_ENLAGE_IMAGE_TEXT', 1, 'Show enlarge image text on produc
 addConfiguration('PRODUCT_LISTING_TYPE', 8, 'Use rows or columns for product listing', 'Use rows or columns for product listing', 'row', "tep_cfg_select_option(array('row', 'column'),");
 addConfiguration('PRODUCT_LISTING_TOTAL_WIDTH', 8, 'When using columns for product listing content area width to use when calculating image width', 'When using columns for product listing content area width to use when calculating image width', '600', "");
 addConfiguration('PRODUCT_LISTING_PRODUCTS_COLUMNS', 8, 'When using columns for product listing number of products to display in a row', 'When using columns for product listing number of products to display in a row', '4', "");
+addConfiguration('PRODUCT_LISTING_PRODUCTS_LIMIT', 8, 'Number of products to list per page', 'Number of products to list per page (max 25)', '12', "");
+addConfiguration('PRODUCT_LISTING_PRODUCTS_LIMIT_ARRAY', 8, 'Results Per Page drop down values', 'Results Per Page drop down values (comma seperated example:<br>12,24,48,96)', '12,24,48,96', "");
 addConfiguration('TOOLTIP_DESCRIPTION_ENABLED', 8, 'Enable product image tooltip description for products listing?', 'Enable product image tooltip description for products listing?', 'true', "tep_cfg_select_option(array('true', 'false'),");
 addConfiguration('TOOLTIP_DESCRIPTION_BUTTONS', 8, 'Show buttons in product image tooltip description for products listing?', 'Show buttons in product image tooltip description for products listing?', 'true', "tep_cfg_select_option(array('true', 'false'),");
 
