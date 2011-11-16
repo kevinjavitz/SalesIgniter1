@@ -45,7 +45,8 @@ class Extension_payPerRentals extends ExtensionBase {
 		), null, $this);
 
 		if ($appExtension->isCatalog()){
-			EventManager::attachEvent('ProductListingQueryBeforeExecute', null, $this);
+			EventManager::attachEvent('ProductSearchQueryPriceFilterBeforeExecute', null, $this);
+			EventManager::attachEvent('ProductSearchQueryBeforeExecute', null, $this);
 			EventManager::attachEvent('ProductSearchQueryBeforeExecute', null, $this);
 		}else{
 			EventManager::attachEvent('OrderInfoAddBlock', null, $this);
@@ -452,46 +453,46 @@ class Extension_payPerRentals extends ExtensionBase {
 			                      CAST("'.date('Y-m-d', strtotime(Session::get('isppr_date_end'))).'" AS DATE) NOT BETWEEN hidden_start_date AND hidden_end_date
 			');
 		}
-		if (isset($_GET['pfrom']) && is_array($_GET['pfrom'])){
+	}
+
+	public function ProductSearchQueryPriceFilterBeforeExecute(&$priceFilters){
+		global $currencies;
+		if (isset($_GET['pfrom']) && is_array($_GET['pfrom']) && $_GET['debug'] == 1){
+			if ($currencies->is_set(Session::get('currency'))){
+				$rate = $currencies->get_value(Session::get('currency'));
+			}
 			foreach($_GET['pfrom'] as $k => $v){
-				$Qproducts->andWhere('ppprp.price >= ? ', (int)$v);
+				if (isset($rate)){
+					$v = $v / $rate;
+					if (isset($_GET['pto'][$k])){
+						$_GET['pto'][$k] = $_GET['pto'][$k] / $rate;
+					}
+				}
+				$queryAddString = '(ppprp.price >= ' . (double)$v;
+				if (isset($_GET['pto'][$k])){
+					$queryAddString .= ' AND ppprp.price <= ' . (double)$_GET['pto'][$k];
+				}
+				$queryAddString .= ')';
+
+				$queryAdd[] = $queryAddString;
 			}
-		}
-		if (isset($_GET['pto']) && is_array($_GET['pto'])){
-			foreach($_GET['pto'] as $k => $v){
-				$Qproducts->andWhere('ppprp.price <= ? ', (int)$v);
+			$priceFiltersCheck = Doctrine_Query::create()
+				->select('pppr.products_id')
+				->from('ProductsPayPerRental pppr')
+				->leftJoin('pppr.PricePerRentalPerProducts ppprp')
+				->where('(' . implode(' or ', $queryAdd) . ')')
+				->fetchArray();
+			if(count($priceFiltersCheck) > 0) {
+				foreach($priceFiltersCheck as $priceFilterProductID){
+					$priceFilters[$priceFilterProductID['products_id']] = $priceFilterProductID['products_id'];
+				}
 			}
-		}
-		if(isset($_GET['pprfp_start']) && (int)$_GET['pprfp_start'] > 0){
-			$Qproducts->andWhere('ppprp.price >= ? ', (int)$_GET['pprfp_start']);
-		}
-		if(isset($_GET['pprfp_stop']) && (int)$_GET['pprfp_stop'] > 0){
-			$Qproducts->andWhere('ppprp.price <= ? ', (int)$_GET['pprfp_stop']);
 		}
 	}
 
 	public function ProductSearchQueryBeforeExecute(&$Qproducts){
-		$Qproducts->leftJoin('p.ProductsPayPerRental pppr');
-		$Qproducts->leftJoin('pppr.PricePerRentalPerProducts ppprp');
-
-		if (isset($_GET['pfrom']) && is_array($_GET['pfrom'])){
-			foreach($_GET['pfrom'] as $k => $v){
-				$Qproducts->andWhere('ppprp.price >= ? ', (int)$v);
-			}
-		}
-		if (isset($_GET['pto']) && is_array($_GET['pto'])){
-			foreach($_GET['pto'] as $k => $v){
-				$Qproducts->andWhere('ppprp.price <= ? ', (int)$v);
-			}
-		}
-		
-		if(isset($_GET['pprfp_start']) && (int)$_GET['pprfp_start'] > 0){
-			$Qproducts->andWhere('ppprp.price >= ? ', (int)$_GET['pprfp_start']);
-		}
-		if(isset($_GET['pprfp_stop']) && (int)$_GET['pprfp_stop'] > 0){
-			$Qproducts->andWhere('ppprp.price <= ? ', (int)$_GET['pprfp_stop']);
-		}
-
+		$Qproducts->leftJoin('p.ProductsPayPerRental pppr')
+			->leftJoin('pppr.PricePerRentalPerProducts ppprp');
 	}
 
 	public function NewProductAddBarcodeListingBody(&$bInfo, &$currentBarcodesTableBody){
