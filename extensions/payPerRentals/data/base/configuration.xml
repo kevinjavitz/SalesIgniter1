@@ -123,7 +123,7 @@
 		</EXTENSION_PAY_PER_RENTALS_AUTO_RETURN>		
 
 		<EXTENSION_PAY_PER_RENTALS_USE_EVENTS>
-			<value>True</value>
+			<value>False</value>
 			<title>Use events instead of start/end dates </title>
 			<description>If the ppr dates beggining is enabled and use events is enabled dates will be replaced by events.</description>
 			<sort_order>20</sort_order>
