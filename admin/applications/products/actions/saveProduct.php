@@ -24,7 +24,7 @@
 	$Product->products_price = (float)$_POST['products_price'];
 	$Product->products_price_used = (float)$_POST['products_price_used'];
 	$Product->products_date_available = $products_date_available;
-	$Product->products_weight = (float)$_POST['products_weight'];
+	$Product->products_weight = ((float)$_POST['products_weight'] <= 0) ? '1' : (float)$_POST['products_weight'];
 	$Product->products_status = $_POST['products_status'];
 	$Product->products_featured = $_POST['products_featured'];
 	$Product->products_tax_class_id = $_POST['products_tax_class_id'];
