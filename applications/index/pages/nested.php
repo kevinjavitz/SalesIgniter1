@@ -43,14 +43,15 @@ if ($category_depth == 'nested') {
 			$categoryName = $cInfo['CategoriesDescription'][0]['categories_name'];
 
 			$cPath_new = tep_get_path($categoryId);
-
-			$tableColumns[] = array(
-				'addCls' => 'main',
-				'align' => 'center',
-				'text' => '<a href="' .  itw_app_link($cPath_new, 'index', 'default') . '">' .
-						  '<img src="imagick_thumb.php?path=rel&imgSrc=' . 'images/'. $categoryImage . '&width=100&height=100" alt="' . $categoryName . '" />' .
-						'<br />' . $categoryName . '</a>'
-			);
+			if(!empty($categoryImage)) {
+				$tableColumns[] = array(
+					'addCls' => 'main',
+					'align' => 'center',
+					'text' => '<a href="' .  itw_app_link($cPath_new, 'index', 'default') . '">' .
+							  '<img src="imagick_thumb.php?path=rel&imgSrc=' . 'images/'. $categoryImage . '&width=100&height=100" alt="' . $categoryName . '" />' .
+							'<br />' . $categoryName . '</a>'
+				);
+			}
 
 			$col++;
 			if ($col > sysConfig::get('MAX_DISPLAY_CATEGORIES_PER_ROW')){
