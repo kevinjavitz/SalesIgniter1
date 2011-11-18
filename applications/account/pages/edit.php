@@ -60,6 +60,19 @@
 		));
 	}
 
+if (sysConfig::get('ACCOUNT_CITY_BIRTH') == 'true') {
+	$cityBirthInput = htmlBase::newElement('input')
+		->setName('city_birth')
+		->setValue($userAccount->getCityBirth());
+
+	$formTable->addBodyRow(array(
+			'columns' => array(
+				array('addCls' => 'main', 'text' => sysLanguage::get('ENTRY_CITY_BIRTH')),
+				array('addCls' => 'main', 'text' => $cityBirthInput->draw())
+			)
+		));
+}
+
 	$emailInput = htmlBase::newElement('input')
 	->setName('email_address')
 	->setValue($userAccount->getEmailAddress());

@@ -9,13 +9,6 @@
 
 	$languages = tep_get_languages();
 
-	if (!isset($Banner['banners_status'])) $Banner['banners_status'] = '1';
-	switch ($Banner['banners_status']) {
-		case '0': $in_status = false; $out_status = true; break;
-		case '1':
-		default: $in_status = true; $out_status = false;
-	}
-
 	$saveButton = htmlBase::newElement('button')->setType('submit')->usePreset('save');
 	$cancelButton = htmlBase::newElement('button')->usePreset('cancel');
 

@@ -65,4 +65,6 @@
 	<define key="TEXT_BANNER_EXPIRES_CLICKS"><![CDATA[Clicks when reached banner expires. When o never expires]]></define>
 	<define key="TEXT_BANNER_VIEWS"><![CDATA[Current number of views]]></define>
 	<define key="TEXT_BANNER_CLICKS"><![CDATA[Current number of clicks]]></define>
+	<define key="TEXT_SELECT_BANNER_TARGET"><![CDATA[Open URL in:]]></define>
+
 </definitions>

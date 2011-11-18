@@ -39,6 +39,7 @@
 	<div class="pricingTable" style="display:block;">
         <?php echo $purchaseTypeClass->getPricingTable();?>
 	</div>
+	<div class="periodsInsurance">
 <?php
 	//this part needs redone
 	 if ($maxRentalPeriod > 0){
@@ -83,6 +84,8 @@ if ($insurancePrice > 0){
 <?php
 }
 ?>
+	</div>
+	<div class="beforeCalendar"></div>
     <div class="calendarTable" style="display:block;">
 		<?php
 				echo ReservationUtilities::getCalendar($_GET['products_id'], $purchaseTypeClasses, 1, true);
@@ -93,7 +96,7 @@ if ($insurancePrice > 0){
 	   $pageContents = ob_get_contents();
 	   ob_end_clean();
 
-	   $pageTitle = sysLanguage::get('TEXT_CREATE_RESERVATION');
+	   $pageTitle = '<span class="pprText">'.$product->getName().'</span>';
 
 	   $pageButtons = '';
 	   if (sysConfig::get('EXTENSION_PAY_PER_RENTALS_SHOW_CALENDAR_PRODUCT_INFO') == 'False') {

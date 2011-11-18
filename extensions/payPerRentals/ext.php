@@ -325,6 +325,17 @@ class Extension_payPerRentals extends ExtensionBase {
 
 	}
 
+	public function ShoppingCartAddFields(&$qty, $purchaseType, $cartProduct){
+		$gInfo = $cartProduct->getInfo();
+		$resInfo = $gInfo['reservationInfo'];
+		foreach($resInfo as $item => $val){
+			if($item != 'quantity'){
+				$qty .= tep_draw_hidden_field('cart_quantity['.$cartProduct->getUniqID().']['.$purchaseType.']['.$item.']', $val, 'size="4" class="'.$item.'_shop"');
+			}
+		}
+
+	}
+
 	public function OrderClassQueryFillProductArray(&$pInfo, &$product){
 		$Reservations = $pInfo['OrdersProductsReservation'];
 		if (sizeof($Reservations) > 0){

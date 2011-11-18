@@ -598,4 +598,5 @@
 	<define key="TEXT_OUT_OF_STOCK"><![CDATA[Out of Stock ]]></define>
 	<define key="RENTAL_CUSTOMER_IS_PAST_DUE"><![CDATA[We have not been able to process your membership payment. Please update your credit card on file by  <a style="color:red;" href="%s">clicking here</a> ]]></define>
 
+	<define key="EXTENSION_PAY_PER_RENTALS_ERROR_NO_INVENTORY_FOR_SELECTED_DATES"><![CDATA[There is no inventory for the selected dates.]]></define>
 </definitions>

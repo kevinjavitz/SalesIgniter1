@@ -261,13 +261,14 @@
 						echo $content;
 					}
 				}
-				
-				echo '<div class="smallText">';
-				echo '<b>' . $quotes[$i]['module'] . '</b>';
-				if (isset($quotes[$i]['icon']) && tep_not_null($quotes[$i]['icon'])){
-					echo $quotes[$i]['icon'];
+				if(sizeof($quotes[$i]['methods']) > 0){
+					echo '<div class="smallText">';
+					echo '<b>' . $quotes[$i]['module'] . '</b>';
+					if (isset($quotes[$i]['icon']) && tep_not_null($quotes[$i]['icon'])){
+						echo $quotes[$i]['icon'];
+					}
+					echo '</div>';
 				}
-				echo '</div>';
 				
 				if (isset($quotes[$i]['error'])){
 					echo '<div>' . $quotes[$i]['error'] . '</div>';

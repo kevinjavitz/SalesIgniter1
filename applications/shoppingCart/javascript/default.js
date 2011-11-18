@@ -90,4 +90,10 @@ $(document).ready(function (){
 			}
 		});
 	}
+	$('.shipInfo').css('cursor','pointer');
+	$('.shipInfo').click(function(){
+		link = js_app_link('appExt=payPerRentals&app=show_shipping&appPage=default_all&dialog=true');
+		popupWindow(link,'400','300');
+		return false;
+	});
 });

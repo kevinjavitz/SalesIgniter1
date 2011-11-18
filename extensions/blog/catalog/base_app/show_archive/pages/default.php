@@ -28,12 +28,16 @@
 	$pg_limit  = (int) sysConfig::get('EXTENSION_BLOG_POST_PER_PAGE');
 
 	$pagerBar = '';
+    if(!is_null($app_pg)){
+		$month_year = explode('-', $app_pg );
 
-	$month_year = explode('-', $app_pg );
-
-	$time = strptime($month_year[0], '%B');
-	$month = $time['tm_mon']+1;
-	$year = $month_year[1];
+		$time = strptime($month_year[0], '%B');
+		$month = $time['tm_mon']+1;
+		$year = $month_year[1];
+    }else{
+	    $month = null;
+	    $year = null;
+    }
 	$posts = $blog->getArchivesPosts(null, $month, $year, $pg_limit, $pg, &$pagerBar);
 
 	$contentHtml = '';

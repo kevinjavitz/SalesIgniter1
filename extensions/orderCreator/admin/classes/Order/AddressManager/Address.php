@@ -28,20 +28,12 @@ class OrderCreatorAddress extends OrderAddress implements Serializable {
 		$this->addressInfo['entry_company'] = $val;
 	}
 
-	public function setCityBirth($val){
-		$this->addressInfo['entry_city_birth'] = $val;
-	}
-
 	public function setVATNumber($val){
 		$this->addressInfo['entry_vat'] = $val;
 	}
 
 	public function setFiscalCode($val){
 		$this->addressInfo['entry_cif'] = $val;
-	}
-
-	public function setDOB($val){
-		$this->addressInfo['entry_dob'] = $val;
 	}
 
 	public function setStreetAddress($val){

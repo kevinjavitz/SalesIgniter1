@@ -12,6 +12,7 @@
 	if (array_key_exists('telephone', $_POST)) $accountValidation['telephone'] = $_POST['telephone'];
 	if (array_key_exists('fax', $_POST)) $accountValidation['fax'] = $_POST['fax'];
 	if (array_key_exists('dob', $_POST)) $accountValidation['dob'] = $_POST['dob'];
+	if (array_key_exists('city_birth', $_POST)) $accountValidation['city_birth'] = $_POST['city_birth'];
 
 	$hasError = $userAccount->validate($accountValidation);
 	if ($hasError == false) {
@@ -34,6 +35,12 @@
 		if (sysConfig::get('ACCOUNT_GENDER') == 'true'){
 			if ($accountValidation['entry_gender'] != $userAccount->getGender()){
 				$userAccount->setGender($accountValidation['entry_gender']);
+			}
+		}
+
+		if (sysConfig::get('ACCOUNT_CITY_BIRTH') == 'true'){
+			if ($accountValidation['city_birth'] != $userAccount->getCityBirth()){
+				$userAccount->setCityBirth($accountValidation['city_birth']);
 			}
 		}
 

@@ -36,7 +36,7 @@
 		$PostsDescription[$lang_id]->blog_post_head_desc =  isset($_POST['blog_post_head_desc'][$lang_id])? $_POST['blog_post_head_desc'][$lang_id]:$_POST['blog_post_title'][$lang_id];
 		$PostsDescription[$lang_id]->blog_post_head_keywords = isset($_POST['blog_post_head_keywords'][$lang_id])? $_POST['blog_post_head_desc'][$lang_id]:$_POST['blog_post_title'][$lang_id];
 
-        if (empty($_POST['blog_post_seo_url'][$lang_id])){
+        if (!empty($_POST['blog_post_seo_url'][$lang_id])){
 			$PostsDescription[$lang_id]->blog_post_seo_url = tep_friendly_seo_url($_POST['blog_post_head_title'][$lang_id]);
 		}
         

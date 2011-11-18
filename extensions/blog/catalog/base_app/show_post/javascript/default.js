@@ -8,6 +8,21 @@ return false;
 }
 
 $(document).ready(function (){
+		$('#commentDiv').hide();
+		$('#addComment').css('cursor','pointer');
+		$('#addComment').css('font-size','14px');
+		$('#addComment').css('font-weight','bold');
+		$('#addComment').css('margin-bottom','15px');
+		$('#addComment').click(function(){
+			if($('#addComment').html() == 'Add Comment +'){
+				$('#commentDiv').show();
+				$('#addComment').html('Hide Comment Form -');
+			}else{
+				$('#commentDiv').hide();
+				$('#addComment').html('Add Comment +');
+			}
+
+		});
 		$('#commentf').submit(function(){
 
 			retf = true;

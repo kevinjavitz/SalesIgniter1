@@ -125,6 +125,10 @@ addConfiguration('ACCOUNT_CITY_BIRTH', 5, 'City of birth', 'City of birth', 'fal
 
 addConfiguration('BARCODE_TYPE', 1, 'Choose barcode type to use in the store', 'Choose barcode type to use in the store', 'Code 39', "tep_cfg_select_option(array('Code 128B', 'Code 39 Extended', 'QR', 'Code 39', 'Code 25', 'Code 25 Interleaved'),");
 
+addConfiguration('SITE_MAINTENANCE_MODE', 1, 'Site In maintenance mode', 'Site in maintenance mode', 'false', "tep_cfg_select_option(array('true', 'false'),");
+addConfiguration('IP_LIST_MAINTENANCE_ENABLED', 1, 'List of IP enabled in maintenance mode', 'List of IP enabled in maintenance mode separated by ;', '', '');
+
+
 /*
 		* This part is for completing with the remaining orders statuses if don't exists. In future updates they should be filled
 		* */
@@ -174,6 +178,37 @@ function addEmailTemplateVariables($variableName,$event, $is_conditional = 0, $c
         }
     }
 }
+
+
+function installInfobox($boxPath, $className, $extName = null){
+	$moduleDir = sysConfig::getDirFsCatalog() . $boxPath;
+	if (is_dir($moduleDir . 'Doctrine/base/')){
+		Doctrine_Core::createTablesFromModels($moduleDir . 'Doctrine/base/');
+	}
+
+	$className = 'PDFInfoBox' . ucfirst($className);
+	if (!class_exists($className)){
+		require($moduleDir . 'pdfinfobox.php');
+	}
+	$class = new $className;
+
+	$Infobox = new PDFTemplatesInfoboxes();
+	$Infobox->box_code = $class->getBoxCode();
+	$Infobox->box_path = $boxPath;
+	if (!is_null($extName)){
+		$Infobox->ext_name = $extName;
+	}
+	$Infobox->save();
+}
+
+function importPDFLayouts(){
+
+	$PDFTemplateLayouts = Doctrine_Core::getTable('PDFTemplateLayouts');
+	$PDFTemplatesInfoboxes = Doctrine_Core::getTable('PDFTemplatesInfoboxes');
+	require(sysConfig::getDirFsCatalog() . 'ext/pdfLayouts/installDataInvoice.php');
+
+}
+
 
 function addEmailTemplate($name, $event, $attach, $subject, $content){
 	$emailTemplates = Doctrine_Core::getTable('EmailTemplates')->findOneByEmailTemplatesEvent($event);
@@ -238,6 +273,8 @@ addStatus('Cancelled');
 addStatus('Approved');
 addStatus('Estimate');
 addStatus('Shipped');
+
+importPDFLayouts();
 
 if(sysConfig::get('MODULE_ORDER_SHIPPING_ZONERESERVATION_STATUS') == 'True'){
 	add_extra_fields('modules_shipping_zone_reservation_methods','weight_rates','TEXT NULL');

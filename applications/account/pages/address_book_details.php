@@ -128,21 +128,6 @@
 		));
 	}
 
-	if (sysConfig::get('ACCOUNT_CITY_BIRTH') == 'true'){
-		$citybirthInput = htmlBase::newElement('input')
-		->setName('city_birth');
-		if (isset($addressEntry)){
-			$citybirthInput->setValue($addressEntry['entry_city_birth']);
-		}
-
-		$formTable->addBodyRow(array(
-			'columns' => array(
-				array('addCls' => 'main', 'text' => sysLanguage::get('ENTRY_CITY_BIRTH')),
-				array('addCls' => 'main', 'text' => $citybirthInput)
-			)
-		));
-	}
-
 	$postCodeInput = htmlBase::newElement('input')
 	->setName('postcode');
 	if (isset($addressEntry)){

@@ -128,6 +128,15 @@ class Customers extends Doctrine_Record {
 			'notnull' => true,
 			'autoincrement' => false,
 		));
+		$this->hasColumn('customers_city_birth', 'string', 250, array(
+				'type' => 'string',
+				'length' => 250,
+				'fixed' => false,
+				'primary' => false,
+				'default' => '',
+				'notnull' => true,
+				'autoincrement' => false,
+			));
 		$this->hasColumn('customers_fax', 'string', 32, array(
 			'type' => 'string',
 			'length' => 32,

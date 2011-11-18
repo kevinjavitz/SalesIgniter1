@@ -41,13 +41,13 @@ if ($ShoppingCart->countContents() > 0) {
 		'</table>';
 
 
-		$qty = '';
-		/* @TODO: Get into pay per rental extension */
-		if ($purchaseType == 'reservation'){
-			$qty .= tep_draw_hidden_field('cart_quantity['.$cartProduct->getUniqID().']['.$purchaseType.']', $purchaseQuantity, 'size="4"') . $purchaseQuantity;
-		}else{
-			$qty .= tep_draw_input_field('cart_quantity['.$cartProduct->getUniqID().']['.$purchaseType.']', $purchaseQuantity, 'size="4"');
-		}
+
+		//if ($purchaseType == 'reservation'){
+		$qty = tep_draw_input_field('cart_quantity['.$cartProduct->getUniqID().']['.$purchaseType.'][quantity]', $purchaseQuantity, 'size="4"');
+		EventManager::notify('ShoppingCartAddFields',&$qty, $purchaseType, $cartProduct);
+		//}else{
+		//	$qty = tep_draw_input_field('cart_quantity['.$cartProduct->getUniqID().']['.$purchaseType.']', $purchaseQuantity, 'size="4"');
+		//}
 
 		$shoppingCartBodyRow = array(
 			array(
@@ -83,6 +83,10 @@ if ($ShoppingCart->countContents() > 0) {
 	->addClass('ui-widget ui-widget-content ui-corner-all');
 
 	EventManager::notify('ShoppingCartListingBeforeListing', &$div);
+
+	$divShipInfo = htmlBase::newElement('a')
+	->html('Shipping Information?')
+	->addClass('shipInfo');
 	
 	$div->append($tableListing);
 
@@ -101,6 +105,7 @@ if ($ShoppingCart->countContents() > 0) {
 
 	$pageButtonsHtml = htmlBase::newElement('button')
      ->setName('update_product')
+	 ->addClass('updateProductButton')
      ->setText(sysLanguage::get('TEXT_BUTTON_UPDATE_CART'))
      ->setType('submit');
 
@@ -115,6 +120,140 @@ if ($ShoppingCart->countContents() > 0) {
 		->setName('continue')
 		->setText(sysLanguage::get('TEXT_BUTTON_CONTINUE_CART'))
 		->setHref($link);
+
+	if(sysConfig::get('EXTENSION_PAY_PER_RENTALS_CHANGE_DATES_BUTTON') == 'True'){
+		$changeDatesButtonHtml = htmlBase::newElement('button')
+		->setName('changeDates')
+		->setText(sysLanguage::get('TEXT_BUTTON_CHANGE_DATES'))
+		->addClass('changeDatesButton');
+		ob_start();
+		?>
+	<script type="text/javascript">
+		function nobeforeDays(date){
+			today = new Date();
+			if(today.getTime() <= date.getTime() - (1000 * 60 * 60 * 24 * <?php echo $datePadding;?> - (24 - date.getHours()) * 1000 * 60 * 60)){
+				return [true,''];
+			}else{
+				return [false,''];
+			}
+		}
+		function makeDatePicker(pickerID){
+			var minRentalDays = <?php
+                                if(sysConfig::get('EXTENSION_PAY_PER_RENTALS_USE_GLOBAL_MIN_RENTAL_DAYS') == 'True'){
+				echo (int)sysConfig::get('EXTENSION_PAY_PER_RENTALS_MIN_RENTAL_DAYS');
+				$minDays = (int)sysConfig::get('EXTENSION_PAY_PER_RENTALS_MIN_RENTAL_DAYS');
+			}else{
+				$minDays = 0;
+				echo '0';
+			}
+				if(Session::exists('button_text')){
+					$butText = Session::get('button_text');
+				}else{
+					$butText = '';
+				}
+				?>;
+			var selectedDateId = null;
+			var startSelectedDate;
+
+			var dates = $(pickerID+' .dstart,'+pickerID+' .dend').datepicker({
+				dateFormat: '<?php echo getJsDateFormat(); ?>',
+				changeMonth: true,
+				beforeShowDay: nobeforeDays,
+				onSelect: function(selectedDate) {
+
+					var option = this.id == "dstart" ? "minDate" : "maxDate";
+					if($(this).hasClass('dstart')){
+						myid = "dstart";
+						option = "minDate";
+					}else{
+						myid = "dend";
+						option = "maxDate";
+					}
+					var instance = $(this).data("datepicker");
+					var date = $.datepicker.parseDate(instance.settings.dateFormat || $.datepicker._defaults.dateFormat, selectedDate, instance.settings);
+
+					var dateC = new Date('<?php echo Session::get('isppr_curDate');?>');
+					if(date.getTime() == dateC.getTime()){
+						if(myid == "dstart"){
+							$(this).closest('form').find('.hstart').html('<?php echo Session::get('isppr_selectOptionscurdays');?>');
+						}else{
+							$(this).closest('form').find('.hend').html('<?php echo Session::get('isppr_selectOptionscurdaye');?>');
+						}
+					}else{
+						if(myid == "dstart"){
+							$(this).closest('form').find('.hstart').html('<?php echo Session::get('isppr_selectOptionsnormaldays');?>');
+						}else{
+							$(this).closest('form').find('.hend').html('<?php echo Session::get('isppr_selectOptionsnormaldaye');?>');
+						}
+					}
+
+
+					if(myid == "dstart"){
+						var days = "0";
+						if ($(this).closest('form').find('select.pickupz option:selected').attr('days')){
+							days = $(this).closest('form').find('select.pickupz option:selected').attr('days');
+						}
+						//startSelectedDate = new Date(selectedDate);
+						dateFut = new Date(date.setDate(date.getDate() + parseInt(days)));
+						dates.not(this).datepicker("option", option, dateFut);
+					}
+					f = true;
+					if(myid == "dend"){
+						datest = new Date(selectedDate);
+						if ($(this).closest('form').find('.dstart').val() != ''){
+							startSelectedDate = new Date($(this).closest('form').find('.dstart').val());
+							if (datest.getTime() - startSelectedDate.getTime() < minRentalDays *24*60*60*1000){
+								alert('<?php echo sprintf(sysLanguage::get('EXTENSION_PAY_PER_RENTALS_ERROR_MIN_DAYS'), $minDays);?>');
+								$(this).val('');
+								f = false;
+							}
+						}else{
+							f = false;
+						}
+					}
+
+					if (selectedDateId != this.id && selectedDateId != null && f){
+						selectedDateId = null;
+					}
+					if (f){
+						selectedDateId = this.id;
+					}
+
+				}
+			});
+		}
+		$(document).ready(function (){
+			$('.changeDatesButton').click(function(){
+
+				$( '<div id="dialog-mesage" title="Choose Dates"><input class="tField" name="tField" ><div class="destBD"><span class="start_text">Start: </span><input class="picker dstart" name="dstart" ></div><div class="destBD"><span class="end_text">End: </span><input class="picker dend" name="dend" ></div></div>' ).dialog({
+					modal: false,
+					autoOpen: true,
+					open: function (e, ui){
+						makeDatePicker('#dialog-mesage');
+						$(this).find('.tField').hide();
+					},
+					buttons: {
+						Submit: function() {
+
+							$('.start_date_shop').val($(this).find('.dstart').val());
+							$('.end_date_shop').val($(this).find('.dend').val());
+							$('.updateProductButton').trigger('click');
+							$(this).dialog( "close" );
+						}
+					}
+				});
+
+				return false;
+			});
+
+		});
+	</script>
+	                            <?php
+ 	  					$script = ob_get_contents();
+		ob_end_clean();
+		$divScript = htmlBase::newElement('div')
+		->html($script);
+	}
 
      $checkoutFormButton = htmlBase::newElement('button')
      ->setText(sysLanguage::get('TEXT_BUTTON_CHECKOUT'))
@@ -176,7 +315,9 @@ if (sysConfig::exists('MODULE_SHIPPING_FREE_SHOW_TEXT')){
 		'margin-top' => '15px'
     ));
 	$div2->append($pageButtonsHtml)->append($checkoutFormButton)->append($continueButtonHtml);
-
+	if(sysConfig::get('EXTENSION_PAY_PER_RENTALS_CHANGE_DATES_BUTTON') == 'True'){
+		$div2->append($changeDatesButtonHtml)->append($divScript);
+	}
 	$div4 = htmlBase::newElement('div')
     ->css(array(
 		'margin-bottom' => '10px'

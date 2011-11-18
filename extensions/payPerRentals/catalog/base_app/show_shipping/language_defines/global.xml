@@ -1,0 +1,5 @@
+<definitions>
+	<define key="TABLE_HEADING_SHIPPING_TITLE"><![CDATA[Shipping Title]]></define>
+	<define key="TABLE_HEADING_SHIPPING_DESCRIPTION"><![CDATA[Shipping Description]]></define>
+
+</definitions>

@@ -121,7 +121,6 @@ class OrderAddressManager {
 		$abbrstate = htmlspecialchars($Address->getZoneCode());
 		$vat = htmlspecialchars($Address->getVAT());
 		$cif = htmlspecialchars($Address->getCIF());
-		$city_birth = htmlspecialchars($Address->getCityBirth());
 		$fmt = $Address->getFormat();
 		if($html){
 			$fmt = nl2br($fmt);

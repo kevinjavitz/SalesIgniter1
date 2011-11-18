@@ -25,7 +25,7 @@ class OrderCreator extends Order implements Serializable {
 			->leftJoin('o.OrdersProducts op')
 			->where('o.orders_id = ?', $orderId)
 			->andWhere('sd.language_id = ?', Session::get('languages_id'))
-			->orderBy('ot.sort_order');
+			->orderBy('ot.sort_order, osh.date_added DESC');
 
 			EventManager::notify('OrderQueryBeforeExecute', &$Qorder);
 

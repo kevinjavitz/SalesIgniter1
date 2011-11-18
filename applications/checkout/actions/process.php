@@ -186,6 +186,11 @@
 					$userAccount->setTelephoneNumber($onePageCheckout->onePage['info']['telephone']);
 				}
 
+				if (!empty($_POST['billing_city_birth'])) {
+					$onePageCheckout->onePage['info']['city_birth'] = $_POST['billing_city_birth'];
+					$userAccount->setCityBirth($onePageCheckout->onePage['info']['city_birth']);
+				}
+
 				if (!empty($_POST['billing_email_address'])) {
 					$onePageCheckout->onePage['info']['email_address'] = $_POST['billing_email_address'];
 					$userAccount->setEmailAddress($onePageCheckout->onePage['info']['email_address']);
