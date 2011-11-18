@@ -45,6 +45,8 @@ class OrderPaymentValitor extends CreditCardModule {
 		
 		//Always require verification code
 		$this->requireCvv = true;
+                
+                $this->removeOrderOnFail = true;
 	}
 
 
@@ -88,13 +90,54 @@ class OrderPaymentValitor extends CreditCardModule {
 	
 	
 	//Validate submitted card details
-	public function validatePost(){	    
-	    $_POST['cardOwner'] = null; //we do not have owner for Valitor payments	    
-	    return parent::validatePost();
+	public function validatePost(){
+            global $messageStack, $onePageCheckout;
+            
+            if (empty($_POST['cardNumber'])) {
+                $error = sysLanguage::get('TEXT_CCVAL_ERROR_INVALID_NUMBER');
+            } elseif($this->requireCvv && empty($_POST['cardCvvNumber'])) {
+                $error = sysLanguage::get('TEXT_CCVAL_ERROR_CVV_LENGTH');
+            } else {
+                $error = null;
+            }                       
+            
+
+            //Repopulate data
+            $onePageCheckout->onePage['info']['payment']['cardDetails'] = array(
+                    'cardNumber'   => $_POST['cardNumber'],
+                    'cardExpMonth' => $_POST['cardExpMonth'],
+                    'cardExpYear'  => $_POST['cardExpYear'],
+                    'cardType'     => $_POST['cardType']
+            );
+            
+            if ($this->requireCvv) {
+                $onePageCheckout->onePage['info']['payment']['cardDetails']['cardCvvNumber'] = $_POST['cardCvvNumber'];
+            }
+            
+            
+            if ($error) {
+                if (isset($onePageCheckout) && is_object($onePageCheckout)){
+                        if ($onePageCheckout->isMembershipCheckout() === true){
+                                $redirectTo = itw_app_link('checkoutType=rental&payment_error=1', 'checkout', 'default', 'SSL');
+                        }else{
+                                $redirectTo = itw_app_link('payment_error=1', 'checkout', 'default', 'SSL');
+                        }
+                }else{
+                        $redirectTo = itw_app_link('payment_error=1', 'checkout', 'default', 'SSL');
+                }
+
+                return array(
+                        'redirectUrl' => $redirectTo,
+                        'errorMsg'    => $error
+                );             
+            } else {
+                return true;
+            }
+
 	}
 	
 	
-	public function processPayment(){
+	public function processPayment($orderID = null, $amount = null){
 		global $order, $onePageCheckout;
 
 		$paymentAmount = $order->info['total'];
@@ -132,21 +175,26 @@ class OrderPaymentValitor extends CreditCardModule {
 	}
 	
 	private function onResponse($CurlResponse, $isCron = false){
-		$response = $CurlResponse->getResponse();
-		
+                
+		$response = $CurlResponse->getResponse();               
+                
 		$xml = @simplexml_load_string($response);
 
 		$error_number = (string)$xml->Villunumer;
-		if ($error_number==='0') {
+		if (empty($error_number)) {
 		    //Success
 		    
 		    $this->transactionId = (string)$xml->Faerslunumer;
+                    $this->authId = (string)$xml->Kvittun->Heimildarnumer;
+                    if (!empty($xml->Kvittun->TegundKorts)) {
+                        $this->resultCardType = (string)$xml->Kvittun->TegundKorts;
+                    }
 		    
 		    $this->onSuccess(array(
 			    'curlResponse'=> $CurlResponse,
 			    'message'	     => 'Success'
-		    ));
-		    
+		    ));		    
+                            
 		    return true;
 		} else {
 		    //some error occured
@@ -162,8 +210,10 @@ class OrderPaymentValitor extends CreditCardModule {
 		}
 	}	
 	
-	private function _getResponseDetails($RequestData)
+	private function _getResponseDetails($curResponse)
 	{
+            $RequestData = $curResponse->getDataRaw();
+            
 	    $orderId = $RequestData['orderID'];
 
 	    $card_info = explode('-', $RequestData['Kortaupplysingar']);
@@ -173,33 +223,36 @@ class OrderPaymentValitor extends CreditCardModule {
 		    'cardNumber'   => $card_info[0], //card number
 		    'cardExpYear'  => substr($card_info[1], 0, 2),
 		    'cardExpMonth' => substr($card_info[1], 2, 2),			
-		    'transId'      => (isset($this->transactionId)?$this->transactionId:'')
+		    'transId'      => (isset($this->transactionId)?$this->transactionId:''),
+                    'authId'      => (isset($this->authId)?$this->authId:''),                
+                    'cardType'     => $this->resultCardType
 	    );
 
 	    return array(
 		    'orderID' => $orderId,
 		    'amount'  => $RequestData['Upphaed'],
-		    'message' => $info['message'],
+		    'message' => $RequestData['message'],
 		    'can_reuse' => (isset($_POST['canReuse'])?1:0),
 		    'cardDetails' => $cardDetails
 	    );
 	}
 	
-	private function onSuccess($info){
-	    $RequestData = $info['curlResponse']->getDataRaw();
-	    $details = $this->_getResponseDetails($RequestData);
+	private function onSuccess($info){	    
+	    $details = $this->_getResponseDetails($info['curlResponse']);
 	    $details['success'] = 1;
 	    $this->logPayment($details);
+            
+            return $details;
 	}
 	
 	private function onFail($info){
 		global $messageStack;
-		
-		$RequestData = $info['curlResponse']->getDataRaw();
-		$orderId = $RequestData['orderID'];
-		
+				
 		$this->setErrorMessage($this->getTitle() . ' : ' . $info['message']);
 		if ($this->removeOrderOnFail === true){
+                        $RequestData = $info['curlResponse']->getDataRaw();
+                        $orderId = $RequestData['orderID'];
+                
 			$Order = Doctrine_Core::getTable('Orders')->find($orderId);
 			if ($Order){
 				$Order->delete();
@@ -207,9 +260,11 @@ class OrderPaymentValitor extends CreditCardModule {
 
 			$messageStack->addSession('pageStack', $info['message'], 'error');
 		}else{
-		    $details = $this->_getResponseDetails($RequestData);
+		    $details = $this->_getResponseDetails($info['curlResponse']);
 		    $details['success'] = 0;
 		    $this->logPayment($details);
 		}
+                
+                return $details;
 	}	
 }

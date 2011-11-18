@@ -269,7 +269,7 @@ if(!$f){
 	     $selectNewsLetter = htmlBase::newElement('checkbox')
 		     ->setName('select_newletter')
 		     ->setId('selectNewsLetter')
-		     ->setLabel('Select NewsLetter')
+		     ->setLabel('Select NewsLetter&nbsp;&nbsp;&nbsp;&nbsp;')
 		     ->setLabelPosition('after');
 	     $searchForm->append($pageLimit);
 	     $searchForm->append($selectNewsLetter);
