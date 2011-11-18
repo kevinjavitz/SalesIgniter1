@@ -1,5 +1,5 @@
 <?php
-	//Doctrine_Core::loadAllModels();
+	Doctrine_Core::loadAllModels();
 	$appContent = $App->getAppContentFile();
 
 	if ($App->getPageName() == 'defines'){

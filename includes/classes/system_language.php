@@ -56,6 +56,7 @@
 							'name_real' => $lInfo['name_real'],
 							'image'     => $lInfo['image'],
 							'directory' => $lInfo['directory'],
+							'forced_default' => $lInfo['forced_default'],
 							'showName'  => function ($sep = '<br>') use ($lInfo) {
 								return $lInfo['name_real'] . $sep . '( ' . $lInfo['name'] . ' )';
 							}
@@ -319,34 +320,41 @@
 		 * Set the browser language based on the priority set within the browser
 		 */
 		public static function getBrowserLanguage(){
-			self::$browser_languages = explode(',', $_SERVER['HTTP_ACCEPT_LANGUAGE']);
-			$languagesSorted = array();
-			foreach(self::$browser_languages as $lInfo){
-				if (stristr($lInfo, ';')){
-					$data = explode(';', $lInfo);
-					$sort = explode('=', $data[1]);
-					$order = $sort[1];
-					$langCode = $data[0];
-				}else{
-					$order = 1;
-					$langCode = $lInfo;
-				}
+			$Qcheck = mysql_query('select code from languages where forced_default = 1');
+			if (mysql_num_rows($Qcheck)){
+				$Check = mysql_fetch_array($Qcheck);
 				
-				$languagesSorted[$order] = $langCode;
-			}
-			krsort($languagesSorted);
-
-			$langSet = false;
-			foreach($languagesSorted as $code){
-				if (isset(self::$catalog_languages[strtolower($code)])){
-					self::$language = self::$catalog_languages[strtolower($code)];
-					$langSet = true;
-					break;
+				self::$language = self::$catalog_languages[$Check['code']];
+			}else{
+				self::$browser_languages = explode(',', $_SERVER['HTTP_ACCEPT_LANGUAGE']);
+				$languagesSorted = array();
+				foreach(self::$browser_languages as $lInfo){
+					if (stristr($lInfo, ';')){
+						$data = explode(';', $lInfo);
+						$sort = explode('=', $data[1]);
+						$order = $sort[1];
+						$langCode = $data[0];
+					}else{
+						$order = 1;
+						$langCode = $lInfo;
+					}
+					
+					$languagesSorted[$order] = $langCode;
 				}
-			}
+				krsort($languagesSorted);
+
+				$langSet = false;
+				foreach($languagesSorted as $code){
+					if (isset(self::$catalog_languages[strtolower($code)])){
+						self::$language = self::$catalog_languages[strtolower($code)];
+						$langSet = true;
+						break;
+					}
+				}
 			
-			if ($langSet === false){
-				self::$language = self::$catalog_languages[sysConfig::get('DEFAULT_LANGUAGE')];
+				if ($langSet === false){
+					self::$language = self::$catalog_languages[sysConfig::get('DEFAULT_LANGUAGE')];
+				}
 			}
 			return self::$language;
 		}
