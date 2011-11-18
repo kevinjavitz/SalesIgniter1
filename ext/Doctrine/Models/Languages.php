@@ -74,6 +74,15 @@ class Languages extends Doctrine_Record {
 		'notnull' => false,
 		'autoincrement' => false,
 		));
+		$this->hasColumn('forced_default', 'integer', 1, array(
+		'type' => 'integer',
+		'length' => 1,
+		'unsigned' => 0,
+		'primary' => false,
+		'default' => '0',
+		'notnull' => false,
+		'autoincrement' => false,
+		));
 		$this->hasColumn('sort_order', 'integer', 4, array(
 		'type' => 'integer',
 		'length' => 4,

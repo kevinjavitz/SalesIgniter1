@@ -19,17 +19,19 @@
 			'name'      => (string) $langSettings->name,
 			'code'      => (string) $langSettings->code,
 			'directory' => str_replace('\\', '/', $langDir->getPathname()),
-			'installed' => false
+			'installed' => false,
+			'forced_default' => 0
 		);
 		
 		$Qcheck = Doctrine_Query::create()
-		->select('languages_id')
+		->select('languages_id, forced_default')
 		->from('Languages')
 		->where('code = ?', (string) $langSettings->code)
 		->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 		if ($Qcheck){
 			$langArr[$dirName]['installed'] = true;
 			$langArr[$dirName]['id'] = $Qcheck[0]['languages_id'];
+			$langArr[$dirName]['forced_default'] = $Qcheck[0]['forced_default'];
 		}else{
 			unset($langArr[$dirName]);
 		}
@@ -51,6 +53,7 @@
 		'columns' => array(
 			array('text' => sysLanguage::get('TABLE_HEADING_LANGUAGE_NAME')),
 			array('text' => sysLanguage::get('TABLE_HEADING_LANGUAGE_CODE')),
+			array('text' => 'Forced Default'),
 			array('text' => 'Info')
 		)
 	));
@@ -75,6 +78,7 @@
 				'columns' => array(
 					array('text' => $gridShowName),
 					array('text' => $lInfo['code']),
+					array('text' => '<a href="' . itw_app_link('action=forceDefault&lID=' . $languageId . '&force=' . ($lInfo['forced_default'] == '1' ? '0' : '1'), 'languages', 'default') . '"><span class="ui-icon ui-icon-circle-' . ($lInfo['forced_default'] == '1' ? 'check' : 'close') . ' forceDefault"></span></a>', 'align' => 'center'),
 					array('text' => htmlBase::newElement('icon')->setType('info')->draw(), 'align' => 'center')
 				)
 			));
