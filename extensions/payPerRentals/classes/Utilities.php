@@ -827,7 +827,7 @@ class ReservationUtilities {
 									$selfID.parent().find('.inCart').position({
 										my:        "left bottom",
 										at:        "left top",
-										offset:    "-20, -10",
+										offset:    "-20, -25",
 										of:        $selfID.find('.refreshCal'), // or $("#otherdiv)
 										collision: "fit"
 									});
@@ -1000,7 +1000,7 @@ class ReservationUtilities {
 							$selfID.parent().find('.inCart').position({
 								my:        "left bottom",
 								at:        "left top",
-								offset:    "-20, -10",
+								offset:    "-20, -25",
 								of:        $selfID.find('.refreshCal'), // or $("#otherdiv)
 								collision: "fit"
 							});
@@ -1160,7 +1160,7 @@ class ReservationUtilities {
 									$selfID.parent().find('.inCart').position({
 										my:        "left bottom",
 										at:        "left top",
-										offset:    "-20, -10",
+										offset:    "-20, -25",
 										of:        $selfID.find('.refreshCal'), // or $("#otherdiv)
 										collision: "fit"
 									});
@@ -1327,6 +1327,16 @@ class ReservationUtilities {
 		$divDate.insertBefore($('.wrapPrice'));
 		$dateText.insertBefore($('.dateQuotesWrap'));
 		$('.dateText, .dateQuotesWrap').wrapAll('<div class="wrapDates"></div>');
+		$('.shippingDiv').css('top','-'+($('.periodsInsurance').height()+12)+'px');
+		$('.dateRow').css('top','-'+($('.periodsInsurance').height()+12-30)+'px');
+		$('.pprButttons').css('top','-'+($('.periodsInsurance').height()+12-45)+'px');
+		$('.pprButttons_wrapper').css('height',($('.pprButttons').height() - $('.periodsInsurance').height()+24)+'px');
+		$('.refreshCal').css('top',($('.pprButttons').position().top + 58)+'px');
+		var firstColumnWidth = $('.calendarTable').width()*5/100;
+		var secColumnWidth = $('.calendarTable').width()*80/100;
+
+		$('.pprButttons').css('left',firstColumnWidth+'px');
+		$('.refreshCal').css('left',secColumnWidth+'px');
 		//$('.calendarTable').css('height', ($('.calendarTable').height()-50) + 'px');
 	});
 	</script>
@@ -1368,7 +1378,6 @@ class ReservationUtilities {
 
 		.dateRow{
 			position:relative;
-			top:-50px;
 		}
 
 		.pricingTable{
@@ -1390,14 +1399,11 @@ class ReservationUtilities {
 
 		.pprButttons_wrapper{
 			position:relative;
-			height:70px;
+			display: inline-block;
 		}
 
 		.pprButttons{
 			position:absolute;
-			top:-35px;
-			display: inline-block;
-			left:15%;
 		}
 
 
@@ -1419,7 +1425,6 @@ class ReservationUtilities {
 		.shippingDiv{
 			width:75%;
 			position:relative;
-			top:-80px;
 			left:-4%;
 			font-size:11px;
 		}
@@ -1439,11 +1444,11 @@ class ReservationUtilities {
 		.datesInputs{
 			display:none;
 		}
-		.refreshCal{
-			float:right;
+		.refreshCal_wrapper{
 			position:relative;
-			top:25px;
-			margin-right:15px;
+		}
+		.refreshCal{
+			position:absolute;
 		}
 		.priceText{
 			display:inline-block;
@@ -1588,6 +1593,7 @@ class ReservationUtilities {
 
 	  <input type="hidden" name="days_before" class="days_before" value="<?php echo (isset($rInfo['reservationInfo']['days_before']) ? $rInfo['reservationInfo']['days_before'] : '');?>"> <input type="hidden" name="days_after" class="days_after" value="<?php echo (isset($rInfo['reservationInfo']['days_after']) ? $rInfo['reservationInfo']['days_after'] : '');?>">
       </div>
+	     <div class="refreshCal_wrapper">
 	  <?php
         echo htmlBase::newElement('button')
              ->addClass('refreshCal')
@@ -1595,6 +1601,7 @@ class ReservationUtilities {
              ->setText(sysLanguage::get('PPR_CALENDAR_RESET'))
              ->draw();
       ?>
+	     </div>
      </div>
 	</div>
 		<div class="pprButttons_wrapper">
