@@ -64,7 +64,7 @@ class OrdersTotal extends Doctrine_Record {
 		'default' => '0.0000',
 		'notnull' => true,
 		'autoincrement' => false,
-		'scale' => false,
+		'scale' => 4,
 		));
 		$this->hasColumn('module_type', 'string', 32, array(
 		'type' => 'string',

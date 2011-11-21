@@ -71,7 +71,7 @@ class Coupons extends Doctrine_Record {
 			'default' => '0.0000',
 			'notnull' => true,
 			'autoincrement' => false,
-			'scale' => false,
+			'scale' => 4,
 		));
 		
 		$this->hasColumn('coupon_minimum_order', 'decimal', 8, array(
@@ -82,7 +82,7 @@ class Coupons extends Doctrine_Record {
 			'default' => '0.0000',
 			'notnull' => true,
 			'autoincrement' => false,
-			'scale' => false,
+			'scale' => 4,
 		));
 		$this->hasColumn('coupon_maximum_order', 'decimal', 8, array(
 			'type' => 'decimal',
@@ -92,7 +92,7 @@ class Coupons extends Doctrine_Record {
 			'default' => '0.0000',
 			'notnull' => true,
 			'autoincrement' => false,
-			'scale' => false,
+			'scale' => 4,
 		));
 		
 		$this->hasColumn('coupon_start_date', 'timestamp', null, array(

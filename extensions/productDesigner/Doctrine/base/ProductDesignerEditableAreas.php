@@ -51,7 +51,7 @@ class ProductDesignerEditableAreas extends Doctrine_Record {
 			'default'       => '0.0000',
 			'notnull'       => true,
 			'autoincrement' => false,
-			'scale'         => false
+			'scale'         => 4
 		));
 		
 		$this->hasColumn('area_x2', 'decimal', 15, array(
@@ -62,7 +62,7 @@ class ProductDesignerEditableAreas extends Doctrine_Record {
 			'default'       => '0.0000',
 			'notnull'       => true,
 			'autoincrement' => false,
-			'scale'         => false
+			'scale'         => 4
 		));
 		
 		$this->hasColumn('area_y1', 'decimal', 15, array(
@@ -73,7 +73,7 @@ class ProductDesignerEditableAreas extends Doctrine_Record {
 			'default'       => '0.0000',
 			'notnull'       => true,
 			'autoincrement' => false,
-			'scale'         => false
+			'scale'         => 4
 		));
 		
 		$this->hasColumn('area_y2', 'decimal', 15, array(
@@ -84,7 +84,7 @@ class ProductDesignerEditableAreas extends Doctrine_Record {
 			'default'       => '0.0000',
 			'notnull'       => true,
 			'autoincrement' => false,
-			'scale'         => false
+			'scale'         => 4
 		));
 		
 		$this->hasColumn('area_width', 'decimal', 15, array(
@@ -95,7 +95,7 @@ class ProductDesignerEditableAreas extends Doctrine_Record {
 			'default'       => '0.0000',
 			'notnull'       => true,
 			'autoincrement' => false,
-			'scale'         => false
+			'scale'         => 4
 		));
 		
 		$this->hasColumn('area_height', 'decimal', 15, array(
@@ -106,7 +106,7 @@ class ProductDesignerEditableAreas extends Doctrine_Record {
 			'default'       => '0.0000',
 			'notnull'       => true,
 			'autoincrement' => false,
-			'scale'         => false
+			'scale'         => 4
 		));
 		
 		$this->hasColumn('area_height_inches', 'decimal', 15, array(
@@ -117,7 +117,7 @@ class ProductDesignerEditableAreas extends Doctrine_Record {
 			'default'       => '0.0000',
 			'notnull'       => true,
 			'autoincrement' => false,
-			'scale'         => false
+			'scale'         => 4
 		));
 		
 		$this->hasColumn('area_width_inches', 'decimal', 15, array(
@@ -128,7 +128,7 @@ class ProductDesignerEditableAreas extends Doctrine_Record {
 			'default'       => '0.0000',
 			'notnull'       => true,
 			'autoincrement' => false,
-			'scale'         => false
+			'scale'         => 4
 		));
 		
 		$this->hasColumn('area_location', 'string', 64, array(

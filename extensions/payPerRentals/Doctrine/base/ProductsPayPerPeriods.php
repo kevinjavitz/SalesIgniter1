@@ -59,7 +59,7 @@ class ProductsPayPerPeriods extends Doctrine_Record {
 			'default' => '0.0000',
 			'notnull' => true,
 			'autoincrement' => false,
-			'scale' => false,
+			'scale' => 4,
 		));
 
 	}

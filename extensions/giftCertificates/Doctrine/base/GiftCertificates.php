@@ -56,6 +56,7 @@ class GiftCertificates extends Doctrine_Record {
         ));
         $this->hasColumn('gift_certificates_price', 'decimal', 15, array(
             'type' => 'decimal',
+            'scale' => 4,
             'length' => 15,
             'unsigned' => 0,
             'default' => '0.0000',

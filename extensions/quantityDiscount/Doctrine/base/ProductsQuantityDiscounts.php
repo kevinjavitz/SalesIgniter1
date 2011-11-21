@@ -75,7 +75,7 @@ class ProductsQuantityDiscounts extends Doctrine_Record {
 			'default' => '0.0000',
 			'notnull' => true,
 			'autoincrement' => false,
-			'scale' => false,
+			'scale' => 4,
 		));
 		
 		$this->hasColumn('purchase_type', 'string', 16, array(

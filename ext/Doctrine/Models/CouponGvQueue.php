@@ -83,7 +83,7 @@ class CouponGvQueue extends Doctrine_Record {
 			'default' => '0.0000',
 			'notnull' => true,
 			'autoincrement' => false,
-			'scale' => false,
+			'scale' => 4,
 		));
 		$this->hasColumn('date_created', 'timestamp', null, array(
 			'type' => 'timestamp',

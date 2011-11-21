@@ -60,7 +60,7 @@ class Specials extends Doctrine_Record {
 			'default' => '0.0000',
 			'notnull' => true,
 			'autoincrement' => false,
-			'scale' => false,
+			'scale' => 4,
 		));
 		
 		$this->hasColumn('specials_date_added', 'timestamp', null, array(
