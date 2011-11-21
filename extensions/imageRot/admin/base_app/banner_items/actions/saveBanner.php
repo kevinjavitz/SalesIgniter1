@@ -30,6 +30,11 @@
 		$Banner->banners_name = $_POST['banners_name'];
 		$Banner->banners_url = $_POST['banners_url'];
 		$Banner->banners_cms_page = $_POST['banners_cms_page'];
+		if($_POST['banners_target'] == 'same'){
+			$Banner->banners_target = 0;
+		}else{
+			$Banner->banners_target = 1;
+		}
         $Banner->banners_html = $_POST['banners_html'];
 		$Banner->banners_description = $_POST['banners_description'];
 		$Banner->banners_small_description = $_POST['banners_small_description'];

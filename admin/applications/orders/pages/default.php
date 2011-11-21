@@ -229,6 +229,25 @@
 	->setLabel('Select All')
 	->setLabelPosition('after');
 
+	$statusField = htmlBase::newElement('selectbox')
+	->setName('status')
+	->setLabel('Status: ')
+	->setLabelPosition('before');
+	$statusField->addOption('0', 'All');
+
+	$QOrdersStatus = Doctrine_Query::create()
+	->from('OrdersStatus s')
+	->leftJoin('s.OrdersStatusDescription sd')
+	->where('sd.language_id = ?', (int)Session::get('languages_id'))
+	->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+
+	foreach($QOrdersStatus as $iStatus){
+		$statusField->addOption($iStatus['orders_status_id'], $iStatus['OrdersStatusDescription'][0]['orders_status_name']);
+	}
+	if(isset($_GET['status'])){
+		$statusField->selectOptionByValue($_GET['status']);
+	}
+
 	$limitField = htmlBase::newElement('selectbox')
 	->setName('limit')
 	->setLabel('Orders per Page: ')
@@ -270,7 +289,8 @@
 	$searchForm
 	->append($limitField)
 	->append($startdateField)
-	->append($enddateField);
+	->append($enddateField)
+	->append($statusField);
 	EventManager::notify('AdminOrdersListingSearchForm', $searchForm);
 	$searchForm->append($submitButton);
 

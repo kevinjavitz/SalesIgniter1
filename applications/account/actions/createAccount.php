@@ -43,7 +43,8 @@
 		if (array_key_exists('telephone', $_POST)) $userAccount->setTelephoneNumber($accountValidation['telephone']);
 		if (array_key_exists('fax', $_POST)) $userAccount->setFaxNumber($accountValidation['fax']);
 		if (array_key_exists('gender', $_POST)) $userAccount->setGender($accountValidation['entry_gender']);
-		if (array_key_exists('dob', $_POST)) $userAccount->setDateOfBirth($accountValidation['dob']);		
+		if (array_key_exists('dob', $_POST)) $userAccount->setDateOfBirth($accountValidation['dob']);
+		if (array_key_exists('city_birth', $_POST)) $userAccount->setCityBirth($accountValidation['entry_city_birth']);
 
 		$customerId = $userAccount->createNewAccount();
 

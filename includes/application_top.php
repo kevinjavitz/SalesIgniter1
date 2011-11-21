@@ -176,6 +176,16 @@ require(sysConfig::getDirFsCatalog() . 'includes/classes/htmlBase.php');
 	require(sysConfig::getDirFsCatalog() . 'includes/classes/session.php');
 	Session::init(); /* Initialize the session */
 
+    /*This position might not be the best since it might throw some errors on update*/
+
+	if(sysConfig::get('SITE_MAINTENANCE_MODE') == 'true' && $App->getEnv() == 'catalog'){
+		$ipList = explode(';', sysConfig::get('IP_LIST_MAINTENANCE_ENABLED'));
+		if(!in_array($_SERVER['REMOTE_ADDR'], $ipList)){
+			echo '<div style="margin:0 auto;text-align:center;"><img src="'.sysConfig::getDirWsCatalog().'images/logo.png" /> <p style="font-size:30px;">This Site Is Under Maintenance</p> </div>';
+			die();
+		}
+	}
+
 	// start the session
 	$session_started = false;
 	if (sysConfig::get('SESSION_FORCE_COOKIE_USE') == 'True') {
@@ -407,7 +417,8 @@ require(sysConfig::getDirFsCatalog() . 'includes/classes/htmlBase.php');
 							foreach($val as $purchaseTypeVal => $qtyVal){
 								$ShoppingCart->updateProduct($item, array(
 										'purchase_type' => $purchaseTypeVal,
-										'quantity'      => $qtyVal
+										'quantity'      => $qtyVal['quantity'],
+										'postVal'      => $qtyVal
 								));
 							}
 						}

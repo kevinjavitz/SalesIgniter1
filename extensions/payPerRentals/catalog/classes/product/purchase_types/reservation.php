@@ -349,7 +349,7 @@ class PurchaseType_reservation extends PurchaseTypeAbstract {
 		return $return;
 	}
 
-	public function hasInventory($myQty = 1){
+	public function hasInventory($myQty = false){
 
 		if ($this->enabled === false) return false;
 		if (is_null($this->inventoryCls)) return true;
@@ -373,8 +373,12 @@ class PurchaseType_reservation extends PurchaseTypeAbstract {
 					->andWhere('products_model = ?', $QModel[0]['products_model'])
 					->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 					if($QProductEvents && $QProductEvents[0]['qty'] > 0){
-						if(Session::exists('isppr_product_qty')){
-							$checkedQty = Session::get('isppr_product_qty');
+						if($myQty === false){
+							if(Session::exists('isppr_product_qty')){
+								$checkedQty = Session::get('isppr_product_qty');
+							}else{
+								$checkedQty = 1;
+							}
 						}else{
 							$checkedQty = $myQty;
 						}
@@ -458,7 +462,7 @@ class PurchaseType_reservation extends PurchaseTypeAbstract {
 				}
 				$noInvDates = array();
 				foreach($timesArr as $iTime){
-					$hasInv = false;
+					$invElem = 0;
 					foreach($invItems as $invInfo){
 						$bookingInfo = array(
 							'item_type' => 'barcode',
@@ -475,11 +479,6 @@ class PurchaseType_reservation extends PurchaseTypeAbstract {
 						}else{
 							//check here if the invInfo has a specific inventory. If there are two or more
 						}
-						if (Session::exists('isppr_product_qty')){
-							$bookingInfo['quantity'] = (int)Session::get('isppr_product_qty');
-						}else{
-							$bookingInfo['quantity'] = $myQty;
-						}
 
 						if (Session::exists('isppr_shipping_days_before')){
 							$bookingInfo['start_date'] = strtotime('- '. Session::get('isppr_shipping_days_before').' days', $bookingInfo['start_date']);
@@ -491,10 +490,26 @@ class PurchaseType_reservation extends PurchaseTypeAbstract {
 
 						$numBookings = ReservationUtilities::CheckBooking($bookingInfo);
 						if ($numBookings == 0){
-							$hasInv = true;
-							break;
+							$invElem++;
+							//break;
 						}
 					}
+
+					if($myQty === false){
+						if (Session::exists('isppr_product_qty')){
+							$bookingInfo['quantity'] = (int)Session::get('isppr_product_qty');
+						}else{
+							$bookingInfo['quantity'] = 1;
+						}
+					}else{
+						$bookingInfo['quantity'] = $myQty;
+					}
+					if($invElem - $bookingInfo['quantity'] < 0){
+						$hasInv = false;
+					}else{
+						$hasInv = true;
+					}
+
 					if($hasInv == false){
 						$noInvDates[] = $iTime['start_date'];
 					}
@@ -1291,7 +1306,10 @@ class PurchaseType_reservation extends PurchaseTypeAbstract {
 								}
 							}else{
 								//here i should check for use_ship
-								$payPerRentalButton->disable();
+								if(sysConfig::get('EXTENSION_PAY_PER_RENTALS_USE_SHIP') == 'True'){
+									$payPerRentalButton->disable()
+									->addClass('no_shipping');
+								}
 							}
 							$thePrice = 0;
 							$rInfo = '';
@@ -1365,9 +1383,13 @@ class PurchaseType_reservation extends PurchaseTypeAbstract {
 								->setName('dropoff')
 								->setValue($dropoff);
 							}
-							$htmlRentalQty = htmlBase::newElement('input')
-							->setType('hidden')
-							->setName('rental_qty')
+							$htmlRentalQty = htmlBase::newElement('input');
+							if(sysConfig::get('EXTENSION_PAY_PER_RENTALS_SHOW_QTY_LISTING') == 'False'){
+								$htmlRentalQty->setType('hidden');
+							}else{
+								$htmlRentalQty->attr('size','3');
+							}
+							$htmlRentalQty->setName('rental_qty')
 							->setValue($qtyVal);
 							if(sysConfig::get('EXTENSION_PAY_PER_RENTALS_INSURE_ALL_PRODUCTS_AUTO') == 'True'){
 								$htmlHasInsurance = htmlBase::newElement('input')
@@ -1452,29 +1474,311 @@ class PurchaseType_reservation extends PurchaseTypeAbstract {
 							));
 							$pageForm->append($priceTable);
 						  	$priceTableHtml = $pageForm->draw();
+							$script = '';
+						if(sysConfig::get('EXTENSION_PAY_PER_RENTALS_PRODUCT_INFO_DATES') == 'True'){
+							ob_start();
+							?>
+						<script type="text/javascript">
+							function nobeforeDays(date){
+								today = new Date();
+								if(today.getTime() <= date.getTime() - (1000 * 60 * 60 * 24 * <?php echo $datePadding;?> - (24 - date.getHours()) * 1000 * 60 * 60)){
+									return [true,''];
+								}else{
+									return [false,''];
+								}
+							}
+							function makeDatePicker(pickerID){
+								var minRentalDays = <?php
+                                if(sysConfig::get('EXTENSION_PAY_PER_RENTALS_USE_GLOBAL_MIN_RENTAL_DAYS') == 'True'){
+									echo (int)sysConfig::get('EXTENSION_PAY_PER_RENTALS_MIN_RENTAL_DAYS');
+									$minDays = (int)sysConfig::get('EXTENSION_PAY_PER_RENTALS_MIN_RENTAL_DAYS');
+								}else{
+									$minDays = 0;
+									echo '0';
+								}
+									if(Session::exists('button_text')){
+										$butText = Session::get('button_text');
+									}else{
+										$butText = '';
+									}
+									?>;
+								var selectedDateId = null;
+								var startSelectedDate;
 
+								var dates = $(pickerID+' .dstart,'+pickerID+' .dend').datepicker({
+									dateFormat: '<?php echo getJsDateFormat(); ?>',
+									changeMonth: true,
+									beforeShowDay: nobeforeDays,
+									onSelect: function(selectedDate) {
+
+										var option = this.id == "dstart" ? "minDate" : "maxDate";
+										if($(this).hasClass('dstart')){
+											myid = "dstart";
+											option = "minDate";
+										}else{
+											myid = "dend";
+											option = "maxDate";
+										}
+										var instance = $(this).data("datepicker");
+										var date = $.datepicker.parseDate(instance.settings.dateFormat || $.datepicker._defaults.dateFormat, selectedDate, instance.settings);
+
+										var dateC = new Date('<?php echo Session::get('isppr_curDate');?>');
+										if(date.getTime() == dateC.getTime()){
+											if(myid == "dstart"){
+												$(this).closest('form').find('.hstart').html('<?php echo Session::get('isppr_selectOptionscurdays');?>');
+											}else{
+												$(this).closest('form').find('.hend').html('<?php echo Session::get('isppr_selectOptionscurdaye');?>');
+											}
+										}else{
+											if(myid == "dstart"){
+												$(this).closest('form').find('.hstart').html('<?php echo Session::get('isppr_selectOptionsnormaldays');?>');
+											}else{
+												$(this).closest('form').find('.hend').html('<?php echo Session::get('isppr_selectOptionsnormaldaye');?>');
+											}
+										}
+
+
+										if(myid == "dstart"){
+											var days = "0";
+											if ($(this).closest('form').find('select.pickupz option:selected').attr('days')){
+												days = $(this).closest('form').find('select.pickupz option:selected').attr('days');
+											}
+											//startSelectedDate = new Date(selectedDate);
+											dateFut = new Date(date.setDate(date.getDate() + parseInt(days)));
+											dates.not(this).datepicker("option", option, dateFut);
+										}
+										f = true;
+										if(myid == "dend"){
+											datest = new Date(selectedDate);
+											if ($(this).closest('form').find('.dstart').val() != ''){
+												startSelectedDate = new Date($(this).closest('form').find('.dstart').val());
+												if (datest.getTime() - startSelectedDate.getTime() < minRentalDays *24*60*60*1000){
+													alert('<?php echo sprintf(sysLanguage::get('EXTENSION_PAY_PER_RENTALS_ERROR_MIN_DAYS'), $minDays);?>');
+													$(this).val('');
+													f = false;
+												}
+											}else{
+												f = false;
+											}
+										}
+
+										if (selectedDateId != this.id && selectedDateId != null && f){
+											selectedDateId = null;
+										}
+										if (f){
+											selectedDateId = this.id;
+										}
+
+									}
+								});
+							}
+							$(document).ready(function (){
+								$('.no_dates_selected').each(function(){$(this).click(function(){
+
+									$( '<div id="dialog-mesage" title="Choose Dates"><input class="tField" name="tField" ><div class="destBD"><span class="start_text">Start: </span><input class="picker dstart" name="dstart" ></div><div class="destBD"><span class="end_text">End: </span><input class="picker dend" name="dend" ></div></div>' ).dialog({
+										modal: false,
+										autoOpen: true,
+										open: function (e, ui){
+											makeDatePicker('#dialog-mesage');
+											$(this).find('.tField').hide();
+										},
+										buttons: {
+											Submit: function() {
+
+												$('.dstart').val($(this).find('.dstart').val());
+												$('.dend').val($(this).find('.dend').val());
+												$('.rentbbut').trigger('click');
+												$(this).dialog( "close" );
+											}
+										}
+									});
+
+									return false;
+								})});
+								$('.no_inventory').each(function(){$(this).click(function(){
+
+									$( '<div id="dialog-mesage" title="No Inventory"><span style="color:red;font-size:18px;"><?php echo sysLanguage::get('EXTENSION_PAY_PER_RENTALS_ERROR_NO_INVENTORY_FOR_SELECTED_DATES');?></span></div>' ).dialog({
+										modal: true,
+										buttons: {
+											Ok: function() {
+												$( this ).dialog( "close" );
+											}
+										}
+									});
+
+									return false;
+								})});
+							});
+						</script>
+						<?php
+	  					$script = ob_get_contents();
+							ob_end_clean();
+						}
 							$return = array(
 								'form_action'   => itw_app_link('appExt=payPerRentals&products_id=' . $_GET['products_id'], 'build_reservation', 'default'),
 								'purchase_type' => $this->typeLong,
 								'allowQty'      => false,
 								'header'        => $this->typeShow,
-								'content'       => $priceTableHtmlPrices . $priceTableHtml,
+								'content'       => $priceTableHtmlPrices . $priceTableHtml . $script,
 								'button'        => $payPerRentalButton
 							);
 						}
 					}else{
-						$payPerRentalButton = htmlBase::newElement('button')->setType('submit')->setText(sysLanguage::get('TEXT_BUTTON_RESERVE'))->setId('noDatesSelected')->setName('no_dates_selected');
+						$payPerRentalButton = htmlBase::newElement('button')
+						->setType('submit')
+						->setText(sysLanguage::get('TEXT_BUTTON_RESERVE'));
 
-						if ($this->hasInventory() === false){
-							$payPerRentalButton->disable();
+						if ($this->hasInventory() === false && Session::exists('isppr_selected') && Session::get('isppr_selected') == true){
+							$payPerRentalButton->addClass('no_inventory');
+						}else{
+							$payPerRentalButton->addClass('no_dates_selected');
 						}
+						$script = '';
+					if(sysConfig::get('EXTENSION_PAY_PER_RENTALS_PRODUCT_INFO_DATES') == 'True'){	
+					    ob_start();
+					    ?>
+				<script type="text/javascript">
+					function nobeforeDays(date){
+						today = new Date();
+						if(today.getTime() <= date.getTime() - (1000 * 60 * 60 * 24 * <?php echo $datePadding;?> - (24 - date.getHours()) * 1000 * 60 * 60)){
+							return [true,''];
+						}else{
+							return [false,''];
+						}
+					}
+					function makeDatePicker(pickerID){
+						var minRentalDays = <?php
+                        if(sysConfig::get('EXTENSION_PAY_PER_RENTALS_USE_GLOBAL_MIN_RENTAL_DAYS') == 'True'){
+							echo (int)sysConfig::get('EXTENSION_PAY_PER_RENTALS_MIN_RENTAL_DAYS');
+							$minDays = (int)sysConfig::get('EXTENSION_PAY_PER_RENTALS_MIN_RENTAL_DAYS');
+						}else{
+							$minDays = 0;
+							echo '0';
+						}
+							if(Session::exists('button_text')){
+								$butText = Session::get('button_text');
+							}else{
+								$butText = '';
+							}
+							?>;
+						var selectedDateId = null;
+						var startSelectedDate;
 
+						var dates = $(pickerID+' .dstart,'+pickerID+' .dend').datepicker({
+							dateFormat: '<?php echo getJsDateFormat(); ?>',
+							changeMonth: true,
+							beforeShowDay: nobeforeDays,
+							onSelect: function(selectedDate) {
+
+								var option = this.id == "dstart" ? "minDate" : "maxDate";
+								if($(this).hasClass('dstart')){
+									myid = "dstart";
+									option = "minDate";
+								}else{
+									myid = "dend";
+									option = "maxDate";
+								}
+								var instance = $(this).data("datepicker");
+								var date = $.datepicker.parseDate(instance.settings.dateFormat || $.datepicker._defaults.dateFormat, selectedDate, instance.settings);
+
+								var dateC = new Date('<?php echo Session::get('isppr_curDate');?>');
+								if(date.getTime() == dateC.getTime()){
+									if(myid == "dstart"){
+										$(this).closest('form').find('.hstart').html('<?php echo Session::get('isppr_selectOptionscurdays');?>');
+									}else{
+										$(this).closest('form').find('.hend').html('<?php echo Session::get('isppr_selectOptionscurdaye');?>');
+									}
+								}else{
+									if(myid == "dstart"){
+										$(this).closest('form').find('.hstart').html('<?php echo Session::get('isppr_selectOptionsnormaldays');?>');
+									}else{
+										$(this).closest('form').find('.hend').html('<?php echo Session::get('isppr_selectOptionsnormaldaye');?>');
+									}
+								}
+
+
+								if(myid == "dstart"){
+									var days = "0";
+									if ($(this).closest('form').find('select.pickupz option:selected').attr('days')){
+										days = $(this).closest('form').find('select.pickupz option:selected').attr('days');
+									}
+									//startSelectedDate = new Date(selectedDate);
+									dateFut = new Date(date.setDate(date.getDate() + parseInt(days)));
+									dates.not(this).datepicker("option", option, dateFut);
+								}
+								f = true;
+								if(myid == "dend"){
+									datest = new Date(selectedDate);
+									if ($(this).closest('form').find('.dstart').val() != ''){
+										startSelectedDate = new Date($(this).closest('form').find('.dstart').val());
+										if (datest.getTime() - startSelectedDate.getTime() < minRentalDays *24*60*60*1000){
+											alert('<?php echo sprintf(sysLanguage::get('EXTENSION_PAY_PER_RENTALS_ERROR_MIN_DAYS'), $minDays);?>');
+											$(this).val('');
+											f = false;
+										}
+									}else{
+										f = false;
+									}
+								}
+
+								if (selectedDateId != this.id && selectedDateId != null && f){
+									selectedDateId = null;
+								}
+								if (f){
+									selectedDateId = this.id;
+								}
+
+							}
+						});
+					}
+					$(document).ready(function (){
+						$('.no_dates_selected').each(function(){$(this).click(function(){
+
+							$( '<div id="dialog-mesage" title="Choose Dates"><input class="tField" name="tField" ><div class="destBD"><span class="start_text">Start: </span><input class="picker dstart" name="dstart" ></div><div class="destBD"><span class="end_text">End: </span><input class="picker dend" name="dend" ></div></div>' ).dialog({
+								modal: false,
+								autoOpen: true,
+								open: function (e, ui){
+									makeDatePicker('#dialog-mesage');
+									$(this).find('.tField').hide();
+								},
+								buttons: {
+									Submit: function() {
+
+										$('.dstart').val($(this).find('.dstart').val());
+										$('.dend').val($(this).find('.dend').val());
+										$('.rentbbut').trigger('click');
+										$(this).dialog( "close" );
+									}
+								}
+							});
+
+							return false;
+						})});
+						$('.no_inventory').each(function(){$(this).click(function(){
+
+							$( '<div id="dialog-mesage" title="No Inventory"><span style="color:red;font-size:18px;"><?php echo sysLanguage::get('EXTENSION_PAY_PER_RENTALS_ERROR_NO_INVENTORY_FOR_SELECTED_DATES');?></span></div>' ).dialog({
+								modal: true,
+								buttons: {
+									Ok: function() {
+										$( this ).dialog( "close" );
+									}
+								}
+							});
+
+							return false;
+						})});
+					});
+				</script>
+					<?php
+					$script = ob_get_contents();
+					ob_end_clean();
+					}
 						$return = array(
 							'form_action'   => '#',
 							'purchase_type' => $this->typeLong,
 							'allowQty'      => false,
 							'header'        => $this->typeShow,
-							'content'       => $priceTableHtmlPrices,
+							'content'       => $priceTableHtmlPrices . $script,
 							'button'        => $payPerRentalButton
 						);
 					}
@@ -1724,7 +2028,7 @@ class PurchaseType_reservation extends PurchaseTypeAbstract {
 			$quotes = array($Module->quote($selectedMethod, $weight));
 			$table = '<div class="shippingTable" style="display:'.$dontShow.'">';
 			if (sizeof($quotes[0]['methods']) > 0){
-				$table .= sysLanguage::get('PPR_SHIPPING_SELECT') . $this->parseQuotes($quotes) ;
+				$table .=  $this->parseQuotes($quotes) ;
 			}
 			$table .= '</div>';
 
@@ -1732,7 +2036,7 @@ class PurchaseType_reservation extends PurchaseTypeAbstract {
 			$table = '<div class="shippingUPS"><table cellpadding="0" cellspacing="0" border="0">';
 
 			$table .= '<tr id="shipMethods">' .
-						    '<td class="main">'.sysLanguage::get('PPR_SHIPPING_SELECT').':</td>' .
+						    '<td class="main">'.'</td>' .
 						    '<td class="main" id="rowquotes">' .  '</td>' .
 						 '</tr>' ;
 
@@ -1806,7 +2110,7 @@ class PurchaseType_reservation extends PurchaseTypeAbstract {
 		global $currencies, $userAccount, $App;
 		$table = '';
 		if ($this->enabledShipping !== false){
-			$table = '<table cellpadding="0" cellspacing="0" border="0">';
+			$table = '<table cellpadding="0" cellspacing="0" border="0" align="center">';/*special modification*/
 
 			$newMethods = array();
 
@@ -1823,7 +2127,7 @@ class PurchaseType_reservation extends PurchaseTypeAbstract {
 				'<td><table border="0" width="100%" cellspacing="0" cellpadding="2">' .
 
 				'<tr>' .
-				'<td class="main" colspan="3"><b>' . $quotes[$i]['module'] . '</b>&nbsp;' . (isset($quotes[$i]['icon']) && ($quotes[$i]['icon'] != '') ? $quotes[$i]['icon'] : '') . '</td>' .
+				'<td class="main" colspan="3"><b>' . sysLanguage::get('PPR_SHIPPING_SELECT') . '</b>&nbsp;'  . '</td>' .
 				'</tr>';
 
 				for ($j=0, $n2=sizeof($quotes[$i]['methods']); $j<$n2; $j++) {

@@ -357,14 +357,10 @@
 
 			if (is_null($archiveMonth) === false){
 				$Query->andWhere('MONTH(p.post_date) = ?', $archiveMonth);
-			}else{
-
 			}
 
 			if (is_null($archiveYear) === false){
 				$Query->andWhere('YEAR(p.post_date) = ?', $archiveYear);
-			}else{
-
 			}
 
 			if (is_null($languageId) === false){

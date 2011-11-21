@@ -296,7 +296,12 @@ $(document).ready(function (){
                         	 $(this).trigger('click');
                      	 });
 					 }
-
+	                $('.shipInfo').css('cursor','pointer');
+	                 $('.shipInfo').click(function(){
+		                 link = js_app_link('appExt=payPerRentals&app=show_shipping&appPage=default_all&dialog=true');
+		                 popupWindow(link,'400','300');
+		                 return false;
+	                 });
 	                if($(':radio[name="payment_method"]:checked').size() == 0){
 		                var p=0;
 		                $(':radio[name="payment_method"]').each(function(){

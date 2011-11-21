@@ -171,11 +171,9 @@ class rentalStoreUser_addressBook {
 		if (isset($addressArray['entry_company'])) $Address->entry_company = $addressArray['entry_company'];
 		if (isset($addressArray['entry_cif'])) $Address->entry_cif = $addressArray['entry_cif'];
 		if (isset($addressArray['entry_vat'])) $Address->entry_vat = $addressArray['entry_vat'];
-		if (isset($addressArray['entry_city_birth'])) $Address->entry_city_birth = $addressArray['entry_city_birth'];
 		if (isset($addressArray['entry_entry_suburb'])) $Address->entry_suburb = $addressArray['entry_suburb'];
 		if (isset($addressArray['entry_zone_id'])) $Address->entry_zone_id = (int)$addressArray['entry_zone_id'];
 		if (isset($addressArray['entry_state'])) $Address->entry_state = $addressArray['entry_state'];
-		
 		if (!isset($addressArray['entry_zone_id']) && isset($addressArray['entry_state'])){
 			$addressArray['entry_zone_id'] = $this->getStateZoneId($addressArray['entry_country_id'], $addressArray['entry_state']);
 			$Address->entry_zone_id = (int)$addressArray['entry_zone_id'];

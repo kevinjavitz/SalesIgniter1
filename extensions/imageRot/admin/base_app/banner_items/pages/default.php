@@ -10,16 +10,12 @@
 		->setHref(itw_app_link($allGetParams . 'bID=' . $bannerId));
 			
 		$statusIcon = htmlBase::newElement('icon');
-		if ($bannerClass['banners_status'] == '1' ){
+		if ($bannerClass['banners_status'] == '2' ){
 			$statusIcon->setType('circleCheck')->setTooltip('Click to pause')
-			->setHref(itw_app_link($allGetParams . 'action=setflag&flag=0&bID=' . $bannerId));
-		}else if ($bannerClass['banners_status'] == '0' ){
-			$statusIcon->setType('circleClose')->setTooltip('Click to enable')
-			->setHref(itw_app_link($allGetParams . 'action=setflag&flag=1&bID=' . $bannerId));
-		}else if ($bannerClass['banners_status'] == '2' ){
-			$statusIcon->setType('circleCheck')->setTooltip('Banner is running. No action will be taken');
+			->setHref(itw_app_link($allGetParams . 'action=setflag&flag=2&bID=' . $bannerId));
 		}else if ($bannerClass['banners_status'] == '3' ){
-			$statusIcon->setType('circleCheck')->setTooltip('Banner is expired. No action will be taken');
+			$statusIcon->setType('circleClose')->setTooltip('Click to enable')
+			->setHref(itw_app_link($allGetParams . 'action=setflag&flag=3&bID=' . $bannerId));
 		}
 		
 		$rowAttr = array('infobox_id' => $bannerId);

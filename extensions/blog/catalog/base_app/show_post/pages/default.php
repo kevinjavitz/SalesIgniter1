@@ -74,7 +74,7 @@
 		->setLabel(sysLanguage::get('PLEASE_FILL_IN_CAPTCHA'));
 		$captcha_img = htmlBase::newElement('image')
 		->addClass('captcha_img')
-		->setSource(tep_href_link('securimage_show.php', session_name() . '=' . session_id()));
+		->setSource(sysConfig::getDirWsCatalog(). 'securimage_show.php');
 	}
 
 	$submitButton = htmlBase::newElement('button')
@@ -83,18 +83,25 @@
 	->setText('Post Comment');
 
 	$commentForm->append($post_seo)
-	->append($post_name)
-	->append($comment_author_name)
-	->append($comment_author_email)
-	->append($comment_text)
-	->append($comment_captcha)
-	->append($captcha_img)
-	->append($submitButton);
+	->append($post_name);
+	if(sysConfig::get('EXTENSION_BLOG_ENABLE_COMMENTS') == 'True'){
+
+		$commentForm->append($comment_author_name)
+		->append($comment_author_email)
+		->append($comment_text);
+		if (sysConfig::get('EXTENSION_BLOG_ENABLE_CAPTCHA') == 'True'){
+			$commentForm->append($comment_captcha)
+			->append($captcha_img);
+		}
+		$commentForm->append($submitButton);
+	}
 
 	$contentHeading = stripslashes($contentHeading);
 	$contentHtml = stripslashes($contentHtml);
-	$contentHtml .= '<br/><br/>'. $commentForm->draw();
-	$contentHtml .= "<p>Comments: </p>" . stripslashes($theComments);
+    if(sysConfig::get('EXTENSION_BLOG_ENABLE_COMMENTS') == 'True'){
+	    $contentHtml .= "<p>Comments: </p>" . stripslashes($theComments);
+		$contentHtml .= '<br/><br/><div id="addComment">Add Comment +</div><div id="commentDiv">'. $commentForm->draw().'</div>';
+    }
 
 	$pageTitle = stripslashes($contentHeading);
 	$pageContents = $contentHtml;

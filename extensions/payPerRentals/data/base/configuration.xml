@@ -106,6 +106,14 @@
 			<set_function>tep_cfg_select_option(array('True','False'),</set_function>
 		</EXTENSION_PAY_PER_RENTALS_SHOW_STOCK>
 
+		<EXTENSION_PAY_PER_RENTALS_SHOW_QTY_LISTING>
+			<value>False</value>
+			<title>Show Qty field on product listing?</title>
+			<description>Show Qty field on product listing. </description>
+			<sort_order>16</sort_order>
+			<set_function>tep_cfg_select_option(array('True','False'),</set_function>
+		</EXTENSION_PAY_PER_RENTALS_SHOW_QTY_LISTING>
+
 		<EXTENSION_PAY_PER_RENTALS_AUTO_SEND>
 			<value>True</value>
 			<title>Auto send reservations on date they should be sent instead of using send reservations page </title>
@@ -146,6 +154,22 @@
 			<sort_order>21</sort_order>
 			<set_function>tep_cfg_select_option(array('True','False'),</set_function>
 		</EXTENSION_PAY_PER_RENTALS_USE_SHIP>
+
+		<EXTENSION_PAY_PER_RENTALS_CHANGE_DATES_BUTTON>
+			<value>False</value>
+			<title>Has Change Dates Button on shopping cart</title>
+			<description>Has Change Dates Button on shopping cart</description>
+			<sort_order>21</sort_order>
+			<set_function>tep_cfg_select_option(array('True','False'),</set_function>
+		</EXTENSION_PAY_PER_RENTALS_CHANGE_DATES_BUTTON>
+		
+		<EXTENSION_PAY_PER_RENTALS_PRODUCT_INFO_DATES>
+			<value>False</value>
+			<title>Has Change Dates Button on product info</title>
+			<description>Has Change Dates Button on product info</description>
+			<sort_order>21</sort_order>
+			<set_function>tep_cfg_select_option(array('True','False'),</set_function>
+		</EXTENSION_PAY_PER_RENTALS_PRODUCT_INFO_DATES>
 
 		<EXTENSION_PAY_PER_RENTALS_SHOW_VIEW_ALL_BUTTON>
 			<value>False</value>
@@ -286,6 +310,14 @@
 			<sort_order>31</sort_order>
 			<set_function>tep_cfg_select_option(array('True','False'),</set_function>
 		</EXTENSION_PAY_PER_RENTALS_FORCE_START_DATE>
+
+		<EXTENSION_PAY_PER_RENTALS_ENABLED_RESERVATION_SHIPPING_NEW_PRODUCTS>
+			<value>False</value>
+			<title>Enable Reservation shipping for new products</title>
+			<description>Enable Reservation shipping for new products</description>
+			<sort_order>31</sort_order>
+			<set_function>tep_cfg_select_option(array('True','False'),</set_function>
+		</EXTENSION_PAY_PER_RENTALS_ENABLED_RESERVATION_SHIPPING_NEW_PRODUCTS>
 
         <EXTENSION_PAY_PER_RENTALS_ALLOW_HOURLY>
 			<value>False</value>

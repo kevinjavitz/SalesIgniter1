@@ -253,9 +253,13 @@ class productListing_productsPricePayPerRental {
 						->setName('dropoff')
 						->setValue($dropoff);
 					}
-					$htmlRentalQty = htmlBase::newElement('input')
-					->setType('hidden')
-					->setName('rental_qty')
+					$htmlRentalQty = htmlBase::newElement('input');
+					if(sysConfig::get('EXTENSION_PAY_PER_RENTALS_SHOW_QTY_LISTING') == 'False'){
+						$htmlRentalQty->setType('hidden');
+					}else{
+						$htmlRentalQty->attr('size','3');
+					}
+					$htmlRentalQty->setName('rental_qty')
 					->setValue($qtyVal);
 
 					if(sysConfig::get('EXTENSION_PAY_PER_RENTALS_INSURE_ALL_PRODUCTS_AUTO') == 'True'){
@@ -447,11 +451,11 @@ class productListing_productsPricePayPerRental {
 					->setType('submit')
 					->setText(sysLanguage::get('TEXT_BUTTON_RESERVE'));
 
-					if($hasInventory){
-						$payPerRentalButton->setId('noDatesSelected')
+					if(Session::exists('isppr_selected') == false || Session::get('isppr_selected') == false){
+						$payPerRentalButton
 						->setName('no_dates_selected');
 					}else{
-						$payPerRentalButton->setId('noInventory')
+						$payPerRentalButton
 						->setName('no_inventory');
 					}
 

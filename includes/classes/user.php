@@ -135,6 +135,7 @@ class RentalStoreUser implements Serializable {
 				'firstName'          => $customer['customers_firstname'],
 				'lastName'           => $customer['customers_lastname'],
 				'dob'                => $customer['customers_dob'],
+				'city_birth'         => $customer['customers_city_birth'],
 				'countryId'          => $country[0]['entry_country_id'],
 				'zoneId'             => $country[0]['entry_zone_id'],
 				'fullName'           => $customer['customers_firstname'] . ' ' . $customer['customers_lastname'],
@@ -324,6 +325,7 @@ class RentalStoreUser implements Serializable {
 		$newUser->customers_fax = $this->customerInfo['fax'];
 		$newUser->customers_password = $this->encryptPassword($this->customerInfo['password']);
 		$newUser->customers_dob = $this->customerInfo['dob'];
+		$newUser->customers_city_birth = $this->customerInfo['city_birth'];
 		$newUser->customers_newsletter = $this->customerInfo['newsletter'];
 		$newUser->language_id = $this->customerInfo['languageId'];
 		//$newUser->customers_referral = $this->customerInfo['referral'];
@@ -428,6 +430,14 @@ class RentalStoreUser implements Serializable {
 		if (sysConfig::get('ACCOUNT_DOB') == 'true'){
 			$Customer->customers_dob = $this->customerInfo['dob'];
 		}
+
+		if(isset($this->customerInfo['password']) && !empty($this->customerInfo['password'])){
+			$Customer->customers_password = $this->encryptPassword($this->customerInfo['password']);
+		}
+		
+		if (sysConfig::get('ACCOUNT_CITY_BIRTH') == 'true'){
+			$Customer->customers_city_birth = $this->customerInfo['city_birth'];
+		}
 		
 		if (sysConfig::get('ACCOUNT_GENDER') == 'true'){
 			$Customer->customers_gender = $this->customerInfo['gender'];
@@ -530,6 +540,10 @@ class RentalStoreUser implements Serializable {
 		$this->customerInfo['emailAddress'] = $val;
 	}
 
+	public function setCityBirth($val){
+		$this->customerInfo['city_birth'] = $val;
+	}
+
 	public function setFaxNumber($val){
 		$this->customerInfo['fax'] = $val;
 	}
@@ -596,6 +610,7 @@ class RentalStoreUser implements Serializable {
 	public function getFaxNumber(){ return $this->customerInfo['fax']; }
 	public function getCustomerId(){ return $this->customerInfo['id']; }
 	public function getDateOfBirth(){ return $this->customerInfo['dob']; }
+	public function getCityBirth(){ return $this->customerInfo['city_birth']; }
 	public function getGender(){ return $this->customerInfo['gender']; }
 	public function isLoggedIn(){ return ($this->customerInfo['id'] > 0 ? true : false); }
 	public function getCustomerInfo(){ return $this->customerInfo; }

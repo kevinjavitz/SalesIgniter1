@@ -20,8 +20,14 @@
 	if (array_key_exists('entry_company', $_POST)) $accountValidation['entry_company'] = $_POST['entry_company'];
 
 	if (array_key_exists('entry_cif', $_POST)) $accountValidation['entry_cif'] = $_POST['entry_cif'];
+
+	if (array_key_exists('customers_password', $_POST) && !empty($_POST['customers_password'])){
+		$accountValidation['password'] = $_POST['customers_password'];
+		$accountValidation['confirmation'] = $_POST['customers_password'];
+	}
+
 	if (array_key_exists('entry_vat', $_POST)) $accountValidation['entry_vat'] = $_POST['entry_vat'];
-	if (array_key_exists('entry_city_birth', $_POST)) $accountValidation['entry_city_birth'] = $_POST['entry_city_birth'];
+	if (array_key_exists('customers_city_birth', $_POST)) $accountValidation['city_birth'] = $_POST['customers_city_birth'];
 
 	if (array_key_exists('customers_gender', $_POST)) $accountValidation['entry_gender'] = $_POST['customers_gender'];
 	if (array_key_exists('customers_newsletter', $_POST)) $accountValidation['newsletter'] = $_POST['customers_newsletter'];
@@ -36,6 +42,7 @@
 		$userAccount->setFirstName($accountValidation['entry_firstname']);
 		$userAccount->setLastName($accountValidation['entry_lastname']);
 		$userAccount->setEmailAddress($accountValidation['email_address']);
+		$userAccount->setPassword($accountValidation['password']);
 		$userAccount->setTelephoneNumber($accountValidation['telephone']);
 		$userAccount->setFaxNumber($accountValidation['fax']);
 		$userAccount->setNewsLetter($accountValidation['newsletter']);
@@ -44,6 +51,10 @@
 		}
 		if (isset($accountValidation['dob'])){
 			$userAccount->setDateOfBirth(strftime(sysLanguage::getDateFormat('short'),strtotime($accountValidation['dob'])));
+		}
+
+		if (isset($accountValidation['city_birth'])){
+			$userAccount->setCityBirth($accountValidation['city_birth']);
 		}
 		$userAccount->updateCustomerAccount();
 

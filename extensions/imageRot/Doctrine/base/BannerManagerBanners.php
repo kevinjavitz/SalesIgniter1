@@ -111,6 +111,15 @@ class BannerManagerBanners extends Doctrine_Record {
 			'length'        => 250,
 			'notnull'       => true
 	   ));
+		$this->hasColumn('banners_target', 'integer', 1, array(
+				'type'          => 'integer',
+				'length'        => 1,
+				'unsigned'      => 0,
+				'primary'       => false,
+				'default'       => '0',
+				'notnull'       => true,
+				'autoincrement' => false
+		));
 		$this->hasColumn('banners_body', 'string', 100, array(
 			'type'          => 'string',
 			'length'        => 100,

@@ -677,11 +677,11 @@ class ReservationUtilities {
 						}
 					}
 					allowSelectionMin = true;
-					if ((date.getTime() - selectedDate.getTime()) < ((minRentalPeriod))) {
+					if ((date.getTime() - selectedDate.getTime() + 24*60*60*1000) < ((minRentalPeriod))) {
 						allowSelectionMin = false;
 					}
 					allowSelectionMax = true;
-					if (((date.getTime() - selectedDate.getTime()) > (maxRentalPeriod)) && maxRentalPeriod != -1) {
+					if (((date.getTime() - selectedDate.getTime() + 24*60*60*1000) > (maxRentalPeriod)) && maxRentalPeriod != -1) {
 						allowSelectionMax = false;
 					}
 				}
@@ -818,6 +818,19 @@ class ReservationUtilities {
 									$selfID.parent().find('.priceQuote').trigger('EventAfterPriceQuote');
 									$selfID.parent().find('.inCart').show();
 									$selfID.parent().find('.inCart').button();
+									/*var pos = $selfID.find('.refreshCal').offset();
+									//alert(pos.left);
+									$selfID.parent().find('.inCart').css('position','absolute');
+									//$selfID.parent().find('.inCart').css('display','inline-block');
+									$selfID.parent().find('.inCart').css('top',(pos.top-40)+'px');
+									$selfID.parent().find('.inCart').css('left',(pos.left)+'px');*/
+									$selfID.parent().find('.inCart').position({
+										my:        "left bottom",
+										at:        "left top",
+										offset:    "-20, -10",
+										of:        $selfID.find('.refreshCal'), // or $("#otherdiv)
+										collision: "fit"
+									});
 									//$('#checkAvail').hide();
 								} else if (data.success == 'not_supported') {
 									$selfID.parent().find('.priceQuote').html(data.price);
@@ -978,6 +991,19 @@ class ReservationUtilities {
 							$selfID.parent().find('.priceQuote').html(data.price + ' ' + data.message);
 							$selfID.parent().find('.inCart').show();
 							$selfID.parent().find('.inCart').button();
+							/*var pos = $selfID.find('.refreshCal').offset();
+							//alert(pos.top);
+							$selfID.parent().find('.inCart').css('position','absolute');
+							//$selfID.parent().find('.inCart').css('display','inline-block');
+							$selfID.parent().find('.inCart').css('top',(pos.top-40)+'px');
+							$selfID.parent().find('.inCart').css('left',(pos.left)+'px');*/
+							$selfID.parent().find('.inCart').position({
+								my:        "left bottom",
+								at:        "left top",
+								offset:    "-20, -10",
+								of:        $selfID.find('.refreshCal'), // or $("#otherdiv)
+								collision: "fit"
+							});
 						} else if (data.success == 'not_supported') {
 							$selfID.parent().find('.priceQuote').html(data.price);
 						} else {
@@ -1061,11 +1087,11 @@ class ReservationUtilities {
 							}
 						}
 						var allowSelectionMinTime = true;
-						if ((date.getTime() - selectedStartTime.getTime()) < ((minRentalPeriod))) {
+						if ((date.getTime() - selectedStartTime.getTime() + 24*60*60*1000) < ((minRentalPeriod))) {
 							allowSelectionMinTime = false;
 						}
 						var allowSelectionMaxTime = true;
-						if (((date.getTime() - selectedStartTime.getTime()) > (maxRentalPeriod)) && maxRentalPeriod != -1) {
+						if (((date.getTime() - selectedStartTime.getTime() + 24*60*60*1000) > (maxRentalPeriod)) && maxRentalPeriod != -1) {
 							alert(date.getTime() - selectedStartTime.getTime());
 							allowSelectionMaxTime = false;
 						}
@@ -1125,6 +1151,19 @@ class ReservationUtilities {
 									$selfID.parent().find('.priceQuote').html(data.price + ' ' + data.message);
 									$selfID.parent().find('.inCart').show();
 									$selfID.parent().find('.inCart').button();
+									/*var pos = $selfID.find('.refreshCal').offset();
+									//alert(pos.top);
+									$selfID.parent().find('.inCart').css('position','absolute');
+									//$selfID.parent().find('.inCart').css('display','inline-block');
+									$selfID.parent().find('.inCart').css('top',(pos.top-40)+'px');
+									$selfID.parent().find('.inCart').css('left',(pos.left)+'px'); */
+									$selfID.parent().find('.inCart').position({
+										my:        "left bottom",
+										at:        "left top",
+										offset:    "-20, -10",
+										of:        $selfID.find('.refreshCal'), // or $("#otherdiv)
+										collision: "fit"
+									});
 								} else if (data.success == 'not_supported') {
 									$selfID.parent().find('.priceQuote').html(data.price);
 								} else {
@@ -1246,6 +1285,49 @@ class ReservationUtilities {
 
 		}
 		?>
+
+		$('.start_date, .end_date').change(function(){
+			var dd1 = new Date($(this).closest('form').find('.start_date').val());
+			var dd2 = new Date($(this).closest('form').find('.end_date').val());
+
+			if(dd1 == 'Invalid Date' || dd2 == 'Invalid Date'){
+				$('.dateQuotes').html('');
+			}else{
+				var dd1_day = '';
+				var dd2_day = '';
+				if(dd1.getDate() < 10){
+					dd1_day = '0'+dd1.getDate();
+				}else{
+					dd1_day = dd1.getDate();
+				}
+				if(dd2.getDate() < 10){
+					dd2_day = '0'+dd2.getDate();
+				}else{
+					dd2_day = dd2.getDate();
+				}
+
+				var m_names = new Array("January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December");
+
+				$('.dateQuotes').html(m_names[dd1.getMonth()] + ' ' +dd1_day + ', ' +dd1.getFullYear() + '&nbsp;&nbsp;&nbsp;To&nbsp;&nbsp;&nbsp;' + m_names[dd2.getMonth()] + ' ' +dd2_day + ', ' +dd2.getFullYear());
+			}
+		});
+		var $priceText = $('<div class="priceText">Price: </div>');
+
+		$('.priceQuote').wrap('<div class="divPriceWrap"></div>');
+		var $divPrice = $('.divPriceWrap');
+		$divPrice.addClass('ui-widget ui-widget-content ui-corner-all ui-state-error');
+		$priceText.insertBefore($divPrice);
+		$('.divPriceWrap, .priceText').wrapAll('<div class="wrapPrice"></div>');
+
+		var $dateText = $('<div class="dateText">Dates Selected: </div>');
+		var $divDate = $('<div class="dateQuotesWrap"></div>');
+		var $dateQuotes = $('<span class="dateQuotes"></span>');
+		$divDate.addClass('ui-widget ui-widget-content ui-corner-all ui-state-error');
+		$divDate.append($dateQuotes);
+		$divDate.insertBefore($('.wrapPrice'));
+		$dateText.insertBefore($('.dateQuotesWrap'));
+		$('.dateText, .dateQuotesWrap').wrapAll('<div class="wrapDates"></div>');
+		//$('.calendarTable').css('height', ($('.calendarTable').height()-50) + 'px');
 	});
 	</script>
 	<style>
@@ -1284,6 +1366,119 @@ class ReservationUtilities {
 
 		}
 
+		.dateRow{
+			position:relative;
+			top:-50px;
+		}
+
+		.pricingTable{
+			float:right;
+			font-size:13px;
+			width:25%;
+		}
+
+		.minPeriod{
+			width:100%;
+			font-size:13px;
+			margin-bottom:5px;
+		}
+		.maxPeriod{
+			width:100%;
+			font-size:13px;
+			margin-bottom:5px;
+		}
+
+		.pprButttons_wrapper{
+			position:relative;
+			height:70px;
+		}
+
+		.pprButttons{
+			position:absolute;
+			top:-35px;
+			display: inline-block;
+			left:15%;
+		}
+
+
+		.insurancePrice{
+			width:100%;
+			font-size:13px;
+			margin-bottom:10px
+		}
+
+		.quantityDiv div{
+			width:25%;
+			font-size:13px;
+		}
+		.shippingInfoDiv{
+			float:left;
+			width:25%;
+			font-size:11px;
+		}
+		.shippingDiv{
+			width:75%;
+			position:relative;
+			top:-80px;
+			left:-4%;
+			font-size:11px;
+		}
+		.estimatedPricing{
+			display:none;
+		}
+		.divPriceWrap, .dateQuotesWrap{
+			height:25px !important;
+			border:0;
+			width:350px;
+			font-size:11px !important;
+			padding:0 !important;
+			line-height:25px;
+			display:inline-block;
+			margin-top:10px !important;
+		}
+		.datesInputs{
+			display:none;
+		}
+		.refreshCal{
+			float:right;
+			position:relative;
+			top:25px;
+			margin-right:15px;
+		}
+		.priceText{
+			display:inline-block;
+			line-height:50px;vertical-align:top;
+			margin-right:10px;
+		}
+		.wrapPrice{
+			width:500px;
+			text-align:center;
+			padding-left:31px;
+		}
+		.dateText{
+			display:inline-block;
+			line-height:50px;vertical-align:top;
+			margin-right:10px;
+		}
+		.wrapDates{
+			text-align:center;
+			width:500px;
+		}
+		.divPriceWrap{
+			height:25px !important;
+			line-height:25px;
+		}
+		.ui-datepicker-current label{
+			display:none;
+		}
+		.ui-datepicker-current{
+			line-height:18px;
+			height:20px;
+		}
+		.datePicker{
+			padding-left:0px;
+		}
+
 		.calendarTime {
 			width: 540px;
 		}
@@ -1301,6 +1496,9 @@ class ReservationUtilities {
 
 		.ui-datepicker-shipping-day-hover, .ui-datepicker-shipping-day-hover-info {
 			background: #F7C8D3;
+		}
+		.ui-datepicker-start_date_info{
+			background: #3a6036;
 		}
 
 		.datePicker .ui-state-active {
@@ -1338,13 +1536,13 @@ class ReservationUtilities {
 				<td style="font-size:.8em"> - Unavailable Days.</td>
 				</tr>
 			    <tr>
-				<td style="width:10px;height:10px;" class="ui-datepicker-shipping-day-hover-info">&nbsp;</td>
+				<td style="width:10px;height:10px;" class="ui-datepicker-start_date_info">&nbsp;</td>
 				<td style="font-size:.8em"> - Selected Days.</td>
 			    </tr>
 
 			<?php if ($purchaseTypeClass->shippingIsNone() === false && $purchaseTypeClass->shippingIsStore() === false){ ?>
 				<tr>
-				<td style="width:10px;height:10px;background: #F7C8D3;">&nbsp;</td>
+				<td style="width:10px;height:10px;" class="ui-datepicker-shipping-day-hover-info">&nbsp;</td>
 				<td style="font-size:.8em"> - Shipping Days.</td>
 		        </tr>
 			<?php } ?>
@@ -1399,6 +1597,7 @@ class ReservationUtilities {
       ?>
      </div>
 	</div>
+		<div class="pprButttons_wrapper">
 	<div class="pprButttons">
 			<?php
 	   $pprButtons = '<span class="estimatedPricing">' . sysLanguage::get('TEXT_ESTIMATED_PRICING') . '</span>' . '<span class="priceQuote"></span>'.'&nbsp;&nbsp;&nbsp;';
@@ -1424,6 +1623,7 @@ class ReservationUtilities {
 
 		echo $pprButtons;
 			?>
+		</div>
 		</div>
 			<?php
    		$calendar = ob_get_contents();

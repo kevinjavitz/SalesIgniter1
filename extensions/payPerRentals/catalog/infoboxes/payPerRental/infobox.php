@@ -924,21 +924,94 @@ class InfoBoxPayPerRental extends InfoBoxAbstract {
 		}
 	}
 
-	$(document).ready(function (){
-     var minRentalDays = <?php
+	function makeDatePicker(pickerID){
+	var minRentalDays = <?php
         if(sysConfig::get('EXTENSION_PAY_PER_RENTALS_USE_GLOBAL_MIN_RENTAL_DAYS') == 'True'){
-            echo (int)sysConfig::get('EXTENSION_PAY_PER_RENTALS_MIN_RENTAL_DAYS');
-            $minDays = (int)sysConfig::get('EXTENSION_PAY_PER_RENTALS_MIN_RENTAL_DAYS');
-        }else{
-            $minDays = 0;
-            echo '0';
-        }
+			echo (int)sysConfig::get('EXTENSION_PAY_PER_RENTALS_MIN_RENTAL_DAYS');
+			$minDays = (int)sysConfig::get('EXTENSION_PAY_PER_RENTALS_MIN_RENTAL_DAYS');
+		}else{
+			$minDays = 0;
+			echo '0';
+		}
 		if(Session::exists('button_text')){
 			$butText = Session::get('button_text');
 		}else{
 			$butText = '';
 		}
-      ?>;
+		?>;
+		var selectedDateId = null;
+		var startSelectedDate;
+
+		var dates = $(pickerID+' .dstart,'+pickerID+' .dend').datepicker({
+		dateFormat: '<?php echo getJsDateFormat(); ?>',
+		changeMonth: true,
+		beforeShowDay: nobeforeDays,
+		onSelect: function(selectedDate) {
+
+		var option = this.id == "dstart" ? "minDate" : "maxDate";
+		if($(this).hasClass('dstart')){
+		myid = "dstart";
+		option = "minDate";
+		}else{
+		myid = "dend";
+		option = "maxDate";
+		}
+		var instance = $(this).data("datepicker");
+		var date = $.datepicker.parseDate(instance.settings.dateFormat || $.datepicker._defaults.dateFormat, selectedDate, instance.settings);
+
+		var dateC = new Date('<?php echo Session::get('isppr_curDate');?>');
+		if(date.getTime() == dateC.getTime()){
+		if(myid == "dstart"){
+		$(this).closest('form').find('.hstart').html('<?php echo Session::get('isppr_selectOptionscurdays');?>');
+		}else{
+		$(this).closest('form').find('.hend').html('<?php echo Session::get('isppr_selectOptionscurdaye');?>');
+		}
+		}else{
+		if(myid == "dstart"){
+		$(this).closest('form').find('.hstart').html('<?php echo Session::get('isppr_selectOptionsnormaldays');?>');
+		}else{
+		$(this).closest('form').find('.hend').html('<?php echo Session::get('isppr_selectOptionsnormaldaye');?>');
+		}
+		}
+
+
+		if(myid == "dstart"){
+		var days = "0";
+		if ($(this).closest('form').find('select.pickupz option:selected').attr('days')){
+		days = $(this).closest('form').find('select.pickupz option:selected').attr('days');
+		}
+		//startSelectedDate = new Date(selectedDate);
+		dateFut = new Date(date.setDate(date.getDate() + parseInt(days)));
+		dates.not(this).datepicker("option", option, dateFut);
+		}
+		f = true;
+		if(myid == "dend"){
+		datest = new Date(selectedDate);
+		if ($(this).closest('form').find('.dstart').val() != ''){
+		startSelectedDate = new Date($(this).closest('form').find('.dstart').val());
+		if (datest.getTime() - startSelectedDate.getTime() < minRentalDays *24*60*60*1000){
+		alert('<?php echo sprintf(sysLanguage::get('EXTENSION_PAY_PER_RENTALS_ERROR_MIN_DAYS'), $minDays);?>');
+		$(this).val('');
+		f = false;
+		}
+		}else{
+		f = false;
+		}
+		}
+
+		if (selectedDateId != this.id && selectedDateId != null && f){
+		selectedDateId = null;
+		}
+		if (f){
+		selectedDateId = this.id;
+		}
+
+		}
+		});
+	}
+
+	$(document).ready(function (){
+
      var butText = '<?php echo $butText;?>';
      $('<?php echo '#'.$WidgetProperties->boxID;?> .rentbbut').text(butText);
     if ($.browser.msie) $('.eventf')
@@ -995,14 +1068,33 @@ class InfoBoxPayPerRental extends InfoBoxAbstract {
 
 
 	$('button[name="no_dates_selected"]').each(function(){$(this).click(function(){
-		$( '<div id="dialog-mesage" title="No Inventory"><span style="color:red;font-size:18px;"><?php echo sysLanguage::get('EXTENSION_PAY_PER_RENTALS_ERROR_RESERVE');?></span></div>' ).dialog({
+		/*$( '<div id="dialog-mesage" title="No Inventory"><span style="color:red;font-size:18px;"><?php echo sysLanguage::get('EXTENSION_PAY_PER_RENTALS_ERROR_RESERVE');?></span></div>' ).dialog({
 			modal: true,
 			buttons: {
 				Ok: function() {
 					$( this ).dialog( "close" );
 				}
 			}
+		});*/
+
+	    $( '<div id="dialog-mesage" title="Choose Dates"><input class="tField" name="tField" ><div class="destBD"><span class="start_text">Start: </span><input class="picker dstart" name="dstart" ></div><div class="destBD"><span class="end_text">End: </span><input class="picker dend" name="dend" ></div></div>' ).dialog({
+			modal: false,
+			autoOpen: true,
+			open: function (e, ui){
+				makeDatePicker('#dialog-mesage');
+				$(this).find('.tField').hide();
+			},
+			buttons: {
+				Submit: function() {
+
+		            $('<?php echo '#'.$WidgetProperties->boxID;?> .dstart').val($(this).find('.dstart').val());
+					$('<?php echo '#'.$WidgetProperties->boxID;?> .dend').val($(this).find('.dend').val());
+					$('<?php echo '#'.$WidgetProperties->boxID;?> .rentbbut').trigger('click');
+					$(this).dialog( "close" );
+				}
+			}
 		});
+
 		return false;
 	})});
 	$('button[name="no_inventory"]').each(function(){$(this).click(function(){
@@ -1015,78 +1107,11 @@ class InfoBoxPayPerRental extends InfoBoxAbstract {
 				}
 			}
 		});
+
 		return false;
 	})});
 	$('button[name="double_dates_selected"]').each(function(){$(this).click(function(){alert('<?php echo sysLanguage::get('TEXT_CHOOSE_INVENTORY');?>');return false;})});
-		var selectedDateId = null;
-        var startSelectedDate;
-
-		var dates = $('<?php echo '#'.$WidgetProperties->boxID;?> .dstart, <?php echo '#'.$WidgetProperties->boxID;?> .dend').datepicker({
-                    dateFormat: '<?php echo getJsDateFormat(); ?>',
-        			changeMonth: true,
-        			beforeShowDay: nobeforeDays,
-        			onSelect: function(selectedDate) {
-
-        				var option = this.id == "dstart" ? "minDate" : "maxDate";
-	                    if($(this).hasClass('dstart')){
-	                    	myid = "dstart";
-							option = "minDate";
-						}else{
-							myid = "dend";
-							option = "maxDate";
-						}
-        				var instance = $(this).data("datepicker");
-        				var date = $.datepicker.parseDate(instance.settings.dateFormat || $.datepicker._defaults.dateFormat, selectedDate, instance.settings);
-
-						var dateC = new Date('<?php echo Session::get('isppr_curDate');?>');
-						if(date.getTime() == dateC.getTime()){
-							if(myid == "dstart"){
-	                    	    $(this).closest('form').find('.hstart').html('<?php echo Session::get('isppr_selectOptionscurdays');?>');
-							}else{
-								$(this).closest('form').find('.hend').html('<?php echo Session::get('isppr_selectOptionscurdaye');?>');
-							}
-						}else{
-							if(myid == "dstart"){
-	                    	    $(this).closest('form').find('.hstart').html('<?php echo Session::get('isppr_selectOptionsnormaldays');?>');
-							}else{
-								$(this).closest('form').find('.hend').html('<?php echo Session::get('isppr_selectOptionsnormaldaye');?>');
-							}
-						}
-
-
-        				if(myid == "dstart"){
-        				    var days = "0";
-        				    if ($(this).closest('form').find('select.pickupz option:selected').attr('days')){
-        				        days = $(this).closest('form').find('select.pickupz option:selected').attr('days');
-        				    }
-                            //startSelectedDate = new Date(selectedDate);
-							dateFut = new Date(date.setDate(date.getDate() + parseInt(days)));
-        				    dates.not(this).datepicker("option", option, dateFut);
-        				}
-        				f = true;
-        				if(myid == "dend"){
-                            datest = new Date(selectedDate);
-							if ($(this).closest('form').find('.dstart').val() != ''){
-								startSelectedDate = new Date($(this).closest('form').find('.dstart').val());
-								if (datest.getTime() - startSelectedDate.getTime() < minRentalDays *24*60*60*1000){
-									alert('<?php echo sprintf(sysLanguage::get('EXTENSION_PAY_PER_RENTALS_ERROR_MIN_DAYS'), $minDays);?>');
-									$(this).val('');
-									f = false;
-								}
-							}else{
-								f = false;
-							}
-        				}
-
-			    	    if (selectedDateId != this.id && selectedDateId != null && f){
-                            selectedDateId = null;
-                      	}
-                        if (f){
-							selectedDateId = this.id;
-						}
-
-        			}
-		});
+		makeDatePicker('<?php echo '#'.$WidgetProperties->boxID;?>');
 		$('<?php echo '#'.$WidgetProperties->boxID;?> .myev2').attr('href',"#");
 		$('<?php echo '#'.$WidgetProperties->boxID;?> .myev2').click(function(){
 								if($('.eventf').val() != '0'){

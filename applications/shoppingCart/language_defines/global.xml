@@ -20,5 +20,7 @@
 
 	<define key="TEXT_BUTTON_UPDATE_CART"><![CDATA[Update Cart]]></define>
 	<define key="TEXT_BUTTON_CONTINUE_CART"><![CDATA[Continue Shopping]]></define>
+	<define key="TEXT_BUTTON_CHANGE_DATES"><![CDATA[Change Dates]]></define>
+
 	<define key="TEXT_AGREE_TO_TERMS"><![CDATA[I agree to the terms and conditions]]></define>
 </definitions>

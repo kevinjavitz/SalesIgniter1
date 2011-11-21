@@ -267,7 +267,7 @@
 	
 	$statusDrop = htmlBase::newElement('selectbox')
 	->setName('status')
-	->selectOptionByValue($Editor->getCurrentStatus());
+	->selectOptionByValue($Editor->getCurrentStatus(true));
 	foreach($orders_statuses as $sInfo){
 		$statusDrop->addOption($sInfo['id'], $sInfo['text']);
 	}
