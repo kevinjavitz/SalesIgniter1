@@ -87,7 +87,7 @@ class Products extends Doctrine_Record {
 			'default'       => '0.0000',
 			'notnull'       => true,
 			'autoincrement' => false,
-			'scale'         => false
+			'scale'         => 4
 		));
 		$this->hasColumn('products_price_used', 'decimal', 15, array(
 			'type'          => 'decimal',
@@ -96,7 +96,7 @@ class Products extends Doctrine_Record {
 			'primary'       => false,
 			'notnull'       => true,
 			'autoincrement' => false,
-			'scale'         => false
+			'scale'         => 4
 		));
 		$this->hasColumn('products_price_stream', 'decimal', 15, array(
 			'type'          => 'decimal',
@@ -106,7 +106,7 @@ class Products extends Doctrine_Record {
 			'default'       => '0.0000',
 			'notnull'       => true,
 			'autoincrement' => false,
-			'scale'         => false
+			'scale'         => 4
 		));
 		$this->hasColumn('products_price_download', 'decimal', 15, array(
 			'type'          => 'decimal',
@@ -116,7 +116,7 @@ class Products extends Doctrine_Record {
 			'default'       => '0.0000',
 			'notnull'       => true,
 			'autoincrement' => false,
-			'scale'         => false
+			'scale'         => 4
 		));
 		$this->hasColumn('products_date_added', 'timestamp', null, array(
 			'type'          => 'timestamp',
@@ -145,7 +145,7 @@ class Products extends Doctrine_Record {
 			'default'       => '0.00',
 			'notnull'       => true,
 			'autoincrement' => false,
-			'scale'         => false
+			'scale'         => 2
 		));
 		$this->hasColumn('products_status', 'integer', 1, array(
 			'type'          => 'integer',
@@ -238,7 +238,7 @@ class Products extends Doctrine_Record {
 			'default'       => '0.00',
 			'notnull'       => true,
 			'autoincrement' => false,
-			'scale'         => false
+			'scale'         => 2
 		));
 		$this->hasColumn('movie_preview', 'string', 255, array(
 			'type'          => 'string',

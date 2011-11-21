@@ -61,7 +61,7 @@ class ProductsPayPerRental extends Doctrine_Record {
 			'default' => '0.0000',
 			'notnull' => true,
 			'autoincrement' => false,
-			'scale' => false,
+			'scale' => 4,
 		));
 		
 		$this->hasColumn('price_weekly', 'decimal', 15, array(
@@ -72,7 +72,7 @@ class ProductsPayPerRental extends Doctrine_Record {
 			'default' => '0.0000',
 			'notnull' => true,
 			'autoincrement' => false,
-			'scale' => false,
+			'scale' => 4,
 		));
 		
 		$this->hasColumn('price_monthly', 'decimal', 15, array(
@@ -83,7 +83,7 @@ class ProductsPayPerRental extends Doctrine_Record {
 			'default' => '0.0000',
 			'notnull' => true,
 			'autoincrement' => false,
-			'scale' => false,
+			'scale' => 4,
 		));
 		
 		$this->hasColumn('price_six_month', 'decimal', 15, array(
@@ -94,7 +94,7 @@ class ProductsPayPerRental extends Doctrine_Record {
 			'default' => '0.0000',
 			'notnull' => true,
 			'autoincrement' => false,
-			'scale' => false,
+			'scale' => 4,
 		));
 		
 		$this->hasColumn('price_year', 'decimal', 15, array(
@@ -105,7 +105,7 @@ class ProductsPayPerRental extends Doctrine_Record {
 			'default' => '0.0000',
 			'notnull' => true,
 			'autoincrement' => false,
-			'scale' => false,
+			'scale' => 4,
 		));
 		
 		$this->hasColumn('price_three_year', 'decimal', 15, array(
@@ -116,7 +116,7 @@ class ProductsPayPerRental extends Doctrine_Record {
 			'default' => '0.0000',
 			'notnull' => true,
 			'autoincrement' => false,
-			'scale' => false,
+			'scale' => 4,
 		));
 		
 		$this->hasColumn('quantity', 'integer', 4, array(
@@ -145,7 +145,7 @@ class ProductsPayPerRental extends Doctrine_Record {
 			'default' => '0.0000',
 			'notnull' => true,
 			'autoincrement' => false,
-			'scale' => false,
+			'scale' => 4,
 		));
 		
 		$this->hasColumn('max_months', 'integer', 4, array(
@@ -192,7 +192,7 @@ class ProductsPayPerRental extends Doctrine_Record {
 			'default' => '0.0000',
 			'notnull' => true,
 			'autoincrement' => false,
-			'scale' => false,
+			'scale' => 4,
 		));
 
 		$this->hasColumn('insurance', 'decimal', 15, array(
@@ -202,7 +202,7 @@ class ProductsPayPerRental extends Doctrine_Record {
 			'default' => '0.0000',
 			'notnull' => true,
 			'autoincrement' => false,
-			'scale' => false,
+			'scale' => 4,
 		));
 		
         $this->hasColumn('min_rental_days', 'integer', 4, array(

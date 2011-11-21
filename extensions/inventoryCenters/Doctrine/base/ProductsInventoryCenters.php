@@ -55,10 +55,10 @@ class ProductsInventoryCenters extends Doctrine_Record {
 			'length'        => 15,
 			'unsigned' => 0,
 			'primary' => false,
-			'default' => '0.00',
+			'default' => '0.0000',
 			'notnull' => true,
 			'autoincrement' => false,
-			'scale' => false
+			'scale' => 4
 		));
 
 		$this->hasColumn('inventory_center_name', 'string', 128, array(

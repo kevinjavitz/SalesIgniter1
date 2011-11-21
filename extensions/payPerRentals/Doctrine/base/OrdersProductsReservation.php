@@ -124,6 +124,7 @@ class OrdersProductsReservation extends Doctrine_Record {
 				
 		$this->hasColumn('insurance', 'decimal', 15, array(
 			'type' => 'decimal',
+			'scale' => 4,
 			'length' => 15,
 			'fixed' => true,
 			'primary' => false,
@@ -195,7 +196,7 @@ class OrdersProductsReservation extends Doctrine_Record {
 			'default' => '0.0000',
 			'notnull' => true,
 			'autoincrement' => false,
-			'scale' => false,
+			'scale' => 4,
 		));
 
 		$this->hasColumn('amount_payed', 'decimal', 15, array(
@@ -206,7 +207,7 @@ class OrdersProductsReservation extends Doctrine_Record {
 				'default' => '0.0000',
 				'notnull' => true,
 				'autoincrement' => false,
-				'scale' => false,
+				'scale' => 4,
 		));
 
 		$this->hasColumn('shipping_days_before', 'integer', 4, array(

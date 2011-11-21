@@ -210,7 +210,7 @@ class Orders extends Doctrine_Record {
 		'primary' => false,
 		'notnull' => false,
 		'autoincrement' => false,
-		'scale' => false,
+		'scale' => 4,
 		));
 		$this->hasColumn('preorder_status', 'integer', 4, array(
 		'type' => 'integer',

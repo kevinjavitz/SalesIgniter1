@@ -55,7 +55,7 @@ class CustomersMembership extends Doctrine_Record {
 		'primary' => false,
 		'notnull' => false,
 		'autoincrement' => false,
-		'scale' => false,
+		'scale' => 4,
 		));
 		$this->hasColumn('plan_tax_class_id', 'integer', 4, array(
 		'type' => 'integer',

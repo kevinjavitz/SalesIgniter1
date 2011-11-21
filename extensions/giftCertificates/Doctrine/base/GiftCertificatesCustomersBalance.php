@@ -61,6 +61,7 @@
             ));
             $this->hasColumn('value', 'decimal', 15, array(
                 'type' => 'decimal',
+                'scale' => 4,
                 'length' => 15,
                 'default' => '0.0000',
                 'notnull' => true,

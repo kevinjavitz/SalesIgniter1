@@ -64,7 +64,7 @@ class OrdersPaymentsHistory extends Doctrine_Record {
 			'primary' => false,
 			'notnull' => true,
 			'autoincrement' => false,
-			'scale' => false,
+			'scale' => 4,
 		));
 		$this->hasColumn('payment_module', 'string', 64, array(
 			'type' => 'string',
