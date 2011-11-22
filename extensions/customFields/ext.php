@@ -206,8 +206,8 @@ class Extension_customFields extends ExtensionBase {
                                 '</span>';
 
                         $boxContent .= '<li style="padding-bottom:.3em;' . ($count > $searchItemDisplay ? 'display:none;' : '') . '">' .
-                                       $icon .
                                        ' <a href="' . $link . '" data-url_param="' . $searchKey . '[' . $count . ']=' . $searchVal . '">' .
+                                       $icon .
                                        $searchText .
                                        '</a> (' . $QproductCount[0]['total'] . ')' .
                                        '</li>';
@@ -215,7 +215,7 @@ class Extension_customFields extends ExtensionBase {
                         $count++;
                     }
                     if ($count > $searchItemDisplay){
-                        $boxContent .= '<li class="searchShowMoreLink"><a href="#"><b>More</b></a></li>';
+                        //$boxContent .= '<li class="searchShowMoreLink"><a href="#"><b>More</b></a></li>';
                     }
                 }
             }
