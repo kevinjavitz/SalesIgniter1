@@ -45,6 +45,7 @@ class InfoBoxSearch extends InfoBoxAbstract {
 			$boxContent .= '<div class="ui-widget ui-widget-content ui-infobox ui-corner-all-medium"><div class="ui-widget-header ui-infobox-header guidedHeader" ><div class="ui-infobox-header-text">'.sysLanguage::get('INFOBOX_SEARCH_GUIDED_SEARCH').'</div></div><form name="guided_search" action="' . itw_app_link(null, 'products', 'search_result') . '" method="get">';
 			$this->searchItemDisplay = 4;
 			$prices = false;
+			$pricesPPR = false;
 			$boxContents = array();
 			foreach($Qitems as $type){
 				$type = (array)$type;
@@ -79,6 +80,12 @@ class InfoBoxSearch extends InfoBoxAbstract {
 								'price_stop' => $sInfo['price_stop']
 							);
 							break;
+						case 'priceppr':
+							$pricesPPR[] = array(
+								'price_start' => $sInfo['price_start'],
+								'price_stop' => $sInfo['price_stop']
+							);
+							break;
 						case 'manufacturer':
 							$this->guidedSearchManufacturer(&$boxContents['manufacturer']['content']);
 							break;
@@ -88,6 +95,10 @@ class InfoBoxSearch extends InfoBoxAbstract {
 			if($prices && count($prices)){
 				$this->guidedSearchPrice(&$boxContents['price']['content'], $prices);
 			}
+			if($pricesPPR && count($pricesPPR)){
+				$this->guidedSearchPricePPR(&$boxContents['priceppr']['content'], $pricesPPR);
+			}
+
 			foreach($boxContents as $content){
 				$boxContent .= '<br /><b>' . $content['heading'] . '</b><ul style="list-style:none;margin:.5em;padding:0;">';
 				$boxContent .= $content['content'];
@@ -220,6 +231,40 @@ class InfoBoxSearch extends InfoBoxAbstract {
 		}
 	}
 
+	private function guidedSearchPricePPR(&$boxContent, $prices){
+		global $currencies;
+		$count = 0;
+		foreach($prices as $pInfo){
+			$QproductCount = Doctrine_Query::create()
+			->select('count(*) as total')
+			->from('Products')
+			->where('products_price >= ?', $pInfo['price_start'])
+			->andWhere('products_price <= ?', $pInfo['price_stop'])
+			->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+
+			$checkIcon = '<span class="ui-icon ui-icon-check" style="display:inline-block;height:14px;background:none;"></span>';
+			$link = itw_app_link(tep_get_all_get_params(array('pprfrom[' . $count . ']', 'pprto[' . $count . ']')) . 'pprfrom[' . $count . ']=' . $pInfo['price_start'] . '&pprto[' . $count . ']=' . $pInfo['price_stop'], 'products', 'search_result');
+			if (isset($_GET['pprfrom'][$count])){
+				$checkIcon = '<span class="ui-icon ui-icon-check" style="display:inline-block;height:14px;"></span>';
+				$link = itw_app_link(tep_get_all_get_params(array('pprfrom[' . $count . ']', 'pprto[' . $count . ']')), 'products', 'search_result');
+			}
+			$icon = '<span class="ui-widget ui-widget-content ui-corner-all">' .
+				$checkIcon .
+			'</span>';
+
+			$boxContent .= '<li style="padding-bottom:.3em;' . ($count > $this->searchItemDisplay ? 'display:none;' : '') . '">' .
+				$icon .
+				' <a href="' . $link . '" data-url_param="pprfrom[' . $count . ']=' . $pInfo['price_start'] . '&pprto[' . $count . ']=' . $pInfo['price_stop'] . '">' .
+					$currencies->format($pInfo['price_start']) . ' - ' . $currencies->format($pInfo['price_stop']) .
+				'</a>' . //' (' . $QproductCount[0]['total'] . ')' .
+			'</li>';
+			$count++;
+		}
+		if ($count > $this->searchItemDisplay){
+			$boxContent .= '<li class="searchShowMoreLink"><a href="#"><b>More</b></a></li>';
+		}
+	}
+	
 	private function guidedSearchManufacturer(&$boxContent){
 		$Qmanufacturers = Doctrine_Query::create()
 			->from('Manufacturers')
