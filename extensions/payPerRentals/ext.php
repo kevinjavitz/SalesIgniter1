@@ -45,9 +45,8 @@ class Extension_payPerRentals extends ExtensionBase {
 		), null, $this);
 
 		if ($appExtension->isCatalog()){
-			EventManager::attachEvent('ProductSearchQueryPriceFilterBeforeExecute', null, $this);
 			EventManager::attachEvent('ProductSearchQueryBeforeExecute', null, $this);
-			EventManager::attachEvent('ProductSearchQueryBeforeExecute', null, $this);
+			EventManager::attachEvent('ProductListingQueryBeforeExecute', null, $this);
 		}else{
 			EventManager::attachEvent('OrderInfoAddBlock', null, $this);
 			EventManager::attachEvent('OrderShowExtraPackingData', null, $this);
@@ -466,22 +465,25 @@ class Extension_payPerRentals extends ExtensionBase {
 		}
 	}
 
-	public function ProductSearchQueryPriceFilterBeforeExecute(&$priceFilters){
+	public function ProductSearchQueryBeforeExecute(&$Qproducts){
+		$Qproducts->leftJoin('p.ProductsPayPerRental pppr')
+			->leftJoin('pppr.PricePerRentalPerProducts ppprp');
 		global $currencies;
-		if (isset($_GET['pfrom']) && is_array($_GET['pfrom']) && $_GET['debug'] == 1){
+		if (isset($_GET['pprfrom']) && is_array($_GET['pprfrom'])){
+			//if (isset($_GET['pfrom']) && is_array($_GET['pfrom']) && $_GET['debug'] == 1){
 			if ($currencies->is_set(Session::get('currency'))){
 				$rate = $currencies->get_value(Session::get('currency'));
 			}
-			foreach($_GET['pfrom'] as $k => $v){
+			foreach($_GET['pprfrom'] as $k => $v){
 				if (isset($rate)){
 					$v = $v / $rate;
-					if (isset($_GET['pto'][$k])){
-						$_GET['pto'][$k] = $_GET['pto'][$k] / $rate;
+					if (isset($_GET['pprto'][$k])){
+						$_GET['pprto'][$k] = $_GET['pprto'][$k] / $rate;
 					}
 				}
-				$queryAddString = '(ppprp.price >= ' . (double)$v;
-				if (isset($_GET['pto'][$k])){
-					$queryAddString .= ' AND ppprp.price <= ' . (double)$_GET['pto'][$k];
+				$queryAddString = '(ppprp.price > ' . (double)$v;
+				if (isset($_GET['pprto'][$k])){
+					$queryAddString .= ' AND ppprp.price <= ' . (double)$_GET['pprto'][$k];
 				}
 				$queryAddString .= ')';
 
@@ -497,13 +499,9 @@ class Extension_payPerRentals extends ExtensionBase {
 				foreach($priceFiltersCheck as $priceFilterProductID){
 					$priceFilters[$priceFilterProductID['products_id']] = $priceFilterProductID['products_id'];
 				}
+				$Qproducts->andWhere('p.products_id in (' . implode(', ', $priceFilters) . ')');
 			}
 		}
-	}
-
-	public function ProductSearchQueryBeforeExecute(&$Qproducts){
-		$Qproducts->leftJoin('p.ProductsPayPerRental pppr')
-			->leftJoin('pppr.PricePerRentalPerProducts ppprp');
 	}
 
 	public function NewProductAddBarcodeListingBody(&$bInfo, &$currentBarcodesTableBody){
