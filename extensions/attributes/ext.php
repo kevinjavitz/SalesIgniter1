@@ -98,11 +98,11 @@ class Extension_attributes extends ExtensionBase {
 						$checkIcon = '<span class="ui-icon ui-icon-check" style="display:inline-block;height:14px;"></span>';
 						$link = itw_app_link(tep_get_all_get_params(array('values[' . $optionId . ']', 'options[' . $optionId . ']')), 'products', 'search_result');
 					}
-					$icon = '<span class="ui-widget ui-widget-content ui-corner-all">' .
+					$icon = '<span class="ui-widget ui-widget-content ui-corner-all" style="margin-right:5px;">' .
 						$checkIcon .
 						'</span>';
 
-					$boxContent .= '<li searchItemDisplay = "'.$searchItemDisplay.'" count = "'.$count.'" style="padding-bottom:.3em;margin:3px;' . (($count > $searchItemDisplay) ? 'display:none;' : '') . '">' .
+					$boxContent .= '<li searchItemDisplay = "'.$searchItemDisplay.'" count = "'.$count.'" style="padding-bottom:.3em;' . (($count > $searchItemDisplay) ? 'display:none;' : '') . '">' .
 					               ' <a href="' . $link . '" data-url_param="options[' . $optionId . ']=' . $optionId . '&values[' . $optionId . ']=' . $attrInfo['id'] . '">' .
 					               $icon .
 					               $attrInfo['text'] .
