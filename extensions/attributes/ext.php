@@ -64,13 +64,12 @@ class Extension_attributes extends ExtensionBase {
 		}
 	}
 
-	public function SearchBoxAddGuidedOptions(&$boxContent, $optionId){
+	public function SearchBoxAddGuidedOptions(&$boxContent, $optionId, &$count){
 		global $appExtension;
 		$searchItemDisplay = 4;
 		if ($appExtension->isInstalled('attributes') && $appExtension->isEnabled('attributes')){
 			$ProductsAttributes = attributesUtil::organizeAttributeArray(attributesUtil::getAttributes(null, $optionId));
 			foreach($ProductsAttributes as $optionId => $aInfo){
-				$count = 0;
 				$added = array();
 				$dropArray = array();
 				foreach($aInfo['ProductsOptionsValues'] as $vInfo){

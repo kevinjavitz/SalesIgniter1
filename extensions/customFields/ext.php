@@ -139,7 +139,7 @@ class Extension_customFields extends ExtensionBase {
                                   ));
     }
 
-    public function SearchBoxAddGuidedOptions(&$boxContent, $fieldId){
+    public function SearchBoxAddGuidedOptions(&$boxContent, $fieldId, &$count){
         $searchItemDisplay = 4;
         $Qfields = Doctrine_Query::create()
                 ->select('f.search_key, f.field_id, fd.field_name, f2p.value')
@@ -175,7 +175,6 @@ class Extension_customFields extends ExtensionBase {
                         }
                     }
 
-                    $count = 0;
                     foreach($dropArray as $fieldInfo){
                         $QproductCount = Doctrine_Query::create()
                                 ->select('count(*) as total')

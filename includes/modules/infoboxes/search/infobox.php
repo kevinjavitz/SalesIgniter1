@@ -65,11 +65,10 @@ class InfoBoxSearch extends InfoBoxAbstract {
 
 					switch($sInfo['option_type']){
 						case 'attribute':
-
-							$this->guidedSearchAttribute(&$boxContents['attribute']['content'], $sInfo['option_id']);
+							$this->guidedSearchAttribute(&$boxContents['attribute']['content'], $sInfo['option_id'], &$boxContents['attribute']['count']);
 							break;
 						case 'custom_field':
-							$this->guidedSearchCustomField(&$boxContents['custom_field']['content'], $sInfo['option_id']);
+							$this->guidedSearchCustomField(&$boxContents['custom_field']['content'], $sInfo['option_id'], &$boxContents['custom_field']['count']);
 							break;
 						case 'purchase_type':
 							$this->guidedSearchPurchaseType(&$boxContents['purchase_type']['content']);
@@ -102,6 +101,9 @@ class InfoBoxSearch extends InfoBoxAbstract {
 			foreach($boxContents as $content){
 				$boxContent .= '<br /><b>' . $content['heading'] . '</b><ul style="list-style:none;margin:.5em;padding:0;">';
 				$boxContent .= $content['content'];
+				if($content['count'] > $this->searchItemDisplay){
+					$boxContent .= '<li class="searchShowMoreLink"><a href="#"><b>More</b></a></li>';
+				}
 				$boxContent .= '</ul>';
 			}
 
@@ -114,20 +116,20 @@ class InfoBoxSearch extends InfoBoxAbstract {
 
 		return $this->draw();
 	}
-
-	private function guidedSearchAttribute(&$boxContent, $optionId){
+	
+	private function guidedSearchAttribute(&$boxContent, $optionId, &$count){
 		global $appExtension;
 		$extAttributes = $appExtension->getExtension('attributes');
 		if ($extAttributes){
-			$extAttributes->SearchBoxAddGuidedOptions(&$boxContent, $optionId);
+			$extAttributes->SearchBoxAddGuidedOptions(&$boxContent, $optionId, &$count);
 		}
 	}
-
-	private function guidedSearchCustomField(&$boxContent, $fieldId){
+	
+	private function guidedSearchCustomField(&$boxContent, $fieldId, &$count){
 		global $appExtension;
 		$extCustomFields = $appExtension->getExtension('customFields');
 		if ($extCustomFields){
-			$extCustomFields->SearchBoxAddGuidedOptions(&$boxContent, $fieldId);
+			$extCustomFields->SearchBoxAddGuidedOptions(&$boxContent, $fieldId, &$count);
 		}
 	}
 
