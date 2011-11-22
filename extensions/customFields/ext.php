@@ -146,16 +146,15 @@ class Extension_customFields extends ExtensionBase {
                 ->from('ProductsCustomFields f')
                 ->leftJoin('f.ProductsCustomFieldsDescription fd')
                 ->leftJoin('f.ProductsCustomFieldsToProducts f2p')
-                ->where('fd.language_id = ?', Session::get('languages_id'))
-        //->andWhere('f.input_type = ?', 'search')
+                ->where('fd.language_id = ?', (int)Session::get('languages_id'))
+                ->andWhere('f.input_type = ?', 'search')
                 ->andWhere('f.field_id = ?', $fieldId)
+                ->andWhere('f.search_key <> ?', '')
                 ->orderBy('fd.field_name')
                 ->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
         if ($Qfields){
             $fieldHtml = '';
             foreach($Qfields as $fInfo){
-                if ($fInfo['search_key'] == '') continue;
-
                 $added = array();
                 $dropArray = array();
                 if (!empty($fInfo['ProductsCustomFieldsToProducts'])){
@@ -200,7 +199,7 @@ class Extension_customFields extends ExtensionBase {
                             $checkIcon = '<span class="ui-icon ui-icon-check" style="display:inline-block;height:14px;"></span>';
                             $link = itw_app_link(tep_get_all_get_params(array($searchKey . '[' . $getIdx . ']')), 'products', 'search_result');
                         }
-                        $icon = '<span class="ui-widget ui-widget-content ui-corner-all">' .
+                        $icon = '<span class="ui-widget ui-widget-content ui-corner-all" style="margin-right:5px;">' .
                                 $checkIcon .
                                 '</span>';
 
