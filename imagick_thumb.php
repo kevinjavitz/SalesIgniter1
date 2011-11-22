@@ -24,7 +24,7 @@ else {
 		if (file_exists($_GET['imgSrc'])){
 			$img = new Imagick($_GET['imgSrc']);
 			$img->setCompression(imagick::COMPRESSION_ZIP);
-			$img->setImageCompressionQuality(50); 
+			$img->setImageCompressionQuality(75); 
 			//$img->trimImage(.5);
 			if( isset($_GET['bestFit'])){
 				$bestFit = $_GET['bestFit'];
