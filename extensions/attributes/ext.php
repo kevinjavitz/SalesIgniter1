@@ -103,9 +103,9 @@ class Extension_attributes extends ExtensionBase {
 						$checkIcon .
 						'</span>';
 
-					$boxContent .= '<li style="padding-bottom:.3em;' . ($count > $searchItemDisplay ? 'display:none;' : '') . '">' .
-					               $icon .
+					$boxContent .= '<li searchItemDisplay = "'.$searchItemDisplay.'" count = "'.$count.'" style="padding-bottom:.3em;margin:3px;' . (($count > $searchItemDisplay) ? 'display:none;' : '') . '">' .
 					               ' <a href="' . $link . '" data-url_param="options[' . $optionId . ']=' . $optionId . '&values[' . $optionId . ']=' . $attrInfo['id'] . '">' .
+					               $icon .
 					               $attrInfo['text'] .
 					               '</a> (' . $QproductCount[0]['total'] . ')' .
 					               '</li>';
@@ -113,7 +113,7 @@ class Extension_attributes extends ExtensionBase {
 					$count++;
 				}
 				if ($count > $searchItemDisplay){
-					$boxContent .= '<li class="searchShowMoreLink"><a href="#"><b>More</b></a></li>';
+					//$boxContent .= '<li class="searchShowMoreLink"><a href="#"><b>More</b></a></li>';
 				}
 			}
 		}

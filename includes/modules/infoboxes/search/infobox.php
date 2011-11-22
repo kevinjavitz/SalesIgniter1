@@ -159,8 +159,8 @@ class InfoBoxSearch extends InfoBoxAbstract {
 			        '</span>';
 
 			$boxContent .= '<li style="padding-bottom:.3em;' . ($count > $this->searchItemDisplay ? 'display:none;' : '') . '">' .
-			               $icon .
 			               ' <a href="' . $link . '" data-url_param="ptype=' . $k . '">' .
+			               $icon .
 			               $v .
 			               '</a> (' . $QproductCount[0]['total'] . ')' .
 			               '</li>';
@@ -219,8 +219,8 @@ class InfoBoxSearch extends InfoBoxAbstract {
 			        '</span>';
 
 			$boxContent .= '<li style="padding-bottom:.3em;' . ($count > $this->searchItemDisplay ? 'display:none;' : '') . '">' .
-			               $icon .
 			               ' <a href="' . $link . '" data-url_param="pfrom[' . $count . ']=' . $pInfo['price_start'] . '&pto[' . $count . ']=' . $pInfo['price_stop'] . '">' .
+			               $icon .
 			               $currencies->format($pInfo['price_start']) . ' - ' . $currencies->format($pInfo['price_stop']) .
 			               '</a>' . //' (' . $QproductCount[0]['total'] . ')' .
 			               '</li>';
@@ -253,9 +253,9 @@ class InfoBoxSearch extends InfoBoxAbstract {
 			'</span>';
 
 			$boxContent .= '<li style="padding-bottom:.3em;' . ($count > $this->searchItemDisplay ? 'display:none;' : '') . '">' .
-				$icon .
 				' <a href="' . $link . '" data-url_param="pprfrom[' . $count . ']=' . $pInfo['price_start'] . '&pprto[' . $count . ']=' . $pInfo['price_stop'] . '">' .
-					$currencies->format($pInfo['price_start']) . ' - ' . $currencies->format($pInfo['price_stop']) .
+			    $icon .
+				$currencies->format($pInfo['price_start']) . ' - ' . $currencies->format($pInfo['price_stop']) .
 				'</a>' . //' (' . $QproductCount[0]['total'] . ')' .
 			'</li>';
 			$count++;
@@ -289,8 +289,8 @@ class InfoBoxSearch extends InfoBoxAbstract {
 				        '</span>';
 
 				$boxContent .= '<li style="padding-bottom:.3em;' . ($count > $this->searchItemDisplay ? 'display:none;' : '') . '">' .
-				               $icon .
 				               ' <a href="' . $link . '" data-url_param="manufacturers_id[' . $count . ']=' . $mInfo['manufacturers_id'] . '">' .
+				               $icon .
 				               $mInfo['manufacturers_name'] .
 				               '</a> (' . $QproductCount[0]['total'] . ')' .
 				               '</li>';
