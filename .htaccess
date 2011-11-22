@@ -102,7 +102,7 @@ AddType image/x-xbitmap .xbm
 # WAV files
 AddType audio/x-wav .wav
 
-php_value zlib.output_compression on
+#php_value zlib.output_compression on
 
 Options +FollowSymLinks
 RewriteEngine On 
