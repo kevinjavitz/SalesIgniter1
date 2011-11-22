@@ -8,9 +8,7 @@
 			array('text' => sysLanguage::get('TABLE_HEADING_ID')),
 			array('text' => sysLanguage::get('TABLE_HEADING_PRIORITY')),
 			array('text' => sysLanguage::get('TABLE_HEADING_MOVIE_TITLE')),
-			array('text' => sysLanguage::get('TABLE_HEADING_STATUS')),
-			array('text' => sysLanguage::get('TABLE_HEADING_BAR_CODE')),
-			array('text' => sysLanguage::get('TABLE_HEADING_BAR_IMG'))
+			array('text' => sysLanguage::get('TABLE_HEADING_BAR_CODE'))
 		)
 	));
 
@@ -79,9 +77,7 @@
 					array('text' => $products[$i]['id']),
 					array('text' => $products[$i]['priority'], 'align' => 'center'),
 					array('text' => '<a href="' . tep_href_link(FILENAME_RENTAL_QUEUE_DETAILS, 'action=viewProduct&cID=' . $cID . '&pID=' . $products[$i]['id']) . '#page-4">' . $products[$i]['name'] . '</a>'),
-					array('text' => $products[$i]['availability']),
-					array('text' => tep_draw_pull_down_menu('barcode[' . $QqueueID->getVal('customers_queue_id') . ']', $barcodeArray[$products[$i]['id']], $selected, 'class="barcodeMenu"')),
-					array('text' => '<span id="barcodeImage"></span>')
+					array('text' => tep_draw_pull_down_menu('barcode[' . $QqueueID->getVal('customers_queue_id') . ']', $barcodeArray[$products[$i]['id']], $selected, 'class="barcodeMenu"'))
 				)
 			));
 		}
