@@ -42,7 +42,7 @@ class InfoBoxSearch extends InfoBoxAbstract {
 		}
 
 		if (isset($Qitems) && count($Qitems) > 0){
-			$boxContent .= '<div class="ui-widget ui-widget-content ui-infobox ui-corner-all-medium"><div class="ui-widget-header ui-infobox-header guidedHeader" ><div class="ui-infobox-header-text">'.sysLanguage::get('INFOBOX_SEARCH_GUIDED_SEARCH').'</div></div><form name="guided_search" action="' . itw_app_link(null, 'products', 'search_result') . '" method="get">';
+			$boxContent .= '<div class="ui-widget ui-widget-content ui-corner-all-medium"><div class="ui-widget-header ui-infobox-header guidedHeader" ><div class="ui-infobox-header-text">'.sysLanguage::get('INFOBOX_SEARCH_GUIDED_SEARCH').'</div></div><form name="guided_search" action="' . itw_app_link(null, 'products', 'search_result') . '" method="get">';
 			$this->searchItemDisplay = 4;
 			$prices = false;
 			$pricesPPR = false;
@@ -60,15 +60,17 @@ class InfoBoxSearch extends InfoBoxAbstract {
 						}
 					}
 
-					$boxContents[$sInfo['option_type']]['heading'] = $heading;
+					//$boxContents[$sInfo['option_type']]['heading'] = $heading;
 					//$boxContents[$sInfo['option_type']]['heading'] = $sInfo['search_title'][(int)Session::get('languages_id')];
 
 					switch($sInfo['option_type']){
 						case 'attribute':
-							$this->guidedSearchAttribute(&$boxContents['attribute']['content'], $sInfo['option_id'], &$boxContents['attribute']['count']);
+							$boxContents[$sInfo['option_type']][$sInfo['option_id']]['heading'] = $heading;
+							$this->guidedSearchAttribute(&$boxContents['attribute'][$sInfo['option_id']]['content'], $sInfo['option_id'], &$boxContents['attribute'][$sInfo['option_id']]['count']);
 							break;
 						case 'custom_field':
-							$this->guidedSearchCustomField(&$boxContents['custom_field']['content'], $sInfo['option_id'], &$boxContents['custom_field']['count']);
+							$boxContents[$sInfo['option_type']][$sInfo['option_id']]['heading'] = $heading;
+							$this->guidedSearchCustomField(&$boxContents['custom_field'][$sInfo['option_id']]['content'], $sInfo['option_id'], &$boxContents['custom_field'][$sInfo['option_id']]['count']);
 							break;
 						case 'purchase_type':
 							$this->guidedSearchPurchaseType(&$boxContents['purchase_type']['content']);
@@ -99,12 +101,23 @@ class InfoBoxSearch extends InfoBoxAbstract {
 			}
 
 			foreach($boxContents as $content){
-				$boxContent .= '<br /><b>' . $content['heading'] . '</b><ul style="list-style:none;margin:.5em;padding:0;">';
-				$boxContent .= $content['content'];
-				if($content['count'] > $this->searchItemDisplay){
-					$boxContent .= '<li class="searchShowMoreLink"><a href="#"><b>More</b></a></li>';
+				if(is_array($content)){
+					foreach($content as $optionID => $optionContent){
+						$boxContent .= '<br /><b>' . $optionContent['heading'] . '</b><ul style="list-style:none;margin:.5em;padding:0;">';
+						$boxContent .= $optionContent['content'];
+						if($optionContent['count'] > $this->searchItemDisplay){
+							$boxContent .= '<li class="searchShowMoreLink"><a href="#"><b>More</b></a></li>';
+						}
+						$boxContent .= '</ul>';
+					}
+				} else {
+					$boxContent .= '<br /><b>' . $content['heading'] . '</b><ul style="list-style:none;margin:.5em;padding:0;">';
+					$boxContent .= $content['content'];
+					if($content['count'] > $this->searchItemDisplay){
+						$boxContent .= '<li class="searchShowMoreLink"><a href="#"><b>More</b></a></li>';
+					}
+					$boxContent .= '</ul>';
 				}
-				$boxContent .= '</ul>';
 			}
 
 			$boxContent .= '</form></div>';
@@ -156,7 +169,7 @@ class InfoBoxSearch extends InfoBoxAbstract {
 				$checkIcon = '<span class="ui-icon ui-icon-check" style="display:inline-block;height:14px;"></span>';
 				$link = itw_app_link(tep_get_all_get_params(array('ptype')), 'products', 'search_result');
 			}
-			$icon = '<span class="ui-widget ui-widget-content ui-corner-all">' .
+			$icon = '<span class="ui-widget ui-widget-content ui-corner-all" style="margin-right:5px;">' .
 			        $checkIcon .
 			        '</span>';
 
@@ -216,7 +229,7 @@ class InfoBoxSearch extends InfoBoxAbstract {
 				$checkIcon = '<span class="ui-icon ui-icon-check" style="display:inline-block;height:14px;"></span>';
 				$link = itw_app_link(tep_get_all_get_params(array('pfrom[' . $count . ']', 'pto[' . $count . ']')), 'products', 'search_result');
 			}
-			$icon = '<span class="ui-widget ui-widget-content ui-corner-all">' .
+			$icon = '<span class="ui-widget ui-widget-content ui-corner-all" style="margin-right:5px;">' .
 			        $checkIcon .
 			        '</span>';
 
@@ -250,7 +263,7 @@ class InfoBoxSearch extends InfoBoxAbstract {
 				$checkIcon = '<span class="ui-icon ui-icon-check" style="display:inline-block;height:14px;"></span>';
 				$link = itw_app_link(tep_get_all_get_params(array('pprfrom[' . $count . ']', 'pprto[' . $count . ']')), 'products', 'search_result');
 			}
-			$icon = '<span class="ui-widget ui-widget-content ui-corner-all">' .
+			$icon = '<span class="ui-widget ui-widget-content ui-corner-all" style="margin-right:5px;">' .
 				$checkIcon .
 			'</span>';
 
@@ -286,7 +299,7 @@ class InfoBoxSearch extends InfoBoxAbstract {
 					$checkIcon = '<span class="ui-icon ui-icon-check" style="display:inline-block;height:14px;"></span>';
 					$link = itw_app_link(tep_get_all_get_params(array('manufacturers_id[' . $count . ']')), 'products', 'search_result');
 				}
-				$icon = '<span class="ui-widget ui-widget-content ui-corner-all">' .
+				$icon = '<span class="ui-widget ui-widget-content ui-corner-all" style="margin-right:5px;">' .
 				        $checkIcon .
 				        '</span>';
 
