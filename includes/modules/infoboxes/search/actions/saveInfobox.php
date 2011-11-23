@@ -14,4 +14,7 @@ foreach($_POST['option'] as $type => $oInfo){
 	}
 }
 $WidgetProperties['searchOptions'] = $SearchOption;
+if(isset($_POST['dropdown']) && is_array($_POST['dropdown'])){
+	$WidgetProperties['dropdown'] = $_POST['dropdown'];
+}
 ?>

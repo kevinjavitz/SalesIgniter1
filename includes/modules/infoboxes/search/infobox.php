@@ -33,7 +33,8 @@ class InfoBoxSearch extends InfoBoxAbstract {
 		              sysLanguage::get('INFOBOX_SEARCH_TEXT') .
 		              '<br><a href="' . itw_app_link(null, 'products', 'search') . '"><b>' . sysLanguage::get('INFOBOX_SEARCH_ADVANCED_SEARCH') . '</b></a>' .
 		              '</form><br />';
-		$boxContent = '';
+		$boxContent = tep_draw_form('quick_find', itw_app_link(null, 'products', 'search_result'), 'get') .
+		              tep_hide_session_id();
 
 		$boxWidgetProperties = $this->getWidgetProperties();
 		if(isset($boxWidgetProperties->searchOptions)){
@@ -66,60 +67,73 @@ class InfoBoxSearch extends InfoBoxAbstract {
 					switch($sInfo['option_type']){
 						case 'attribute':
 							$boxContents[$sInfo['option_type']][$sInfo['option_id']]['heading'] = $heading;
-							$this->guidedSearchAttribute(&$boxContents['attribute'][$sInfo['option_id']]['content'], $sInfo['option_id'], &$boxContents['attribute'][$sInfo['option_id']]['count']);
+							$this->guidedSearchAttribute(&$boxContents['attribute'][$sInfo['option_id']]['content'], &$sInfo['option_id'], &$boxContents['attribute'][$sInfo['option_id']]['count'], isset($boxWidgetProperties->dropdown->attribute));
 							break;
 						case 'custom_field':
 							$boxContents[$sInfo['option_type']][$sInfo['option_id']]['heading'] = $heading;
-							$this->guidedSearchCustomField(&$boxContents['custom_field'][$sInfo['option_id']]['content'], $sInfo['option_id'], &$boxContents['custom_field'][$sInfo['option_id']]['count']);
+							$this->guidedSearchCustomField(&$boxContents['custom_field'][$sInfo['option_id']]['content'], &$sInfo['option_id'], &$boxContents['custom_field'][$sInfo['option_id']]['count'], isset($boxWidgetProperties->dropdown->custom_field));
 							break;
 						case 'purchase_type':
-							$this->guidedSearchPurchaseType(&$boxContents['purchase_type']['content']);
+							$boxContents[$sInfo['option_type']]['heading'] = $heading;
+							$this->guidedSearchPurchaseType(&$boxContents['purchase_type']['content'], isset($boxWidgetProperties->dropdown->purchase_type));
 							break;
 						case 'price':
+							$boxContents[$sInfo['option_type']]['heading'] = $heading;
 							$prices[] = array(
 								'price_start' => $sInfo['price_start'],
 								'price_stop' => $sInfo['price_stop']
 							);
 							break;
 						case 'priceppr':
+							$boxContents[$sInfo['option_type']]['heading'] = $heading;
 							$pricesPPR[] = array(
 								'price_start' => $sInfo['price_start'],
 								'price_stop' => $sInfo['price_stop']
 							);
 							break;
 						case 'manufacturer':
-							$this->guidedSearchManufacturer(&$boxContents['manufacturer']['content']);
+							$boxContents[$sInfo['option_type']]['heading'] = $heading;
+							$this->guidedSearchManufacturer(&$boxContents['manufacturer']['content'], isset($boxWidgetProperties->dropdown->manufacturer));
 							break;
 					}
 				}
 			}
 			if($prices && count($prices)){
-				$this->guidedSearchPrice(&$boxContents['price']['content'], $prices);
+				$this->guidedSearchPrice(&$boxContents['price']['content'], $prices, isset($boxWidgetProperties->dropdown->price));
 			}
 			if($pricesPPR && count($pricesPPR)){
-				$this->guidedSearchPricePPR(&$boxContents['priceppr']['content'], $pricesPPR);
+				$this->guidedSearchPricePPR(&$boxContents['priceppr']['content'], $pricesPPR, isset($boxWidgetProperties->dropdown->priceppr));
 			}
 
-			foreach($boxContents as $content){
+			foreach($boxContents as $type => $content){
 				if(is_array($content)){
 					foreach($content as $optionID => $optionContent){
-						$boxContent .= '<br /><b>' . $optionContent['heading'] . '</b><ul style="list-style:none;margin:.5em;padding:0;">';
+						$boxContent .= '<br /><b '.(isset($boxWidgetProperties->dropdown->{$type}) ? 'style="margin:.5em"' : '').'>' . $optionContent['heading'] . '</b><ul style="list-style:none;margin:.5em;padding:0px">';
 						$boxContent .= $optionContent['content'];
-						if($optionContent['count'] > $this->searchItemDisplay){
+						if($optionContent['count'] > $this->searchItemDisplay && !isset($boxWidgetProperties->dropdown->{$type})){
 							$boxContent .= '<li class="searchShowMoreLink"><a href="#"><b>More</b></a></li>';
 						}
 						$boxContent .= '</ul>';
 					}
 				} else {
-					$boxContent .= '<br /><b>' . $content['heading'] . '</b><ul style="list-style:none;margin:.5em;padding:0;">';
+					$boxContent .= '<br /><b '.(isset($boxWidgetProperties->dropdown->{$type}) ? 'style="margin:.5em"' : '').'>' . $content['heading'] . '</b><ul style="list-style:none;margin:.5em;padding:0px">';
 					$boxContent .= $content['content'];
-					if($content['count'] > $this->searchItemDisplay){
+					if($content['count'] > $this->searchItemDisplay && !isset($boxWidgetProperties->dropdown->{$type})){
 						$boxContent .= '<li class="searchShowMoreLink"><a href="#"><b>More</b></a></li>';
 					}
 					$boxContent .= '</ul>';
 				}
 			}
-
+			if(isset($boxWidgetProperties->dropdown)){
+				$boxContent .= htmlBase::newElement('div')
+					->css(
+					array('padding-left' => '8px'))
+					->append(htmlBase::newElement('button')
+						         ->css(array('font-size' => '.8em'))
+						         ->setType('submit')
+						         ->setText(' Submit '))
+					->draw();
+			}
 			$boxContent .= '</form></div>';
 		}
 
@@ -130,19 +144,19 @@ class InfoBoxSearch extends InfoBoxAbstract {
 		return $this->draw();
 	}
 	
-	private function guidedSearchAttribute(&$boxContent, $optionId, &$count){
+	private function guidedSearchAttribute(&$boxContent, $optionId, &$count, $dropdown){
 		global $appExtension;
 		$extAttributes = $appExtension->getExtension('attributes');
 		if ($extAttributes){
-			$extAttributes->SearchBoxAddGuidedOptions(&$boxContent, $optionId, &$count);
+			$extAttributes->SearchBoxAddGuidedOptions(&$boxContent, $optionId, &$count, $dropdown);
 		}
 	}
 	
-	private function guidedSearchCustomField(&$boxContent, $fieldId, &$count){
+	private function guidedSearchCustomField(&$boxContent, $fieldId, &$count, $dropdown){
 		global $appExtension;
 		$extCustomFields = $appExtension->getExtension('customFields');
 		if ($extCustomFields){
-			$extCustomFields->SearchBoxAddGuidedOptions(&$boxContent, $fieldId, &$count);
+			$extCustomFields->SearchBoxAddGuidedOptions(&$boxContent, $fieldId, &$count, $dropdown);
 		}
 	}
 
@@ -189,31 +203,6 @@ class InfoBoxSearch extends InfoBoxAbstract {
 
 	private function guidedSearchPrice(&$boxContent, $prices){
 		global $currencies;
-		/*
-		$priceHigh = 5950.85;
-		$priceLow = 5;
-		$curPrice = round($priceLow, 0);
-		while($curPrice < $priceHigh){
-			if ($curPrice < 25){
-				$factor = 20;
-			}elseif ($curPrice < 100){
-				$factor = 25;
-			}elseif ($curPrice < 1000){
-				$factor = 100;
-			}elseif ($curPrice < 10000){
-				$factor = 250;
-			}else{
-				$factor = 500;
-			}
-			
-			$prices[] = array(
-				'from' => $curPrice,
-				'to' => $curPrice + $factor
-			);
-			$curPrice += $factor;
-		}
-		$count = 0;
-		*/
 		$count = 0;
 		foreach($prices as $pInfo){
 			$QproductCount = Doctrine_Query::create()

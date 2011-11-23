@@ -192,7 +192,55 @@
 		->addOption('priceppr', 'Product PPR Price')
 		->addOption('custom_field', 'Custom Field')
 		->addOption('attribute', 'Attribute');
-	
+
+	$DropDownSelectionContainer = htmlBase::newElement('span');
+
+	$PurchaseTypeIsDropDownCheckBox = htmlBase::newElement('checkbox')
+		->setName('dropdown[purchase_type]')
+		->val('1')
+		->setChecked(isset($WidgetSettings->dropdown->purchase_type))
+		->setLabelPosition('after')
+		->setLabel('Purchase Type');
+	$DropDownSelectionContainer->append($PurchaseTypeIsDropDownCheckBox);
+
+	$PriceIsDropDownCheckBox = htmlBase::newElement('checkbox')
+		->setName('dropdown[price]')
+		->val('1')
+		->setChecked(isset($WidgetSettings->dropdown->price))
+		->setLabelPosition('after')
+		->setLabel('Price');
+	$DropDownSelectionContainer->append($PriceIsDropDownCheckBox);
+
+	$PricePPRIsDropDownCheckBox = htmlBase::newElement('checkbox')
+		->setName('dropdown[priceppr]')
+		->val('1')
+		->setChecked(isset($WidgetSettings->dropdown->priceppr))
+		->setLabelPosition('after')
+		->setLabel('Price PPR');
+	$DropDownSelectionContainer->append($PricePPRIsDropDownCheckBox);
+
+	$CustomFieldIsDropDownCheckBox = htmlBase::newElement('checkbox')
+		->setName('dropdown[custom_field]')
+		->val('1')
+		->setChecked(isset($WidgetSettings->dropdown->custom_field))
+		->setLabelPosition('after')
+		->setLabel('Custom Field');
+	$DropDownSelectionContainer->append($CustomFieldIsDropDownCheckBox);
+
+	$AttributeIsDropDownCheckBox = htmlBase::newElement('checkbox')
+		->setName('dropdown[attribute]')
+		->val('1')
+		->setChecked(isset($WidgetSettings->dropdown->attribute))
+		->setLabelPosition('after')
+		->setLabel('Attribute');
+	$DropDownSelectionContainer->append($AttributeIsDropDownCheckBox);
+
+	$editTable->addBodyRow(array(
+                            'columns' => array(
+	                            array('text' => 'Select the option types to display as a drop down: '),
+	                            array('text' => $DropDownSelectionContainer)
+                            )
+                       ));
 	$editTable->addBodyRow(array(
 		'columns' => array(
 			array('text' => 'Option Type: '),
