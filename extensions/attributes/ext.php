@@ -64,7 +64,7 @@ class Extension_attributes extends ExtensionBase {
 		}
 	}
 
-	public function SearchBoxAddGuidedOptions(&$boxContent, $optionId, &$count){
+	public function SearchBoxAddGuidedOptions(&$boxContent, $optionId, &$count, $dropdown = false){
 		global $appExtension;
 		$searchItemDisplay = 4;
 		if ($appExtension->isInstalled('attributes') && $appExtension->isEnabled('attributes')){
@@ -81,6 +81,11 @@ class Extension_attributes extends ExtensionBase {
 						$added[] = $vInfo['options_values_id'];
 					}
 				}
+				if($dropdown){
+					$boxDropDown = htmlBase::newElement('selectbox')
+						->setName('values[' . $optionId . ']')
+						->addOption('', 'Please Select');
+				}
 
 				foreach($dropArray as $attrInfo){
 					$QproductCount = Doctrine_Query::create()
@@ -92,6 +97,14 @@ class Extension_attributes extends ExtensionBase {
 							->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 					if($QproductCount[0]['total'] <= 0)
 						continue;
+
+					if($dropdown){
+						$boxDropDown->addOption($attrInfo['id'], $attrInfo['text']);
+						if(isset($_GET['options'][$optionId]) && isset($_GET['values'][$optionId]) && $_GET['values'][$optionId] == $attrInfo['id']){
+							$boxDropDown->selectOptionByValue($attrInfo['id']);
+						}
+						continue;
+					}
 					$checkIcon = '<span class="ui-icon ui-icon-check" style="display:inline-block;height:14px;background:none;"></span>';
 					$link = itw_app_link(tep_get_all_get_params(array('values[' . $optionId . ']', 'options[' . $optionId . ']')) . 'options[' . $optionId . ']=' . $optionId . '&values[' . $optionId . ']=' . $attrInfo['id'], 'products', 'search_result');
 					if(isset($_GET['options'][$optionId]) && isset($_GET['values'][$optionId]) && $_GET['values'][$optionId] == $attrInfo['id']){
@@ -110,6 +123,10 @@ class Extension_attributes extends ExtensionBase {
 					               '</li>';
 
 					$count++;
+				}
+				if($dropdown){
+					$boxContent = $boxDropDown->draw();
+					$boxContent .= '<input type="hidden" name="options[' . $optionId . ']" value=""options[' . $optionId . ']">';
 				}
 				if ($count > $searchItemDisplay){
 					//$boxContent .= '<li class="searchShowMoreLink"><a href="#"><b>More</b></a></li>';
