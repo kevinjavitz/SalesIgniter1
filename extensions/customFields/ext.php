@@ -139,7 +139,7 @@ class Extension_customFields extends ExtensionBase {
                                   ));
     }
 
-    public function SearchBoxAddGuidedOptions(&$boxContent, $fieldId, &$count){
+    public function SearchBoxAddGuidedOptions(&$boxContent, $fieldId, &$count, $dropdown = false){
         $searchItemDisplay = 4;
         $Qfields = Doctrine_Query::create()
                 ->select('f.search_key, f.field_id, fd.field_name, f2p.value')
@@ -173,6 +173,11 @@ class Extension_customFields extends ExtensionBase {
                             }
                         }
                     }
+                    if($dropdown){
+	                    $boxDropDown = htmlBase::newElement('selectbox')
+		                    ->setName($fInfo['search_key'] . '['.$count.']')
+		                    ->addOption('', 'Please Select');
+                    }
 
                     foreach($dropArray as $fieldInfo){
                         $QproductCount = Doctrine_Query::create()
@@ -187,6 +192,13 @@ class Extension_customFields extends ExtensionBase {
                         $searchKey = $fInfo['search_key'];
                         $getIdx = $count;
                         $checked = false;
+                        if($dropdown){
+	                        $boxDropDown->addOption($searchVal, $fieldInfo['text']);
+	                        if (isset($_GET[$searchKey]) && in_array($searchVal, $_GET[$searchKey])){
+		                        $boxDropDown->selectOptionByValue($searchVal);
+	                        }
+	                        continue;
+                        }
                         if (isset($_GET[$searchKey]) && in_array($searchVal, $_GET[$searchKey])){
                             $arrayKeys = array_keys($_GET[$searchKey], $searchVal);
                             $getIdx = $arrayKeys[0];
@@ -211,6 +223,9 @@ class Extension_customFields extends ExtensionBase {
                                        '</li>';
 
                         $count++;
+                    }
+                    if($dropdown){
+	                    $boxContent = $boxDropDown->draw();
                     }
                     if ($count > $searchItemDisplay){
                         //$boxContent .= '<li class="searchShowMoreLink"><a href="#"><b>More</b></a></li>';
