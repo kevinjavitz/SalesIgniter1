@@ -100,7 +100,7 @@
 	$contentHtml = stripslashes($contentHtml);
     if(sysConfig::get('EXTENSION_BLOG_ENABLE_COMMENTS') == 'True'){
 	    $contentHtml .= "<p>Comments: </p>" . stripslashes($theComments);
-		$contentHtml .= '<br/><br/><div id="addComment">Add Comment +</div><div id="commentDiv">'. $commentForm->draw().'</div>';
+		$contentHtml .= '<br/><br style="clear:both;"/><div id="addComment">Add Comment +</div><div id="commentDiv">'. $commentForm->draw().'</div>';
     }
 
 	$pageTitle = stripslashes($contentHeading);
