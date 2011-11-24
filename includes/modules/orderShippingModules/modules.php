@@ -46,6 +46,7 @@
 		
 		public static function quote($method = '', $module = ''){
 			$quotes_array = array();
+			self::loadModules(true);
 			if (self::hasModules() === true) {
 				self::calculateWeight();
 				
