@@ -4,6 +4,10 @@ function updateTotals(){
                          $(this).click();
                         isShip = true;
     });
+	if($(':hidden[name="shipping_method"]')){
+		setOnlyShippingMethod();
+		isShip = true;
+	}
     if (isShip == false){
          $('.orderTotalsList').each(function (){
                     showAjaxLoader($(this), 'large');
@@ -25,6 +29,26 @@ function updateTotals(){
                 }
          });
     }
+}
+
+function setOnlyShippingMethod(){
+	$('.orderTotalsList').each(function (){
+		showAjaxLoader($(this).parent(), 'large');
+	});
+	var linkParams = js_get_all_get_params(['app', 'appPage', 'action']);
+	$.ajax({
+		url: js_app_link(linkParams + 'rType=ajax&app=checkout&appPage=default&action=setShippingMethod'),
+		cache: false,
+		dataType: 'json',
+		type: 'post',
+		data: 'shipping_method=' + $(':hidden[name="shipping_method"]').val(),
+		success: function (data){
+			$('.orderTotalsList').each(function (){
+				removeAjaxLoader($(this).parent(), 'large', 'append');
+			});
+			$('.orderTotalsList').html(data.orderTotalRows);
+		}
+	});
 }
 $(document).ready(function (){
 	$('.shippingAddressDiff').live('click',function (){
@@ -117,7 +141,8 @@ $(document).ready(function (){
 				if (data.errorMsg != ''){
 					alert(data.errorMsg);
 				}
-                $('.orderTotalsList').html(data.orderTotalRows);
+	            //$('.orderTotalsList').html(data.orderTotalRows);
+	            updateTotals();
             }
         });
         return false;
@@ -238,6 +263,9 @@ $(document).ready(function (){
                         return false;
                     }
                 }
+	        if($(':hidden[name="shipping_method"]:checked')){
+		        setOnlyShippingMethod();
+	        }
         }
         if ($('#currentPage').val() == 'success'){
             js_redirect(DIR_WS_CATALOG);
@@ -296,6 +324,9 @@ $(document).ready(function (){
                         	 $(this).trigger('click');
                      	 });
 					 }
+			if($(':hidden[name="shipping_method"]:checked')){
+	                    setOnlyShippingMethod();
+	                }
 	                $('.shipInfo').css('cursor','pointer');
 	                 $('.shipInfo').click(function(){
 		                 link = js_app_link('appExt=payPerRentals&app=show_shipping&appPage=default_all&dialog=true');
@@ -382,7 +413,8 @@ $(document).ready(function (){
 				$('.orderTotalsList').each(function (){
 					removeAjaxLoader($(this).parent(), 'large', 'append');
 				});
-				$('.orderTotalsList').html(data.orderTotalRows);
+				//$('.orderTotalsList').html(data.orderTotalRows);
+				updateTotals();
 			}
 		});
 	});

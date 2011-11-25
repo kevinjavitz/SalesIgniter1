@@ -30,7 +30,7 @@
 
 	$isPostPage = (isset($_POST) && !empty($_POST));
 
-	if ($isPostPage === false && $action != 'remotePaymentProcess'){
+	if ($isPostPage === false && $action != 'remotePaymentProcess' && $action != 'updateTotals'){
 		if (!isset($ShoppingCart->cartID)){
 			$ShoppingCart->cartID = $ShoppingCart->generateCartId();
 		}
