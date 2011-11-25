@@ -86,6 +86,9 @@ class osC_onePageCheckout {
 		EventManager::notify('OnepageCheckoutLoadOrdersVars', &$info, &$order);
 		
 		$userAccount = &$this->getUserAccount();
+		if(empty($info['email_address'])){
+			$info['email_address'] = $userAccount->getEmailAddress();
+		}
 		$userAccount->setCustomerInfo(array(
 			'emailAddress' => $info['email_address'],
 			'telephone'    => $info['telephone'],

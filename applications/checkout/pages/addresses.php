@@ -56,11 +56,13 @@
 					'value' => (isset($onePageCheckout->onePage['info']['email_address']) ? $onePageCheckout->onePage['info']['email_address'] : '')
 				);
 			}else{
+				/*
 				$FieldsArray['email_address'] = array(
 					'required' => false,
 					'hidden' => true,
 					'value' => (isset($onePageCheckout->onePage['info']['email_address']) ? $onePageCheckout->onePage['info']['email_address'] : '')
 				);
+				*/
 			}
 
 	
