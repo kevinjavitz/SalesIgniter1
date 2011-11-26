@@ -32,23 +32,25 @@ function updateTotals(){
 }
 
 function setOnlyShippingMethod(){
-	$('.orderTotalsList').each(function (){
-		showAjaxLoader($(this).parent(), 'large');
-	});
-	var linkParams = js_get_all_get_params(['app', 'appPage', 'action']);
-	$.ajax({
-		url: js_app_link(linkParams + 'rType=ajax&app=checkout&appPage=default&action=setShippingMethod'),
-		cache: false,
-		dataType: 'json',
-		type: 'post',
-		data: 'shipping_method=' + $(':hidden[name="shipping_method"]').val(),
-		success: function (data){
-			$('.orderTotalsList').each(function (){
-				removeAjaxLoader($(this).parent(), 'large', 'append');
-			});
-			$('.orderTotalsList').html(data.orderTotalRows);
-		}
-	});
+	if($(':radio[name="shipping_method"]')){}else {
+		$('.orderTotalsList').each(function (){
+			showAjaxLoader($(this).parent(), 'large');
+		});
+		var linkParams = js_get_all_get_params(['app', 'appPage', 'action']);
+		$.ajax({
+			url: js_app_link(linkParams + 'rType=ajax&app=checkout&appPage=default&action=setShippingMethod'),
+			cache: false,
+			dataType: 'json',
+			type: 'post',
+			data: 'shipping_method=' + $(':hidden[name="shipping_method"]').val(),
+			success: function (data){
+				$('.orderTotalsList').each(function (){
+					removeAjaxLoader($(this).parent(), 'large', 'append');
+				});
+				$('.orderTotalsList').html(data.orderTotalRows);
+			}
+		});
+	}
 }
 $(document).ready(function (){
 	$('.shippingAddressDiff').live('click',function (){
