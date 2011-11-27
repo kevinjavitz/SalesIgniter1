@@ -17,10 +17,17 @@ class referralInstall extends extensionInstaller {
 	}
 
 	public function install(){
-		global $currencies;
+		global $currencies, $pointsEarned;
 		if (sysConfig::exists('EXTENSION_REFFERAL_SYSTEM_ENABLED') === true) return;
 
 		parent::install();
+
+		if(!is_object($currencies)){
+			if(!class_exists('currencies')){
+				require(sysConfig::getDirFsCatalog() . 'includes/classes/currencies.php');
+			}
+			$currencies = new currencies();
+		}
 
 		$EmailTemplates = Doctrine_Core::getTable('EmailTemplates');
 		$Template = $EmailTemplates->create();
@@ -37,6 +44,9 @@ class referralInstall extends extensionInstaller {
 			$Variables[] = $Variable;
 		}
 		$languages = sysLanguage::getLanguages();
+		if(empty($pointsEarned)){
+			$pointsEarned = 0;
+		}
 		$pointsEarned = $currencies->format($pointsEarned);
 		foreach($languages as $lInfo){
 				$Descriptions[$lInfo['id']]->email_templates_subject = 'You have earned a referral reward';
