@@ -17,8 +17,8 @@ class CustomersFavoritesProductAttributes extends Doctrine_Record {
 		$this->setUpParent();
 		
 		$this->hasOne('CustomerFavorites', array(
-			'local' => 'customer_favorites_id',
-			'foreign' => 'customers_favorites_id'
+			'local' => 'customers_favorites_id',
+			'foreign' => 'customer_favorites_id'
 		));
 
 		$this->hasOne('ProductsAttributes', array(
