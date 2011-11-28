@@ -5,7 +5,8 @@
 CKEDITOR.dialog.add( 'streaming', function ( editor )
 {
 	var lang = editor.lang.video;
-
+	var streamProvider = false;
+	var streamContentProvider = false;
 	function commitValue( videoNode, extraStyles )
 	{
 		var value=this.getValue();
@@ -171,39 +172,45 @@ CKEDITOR.dialog.add( 'streaming', function ( editor )
 						[
 							[ 'Please Select', '' ]
 						],
-
-						id : 'provider',
 						label : 'Stream Provider',
 						commit : commitValue,
 						setup : function (videoNode){
-							//loadValue(videoNode);
-							//$(videoNode).attr('name','stream_provider');
 							if ( videoNode ) {
 								this.setValue( videoNode.getAttribute( this.id ) );
 							} else {
 								if ( this.id == 'id')
 									this.setValue( generateId() );
 							}
-							$.ajax({
-								cache: false,
-								dataType: 'html',
-								url: js_app_link('app=products&appPage=new_product&action=getStreamProviders'),
-								success: function (data){
+							var ctr = 0;
+							$('.cke_dialog_contents').find('select').each(function (){
+								switch(ctr){
+									case 0:
+										streamProviders = $(this);
 
-									$('#cke_112_select')
-										.html($(data).html());
-									$("#cke_112_select option:first").attr('selected','selected');
-									$('#cke_112_select').trigger('change');
-									$.ajax({
-										cache: false,
-										dataType: 'html',
-										url: js_app_link('app=products&appPage=new_product&action=getProviderStreamTypes&pID=' + $('#cke_112_select').val()),
-										success: function (data){
-											var oldVal = $('#cke_115_select').val();
-											$('#cke_115_select')
-												.html($(data).html());
-											if(oldVal)
-												$('#cke_115_select').val(oldval);
+									break;
+									case 1:
+										streamContentProvider = $(this);
+									break;
+								}
+								ctr++;
+							});
+							$.ajax({
+									cache: false,
+									dataType: 'html',
+									url: js_app_link('app=products&appPage=new_product&action=getStreamProviders'),
+									success: function (data){
+										streamProviders.html($(data).html());
+										
+										$.ajax({
+											cache: false,
+											dataType: 'html',
+											url: js_app_link('app=products&appPage=new_product&action=getProviderStreamTypes&pID=' + streamProviders.val()),
+											success: function (data){
+												var oldVal = streamContentProvider.val();
+												streamContentProvider
+													.html($(data).html());
+												if(oldVal)
+													streamContentProvider.val(oldval);
 
 										}
 									});
@@ -224,7 +231,7 @@ CKEDITOR.dialog.add( 'streaming', function ( editor )
 							$.ajax({
 								cache: false,
 								dataType: 'html',
-								url: js_app_link('app=products&appPage=new_product&action=getProviderStreamTypes&pID=' + newValue),
+								url: js_app_link('app=products&appPage=new_product&action=getProviderStreamTypes&pID=' + streamProviders.val()),
 								success: function (data){
 									//populate stream types
 									/*
@@ -236,11 +243,11 @@ CKEDITOR.dialog.add( 'streaming', function ( editor )
 										.html(data.replace(regexp, '$1'))
 										.val(oldval);
 									*/
-									var oldVal = $('#cke_115_select').val();
-									$('#cke_115_select')
+									var oldVal = streamContentProvider.val();
+									streamContentProvider
 										.html($(data).html());
 									if(oldVal)
-										$('#cke_115_select').val(oldval);
+										streamContentProvider.val(oldval);
 									
 								}
 							});
