@@ -159,6 +159,7 @@ class osC_onePageCheckout {
 
 		$this->onePage['createAccount'] = 'false';
 		$this->onePage['info']['email_address'] = $userAccount->getEmailAddress();
+		$this->onePage['info']['dob'] = $userAccount->getDateOfBirth();
 		$this->onePage['info']['telephone'] = $userAccount->getTelephoneNumber();
 
 		$customerAddress = $addressBook->getAddress($addressBook->getDefaultAddressId());
@@ -185,6 +186,7 @@ class osC_onePageCheckout {
 			$userAccount->setFirstName($customerAddress['entry_firstname']);
 			$userAccount->setLastName($customerAddress['entry_lastname']);
 			$userAccount->setEmailAddress($this->onePage['info']['email_address']);
+			$userAccount->setDateOfBirth($this->onePage['info']['dob']);
 			$userAccount->setFaxNumber((isset($this->onePage['info']['fax']) ? $this->onePage['info']['fax'] : ''));
 			$userAccount->setTelephoneNumber($this->onePage['info']['telephone']);
 			$userAccount->setPassword($this->onePage['info']['password']);
