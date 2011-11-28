@@ -415,8 +415,8 @@ $(document).ready(function (){
 				$('.orderTotalsList').each(function (){
 					removeAjaxLoader($(this).parent(), 'large', 'append');
 				});
-				//$('.orderTotalsList').html(data.orderTotalRows);
-				updateTotals();
+				$('.orderTotalsList').html(data.orderTotalRows);
+				//updateTotals();
 			}
 		});
 	});
