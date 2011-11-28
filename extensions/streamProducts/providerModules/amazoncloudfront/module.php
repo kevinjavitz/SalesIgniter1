@@ -35,6 +35,18 @@ class StreamProviderAmazonCloudFront extends StreamProviderModule {
 		return $this->getConfigData('MODULE_STREAM_PROVIDER_AMAZONCLOUDFRONT_PRIVATE_KEY');
 	}
 
+	public function getStreamerControlsPath() {
+		return $this->getConfigData('MODULE_STREAM_PROVIDER_AMAZONCLOUDFRONT_STREAMER_CONTROLS_PATH');
+	}
+
+	public function getNonHttpStreamerPath() {
+		return $this->getConfigData('MODULE_STREAM_PROVIDER_AMAZONCLOUDFRONT_NON_HTTP_STREAMER_PATH');
+	}
+
+	public function getLogoPath() {
+		return $this->getConfigData('MODULE_STREAM_PROVIDER_AMAZONCLOUDFRONT_LOGO_PATH');
+	}
+
 	public function getStreamTypes(){
 		return array(
 			'http',
@@ -79,7 +91,7 @@ class StreamProviderAmazonCloudFront extends StreamProviderModule {
 		$config = array(
 /*			'key' => 'Commercial Key',
 			'logo' => array(
-				'url' => '/streamer/flowplayer/images/logo.png',
+				'url' => $this->getLogoPath(),
 				'fullscreenOnly' => false,
 				'top' => 20,
 				'right' => 20,
@@ -92,10 +104,10 @@ class StreamProviderAmazonCloudFront extends StreamProviderModule {
 		if ($protocol != 'http'){
 			$config['plugins'] = array(
 				'controls' => array(
-					'url' => 'streamer/flowplayer/flowplayer.controls-3.2.3.swf'
+					'url' => $this->getStreamerControlsPath()
 				),
 				$protocol => array(
-					'url' => 'streamer/flowplayer/flowplayer.rtmp-3.2.3.swf',
+					'url' => $this->getNonHttpStreamerPath(),
 					'netConnectionUrl' => $protocol . '://' . $this->getServerAddress() . '/cfx/st'
 				)
 			);
@@ -109,7 +121,7 @@ class StreamProviderAmazonCloudFront extends StreamProviderModule {
 		}else{
 			$config['plugins'] = array(
 				'controls' => array(
-					'url' => 'streamer/flowplayer/flowplayer.controls-3.2.3.swf'
+					'url' => $this->getStreamerControlsPath()
 				)
 			);
 			
