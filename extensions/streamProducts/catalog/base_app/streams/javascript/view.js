@@ -82,6 +82,7 @@ $(document).ready(function (){
 					}
 	  				wrap.css({width: width, height: height}); 
 				};
+				//flowPlayerObj = $f('streamPlayer', 'streamer/flowplayer/flowplayer.commercial-3.2.7.swf', data.config).StreamViewUpdate();
 				
 				flowPlayerObj = $f('streamPlayer', 'streamer/flowplayer/flowplayer-3.2.5.swf', data.config).StreamViewUpdate();
 			}else{

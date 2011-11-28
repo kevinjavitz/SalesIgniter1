@@ -31,6 +31,14 @@ class StreamProviderAmazons3 extends StreamProviderModule {
 		return $this->getConfigData('MODULE_STREAM_PROVIDER_AMAZONS3_SECRET_KEY');
 	}
 
+	public function getStreamerControlsPath() {
+		return $this->getConfigData('MODULE_STREAM_PROVIDER_AMAZONS3_STREAMER_CONTROLS_PATH');
+	}
+
+	public function getNonHttpStreamerPath() {
+		return false;
+	}
+
 	public function getStreamTypes(){
 		return array(
 			'http'
@@ -65,7 +73,7 @@ class StreamProviderAmazons3 extends StreamProviderModule {
 			),*/
 			'plugins' => array(
 				'controls' => array(
-					'url' => 'streamer/flowplayer/flowplayer.controls-3.2.3.swf'
+					'url' => $this->getStreamerControlsPath()
 				)
 			),
 			'clip' => array(

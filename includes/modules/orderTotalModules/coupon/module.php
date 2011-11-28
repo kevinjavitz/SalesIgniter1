@@ -236,166 +236,169 @@ class OrderTotalCoupon extends OrderTotalModule {
 
 	public function calculate_tax_deduction($amount, $discountAmount, $method) {
 		global $userAccount, $order, $ShoppingCart, $onePageCheckout;
-
-		$Qcoupon = Doctrine_Query::create()
-		->from('Coupons')
-		->where('coupon_id = ?', (int) Session::get('cc_id'))
-		->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
-		if ($Qcoupon){
-			$Coupon = $Qcoupon[0];
-			$totalPrice = 0;
-			if ($Coupon['coupon_type'] != 'S'){
-				$valid_array = array();
-				if ($Coupon['restrict_to_products'] || $Coupon['restrict_to_purchase_type']){
-					$products = $ShoppingCart->contents;
-					$valid_product = false;
-					if($onePageCheckout->isMembershipCheckout()) {
-						$success = false;
-						if (!empty($Coupon['restrict_to_purchase_type'])){
-
-							$allowedPurchaseTypes = explode(',', $Coupon['restrict_to_purchase_type']);
-							if(strstr($Coupon['restrict_to_purchase_type'],',')){
-								$allowedPurchaseTypes = explode(',',$Coupon['restrict_to_purchase_type']);
-							} else {
-								$allowedPurchaseTypes = array($Coupon['restrict_to_purchase_type']);
-							}
-							$success = (is_array($allowedPurchaseTypes) && in_array('membership', $allowedPurchaseTypes));
-						} else {
-							$success = true;
-						}
-						if($success) {
-							if ($Coupon['coupon_type'] == 'P'){
-								$finalPrice = $order->products[0]['final_price'];
-								$valid_array[] = array(
-									'product_id' => 0,
-									'products_price' => $finalPrice,
-									'products_tax_class' => $onePageCheckout->onePage['rentalPlan']['tax_class']
-								);
-								$totalPrice += $finalPrice; // changed
-							}
-						}
-
-					} else {
-						foreach($ShoppingCart->getProducts() as $cartProduct){
-							$valid_product = false;
-							$productId = (int) $cartProduct->getIdString();
-							$taxClassId = $cartProduct->getTaxClassId();
-							$purchaseType = $cartProduct->getPurchaseType();
-							$productPrice = $cartProduct->getFinalPrice();
-							$productQty = $cartProduct->getQuantity();
-
-							if (!empty($Coupon['restrict_to_products'])){
-								$productIds = explode(',', $Coupon['restrict_to_products']);
-								if (in_array($productId, $productIds)){
-									$valid_product = true;
-								}
-							}
-
+		$totalDiscount = 0;
+		if(sysConfig::exists('cc_id') === true){
+			$Qcoupon = Doctrine_Query::create()
+			->from('Coupons')
+			->where('coupon_id = ?', (int) Session::get('cc_id'))
+			->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+			if ($Qcoupon){
+				$Coupon = $Qcoupon[0];
+				$totalPrice = 0;
+				if ($Coupon['coupon_type'] != 'S'){
+					$valid_array = array();
+					if ($Coupon['restrict_to_products'] || $Coupon['restrict_to_purchase_type']){
+						$products = $ShoppingCart->contents;
+						$valid_product = false;
+						if($onePageCheckout->isMembershipCheckout()) {
+							$success = false;
 							if (!empty($Coupon['restrict_to_purchase_type'])){
-								$purchaseTypes = explode(',', $Coupon['restrict_to_purchase_type']);
 
-								$success = in_array($purchaseType, $purchaseTypes);
-								EventManager::notify('CouponsPurchaseTypeRestrictionCheck', $cartProduct, $Coupon, &$success);
-
-								if ($success === true){
-									$valid_product = true;
+								$allowedPurchaseTypes = explode(',', $Coupon['restrict_to_purchase_type']);
+								if(strstr($Coupon['restrict_to_purchase_type'],',')){
+									$allowedPurchaseTypes = explode(',',$Coupon['restrict_to_purchase_type']);
+								} else {
+									$allowedPurchaseTypes = array($Coupon['restrict_to_purchase_type']);
+								}
+								$success = (is_array($allowedPurchaseTypes) && in_array('membership', $allowedPurchaseTypes));
+							} else {
+								$success = true;
+							}
+							if($success) {
+								if ($Coupon['coupon_type'] == 'P'){
+									$finalPrice = $order->products[0]['final_price'];
+									$valid_array[] = array(
+										'product_id' => 0,
+										'products_price' => $finalPrice,
+										'products_tax_class' => $onePageCheckout->onePage['rentalPlan']['tax_class']
+									);
+									$totalPrice += $finalPrice; // changed
 								}
 							}
 
-							if ($valid_product === true) {
-								$finalPrice = $productPrice * $productQty;
-								$valid_array[] = array(
-									'product_id' => $productId,
-									'products_price' => $finalPrice,
-									'products_tax_class' => $taxClassId
-								);
-								$totalPrice += $finalPrice; // changed
-							}
-						}
-					}
-
-					if (sizeof($valid_array) > 0){
-						if ($Coupon['coupon_type'] == 'P') {
-							$ratio = $Coupon['coupon_amount']/100;
 						} else {
-							$ratio = $discountAmount / $totalPrice;
+							foreach($ShoppingCart->getProducts() as $cartProduct){
+								$valid_product = false;
+								$productId = (int) $cartProduct->getIdString();
+								$taxClassId = $cartProduct->getTaxClassId();
+								$purchaseType = $cartProduct->getPurchaseType();
+								$productPrice = $cartProduct->getFinalPrice();
+								$productQty = $cartProduct->getQuantity();
+
+								if (!empty($Coupon['restrict_to_products'])){
+									$productIds = explode(',', $Coupon['restrict_to_products']);
+									if (in_array($productId, $productIds)){
+										$valid_product = true;
+									}
+								}
+
+								if (!empty($Coupon['restrict_to_purchase_type'])){
+									$purchaseTypes = explode(',', $Coupon['restrict_to_purchase_type']);
+
+									$success = in_array($purchaseType, $purchaseTypes);
+									EventManager::notify('CouponsPurchaseTypeRestrictionCheck', $cartProduct, $Coupon, &$success);
+
+									if ($success === true){
+										$valid_product = true;
+									}
+								}
+
+								if ($valid_product === true) {
+									$finalPrice = $productPrice * $productQty;
+									$valid_array[] = array(
+										'product_id' => $productId,
+										'products_price' => $finalPrice,
+										'products_tax_class' => $taxClassId
+									);
+									$totalPrice += $finalPrice; // changed
+								}
+							}
 						}
 
-						if ($Coupon['coupon_type'] == 'S') $ratio = 1;
-
-						if ($method == 'Credit Note'){
-							$tax_rate = tep_get_tax_rate($this->tax_class, $order->delivery['country']['id'], $order->delivery['zone_id']);
-							$tax_desc = tep_get_tax_description($this->tax_class, $order->delivery['country']['id'], $order->delivery['zone_id']);
+						if (sizeof($valid_array) > 0){
 							if ($Coupon['coupon_type'] == 'P') {
-								$totalDiscount = $discountAmount / (100 + $tax_rate)* $tax_rate;
+								$ratio = $Coupon['coupon_amount']/100;
 							} else {
-								$totalDiscount = $order->info['tax_groups'][$tax_desc] * $discountAmount/100;
+								$ratio = $discountAmount / $totalPrice;
 							}
-							$order->info['tax_groups'][$tax_desc] -= $totalDiscount;
+
+							if ($Coupon['coupon_type'] == 'S') $ratio = 1;
+
+							if ($method == 'Credit Note'){
+								$tax_rate = tep_get_tax_rate($this->tax_class, $order->delivery['country']['id'], $order->delivery['zone_id']);
+								$tax_desc = tep_get_tax_description($this->tax_class, $order->delivery['country']['id'], $order->delivery['zone_id']);
+								if ($Coupon['coupon_type'] == 'P') {
+									$totalDiscount = $discountAmount / (100 + $tax_rate)* $tax_rate;
+								} else {
+									$totalDiscount = $order->info['tax_groups'][$tax_desc] * $discountAmount/100;
+								}
+								$order->info['tax_groups'][$tax_desc] -= $totalDiscount;
+								$order->info['total'] -= $totalDiscount;
+								$order->info['tax'] -= $totalDiscount;
+							}else{
+								for ($i=0; $i<sizeof($valid_array); $i++){
+									$tax_rate = tep_get_tax_rate($valid_array[$i]['products_tax_class'], $order->delivery['country']['id'], $order->delivery['zone_id']);
+									$tax_desc = tep_get_tax_description($valid_array[$i]['products_tax_class'], $order->delivery['country']['id'], $order->delivery['zone_id']);
+									if ($tax_rate > 0){
+										$totalDiscount = ($valid_array[$i]['products_price'] * $tax_rate)/100 * $ratio;
+										$order->info['tax_groups'][$tax_desc] -= $totalDiscount;
+										$order->info['total'] -= $totalDiscount;
+										$order->info['tax'] -= $totalDiscount;
+									}
+								}
+							}
+						}
+					}else{
+						if ($Coupon['coupon_type'] =='F'){
+							$totalDiscount = 0;
+							if ($method == 'Credit Note'){
+								$tax_rate = tep_get_tax_rate($this->tax_class, $order->delivery['country']['id'], $order->delivery['zone_id']);
+								$tax_desc = tep_get_tax_description($this->tax_class, $order->delivery['country']['id'], $order->delivery['zone_id']);
+								$totalDiscount = $discountAmount / (100 + $tax_rate)* $tax_rate;
+								$order->info['tax_groups'][$tax_desc] -= $totalDiscount;
+							}else{
+								reset($order->info['tax_groups']);
+								while (list($key, $value) = each($order->info['tax_groups'])) {
+									$ratio1 = $discountAmount/($amount-$order->info['tax_groups'][$key]); ////debug
+									$tax_rate = tep_get_tax_rate_from_desc($key);
+									$net = $tax_rate * $order->info['tax_groups'][$key];
+									if ($net>0) {
+										$taxGroupTotal = $order->info['tax_groups'][$key] * $ratio1;
+										$totalDiscount += $taxGroupTotal;
+										$order->info['tax_groups'][$key] = $order->info['tax_groups'][$key] - $taxGroupTotal;
+									}
+								}
+							}
 							$order->info['total'] -= $totalDiscount;
 							$order->info['tax'] -= $totalDiscount;
-						}else{
-							for ($i=0; $i<sizeof($valid_array); $i++){
-								$tax_rate = tep_get_tax_rate($valid_array[$i]['products_tax_class'], $order->delivery['country']['id'], $order->delivery['zone_id']);
-								$tax_desc = tep_get_tax_description($valid_array[$i]['products_tax_class'], $order->delivery['country']['id'], $order->delivery['zone_id']);
-								if ($tax_rate > 0){
-									$totalDiscount = ($valid_array[$i]['products_price'] * $tax_rate)/100 * $ratio;
-									$order->info['tax_groups'][$tax_desc] -= $totalDiscount;
-									$order->info['total'] -= $totalDiscount;
-									$order->info['tax'] -= $totalDiscount;
+						}elseif ($Coupon['coupon_type'] =='P'){
+							$totalDiscount = 0;
+							if ($method == 'Credit Note'){
+								$tax_desc = tep_get_tax_description($this->tax_class, $order->delivery['country']['id'], $order->delivery['zone_id']);
+								$totalDiscount = $order->info['tax_groups'][$tax_desc] * $discountAmount/100;
+								$order->info['tax_groups'][$tax_desc] -= $totalDiscount;
+							} else {
+								reset($order->info['tax_groups']);
+								while (list($key, $value) = each($order->info['tax_groups'])) {
+									$taxGroupTotal = 0;
+									$tax_rate = tep_get_tax_rate_from_desc($key);
+									$net = $tax_rate * $order->info['tax_groups'][$key];
+									if ($net>0) {
+										$taxGroupTotal = $order->info['tax_groups'][$key] * $Coupon['coupon_amount']/100;
+										$totalDiscount += $taxGroupTotal;
+										$order->info['tax_groups'][$key] = $order->info['tax_groups'][$key] - $taxGroupTotal;
+									}
 								}
 							}
+							$order->info['total'] -= $totalDiscount;
+							$order->info['tax'] -= $totalDiscount;
 						}
-					}
-				}else{
-					if ($Coupon['coupon_type'] =='F'){
-						$totalDiscount = 0;
-						if ($method == 'Credit Note'){
-							$tax_rate = tep_get_tax_rate($this->tax_class, $order->delivery['country']['id'], $order->delivery['zone_id']);
-							$tax_desc = tep_get_tax_description($this->tax_class, $order->delivery['country']['id'], $order->delivery['zone_id']);
-							$totalDiscount = $discountAmount / (100 + $tax_rate)* $tax_rate;
-							$order->info['tax_groups'][$tax_desc] -= $totalDiscount;
-						}else{
-							reset($order->info['tax_groups']);
-							while (list($key, $value) = each($order->info['tax_groups'])) {
-								$ratio1 = $discountAmount/($amount-$order->info['tax_groups'][$key]); ////debug
-								$tax_rate = tep_get_tax_rate_from_desc($key);
-								$net = $tax_rate * $order->info['tax_groups'][$key];
-								if ($net>0) {
-									$taxGroupTotal = $order->info['tax_groups'][$key] * $ratio1;
-									$totalDiscount += $taxGroupTotal;
-									$order->info['tax_groups'][$key] = $order->info['tax_groups'][$key] - $taxGroupTotal;
-								}
-							}
-						}
-						$order->info['total'] -= $totalDiscount;
-						$order->info['tax'] -= $totalDiscount;
-					}elseif ($Coupon['coupon_type'] =='P'){
-						$totalDiscount = 0;
-						if ($method == 'Credit Note'){
-							$tax_desc = tep_get_tax_description($this->tax_class, $order->delivery['country']['id'], $order->delivery['zone_id']);
-							$totalDiscount = $order->info['tax_groups'][$tax_desc] * $discountAmount/100;
-							$order->info['tax_groups'][$tax_desc] -= $totalDiscount;
-						} else {
-							reset($order->info['tax_groups']);
-							while (list($key, $value) = each($order->info['tax_groups'])) {
-								$taxGroupTotal = 0;
-								$tax_rate = tep_get_tax_rate_from_desc($key);
-								$net = $tax_rate * $order->info['tax_groups'][$key];
-								if ($net>0) {
-									$taxGroupTotal = $order->info['tax_groups'][$key] * $Coupon['coupon_amount']/100;
-									$totalDiscount += $taxGroupTotal;
-									$order->info['tax_groups'][$key] = $order->info['tax_groups'][$key] - $taxGroupTotal;
-								}
-							}
-						}
-						$order->info['total'] -= $totalDiscount;
-						$order->info['tax'] -= $totalDiscount;
 					}
 				}
 			}
 		}
 		return $totalDiscount;
+
 	}
 
 	public function update_credit_account($cartProduct) {

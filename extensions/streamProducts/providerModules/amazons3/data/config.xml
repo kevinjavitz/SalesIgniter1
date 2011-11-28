@@ -35,4 +35,11 @@
 		<description><![CDATA[Absolute path to files inside the bucket]]></description>
 		<sort_order>5</sort_order>
 	</configuration>
+	<configuration>
+		<title><![CDATA[Path To player controls]]></title>
+		<key><![CDATA[MODULE_STREAM_PROVIDER_AMAZONS3_STREAMER_CONTROLS_PATH]]></key>
+		<value><![CDATA[streamer/flowplayer/flowplayer.controls-3.2.5.swf]]></value>
+		<description><![CDATA[Absolute path to player controls]]></description>
+		<sort_order>7</sort_order>
+	</configuration>
 </configurations>

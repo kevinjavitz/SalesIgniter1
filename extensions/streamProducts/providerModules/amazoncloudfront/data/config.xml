@@ -43,4 +43,26 @@
 		<description><![CDATA[Absolute path to files inside the bucket]]></description>
 		<sort_order>6</sort_order>
 	</configuration>
+	<configuration>
+		<title><![CDATA[Path To player controls]]></title>
+		<key><![CDATA[MODULE_STREAM_PROVIDER_AMAZONCLOUDFRONT_STREAMER_CONTROLS_PATH]]></key>
+		<value><![CDATA[streamer/flowplayer/flowplayer.controls-3.2.5.swf]]></value>
+		<description><![CDATA[Absolute path to player controls]]></description>
+		<sort_order>7</sort_order>
+	</configuration>
+	<configuration>
+		<title><![CDATA[Path To non-http streamer]]></title>
+		<key><![CDATA[MODULE_STREAM_PROVIDER_AMAZONCLOUDFRONT_NON_HTTP_STREAMER_PATH]]></key>
+		<value><![CDATA[streamer/flowplayer/flowplayer.rtmp-3.2.3.swf]]></value>
+		<description><![CDATA[Absolute path to non-http streamer]]></description>
+		<sort_order>8</sort_order>
+	</configuration>
+	<configuration>
+		<title><![CDATA[Path To logo image]]></title>
+		<key><![CDATA[MODULE_STREAM_PROVIDER_AMAZONCLOUDFRONT_LOGO_PATH]]></key>
+		<value><![CDATA[streamer/flowplayer/images/logo.png]]></value>
+		<description><![CDATA[Absolute path to logo]]></description>
+		<sort_order>8</sort_order>
+	</configuration>
+
 </configurations>

@@ -1,214 +1,4 @@
-<?php
 
- $action = (isset($_GET['action']) ? $_GET['action'] : '');
-
- if (isset($_REQUEST['save_order']))
- {
-	$cats_order = $_REQUEST['sort_order_cat'];
-	if (sizeof($cats_order))
-	 foreach ($cats_order as $key => $value) {
-		$query = 'update ' . TABLE_FUNWAYS_CATEGORIES . '
-				  set sort_order = ' . tep_db_input($value) . '
-				  where categories_id = ' . tep_db_input($key);
-		tep_db_query($query);
-	 }
-
-
-	$prods_order = $_REQUEST['sort_order_prod'];
-	if (sizeof($prods_order))
-	 foreach ($prods_order as $key => $value) {
-		$query = 'update ' . TABLE_FUNWAYS_PRODUCTS . '
-		set sort_order = ' . tep_db_input($value) . '
-		where products_id = ' . tep_db_input($key);
-		tep_db_query($query);
-	 }
- }
-
- if (tep_not_null($action)) {
-   switch ($action) {
-	 case 'setflag':
-	   if ( ($_GET['flag'] == '0') || ($_GET['flag'] == '1') ) {
-		 if (isset($_GET['pID'])) {
-		   tep_set_product_status($_GET['pID'], $_GET['flag']);
-		 }
-	   }
-
-	   tep_redirect(itw_app_link('cPath=' . $_GET['cPath'] . '&pID=' . $_GET['pID'],'funways','default'));
-	   break;
-	 case 'setfflag':
-	   if ( ($_GET['fflag'] == '0') || ($_GET['fflag'] == '1') ) {
-		 if (isset($_GET['pID'])) {
-		   tep_set_product_featured($_GET['pID'], $_GET['fflag']);
-		 }
-	   }
-
-	   tep_redirect(itw_app_link('cPath=' . $_GET['cPath'] . '&pID=' . $_GET['pID'],'funways','default'));
-	   break;
-
-	 case 'insert_category':
-	 case 'update_category':
-	   if (isset($_POST['categories_id'])) $categories_id = tep_db_prepare_input($_POST['categories_id']);
-	   $sort_order = tep_db_prepare_input($_POST['sort_order']);
-	   $categories_name = tep_db_prepare_input($_POST['categories_name']);
-	   $categories_link_to = tep_db_prepare_input($_POST['categories_link_to']);
-	   $categories_description = tep_db_prepare_input($_POST['categories_description']);
-
-	   $sql_data_array = array('sort_order' => $sort_order,
-							   'categories_name' => $categories_name,
-							   'link_to' => $categories_link_to,
-							   'categories_description' => $categories_description);
-
-	   if ($action == 'insert_category') {
-		 $insert_sql_data = array('parent_id' => $current_category_id,
-								  'date_added' => 'now()');
-
-		 $sql_data_array = array_merge($sql_data_array, $insert_sql_data);
-
-		 tep_db_perform(TABLE_FUNWAYS_CATEGORIES, $sql_data_array);
-
-		 $categories_id = tep_db_insert_id();
-	   } elseif ($action == 'update_category') {
-		 $update_sql_data = array('last_modified' => 'now()');
-
-		 $sql_data_array = array_merge($sql_data_array, $update_sql_data);
-
-		 tep_db_perform(TABLE_FUNWAYS_CATEGORIES, $sql_data_array, 'update', "categories_id = '" . (int)$categories_id . "'");
-	   }
-
-	   if ($categories_image = new upload('categories_image', DIR_FS_CATALOG_IMAGES)) {
-		 tep_db_query("update " . TABLE_FUNWAYS_CATEGORIES . " set categories_image = '" . tep_db_input($categories_image->filename) . "' where categories_id = '" . (int)$categories_id . "'");
-	   }
-
-	   tep_redirect(itw_app_link('cPath=' . $cPath . 'cID=' . $categories_id,'funways','default'));
-	   break;
-	 case 'insert_product':
-	 case 'update_product':
-	   if (isset($_POST['products_id'])) $products_id = tep_db_prepare_input($_POST['products_id']);
-	   if (isset($_POST['categories_id'])) $categories_id = tep_db_prepare_input($_POST['categories_id']);
-	   $products_sort_order = tep_db_prepare_input($_POST['products_sort_order']);
-	   $products_name = tep_db_prepare_input($_POST['products_name']);
-	   $products_link_to = tep_db_prepare_input($_POST['products_link_to']);
-	   $products_description = tep_db_prepare_input($_POST['products_description']);
-
-	   $sql_data_array = array('sort_order' => $products_sort_order,
-							   'products_name' => $products_name,
-							   'link_to' => $products_link_to,
-							   'products_description' => $products_description);
-
-	   if ($action == 'insert_product') {
-		 $insert_sql_data = array('products_date_added' => 'now()');
-
-		 $sql_data_array = array_merge($sql_data_array, $insert_sql_data);
-
-		 tep_db_perform(TABLE_FUNWAYS_PRODUCTS, $sql_data_array);
-
-		 $products_id = tep_db_insert_id();
-
-		 $insert_sql_data = array('categories_id' => $categories_id,
-								  'products_id' => $products_id);
-		 tep_db_perform(TABLE_FUNWAYS_PTC, $insert_sql_data);
-	   } elseif ($action == 'update_product') {
-		 $update_sql_data = array('products_last_modified' => 'now()');
-
-		 $sql_data_array = array_merge($sql_data_array, $update_sql_data);
-
-		 tep_db_perform(TABLE_FUNWAYS_PRODUCTS, $sql_data_array, 'update', "products_id = '" . (int)$products_id . "'");
-	   }
-
-	   if ($products_image = new upload('products_image', DIR_FS_CATALOG_IMAGES)) {
-		 tep_db_query("update " . TABLE_FUNWAYS_PRODUCTS . " set products_image = '" . tep_db_input($products_image->filename) . "' where products_id = '" . (int)$products_id . "'");
-	   }
-
-	   tep_redirect(itw_app_link('cPath=' . $cPath . '&pID=' . $products_id . '&cID=' . $categories_id,'funways','default'));
-
-	   break;
-	 case 'delete_category_confirm':
-	   if (isset($_POST['categories_id'])) {
-		 $categories_id = tep_db_prepare_input($_POST['categories_id']);
-
-		 $categories = tep_get_funways_category_tree($categories_id, '', '0', '', true);
-		 $products = array();
-		 $products_delete = array();
-
-		 for ($i=0, $n=sizeof($categories); $i<$n; $i++) {
-		   $product_ids_query = tep_db_query("select products_id from " . TABLE_FUNWAYS_PTC . " where categories_id = '" . (int)$categories[$i]['id'] . "'");
-
-		   while ($product_ids = tep_db_fetch_array($product_ids_query)) {
-			 $products[$product_ids['products_id']]['categories'][] = $categories[$i]['id'];
-		   }
-		 }
-
-		 reset($products);
-		 while (list($key, $value) = each($products)) {
-		   $category_ids = '';
-
-		   for ($i=0, $n=sizeof($value['categories']); $i<$n; $i++) {
-			 $category_ids .= "'" . (int)$value['categories'][$i] . "', ";
-		   }
-		   $category_ids = substr($category_ids, 0, -2);
-
-		   $check_query = tep_db_query("select count(*) as total from " . TABLE_FUNWAYS_PTC . " where products_id = '" . (int)$key . "' and categories_id not in (" . $category_ids . ")");
-		   $check = tep_db_fetch_array($check_query);
-		   if ($check['total'] < '1') {
-			 $products_delete[$key] = $key;
-		   }
-		 }
-
-   // removing categories can be a lengthy process
-		 tep_set_time_limit(0);
-		 for ($i=0, $n=sizeof($categories); $i<$n; $i++) {
-		   tep_remove_funways_category($categories[$i]['id']);
-		 }
-
-		 reset($products_delete);
-		 while (list($key) = each($products_delete)) {
-		   tep_remove_funways_product($key);
-		 }
-	   }
-
-	   tep_redirect(itw_app_link('cPath=' . $cPath,'funways','default'));
-	   break;
-	 case 'delete_product_confirm':
-	   if (isset($_POST['products_id']) && isset($_POST['product_categories']) && is_array($_POST['product_categories'])) {
-		 $product_id = tep_db_prepare_input($_POST['products_id']);
-		 $product_categories = $_POST['product_categories'];
-
-		 for ($i=0, $n=sizeof($product_categories); $i<$n; $i++) {
-		   tep_db_query("delete from " . TABLE_FUNWAYS_PTC . " where products_id = '" . (int)$product_id . "' and categories_id = '" . (int)$product_categories[$i] . "'");
-		 }
-
-		 $product_categories_query = tep_db_query("select count(*) as total from " . TABLE_FUNWAYS_PTC . " where products_id = '" . (int)$product_id . "'");
-		 $product_categories = tep_db_fetch_array($product_categories_query);
-
-		 if ($product_categories['total'] == '0') {
-		   tep_remove_funways_product($product_id);
-		 }
-
-	   }
-
-	   tep_redirect(itw_app_link('cPath=' . $cPath,'funways','default'));
-	   break;
-	 case 'move_category_confirm':
-	   if (isset($_POST['categories_id']) && ($_POST['categories_id'] != $_POST['move_to_category_id'])) {
-		 $categories_id = tep_db_prepare_input($_POST['categories_id']);
-		 $new_parent_id = tep_db_prepare_input($_POST['move_to_category_id']);
-
-		 $path = explode('_', tep_get_generated_category_path_ids($new_parent_id));
-
-		 if (in_array($categories_id, $path)) {
-		   $messageStack->add_session(sysLanguage::get('ERROR_CANNOT_MOVE_CATEGORY_TO_PARENT'), 'error');
-		   tep_redirect(itw_app_link('cPath=' . $cPath . '&cID=' . $categories_id,'funways','default'));
-		 } else {
-		   tep_db_query("update " . TABLE_FUNWAYS_CATEGORIES . " set parent_id = '" . (int)$new_parent_id . "', last_modified = now() where categories_id = '" . (int)$categories_id . "'");
-
-		   tep_redirect(itw_app_link('cPath=' . $new_parent_id . '&cID=' . $categories_id,'funways','default'));
-		 }
-	   }
-
-	   break;
-   }
- }
- ?>
     <table border="0" width="100%" cellspacing="0" cellpadding="2">
       <tr>
         <td><table border="0" width="100%" cellspacing="0" cellpadding="0">
@@ -219,7 +9,7 @@
               <tr>
                 <td class="smallText" align="right">
 <?php
-    echo tep_draw_form('search', itw_app_link(null,'funways','default'), '', 'get');
+    echo tep_draw_form('search', itw_app_link(null,'funways','default'), 'get');
     echo sysLanguage::get('HEADING_TITLE_SEARCH') . ' ' . tep_draw_input_field('search');
     echo '</form>';
 ?>
@@ -228,7 +18,7 @@
               <tr>
                 <td class="smallText" align="right">
 <?php
-    echo tep_draw_form('goto', itw_app_link(null,'funways','default'), '', 'get');
+    echo tep_draw_form('goto', itw_app_link(null,'funways','default'), 'get');
     echo sysLanguage::get('HEADING_TITLE_GOTO') . ' ' . tep_draw_pull_down_menu('cPath', tep_get_category_tree(), $current_category_id, 'onChange="this.form.submit();"');
     echo '</form>';
 ?>
@@ -241,7 +31,7 @@
       <tr>
         <td>
 <?php
-    echo tep_draw_form('select', itw_app_link(null,'funways','default'), '', 'get');
+    echo tep_draw_form('select', itw_app_link(null,'funways','default'), 'get');
 ?>
         <table border="0" width="100%" cellspacing="0" cellpadding="0">
           <tr>
@@ -373,7 +163,7 @@
       case 'new_category':
         $heading[] = array('text' => '<b>' . sysLanguage::get('TEXT_INFO_HEADING_NEW_CATEGORY') . '</b>');
 
-        $contents = array('form' => tep_draw_form('newcategory', itw_app_link(null,'funways','default'), 'action=insert_category&cPath=' . $cPath, 'post', 'enctype="multipart/form-data"'));
+        $contents = array('form' => tep_draw_form('newcategory', itw_app_link('action=insert_category&cPath=' . $cPath,'funways','default'), 'post', 'enctype="multipart/form-data"'));
         $contents[] = array('text' => sysLanguage::get('TEXT_NEW_CATEGORY_INTRO'));
 
         $contents[] = array('text' => '<br>' . sysLanguage::get('TEXT_CATEGORIES_NAME') . tep_draw_input_field('categories_name'));
@@ -386,7 +176,7 @@
       case 'edit_category':
         $heading[] = array('text' => '<b>' . sysLanguage::get('TEXT_INFO_HEADING_EDIT_CATEGORY') . '</b>');
 
-        $contents = array('form' => tep_draw_form('categories', itw_app_link(null,'funways','default'), 'action=update_category&cPath=' . $cPath, 'post', 'enctype="multipart/form-data"') . tep_draw_hidden_field('categories_id', $cInfo->categories_id));
+        $contents = array('form' => tep_draw_form('categories', itw_app_link('action=update_category&cPath=' . $cPath,'funways','default'), 'post', 'enctype="multipart/form-data"') . tep_draw_hidden_field('categories_id', $cInfo->categories_id));
         $contents[] = array('text' => sysLanguage::get('TEXT_EDIT_INTRO'));
 
         $contents[] = array('text' => '<br>' . sysLanguage::get('TEXT_CATEGORIES_NAME') . tep_draw_input_field('categories_name', $cInfo->categories_name));
@@ -401,7 +191,7 @@
       case 'delete_category':
         $heading[] = array('text' => '<b>' . sysLanguage::get('TEXT_INFO_HEADING_DELETE_CATEGORY') . '</b>');
 
-        $contents = array('form' => tep_draw_form('categories', itw_app_link(null,'funways','default'), 'action=delete_category_confirm&cPath=' . $cPath) . tep_draw_hidden_field('categories_id', $cInfo->categories_id));
+        $contents = array('form' => tep_draw_form('categories', itw_app_link('action=delete_category_confirm&cPath=' . $cPath,'funways','default'),'get') . tep_draw_hidden_field('categories_id', $cInfo->categories_id));
         $contents[] = array('text' => sysLanguage::get('TEXT_DELETE_CATEGORY_INTRO'));
         $contents[] = array('text' => '<br><b>' . $cInfo->categories_name . '</b>');
         if ($cInfo->childs_count > 0) $contents[] = array('text' => '<br>' . sprintf(sysLanguage::get('TEXT_DELETE_WARNING_CHILDS'), $cInfo->childs_count));
@@ -411,7 +201,7 @@
       case 'move_category':
         $heading[] = array('text' => '<b>' . sysLanguage::get('TEXT_INFO_HEADING_MOVE_CATEGORY') . '</b>');
 
-        $contents = array('form' => tep_draw_form('categories', itw_app_link(null,'funways','default'), 'action=move_category_confirm&cPath=' . $cPath) . tep_draw_hidden_field('categories_id', $cInfo->categories_id));
+        $contents = array('form' => tep_draw_form('categories', itw_app_link('action=move_category_confirm&cPath=' . $cPath,'funways','default'),'get') . tep_draw_hidden_field('categories_id', $cInfo->categories_id));
         $contents[] = array('text' => sprintf(sysLanguage::get('TEXT_MOVE_CATEGORIES_INTRO'), $cInfo->categories_name));
         $contents[] = array('text' => '<br>' . sprintf(sysLanguage::get('TEXT_MOVE'), $cInfo->categories_name) . '<br>' . tep_draw_pull_down_menu('move_to_category_id', tep_get_funways_category_tree(), $current_category_id));
         $contents[] = array('align' => 'center', 'text' => '<br>' . htmlBase::newElement('button')->usePreset('move')->setType('submit')->draw() . ' ' . htmlBase::newElement('button')->usePreset('cancel')->setHref(itw_app_link('cPath=' . $cPath . '&cID=' . $cInfo->categories_id,'funways','default'))->draw());
@@ -419,7 +209,7 @@
       case 'copy_to':
         $heading[] = array('text' => '<b>' . sysLanguage::get('TEXT_INFO_HEADING_COPY_TO') . '</b>');
 
-        $contents = array('form' => tep_draw_form('copy_to', itw_app_link(null,'funways','default'), 'action=copy_to_confirm&cPath=' . $cPath) . tep_draw_hidden_field('products_id', $pInfo->products_id));
+        $contents = array('form' => tep_draw_form('copy_to', itw_app_link('action=copy_to_confirm&cPath=' . $cPath,'funways','default'),'get') . tep_draw_hidden_field('products_id', $pInfo->products_id));
         $contents[] = array('text' => sysLanguage::get('TEXT_INFO_COPY_TO_INTRO'));
         $contents[] = array('text' => '<br>' . sysLanguage::get('TEXT_INFO_CURRENT_CATEGORIES') . '<br><b>' . tep_output_generated_category_path($pInfo->products_id, 'product') . '</b>');
         $contents[] = array('text' => '<br>' . sysLanguage::get('TEXT_CATEGORIES') . '<br>' . tep_draw_pull_down_menu('categories_id', tep_get_category_tree(), $current_category_id));
@@ -435,7 +225,7 @@
       }
         $heading[] = array('text' => '<b>' . sysLanguage::get('TEXT_INFO_HEADING_NEW_PRODUCT') . '</b>');
 
-        $contents = array('form' => tep_draw_form('newproduct', itw_app_link(null,'funways','default'), 'action=insert_product&cPath=' . $cPath, 'post', 'enctype="multipart/form-data"').tep_draw_hidden_field('categories_id', $cPath_array[sizeof($cPath_array)-1]));
+        $contents = array('form' => tep_draw_form('newproduct', itw_app_link('action=insert_product&cPath=' . $cPath,'funways','default'), 'post', 'enctype="multipart/form-data"').tep_draw_hidden_field('categories_id', $cPath_array[sizeof($cPath_array)-1]));
         $contents[] = array('text' => TEXT_NEW_PRODUCT_INTRO);
         $contents[] = array('text' => '<br>' . sysLanguage::get('TEXT_LINK_TO_PRODUCT') . tep_draw_products_down('products_link_to', 'style="width:300px"', /*$funways_array*/array()));
         $contents[] = array('text' => '<br>' . sysLanguage::get('TEXT_PRODUCTS_DESCRIPTION') . tep_draw_textarea_field('products_description','soft',30,5));
@@ -452,7 +242,7 @@
 
         $heading[] = array('text' => '<b>' . sysLanguage::get('TEXT_INFO_HEADING_EDIT_PRODUCT') . '</b>');
 
-        $contents = array('form' => tep_draw_form('products', itw_app_link(null,'funways','default'), 'action=update_product&cPath=' . $cPath, 'post', 'enctype="multipart/form-data"') . tep_draw_hidden_field('products_id', $pInfo->products_id).tep_draw_hidden_field('categories_id', $cPath));
+        $contents = array('form' => tep_draw_form('products', itw_app_link('action=update_product&cPath=' . $cPath,'funways','default'), 'post', 'enctype="multipart/form-data"') . tep_draw_hidden_field('products_id', $pInfo->products_id).tep_draw_hidden_field('categories_id', $cPath));
         $contents[] = array('text' => sysLanguage::get('TEXT_EDIT_INTRO'));
         $contents[] = array('text' => '<br>' . sysLanguage::get('TEXT_LINK_TO_PRODUCT') . tep_draw_products_down('products_link_to', 'style="width:150px"', $funways_array, $pInfo->link_to));
         $contents[] = array('text' => '<br>' . sysLanguage::get('TEXT_PRODUCTS_DESCRIPTION') . tep_draw_textarea_field('products_description','soft',30,5,$pInfo->products_description));
@@ -464,7 +254,7 @@
       case 'delete_product':
         $heading[] = array('text' => '<b>' . sysLanguage::get('TEXT_INFO_HEADING_DELETE_PRODUCT') . '</b>');
 
-			$contents = array('form' => tep_draw_form('products', itw_app_link(null,'funways','default'), 'action=delete_product_confirm&cPath=' . $cPath) . tep_draw_hidden_field('products_id', $pInfo->products_id));
+			$contents = array('form' => tep_draw_form('products', itw_app_link('action=delete_product_confirm&cPath=' . $cPath,'funways','default'),'get') . tep_draw_hidden_field('products_id', $pInfo->products_id));
 			$contents[] = array('text' => sysLanguage::get('TEXT_DELETE_PRODUCT_INTRO'));
 			$contents[] = array('text' => '<br><b>' . $pInfo->products_name . '</b>');
 
