@@ -11,7 +11,7 @@
 */
 
 
-    $App->setAppPage('default');
-
+	$App->setAppPage('default');
 	$appContent = $App->getAppContentFile();
+	$App->addJavascriptFile('streamer/flowplayer/flowplayer-3.2.4.min.js');
 ?>
