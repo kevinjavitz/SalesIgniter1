@@ -19,9 +19,12 @@ class currencies {
 	public function __construct(){
 		$this->currencies = array();
 
-		$Qcurrencies = mysql_query('select * from currencies');
-		if (mysql_num_rows($Qcurrencies)){
-			while($currency = mysql_fetch_assoc($Qcurrencies)){
+		$currencies = Doctrine_Query::create()
+			->select('*')
+			->from('CurrenciesTable')
+			->orderBy('title')->fetchArray();
+		if ($currencies){
+			foreach($currencies as $currency){
 				$this->currencies[$currency['code']] = array(
 					'title'           => $currency['title'],
 					'symbol_left'     => $currency['symbol_left'],
