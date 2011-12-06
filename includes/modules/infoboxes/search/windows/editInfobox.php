@@ -385,7 +385,7 @@
 				$optionId = $iInfo['option_id'];
 				$optionType = $iInfo['option_type'];
 				$optionSort = $iInfo['option_sort'];
-				if($optionType == 'price'){
+				if($optionType == 'price' || $optionType == 'priceppr'){
 					$priceStart = $iInfo['price_start'];
 					$priceStop = $iInfo['price_stop'];
 					$liItems .= '<li id="options_' . $optionType . '_' . $optionId . '" data-option_type="' . $optionType . '" data-option_id="' . $optionId . '">' .
@@ -406,23 +406,24 @@
 					            '</table>' .
 					            '</div>' .
 					            '</li>';
+				} else {
+					$liItems .= '<li id="options_' . $optionType . '_' . $optionId . '" data-option_type="' . $optionType . '" data-option_id="' . $optionId . '">' .
+						'<div class="ui-widget ui-widget-content ui-corner-all">' .
+							'<table cellpadding="2" cellspacing="0" border="0">' .
+								'<tr>' .
+									'<td valign="top">' .
+										'<b>Heading</b><br />' .
+										'<textarea name="option_heading[' . $optionType . '][' . $optionId . ']" rows="3" cols="50">' .
+											$heading .
+										'</textarea>' .
+										'<input type="hidden" name="option[' . $optionType . '][]" value="' . $optionId . '">' .
+										'<input type="hidden" class="sortBox" name="option_sort[' . $optionType . '][' . $optionId . ']" value="' . $optionSort . '">' .
+								'</td>' .
+								'</tr>' .
+							'</table>' .
+						'</div>' .
+					'</li>';
 				}
-				$liItems .= '<li id="options_' . $optionType . '_' . $optionId . '" data-option_type="' . $optionType . '" data-option_id="' . $optionId . '">' .
-					'<div class="ui-widget ui-widget-content ui-corner-all">' .
-						'<table cellpadding="2" cellspacing="0" border="0">' .
-							'<tr>' .
-								'<td valign="top">' .
-									'<b>Heading</b><br />' .
-									'<textarea name="option_heading[' . $optionType . '][' . $optionId . ']" rows="3" cols="50">' .
-										$heading .
-									'</textarea>' .
-									'<input type="hidden" name="option[' . $optionType . '][]" value="' . $optionId . '">' .
-									'<input type="hidden" class="sortBox" name="option_sort[' . $optionType . '][' . $optionId . ']" value="' . $optionSort . '">' .
-							'</td>' .
-							'</tr>' .
-						'</table>' .
-					'</div>' .
-				'</li>';
 			}
 		}
 	}
