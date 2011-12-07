@@ -74,11 +74,11 @@ class InfoBoxSearch extends InfoBoxAbstract {
 							$this->guidedSearchCustomField(&$boxContents['custom_field'][$sInfo['option_id']]['content'], &$sInfo['option_id'], &$boxContents['custom_field'][$sInfo['option_id']]['count'], isset($boxWidgetProperties->dropdown->custom_field));
 							break;
 						case 'purchase_type':
-							$boxContents[$sInfo['option_type']]['heading'] = $heading;
+							$boxContents['attribute'][$sInfo['option_type']]['heading'] = $heading;
 							$this->guidedSearchPurchaseType(&$boxContents['purchase_type']['content'], isset($boxWidgetProperties->dropdown->purchase_type));
 							break;
 						case 'price':
-							$boxContents[$sInfo['option_type']]['heading'] = $heading;
+							$boxContents['price'][$sInfo['option_type']]['heading'] = $heading;
 							$prices[] = array(
 								'price_start' => $sInfo['price_start'],
 								'price_stop' => $sInfo['price_stop']
@@ -106,7 +106,7 @@ class InfoBoxSearch extends InfoBoxAbstract {
 			}
 
 			foreach($boxContents as $type => $content){
-				if(is_array($content)){
+				if(is_array($content) && !isset($content['content'])){
 					foreach($content as $optionID => $optionContent){
 						$boxContent .= '<br /><b '.(isset($boxWidgetProperties->dropdown->{$type}) ? 'style="margin:.5em"' : '').'>' . $optionContent['heading'] . '</b><ul style="list-style:none;margin:.5em;padding:0px">';
 						$boxContent .= $optionContent['content'];
@@ -240,11 +240,11 @@ class InfoBoxSearch extends InfoBoxAbstract {
 		$count = 0;
 		foreach($prices as $pInfo){
 			$QproductCount = Doctrine_Query::create()
-			->select('count(*) as total')
-			->from('Products')
-			->where('products_price >= ?', $pInfo['price_start'])
-			->andWhere('products_price <= ?', $pInfo['price_stop'])
-			->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+				->select('count(*) as total')
+				->from('ProductsPayPerRental pppr')
+				->leftJoin('pppr.PricePerRentalPerProducts ppprp')
+				->where(' ppprp.price >= ' . $pInfo['price_start'] . ' or ppprp.price <=' . $pInfo['price_stop'])
+				->fetchArray();
 
 			$checkIcon = '<span class="ui-icon ui-icon-check" style="display:inline-block;height:14px;background:none;"></span>';
 			$link = itw_app_link(tep_get_all_get_params(array('pprfrom[' . $count . ']', 'pprto[' . $count . ']')) . 'pprfrom[' . $count . ']=' . $pInfo['price_start'] . '&pprto[' . $count . ']=' . $pInfo['price_stop'], 'products', 'search_result');
