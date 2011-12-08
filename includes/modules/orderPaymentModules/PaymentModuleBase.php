@@ -326,6 +326,13 @@
 		public function logPayment($info){
 			global $order;
 
+			$Order = Doctrine_Core::getTable('Orders')->findOneByOrdersId((isset($info['orderID']) ? $info['orderID'] : $order->newOrder['orderID']));
+			$newHistory =& $Order->OrdersStatusHistory;
+			$idx = $newHistory->count();
+			$Order->OrdersStatusHistory[$idx]->orders_status_id = $this->orderStatus;
+			$Order->orders_status = $this->orderStatus;
+			$Order->save();
+
 			$newStatus = new OrdersPaymentsHistory();
 			$newStatus->orders_id = (isset($info['orderID']) ? $info['orderID'] : $order->newOrder['orderID']);
 			$newStatus->payment_module = $this->code;

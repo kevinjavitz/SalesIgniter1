@@ -12,7 +12,7 @@ if (!defined('CC_KEY')) define('CC_KEY', 'Ys8oEwebV0CjrFoB');
 if (!function_exists('parseCC')){
   function parseCC($cc){
       $cardNum = cc_decrypt($cc);
-    return str_repeat('X', (strlen($cardNum) - 4)) . substr($cardNum, -4);
+    return str_repeat('X', (strlen($cardNum) > 4 ? (strlen($cardNum) - 4) : 14)  ) . ((strlen($cardNum) > 4) ? substr($cardNum, -4) : '');
   }
 
   function cc_encrypt($text) {
