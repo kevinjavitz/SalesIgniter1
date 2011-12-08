@@ -145,5 +145,5 @@
 	<define key="ENTRY_VAT"><![CDATA[VAT:]]></define>
 	<define key="PASSWORD"><![CDATA[Password:]]></define>
 	<define key="PASSWORD_CONFIRMATION"><![CDATA[Password Confirmation:]]></define>
-
+	<define key="TEXT_SEND_EMAIL"><![CDATA[Email customer membership info:]]></define>
 </definitions>

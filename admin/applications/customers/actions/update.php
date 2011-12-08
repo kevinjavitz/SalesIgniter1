@@ -78,8 +78,8 @@
 			if(isset($_POST['planid'])){
 				$planInfo = $membership->getPlanInfo($_POST['planid']);
 			}
-			
-			if (isset($_POST['member']) && $_POST['member'] == 'Y'){
+			if (array_key_exists('activate', $_POST)){
+
 				if(isset($_POST['next_billing_month']) && isset($_POST['next_billing_day']) && isset($_POST['next_billing_year'])){
 					$next_bill_date = mktime(0,0,0,
 						$_POST['next_billing_month'],
@@ -136,10 +136,12 @@
 						'previousPlanPrice' => $previousPlan['price']
 					));
 				}
-				$emailEvent->sendEmail(array(
-					'email' => $userAccount->getEmailAddress(),
-					'name'  => $userAccount->getFullName()
-				));
+				if(isset($_POST['sendEmail'])){
+					$emailEvent->sendEmail(array(
+						'email' => $userAccount->getEmailAddress(),
+						'name'  => $userAccount->getFullName()
+					));
+				}
 			}
 			/* Send email based on certian conditions - END */
 		}

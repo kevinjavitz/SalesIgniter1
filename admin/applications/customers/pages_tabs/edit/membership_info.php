@@ -14,7 +14,7 @@
 				<tr>
 					<td class="main"><?php echo sysLanguage::get('TEXT_NAME');?></td>
 					<td class="main"><?php
-						echo tep_draw_hidden_field('member','Y');
+						//echo tep_draw_hidden_field('member','Y');
 						
 						$Qmembership = Doctrine_Query::create()
 						->from('Membership m')
@@ -64,6 +64,15 @@
 				<tr>
 					<td class="main"><?php echo sysLanguage::get('TEXT_MEM_DATE');?></td>
 					<td class="main"><?php echo $CustomersMembership->membership_date;?></td>
+				</tr>
+				<tr>
+					<td class="main"><?php echo sysLanguage::get('TEXT_SEND_EMAIL');?></td>
+					<td class="main"><?php
+						$htmlCheckbox = htmlBase::newElement('checkbox')
+							->setName('sendEmail')
+							->setValue('1');
+							echo $htmlCheckbox->draw();
+						?></td>
 				</tr>
 <?php
 		if ($CustomersMembership->free_trial_flag == 'Y'){
@@ -316,10 +325,11 @@
 						}
 						if($CustomersMembership){
 							$PaymentMethodBox->selectOptionByValue($CustomersMembership->payment_method);
+							$nextBillDate = date_parse($CustomersMembership->next_bill_date);
 							$NextBillYearBox->selectOptionByValue($nextBillDate['year']);
 							$NextBillMonthBox->selectOptionByValue($nextBillDate['month']);
 							$NextBillDayBox->selectOptionByValue($nextBillDate['day']);
-							$nextBillDate = date_parse($CustomersMembership->next_bill_date);
+
 						}
 
 						echo $PaymentMethodBox->draw();
