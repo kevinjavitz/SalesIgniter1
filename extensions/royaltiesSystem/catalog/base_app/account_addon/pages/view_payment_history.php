@@ -28,16 +28,16 @@ $OverViewTable = htmlBase::newElement('table')
 		      ));
 
 $OverViewTableHeader = array(
-	array('text' => sysLanguage::get('TABLE_HEADING_DATE_PAID')),
-	array('text' => sysLanguage::get('TABLE_HEADING_AMOUNT_PAID'))
+	array('text' => sysLanguage::get('TABLE_HEADING_DATE_PAID'), 'css' => array('padding' => '5px')),
+	array('text' => sysLanguage::get('TABLE_HEADING_AMOUNT_PAID'), 'css' => array('padding' => '5px'))
 );
 
 EventManager::notify('RoyaltiesPaymentHistoryTableAddHeader', &$OverViewTableHeader);
 
-$OverViewTableHeader[] = array('text' => '&nbsp');
+//$OverViewTableHeader[] = array('text' => '&nbsp');
 
 $OverViewTable->addHeaderRow(array(
-                                  'addCls' => 'ui-widget-header ui-state-hover',
+                                  'addCls' => 'ui-widget-header ui-corner-all pageHeaderContainer',
                                   'columns' => $OverViewTableHeader
                              ));
 
@@ -48,8 +48,8 @@ if ($Result){
 			$OverViewTable->addBodyRow(array(
 			                                'rowAttr' => array(),
 			                                'columns' => array(
-				                                array('text' => $rInfo['royalty_payment_date'], 'align' => 'center'),
-				                                array('text' => $currencies->format($rInfo['royalty_amount_paid']), 'align' => 'center')
+				                                array('addCls' => 'first', 'text' => $rInfo['royalty_payment_date'], 'align' => 'left', 'css' => array('padding' => '5px')),
+				                                array('addCls' => 'last', 'text' => $currencies->format($rInfo['royalty_amount_paid']), 'align' => 'left', 'css' => array('padding' => '5px')),
 			                                )
 			                           ));
 		}
@@ -94,7 +94,7 @@ if (isset($_GET['end_date'])){
 }
 
 
-echo $searchForm->draw();
+//echo $searchForm->draw();
 $mainPageTable = htmlBase::newElement('table')
 		->setCellPadding(2)
 		->setCellSpacing(0)
@@ -115,7 +115,7 @@ $mainPageTable->addBodyRow(array(
                            ));
 $mainPageTable->addBodyRow(array(
                                 'columns' => array(
-	                                array('text' => $OverViewTable->draw(), 'colspan' => '2')
+	                                array('text' => $OverViewTable->draw(), 'colspan' => '3')
                                 )
                            ));
 $pageTitle = sysLanguage::get('HEADING_TITLE');
