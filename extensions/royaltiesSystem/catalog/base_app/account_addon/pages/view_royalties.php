@@ -8,12 +8,12 @@ $OverViewTable = htmlBase::newElement('table')
 		      ));
 
 $OverViewTableHeader = array(
-	array('text' => sysLanguage::get('TABLE_HEADING_DATE_ADDED')),
-	array('text' => sysLanguage::get('TABLE_HEADING_ORDERS_ID')),
-	array('text' => sysLanguage::get('TABLE_HEADING_CONTENT')),
-	array('text' => sysLanguage::get('TABLE_HEADING_CONTENT_TYPE')),
-	array('text' => sysLanguage::get('TABLE_HEADING_PRODUCT_NAME')),
-	array('text' => sysLanguage::get('TABLE_HEADING_ROYALTY_FEE')),
+	array('text' => sysLanguage::get('TABLE_HEADING_DATE_ADDED'), 'css' => array('padding' => '5px')),
+	array('text' => sysLanguage::get('TABLE_HEADING_ORDERS_ID'), 'css' => array('padding' => '5px')),
+	array('text' => sysLanguage::get('TABLE_HEADING_CONTENT'), 'css' => array('padding' => '5px')),
+	array('text' => sysLanguage::get('TABLE_HEADING_CONTENT_TYPE'), 'css' => array('padding' => '5px')),
+	array('text' => sysLanguage::get('TABLE_HEADING_PRODUCT_NAME'), 'css' => array('padding' => '5px')),
+	array('text' => sysLanguage::get('TABLE_HEADING_ROYALTY_FEE'), 'css' => array('padding' => '5px')),
 );
 
 EventManager::notify('RoyaltiesOverviewTableAddHeader', &$OverViewTableHeader);
@@ -21,9 +21,9 @@ EventManager::notify('RoyaltiesOverviewTableAddHeader', &$OverViewTableHeader);
 $OverViewTableHeader[] = array('text' => '&nbsp');
 
 $OverViewTable->addHeaderRow(array(
-                                  'addCls' => 'ui-widget-header ui-state-hover',
-                                  'columns' => $OverViewTableHeader
-                             ));
+	'addCls' => 'ui-widget-header pageHeaderContainer',
+	'columns' => $OverViewTableHeader
+));
 
 $QcustomerProducts = Doctrine_Query::create()
 		->from('RoyaltiesSystemRoyaltiesEarned r')
@@ -75,7 +75,7 @@ if ($royalties){
 		//var_dump($rInfo['Products']['ProductsDescription']);
 		//die();
 		$OverViewTableBody = array(
-			array('text' => $rInfo['date_added']),
+			array('addCls' => 'first', 'text' => $rInfo['date_added']),
 			array('text' => $ordersLink),
 			array('text' => $displayName),
 			array('text' => $contentType),
@@ -129,7 +129,7 @@ $mainPageTable->addBodyRow(array(
                            ));
 $mainPageTable->addBodyRow(array(
                                 'columns' => array(
-	                                array('text' => $OverViewTable->draw(), 'colspan' => '2')
+	                                array('text' => $OverViewTable->draw(), 'colspan' => '3')
                                 )
                            ));
 $pageTitle = sysLanguage::get('HEADING_TITLE');
