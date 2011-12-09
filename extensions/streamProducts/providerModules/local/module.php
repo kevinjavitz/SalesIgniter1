@@ -29,7 +29,7 @@ class StreamProviderLocal extends StreamProviderModule {
 			$params = $sInfo['oID'] . '/' . $sInfo['opID'] . '/';
 		}
 		$link = itw_app_link(null, 'pullStream', $sInfo['products_id'] . '/' . $params . $movieName);
-		$link = str_replace('.php', '', $link);
+		$link = str_replace('pullStream/', 'pullStream.php/', $link);
 		
 		return array(
 /*			'key' => 'Commercial Key',

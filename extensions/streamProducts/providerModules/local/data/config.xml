@@ -10,7 +10,7 @@
 	<configuration>
 		<title><![CDATA[Storage Folder]]></title>
 		<key><![CDATA[MODULE_STREAM_PROVIDER_LOCAL_FOLDER]]></key>
-		<value><![CDATA[]]></value>
+		<value><![CDATA[streams]]></value>
 		<description><![CDATA[Folder where streams are stored locally]]></description>
 		<sort_order>2</sort_order>
 	</configuration>
