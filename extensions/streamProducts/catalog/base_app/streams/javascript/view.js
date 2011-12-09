@@ -59,28 +59,10 @@ $(document).ready(function (){
 					var RealWidth = parseInt(clip.metaData.width);
 					var ratio = RealHeight / RealWidth;
 				
-					if (!width && height) {
-						ratio = height / RealHeight;
-						width = parseInt(RealWidth * ratio);
-					} else if (width && !height) {
-						ratio = width / RealWidth;
-						height = parseInt(RealHeight * ratio);
-					} else if (!width && !height) {
-						width = RealWidth;
-						height = RealHeight;
-					}
-					
-					if (RealWidth != width || RealHeight != height) {
-						var rx = RealWidth / width;
-						var ry = RealHeight / height;
-						
-						if (rx < ry) {
-							width = parseInt(height / ratio);
-						} else {
-							height = parseInt(width * ratio);
-						}
-					}
-	  				wrap.css({width: width, height: height}); 
+					ratio = width / RealWidth;
+					height = parseInt(RealHeight * ratio);
+				
+  					wrap.css({width: width, height: height});
 				};
 				//flowPlayerObj = $f('streamPlayer', 'streamer/flowplayer/flowplayer.commercial-3.2.7.swf', data.config).StreamViewUpdate();
 				

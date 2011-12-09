@@ -232,6 +232,8 @@ class Extension_streamProducts extends ExtensionBase {
 
 	public function PullStreamAfterUpdate(&$Stream, $ordersId, $ordersProductsId){
 		$Stream = $this->getOrderStream($ordersProductsId);
+		$providerModule = $this->getProviderModuleById($Stream['provider_id']);
+		$Stream['file_name'] = $providerModule->getStorageFolder() . $Stream['file_name'];
 		tep_db_query('update ' . TABLE_ORDERS_PRODUCTS_STREAM . ' set stream_count = stream_count + 1 where orders_id = "' . (int)$ordersId . '" and orders_products_id = "' . (int)$ordersProductsId . '" and orders_products_filename = "' . $Stream['file_name'] . '"');
 	}
 
