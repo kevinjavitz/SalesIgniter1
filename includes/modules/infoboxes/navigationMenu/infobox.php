@@ -248,6 +248,23 @@ class InfoBoxNavigationMenu extends InfoBoxAbstract
 		});
 		<?php } ?>
 	});
+	<?php if ($WidgetProperties->use_cufon == 'true'){ ?>
+	$(document).ready(function(){
+		Cufon.replace('#<?php echo $WidgetProperties->menuId; ?>.ui-navigation-menu', {
+		<?php if (!empty($WidgetProperties->cufon_text_shadow)){ ?>
+		textShadow: '<?php echo $WidgetProperties->cufon_text_shadow; ?>',
+		<?php } ?>
+		hover: {
+			<?php if (!empty($WidgetProperties->cufon_text_shadow_hover)){ ?>
+				textShadow: <?php echo "'" .$WidgetProperties->cufon_text_shadow_hover . "'" . (!empty($WidgetProperties->cufon_hover_color) ? ',' : '' ); ?>
+			<?php }
+				if (!empty($WidgetProperties->cufon_hover_color)){?>
+			color: '<?php echo $WidgetProperties->cufon_hover_color; ?>'
+			<?php } ?>
+		}
+		});
+	});
+	<?php } ?>
 	<?php
  		$javascript = '/* Navigation Menu --BEGIN-- */' . "\n" .
 			ob_get_contents();
