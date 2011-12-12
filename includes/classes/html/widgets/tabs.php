@@ -4,7 +4,7 @@
  * @package Html
  */
 class htmlWidget_tabs implements htmlWidgetPlugin {
-	protected $tabElement, $tabPages, $tabHeaders;
+	protected $tabElement, $tabPages, $tabHeaders, $selectedTab;
 	
 	public function __construct(){
 		$this->tabHeaderElement = htmlBase::newElement('list');
@@ -49,6 +49,9 @@ class htmlWidget_tabs implements htmlWidgetPlugin {
 	public function draw(){
 		foreach($this->tabHeaders as $id => $obj){
 			if (isset($this->tabPages[$id])){
+				if (!empty($this->selectedTab) && $this->selectedTab == $id){
+					$obj->addClass('ui-tabs-selected');
+				}
 				$this->tabHeaderElement->addItemObj($obj);
 			}
 		}
@@ -94,6 +97,11 @@ class htmlWidget_tabs implements htmlWidgetPlugin {
 			return $this->tabPages[$id];
 		}
 		return false;
+	}
+	
+	public function setSelected($id){
+		$this->selectedTab = $id;
+		return $this;
 	}
 }
 ?>
