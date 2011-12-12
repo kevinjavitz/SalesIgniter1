@@ -26,13 +26,17 @@ class InfoBoxCufonFonts extends InfoBoxAbstract {
 		$boxWidgetProperties = $this->getWidgetProperties();
 
 		$javascript = '';
-
-
+		ob_start();
+		readfile(dirname(__FILE__) . '/javascript/cufon-yui.js');
+		readfile(sysConfig::getDirFsCatalog().'templates/'.Session::get('tplDir').'/fonts/'.$boxWidgetProperties->applied_font.'.js');
+		$javascript = ob_get_contents();
+		ob_end_clean();
 		$javascript .= '/* Cufon Fonts --BEGIN-- */' . "\n" .
-		'	$(document).ready(function (){' . "\n" .
-        '   $.getScript("'.sysConfig::getDirWsCatalog().'templates/'.Session::get('tplDir').'/fonts/'.$boxWidgetProperties->applied_font.'.js",function(){ '. "\n" .
-		'   Cufon.replace("'.$boxWidgetProperties->applied_elements.'");' . "\n" .
-		'   }); ' . "\n" .
+		'	$(document).ready(function (){' . "\n";
+		if(!empty($boxWidgetProperties->applied_elements)){
+		$javascript .= '   Cufon.replace("'.$boxWidgetProperties->applied_elements.'");' . "\n";
+		}
+		$javascript .=
 		'	});' . "\n" .
 		'/* Cufon Fonts --END-- */' . "\n";
 

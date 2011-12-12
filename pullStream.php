@@ -5,9 +5,11 @@ $name = substr($_GET['file'], 0, strpos($_GET['file'], '.'));
 if($name == 'preview' && !isset($_GET['opID'])){
 	$canView = true;
 }
+/*
 if($name != 'preview' && !stristr($name, 'loaded_stream_')){
 	$canView = false;
 }
+*/
 $pID = (isset($_GET['pID']) ? $_GET['pID'] : (isset($_GET['pid']) ? $_GET['pid'] : false));
 if($pID === false || !is_numeric($pID)){
 	$canView = false;
@@ -59,7 +61,9 @@ if($canView === true){
 		}
 		header('Content-Disposition: attachment; filename="' . $file['file_name'] . '"');
 	}
-	readfile('streamer/movies/' . $file['file_name']);
+	//readfile('streamer/movies/' . $file['file_name']);
+
+	readfile('streamer/' . $file['file_name']);
 	exit;
 } else{
 	echo 'File Not Found';

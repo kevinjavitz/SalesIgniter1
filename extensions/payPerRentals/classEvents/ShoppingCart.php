@@ -72,6 +72,10 @@
 
 			if (isset($pInfo['postVal']['start_date'])){
 				$pInfo['reservationInfo']['start_date'] = $pInfo['postVal']['start_date'];
+				if(Session::exists('isppr_date_start')){
+					Session::set('isppr_date_start', $pInfo['postVal']['start_date']);
+				}
+
 			}
 
 			if (isset($pInfo['postVal']['event_date'])) {
@@ -91,6 +95,9 @@
 
 			if (isset($pInfo['postVal']['end_date'])) {
 				$pInfo['reservationInfo']['end_date'] = $pInfo['postVal']['end_date'];
+				if(Session::exists('isppr_date_end')){
+					Session::set('isppr_date_end', $pInfo['postVal']['end_date']);
+				}
 			}
 
 			$pInfo['reservationInfo']['quantity'] = $pInfo['quantity'];

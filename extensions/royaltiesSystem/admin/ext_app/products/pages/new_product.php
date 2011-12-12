@@ -57,7 +57,7 @@ class royaltiesSystem_admin_products_new_product extends Extension_royaltiesSyst
 				);
 				
 				if ($pInfo['customers_id'] == $sInfo['content_provider_id']){
-					$providerName = $pInfo['customers_firstname'] . ' ' . $pInfo['customers_lastname'];
+					$providerName = $pInfo['customers_name'];
 				}
 			}
 		}

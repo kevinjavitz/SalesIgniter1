@@ -5,7 +5,7 @@ if ($session_started == false) {
 	if($App->getPageName() === 'logoff' || $App->getPageName() === 'login' || $App->getPageName() === 'create' || $App->getPageName() === 'password_forgotten'){
 		$navigation->remove_current_page();
 	}
-	if ($App->getPageName() != 'login' && $App->getPageName() != 'password_forgotten' && $App->getPageName() != 'create' && $userAccount->isLoggedIn() === false){
+	if ($App->getPageName() != 'login' && $App->getPageName() != 'password_forgotten' && $App->getPageName() != 'create' && $App->getPageName() != 'create_rental' && $userAccount->isLoggedIn() === false){
 		$navigation->set_snapshot();
 		tep_redirect(itw_app_link(null, 'account', 'login', 'SSL'));
 	}
