@@ -160,7 +160,7 @@
 			$form_elems['i']
 		);
 
-
+		EventManager::notify('MetaTagsAdminEditAddTabContents', &$layout);
 		$layout .= '</div>';
 
 		if($lInfo['id'] === sysLanguage::getId()){

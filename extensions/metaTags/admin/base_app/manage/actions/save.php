@@ -64,7 +64,7 @@
 			$Metatags->keywords 	= trim($val['k']);
 			$Metatags->type_page	= strtoupper($type_page);
 			$Metatags->type_page_id	= 0;
-
+			EventManager::notify('MetaTagsAdminSaveQueryBeforeExecute', &$Metatags);
 			$Metatags->save();
 
 		}
