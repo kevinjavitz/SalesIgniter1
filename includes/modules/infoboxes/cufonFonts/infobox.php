@@ -26,13 +26,9 @@ class InfoBoxCufonFonts extends InfoBoxAbstract {
 		$boxWidgetProperties = $this->getWidgetProperties();
 
 		$javascript = '';
-		ob_start();
-		readfile(dirname(__FILE__) . '/javascript/cufon-yui.js');
-		readfile(sysConfig::getDirFsCatalog().'templates/'.Session::get('tplDir').'/fonts/'.$boxWidgetProperties->applied_font.'.js');
-		$javascript = ob_get_contents();
-		ob_end_clean();
-		$javascript .= '/* Cufon Fonts --BEGIN-- */' . "\n" .
-		'	$(document).ready(function (){' . "\n";
+		
+		$javascript = '/* Cufon Fonts --BEGIN-- */' . "\n" .
+		'	$(document).ready(function (){' . "\n" ;
 		if(!empty($boxWidgetProperties->applied_elements)){
 		$javascript .= '   Cufon.replace("'.$boxWidgetProperties->applied_elements.'");' . "\n";
 		}
@@ -41,6 +37,14 @@ class InfoBoxCufonFonts extends InfoBoxAbstract {
 		'/* Cufon Fonts --END-- */' . "\n";
 
 		return $javascript;
+	}
+
+	public function getJavascriptSources(){
+		$boxWidgetProperties = $this->getWidgetProperties();
+		return array(
+			dirname(__FILE__) . '/javascript/cufon-yui.js',
+			sysConfig::getDirFsCatalog().'templates/'.Session::get('tplDir').'/fonts/'.$boxWidgetProperties->applied_font.'.js'
+		);
 	}
 	
 	public function onTemplateExport(&$iInfo, $data){
