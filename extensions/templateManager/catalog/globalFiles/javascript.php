@@ -66,9 +66,11 @@ else {
 	});
 	});
 	<?php
-		 $boxJavascriptsEntered = array();
+		$boxJavascriptsEntered = array();
+		$boxJavascriptSourcesEntered = array();
+		$infoBoxSrouces = array();
 		function parseContainer($Container) {
-			global $boxJavascriptsEntered;
+			global $boxJavascriptsEntered, $boxJavascriptSourcesEntered, $infoBoxSrouces;
 			if ($Container->Children->count() > 0){
 				foreach($Container->Children as $ChildObj){
 					parseContainer($ChildObj);
@@ -105,6 +107,23 @@ else {
 								echo $Box->buildJavascript();
 
 								$boxJavascriptsEntered[] = $className;
+							}
+						}
+						if (method_exists($className, 'getJavascriptSources')){
+							if (!in_array($className, $boxJavascriptSourcesEntered)){
+								if (isset($WidgetSettings->id) && !empty($WidgetSettings->id)){
+									$Box->setBoxId($WidgetSettings->id);
+								}
+								$Box->setWidgetProperties($WidgetSettings);
+
+								$infoBoxJsFiles = $Box->getJavascriptSources();
+								foreach($infoBoxJsFiles as $infoBoxJsFile){
+									if (file_exists($infoBoxJsFile)){
+										$infoBoxSrouces[] = $infoBoxJsFile;
+									}
+								}
+
+								$boxJavascriptSourcesEntered[] = $className;
 							}
 						}
 					}
@@ -171,6 +190,9 @@ else {
 	}
 	else {
 		$sources[] = sysConfig::getDirFsCatalog() . 'includes/javascript/general.js';
+		if(count($infoBoxSrouces)){
+			$sources = array_merge($sources,$infoBoxSrouces);
+		}
 	}
 
 	if (isset($_GET['import']) && !empty($_GET['import'])){
