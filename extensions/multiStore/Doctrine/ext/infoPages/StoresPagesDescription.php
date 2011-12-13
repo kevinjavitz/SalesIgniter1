@@ -41,7 +41,32 @@ class StoresPagesDescription extends Doctrine_Record {
 			'notnull'       => true,
 			'autoincrement' => false
 		));
-		
+		$this->hasColumn('pages_head_title_tag', 'string', 64, array(
+			'type'          => 'string',
+			'length'        => 64,
+			'fixed'         => false,
+			'primary'       => false,
+			'default'       => '',
+			'notnull'       => true,
+			'autoincrement' => false
+		));
+		$this->hasColumn('pages_head_desc_tag', 'string', null, array(
+			'type'          => 'string',
+			'fixed'         => false,
+			'primary'       => false,
+			'default'       => '',
+			'notnull'       => true,
+			'autoincrement' => false
+		));
+		$this->hasColumn('pages_head_keywords_tag', 'string', null, array(
+			'type'          => 'string',
+			'fixed'         => false,
+			'primary'       => false,
+			'default'       => '',
+			'notnull'       => true,
+			'autoincrement' => false
+		));
+
 		$this->hasColumn('pages_html_text', 'string', null, array(
 			'type'          => 'string',
 			'fixed'         => false,

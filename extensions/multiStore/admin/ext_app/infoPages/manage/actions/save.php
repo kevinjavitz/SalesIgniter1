@@ -23,6 +23,11 @@
 					$lID = $languages[$i]['id'];
 
 					$Pages->StoresPages[$sID]->StoresPagesDescription[$lID]->pages_title = $_POST['store_pages_title'][$sID][$lID];
+					if($appExtension->isEnabled('metaTags')){
+						$Pages->StoresPages[$sID]->StoresPagesDescription[$lID]->pages_head_title_tag = $_POST['pages_head_title_tag'][$sID][$lID];
+						$Pages->StoresPages[$sID]->StoresPagesDescription[$lID]->pages_head_desc_tag = $_POST['pages_head_desc_tag'][$sID][$lID];
+						$Pages->StoresPages[$sID]->StoresPagesDescription[$lID]->pages_head_keywords_tag = $_POST['pages_head_keywords_tag'][$sID][$lID];
+					}
 					$Pages->StoresPages[$sID]->StoresPagesDescription[$lID]->pages_html_text = $_POST['store_pages_html_text'][$sID][$lID];
 					$Pages->StoresPages[$sID]->StoresPagesDescription[$lID]->language_id = $lID;
 				}
