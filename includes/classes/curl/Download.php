@@ -251,7 +251,9 @@ class CurlDownload{
 			'<br>Download Speed: N/A' .
 			'<br>Total Downloaded: ' . $downloadedDone . '/' . $downloadedLeft . ' MB';
 		}
-		mysql_query('update progress_bar set message = "' . $message . '", percentage = "' . ($percent * 100) . '" where name = "' . $this->progressBarName . '"');
+		Doctrine_Manager::getInstance()
+			->getCurrentConnection()
+			->exec('update progress_bar set message = "' . $message . '", percentage = "' . ($percent * 100) . '" where name = "' . $this->progressBarName . '"');
 		return 0;
 	}
 }

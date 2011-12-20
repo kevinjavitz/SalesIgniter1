@@ -1,6 +1,7 @@
 <?php
-	$Qprogress = tep_db_query('select message from progress_bar where name = "newLanguage"');
-	$progress = tep_db_fetch_array($Qprogress);
+	$Progress = Doctrine_Manager::getInstance()
+		->getCurrentConnection()
+		->fetchAssoc('select message from progress_bar where name = "newLanguage"');
 	
-	EventManager::attachActionResponse($progress['message'], 'html');
+	EventManager::attachActionResponse($Progress[0]['message'], 'html');
 ?>
