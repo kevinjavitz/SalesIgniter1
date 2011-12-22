@@ -193,8 +193,9 @@ class InfoBoxSearch extends InfoBoxAbstract {
 			               $v .
 			               '</a> (' . $QproductCount[0]['total'] . ')' .
 			               '</li>';
+			$count++;
 		}
-		$count++;
+
 
 		if ($count > $this->searchItemDisplay){
 			$boxContent .= '<li class="searchShowMoreLink"><a href="#"><b>More</b></a></li>';
