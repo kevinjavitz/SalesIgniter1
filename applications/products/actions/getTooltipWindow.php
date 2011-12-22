@@ -1,5 +1,6 @@
 <?php
-	$product = new Product((int)$_POST['pID']);
+	$productID = (int)$_GET['products_id'];
+	$product = new Product((int)$_GET['products_id']);
 	$pageButtons = '';
 	if(sysConfig::get('TOOLTIP_DESCRIPTION_BUTTONS') == 'true') {
 		$purchaseBoxes = array();
@@ -41,7 +42,7 @@
 																		));
 			}
 
-			$boxInfo['content'] .= tep_draw_hidden_field('products_id', $productID);
+			$boxInfo['content'] .= tep_draw_hidden_field('products_id', $product->getId());
 
 			$boxObj = htmlBase::newElement('infobox')
 					->setForm(array(
