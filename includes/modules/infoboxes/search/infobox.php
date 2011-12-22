@@ -116,7 +116,7 @@ class InfoBoxSearch extends InfoBoxAbstract {
 						$boxContent .= '</ul>';
 					}
 				} else {
-					$boxContent .= '<br /><b '.(isset($boxWidgetProperties->dropdown->{$type}) ? 'style="margin:.5em"' : '').'>' . $content['heading'] . '</b><ul style="list-style:none;margin:.5em;padding:0px">';
+					$boxContent .= '<b '.(isset($boxWidgetProperties->dropdown->{$type}) ? 'style="margin:.5em"' : '').'>' . $content['heading'] . '</b><ul style="list-style:none;margin:.5em;padding:0px">';
 					$boxContent .= $content['content'];
 					if($content['count'] > $this->searchItemDisplay && !isset($boxWidgetProperties->dropdown->{$type})){
 						$boxContent .= '<li class="searchShowMoreLink"><a href="#"><b>More</b></a></li>';
