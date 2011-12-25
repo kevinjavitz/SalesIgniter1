@@ -9,7 +9,7 @@ $(document).ready(function (){
 			removeAjaxLoader($('#streamPlayer'));
 			data.config.clip.onStart = function(clip){
 				var wrap = jQuery(this.getParent());
-				var width = 700;
+				var width = data.config.width;
 				var height;
 				
 				var RealHeight = parseInt(clip.metaData.height);

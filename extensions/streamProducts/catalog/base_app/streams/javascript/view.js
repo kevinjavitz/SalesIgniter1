@@ -52,7 +52,7 @@ $(document).ready(function (){
 			if (data.success){
 				data.config.clip.onStart = function(clip){
 					var wrap = jQuery(this.getParent());
-					var width = 720;
+					var width = data.config.width;
 					var height = false;
 				
 					var RealHeight = parseInt(clip.metaData.height);
