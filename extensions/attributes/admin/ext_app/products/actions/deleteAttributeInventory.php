@@ -6,17 +6,22 @@
 	->from('ProductsInventory')
 	->where('controller = ?', 'attribute')
 	->andWhere('type = ?', $_GET['purchaseType'])
+	->andWhere('products_id = ?', $_GET['product_id'])
 	//->andWhere('track_method = ?', $_GET['track_method'])
 	->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 	if ($Qinventory){
 		$extAttributes = $appExtension->getExtension('attributes');
-		$attributePermutations = attributesUtil::permutateAttributesFromString($_GET['aID_string']);
+		if(!empty($_GET['aID_string'])){
+			$attributePermutations = attributesUtil::permutateAttributesFromString($_GET['aID_string']);
+		}else{
+			$attributePermutations = array();
+		}
 		if ($_GET['trackMethod'] == 'barcode'){
 			$Qcheck = Doctrine_Query::create()
 			->select('inventory_id')
 			->from('ProductsInventoryBarcodes')
 			->where('inventory_id = ?', $Qinventory[0]['inventory_id'])
-			->andWhereIn('attributes', $attributePermutations)
+			//->andWhereIn('attributes', $attributePermutations)
 			->andWhereIn('status', array('O', 'P'))
 			->execute();
 			if ($Qcheck->count() > 0){
@@ -31,7 +36,7 @@
 			Doctrine_Query::create()
 			->delete('ProductsInventoryBarcodes')
 			->where('inventory_id = ?', $Qinventory[0]['inventory_id'])
-			->andWhereIn('attributes', $attributePermutations)
+			//->andWhereIn('attributes', $attributePermutations)
 			->andWhereNotIn('status', array('O', 'P'))
 			->execute();
 		}elseif ($_GET['trackMethod'] == 'quantity'){
@@ -39,7 +44,7 @@
 			->select('inventory_id')
 			->from('ProductsInventoryQuantity')
 			->where('inventory_id = ?', $Qinventory[0]['inventory_id'])
-			->andWhereIn('attributes', $attributePermutations)
+			//->andWhereIn('attributes', $attributePermutations)
 			->andWhere('(purchased > 0 OR reserved > 0 OR qty_out > 0)')
 			->execute();
 			if ($Qcheck->count() > 0){
@@ -51,7 +56,7 @@
 				Doctrine_Query::create()
 				->delete('ProductsInventoryQuantity')
 				->where('inventory_id = ?', $Qinventory[0]['inventory_id'])
-				->andWhereIn('attributes', $attributePermutations)
+				//->andWhereIn('attributes', $attributePermutations)
 				->execute();
 				$response = array('success' => true);
 			}

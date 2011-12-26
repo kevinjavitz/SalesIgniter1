@@ -72,6 +72,33 @@
 			return false;
 		}
 
+		public function getPostCategories($blog_post_id){
+			global $appExtension;
+			if (!isset($this->checkMultiStore)){
+				$multiStore = $appExtension->getExtension('multiStore');
+				if ($multiStore !== false && $multiStore->isEnabled() === true){
+					$this->checkMultiStore = true;
+				} else{
+					$this->checkMultiStore = false;
+				}
+			}
+
+			$Query = Doctrine_Query::create()
+				->select('cd.*, cc.*, c.*')
+				->from('BlogPostToCategories c')
+				->leftJoin('c.BlogCategories cc')
+				->leftJoin('cc.BlogCategoriesDescription cd')
+				->where('cd.language_id = ?', (int) Session::get('languages_id'))
+				->andWhere('c.blog_post_id = ?', (int) $blog_post_id);
+
+			if ($this->checkMultiStore === true){
+				$Query->addSelect('ps.*')
+					->leftJoin('cc.BlogCategoriesToStores ps')
+					->andWhere('ps.stores_id = ?', (int) Session::get('current_store_id'));
+			}
+			return $Query->execute();
+		}
+
 		public function getCategoryHeaderDescription($seo_title){
 
 			$Query = Doctrine_Query::create()
@@ -251,6 +278,63 @@
 
 			$pagerRange = new Doctrine_Pager_Range_Sliding(array(
 			'chunk' => 5
+			));
+
+			$pagerLayout = new PagerLayoutWithArrows($listingPager, $pagerRange, $pagerLink);
+			$pagerLayout->setMyType('posts');
+			$pagerLayout->setTemplate('<a href="{%url}" style="margin-left:5px;background-color:#ffffff;padding:3px;">{%page}</a>');
+			$pagerLayout->setSelectedTemplate('<span style="margin-left:5px;">{%page}</span>');
+
+			$pager = $pagerLayout->getPager();
+
+			$Result = $pager->execute()->toArray(true);
+
+			$pagerBar = $pagerLayout->display(array(), true);
+
+			return $Result;
+		}
+
+		public function getPostsWithPaging($languageId = null, $seo_cat = null, $pg_limit, $pg, &$pagerBar) {
+			global $appExtension;
+
+			if (!isset($this->checkMultiStore)){
+				$multiStore = $appExtension->getExtension('multiStore');
+				if ($multiStore !== false && $multiStore->isEnabled() === true){
+					$this->checkMultiStore = true;
+				} else{
+					$this->checkMultiStore = false;
+				}
+			}
+
+			$Query = Doctrine_Query::create()
+				->select('p.*, pd.*')
+				->from('BlogPosts p')
+				->leftJoin('p.BlogPostsDescription pd')
+				//->leftJoin('p.BlogPostToCategories c')
+				//->leftJoin('c.BlogCategories cc')
+				//->leftJoin('cc.BlogCategoriesDescription cd')
+				->where('p.post_status = 1')
+				->orderBy('p.post_date desc');
+
+			if (is_null($languageId) === false){
+				$Query->andWhere('pd.language_id = ?', (int) $languageId);
+				//$Query->andWhere('cd.language_id = ?', (int) $languageId);
+			} else{
+				$Query->andWhere('pd.language_id = ?', (int) Session::get('languages_id'));
+				//$Query->andWhere('cd.language_id = ?', (int) Session::get('languages_id'));
+			}
+
+			if ($this->checkMultiStore === true){
+				$Query->addSelect('ps.*')
+					->leftJoin('cc.BlogCategoriesToStores ps')
+					->andWhere('ps.stores_id = ?', (int) Session::get('current_store_id'));
+			}
+
+			$listingPager = new Doctrine_Pager($Query, $pg, $pg_limit);
+			$pagerLink = itw_app_link(tep_get_all_get_params(array('page', 'action')) . 'page={%page_number}');
+
+			$pagerRange = new Doctrine_Pager_Range_Sliding(array(
+				'chunk' => 5
 			));
 
 			$pagerLayout = new PagerLayoutWithArrows($listingPager, $pagerRange, $pagerLink);

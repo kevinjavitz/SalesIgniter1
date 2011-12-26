@@ -33,6 +33,89 @@ class Extension_infoPages extends ExtensionBase {
 
 		if ($appExtension->isAdmin()){
 			EventManager::attachEvent('BoxCmsAddLink', null, $this);
+		} else {
+			if (!isset($this->checkMultiStore)){
+				$multiStore = $appExtension->getExtension('multiStore');
+				if ($multiStore !== false && $multiStore->isEnabled() === true){
+					$this->checkMultiStore = true;
+				}else{
+					$this->checkMultiStore = false;
+				}
+			}
+			if($this->checkMultiStore){
+				EventManager::attachEvents(array(
+					'PageLayoutHeaderTitle',
+					'PageLayoutHeaderMetaDescription',
+					'PageLayoutHeaderMetaKeyword'
+				), null, $this);
+			}
+		}
+	}
+
+	public function PageLayoutHeaderTitle(&$title){
+		$Query = Doctrine_Query::create()
+			->select('p.pages_id,pd.pages_head_title_tag,sp.*,spd.pages_head_title_tag') //If select is not included, the following error is thrown: "The root class of the query (alias p) must have at least one field selected."
+			->from('Pages p')
+			->leftJoin('p.PagesDescription pd')
+			->leftJoin('p.StoresPages sp')
+			->leftJoin('sp.StoresPagesDescription spd')
+			->where('pd.language_id = ?', (int)Session::get('languages_id'))
+			->andWhere('sp.stores_id = ?', (int)Session::get('current_store_id'))
+			->andWhere('p.page_key = ?', $_GET['appPage']);
+
+		$Result = $Query->fetchArray();
+		if(count($Result)){
+			if(count($Result[0]['StoresPages'][0]['StoresPagesDescription']) <= 0){
+				$title = $Result[0]['PagesDescription'][0]['pages_head_title_tag'];
+
+			} else {
+				$title = $Result[0]['StoresPages'][0]['StoresPagesDescription'][0]['pages_head_title_tag'];
+			}
+		}
+	}
+
+	public function PageLayoutHeaderMetaDescription(&$desc){
+		$Query = Doctrine_Query::create()
+			->select('p.pages_id,pd.pages_head_desc_tag,sp.*,spd.pages_head_desc_tag') //If select is not included, the following error is thrown: "The root class of the query (alias p) must have at least one field selected."
+			->from('Pages p')
+			->leftJoin('p.PagesDescription pd')
+			->leftJoin('p.StoresPages sp')
+			->leftJoin('sp.StoresPagesDescription spd')
+			->where('pd.language_id = ?', (int)Session::get('languages_id'))
+			->andWhere('sp.stores_id = ?', (int)Session::get('current_store_id'))
+			->andWhere('p.page_key = ?', $_GET['appPage']);
+
+		$Result = $Query->fetchArray();
+		if(count($Result)){
+			if(count($Result[0]['StoresPages'][0]['StoresPagesDescription']) <= 0){
+				$desc = $Result[0]['PagesDescription'][0]['pages_head_desc_tag'];
+
+			} else {
+
+				$desc = $Result[0]['StoresPages'][0]['StoresPagesDescription'][0]['pages_head_desc_tag'];
+			}
+		}
+	}
+
+	public function PageLayoutHeaderMetaKeyword(&$keys){
+		$Query = Doctrine_Query::create()
+			->select('p.pages_id,pd.pages_head_keywords_tag,sp.*,spd.pages_head_keywords_tag') //If select is not included, the following error is thrown: "The root class of the query (alias p) must have at least one field selected."
+			->from('Pages p')
+			->leftJoin('p.PagesDescription pd')
+			->leftJoin('p.StoresPages sp')
+			->leftJoin('sp.StoresPagesDescription spd')
+			->where('pd.language_id = ?', (int)Session::get('languages_id'))
+			->andWhere('sp.stores_id = ?', (int)Session::get('current_store_id'))
+			->andWhere('p.page_key = ?', $_GET['appPage']);
+
+		$Result = $Query->fetchArray();
+		if(count($Result)){
+			if(count($Result[0]['StoresPages'][0]['StoresPagesDescription']) <= 0){
+				$keys = $Result[0]['PagesDescription'][0]['pages_head_keywords_tag'];
+
+			} else {
+				$keys = $Result[0]['StoresPages'][0]['StoresPagesDescription'][0]['pages_head_keywords_tag'];
+			}
 		}
 	}
 

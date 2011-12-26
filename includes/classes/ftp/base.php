@@ -1,47 +1,51 @@
 <?php
-class SystemFtpSplFileInfo extends SplFileInfo {
-	
-	public function getExt(){
+class SystemFtpSplFileInfo extends SplFileInfo
+{
+
+	public function getExt() {
 		if (method_exists($this, 'getExtension')){
 			return parent::getExtension();
-		}else{
+		}
+		else {
 			if (strpos($this->getBasename(), '.') > 0){
 				return substr($this->getBasename(), -(strrpos($this->getBasename(), '.')));
-			}else{
+			}
+			else {
 				return '';
 			}
 		}
 	}
-	
-	public function isDir(){
+
+	public function isDir() {
 		return ($this->getExt() == '');
 	}
-	
-	public function isFile(){
+
+	public function isFile() {
 		return ($this->getExt() != '');
 	}
-	
-	public function isWritable(){
+
+	public function isWritable() {
 		return is_writable(sysConfig::getDirFsCatalog() . $this->getPathname());
 	}
-	
-	public function isReadable(){
+
+	public function isReadable() {
 		return is_readable(sysConfig::getDirFsCatalog() . $this->getPathname());
 	}
-	
-	public function getPerms(){
+
+	public function getPerms() {
 		return substr(sprintf('%o', fileperms(sysConfig::getDirFsCatalog() . $this->getPathname())), -4);
 	}
-	
-	public function exists(){
+
+	public function exists() {
 		if ($this->isFile() === true){
 			return (file_exists(sysConfig::getDirFsCatalog() . $this->getPathname()) === true);
-		}else{
+		}
+		else {
 			return (is_dir(sysConfig::getDirFsCatalog() . $this->getPathname()) === true);
 		}
 	}
-	
-	public function updateContentFromString($contents, $truncate = false){
+
+	public function updateContentFromString($contents, $truncate = false) {
 		$FileObj = new SplFileObject(sysConfig::getDirFsCatalog() . $this->getPathname(), 'w');
 		if ($truncate === true){
 			$FileObj->ftruncate(0);
@@ -52,15 +56,27 @@ class SystemFtpSplFileInfo extends SplFileInfo {
 	}
 }
 
-class SystemFTP {
+class SystemFTP
+{
+
 	private $usePASV = true;
+
 	private $ftpConn = false;
+
 	private $error = array();
 
-	public function __construct(){
+	public function __construct() {
 	}
 
-	public function connect(){
+	public function hasError(){
+		return !empty($this->error);
+	}
+
+	public function getError(){
+		return $this->error;
+	}
+
+	public function connect() {
 		$this->ftpConn = ftp_connect(sysConfig::get('SYSTEM_FTP_SERVER'), 21);
 		if ($this->ftpConn === false){
 			$this->error = array(
@@ -97,75 +113,96 @@ class SystemFTP {
 			$folders = sysConfig::getDirWsCatalog();
 			$folders = explode('/', $folders);
 			foreach($folders as $fName){
-				if (empty($fName)) continue;
+				if (empty($fName)) {
+					continue;
+				}
 
 				ftp_chdir($this->ftpConn, $fName);
 			}
 		}
 	}
 
-	public function disconnect(){
+	public function cleanPath($filePath) {
+		return str_replace(sysConfig::getDirFsCatalog(), '', $filePath);
+	}
+
+	public function disconnect() {
 		ftp_close($this->ftpConn);
 	}
 
-	public function makeWritable($filePath){
+	public function makeWritable($filePath) {
 		$this->checkPath($filePath);
 
-		$this->changePermissions($filePath, '777');
+		return $this->changePermissions($filePath, '777');
 	}
 
-	public function unmakeWritable($filePath){
+	public function unmakeWritable($filePath) {
 		if (is_dir(sysConfig::getDirFsCatalog() . $filePath)){
-			$this->changePermissions($filePath, '755');
-		}else{
-			$this->changePermissions($filePath, '644');
+			$perms = '755';
 		}
+		else {
+			$perms = '644';
+		}
+		return $this->changePermissions($filePath, $perms);
 	}
 
-	public function deleteDir($filePath){
-		ftp_rmdir($this->ftpConn, $filePath);
+	public function deleteDir($filePath) {
+		ftp_rmdir($this->ftpConn, $this->cleanPath($filePath));
 	}
 
-	public function deleteFile($filePath){
-		ftp_delete($this->ftpConn, $filePath);
+	public function deleteFile($filePath) {
+		ftp_delete($this->ftpConn, $this->cleanPath($filePath));
 	}
 
-	public function copyFile($from, $to){
+	public function copyFile($from, $to) {
+		$success = true;
 		$fileCheck = $this->checkPath($to);
 
 		if ($fileCheck->exists() === true){
-			$this->makeWritable($fileCheck->getPathname());
-		}else{
-			if ($fileCheck->isWritable() === false){
-				$this->makeWritable($fileCheck->getPath());
-			}
-		
-			$tmpHandle = fopen($from, 'r');
-			ftp_fput($this->ftpConn, $fileCheck->getPathname(), $tmpHandle, FTP_BINARY);
-			fclose($tmpHandle);
-		
-			if ($fileCheck->isWritable() === true){
-				$this->unmakeWritable($fileCheck->getPath());
+			if (!$this->makeWritable($fileCheck->getPathname())){
+				$success = false;
 			}
 		}
+		else {
+			if ($fileCheck->isWritable() === false){
+				if (!$this->makeWritable($fileCheck->getPath())){
+					$success = false;
+				}
+			}
+
+			if ($success === true){
+				$tmpHandle = fopen($from, 'r');
+				if (!ftp_fput($this->ftpConn, $fileCheck->getPathname(), $tmpHandle, FTP_BINARY)){
+					$success = false;
+				}
+				fclose($tmpHandle);
+
+				if ($success === true && $fileCheck->isWritable() === true){
+					$this->unmakeWritable($fileCheck->getPath());
+				}
+			}
+		}
+		return $success;
 	}
 
-	public function updateFileFromString($filePath, $fileContent){
+	public function updateFileFromString($filePath, $fileContent) {
 		$fileCheck = $this->checkPath($filePath);
-		if ($fileCheck->isDir() === true) return;
-		
+		if ($fileCheck->isDir() === true) {
+			return;
+		}
+
 		if ($fileCheck->exists() === false){
 			$tmpHandle = tmpfile();
 			ftp_fput($this->ftpConn, $fileCheck->getPathname(), $tmpHandle, FTP_ASCII);
 			fclose($tmpHandle);
 		}
-		
+
 		if ($fileCheck->isWritable() === false){
 			$this->makeWritable($fileCheck->getPathname());
 		}
 
 		$fileCheck->updateContentFromString($fileContent, true);
-		
+
 		if ($fileCheck->isWritable() === true){
 			$this->unmakeWritable($fileCheck->getPathname());
 		}
@@ -173,9 +210,9 @@ class SystemFTP {
 		unset($fileCheck);
 	}
 
-	public function checkPath($filePath){
-		$fileCheck = new SystemFtpSplFileInfo($filePath);
-		
+	public function checkPath($filePath) {
+		$fileCheck = new SystemFtpSplFileInfo($this->cleanPath($filePath));
+
 		$FileLoop = $fileCheck->getPathInfo('SystemFtpSplFileInfo');
 		$checkArr = array(
 			$fileCheck
@@ -187,10 +224,12 @@ class SystemFTP {
 		$checkArr[] = $FileLoop;
 		$FileLoop = null;
 		unset($FileLoop);
-		
+
 		$checkArr = array_reverse($checkArr);
 		foreach($checkArr as $fInfo){
-			if ($fInfo->isFile() === true || $fInfo->exists() === true) continue;
+			if ($fInfo->isFile() === true || $fInfo->exists() === true) {
+				continue;
+			}
 
 			ftp_mkdir($this->ftpConn, $fInfo->getPathname());
 		}
@@ -198,14 +237,16 @@ class SystemFTP {
 		$fInfo = null;
 		unset($checkArr);
 		unset($fInfo);
-		
+
 		return $fileCheck;
 	}
 
-	private function changePermissions($filePath, $perms){
-		$perms = '0'.$perms;
-		$ftpCmd = ftp_chmod($this->ftpConn, eval("return({$perms});"), $filePath);
+	private function changePermissions($filePath, $perms) {
+		$perms = '0' . $perms;
+		$ftpCmd = ftp_chmod($this->ftpConn, eval("return({$perms});"), $this->cleanPath($filePath));
+		$success = true;
 		if ($ftpCmd === false){
+			$success = false;
 			$this->error = array(
 				'type' => 'fatal',
 				'message' => sprintf(
@@ -214,5 +255,6 @@ class SystemFTP {
 				)
 			);
 		}
+		return $success;
 	}
 }

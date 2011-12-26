@@ -13,7 +13,7 @@
 				'stream_type' => $_GET['type'],
 				'file_name' => $_GET['file'],
 			));
-
+			$config['width'] = sysConfig::get('EXTENSION_STREAMPRODUCTS_STREAMER_WIDTH');
 			$json = array(
 				'success' => true,
 				'config' => $config
@@ -40,7 +40,7 @@
 			$StreamInfo['oID'] = $orderId;
 			$StreamInfo['opID'] = $orderProductId;
 			$config = $Provider->getFlowplayerConfig($StreamInfo);
-			
+			$config['width'] = sysConfig::get('EXTENSION_STREAMPRODUCTS_STREAMER_WIDTH');
 			$json = array(
 				'success' => true,
 				'config' => $config
@@ -59,7 +59,7 @@
 				$Stream['ProductsStreamProviders']['provider_module_settings']
 			);
 			$config = $Provider->getFlowplayerConfig($Stream);
-			
+			$config['width'] = sysConfig::get('EXTENSION_STREAMPRODUCTS_STREAMER_WIDTH');
 			$json = array(
 				'success' => true,
 				'config' => $config
@@ -78,6 +78,7 @@
 				$PreviewStream['ProductsStreamProviders']['provider_module_settings']
 			);
 			$config = $Provider->getFlowplayerConfig($PreviewStream);
+			$config['width'] = sysConfig::get('EXTENSION_STREAMPRODUCTS_STREAMER_WIDTH');
 			
 			$json = array(
 				'success' => true,

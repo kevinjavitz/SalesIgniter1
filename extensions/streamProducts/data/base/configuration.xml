@@ -24,5 +24,11 @@
 			<description>Stream expires X days after purchase, 0 for unlimited</description>
 			<sort_order>3</sort_order>
 		</EXTENSION_STREAMPRODUCTS_MAX_DAYS>
+		<EXTENSION_STREAMPRODUCTS_STREAMER_WIDTH>
+			<title>Player default width</title>
+			<value>640</value>
+			<description>Set player's default width. Height will be calculated from video aspect ratio</description>
+			<sort_order>4</sort_order>
+		</EXTENSION_STREAMPRODUCTS_STREAMER_WIDTH>
 	</Configuration>
 </ConfigurationGroup>

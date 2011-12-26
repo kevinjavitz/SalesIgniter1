@@ -25,6 +25,7 @@ class multiStore_admin_infoPages_manage_newPage extends Extension_multiStore {
 	}
 	
 	public function loadTabs(&$tabsObj){
+		global $appExtension;
 		$multiStoreTabs = htmlBase::newElement('tabs')->setId('storeTabs');
 		$multiStoreTabs->addTabHeader('tab_global', array(
 			'text' => 'Global'
@@ -85,7 +86,26 @@ class multiStore_admin_infoPages_manage_newPage extends Extension_multiStore {
 				->attr('language_id', $lID)
 				->addClass('titleInput')
 				->setName('store_pages_title[' . $sInfo['stores_id'] . '][' . $lID . ']');
-				
+				if($appExtension->isEnabled('metaTags')){
+					$metaTitleInput = htmlBase::newElement('input')
+					->attr('language_id', $lID)
+					->addClass('metaTitleInput')
+					->setName('pages_head_title_tag[' . $sInfo['stores_id'] . '][' . $lID . ']');
+
+					$metaDescriptionField = htmlBase::newElement('textarea')
+						->attr('language_id', $lID)
+						->addClass('metaDescriptionInput')
+						->setName('pages_head_desc_tag[' . $sInfo['stores_id'] . '][' . $lID . ']')
+						->attr('cols', 90)
+						->attr('rows', 20);
+
+					$metaKeywordsField = htmlBase::newElement('textarea')
+						->attr('language_id', $lID)
+						->addClass('metaKeywordsInput')
+						->setName('pages_head_keywords_tag[' . $sInfo['stores_id'] . '][' . $lID . ']')
+						->attr('cols', 90)
+						->attr('rows', 20);
+				}
 				$ckField = htmlBase::newElement('ck_editor')
 				->attr('language_id', $lID)
 				->setName('store_pages_html_text[' . $sInfo['stores_id'] . '][' . $lID . ']')
@@ -94,14 +114,22 @@ class multiStore_admin_infoPages_manage_newPage extends Extension_multiStore {
 				
 				if (isset($pInfo) && $pInfo['show_method'] == 'use_custom'){
 					$titleInput->val($pInfo['StoresPagesDescription'][$lID]['pages_title']);
+					if($appExtension->isEnabled('metaTags')){
+						$metaTitleInput->val($pInfo['StoresPagesDescription'][$lID]['pages_head_title_tag']);
+						$metaDescriptionField->val($pInfo['StoresPagesDescription'][$lID]['pages_head_desc_tag']);
+						$metaKeywordsField->val($pInfo['StoresPagesDescription'][$lID]['pages_head_keywords_tag']);
+					}
 					$ckField->html($pInfo['StoresPagesDescription'][$lID]['pages_html_text']);
 				}
 				
 				$storeTabsLang->addTabHeader('storeTabs_langTab_' . $sInfo['stores_id'] . '_' . $lID, array(
 					'text' => $lInfo['showName']()
 				))->addTabPage('storeTabs_langTab_' . $sInfo['stores_id'] . '_' . $lID, array(
-					'text' => sysLanguage::get('TEXT_PAGES_TITLE') . '&nbsp;' . $titleInput->draw() . '<br /><br />' . 
-					          $ckField->draw() . '<br />' . 
+					'text' => sysLanguage::get('TEXT_PAGES_TITLE') . '&nbsp;' . $titleInput->draw() . '<br /><br />' .
+					          ($appExtension->isEnabled('metaTags') ? sysLanguage::get('HEADER_META_TITLE') . '&nbsp;' . $metaTitleInput->draw() . '<br /><br />' : '') .
+					          ($appExtension->isEnabled('metaTags') ? sysLanguage::get('HEADER_META_DESC') . '&nbsp;' . $metaDescriptionField->draw() . '<br /><br />' : '') .
+					          ($appExtension->isEnabled('metaTags') ? sysLanguage::get('HEADER_META_KEYWORD') . '&nbsp;' . $metaKeywordsField->draw() . '<br /><br />' : '') .
+					          $ckField->draw() . '<br />' .
 					          sysLanguage::get('TEXT_PAGES_PAGE_NOTE')
 				));
 			}

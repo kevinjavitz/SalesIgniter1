@@ -54,7 +54,7 @@ class BlogPosts extends Doctrine_Record {
 			'length'        => 4,
 			'unsigned'      => 0,
 			'primary'       => false,
-			'default'       => '0',
+			'default'       => '1',
 			'notnull'       => true,
 			'autoincrement' => false
 		));

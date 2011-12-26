@@ -23,6 +23,8 @@ class Extension_multiStore extends ExtensionBase {
 		EventManager::attachEvents(array(
 			'EmailEventSetAllowedVars',
 			'OrderQueryBeforeExecute',
+			'MetaTagsFetchPageQueryBeforeExecute',
+			'MetaTagsFetchDefaultsQueryBeforeExecute',
 			'OrderSingleLoad'
 		), null, $this);
 		
@@ -63,6 +65,8 @@ class Extension_multiStore extends ExtensionBase {
 				'BoxConfigurationAddLink',
 				'AdminHeaderRightAddContent',
 				'AdminInventoryCentersListingQueryBeforeExecute',
+				'MetaTagsAdminEditAddTabContents',
+				'MetaTagsAdminSaveQueryBeforeExecute',
 				'ProductInventoryReportsListingQueryBeforeExecute'
 			), null, $this);
 			
@@ -362,6 +366,67 @@ class Extension_multiStore extends ExtensionBase {
 		}
 	}
 	
+	public function MetaTagsAdminEditAddTabContents(&$layout){
+		$Result = $this->getStoresArray();
+		if ($Result){
+			$selectBox = htmlBase::newElement('selectbox')
+				->setName('meta_stores_id')
+				->attr('jslink', itw_app_link(tep_get_all_get_params(array('action', 'meta_stores_id'))));
+
+			if (isset($_GET['meta_stores_id'])){
+				$selectBox->selectOptionByValue($_GET['meta_stores_id']);
+			}
+
+			$selectBox->addOption('all', 'All Stores');
+			foreach($Result as $sInfo){
+				$selectBox->addOption($sInfo['stores_id'], $sInfo['stores_name']);
+			}
+			$layout = '<br><table cellpadding="4" cellspacing="4"><tr><td>Store:</td><td>' . $selectBox->draw() . '</td></tr></table><hr>' . $layout;
+		}
+	}
+
+	public function MetaTagsCheckStores(){
+		global $langs;
+		$Result = $this->getStoresArray();
+		if ($Result){
+			foreach($Result as $sInfo){
+				foreach ($langs as $langid => $val) {
+					$Metatags = Doctrine::getTable('MetaTags')->findByStoresIdAndLanguageId($sInfo['stores_id'], $langid);
+					if(!$Metatags){
+
+						$Metatags = Doctrine::getTable('MetaTags');
+						$Metatags = $Metatags->create();
+						$Metatags->language_id	= intVal($langid);
+						$Metatags->stores_id	= intVal($sInfo['stores_id']);
+						$Metatags->save();
+					}
+				}
+			}
+		}
+	}
+
+	public function MetaTagsAdminSaveQueryBeforeExecute(&$Metatags){
+		$Metatags->stores_id = (($_POST['meta_stores_id'] == 'all') ? 0 : intVal($_POST['meta_stores_id']));
+	}
+
+	public function MetaTagsFetchPageQueryBeforeExecute(&$MetatagsQuery){
+		global $appExtension;
+		if($appExtension->isAdmin()){
+			$this->MetaTagsCheckStores();
+			$MetatagsQuery->andWhere('stores_id = ?', (($_GET['meta_stores_id'] == 'all') ? 0 : intVal($_GET['meta_stores_id'])));
+		} else {
+			$MetatagsQuery->andWhere('stores_id = ?', ((Session::get('current_store_id') == 'all') ? 0 : intVal(Session::get('current_store_id'))));
+		}
+	}
+
+	public function MetaTagsFetchDefaultsQueryBeforeExecute(&$MetatagsQuery){
+		global $appExtension;
+		if($appExtension->isAdmin()){
+			$MetatagsQuery->andWhere('stores_id = ?', (($_GET['meta_stores_id'] == 'all') ? 0 : intVal($_GET['meta_stores_id'])));
+		} else {
+			$MetatagsQuery->andWhere('stores_id = ?', ((Session::get('current_store_id') == 'all') ? 0 : intVal(Session::get('current_store_id'))));
+		}
+	}
 	
 	/**
 	 * Calculates distance between two points on Earth

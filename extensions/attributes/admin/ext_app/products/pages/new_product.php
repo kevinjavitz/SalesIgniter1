@@ -409,6 +409,7 @@ class attributes_admin_products_new_product extends Extension_attributes {
 			$optionId = $_POST['option'];
 		}
 		$html = '';
+		$OptionContainer = false;
 		if ($optionId > 0){
 			$Option = Doctrine_Query::create()
 			->from('ProductsOptions o')
@@ -680,9 +681,9 @@ class attributes_admin_products_new_product extends Extension_attributes {
 
 				$OptionContainer->append($OptionsTable);
 			}
-			return $OptionContainer;
+
 		}
-		return false;
+		return $OptionContainer;
 	}
 
 	public function getInventoryEntry($data){

@@ -112,10 +112,10 @@ function buildAppLink($o){
 }
 
 function itw_app_link($params=null, $appName=null, $appPage=null, $connection='NONSSL'){
-	global $request_type;
+	global $request_type, $App;
 	$appExt = null;
 
-	if($appName == 'account' && sysConfig::get('ENABLE_SSL') == true && ($connection !== 'SSL')){
+	if(($appName == 'account' || $appName == 'checkout' || $App->getAppName() == 'account' || $App->getAppName() == 'checkout') && sysConfig::get('ENABLE_SSL') == true && ($connection !== 'SSL')){
 		$connection = 'SSL';
 	}
 	

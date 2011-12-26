@@ -27,12 +27,14 @@
 	$pg_limit = (int) sysConfig::get('EXTENSION_BLOG_POST_PER_PAGE');
 
 	$pagerBar = '';
-	$posts = $blog->getCategoriesPosts(null, $app_pg, $pg_limit, $pg, &$pagerBar);
+	//$posts = $blog->getCategoriesPosts(null, $app_pg, $pg_limit, $pg, &$pagerBar);
+	$posts = $blog->getPostsWithPaging(null, $app_pg, $pg_limit, $pg, &$pagerBar);
 
 	$contentHtml = '';
 	foreach ($posts as $post){
 		$categ = '';
-		foreach ($post['BlogPostToCategories'] as $cat){
+		$postCategories = $blog->getPostCategories($post['post_id']);
+		foreach ($postCategories as $cat){
 			$categ .= $cat['BlogCategories']['BlogCategoriesDescription'][Session::get('languages_id')]['blog_categories_title'] . ', ';
 		}
 		$categ = substr($categ, 0, strlen($categ) - 2);

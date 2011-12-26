@@ -40,6 +40,9 @@ $(document).ready(function (){
 						$('.titleInput', $('#tab_global')).each(function (){
 							var languageId = $(this).attr('language_id');
 							$('.titleInput[language_id=' + languageId + ']', $curTab).val($(this).val());
+							$('.metaTitleInput[language_id=' + languageId + ']', $curTab).val($('.metaTitleInput[language_id=' + languageId + ']', $('#tab_global')).val());
+							$('.metaDescriptionInput[language_id=' + languageId + ']', $curTab).val($('.metaDescriptionInput[language_id=' + languageId + ']', $('#tab_global')).val());
+							$('.metaKeywordsInput[language_id=' + languageId + ']', $curTab).val($('.metaKeywordsInput[language_id=' + languageId + ']', $('#tab_global')).val());
 						});
 					}else{
 						$tabEl.show();

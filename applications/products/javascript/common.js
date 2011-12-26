@@ -5,7 +5,7 @@ $(document).ready(function (){
 		var $thisImage = $(this);
 		if(!$('#desc' + $(this).attr('pID')).html()){
 			$.ajax({
-				url: js_app_link(linkParams + 'rType=ajax&app=products&appPage=all&action=getTooltipWindow'),
+				url: js_app_link(linkParams + 'rType=ajax&app=products&appPage=all&action=getTooltipWindow&products_id=' + $thisImage.attr('pID')),
 				data: 'pID=' + $thisImage.attr('pID'),
 				type: 'post',
 				dataType: 'json',

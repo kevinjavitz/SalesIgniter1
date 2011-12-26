@@ -1,3 +1,16 @@
+<?php
+/*
+ * Sales Igniter E-Commerce System
+ * Version: 2.0
+ *
+ * I.T. Web Experts
+ * http://www.itwebexperts.com
+ *
+ * Copyright (c) 2011 I.T. Web Experts
+ *
+ * This script and its source are not distributable without the written conscent of I.T. Web Experts
+ */
+?>
 <div class="pageHeading"><?php
 	echo sysLanguage::get('HEADING_TITLE');
 ?></div>
@@ -149,7 +162,7 @@
  		}
  	}
  	
- 	$translateList = '<br><br><b><u>Select Extra Tanslations</u></b><br>';
+ 	$translateList = '<br><br><input type="checkbox" class="selectAll"><b><u>Select Extra Tanslations</u></b><br>';
  	foreach($langModels as $mInfo){
  		$showName = $mInfo['modelName'];
  		if (is_null($mInfo['extName']) === false){
@@ -160,7 +173,7 @@
  	$translateList .= '<br>';
  	
  	$dropMenu = htmlBase::newElement('selectbox')->setName('toLanguage');
- 	foreach(sysLanguage::getGoogleLanguages() as $langCode => $langName){
+ 	foreach($googleLanguages as $langCode => $langName){
  		$dropMenu->addOption($langCode, $langName);
  	}
  	echo $dropMenu->draw() . '<br><small>* This may take a few minutes.</small>';

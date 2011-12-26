@@ -957,6 +957,7 @@ class ReservationUtilities {
 					if (data.success == true) {
 						removeAjaxLoader($calLoader);
 						$selfID.parent().html(data.calendar);
+						$('#getQuotes').button();
 						$calLoader.trigger('EventAfterLoadedCalendar');
 					}
 				}
@@ -1423,10 +1424,12 @@ class ReservationUtilities {
 			font-size:11px;
 		}
 		.shippingDiv{
-			width:75%;
+			width:50%;
 			position:relative;
 			left:-4%;
 			font-size:11px;
+			display: inline-block;
+
 		}
 		.estimatedPricing{
 			display:none;

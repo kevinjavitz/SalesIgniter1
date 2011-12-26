@@ -43,14 +43,25 @@ class Extension_metaTags extends ExtensionBase {
 	 * @return void
 	 */
 	public function init() {
-		// global $App, $appExtension, $Template;
+		global $appExtension;
 		if ($this->enabled === FALSE) return;
-
-		EventManager::attachEvents(array(
-			'PageLayoutHeaderTitle',
-			'PageLayoutHeaderMetaDescription',
-			'PageLayoutHeaderMetaKeyword'
-		), null, $this);
+		if ($appExtension->isCatalog()){
+			if (!isset($this->checkMultiStore)){
+				$multiStore = $appExtension->getExtension('multiStore');
+				if ($multiStore !== false && $multiStore->isEnabled() === true){
+					$this->checkMultiStore = true;
+				}else{
+					$this->checkMultiStore = false;
+				}
+			}
+			if(!$this->checkMultiStore){
+				EventManager::attachEvents(array(
+					'PageLayoutHeaderTitle',
+					'PageLayoutHeaderMetaDescription',
+					'PageLayoutHeaderMetaKeyword'
+				), null, $this);
+			}
+		}
 	}
 
 	// -------------------------------------------------------------------------------------------
@@ -81,19 +92,18 @@ class Extension_metaTags extends ExtensionBase {
 	public function fetchPageMetaTags($type_page, $lang_id = -1) {
 
 		if ($lang_id == -1) {
-			$Metatags = Doctrine_Query::create()
+			$MetatagsQuery = Doctrine_Query::create()
 			->from('MetaTags m')
-			->where('m.type_page = ?', $type_page)
-			->execute(null, Doctrine_Core::HYDRATE_ARRAY);
+			->where('m.type_page = ?', $type_page);
 		}
 		else {
-			$Metatags = Doctrine_Query::create()
+			$MetatagsQuery = Doctrine_Query::create()
 			->from('MetaTags m')
 			->where('m.type_page = ?', $type_page)
-			->andWhere('m.language_id 	 = ?', $lang_id)
-			->execute(null, Doctrine_Core::HYDRATE_ARRAY);
+			->andWhere('m.language_id 	 = ?', $lang_id);
 		}
-
+		EventManager::notify('MetaTagsFetchPageQueryBeforeExecute', &$MetatagsQuery);
+		$Metatags = $MetatagsQuery->execute(null, Doctrine_Core::HYDRATE_ARRAY);
 		$metas_array = array();
 		if ($Metatags) {
 			foreach($Metatags as $row) {
@@ -128,12 +138,12 @@ class Extension_metaTags extends ExtensionBase {
 		$lID = intval(Session::get('languages_id'));
 		if ( ! $lID ) $lID = 1; //global english
 
-		$Metatags = Doctrine_Query::create()
+		$MetatagsQuery = Doctrine_Query::create()
 		->from('MetaTags m')
 		->where('m.language_id = ?', $lID)
-		->andWhere('m.type_page = ?', 'D')
-		->fetchOne(null, Doctrine_Core::HYDRATE_ARRAY);
-
+		->andWhere('m.type_page = ?', 'D');
+		EventManager::notify('MetaTagsFetchDefaultsQueryBeforeExecute', &$MetatagsQuery);
+		$Metatags = $MetatagsQuery->fetchOne(null, Doctrine_Core::HYDRATE_ARRAY);
 		if ($Metatags) {
 			$this->title		= $Metatags['title'];
 			$this->description	= $Metatags['description'];
@@ -153,9 +163,12 @@ class Extension_metaTags extends ExtensionBase {
 	 * @return void
 	 */
 	public function PageLayoutHeaderTitle(&$param) {
-		$tmp = $this->processHeaderTag(1);
-		if ($tmp != '') {
-			$param = $tmp;
+		global $App;
+		if($App->getAppName() !== 'infoPages'){
+			$tmp = $this->processHeaderTag(1);
+			if ($tmp != '') {
+				$param = $tmp;
+			}
 		}
 	}
 
@@ -169,10 +182,13 @@ class Extension_metaTags extends ExtensionBase {
 	 * @return void
 	 */
 	public function PageLayoutHeaderMetaDescription(&$param) {
-		$tmp = $this->processHeaderTag(2);
-		if ($tmp != '') {
-			//$param = substr($tmp, 0, 500);
-			$param = $tmp;
+		global $App;
+		if($App->getAppName() !== 'infoPages'){
+			$tmp = $this->processHeaderTag(2);
+			if ($tmp != '') {
+				//$param = substr($tmp, 0, 500);
+				$param = $tmp;
+			}
 		}
 	}
 
@@ -186,9 +202,12 @@ class Extension_metaTags extends ExtensionBase {
 	 * @return void
 	 */
 	public function PageLayoutHeaderMetaKeyword(&$param) {
-		$tmp = $this->processHeaderTag(3);
-		if ($tmp != '') {
-			$param = $tmp;
+		global $App;
+		if($App->getAppName() !== 'infoPages'){
+			$tmp = $this->processHeaderTag(3);
+			if ($tmp != '') {
+				$param = $tmp;
+			}
 		}
 	}
 
@@ -296,6 +315,8 @@ class Extension_metaTags extends ExtensionBase {
 
 		$t	= htmlBase::newElement('input')
 			->css(array('width' => '600px'))
+			->attr('language_id', $lang_id)
+			->addClass('metaTitleInput')
 			->setValue($values['t']);
 
 		if ($lang_id == 0){
@@ -306,6 +327,8 @@ class Extension_metaTags extends ExtensionBase {
 
 		$d	= htmlBase::newElement('textarea')
 			->css(array('width' => '600px'))
+			->addClass('metaDescriptionInput')
+			->attr('language_id', $lang_id)
 			->attr('rows', 4)
 			->html($values['d']);
 
@@ -317,6 +340,8 @@ class Extension_metaTags extends ExtensionBase {
 
 		$k	= htmlBase::newElement('textarea')
 			->css(array('width' => '600px'))
+			->addClass('metaKeywordsInput')
+			->attr('language_id', $lang_id)
 			->attr('rows', 2)
 			->html($values['k']);
 
