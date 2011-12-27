@@ -69,7 +69,7 @@
 					'cardNumber'    => $paymentInfo['cardDetails']['cardNumber'],
 					'cardExpMonth'  => $paymentInfo['cardDetails']['cardExpMonth'],
 					'cardExpYear'   => $paymentInfo['cardDetails']['cardExpYear'],
-					'cardCvvNumber' => (!empty($paymentInfo['cardDetails']['cardCvv']) ? $paymentInfo['cardDetails']['cardCvv'] : '')
+					'cardCvvNumber' => (!empty($paymentInfo['cardDetails']['cardCvvNumber']) ? $paymentInfo['cardDetails']['cardCvvNumber'] : '')
 				)
 			));
 		}
