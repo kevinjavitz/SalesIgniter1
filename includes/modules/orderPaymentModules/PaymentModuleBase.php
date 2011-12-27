@@ -85,7 +85,7 @@
 				}
 				
 				if (array_key_exists((string) $info->order_status_key, $this->configData)){
-					$this->orderStatus = (int) $this->configData[(string) $info->order_status_key]['configuration_value'];
+					$this->orderStatus = ((int) $this->configData[(string) $info->order_status_key]['configuration_value'] ? (int) $this->configData[(string) $info->order_status_key]['configuration_value'] : 1);
 				}
 				
 				$this->updateStatus();
