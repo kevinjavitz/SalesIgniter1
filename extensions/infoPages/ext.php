@@ -43,11 +43,13 @@ class Extension_infoPages extends ExtensionBase {
 				}
 			}
 			if($this->checkMultiStore){
-				EventManager::attachEvents(array(
-					'PageLayoutHeaderTitle',
-					'PageLayoutHeaderMetaDescription',
-					'PageLayoutHeaderMetaKeyword'
-				), null, $this);
+				if (isset($_GET['appExt']) && $_GET['appExt'] == 'infoPages'){
+					EventManager::attachEvents(array(
+						'PageLayoutHeaderTitle',
+						'PageLayoutHeaderMetaDescription',
+						'PageLayoutHeaderMetaKeyword'
+					), null, $this);
+				}
 			}
 		}
 	}
