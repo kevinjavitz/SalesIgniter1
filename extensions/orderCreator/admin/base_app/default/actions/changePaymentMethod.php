@@ -24,8 +24,12 @@
 	$headerPaymentCols[] = '<td class="ui-widget-content ui-state-hover" align="left" style="border-top:none">'.date('m/d/Y').'</td>';
 	$headerPaymentCols[] = '<td class="ui-widget-content ui-state-hover" align="left" style="border-top:none;border-left:none;">'.$PaymentMethodDrop->draw().'</td>';
 
-	$Module = OrderPaymentModules::getModule($_POST['payment_method']);
-	$Module->getCreatorRow($Editor, &$headerPaymentCols);
+	if (isset($_POST['payment_method']) && !empty($_POST['payment_method'])){
+		$Module = OrderPaymentModules::getModule($_POST['payment_method']);
+		if (method_exists($Module, 'getCreatorRow')){
+			$Module->getCreatorRow($Editor, &$headerPaymentCols);
+		}
+	}
 
 	$html = '<tr>';
 	foreach($headerPaymentCols as $column){

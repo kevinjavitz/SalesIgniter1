@@ -415,7 +415,21 @@ class Extension_multiStore extends ExtensionBase {
 			$this->MetaTagsCheckStores();
 			$MetatagsQuery->andWhere('stores_id = ?', (($_GET['meta_stores_id'] == 'all') ? 0 : intVal($_GET['meta_stores_id'])));
 		} else {
-			$MetatagsQuery->andWhere('stores_id = ?', ((Session::get('current_store_id') == 'all') ? 0 : intVal(Session::get('current_store_id'))));
+			//$MetatagsQuery->andWhere('stores_id = ?', ((Session::get('current_store_id') == 'all') ? 0 : intVal(Session::get('current_store_id'))));
+			$lID = intval(Session::get('languages_id'));
+			if ( ! $lID ) $lID = 1;
+			if((Session::get('current_store_id') !== 'all')){
+				$check = Doctrine_Query::create()
+					->from('MetaTags m')
+					->where('m.language_id = ?', $lID)
+					->andWhere('m.type_page = ?', 'D')->andWhere('stores_id = ?', Session::get('current_store_id'))
+					->execute(null, Doctrine_Core::HYDRATE_ARRAY);
+				if($check && (!empty($check[0]['title']) || !empty($check[0]['description']) || !empty($check[0]['keywords']))){
+					$MetatagsQuery->andWhere('stores_id = ?', intVal(Session::get('current_store_id')));
+					return true;
+				}
+			}
+			$MetatagsQuery->andWhere('stores_id = ?', 0);
 		}
 	}
 
@@ -424,7 +438,22 @@ class Extension_multiStore extends ExtensionBase {
 		if($appExtension->isAdmin()){
 			$MetatagsQuery->andWhere('stores_id = ?', (($_GET['meta_stores_id'] == 'all') ? 0 : intVal($_GET['meta_stores_id'])));
 		} else {
-			$MetatagsQuery->andWhere('stores_id = ?', ((Session::get('current_store_id') == 'all') ? 0 : intVal(Session::get('current_store_id'))));
+			//$MetatagsQuery->andWhere('stores_id = ?', ((Session::get('current_store_id') == 'all') ? 0 : intVal(Session::get('current_store_id'))));
+			$lID = intval(Session::get('languages_id'));
+			if ( ! $lID ) $lID = 1;
+			if((Session::get('current_store_id') !== 'all')){
+				$check = Doctrine_Query::create()
+					->from('MetaTags m')
+					->where('m.language_id = ?', $lID)
+					->andWhere('m.type_page = ?', 'D')->andWhere('stores_id = ?', Session::get('current_store_id'))
+					->execute(null, Doctrine_Core::HYDRATE_ARRAY);
+				if($check && (!empty($check[0]['title']) || !empty($check[0]['description']) || !empty($check[0]['keywords']))){
+					$MetatagsQuery->andWhere('stores_id = ?', intVal(Session::get('current_store_id')));
+					return true;
+				}
+			}
+			$MetatagsQuery->andWhere('stores_id = ?', 0);
+
 		}
 	}
 	

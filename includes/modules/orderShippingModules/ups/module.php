@@ -42,20 +42,49 @@ class OrderShippingUps extends OrderShippingModule {
 		}
 	}
 	
-	public function quote($method = ''){
-		global $order, $shipping_weight, $shipping_num_boxes;
+	public function getType(){
+		return $this->type;
+	}
 
-		if ( (tep_not_null($method)) && (isset($this->types[$method])) ) {
-			$prod = $method;
+	public function getNumBoxes(&$shipping_weight, &$shipping_num_boxes){
+		$boxWeight = sysConfig::get('SHIPPING_BOX_WEIGHT');
+		$boxPadding = sysConfig::get('SHIPPING_BOX_PADDING');
+		$boxMaxWeight = sysConfig::get('SHIPPING_MAX_WEIGHT');
+
+
+		if ($boxWeight >= $shipping_weight * $boxPadding / 100) {
+			$shipping_weight = $shipping_weight + $boxWeight;
 		} else {
-			$prod = 'GNDRES';
+			$shipping_weight = $shipping_weight + ($shipping_weight * $boxPadding / 100);
 		}
 
-		if ($method) $this->_upsAction('3'); // return a single quote
+		if ($shipping_weight > $boxMaxWeight) { // Split into many boxes
+			$shipping_num_boxes = ceil($shipping_weight / $boxMaxWeight);
+			$shipping_weight = $shipping_weight / $shipping_num_boxes;
+		}
+	}
+	
+	public function quote($method = ''){
+		global $order,  $userAccount, $App, $shipping_weight;
+		$shipping_num_boxes = 1;
+		$this->getNumBoxes($shipping_weight, $shipping_num_boxes);
+
+		if ( isset($method) && !empty($method)) {
+			$prod = $method;
+		} else {
+			$prod = 'GND';
+		}
 
 		$this->_upsProduct($prod);
-
-		$deliveryAddress = $this->getDeliveryAddress();
+		if($App->getEnv() == 'catalog'){
+			$deliveryAddress = $this->getDeliveryAddress();
+		}else{
+			global $Editor;
+			if(isset($Editor)){
+				$deliveryAddress = $Editor->AddressManager->getAddress('delivery')->toArray();
+			}
+		}
+		if (isset($deliveryAddress) ){
 		$deliveryCountry = OrderShippingModules::getCountryInfo($deliveryAddress['entry_country_id']);
 		$country_name = tep_get_countries(sysConfig::get('SHIPPING_ORIGIN_COUNTRY'), true);
 		$this->_upsOrigin(sysConfig::get('SHIPPING_ORIGIN_ZIP'), $deliveryCountry['countries_iso_code_2']);
@@ -74,7 +103,12 @@ class OrderShippingUps extends OrderShippingModule {
 		);
 		
 		if ( (is_array($upsQuote)) && (sizeof($upsQuote) > 0) ) {
-			$this->quotes['module'] .= ' (' . $shipping_num_boxes . ' x ' . $shipping_weight . 'lbs)';
+				if ($shipping_num_boxes > 0 && $shipping_weight > 0){
+					$numBoxes =  $shipping_num_boxes;
+					$this->quotes['module'] .= ' (' . $shipping_num_boxes . ' x ' . $shipping_weight . 'lbs)';
+				}else{
+					$numBoxes = 1;
+				}
 
 			$methods = array();
 			$qsize = sizeof($upsQuote);
@@ -83,7 +117,8 @@ class OrderShippingUps extends OrderShippingModule {
 				$this->quotes['methods'][] = array(
 					'id'    => $type,
 					'title' => $this->types[$type],
-					'cost'  => ($cost + $this->handlingCost) * $shipping_num_boxes
+					'cost'  => ($cost + $this->handlingCost) * $numBoxes,
+					'showCost'    =>($cost + $this->handlingCost) * $numBoxes
 				);
 			}
 
@@ -94,7 +129,27 @@ class OrderShippingUps extends OrderShippingModule {
 		}else{
 			$this->quotes['error'] = 'An error occured with the UPS shipping calculations.<br>' . $upsQuote . '<br>If you prefer to use UPS as your shipping method, please contact the store owner.';
 		}
+		}else{
+			$this->quotes = array(
+				'id'      => $this->getCode(),
+				'module'  => $this->getTitle(),
+				'methods' => array()
+			);
 
+			$this->quotes['methods'][] = array(
+						'id'      => 'method' . $methodId,
+						'title'   => $mInfo['text'],
+						'cost'	  =>0,
+						'showCost'	  =>0
+			);
+
+			$classId = $this->getTaxClass();
+			if ($classId > 0) {
+				$deliveryAddress = $this->getDeliveryAddress();
+				$this->quotes['tax'] = tep_get_tax_rate($classId, $deliveryAddress['country_id'], $deliveryAddress['zone_id']);
+			}
+
+		}
 		return $this->quotes;
 	}
 	
@@ -185,11 +240,10 @@ class OrderShippingUps extends OrderShippingModule {
 	}
 
 	public function _upsGetQuote() {
-		if (!isset($this->_upsActionCode)) $this->_upsActionCode = '4';
 
 		$request = array(
 			'accept_UPS_license_agreement=yes',
-			'10_action=' . $this->_upsActionCode,
+			'10_action=4',
 			'13_product=' . $this->_upsProductCode,
 			'14_origCountry=' . $this->_upsOriginCountryCode,
 			'15_origPostal=' . $this->_upsOriginPostalCode,

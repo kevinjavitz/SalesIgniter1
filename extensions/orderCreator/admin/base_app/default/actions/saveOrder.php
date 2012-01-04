@@ -51,6 +51,8 @@
 		$success = false;
 	}else{
 		$success = true;
+		$NewOrder->save();
+		$Editor->setOrderId($NewOrder->orders_id);
 		if (!isset($_GET['oID'])){
 			$NewOrder->bill_attempts = 1;
 			if(!isset($_POST['estimateOrder'])){

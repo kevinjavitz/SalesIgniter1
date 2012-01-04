@@ -71,10 +71,10 @@ class rentalStoreUser_membership extends StandardClass {
 	}
 
 	public function loadMembershipInfo(){
-		$Qmembership = Doctrine_Query::create()
-		->from('CustomersMembership')
-		->where('customers_id = ?', $this->customerId)
-		->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+		$Qmembership = Doctrine_Manager::getInstance()
+			->getCurrentConnection()
+			->fetchAssoc('select * from customers_membership where customers_id = "' . $this->customerId .'"');
+
 		if(isset($Qmembership[0])){
 			$nextBillDate = $this->dateToTime($Qmembership[0]['next_bill_date']);
 			$freeTrialEnds = $this->dateToTime($Qmembership[0]['free_trial_ends']);
@@ -112,24 +112,18 @@ class rentalStoreUser_membership extends StandardClass {
 	}
 
 	public function getPlanInfo($planId){
-		$Qmembership = Doctrine_Query::create()
-		->from('Membership m')
-		->leftJoin('m.MembershipPlanDescription md')
-		->where('md.language_id = ?', Session::get('languages_id'))
-		->andWhere('m.plan_id = ?', $planId)
-		->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
-		
-		/*
-		* Does not have to be listed, but done so to show coders the columns available
-		* If it's annoying then just change to: $planInfo = $Qmembership->toArray();
-		*/
+
+		$Qmembership = Doctrine_Manager::getInstance()
+			->getCurrentConnection()
+			->fetchAssoc('select m.*,md.* from membership m left join membership_plan_description md on m.plan_id=md.plan_id where md.language_id = "' . Session::get('languages_id') .'" and m.plan_id = "'.$planId.'"');
+
 		$planInfo = null;
 		if (count($Qmembership) > 0){
 			$planInfo = array(
 				'plan_id'                     => $Qmembership[0]['plan_id'],
 				'price'                       => $Qmembership[0]['price'],
 				'rent_tax_class_id'           => $Qmembership[0]['rent_tax_class_id'],
-				'package_name'                => $Qmembership[0]['MembershipPlanDescription'][0]['name'],
+				'package_name'                => $Qmembership[0]['name'],
 				'membership_months'           => $Qmembership[0]['membership_months'],
 				'membership_days'             => $Qmembership[0]['membership_days'],
 				'no_of_titles'                => $Qmembership[0]['no_of_titles'],
@@ -311,24 +305,27 @@ class rentalStoreUser_membership extends StandardClass {
 		$CustomersMembership->save();
 	}
 
-	public function needsRetry($cID){
-		$Qcheck = Doctrine_Query::create()
-			->from('MembershipBillingReport')
-			->where('customers_id = ?', $cID)
-			->orderBy('date desc')
-			->limit('1')
-			->fetchOne();
-		if ($Qcheck){
-			$LastReport = $Qcheck->toArray();
+	public function getBillingAttempts($oID){
+		$Qcheck = Doctrine_Manager::getInstance()
+			->getCurrentConnection()
+			->fetchAssoc('select bill_attempts from orders where orders_id = "' . $oID .'"');
+		return $Qcheck[0]['bill_attempts'];
+	}
 
-			$orderProcess = new OrderProcessor($LastReport['orders_id']);
+	public function needsRetry($cID){
+		$Qcheck = Doctrine_Manager::getInstance()
+			->getCurrentConnection()
+			->fetchAssoc('select * from membership_billing_report where customers_id = "' . $cID .'" order by billing_report_id desc limit 1');
+
+		if ($Qcheck){
+			$LastReport = $Qcheck[0];
 			if ($LastReport['status'] == 'D'){
 				$dateAdded = date_parse($LastReport['date']);
 				$timeAdded = mktime(0,0,0,$dateAdded['month'],$dateAdded['day'],$dateAdded['year']);
 				$timeNow = time();
 				$daysDiff = ($timeNow - $timeAdded) / (60*60*24);
 				if ($daysDiff <= sysConfig::get('MAX_RECURRING_BILLING_DAYS')){
-					if ($orderProcess->getBillingAttempts() < sysConfig::get('MAX_RECURRING_BILLING_DAYS')){
+					if ($this->getBillingAttempts($LastReport['orders_id']) < sysConfig::get('MAX_RECURRING_BILLING_DAYS')){
 						return true;
 					}
 				}
@@ -542,20 +539,20 @@ class rentalStoreUser_membership extends StandardClass {
 
 	public function getPlanTaxRate($country_id = -1, $zone_id = -1){
 		if ($country_id == -1){
-			$country_id = STORE_COUNTRY;
+			$country_id = sysConfig::get('STORE_COUNTRY');
 		}
 		if ($zone_id == -1){
-			$zone_id = STORE_ZONE;
+			$zone_id = sysConfig::get('STORE_ZONE');
 		}
 		return tep_get_tax_rate($this->planInfo['rent_tax_class_id'], $country_id, $zone_id);
 	}
 
 	public function getMembershipTaxRate($country_id = -1, $zone_id = -1){
 		if ($country_id == -1){
-			$country_id = STORE_COUNTRY;
+			$country_id = sysConfig::get('STORE_COUNTRY');
 		}
 		if ($zone_id == -1){
-			$zone_id = STORE_ZONE;
+			$zone_id = sysConfig::get('STORE_ZONE');
 		}
 		return tep_get_tax_rate($this->membershipInfo['plan_tax_class_id'], $country_id, $zone_id);
 	}

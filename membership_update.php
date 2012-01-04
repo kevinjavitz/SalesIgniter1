@@ -1,39 +1,31 @@
 <?php
 putenv('SHELL=/bin/bash');
 putenv('TERM=vt100');
-/*
-  $Id: conditions.php,v 1.22 2003/06/05 23:26:22 hpdl Exp $
+set_time_limit(0);
 
-  osCommerce, Open Source E-Commerce Solutions
-  http://www.oscommerce.com
+require('includes/application_top.php');
 
-  Copyright (c) 2003 osCommerce
+define('CRON_BILL_METHOD', 'original'); /* Options: original, current */
 
-  Released under the GNU General Public License
-*/
-  require('includes/application_top.php');
-  
-  define('CRON_BILL_METHOD', 'original'); /* Options: original, current */
-  
-  include(sysConfig::getDirFsCatalog() . 'includes/classes/order.php');
-  
-  include(sysConfig::getDirFsCatalog() . 'includes/classes/membership_update.php');
-  $membershipUpdate = new membershipUpdate_cron();
-  
-  if (sysConfig::get('RENTAL_UPGRADE_CYCLE') == 'true'){
-  	$Qupdates = Doctrine_Query::create()
-  	->select('upgrade_date, customers_id, plan_id')
-  	->from('MembershipUpdate')
-  	->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
-      foreach($Qupdates as $uInfo){
-          if ($membershipUpdate->timeToBill($uInfo['upgrade_date']) === true){
-              $userAccount = new rentalStoreUser($uInfo['customers_id']);
-              $userAccount->loadPlugins();
-              $membershipUpdate->setCurrentCustomer($userAccount);
-              $membershipUpdate->setPlan($uInfo['plan_id']);
-          }
-      }
-  }
+include(sysConfig::getDirFsCatalog() . 'includes/classes/order.php');
+
+include(sysConfig::getDirFsCatalog() . 'includes/classes/membership_update.php');
+$membershipUpdate = new membershipUpdate_cron();
+
+if (sysConfig::get('RENTAL_UPGRADE_CYCLE') == 'true'){
+	$Qupdates = Doctrine_Query::create()
+		->select('upgrade_date, customers_id, plan_id')
+		->from('MembershipUpdate')
+		->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+	foreach($Qupdates as $uInfo){
+		if ($membershipUpdate->timeToBill($uInfo['upgrade_date']) === true){
+			$userAccount = new rentalStoreUser($uInfo['customers_id']);
+			$userAccount->loadPlugins();
+			$membershipUpdate->setCurrentCustomer($userAccount);
+			$membershipUpdate->setPlan($uInfo['plan_id']);
+		}
+	}
+}
 
   if (sysConfig::get('RENTAL_UPGRADE_BILL_DATE') == 'true'){
   	$Qcustomer = Doctrine_Query::create()
@@ -88,8 +80,5 @@ putenv('TERM=vt100');
       echo $messageStack->output('footerStack');
   }
 
-
-
-  //todo add autosendreturn products
-  require('includes/application_bottom.php');
+require('includes/application_bottom.php');
 ?>

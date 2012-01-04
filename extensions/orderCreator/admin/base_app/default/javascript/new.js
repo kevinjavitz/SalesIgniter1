@@ -5,8 +5,8 @@ function number_format(number){
 }
 
 $(document).ready(function (){
-	var getVars = getUrlVars();
-	$('select[name=payment_method]').change(function(){
+	//var getVars = getUrlVars();
+	$('select[name="payment_method"]').change(function(){
 		var $self = $(this);
 		showAjaxLoader($self, 'small');
 
@@ -68,7 +68,7 @@ $(document).ready(function (){
 					$('input[name=account_password]').attr('disabled', 'disabled');
 					
 					$('.productSection, .totalSection, .paymentSection, .commentSection').show();
-					$('select[name=payment_method]').change(function(){
+					$('select[name="payment_method"]').live('change', function(){
 						var $self = $(this);
 						showAjaxLoader($self, 'small');
 
@@ -91,7 +91,7 @@ $(document).ready(function (){
 							}
 						});
 					});
-					$('select[name=payment_method]').trigger('change');
+					$('select[name="payment_method"]').trigger('change');
 					$('.purchaseType').trigger('change');
 				}
 			});
@@ -343,7 +343,28 @@ $(document).ready(function (){
 		});
 	});
 
-	$('select[name=payment_method]').trigger('change');
+	$('select[name="payment_method"]').change(function(){
+		var $self = $(this);
+		showAjaxLoader($self, 'small');
+
+		$.ajax({
+			url: js_app_link('appExt=orderCreator&app=default&appPage=new&action=changePaymentMethod'),
+			cache: false,
+			dataType: 'json',
+			data: 'payment_method=' + $self.val(),
+			type: 'post',
+			success: function (data){
+				if (data.success == true){
+					$self.parent().parent().replaceWith(data.tableRow);
+					$('.paymentProcessButton').button();
+				}else if (typeof data.success == 'object'){
+					alert(data.success.error_message);
+				}
+			}
+		});
+	});
+	$('select[name="payment_method"]').trigger('change');
+
 	$('.purchaseType').trigger('change');
 	$('.paymentRefundButton').click(function (){
 		var $self = $(this);
@@ -480,6 +501,30 @@ $(document).ready(function (){
 			type: 'post',
 			success: function (data){
 				$('.productSection, .totalSection, .paymentSection, .commentSection').show();
+				$('select[name=payment_method]').change(function(){
+					var $self = $(this);
+					showAjaxLoader($self, 'small');
+
+					$.ajax({
+						url: js_app_link('appExt=orderCreator&app=default&appPage=new&action=changePaymentMethod'),
+						cache: false,
+						dataType: 'json',
+						data: 'payment_method=' + $self.val(),
+						type: 'post',
+						success: function (data){
+							if (data.success == true){
+								$self.parent().parent().replaceWith(data.tableRow);
+								$('.paymentProcessButton').button();
+							}else if (typeof data.success == 'object'){
+								alert(data.success.error_message);
+							}else{
+								//alert('Payment Failed');
+							}
+							//removeAjaxLoader($self);
+						}
+					});
+				});
+				$('select[name=payment_method]').trigger('change');
 				removeAjaxLoader($('.customerSection'));
 			}
 		});
@@ -512,7 +557,7 @@ $(document).ready(function (){
 		}
 	});
 	
-
+	var getVars = getUrlVars();
 	if (!getVars['error'] && !getVars['oID']){
 		$('.productSection, .totalSection, .paymentSection, .commentSection').hide();
 	}

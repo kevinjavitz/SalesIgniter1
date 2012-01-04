@@ -1,22 +1,9 @@
 <?php
-/*
-$Id: configuration.php,v 1.43 2003/06/29 22:50:51 hpdl Exp $
-
-osCommerce, Open Source E-Commerce Solutions
-http://www.oscommerce.com
-
-Copyright (c) 2003 osCommerce
-
-Released under the GNU General Public License
-*/
-
-require('includes/application_top.php');
-
 $action = (isset($_GET['action']) ? $_GET['action'] : '');
 
 if (tep_not_null($action)) {
 	$manager->setAttribute(Doctrine_Core::ATTR_MODEL_LOADING, Doctrine_Core::MODEL_LOADING_AGGRESSIVE);
-	Doctrine::loadModels(DIR_FS_CATALOG . 'ext/Doctrine/Models');
+	Doctrine::loadModels(sysConfig::get('DIR_FS_CATALOG') . 'ext/Doctrine/Models');
 
 	switch ($action) {
 		case 'clear':
@@ -82,9 +69,4 @@ if (tep_not_null($action)) {
 	}
 }
 
-$pageName = basename($_SERVER['PHP_SELF']);
-$pageContent = substr($pageName, 0, strpos($pageName, '.'));
-require(DIR_WS_ADMIN_TEMPLATES . ADMIN_TEMPLATE_NAME . TEMPLATE_MAIN_PAGE);
-
-require(DIR_WS_INCLUDES . 'application_bottom.php');
 ?>

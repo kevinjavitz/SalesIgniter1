@@ -3,12 +3,15 @@ $tabsArr = array(
 	'tabReturning' => array(
 		'heading' => sysLanguage::get('HEADING_RETURNING_CUSTOMER'),
 		'contentFile' => sysConfig::getDirFsCatalog() . 'applications/account/pages_tabs/login/returning.php'
-	),
-	'tabNewAccount' => array(
-		'heading' => sysLanguage::get('HEADING_NEW_CUSTOMER'),
-		'contentFile' => sysConfig::getDirFsCatalog() . 'applications/account/pages_tabs/login/customer.php'
 	)
 );
+
+if (sysConfig::get('SHOW_STANDARD_CREATE_ACCOUNT') == 'true'){
+	$tabsArr['tabNewAccount'] = array(
+		'heading' => sysLanguage::get('HEADING_NEW_CUSTOMER'),
+		'contentFile' => sysConfig::getDirFsCatalog() . 'applications/account/pages_tabs/login/customer.php'
+	);
+}
 
 if (sysConfig::get('ALLOW_RENTALS') == 'true'){
 	$tabsArr['tabNewRentAccount'] = array(
