@@ -1,5 +1,4 @@
 <?php
-require('includes/application_top.php');
 
 function addConfiguration($key, $group, $title, $desc, $default, $func) {
 	$Qcheck = Doctrine_Query::create()
@@ -87,6 +86,8 @@ function updateConfiguration($key, $group, $title, $desc, $default, $func) {
 }
 
 addConfiguration('SHOW_MANUFACTURER_ON_PRODUCT_INFO', 1, 'Show manufacturer name on product Info', 'Show manufacturer name on product Info', 'false', "tep_cfg_select_option(array('true', 'false'),");
+addConfiguration('PRODUCT_INFO_SHOW_MODEL', 1, 'Show model on product info', 'Show model on product Info', 'true', "tep_cfg_select_option(array('true', 'false'),");
+
 
 addConfiguration('ORDERS_STATUS_CANCELLED_ID', 1, 'Order Status cancel ID', 'Order Status cancel ID', '7', 'tep_cfg_pull_down_order_status_list(');
 addConfiguration('ORDERS_STATUS_WAITING_ID', 1, 'Order Status Waiting for Confirmation ID', 'Order Status Waiting for Confirmation ID', '6', 'tep_cfg_pull_down_order_status_list(');
@@ -124,10 +125,16 @@ addConfiguration('ACCOUNT_FISCAL_CODE',5, 'Fiscal Code', 'Fiscal Code','false',"
 addConfiguration('ACCOUNT_CITY_BIRTH', 5, 'City of birth', 'City of birth', 'false', "tep_cfg_select_option(array('true', 'false'),");
 
 addConfiguration('BARCODE_TYPE', 1, 'Choose barcode type to use in the store', 'Choose barcode type to use in the store', 'Code 39', "tep_cfg_select_option(array('Code 128B', 'Code 39 Extended', 'QR', 'Code 39', 'Code 25', 'Code 25 Interleaved'),");
+addConfiguration('SHOW_IP_ADDRESS_ORDERS_DETAILS', 1, 'Show IP address on orders details page', 'Show IP address on orders details page', 'true', "tep_cfg_select_option(array('true', 'false'),");
+addConfiguration('SHOW_PACKING_SLIP_BUTTONS', 1, 'Show packing slip buttons', 'Show packing slip buttons', 'true', "tep_cfg_select_option(array('true', 'false'),");
+addConfiguration('BARCODES_INVENTORY_TYPES', 1, 'List of barcodes inventory types', 'List of barcodes inventory types separated by ;', '', '');
 
 addConfiguration('SITE_MAINTENANCE_MODE', 1, 'Site In maintenance mode', 'Site in maintenance mode', 'false', "tep_cfg_select_option(array('true', 'false'),");
 addConfiguration('IP_LIST_MAINTENANCE_ENABLED', 1, 'List of IP enabled in maintenance mode', 'List of IP enabled in maintenance mode separated by ;', '', '');
 
+
+addConfiguration('REQUEST_PICKUP_BEFORE_DAYS', 16, 'How many days to not show on the request pickup or delivery', 'How many days to not show on the request pickup or delivery', '2', '');
+addConfiguration('SHOW_STANDARD_CREATE_ACCOUNT', 1, 'Show standard create account tab on account login', 'Show standard create account tab on account login', 'true', "tep_cfg_select_option(array('true', 'false'),");
 
 /*
 		* This part is for completing with the remaining orders statuses if don't exists. In future updates they should be filled
@@ -151,6 +158,27 @@ function addStatus($status_name) {
 		$Status->save();
 	}
 }
+
+function addInfoPage($page_name, $page_text) {
+	$QPages = Doctrine_Query::create()
+		->from('Pages p')
+		->leftJoin('p.PagesDescription pd')
+		->andWhere('p.page_key = ?', $page_name)
+		->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+	if (count($QPages) <= 0) {
+		$Page = new Pages();
+		$Page->page_type = 'page';
+		$Page->page_key = $page_name;
+		$Description = $Page->PagesDescription;
+		foreach (sysLanguage::getLanguages() as $lInfo) {
+			$Description[$lInfo['id']]->language_id = $lInfo['id'];
+			$Description[$lInfo['id']]->pages_title = $page_name;
+			$Description[$lInfo['id']]->pages_html_text = $page_text;
+		}
+		$Page->save();
+	}
+}
+
 $EmailTemplatesVariables = Doctrine_Core::getTable('EmailTemplatesVariables');
 $EmailTemplatesVariableCheck = $EmailTemplatesVariables->findOneByEmailTemplatesIdAndEventVariable(17,'adminEditLink');
 
@@ -273,18 +301,10 @@ addStatus('Cancelled');
 addStatus('Approved');
 addStatus('Estimate');
 addStatus('Shipped');
-
-importPDFLayouts();
-
-if(sysConfig::get('MODULE_ORDER_SHIPPING_ZONERESERVATION_STATUS') == 'True'){
-	add_extra_fields('modules_shipping_zone_reservation_methods','weight_rates','TEXT NULL');
-	add_extra_fields('modules_shipping_zone_reservation_methods','min_rental_number','INT(1) NOT NULL DEFAULT  "0"');
-	add_extra_fields('modules_shipping_zone_reservation_methods','min_rental_type','INT(1) NOT NULL DEFAULT  "0"');
-}
+addInfoPage('maintenance_page','<div style="margin:0 auto;text-align:center;"><img src="'.sysConfig::getDirWsCatalog().'images/logo.png" /> <p style="font-size:30px;">This Site Is Under Maintenance</p> </div>');
 
 updatePagesDescription();
-
-//update bannerManger
+importPDFLayouts();
 
 Doctrine_Query::create()
 	->update('TemplatesInfoboxes')
@@ -292,10 +312,10 @@ Doctrine_Query::create()
 	->set('ext_name', '?', 'imageRot')
 	->where('box_code = ?', 'banner')
 	->execute();
+	
+add_extra_fields('modules_shipping_zone_reservation_methods','weight_rates','TEXT NULL');
+add_extra_fields('modules_shipping_zone_reservation_methods','min_rental_number'," INT( 1 ) NOT NULL DEFAULT  '0'");
+add_extra_fields('modules_shipping_zone_reservation_methods','min_rental_type'," INT( 1 ) NOT NULL DEFAULT  '0'");
 
-$pageName = basename($_SERVER['PHP_SELF']);
-$pageContent = substr($pageName, 0, strpos($pageName, '.'));
-require(DIR_WS_ADMIN_TEMPLATES . ADMIN_TEMPLATE_NAME . TEMPLATE_MAIN_PAGE);
-
-require(DIR_WS_INCLUDES . 'application_bottom.php');
 ?>
+Configuration Updated.<

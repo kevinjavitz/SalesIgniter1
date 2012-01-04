@@ -176,16 +176,6 @@ require(sysConfig::getDirFsCatalog() . 'includes/classes/htmlBase.php');
 	require(sysConfig::getDirFsCatalog() . 'includes/classes/session.php');
 	Session::init(); /* Initialize the session */
 
-    /*This position might not be the best since it might throw some errors on update*/
-
-	if(sysConfig::get('SITE_MAINTENANCE_MODE') == 'true' && $App->getEnv() == 'catalog'){
-		$ipList = explode(';', sysConfig::get('IP_LIST_MAINTENANCE_ENABLED'));
-		if(!in_array($_SERVER['REMOTE_ADDR'], $ipList)){
-			echo '<div style="margin:0 auto;text-align:center;"><img src="'.sysConfig::getDirWsCatalog().'images/logo.png" /> <p style="font-size:30px;">This Site Is Under Maintenance</p> </div>';
-			die();
-		}
-	}
-
 	// start the session
 	$session_started = false;
 	if (sysConfig::get('SESSION_FORCE_COOKIE_USE') == 'True') {
@@ -287,6 +277,19 @@ require(sysConfig::getDirFsCatalog() . 'includes/classes/htmlBase.php');
 	//Doctrine_Core::initializeModels(Doctrine_Core::getLoadedModels());
 
 	$App->loadLanguageDefines();
+
+	/*This position might not be the best since it might throw some errors on update.*/
+	if(sysConfig::get('SITE_MAINTENANCE_MODE') == 'true' && $App->getEnv() == 'catalog'){
+		$ipList = explode(';', sysConfig::get('IP_LIST_MAINTENANCE_ENABLED'));
+		if(!in_array($_SERVER['REMOTE_ADDR'], $ipList)){
+			$infoPages = $appExtension->getExtension('infoPages');
+			if ($infoPages !== false && $infoPages->isEnabled() === true){
+				$maintenancePage = $infoPages->getInfoPage('maintenance_page');
+				echo $maintenancePage['PagesDescription'][Session::get('languages_id')]['pages_html_text'];
+			}
+			die();
+		}
+	}
 
 	if (Session::exists('userAccount') === false){
 		$userAccount = new RentalStoreUser();

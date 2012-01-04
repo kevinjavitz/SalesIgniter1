@@ -58,13 +58,27 @@
 			'text' => sysLanguage::get('TEXT_ADMIN_MENU_SES_UPDATES')
 		);
 	}
-	
-	//if (sysPermissions::adminAccessAllowed('membership', 'packages') === true){
+	if (sysPermissions::adminAccessAllowed('database_manager', 'default') === true){
 		$contents['children'][] = array(
-			'link' => tep_href_link('clearDB.php'),
+			'link' => itw_app_link(null, 'database_manager', 'default'),
+			'text' => 'Database Management'
+		);
+	}
+
+	if (sysPermissions::adminAccessAllowed('tools', 'cleardb') === true){
+		$contents['children'][] = array(
+			'link' => itw_app_link(null, 'tools', 'cleardb'),
 			'text' => 'Clear Database'
 		);
-	//}
+	}
+
+	if (sysPermissions::adminAccessAllowed('tools', 'fill_model') === true){
+		$contents['children'][] = array(
+			'link' => itw_app_link(null, 'tools', 'fill_model'),
+			'text' => 'Fill Empty Models'
+		);
+	}
+
 
 	EventManager::notify('BoxToolsAddLink', &$contents);
 ?>

@@ -21,26 +21,39 @@ class membershipUpdate_cron {
 
 	public function timeToBill($date){
 		$dateArr = $this->parseDate($date);
-		return (date('Y-m-d', mktime(0,0,0,$dateArr['month'],$dateArr['day'],$dateArr['year'])) == date('Y-m-d'))  /*((date('Y-m-d', mktime(0,0,0,$dateArr['month'],$dateArr['day'],$dateArr['year'])) >= date('Y-m-d', mktime(0,0,0,10,19,2011))) && (date('Y-m-d', mktime(0,0,0,$dateArr['month'],$dateArr['day'],$dateArr['year'])) <= date('Y-m-d', mktime(0,0,0,10,24,2011))))*/;
+		return (date('Y-m-d', mktime(0,0,0,$dateArr['month'],$dateArr['day'],$dateArr['year'])) == date('Y-m-d'))  /*((date('Y-m-d', mktime(0,0,0,$dateArr['month'],$dateArr['day'],$dateArr['year'])) >= date('Y-m-d', mktime(0,0,0,12,20,2011))) && (date('Y-m-d', mktime(0,0,0,$dateArr['month'],$dateArr['day'],$dateArr['year'])) <= date('Y-m-d', mktime(0,0,0,12,29,2011))))*/;
+	}
+
+	public function getBillingAttempts($oID){
+		$Qcheck = Doctrine_Manager::getInstance()
+			->getCurrentConnection()
+			->fetchAssoc('select bill_attempts from orders where orders_id = "' . $oID .'"');
+		return $Qcheck[0]['bill_attempts'];
+	}
+
+	public function updateBillingAttempts($oID){
+		Doctrine_Query::create()
+			->update('Orders')
+			->set('bill_attempts', '?', 'bill_attempts + 1')
+			->where('orders_id = ?', $oID)
+			->execute();
 	}
 
 	public function needsRetry($cID){
-		$Qcheck = Doctrine_Query::create()
-		->from('MembershipBillingReport')
-		->where('customers_id = ?', $cID)
-		->orderBy('date desc')
-		->limit('1')
-		->fetchOne();
-		if ($Qcheck){
-			$LastReport = $Qcheck->toArray();
-			$this->order = new OrderProcessor($LastReport['orders_id']);
+		$Qcheck = Doctrine_Manager::getInstance()
+		->getCurrentConnection()
+		->fetchAssoc('select * from membership_billing_report where customers_id = "' . $cID .'" order by billing_report_id desc limit 1');
+
+		if (count($Qcheck) > 0){
+			$LastReport = $Qcheck[0];
+			$this->orderId = $LastReport['orders_id'];
 			if ($LastReport['status'] == 'D'){
 				$dateAdded = $this->parseDate($LastReport['date']);
 				$timeAdded = mktime(0,0,0,$dateAdded['month'],$dateAdded['day'],$dateAdded['year']);
 				$timeNow = time();
 				$daysDiff = ($timeNow - $timeAdded) / (60*60*24);
 				if ($daysDiff <= $this->retryMaxTimes){
-					if ($this->order->getBillingAttempts() < $this->retryMaxTimes){
+					if ($this->getBillingAttempts($this->orderId) < $this->retryMaxTimes){
 						return true;
 					}
 				}
@@ -260,8 +273,8 @@ class membershipUpdate_cron {
 		global $currencies;
 		$order = new OrderProcessor;
 		if ($this->isRetry()){
-			$this->order->updateBillingAttempts();
-			return $this->order->orderId;
+			$this->updateBillingAttempts($this->orderId);
+			return $this->orderId;
 		}
 		$OrderTotalModules = new OrderTotalModules;
 

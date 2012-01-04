@@ -24,24 +24,51 @@ class OrderCreatorPaymentManager extends OrderPaymentManager implements Serializ
 			$Module->logToCollection($CollectionObj);
 		}
 		$BillingAddress = $Editor->AddressManager->getAddress('billing');
-		
-		$RequestData = array(
-			'amount' => $_POST['payment_amount'],
-			'currencyCode' => $Editor->getCurrency(),
-			'orderID' => $Editor->getOrderId(),
-			'description' => 'Administration Order Payment',
-			'customerId' => $Editor->getCustomerId(),
-			'customerEmail' => $Editor->getEmailAddress(),
-			'customerTelephone' => $Editor->getTelephone(),
-			'customerFirstName' => $BillingAddress->getFirstName(),
-			'customerLastName' => $BillingAddress->getLastName(),
-			'customerCompany' => $BillingAddress->getCompany(),
-			'customerStreetAddress' => $BillingAddress->getStreetAddress(),
-			'customerPostcode' => $BillingAddress->getPostcode(),
-			'customerCity' => $BillingAddress->getCity(),
-			'customerState' => $BillingAddress->getState(),
-			'customerCountry' => $BillingAddress->getCountry()
-		);
+
+		if(is_object($BillingAddress)){
+			$RequestData = array(
+				'amount' => $_POST['payment_amount'],
+				'currencyCode' => $Editor->getCurrency(),
+				'orderID' => $Editor->getOrderId(),
+				'description' => 'Administration Order Payment',
+				'customerId' => $Editor->getCustomerId(),
+				'customerEmail' => $Editor->getEmailAddress(),
+				'customerTelephone' => $Editor->getTelephone(),
+				'customerFirstName' => $BillingAddress->getFirstName(),
+				'customerLastName' => $BillingAddress->getLastName(),
+				'customerStreetAddress' => $BillingAddress->getStreetAddress(),
+				'customerPostcode' => $BillingAddress->getPostcode(),
+				'customerCity' => $BillingAddress->getCity(),
+				'customerState' => $BillingAddress->getState(),
+				'customerCountry' => $BillingAddress->getCountry()
+			);
+			if(sysConfig::get('ACCOUNT_COMPANY') == 'true'){
+				$RequestData['customerCompany'] = $BillingAddress->getCompany();
+			}
+		}else{
+			$Address = $Editor->AddressManager->getAddress('customer');
+			$name = explode(' ',  $Address->getName());
+
+			$RequestData = array(
+				'amount' => $_POST['payment_amount'],
+				'currencyCode' => $Editor->getCurrency(),
+				'orderID' => $Editor->getOrderId(),
+				'description' => 'Administration Order Payment',
+				'customerId' => $Editor->getCustomerId(),
+				'customerEmail' => $Editor->getEmailAddress(),
+				'customerTelephone' => $Editor->getTelephone(),
+				'customerFirstName' => (isset($name[0])?$name[0]:''),
+				'customerLastName' => (isset($name[1])?$name[1]:''),
+				'customerStreetAddress' => $Address->getStreetAddress(),
+				'customerPostcode' => $Address->getPostcode(),
+				'customerCity' => $Address->getCity(),
+				'customerState' => $Address->getState(),
+				'customerCountry' => $Address->getCountry()
+			);
+			if(sysConfig::get('ACCOUNT_COMPANY') == 'true'){
+				$RequestData['customerCompany'] = $Address->getCompany();
+			}
+		}
 		
 		if (isset($_POST['payment_cc_number']) && $_POST['payment_cc_number']!='' && $_POST['payment_cc_expires']!='' && $_POST['payment_cc_cvv']!=''){
 			$RequestData['cardNum'] = $_POST['payment_cc_number'];
