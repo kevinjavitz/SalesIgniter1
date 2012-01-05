@@ -812,20 +812,20 @@ class SimpleXMLExtended extends SimpleXMLElement
 	/*
 	 * SimpleXML builds files as one line, lets keep it pretty and human readable with this function
 	 */
-	public function asPrettyXML() {
+	public function asPrettyXML($fileName = null) {
 		$string = $this->asXML();
 
 		/*
 		 * put each element on it's own line
 		 */
-		$string = preg_replace("/>\s*</", ">\n<", $string);
+		$string = preg_replace("/></", ">\n<", $string);
 
 		/*
 		 * Fix CDATA Element and closing tag to be one the same line as the opening tag
 		 */
 		$string = preg_replace("/(>\n*<!\[)/", "><![", $string);
 		$string = preg_replace("/(\]>\n<\/)/", "]></", $string);
-		$string = preg_replace("/(>\n<)(?!(def)|(\/def)|(\!))/", "><", $string);
+		//$string = preg_replace("/(>\n<)(?!(def)|(\/def)|(\!))/", "><", $string);
 
 		/*
 		 * each element to own array
@@ -835,7 +835,7 @@ class SimpleXMLExtended extends SimpleXMLElement
 		/*
 		 * holds indentation
 		 */
-		$currIndent = 0;
+		$currIndent = -1;
 
 		/*
 		 * set xml element first by shifting of initial element
@@ -873,6 +873,13 @@ class SimpleXMLExtended extends SimpleXMLElement
 			$string = substr($string, 0, -1);
 		}
 
+		if (is_null($fileName) === false){
+			$FileObj = new SplFileObject($fileName, 'w+');
+			$FileObj->ftruncate(0);
+			$bytesWritten = $FileObj->fwrite($string);
+
+			return (is_null($bytesWritten) === false);
+		}
 		return $string;
 	}
 }

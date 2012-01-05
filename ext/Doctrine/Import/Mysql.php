@@ -139,7 +139,7 @@ class Doctrine_Import_Mysql extends Doctrine_Import
      */
     public function listTableColumns($table)
     {
-        $sql = 'DESCRIBE ' . $this->conn->quoteIdentifier($table, true);
+        $sql = 'SHOW FULL COLUMNS FROM ' . $this->conn->quoteIdentifier($table, true);
         $result = $this->conn->fetchAssoc($sql);
 
         $description = array();
@@ -166,6 +166,7 @@ class Doctrine_Import_Mysql extends Doctrine_Import
                           'default'       => $val['default'],
                           'notnull'       => (bool) ($val['null'] != 'YES'),
                           'autoincrement' => (bool) (strpos($val['extra'], 'auto_increment') !== false),
+                          'collation'     => $val['collation']
                           );
             if (isset($decl['scale'])) {
                 $description['scale'] = $decl['scale'];
