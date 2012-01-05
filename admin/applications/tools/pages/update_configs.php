@@ -318,4 +318,4 @@ add_extra_fields('modules_shipping_zone_reservation_methods','min_rental_number'
 add_extra_fields('modules_shipping_zone_reservation_methods','min_rental_type'," INT( 1 ) NOT NULL DEFAULT  '0'");
 
 ?>
-Configuration Updated.<
+Configuration Updated.
