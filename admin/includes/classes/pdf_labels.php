@@ -3,36 +3,67 @@ require_once('../tcpdf/config/tcpdf_config.php');
 require_once('../tcpdf/config/lang/eng.php');
 require_once('../tcpdf/tcpdf.php');
 
-class PDF_Labels {
+class PDF_Labels
+{
 
-	function PDF_Labels(){
+	/**
+	 * @var TCPDF
+	 */
+	private $pdf;
+
+	/**
+	 * @var array
+	 */
+	private $startLocation = array(
+		'row' => 1,
+		'col' => 1
+	);
+
+	/**
+	 * @var array
+	 */
+	private $layoutInfo = array();
+
+	function PDF_Labels() {
 		$this->setStartDate(date('Y-m-d'));
 		$this->setEndDate(date('Y-m-d'));
 		$this->setFilter('All');
 		$this->labels = array();
 	}
 
-	function setStartDate($val){ $this->startDate = $val; }
-	function setEndDate($val){ $this->endDate = $val; }
-	function setFilter($val){ $this->filter = $val; }
-	function setLabelsType($val){ $this->labelsType = $val; }
-	function setLabelLocation($val){ $this->labelLocation = $val; }
-	function setInventoryCenter($val){ $this->invCenter = $val; }
+	function setStartDate($val) { $this->startDate = $val; }
 
-	function getRentedQueueQuery($settings = null){
+	function setEndDate($val) { $this->endDate = $val; }
+
+	function setFilter($val) { $this->filter = $val; }
+
+	function setLabelsType($val) { $this->labelsType = $val; }
+
+	function setLabelLocation($val) { $this->labelLocation = $val; }
+
+	function setInventoryCenter($val) { $this->invCenter = $val; }
+
+	public function setStartLocation($row, $col) {
+		$this->startLocation = array(
+			'row' => $row,
+			'col' => $col
+		);
+	}
+
+	function getRentedQueueQuery($settings = null) {
 		$query = Doctrine_Query::create()
 		->select('ab.*, co.*, z.*, rq.customers_queue_id, rq.shipment_date as date_shipped, concat(c.customers_firstname, " ", c.customers_lastname) as customers_name, p.products_id, pd.products_name, "rental" as products_type, c.customers_id, co.countries_id, ib.barcode_id, ib.barcode')
-		->from('RentedQueue rq')
-		->leftJoin('rq.ProductsInventoryBarcodes ib')
-		->leftJoin('rq.Customers c')
-		->leftJoin('c.AddressBook ab')
-		->leftJoin('ab.Countries co')
-		->leftJoin('ab.Zones z')
-		->leftJoin('rq.Products p')
-		->leftJoin('p.ProductsDescription pd')
-		->where('pd.language_id = ?', Session::get('languages_id'))
-		->andWhere('ab.address_book_id = c.customers_delivery_address_id or c.customers_delivery_address_id is null')
-		->orderBy('rq.shipment_date asc, pd.products_name asc');
+			->from('RentedQueue rq')
+			->leftJoin('rq.ProductsInventoryBarcodes ib')
+			->leftJoin('rq.Customers c')
+			->leftJoin('c.AddressBook ab')
+			->leftJoin('ab.Countries co')
+			->leftJoin('ab.Zones z')
+			->leftJoin('rq.Products p')
+			->leftJoin('p.ProductsDescription pd')
+			->where('pd.language_id = ?', Session::get('languages_id'))
+			->andWhere('ab.address_book_id = c.customers_delivery_address_id or c.customers_delivery_address_id is null')
+			->orderBy('rq.shipment_date asc, pd.products_name asc');
 
 		if (isset($settings['startDate']) && isset($settings['endDate'])){
 			$query->andWhere('rq.shipment_date between "' . $settings['startDate'] . ' 00:00:00" and "' . $settings['endDate'] . ' 23:59:59"');
@@ -45,21 +76,21 @@ class PDF_Labels {
 		return $this->getRentedProducts($settings);
 		return $query;
 	}
-	
-	public function getRentedProducts($settings = null){
+
+	public function getRentedProducts($settings = null) {
 		$query = Doctrine_Query::create()
 		->select('ab.*, co.*, z.*, rq.customers_queue_id, rq.shipment_date, concat(c.customers_firstname, " ", c.customers_lastname) as customers_name, p.products_id, pd.products_name, c.customers_id, co.countries_id, ib.barcode_id, ib.barcode')
-		->from('RentedQueue rq')
-		->leftJoin('rq.ProductsInventoryBarcodes ib')
-		->leftJoin('rq.Customers c')
-		->leftJoin('c.AddressBook ab')
-		->leftJoin('ab.Countries co')
-		->leftJoin('ab.Zones z')
-		->leftJoin('rq.Products p')
-		->leftJoin('p.ProductsDescription pd')
-		->where('pd.language_id = ?', Session::get('languages_id'))
-		->andWhere('ab.address_book_id = c.customers_delivery_address_id or c.customers_delivery_address_id is null')
-		->orderBy('rq.shipment_date asc, pd.products_name asc');
+			->from('RentedQueue rq')
+			->leftJoin('rq.ProductsInventoryBarcodes ib')
+			->leftJoin('rq.Customers c')
+			->leftJoin('c.AddressBook ab')
+			->leftJoin('ab.Countries co')
+			->leftJoin('ab.Zones z')
+			->leftJoin('rq.Products p')
+			->leftJoin('p.ProductsDescription pd')
+			->where('pd.language_id = ?', Session::get('languages_id'))
+			->andWhere('ab.address_book_id = c.customers_delivery_address_id or c.customers_delivery_address_id is null')
+			->orderBy('rq.shipment_date asc, pd.products_name asc');
 
 		if (isset($settings['startDate']) && isset($settings['endDate'])){
 			$query->andWhere('rq.shipment_date between "' . $settings['startDate'] . ' 00:00:00" and "' . $settings['endDate'] . ' 23:59:59"');
@@ -68,9 +99,9 @@ class PDF_Labels {
 		if (isset($settings['queueId'])){
 			$query->andWhere('rq.customers_queue_id = ?', $settings['queueId']);
 		}
-		
+
 		$Result = $query->execute();
-		
+
 		$dataArray = array();
 		if ($Result->count() > 0){
 			$idx = 0;
@@ -78,7 +109,7 @@ class PDF_Labels {
 				if (!empty($Queue['Products'])){
 					$descInfo = $Queue['Products']['ProductsDescription'][Session::get('languages_id')];
 					$Address = $Queue['Customers']['AddressBook'][0];
-						
+
 					$dataArray[$idx] = array(
 						'customers_name'   => $Queue['customers_name'],
 						'addressFormatted' => tep_address_format($Address['Countries']['address_format_id'], $Address, true, '', '<br />', 'short'),
@@ -91,6 +122,7 @@ class PDF_Labels {
 					if (isset($Queue['ProductsInventoryBarcodes']) && !empty($Queue['ProductsInventoryBarcodes'])){
 						$dataArray[$idx]['barcode_id'] = $Queue['ProductsInventoryBarcodes']['barcode_id'];
 						$dataArray[$idx]['barcode'] = $Queue['ProductsInventoryBarcodes']['barcode'];
+						$dataArray[$idx]['barcode_type'] = 'Code128Auto';
 					}
 
 					if (isset($Queue['ProductsInventoryQuantity']) && !empty($Queue['ProductsInventoryQuantity'])){
@@ -104,18 +136,18 @@ class PDF_Labels {
 		return $dataArray;
 	}
 
-	function getPayPerRentalQuery($settings = null){
+	function getPayPerRentalQuery($settings = null) {
 		$query = Doctrine_Query::create()
 		->select('ib.barcode_id, ib.barcode, oa.*, opr.orders_products_reservations_id as reservation_id, opr.date_shipped as date_shipped, opr.barcode_id, opr.quantity_id, oa.entry_name as customers_name, op.products_name, op.products_id, "reservation" as products_type, o.customers_id, p.products_id, pd.products_description')
-		->from('Orders o')
-		->leftJoin('o.OrdersProducts op')
-		->leftJoin('op.OrdersProductsReservation opr')
-		->leftJoin('opr.ProductsInventoryBarcodes ib')
-		->leftJoin('op.Products p')
-		->leftJoin('p.ProductsDescription pd')
-		->leftJoin('o.OrdersAddresses oa')
-		->where('oa.address_type = ?', 'delivery')
-		->orderBy('opr.date_shipped asc, op.products_name asc');
+			->from('Orders o')
+			->leftJoin('o.OrdersProducts op')
+			->leftJoin('op.OrdersProductsReservation opr')
+			->leftJoin('opr.ProductsInventoryBarcodes ib')
+			->leftJoin('op.Products p')
+			->leftJoin('p.ProductsDescription pd')
+			->leftJoin('o.OrdersAddresses oa')
+			->where('oa.address_type = ?', 'delivery')
+			->orderBy('opr.date_shipped asc, op.products_name asc');
 
 		if (isset($settings['startDate']) && isset($settings['endDate'])){
 			$query->andWhere('opr.date_shipped BETWEEN CAST("' . $settings['startDate'] . '" as DATE) AND CAST("' . $settings['endDate'] . '" as DATE)');
@@ -123,7 +155,8 @@ class PDF_Labels {
 
 		if (isset($settings['bookingId'])){
 			$query->andWhere('opr.orders_products_reservations_id = ?', $settings['bookingId']);
-		}else{
+		}
+		else {
 			$query->andWhere('opr.parent_id is null');
 		}
 
@@ -133,15 +166,15 @@ class PDF_Labels {
 		return $query;
 	}
 
-	public function getPayPerRentals($settings = null){
+	public function getPayPerRentals($settings = null) {
 		$query = Doctrine_Query::create()
-		->from('Orders o')
-		->leftJoin('o.OrdersProducts op')
-		->leftJoin('op.OrdersProductsReservation opr')
-		->leftJoin('opr.ProductsInventoryBarcodes ib')
-		->leftJoin('o.OrdersAddresses oa')
-		->where('oa.address_type = ?', 'delivery')
-		->orderBy('opr.date_shipped asc, op.products_name asc');
+			->from('Orders o')
+			->leftJoin('o.OrdersProducts op')
+			->leftJoin('op.OrdersProductsReservation opr')
+			->leftJoin('opr.ProductsInventoryBarcodes ib')
+			->leftJoin('o.OrdersAddresses oa')
+			->where('oa.address_type = ?', 'delivery')
+			->orderBy('opr.date_shipped asc, op.products_name asc');
 
 		/*if (isset($settings['startDate']) && isset($settings['endDate'])){
 			$query->andWhere('opr.date_shipped BETWEEN CAST("' . $settings['startDate'] . '" as DATE) AND CAST("' . $settings['endDate'] . '" as DATE)');
@@ -149,7 +182,8 @@ class PDF_Labels {
 
 		if (isset($settings['bookingId'])){
 			$query->andWhere('opr.orders_products_reservations_id = ?', $settings['bookingId']);
-		}else{
+		}
+		else {
 			$query->andWhere('opr.parent_id is null');
 		}
 
@@ -178,6 +212,7 @@ class PDF_Labels {
 						if (isset($resInfo['ProductsInventoryBarcodes']) && !empty($resInfo['ProductsInventoryBarcodes'])){
 							$dataArray[$idx]['barcode_id'] = $resInfo['ProductsInventoryBarcodes']['barcode_id'];
 							$dataArray[$idx]['barcode'] = $resInfo['ProductsInventoryBarcodes']['barcode'];
+							$dataArray[$idx]['barcode_type'] = 'Code128Auto';
 						}
 
 						if (isset($resInfo['ProductsInventoryQuantity']) && !empty($resInfo['ProductsInventoryQuantity'])){
@@ -191,16 +226,16 @@ class PDF_Labels {
 		return $dataArray;
 	}
 
-	function runListingQuery(){
+	function runListingQuery() {
 		global $appExtension;
 		$queries['rental'] = $this->getRentedQueueQuery(array(
 			'startDate' => $this->startDate,
-			'endDate' => $this->endDate
+			'endDate'   => $this->endDate
 		));
 
 		$queries['onetime'] = $this->getPayPerRentalQuery(array(
 			'startDate' => $this->startDate,
-			'endDate' => $this->endDate
+			'endDate'   => $this->endDate
 		));
 
 		$sqlResources = array();
@@ -226,23 +261,24 @@ class PDF_Labels {
 				if ($appExtension->isEnabled('inventoryCenters')){
 					if (isset($this->invCenter) && $this->invCenter != ''){
 						$QinventoryCenter = Doctrine_Query::create()
-						->select('inventory_center_name')
-						->from('ProductsInventoryCenters')
-						->where('inventory_center_id = ?', $this->invCenter)
-						->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+							->select('inventory_center_name')
+							->from('ProductsInventoryCenters')
+							->where('inventory_center_id = ?', $this->invCenter)
+							->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 
 						$inventoryCenterName = $QinventoryCenter[0]['inventory_center_name'];
 
 						$Result = false;
 						if (!empty($itemData['barcode_id']) || !empty($itemData['quantity_id'])){
 							$Qcheck = Doctrine_Query::create()
-							->select('count(*) as total');
+								->select('count(*) as total');
 							if (!empty($itemData['barcode_id'])){
 								$Qcheck->from('ProductsInventoryBarcodesToInventoryCenters')
-								->where('barcode_id = ?', $itemData['barcode_id']);
-							}elseif (!empty($itemData['quantity_id'])){
+									->where('barcode_id = ?', $itemData['barcode_id']);
+							}
+							elseif (!empty($itemData['quantity_id'])) {
 								$Qcheck->from('ProductsInventoryQuantity')
-								->where('quantity_id = ?', $itemData['quantity_id']);
+									->where('quantity_id = ?', $itemData['quantity_id']);
 							}
 							$Qcheck->andWhere('inventory_center_id = ?', $this->invCenter);
 
@@ -252,27 +288,31 @@ class PDF_Labels {
 						if ($Result && $Result[0]['total'] <= 0){
 							continue;
 						}
-					}else{
+					}
+					else {
 						$QinventoryCenter = Doctrine_Query::create()
-						->select('ic.inventory_center_name')
-						->from('ProductsInventoryCenters ic');
+							->select('ic.inventory_center_name')
+							->from('ProductsInventoryCenters ic');
 
 						if (isset($itemData['barcode_id']) || isset($itemData['quantity_id'])){
 							if (isset($itemData['barcode_id'])){
 								$QinventoryCenter->leftJoin('ic.ProductsInventoryBarcodesToInventoryCenters b2c')
-								->where('b2c.barcode_id = ?', $itemData['barcode_id']);
-							}else{
+									->where('b2c.barcode_id = ?', $itemData['barcode_id']);
+							}
+							else {
 								$QinventoryCenter->leftJoin('ic.ProductsInventoryQuantity iq')
-								->where('iq.quantity_id = ?', $itemData['quantity_id']);
+									->where('iq.quantity_id = ?', $itemData['quantity_id']);
 							}
 
 							$Result = $QinventoryCenter->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 							if ($Result){
 								$inventoryCenterName = $Result[0]['inventory_center_name'];
-							}else{
+							}
+							else {
 								$inventoryCenterName = 'None';
 							}
-						}else{
+						}
+						else {
 							$inventoryCenterName = 'Package Product';
 						}
 					}
@@ -285,12 +325,12 @@ class PDF_Labels {
 					'products_type'    => $itemData['products_type'],
 					'date_sent'        => $itemData['date_sent'],
 					'barcode'          => (isset($itemData['barcode']) ? $itemData['barcode'] : 'Quantity Tracking'),
+					'barcode_type'     => (isset($itemData['type']) ? $itemData['type'] : 'Code128Auto'),
 					'inventory_center' => $inventoryCenterName,
 					'checkbox_value'   => $itemData['checkbox_value']
 				);
 			}
 		}
-
 		/*
 		$index = 0;
 		foreach($sqlResources as $Qrental){
@@ -357,8 +397,10 @@ class PDF_Labels {
 					->where('barcode_id = ?', $rental['ProductsInventoryBarcodes']['barcode_id'])
 					->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 					$barcodeNum = $Qbarcode[0]['barcode'];
+					$barcodeType = 'Code128Auto';
 				}else{
 					$barcodeNum = 'Quantity Tracking';
+					$barcodeType = '';
 				}
 
 				$this->listingData[$index] = array(
@@ -368,6 +410,7 @@ class PDF_Labels {
 					'products_type'    => $rental['products_type'],
 					'date_sent'        => (isset($rental['shipment_date']) ? $rental['shipment_date'] : $rental['date_shipped']),
 					'barcode'          => $barcodeNum,
+					'barcode_type'     => $barcodeType,
 					'inventory_center' => $inventoryCenterName,
 					'checkbox_value'   => ''
 				);
@@ -390,7 +433,7 @@ class PDF_Labels {
 		*/
 	}
 
-	function parseListingData($type = 'html'){
+	function parseListingData($type = 'html') {
 		global $typeNames;
 		if (isset($this->listingData) && sizeof($this->listingData) > 0){
 			switch($type){
@@ -425,13 +468,14 @@ class PDF_Labels {
 					$return = '"HTML Parsing Not Available At This Time"';
 					break;
 			}
-		}else{
+		}
+		else {
 			$return = '"No Listings To Display"';
 		}
 		return $return;
 	}
 
-	function getProductTypeName($type){
+	function getProductTypeName($type) {
 		switch($type){
 			case 'R':
 				return 'Rental Queue';
@@ -442,14 +486,14 @@ class PDF_Labels {
 		}
 	}
 
-	function loadProductBarcodes($id, $singleBarcode = false){
+	function loadProductBarcodes($id, $singleBarcode = false) {
 		$product = new product($id);
 
 		$Qinventory = Doctrine_Query::create()
 		->select('i.inventory_id, ib.barcode, ib.barcode_id')
-		->from('ProductsInventory i')
-		->leftJoin('i.ProductsInventoryBarcodes ib')
-		->where('i.products_id = ?', $id);
+			->from('ProductsInventory i')
+			->leftJoin('i.ProductsInventoryBarcodes ib')
+			->where('i.products_id = ?', $id);
 
 		if ($singleBarcode !== false && $singleBarcode > 0){
 			$Qinventory->andWhere('barcode_id = ?', $singleBarcode);
@@ -461,6 +505,7 @@ class PDF_Labels {
 				$this->labels[] = array(
 					'products_name'        => $product->getName(),
 					'barcode'              => $barcode['barcode'],
+					'barcode_type'         => 'Code128Auto',
 					'barcode_id'           => $barcode['barcode_id'],
 					'products_description' => $product->getDescription(),
 					'customers_address'    => false
@@ -469,18 +514,19 @@ class PDF_Labels {
 		}
 	}
 
-	function loadBarcodes($pID, $barcodes){
+	function loadBarcodes($pID, $barcodes) {
 		$product = new product($pID);
 		foreach($barcodes as $barcodeId){
 			$Qbarcode = Doctrine_Query::create()
 			->select('barcode, barcode_id')
-			->from('ProductsInventoryBarcodes')
-			->where('barcode_id = ?', $barcodeId)
-			->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+				->from('ProductsInventoryBarcodes')
+				->where('barcode_id = ?', $barcodeId)
+				->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 			if ($Qbarcode){
 				$this->labels[] = array(
 					'products_name'        => $product->getName(),
 					'barcode'              => $Qbarcode[0]['barcode'],
+					'barcode_type'         => 'Code128Auto',
 					'barcode_id'           => $Qbarcode[0]['barcode_id'],
 					'products_description' => strip_tags($product->getDescription()),
 					'customers_address'    => false
@@ -489,7 +535,7 @@ class PDF_Labels {
 		}
 	}
 
-	function loadLabelInfo($id, $type, $singleBarcode = false){
+	function loadLabelInfo($id, $type, $singleBarcode = false) {
 		switch($type){
 			case 'R':
 				$Qorder = $this->getRentedQueueQuery(array(
@@ -498,7 +544,6 @@ class PDF_Labels {
 
 				$order = $Qorder->execute()->toArray(true);
 				$oInfo = $order[0];
-
 
 				$Product = $oInfo['Products'];
 				$ProductDescription = $Product['ProductsDescription'][Session::get('languages_id')];
@@ -511,6 +556,7 @@ class PDF_Labels {
 					'products_name'        => $ProductDescription['products_name'],
 					'barcode_id'           => $ProductsInventoryBarcodes['barcode_id'],
 					'barcode'              => $ProductsInventoryBarcodes['barcode'],
+					'barcode_type'         => 'Code128Auto',
 					'products_description' => stripslashes(strip_tags($ProductDescription['products_description'])),
 					'customers_address'    => $CustomerAddress
 				);
@@ -527,6 +573,7 @@ class PDF_Labels {
 					'products_name'        => $oInfo['OrdersProducts']['products_name'],
 					'barcode_id'           => $oInfo['ProductsInventoryBarcodes']['barcode_id'],
 					'barcode'              => $oInfo['ProductsInventoryBarcodes']['barcode'],
+					'barcode_type'         => 'Code128Auto',
 					'products_description' => stripslashes(strip_tags($oInfo['OrdersProducts']['Products']['ProductsDescription'][Session::get('languages_id')]['products_description'])),
 					'customers_address'    => $oInfo['OrdersProducts']['Orders']['OrdersAddresses']['delivery']
 				);
@@ -538,30 +585,103 @@ class PDF_Labels {
 		}
 	}
 
-	function buildHTML(){
+	public function setData($data) {
+		$this->labels = $data;
+	}
+
+	function buildHTML() {
 		return $this->buildOutput('pdf');
 	}
 
-	function buildPDF(){
+	function buildPDF() {
 		return $this->buildOutput('pdf');
 	}
 
-	function buildOutput($type = 'html'){
-		$this->tmpType = $type;
-		if ($type == 'pdf'){
-			$this->pdf = new TCPDF('P', 'in', array('8.53', '11.03'), true);
+	function buildOutput() {
+		$this->tmpType = 'pdf';
+
+		$printerMargin = 0;
+
+		$this->layoutInfo = array(
+			'leftMargin'   => .15625,
+			'topMargin'    => .5,
+			'rightMargin'  => .15625,
+			'labelPadding' => .125
+		);
+
+		if ($printerMargin > $this->layoutInfo['leftMargin']){
+			$this->layoutInfo['labelPadding'] = ($printerMargin - $this->layoutInfo['leftMargin']);
+			$this->layoutInfo['leftMargin'] = 0;
+		}
+		else {
+			$this->layoutInfo['leftMargin'] -= $printerMargin;
+		}
+
+		if ($printerMargin > $this->layoutInfo['topMargin']){
+			$this->layoutInfo['topMargin'] = 0;
+		}
+		else {
+			$this->layoutInfo['topMargin'] -= $printerMargin;
+		}
+
+		if ($printerMargin > $this->layoutInfo['rightMargin']){
+			$this->layoutInfo['rightMargin'] = 0;
+		}
+		else {
+			$this->layoutInfo['rightMargin'] -= $printerMargin;
+		}
+
+		$this->layoutInfo['labelPage'] = false;
+		if ($this->labelsType == '5160' || $this->labelsType == '8160-s' || $this->labelsType == '8160-b' || $this->labelsType == 'barcodes'){
+			$this->layoutInfo['labelPage'] = '8160';
+			$this->layoutInfo['RowsPerPage'] = 10;
+			$this->layoutInfo['ColsPerRow'] = 3;
+			$this->layoutInfo['labelHeight'] = 1;
+			$this->layoutInfo['labelWidth'] = 2.625;
+			$this->layoutInfo['labelSpacerWidth'] = .15625;
+
+			$this->layoutInfo['barcodeMaxWidth'] = $this->layoutInfo['labelWidth'] - ($this->layoutInfo['labelPadding'] * 2);
+			$this->layoutInfo['barcodeMaxHeight'] = $this->layoutInfo['labelHeight'] - ($this->layoutInfo['labelPadding'] * 2);
+			$this->layoutInfo['barcodeMaxHeight'] -= .125; //Allow For Text
+
+			if ($this->labelsType == '5160' || $this->labelsType == '8160-s'){
+				$buildfunction = 'buildLabel_Address';
+			}elseif ($this->labelsType == 'barcodes' || $this->labelsType == '8160-b'){
+				$buildfunction = 'buildLabel_Barcodes';
+			}
+		}
+		elseif ($this->labelsType == '5164' || $this->labelsType == '8164') {
+			$this->layoutInfo['labelPage'] = '8164';
+			$this->layoutInfo['RowsPerPage'] = 3;
+			$this->layoutInfo['ColsPerRow'] = 2;
+			$this->layoutInfo['labelHeight'] = 3.3125;
+			$this->layoutInfo['labelWidth'] = 4;
+			$this->layoutInfo['labelSpacerWidth'] = .1875;
+
+			$this->layoutInfo['barcodeMaxWidth'] = $this->layoutInfo['labelWidth'] - ($this->layoutInfo['labelPadding'] * 2);
+			$this->layoutInfo['barcodeMaxHeight'] = 1;
+			$this->layoutInfo['barcodeMaxHeight'] -= .125; //Allow For Text
+
+			$buildfunction = 'buildLabel_ProductInfo';
+		}
+
+		if ($this->layoutInfo['labelPage'] !== false){
+			$this->pdf = new TCPDF('P', 'in', array('8.5', '11.2'), true);
 			$this->pdf->SetCreator('osCommerce Rental Script');
 			$this->pdf->SetAuthor('Kevin Javitz');
 			$this->pdf->SetTitle('Rental Product Labels');
 			$this->pdf->SetSubject('Rental Product Labels');
-			if ($this->labelsType == '5160'){
-				$this->pdf->SetMargins(0.18, 0.49, 0.2);
-			} elseif ($this->labelsType == '5164'){
-				$this->pdf->SetMargins(0.15, 0.49, 0.15);
-			} else{
-				$this->pdf->SetMargins(0.18, 0.49, 0.2);
-			}
-			$this->pdf->SetCellPadding(.075);
+			$this->pdf->setViewerPreferences(array(
+				'PrintScaling' => 'None'
+			));
+
+			$this->pdf->SetMargins(
+				$this->layoutInfo['leftMargin'],
+				$this->layoutInfo['topMargin'],
+				$this->layoutInfo['rightMargin'],
+				true
+			);
+			$this->pdf->SetCellPadding($this->layoutInfo['labelPadding']);
 			$this->pdf->setPrintHeader(false);
 			$this->pdf->setPrintFooter(false);
 			$this->pdf->SetAutoPageBreak(TRUE, .51);
@@ -570,107 +690,76 @@ class PDF_Labels {
 			$this->pdf->AliasNbPages();
 			$this->pdf->AddPage();
 			$this->pdf->SetFont("helvetica", "", 11);
-		}else{
-			$topPadding = 0.49;
-			$bottomPadding = 0.51;
-			$leftPadding = ($this->labelsType == '5160' ? 0.18 : 0.15);
-			$rightPadding = ($this->labelsType == '5160' ? 0.18 : 0.15);
-			$this->htmlOutput = '<html>' .
-			'<head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></head>' .
-			'<body topmargin="0" leftmargin="0" style="font-family:halvetica;font-size:11pt;">' .
-			'<div style="padding-top:' . $topPadding . 'in;padding-left:' . $leftPadding . 'in;padding-right:' . $rightPadding . 'in;padding-bottom:' . $bottomPadding . 'in;width:8.53in;height:11.03in;">' . "\n";
-		}
 
-		$function = '';
-		switch($this->labelsType){
-			case '5160': // Avery 5160 Shipping Labels
-			case 'ship_html': // Shipping Labels HTML Version
-			$maxCol = 1;
-			$function = 'buildLabel_5160';
-			$pageCells = 30;
-			break;
-			case '5164': // Avery 5164 Product Info Labels
-			case 'pinfo_html': // Product Info Labels HTML Version
-			$maxCol = 0;
-			$function = 'buildLabel_5164';
-			$pageCells = 6;
-			break;
-			case 'barcodes':
-				$maxCol = 1;
-				$function = 'buildLabel_Barcodes';
-				//$this->buildLabel_5164($this->labels[0], 1, true);
-				$pageCells = 30;
-				break;
-			default:
-				die('PDF Error: Unknown Label Sheet Type');
-				break;
-		}
+			$CurPage = 1;
+			$CurrentRow = 1;
+			$CurrentCol = 1;
+			$labelCnt = 0;
+			$lastLabel = sizeof($this->labels);
+			while($CurrentRow <= $this->layoutInfo['RowsPerPage']){
+				if (!isset($this->labels[$labelCnt])){
+					break;
+				}
 
-		$col = 0;
-		if (isset($this->labelLocation) && tep_not_null($this->labelLocation)){
-			$n = $pageCells;
-		}else{
-			$n = sizeof($this->labels);
-		}
-		for($i=0; $i<$n; $i++){
-			if ($col > $maxCol){
-				$col = 0;
-				$newLine = 1;
-			}else{
-				$col++;
-				$newLine = 0;
-			}
-			$lInfo = $this->labels[$i];
-			if (isset($this->labelLocation) && tep_not_null($this->labelLocation)){
-				if ($i != $this->labelLocation){
-					$lInfo = array();
-				}else{
-					$lInfo = $this->labels[0];
+				if ($CurPage == 1){
+					if ($CurrentRow < $this->startLocation['row']){
+						$blankRow = true;
+					}
+					else {
+						$blankRow = false;
+					}
+				}
+				else {
+					$blankRow = false;
+				}
+
+				while($CurrentCol <= $this->layoutInfo['ColsPerRow']){
+					if ($CurPage == 1){
+						if ($blankRow === true || $CurrentCol < $this->startLocation['col']){
+							$blankCol = true;
+						}
+						else {
+							//Reset to 1 so that after first output it will continue without skipping columns
+							$this->startLocation['col'] = 1;
+							$blankCol = false;
+						}
+					}
+					else {
+						$blankCol = false;
+					}
+
+					$newLine = ($CurrentCol == $this->layoutInfo['ColsPerRow'] ? 1 : 0);
+
+					if ($blankCol === true){
+						$lInfo = array();
+					}
+					else {
+						$lInfo = $this->labels[$labelCnt];
+						$labelCnt++;
+					}
+					$this->$buildfunction($lInfo, $newLine);
+
+					$CurrentCol++;
+				}
+
+				$CurrentCol = 1;
+				$CurrentRow++;
+				if ($CurrentRow == $this->layoutInfo['RowsPerPage']){
+					if ($lastLabel > $labelCnt){
+						$CurrentRow = 1;
+						$CurPage++;
+					}
 				}
 			}
-			$this->$function($lInfo, $newLine);
-		}
 
-		if ($type == 'pdf'){
 			$this->pdf->lastPage();
-			$this->pdf->Output("example_017.pdf", "I");
+			$this->pdf->Output("labelSheet.pdf", "I");
 		}else{
-			$this->htmlOutput .= '</div>' . "\n" .
-			'</body>' . "\n" .
-			'</html>' . "\n";
-			return $this->htmlOutput;
+			die('PDF Error: Unknown Label Sheet Type (' . $this->labelsType . ')');
 		}
 	}
 
-	function buildLabel_5160($lInfo, $newLine){
-		$labelContent = array(
-		substr($lInfo['products_name'], 0, 13) . ' - ' . $lInfo['barcode']
-		);
-
-		if ($lInfo['customers_address'] !== false){
-			$labelContent = tep_address_format($lInfo['customers_address']['address_format_id'], $lInfo['customers_address'],'','','','short');
-		}
-
-		if ($this->tmpType == 'pdf'){
-			$this->pdf->MultiCell(2.63, 1, implode('<br>', $labelContent), 0, 'L', 0, $newLine, 0, 0, true, 0, true);
-			if ($newLine == 0){
-				$this->pdf->Cell(0.13, 1, '');
-			}
-		}else{
-			$this->htmlOutput .= '<div style="width:2.63in;height:1in;position:relative;float:left;">' . "\n" .
-			'<div style="padding:0.075in;">' . "\n" .
-			implode('<br>', $labelContent) . "\n" .
-			'</div>' . "\n" .
-			'</div>' . "\n";
-			if ($newLine == 1){
-				$this->htmlOutput .= '<div style="clear:both;"></div>' . "\n";
-			}else{
-				$this->htmlOutput .= '<div style="width:0.13in;height:1in;position:relative;float:left;"></div>' . "\n";
-			}
-		}
-	}
-
-	private function buildLabel_5164($labelInfo, $newLine){
+	private function buildLabel_ProductInfo($labelInfo, $newLine) {
 		$labelContent = array();
 		if (tep_not_null($labelInfo['products_name'])){
 			$labelContent[] = '<b>' . $labelInfo['products_name'] . '</b>';
@@ -682,143 +771,160 @@ class PDF_Labels {
 
 		if (tep_not_null($labelInfo['barcode'])){
 			$labelContent[] = '<b>Barcode:</b> ' . $labelInfo['barcode'];
-			// define barcode style
-			$style = array(
-				'position' => '',
-				'align' => 'L',
-				'stretch' => false,
-				'fitwidth' => false,
-				'cellfitalign' => '',
-				'border' => false,
-				'hpadding' => '0',
-				'vpadding' => '0',
-				'fgcolor' => array(0,0,0),
-				'bgcolor' => false, //array(255,255,255),
-				'text' => true,
-				'font' => 'helvetica',
-				'fontsize' => 8,
-				'stretchtext' => 4
-			);
-
-			$styleQR = array(
-				'border' => 0,
-				'vpadding' => '0',
-				'hpadding' => '0',
-				'fgcolor' => array(0,0,0),
-				'bgcolor' => false, //array(255,255,255)
-				'module_width' => 1, // width of a single module in points
-				'module_height' => 1 // height of a single module in points
-			);
-
-
-
 			if (tep_not_null($labelInfo['barcode'])){
-				switch(sysConfig::get('BARCODE_TYPE')){
-					case 'Code 25':
-						$params = $this->pdf->serializeTCPDFtagParameters(array($labelInfo['barcode'], 'S25', '', '', '' ,1, 0.4, $style, 'N'));
-						$labelContent[] = '<tcpdf method="write1DBarcode" params="'.$params.'" />';
-						break;
-					case 'Code 25 Interleaved':
-						$params = $this->pdf->serializeTCPDFtagParameters(array($labelInfo['barcode'], 'I25', '', '', '' ,1, 0.4, $style, 'N'));
-						$labelContent[] = '<tcpdf method="write1DBarcode" params="'.$params.'" />';
-						break;
-					case 'Code 39':
-						$params = $this->pdf->serializeTCPDFtagParameters(array($labelInfo['barcode'], 'C39', '', '', '',1, 0.4, $style, 'N'));
-						$labelContent[] = '<tcpdf method="write1DBarcode" params="'.$params.'" />';
-						break;
-					case 'Code 39 Extended':
-						$params = $this->pdf->serializeTCPDFtagParameters(array($labelInfo['barcode'], 'C39E', '', '', '',1, 0.4, $style, 'N'));
-						$labelContent[] = '<tcpdf method="write1DBarcode" params="'.$params.'" />';
-						break;
-					case 'Code 128B':
-						$params = $this->pdf->serializeTCPDFtagParameters(array($labelInfo['barcode'], 'C128B', '', '', '',1, 0.4, $style, 'N'));
-						$labelContent[] = '<tcpdf method="write1DBarcode" params="'.$params.'" />';
-						break;
-					case 'QR':
-						$params = $this->pdf->serializeTCPDFtagParameters(array($labelInfo['barcode'], 'QRCODE,H', '', '', 1, 1, $styleQR, 'N'));
-						$labelContent[] = '<tcpdf method="write2DBarcode" params="'.$params.'" />';
-						break;
-				}
-				//$labelContent[] =  '<img src="' . tep_href_link('showBarcode_' . $labelInfo['barcode_id'] . '.png', Session::getSessionName() . '=' . Session::getSessionId()) . '">';
-			}else{
+				$labelContent[] = $this->getTcpdfBarcode($labelInfo);
+			}
+			else {
 				$labelContent[] = 'Image Not Available';
 			}
 		}
 
-		$this->pdf->MultiCell(4, 1.4, implode('<br>', $labelContent), 0, 'L', 0, $newLine, '', '', true, 0, true);
+		$this->pdf->MultiCell($this->layoutInfo['labelWidth'], $this->layoutInfo['labelHeight'], implode('<br>', $labelContent), 0, 'L', 0, $newLine, '', '', true, 0, true, true, 1, 'M', true);
 		if ($newLine == 0){
-			$this->pdf->Cell(.2, 3.34, '');
+			$this->pdf->Cell($this->layoutInfo['labelSpacerWidth'], $this->layoutInfo['labelHeight'], '');
 		}
-
 	}
 
-	private function buildLabel_Barcodes($labelInfo, $newLine){
+	private function buildLabel_Address($lInfo, $newLine) {
+		$labelContent = array(
+			substr($lInfo['products_name'], 0, 13) . ' - ' . $lInfo['barcode']
+		);
+
+		if ($lInfo['customers_address'] !== false){
+			$labelContent[] = tep_address_format(tep_get_address_format_id($lInfo['customers_address']['entry_country_id']), $lInfo['customers_address']);
+		}
+
+		$this->pdf->MultiCell($this->layoutInfo['labelWidth'], $this->layoutInfo['labelHeight'], strip_tags(str_replace('&nbsp;', ' ', implode("\n", $labelContent))), 0, 'L', 0, $newLine, '', '', true, 0, false, true, $this->layoutInfo['labelHeight'], 'M', true);
+		if ($newLine == 0){
+			$this->pdf->Cell($this->layoutInfo['labelSpacerWidth'], $this->layoutInfo['labelHeight'], '');
+		}
+	}
+
+	private function buildLabel_Barcodes($lInfo, $newLine) {
 		$labelContent = array();
-		if (tep_not_null($labelInfo['barcode'])){
-			$style = array(
-				'position' => '',
-				'align' => 'L',
-				'stretch' => false,
-				'fitwidth' => false,
-				'cellfitalign' => '',
-				'border' => false,
-				'hpadding' => '0',
-				'vpadding' => '0',
-				'fgcolor' => array(0,0,0),
-				'bgcolor' => false, //array(255,255,255),
-				'text' => true,
-				'font' => 'helvetica',
-				'fontsize' => 8,
-				'stretchtext' => 4
-			);
+		if (tep_not_null($lInfo['barcode'])){
 
-			$styleQR = array(
-				'border' => 0,
-				'vpadding' => '0',
-				'hpadding' => '0',
-				'fgcolor' => array(0,0,0),
-				'bgcolor' => false, //array(255,255,255)
-				'module_width' => 1, // width of a single module in points
-				'module_height' => 1 // height of a single module in points
-			);
-
-			if (tep_not_null($labelInfo['barcode'])){
-				switch(sysConfig::get('BARCODE_TYPE')){
-					case 'Code 25':
-						$params = $this->pdf->serializeTCPDFtagParameters(array($labelInfo['barcode'], 'S25', '', '', '' ,1, 0.4, $style, 'N'));
-						$labelContent[] = '<tcpdf method="write1DBarcode" params="'.$params.'" />';
-						break;
-					case 'Code 25 Interleaved':
-						$params = $this->pdf->serializeTCPDFtagParameters(array($labelInfo['barcode'], 'I25', '', '', '' ,1, 0.4, $style, 'N'));
-						$labelContent[] = '<tcpdf method="write1DBarcode" params="'.$params.'" />';
-						break;
-					case 'Code 39':
-						$params = $this->pdf->serializeTCPDFtagParameters(array($labelInfo['barcode'], 'C39', '', '', '',1, 0.4, $style, 'N'));
-						$labelContent[] = '<tcpdf method="write1DBarcode" params="'.$params.'" />';
-						break;
-					case 'Code 39 Extended':
-						$params = $this->pdf->serializeTCPDFtagParameters(array($labelInfo['barcode'], 'C39E', '', '', '',1, 0.4, $style, 'N'));
-						$labelContent[] = '<tcpdf method="write1DBarcode" params="'.$params.'" />';
-						break;
-					case 'Code 128B':
-						$params = $this->pdf->serializeTCPDFtagParameters(array($labelInfo['barcode'], 'C128B', '', '', '',1, 0.4, $style, 'N'));
-						$labelContent[] = '<tcpdf method="write1DBarcode" params="'.$params.'" />';
-						break;
-					case 'QR':
-						$params = $this->pdf->serializeTCPDFtagParameters(array($labelInfo['barcode'], 'QRCODE,H', '', '', 1, 1, $styleQR, 'N'));
-						$labelContent[] = '<tcpdf method="write2DBarcode" params="'.$params.'" />';
-						break;
-				}
-				//$labelContent[] =  '<img src="' . tep_href_link('showBarcode_' . $labelInfo['barcode_id'] . '.png', Session::getSessionName() . '=' . Session::getSessionId()) . '">';
-			}else{
+			if (tep_not_null($lInfo['barcode_type'])){
+				$labelContent[] = $this->getTcpdfBarcode($lInfo);
+			}
+			else {
 				$labelContent[] = 'Image Not Available';
 			}
 		}
-			$this->pdf->MultiCell(2.7, 1.3, implode('<br>', $labelContent), 0, 'L', 0, $newLine, '', '', true, 0, true);
-			if ($newLine == 0){
-				$this->pdf->Cell(.2, 3.34, '');
-			}
+		$this->pdf->MultiCell($this->layoutInfo['labelWidth'], $this->layoutInfo['labelHeight'], implode("\n", $labelContent), 0, 'C', 0, $newLine, '', '', true, 0, true, true, $this->layoutInfo['labelHeight'], 'M', true);
+		if ($newLine == 0){
+			$this->pdf->Cell($this->layoutInfo['labelSpacerWidth'], $this->layoutInfo['labelHeight'], '');
+		}
+	}
 
+	private function getTcpdfBarcode($bInfo){
+		$style = array(
+			'position'     => '',
+			'align'        => 'L',
+			'stretch'      => false,
+			'fitwidth'     => false,
+			'cellfitalign' => '',
+			'border'       => false,
+			'hpadding'     => '0',
+			'vpadding'     => '0',
+			'fgcolor'      => array(0, 0, 0),
+			'bgcolor'      => false, //array(255,255,255),
+			'text'         => true,
+			'font'         => 'helvetica',
+			'fontsize'     => 8,
+			'stretchtext'  => false
+		);
+
+		$styleQR = array(
+			'border'        => 0,
+			'vpadding'      => '0',
+			'hpadding'      => '0',
+			'fgcolor'       => array(0, 0, 0),
+			'bgcolor'       => false, //array(255,255,255)
+			'module_width'  => 1, // width of a single module in points
+			'module_height' => 1 // height of a single module in points
+		);
+
+		switch($bInfo['barcode_type']){
+			case 'Code39':
+				$params = $this->pdf->serializeTCPDFtagParameters(array($bInfo['barcode'], 'C39', '', '', $this->layoutInfo['barcodeMaxWidth'], $this->layoutInfo['barcodeMaxHeight'], 0.4, $style, 'N'));
+				$barcodeStr = '<tcpdf method="write1DBarcode" params="' . $params . '" />';
+				break;
+			case 'Code39CS':
+				$params = $this->pdf->serializeTCPDFtagParameters(array($bInfo['barcode'], 'C39+', '', '', $this->layoutInfo['barcodeMaxWidth'], $this->layoutInfo['barcodeMaxHeight'], 0.4, $style, 'N'));
+				$barcodeStr = '<tcpdf method="write1DBarcode" params="' . $params . '" />';
+				break;
+			case 'Code128Auto':
+				$params = $this->pdf->serializeTCPDFtagParameters(array($bInfo['barcode'], 'C128', '', '', $this->layoutInfo['barcodeMaxWidth'], $this->layoutInfo['barcodeMaxHeight'], 0.4, $style, 'N'));
+				$barcodeStr = '<tcpdf method="write1DBarcode" params="' . $params . '" />';
+				break;
+			case 'Code128A':
+				$params = $this->pdf->serializeTCPDFtagParameters(array($bInfo['barcode'], 'C128A', '', '', $this->layoutInfo['barcodeMaxWidth'], $this->layoutInfo['barcodeMaxHeight'], 0.4, $style, 'N'));
+				$barcodeStr = '<tcpdf method="write1DBarcode" params="' . $params . '" />';
+				break;
+			case 'Code128B':
+				$params = $this->pdf->serializeTCPDFtagParameters(array($bInfo['barcode'], 'C128B', '', '', $this->layoutInfo['barcodeMaxWidth'], $this->layoutInfo['barcodeMaxHeight'], 0.4, $style, 'N'));
+				$barcodeStr = '<tcpdf method="write1DBarcode" params="' . $params . '" />';
+				break;
+			case 'Code128C':
+				$params = $this->pdf->serializeTCPDFtagParameters(array($bInfo['barcode'], 'C128C', '', '', $this->layoutInfo['barcodeMaxWidth'], $this->layoutInfo['barcodeMaxHeight'], 0.4, $style, 'N'));
+				$barcodeStr = '<tcpdf method="write1DBarcode" params="' . $params . '" />';
+				break;
+			case 'Code2of5':
+				$params = $this->pdf->serializeTCPDFtagParameters(array($bInfo['barcode'], 'S25', '', '', $this->layoutInfo['barcodeMaxWidth'], $this->layoutInfo['barcodeMaxHeight'], 0.4, $style, 'N'));
+				$barcodeStr = '<tcpdf method="write1DBarcode" params="' . $params . '" />';
+				break;
+			case 'UpcA':
+				$params = $this->pdf->serializeTCPDFtagParameters(array($bInfo['barcode'], 'UPCA', '', '', $this->layoutInfo['barcodeMaxWidth'], $this->layoutInfo['barcodeMaxHeight'], 0.4, $style, 'N'));
+				$barcodeStr = '<tcpdf method="write1DBarcode" params="' . $params . '" />';
+				break;
+			case 'UpcE':
+				$params = $this->pdf->serializeTCPDFtagParameters(array($bInfo['barcode'], 'UPCE', '', '', $this->layoutInfo['barcodeMaxWidth'], $this->layoutInfo['barcodeMaxHeight'], 0.4, $style, 'N'));
+				$barcodeStr = '<tcpdf method="write1DBarcode" params="' . $params . '" />';
+				break;
+			case 'Ean8':
+				$params = $this->pdf->serializeTCPDFtagParameters(array($bInfo['barcode'], 'EAN8', '', '', $this->layoutInfo['barcodeMaxWidth'], $this->layoutInfo['barcodeMaxHeight'], 0.4, $style, 'N'));
+				$barcodeStr = '<tcpdf method="write1DBarcode" params="' . $params . '" />';
+				break;
+			case 'Ean13':
+				$params = $this->pdf->serializeTCPDFtagParameters(array($bInfo['barcode'], 'EAN13', '', '', $this->layoutInfo['barcodeMaxWidth'], $this->layoutInfo['barcodeMaxHeight'], 0.4, $style, 'N'));
+				$barcodeStr = '<tcpdf method="write1DBarcode" params="' . $params . '" />';
+				break;
+			case 'Codabar':
+				$params = $this->pdf->serializeTCPDFtagParameters(array($bInfo['barcode'], 'CODABAR', '', '', $this->layoutInfo['barcodeMaxWidth'], $this->layoutInfo['barcodeMaxHeight'], 0.4, $style, 'N'));
+				$barcodeStr = '<tcpdf method="write1DBarcode" params="' . $params . '" />';
+				break;
+			case 'Postnet':
+				$params = $this->pdf->serializeTCPDFtagParameters(array($bInfo['barcode'], 'POSTNET', '', '', $this->layoutInfo['barcodeMaxWidth'], $this->layoutInfo['barcodeMaxHeight'], 0.4, $style, 'N'));
+				$barcodeStr = '<tcpdf method="write1DBarcode" params="' . $params . '" />';
+				break;
+			case 'Code39LibR':
+				break;
+			case 'Code39LibL':
+				break;
+			case 'CodabarLibR':
+				break;
+			case 'CodabarLibL':
+				break;
+			case 'Code128Ean':
+				break;
+			case 'Itf14':
+				break;
+			case 'Planet':
+				$params = $this->pdf->serializeTCPDFtagParameters(array($bInfo['barcode'], 'PLANET', '', '', $this->layoutInfo['barcodeMaxWidth'], $this->layoutInfo['barcodeMaxHeight'], 0.4, $style, 'N'));
+				$barcodeStr = '<tcpdf method="write1DBarcode" params="' . $params . '" />';
+				break;
+			case 'Pdf417':
+				break;
+			case 'QRCode':
+				$params = $this->pdf->serializeTCPDFtagParameters(array($bInfo['barcode'], 'QRCODE', '', '', 1, 1, $styleQR, 'N'));
+				$barcodeStr = '<tcpdf method="write2DBarcode" params="' . $params . '" />';
+				break;
+			case 'IMail':
+				break;
+		}
+		return $barcodeStr;
 	}
 }
+
 ?>
