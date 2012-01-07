@@ -89,8 +89,15 @@
 						      'colspan' => 5,
 						      'text' => '')
 						)));
-
-	$htmlTable->addBodyRow(array(
+    $htmlTable2 = htmlBase::newElement('table')
+            ->setCellPadding(2)
+            ->setCellSpacing(0)
+            ->attr('id', 'pointsHistoryTable')
+            ->addClass('ui-widget')
+            ->css(array(
+        'width' => '100%'
+    ));
+    $htmlTable2->addBodyRow(array(
 		'columns' => array(
 			array('addCls' => 'ui-widget-header', 'text' => sysLanguage::get('TABLE_HEADING_POINTS')),
 			array('addCls' => 'ui-widget-header', 'css' => array('border-left' => 0), 'text' => sysLanguage::get('TABLE_HEADING_PURCHASE_TYPE')),
@@ -100,22 +107,22 @@
 		)
 	));
 	if (!$QpointsRewardsEarned && !$QpointsRewardsDeducted){
-		$htmlTable->addBodyRow(array(
+		$htmlTable2->addBodyRow(array(
 			'columns' => array(
 				array('colspan' => 5, 'addCls' => 'ui-widget-content', 'align' => 'center', 'css' => array('border-top' => 0), 'text' => sysLanguage::get('TEXT_INFO_NO_HISTORY'))
 			)
 		));
 	}else{
 		if($QpointsRewardsEarned){
-			$htmlTable->addBodyRow(array(
+			$htmlTable2->addBodyRow(array(
 			                            'columns' => array(
-				                            array('addCls' => 'pageStackContainer',
-				                                  'css'=>array('text-align:center'),
+				                            array('css'=>array('text-align:center'),
+                                                  'addCls' => 'ui-widget-header',
 				                                  'colspan' => 5,
 				                                  'text' => sysLanguage::get('TABLE_HEADING_POINTS_EARNINGS'))
 			                            )));
 			foreach($QpointsRewardsEarned as $pInfo){
-				$htmlTable->addBodyRow(array(
+				$htmlTable2->addBodyRow(array(
 				                            'columns' => array(
 					                            array('addCls' => 'ui-widget-content', 'css' => array('border-top' => 0), 'text' => $pInfo['points']),
 					                            array('addCls' => 'ui-widget-content', 'css' => array('border-top' => 0, 'border-left' => 0), 'text' => $pInfo['purchase_type']),
@@ -128,16 +135,16 @@
 			}
 		}
 		if($QpointsRewardsDeducted){
+            $htmlTable2->addBodyRow(array(
+                'columns' => array(
+                    array('css'=>array('text-align:center'),
+                        'addCls' => 'ui-widget-header',
+                        'colspan' => 5,
+                        'text' => sysLanguage::get('TABLE_HEADING_POINTS_SPENDINGS'))
+                )));
 			foreach($QpointsRewardsDeducted as $pInfo){
-				$htmlTable->addBodyRow(array(
-				                            'columns' => array(
-					                            array('addCls' => 'pageStackContainer',
-					                                  'css'=>array('text-align:center'),
-					                                  'colspan' => 5,
-					                                  'text' => sysLanguage::get('TABLE_HEADING_POINTS_SPENDINGS'))
-				                            )));
 
-				$htmlTable->addBodyRow(array(
+				$htmlTable2->addBodyRow(array(
 				                            'columns' => array(
 					                            array('addCls' => 'ui-widget-content', 'css' => array('border-top' => 0), 'text' => '-' . $pInfo['points']),
 					                            array('addCls' => 'ui-widget-content', 'css' => array('border-top' => 0, 'border-left' => 0), 'text' => $pInfo['purchase_type']),
@@ -150,6 +157,13 @@
 			}
 		}
 	}
-	echo $htmlTable->draw();
+    if (isset($_GET['rType']) && $_GET['rType'] == 'ajax'){
+        echo $htmlTable2->draw();
+    } else {
+        $htmlTable->addBodyRow(array(
+            'columns' => array(
+                array('text' => $htmlTable2)
+            )));
+        echo $htmlTable->draw();
+    }
 ?>
-<div id="page-1"><?php include sysConfig::getDirFsCatalog() . 'extensions/pointsRewards/admin/ext_app/customers/page_tabs/';?></div>

@@ -18,6 +18,7 @@ $(document).ready(function (){
 			type: 'post',
 			success: function (data){
 				$('.pageStackContainer').html(data.msgStack).show();
+                		$('#pointsHistoryTable').parent().html(data.history);
 				removeAjaxLoader($this);
 			}
 		});
@@ -40,6 +41,7 @@ $(document).ready(function (){
 			type: 'post',
 			success: function (data){
 				$('.pageStackContainer').html(data.msgStack).show();
+                		$('#pointsHistoryTable').parent().html(data.history);
 				removeAjaxLoader($this);
 			}
 		});
