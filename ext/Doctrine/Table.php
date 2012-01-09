@@ -1298,6 +1298,10 @@ class Doctrine_Table extends Doctrine_Configurable implements Countable
                 }
                 unset($options[$k]);
             }
+            
+            if (($k == 'fixed' || $k == 'notnull' || $k == 'primary') && is_string($option)){
+            	$options[$k] = (strtolower($option) == 'true');
+            }
         }
 
         // extract column name & field name

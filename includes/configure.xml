@@ -72,4 +72,12 @@
 		<key>SYSTEM_INSTALL_DATE</key>
 		<value></value>
 	</config>
+	<config protected="true">
+		<key>SYSTEM_CHARACTER_SET</key>
+		<value>utf8</value>
+	</config>
+	<config protected="true">
+		<key>SYSTEM_CHARACTER_SET_COLLATION</key>
+		<value>utf8_general_ci</value>
+	</config>
 </configuration>

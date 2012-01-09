@@ -28,7 +28,7 @@ class Extension_pointsRewards extends ExtensionBase {
 				->from('pointsRewardsPointsEarned ')
 				->where('customers_id= ?', (int)$userAccount->getCustomerId());
 		if(sysConfig::get('EXTENSION_POINTS_REWARDS_SYSTEM_POINTS_ON_SAME_PURCHASETYPE') == 'True'){
-			$QpointsTable->andWhere('purchase_type = "reservation"');
+			//$QpointsTable->andWhere('purchase_type = "reservation"');
 		}
 		$Qpoints = $QpointsTable->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 
@@ -37,7 +37,7 @@ class Extension_pointsRewards extends ExtensionBase {
 				->from('pointsRewardsPointsDeducted ')
 				->where('customers_id= ?', (int)$userAccount->getCustomerId());
 		if(sysConfig::get('EXTENSION_POINTS_REWARDS_SYSTEM_POINTS_ON_SAME_PURCHASETYPE') == 'True'){
-			$QpointsDeductedTable->andWhere('purchase_type = "reservation"');
+			//$QpointsDeductedTable->andWhere('purchase_type = "reservation"');
 		}
 		$QpointsDeducted = $QpointsDeductedTable->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 		if ($Qpoints) {

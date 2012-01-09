@@ -1,4 +1,5 @@
 <?php
+$cID = $_POST['customers_id'];
 switch($_POST['actionAddRemove']){
 	case 'add':
 		$pointsRewardsEarned = new pointsRewardsPointsEarned;
@@ -23,6 +24,13 @@ $json = array(
 	'msgStack'  => $messageStack->parseTemplate('pageStack', $_POST['points'] . ' points ' . $_POST['actionAddRemove'] . 'ed for customer.', 'success')
 );
 if (isset($_GET['rType']) && $_GET['rType'] == 'ajax'){
+
+    $pageTabsDir = sysConfig::getDirFsCatalog() . 'extensions/pointsRewards/admin/ext_app/customers/page_tabs/';
+
+    ob_start();
+    include($pageTabsDir . 'history.php');
+    $json['history'] = ob_get_contents();
+    ob_end_clean();
 	EventManager::attachActionResponse($json, 'json');
 }else{
 	$messageStack->addSession('pageStack', 'Page not accesible', 'error');

@@ -28,7 +28,7 @@ $(document).ready(function (){
 		});
 	});
 
-	$('#genLabels').click(function (){
+	/*$('#genLabels').click(function (){
 		if ($('input[name="print[]"]:checked').size() > 0){
 			var checked = new Array();
 			$('input[name="print[]"]:checked').each(function (){
@@ -38,8 +38,22 @@ $(document).ready(function (){
 		}else{
 			alert('No rentals selected to generate labels.');
 		}
+	});*/
+	
+	$('#genLabels').labelPrinter({
+		//labelTypes: ['8160-b'],
+		printUrl : js_app_link('app=label_maker&appPage=default&action=printLabels'),
+		getData : function () {
+			return $('input[name="print[]"]:checked').serialize();
+		},
+		beforeShow : function () {
+			if ($('input[name="print[]"]:checked').size() <= 0){
+				alert('Please select barcodes to print using the checkboxes on the left of the table rows');
+				return false;
+			}
+			return true;
+		}
 	});
-
 	$('#DP_startDate').datepicker({
 		dateFormat: 'yy-mm-dd',
 		gotoCurrent: true,

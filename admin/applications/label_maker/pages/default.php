@@ -81,19 +81,6 @@
 </div>
 
 <div class="hideForPrint main" style="text-align:right;margin:.5em;"><?php
-	$selectBox = htmlBase::newElement('selectbox')
-	->setName('label_type')
-	->setId('label_type');
-	
-	$selectBox->addOption('avery_5160', 'Avery 5160 Shipping Labels');
-	$selectBox->addOption('avery_5164', 'Avery 5164 Product Info Labels');
-	$selectBox->addOption('avery_5160_html', 'Shipping Labels HTML Version');
-	$selectBox->addOption('avery_5164_html', 'Product Info Labels HTML Version');
-	
-	echo $selectBox->draw();
-?></div>
-
-<div class="hideForPrint main" style="text-align:right;margin:.5em;"><?php
 	echo htmlBase::newElement('button')->setName('genLabels')->setId('genLabels')->setText(sysLanguage::get('TEXT_BUTTON_GENERATE_LABELS'))->draw();
 	echo htmlBase::newElement('button')->setName('printPage')->setId('printPage')->setText(sysLanguage::get('TEXT_BUTTON_PRINT_PAGE'))->draw();
 ?></div>

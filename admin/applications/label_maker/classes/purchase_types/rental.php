@@ -30,7 +30,7 @@
 					'products_name'        => $ProductDescription['products_name'],
 					'barcode_id'           => $ProductsInventoryBarcodes['barcode_id'],
 					'barcode'              => $ProductsInventoryBarcodes['barcode'],
-					'products_description' => stripslashes(strip_tags($ProductDescription['products_description'])),
+					'products_description' => wordwrap(substr(stripslashes(strip_tags($ProductDescription['products_description'])), 0, 350), 70),
 					'customers_address'    => $QAddress[0]
 				);
 			}

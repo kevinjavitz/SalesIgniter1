@@ -79,6 +79,13 @@
 		);
 	}
 
+	if (sysPermissions::adminAccessAllowed('tools', 'update_configs') === true){
+		$contents['children'][] = array(
+			'link' => itw_app_link(null, 'tools', 'update_configs'),
+			'text' => 'Update Configurations'
+		);
+	}
+
 
 	EventManager::notify('BoxToolsAddLink', &$contents);
 ?>

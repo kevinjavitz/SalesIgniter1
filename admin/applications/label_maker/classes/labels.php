@@ -30,7 +30,7 @@
 			$this->products[$type][] = $productId;
 		}
 		
-		private function getData(){
+		public function getData(){
 			$data = array();
 			foreach($this->products as $type => $products){
 				$className = 'labelMaker_' . $type;
