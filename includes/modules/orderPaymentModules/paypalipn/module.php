@@ -199,33 +199,6 @@ class OrderPaymentPaypalipn extends StandardPaymentModule {
 
 					$parameters['shipping_' . $item] = number_format($shipping_cost * $currencies->get_value($my_currency), $currencies->get_decimal_places($my_currency));
 				}
-
-				if (isset($order->products[$i]['attributes'])){
-					for ($j = 0, $n2 = sizeof($order->products[$i]['attributes']); $j < $n2; $j++){
-						if (sysConfig::get('DOWNLOAD_ENABLED') == 'true'){
-							$attributes_query = "select popt.products_options_name, poval.products_options_values_name, pa.options_values_price, pa.price_prefix, pad.products_attributes_maxdays, pad.products_attributes_maxcount , pad.products_attributes_filename
-                                                   from " . TABLE_PRODUCTS_OPTIONS . " popt, " . TABLE_PRODUCTS_OPTIONS_VALUES . " poval, " . TABLE_PRODUCTS_ATTRIBUTES . " pa
-                                                   left join " . TABLE_PRODUCTS_ATTRIBUTES_DOWNLOAD . " pad
-                                                   on pa.products_attributes_id=pad.products_attributes_id
-                                                   where pa.products_id = '" . $order->products[$i]['id'] . "'
-                                                   and pa.options_id = '" . $order->products[$i]['attributes'][$j]['option_id'] . "'
-                                                   and pa.options_id = popt.products_options_id
-                                                   and pa.options_values_id = '" . $order->products[$i]['attributes'][$j]['value_id'] . "'
-                                                   and pa.options_values_id = poval.products_options_values_id
-                                                   and popt.language_id = '" . Session::get('languages_id') . "'
-                                                   and poval.language_id = '" . Session::get('languages_id') . "'";
-							$attributes = tep_db_query($attributes_query);
-						}else{
-							$attributes = tep_db_query("select popt.products_options_name, poval.products_options_values_name, pa.options_values_price, pa.price_prefix from " . TABLE_PRODUCTS_OPTIONS . " popt, " . TABLE_PRODUCTS_OPTIONS_VALUES . " poval, " . TABLE_PRODUCTS_ATTRIBUTES . " pa where pa.products_id = '" . $order->products[$i]['id'] . "' and pa.options_id = '" . $order->products[$i]['attributes'][$j]['option_id'] . "' and pa.options_id = popt.products_options_id and pa.options_values_id = '" . $order->products[$i]['attributes'][$j]['value_id'] . "' and pa.options_values_id = poval.products_options_values_id and popt.language_id = '" . Session::get('languages_id') . "' and poval.language_id = '" . Session::get('languages_id') . "'");
-						}
-						$attributes_values = tep_db_fetch_array($attributes);
-
-						// Unfortunately PayPal only accepts two attributes per product, so the
-						// third attribute onwards will not be shown at PayPal
-						$parameters['on' . $j . '_' . $item] = $attributes_values['products_options_name'];
-						$parameters['os' . $j . '_' . $item] = $attributes_values['products_options_values_name'];
-					}
-				}
 			}
 
 			$parameters['num_cart_items'] = $item;
