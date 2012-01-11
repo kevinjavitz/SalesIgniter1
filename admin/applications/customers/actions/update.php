@@ -113,27 +113,36 @@
 		
 			if ($emailEventName !== false){
 				$emailEvent = new emailEvent($emailEventName, $userAccount->getLanguageId());
-				$currentPlan = Doctrine_Core::getTable('Membership')->findOneByPlanId((int)$_POST['planid'])->toArray();
+				$QcurrentPlan = Doctrine_Query::create()
+				->from('Membership m')
+				->leftJoin('m.MembershipPlanDescription mpd')
+				->where('m.plan_id = ?', (int)$_POST['planid'])
+				->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 
 				$emailEvent->setVars(array(
 					'customerFirstName' => $userAccount->getFirstName(),
 					'customerLastName' => $userAccount->getLastName(),
-					'currentPlanPackageName' => $currentPlan['MembershipPlanDescription'][0]['name'],
-					'currentPlanMembershipDays' => $currentPlan['membership_days'],
-					'currentPlanNumberOfTitles' => $currentPlan['no_of_titles'],
-					'currentPlanFreeTrial' => $currentPlan['free_trial'],
-					'currentPlanPrice' => $currentPlan['price']
+					'currentPlanPackageName' => $QcurrentPlan[0]['MembershipPlanDescription'][0]['name'],
+					'currentPlanMembershipDays' => $QcurrentPlan[0]['membership_days'],
+					'currentPlanNumberOfTitles' => $QcurrentPlan[0]['no_of_titles'],
+					'currentPlanFreeTrial' => $QcurrentPlan[0]['free_trial'],
+					'currentPlanPrice' => $QcurrentPlan[0]['price']
 				));
 
 				if (isset($_POST['prev_plan_id']) && !empty($_POST['prev_plan_id']) && $_POST['planid'] != $_POST['prev_plan_id']){
-					$previousPlan = Doctrine_Core::getTable('Membership')->findOneByPlanId((int)$_POST['prev_plan_id'])->toArray();
+					//$previousPlan = Doctrine_Core::getTable('Membership')->findOneByPlanId((int)$_POST['prev_plan_id'])->toArray();
+					$QprevPlan = Doctrine_Query::create()
+						->from('Membership m')
+						->leftJoin('m.MembershipPlanDescription mpd')
+						->where('m.plan_id = ?', (int)$_POST['prev_plan_id'])
+						->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 
 					$emailEvent->setVars(array(
-						'previousPlanPackageName' => $previousPlan['MembershipPlanDescription'][0]['name'],
-						'previousPlanMembershipDays' => $previousPlan['membership_days'],
-						'previousPlanNumberOfTitles' => $previousPlan['no_of_titles'],
-						'previousPlanFreeTrial' => $previousPlan['free_trial'],
-						'previousPlanPrice' => $previousPlan['price']
+						'previousPlanPackageName' => $QprevPlan[0]['MembershipPlanDescription'][0]['name'],
+						'previousPlanMembershipDays' =>  $QprevPlan[0]['membership_days'],
+						'previousPlanNumberOfTitles' =>  $QprevPlan[0]['no_of_titles'],
+						'previousPlanFreeTrial' =>  $QprevPlan[0]['free_trial'],
+						'previousPlanPrice' =>  $QprevPlan[0]['price']
 					));
 				}
 				if(isset($_POST['sendEmail'])){

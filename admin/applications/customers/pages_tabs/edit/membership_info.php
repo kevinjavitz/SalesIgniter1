@@ -149,7 +149,7 @@
                             
 						$today['year'] = date('Y');
 
-						for ($i=$today['year']; $i < $today['year']+10; $i++) {
+						for ($i=$today['year']-2; $i < $today['year']+10; $i++) {
 							$NextBillYearBox->addOption(
 								strftime('%Y',mktime(0,0,0,1,1,$i)),
 								strftime('%Y',mktime(0,0,0,1,1,$i))

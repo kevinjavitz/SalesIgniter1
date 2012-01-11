@@ -35,30 +35,18 @@ $OverViewTableHeader1 = array(
 
 //$OverViewTableHeader[] = array('text' => '&nbsp');
 
-$OverViewTable->addHeaderRow(array(
-                                  'addCls' => 'ui-widget-header ui-state-hover',
-                                  'columns' => $OverViewTableHeader
-                             ));
-$OverViewTable1->addHeaderRow(array(
-                                  'addCls' => 'ui-widget-header ui-state-hover',
-                                  'columns' => $OverViewTableHeader1
-                             ));
+
+
 
 $QpointsEarned = Doctrine_Query::create()
 		->from('pointsRewardsPointsEarned r')
 		->leftJoin('r.Customers c')
-		->leftJoin('r.Products p')
-		->leftJoin('p.ProductsDescription pd')
-		->where('pd.language_id = "' . Session::get('languages_id') . '" ')
-		->andWhere('customers_id = ?', (int)$userAccount->getCustomerId())
+		->where('customers_id = ?', (int)$userAccount->getCustomerId())
 		->addOrderBy('r.date desc');
 $QpointsDeducted = Doctrine_Query::create()
 		->from('pointsRewardsPointsDeducted r')
 		->leftJoin('r.Customers c')
-		->leftJoin('r.Products p')
-		->leftJoin('p.ProductsDescription pd')
-		->where('pd.language_id = "' . Session::get('languages_id') . '" ')
-		->andWhere('customers_id = ?', (int)$userAccount->getCustomerId())
+		->where('customers_id = ?', (int)$userAccount->getCustomerId())
 		->addOrderBy('r.date desc');
 
 if (isset($_GET['start_date']) && tep_not_null($_GET['start_date'])){
@@ -76,42 +64,55 @@ if (isset($_GET['end_date']) && tep_not_null($_GET['end_date'])){
 $pointsEarned = $QpointsEarned->execute(array(), Doctrine_Core::HYDRATE_RECORD);
 $pointsDeducted = $QpointsDeducted->execute(array(), Doctrine_Core::HYDRATE_RECORD);
 if ($pointsEarned){
+    $OverViewTable->addHeaderRow(array(
+        'addCls' => 'ui-widget-header ui-state-hover',
+        'columns' => $OverViewTableHeader
+    ));
 	foreach($pointsEarned as $rInfo){
-		$ordersLink = $rInfo['orders_id'];
-		switch($rInfo['purchase_type']){
-			case 'new':
-				$contentType = 'New Product Sale';
-				$displayName = $rInfo['Products']['ProductsDescription'][Session::get('languages_id')]['products_name'];
-				break;
-			case 'used':
-				$contentType = 'Used Product Sale';
-				$displayName = $rInfo['Products']['ProductsDescription'][Session::get('languages_id')]['products_name'];
-				break;
-			case 'stream':
-				$contentType = 'Stream';
-				$displayName = $rInfo['Products']['ProductsDescription'][Session::get('languages_id')]['products_name'];
-				break;
-			case 'download':
-				$contentType = 'Download';
-				$displayName = $rInfo['Products']['ProductsDescription'][Session::get('languages_id')]['products_name'];
-				break;
-			case 'rental':
-				$contentType = 'Member Rental';
-				$displayName = $rInfo['Products']['ProductsDescription'][Session::get('languages_id')]['products_name'];
-				$ordersLink = 'Rental';
-				break;
-			case 'reservation':
-				$contentType = 'Pay per Rental';
-				$displayName = $rInfo['Products']['ProductsDescription'][Session::get('languages_id')]['products_name'];
-				//$ordersLink = 'Rental';
-				break;
-		}
+        if($rInfo['products_id'] > 0){
+            $productInfo = Doctrine_Query::create()
+                    ->from('Products p')
+                    ->leftJoin('p.ProductsDescription pd')
+                    ->where('pd.language_id = "' . Session::get('languages_id') . '" ');
+            $ordersLink = $rInfo['orders_id'];
+            switch($rInfo['purchase_type']){
+                case 'new':
+                    $contentType = 'New Product Sale';
+                    $displayName = $productInfo['ProductsDescription'][Session::get('languages_id')]['products_name'];
+                    break;
+                case 'used':
+                    $contentType = 'Used Product Sale';
+                    $displayName = $productInfo['ProductsDescription'][Session::get('languages_id')]['products_name'];
+                    break;
+                case 'stream':
+                    $contentType = 'Stream';
+                    $displayName = $productInfo['ProductsDescription'][Session::get('languages_id')]['products_name'];
+                    break;
+                case 'download':
+                    $contentType = 'Download';
+                    $displayName = $productInfo['ProductsDescription'][Session::get('languages_id')]['products_name'];
+                    break;
+                case 'rental':
+                    $contentType = 'Member Rental';
+                    $displayName = $productInfo['ProductsDescription'][Session::get('languages_id')]['products_name'];
+                    $ordersLink = 'Rental';
+                    break;
+                case 'reservation':
+                    $contentType = 'Pay per Rental';
+                    $displayName = $productInfo['ProductsDescription'][Session::get('languages_id')]['products_name'];
+                    //$ordersLink = 'Rental';
+                    break;
+            }
+        } else {
+            $contentType = 'Credited By Admin';
+            $displayName = '&nbsp;';
+        }
+        
 		$OverViewTableBody = array(
 			array('text' => $rInfo['date'], 'align' => 'center'),
 			array('text' => $ordersLink, 'align' => 'center'),
-			//array('text' => $displayName),
 			array('text' => $contentType, 'align' => 'center'),
-			array('text' => $rInfo['Products']['ProductsDescription'][Session::get('languages_id')]['products_name'], 'align' => 'center'),
+			array('text' => $displayName, 'align' => 'center'),
 			array('text' => $rInfo['points'], 'align' => 'center')
 		);
 
@@ -124,42 +125,54 @@ if ($pointsEarned){
 }
 //for deducted points
 if ($pointsDeducted){
+    $OverViewTable1->addHeaderRow(array(
+        'addCls' => 'ui-widget-header ui-state-hover',
+        'columns' => $OverViewTableHeader1
+    ));
 	foreach($pointsDeducted as $rInfo){
-		$ordersLink = $rInfo['orders_id'];
-		switch($rInfo['purchase_type']){
-			case 'new':
-				$contentType = 'New Product Sale';
-				$displayName = $rInfo['Products']['ProductsDescription'][Session::get('languages_id')]['products_name'];
-				break;
-			case 'used':
-				$contentType = 'Used Product Sale';
-				$displayName = $rInfo['Products']['ProductsDescription'][Session::get('languages_id')]['products_name'];
-				break;
-			case 'stream':
-				$contentType = 'Stream';
-				$displayName = $rInfo['Products']['ProductsDescription'][Session::get('languages_id')]['products_name'];
-				break;
-			case 'download':
-				$contentType = 'Download';
-				$displayName = $rInfo['Products']['ProductsDescription'][Session::get('languages_id')]['products_name'];
-				break;
-			case 'rental':
-				$contentType = 'Member Rental';
-				$displayName = $rInfo['Products']['ProductsDescription'][Session::get('languages_id')]['products_name'];
-				$ordersLink = 'Rental';
-				break;
-			case 'reservation':
-				$contentType = 'Pay per Rental';
-				$displayName = $rInfo['Products']['ProductsDescription'][Session::get('languages_id')]['products_name'];
-				//$ordersLink = 'Rental';
-				break;
-		}
+        if($rInfo['products_id'] > 0){
+            $productInfo = Doctrine_Query::create()
+                    ->from('Products p')
+                    ->leftJoin('p.ProductsDescription pd')
+                    ->where('pd.language_id = "' . Session::get('languages_id') . '" ');
+            $ordersLink = $rInfo['orders_id'];
+            switch($rInfo['purchase_type']){
+                case 'new':
+                    $contentType = 'New Product Sale';
+                    $displayName = $productInfo['ProductsDescription'][Session::get('languages_id')]['products_name'];
+                    break;
+                case 'used':
+                    $contentType = 'Used Product Sale';
+                    $displayName = $productInfo['ProductsDescription'][Session::get('languages_id')]['products_name'];
+                    break;
+                case 'stream':
+                    $contentType = 'Stream';
+                    $displayName = $productInfo['ProductsDescription'][Session::get('languages_id')]['products_name'];
+                    break;
+                case 'download':
+                    $contentType = 'Download';
+                    $displayName = $productInfo['ProductsDescription'][Session::get('languages_id')]['products_name'];
+                    break;
+                case 'rental':
+                    $contentType = 'Member Rental';
+                    $displayName = $productInfo['ProductsDescription'][Session::get('languages_id')]['products_name'];
+                    $ordersLink = 'Rental';
+                    break;
+                case 'reservation':
+                    $contentType = 'Pay per Rental';
+                    $displayName = $productInfo['ProductsDescription'][Session::get('languages_id')]['products_name'];
+                    //$ordersLink = 'Rental';
+                    break;
+            }
+        } else {
+            $contentType = 'Deducted By Admin';
+            $displayName = '&nbsp;';
+        }
 		$OverViewTableBody1 = array(
 			array('text' => $rInfo['date'], 'align' => 'center'),
 			array('text' => $ordersLink, 'align' => 'center'),
-			//array('text' => $displayName),
 			array('text' => $contentType, 'align' => 'center'),
-			array('text' => $rInfo['Products']['ProductsDescription'][Session::get('languages_id')]['products_name'], 'align' => 'center'),
+			array('text' => $displayName, 'align' => 'center'),
 			array('text' => $rInfo['points'], 'align' => 'center')
 		);
 
