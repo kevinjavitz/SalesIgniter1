@@ -238,6 +238,11 @@ require(sysConfig::getDirFsCatalog() . 'includes/classes/eventManager/EventActio
 				tep_redirect(itw_app_link(null, 'index', 'noAccess'));
 			}
 		}
+		
+		if ($App->getAppName() != 'database_manager' && Session::exists('DatabaseError')){
+			$messageStack->addSession('pageStack', 'There are database errors that must be fixed before you can use the administration area, They are hilighted red below', 'error');
+			tep_redirect(itw_app_link(null, 'database_manager', 'default'));
+		}
 	}
 
 	require(sysConfig::getDirFsCatalog() . 'includes/classes/ftp/base.php');

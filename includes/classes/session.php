@@ -211,6 +211,19 @@ class Session {
 		}
 		return false;
 	}
+	
+	public static function sizeOf($varName, $useKey = null){
+		if (isset($_SESSION[$varName]) && is_array($_SESSION[$varName])){
+			if (is_null($useKey) === false){
+				if (isset($_SESSION[$varName][$useKey]) && is_array($_SESSION[$varName][$useKey])){
+					return sizeof($_SESSION[$varName][$useKey]);
+				}
+			}else{
+				return sizeof($_SESSION[$varName]);
+			}
+		}
+		return 0;
+	}
 
 	public static function getSessionName(){
 		return session_name();

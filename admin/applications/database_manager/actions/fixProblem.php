@@ -350,6 +350,9 @@ switch($Resolution){
 		if ($dbConn->import->tableExists($tableObj->getTableName())){
 			$message = 'Database table added.';
 			$isOk = true;
+			if (Session::exists('DatabaseError', $ModelName) === true){
+				Session::remove('DatabaseError', $ModelName);
+			}
 		}
 		break;
 	case 'addColumn':
@@ -364,6 +367,9 @@ switch($Resolution){
 
 		$message = 'Database table column added.';
 		$isOk = true;
+		if (Session::exists('DatabaseError', $ModelName . '-' . $columnName) === true){
+			Session::remove('DatabaseError', $ModelName . '-' . $columnName);
+		}
 		break;
 	case 'syncColumnSettings':
 		$tableObj = Doctrine_Core::getTable($modelName);
@@ -507,6 +513,10 @@ switch($Resolution){
 				break;
 		}
 		break;
+}
+
+if (Session::exists('DatabaseError') === true && Session::sizeOf('DatabaseError') == 0){
+	Session::remove('DatabaseError');
 }
 
 /*$message = '<table>' .
