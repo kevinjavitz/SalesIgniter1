@@ -58,8 +58,9 @@ class Extension_customFields extends ExtensionBase {
             foreach($fieldsToGroups as $fieldToGroup){
                 if (!empty($fieldToGroup['ProductsCustomFields']['ProductsCustomFieldsToProducts'][0]['value'])) {
                     $name = $fieldToGroup['ProductsCustomFields']['ProductsCustomFieldsDescription'][Session::get('languages_id')]['field_name'];
-                    $return .= '<li><a href="#tab'.$name.'"><span>' . $name . '</span></a></li>';
-                    $groups_content['tab'.$name] = $fieldToGroup['ProductsCustomFields']['ProductsCustomFieldsToProducts'][0]['value'];
+	                $tabName = 'tab'.str_replace(' ','_',$name);
+                    $return .= '<li><a href="#'.$tabName.'"><span>' . $name . '</span></a></li>';
+                    $groups_content[$tabName] = $fieldToGroup['ProductsCustomFields']['ProductsCustomFieldsToProducts'][0]['value'];
                 }
             }
         }
