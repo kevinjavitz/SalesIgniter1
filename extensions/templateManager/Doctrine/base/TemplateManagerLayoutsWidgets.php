@@ -50,7 +50,7 @@ class TemplateManagerLayoutsWidgets extends Doctrine_Record
 			'local' => 'identifier',
 			'foreign' => 'box_code'));
 
-		$this->hasOne('TemplateManagerLayoutsColumns', array(
+		$this->hasOne('TemplateManagerLayoutsColumns as Column', array(
 			'local' => 'column_id',
 			'foreign' => 'column_id'));
 

@@ -41,6 +41,7 @@ function checkModel($modelName, $charset, $collation){
 			if (array_key_exists($colName, $tableColumns) === false){
 				$isOk = false;
 				$info[] = array(
+						'addCls'  => 'ui-state-error',
 						'text'    => '<b>' . $colName . '</b> is missing in database table',
 						'resLink' => itw_app_link('rType=ajax&action=fixProblem&resolution=addColumn&model=' . $modelName . '&column=' . $colName, 'database_manager', 'default'),
 						'resInfo' => 'Add Column To Database Table'
@@ -50,6 +51,7 @@ function checkModel($modelName, $charset, $collation){
 					$isCharset = false;
 					$isOk = false;
 					$info[] = array(
+							'addCls'  => 'ui-state-notice',
 							'text'    => '<b>' . $colName . '</b> collation doesnt match system collation ( <b>System:</b> ' . $collation . ' - <b>Column:</b> ' . $tableColumns[$colName]['collation'] . ' )',
 							'resLink' => itw_app_link('rType=ajax&action=fixProblem&resolution=changeColumnCollation&table=' . $tableName . '&column=' . $colName . '&to=' . $charset . '&collate=' . $collation, 'database_manager', 'default'),
 							'resInfo' => 'Change Collation For Database Column'
@@ -59,6 +61,7 @@ function checkModel($modelName, $charset, $collation){
 				/*if ($colSettings['type'] != $tableColumns[$colName]['type']){
 					$isOk = false;
 					$info[] = array(
+							'addCls'  => 'ui-state-error',
 							'text'    => '<b>' . $colName . '</b> type has changed in database ( ' . $tableColumns[$colName]['type'] . ' ) or model ( ' . $colSettings['type'] . ' )',
 							'resLink' => itw_app_link('rType=ajax&action=fixProblem&resolution=changeColumnType&table=' . $tableName . '&column=' . $colName . '&to=' . $colSettings['type'], 'database_manager', 'default'),
 							'resInfo' => 'Change Type Setting For Database Column'
@@ -82,6 +85,7 @@ function checkModel($modelName, $charset, $collation){
 					){
 						$isOk = false;
 						$info[] = array(
+								'addCls'  => 'ui-state-warning',
 								'text'    => '<b>' . $colName . '\'s</b> settings are out of sync',
 								'resLink' => itw_app_link('rType=ajax&showErrors=true&action=fixProblem&resolution=syncColumnSettings&model=' . $modelName . '&column=' . $colName, 'database_manager', 'default'),
 								'resInfo' => 'Syncronize Settings For Database Column'
@@ -96,6 +100,7 @@ function checkModel($modelName, $charset, $collation){
 			if (array_key_exists($colName, $modelColumns) === false){
 				$isOk = false;
 				$info[] = array(
+						'addCls'  => 'ui-state-notice',
 						'text'    => 'Abandoned Table Column: <b>' . $colName . '</b>',
 						'resLink' => itw_app_link('rType=ajax&action=fixProblem&resolution=removeColumn&table=' . $tableName . '&column=' . $colName, 'database_manager', 'default'),
 						'resInfo' => 'Remove Column From Database Table'
@@ -105,6 +110,7 @@ function checkModel($modelName, $charset, $collation){
 	}else{
 		$isOk = false;
 		$info[] = array(
+				'addCls'  => 'ui-state-error',
 				'text'    => 'Table Missing In Database',
 				'resLink' => itw_app_link('rType=ajax&action=fixProblem&resolution=addTable&model=' . $modelName, 'database_manager', 'default'),
 				'resInfo' => 'Add Table To Database'
@@ -121,6 +127,7 @@ function checkModel($modelName, $charset, $collation){
 			));
 		foreach($info as $infoData){
 			$infoTable->addBodyRow(array(
+					'addCls' => $infoData['addCls'],
 					'columns' => array(
 						array('text' => $infoData['text']),
 						array('align' => 'right', 'text' => htmlBase::newElement('button')->addClass('resButton')->setText('Fix Problem')->attr('tooltip', $infoData['resInfo'])->setHref($infoData['resLink'])->draw())

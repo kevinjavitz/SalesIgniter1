@@ -23,6 +23,7 @@ class barcodePopulate{
 			'v_quantity_out',
 			'v_quantity_purchased',
 			'v_quantity_reserved',
+			'v_attributes',//{Size}S{Color}blue
 			'v_use_center',
 			'v_comments'
 		);
@@ -69,25 +70,27 @@ class barcodePopulate{
 		$isExit = false;
 		
 		$QproductsAll = Doctrine_Query::create()
-						->select('products_id')
 						->from('Products')
 						->andWhere('products_id > ?', '0')
 						->orderBy('products_id')
-						->execute(array(), Doctrine_Core::HYDRATE_ARRAY);		
+						->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+
 		foreach($QproductsAll as $pInfo){
 			$productsArr[] = $pInfo['products_id'];
-		}		
+			$productController[$pInfo['products_id']] = $pInfo['products_inventory_controller'];
+		}
+
+
 
 		$QPurchaseTypes = Doctrine_Query::create()
 				->from('ProductsInventory')
-				->where('controller = ?','normal')
 				->andWhereIn('products_id', $productsArr)
 				->orderBy('products_id')
 				->execute(array(),Doctrine_Core::HYDRATE_ARRAY);
 
 		if (count($QPurchaseTypes) > 0){
 			foreach($QPurchaseTypes as $qpur){
-
+				if($qpur['controller'] != $productController[$qpur['products_id']]) continue;
 				$track_method = $qpur['track_method'];
 				$iID = $qpur['inventory_id'];
 				if (isset($qpur['use_center'])){
@@ -100,13 +103,37 @@ class barcodePopulate{
 				$Qprod = Doctrine_Query::create()
 						->select('products_model')
 						->from('Products p')
-						->where('products_id = ?',$qpur['products_id'])
+						->where('products_id = ?', $qpur['products_id'])
 						->execute(array(),Doctrine_Core::HYDRATE_ARRAY);
 
 				if (count($Qprod) > 0){
 					$products_model = $Qprod[0]['products_model'];
 				}else{
 					$products_model = '';
+				}
+
+				if ($appExtension->isInstalled('attributes') && $appExtension->isEnabled('attributes')){
+					$Qattributes = Doctrine_Query::create()
+						->from('ProductsAttributes a')
+						->leftJoin('a.ProductsAttributesViews av')
+						->leftJoin('a.ProductsOptionsGroups og')
+						->leftJoin('a.ProductsOptions o')
+						->leftJoin('o.ProductsOptionsDescription od')
+						->leftJoin('a.ProductsOptionsValues ov')
+						->leftJoin('ov.ProductsOptionsValuesDescription ovd')
+						->where('a.products_id = ?', $qpur['products_id'])
+						->execute()->toArray();
+					$optionsArr = array();
+					$valuesArr = array();
+					if ($Qattributes){
+						$lID = Session::get('languages_id');
+						foreach($Qattributes as $i => $attribute){
+							//if (isset($attribute['ProductsOptionsGroups']) && isset($attribute['ProductsOptions']['ProductsOptionsDescription']) && isset($attribute['ProductsOptionsValues']['ProductsOptionsValuesDescription'])){
+							$optionsArr[$attribute['ProductsOptions']['products_options_id']] = $attribute['ProductsOptions']['ProductsOptionsDescription'][$lID]['products_options_name'];
+							$valuesArr[$attribute['ProductsOptionsValues']['products_options_values_id']] = $attribute['ProductsOptionsValues']['ProductsOptionsValuesDescription'][$lID]['products_options_values_name'];
+							//}
+						}
+					}
 				}
 				              
 				if ($track_method == 'quantity'){
@@ -145,6 +172,17 @@ class barcodePopulate{
 							$pr['v_quantity_reserved'] = $qi['reserved'];
 							$pr['v_purchase_type'] = $purtype;
 							$pr['v_use_center'] = $usecenter;
+							if(isset($qi['attributes'])){
+								$attributes = '';
+								if(!empty($qi['attributes'])){
+									$attrArray = attributesUtil::splitStringToArray($qi['attributes']);
+									foreach($attrArray as $k => $v){
+										$attributes .= '{'.$optionsArr[$k].'}'.$valuesArr[$v];
+									}
+								}
+								$pr['v_attributes'] = $attributes;/*move into extension*/
+							}
+
 
 							if ($usecenter == 1){
 								if ($isStore == 1){
@@ -200,6 +238,16 @@ class barcodePopulate{
 							$pr['v_quantity_reserved'] = '';
 							$pr['v_purchase_type'] = $purtype;
 							$pr['v_use_center'] = $usecenter;
+							if(isset($qi['attributes'])){
+								$attributes = '';
+								if(!empty($qi['attributes'])){
+									$attrArray = attributesUtil::splitStringToArray($qi['attributes']);
+									foreach($attrArray as $k => $v){
+										$attributes .= '{'.$optionsArr[$k].'}'.$valuesArr[$v];
+									}
+								}
+								$pr['v_attributes'] = $attributes;/*move into extension*/
+							}
 							$Qcom = Doctrine_Query::create()
 										->select('comments')
 										->from('ProductsInventoryBarcodesComments')
@@ -367,6 +415,8 @@ class barcodePopulate{
 			$purchaseType = isset($cols[$this->fileLayout['v_purchase_type']])?ltrim(rtrim($cols[$this->fileLayout['v_purchase_type']])):'';
 			$comments = isset($cols[$this->fileLayout['v_comments']])?ltrim(rtrim($cols[$this->fileLayout['v_comments']])):'';
 
+			$attributesString = isset($cols[$this->fileLayout['v_attributes']])?ltrim(rtrim($cols[$this->fileLayout['v_attributes']])):'';
+
 			$useCenter = isset($cols[$this->fileLayout['v_use_center']])?ltrim(rtrim($cols[$this->fileLayout['v_use_center']])):'';
 			if (empty($useCenter)){
 				$useCenter = 0;
@@ -416,6 +466,35 @@ class barcodePopulate{
 			}else{
 				$productID = $foundID[$productsModel];
 			}
+			$attributes = '';
+			if(!empty($attributesString)){
+				$attributesArr = attributesUtil::splitStringToArray($attributesString);
+				$Qattributes = Doctrine_Query::create()
+					->from('ProductsAttributes a')
+					->leftJoin('a.ProductsAttributesViews av')
+					->leftJoin('a.ProductsOptionsGroups og')
+					->leftJoin('a.ProductsOptions o')
+					->leftJoin('o.ProductsOptionsDescription od')
+					->leftJoin('a.ProductsOptionsValues ov')
+					->leftJoin('ov.ProductsOptionsValuesDescription ovd')
+					->where('a.products_id = ?', $productID)
+					->execute()->toArray();
+				$optionsArr = array();
+				$valuesArr = array();
+				if ($Qattributes){
+					$lID = Session::get('languages_id');
+					foreach($Qattributes as $i => $attribute){
+						//if (isset($attribute['ProductsOptionsGroups']) && isset($attribute['ProductsOptions']['ProductsOptionsDescription']) && isset($attribute['ProductsOptionsValues']['ProductsOptionsValuesDescription'])){
+						$optionsArr[$attribute['ProductsOptions']['ProductsOptionsDescription'][$lID]['products_options_name']] = $attribute['ProductsOptions']['products_options_id'];
+						$valuesArr[$attribute['ProductsOptionsValues']['ProductsOptionsValuesDescription'][$lID]['products_options_values_name']] = $attribute['ProductsOptionsValues']['products_options_values_id'];
+						//}
+					}
+				}
+				foreach($attributesArr as $k => $v){
+					$attributes .= '{'.$optionsArr[$k].'}'.$valuesArr[$v];
+				}
+			}
+
 			 
 			$inventory_store_center_id = 0;
 			if($useCenter){
@@ -495,6 +574,9 @@ class barcodePopulate{
 							$qi->broken = $qty_broken;
 							$qi->purchased = $qty_purchased;
 							$qi->reserved = $qty_reserved;
+							if(!empty($attributes)){
+								//check attributes
+							}
 							$qi->save();
 							$ist = false;
 						}
@@ -508,6 +590,10 @@ class barcodePopulate{
 						$myInvq->purchased = $qty_purchased;
 						$myInvq->inventory_id = $inventory_id;
 						$myInvq->reserved = $qty_reserved;
+						if(!empty($attributes)){
+							//check attributes
+						}
+
 						$myInvq->save();
 						$quantity_id = $myInvq->quantity_id;
 						logNew('product_quantity', array_merge($commonLog, array(
@@ -623,6 +709,9 @@ class barcodePopulate{
 					foreach($Qinvq as $qi){
 						$barcode_id = $qi->barcode_id;
 						$qi->status = $barcodeStatus;
+						if(!empty($attributes)){
+							//check attributes
+						}
 						$qi->save();
 						$ist = false;
 					}
@@ -632,6 +721,9 @@ class barcodePopulate{
 					$myInvq = new ProductsInventoryBarcodes();
 					$myInvq->barcode = $barcodeNumber;
 					$myInvq->inventory_id = $inventory_id;
+					if(!empty($attributes)){
+						//check attributes
+					}
 					$myInvq->status = $barcodeStatus;
 					$myInvq->save();
 					$barcode_id = $myInvq->barcode_id;

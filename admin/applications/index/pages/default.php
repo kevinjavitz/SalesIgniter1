@@ -8,7 +8,7 @@
 //change header to home(index), my accounbt(admin_account/default, logoff, and right add this page to my favorites... which will do an ajax action to add the page... so the function must be in general.js.
 
 /*Latest Orders*/
-
+   if(sysPermissions::isSimple() === false){
 	$Qorders = Doctrine_Query::create()
 	->select('o.orders_id, a.entry_name, o.date_purchased, o.customers_id, o.last_modified, o.currency, o.currency_value, s.orders_status_id, sd.orders_status_name, ot.text as order_total, o.payment_module')
 	->from('Orders o')
@@ -23,7 +23,7 @@
 	->orderBy('o.date_purchased desc')
 	->limit(10);
 
-	EventManager::notify('AdminOrdersListingBeforeExecute', &$Qorders);
+	EventManager::notify('AdminOrdersListingBeforeExecute', $Qorders);
 
 	$tableGridOrders = htmlBase::newElement('grid')
 	->usePagination(false)
@@ -267,7 +267,7 @@
 	))
 	->addClass('ui-widget ui-widget-content');
 
-	$col2Text = ($sel_month == 0 ? TABLE_HEADING_YEAR : sysLanguage::get('TABLE_HEADING_DAY'));
+	$col2Text = ($sel_month == 0 ? sysLanguage::get('TABLE_HEADING_YEAR') : sysLanguage::get('TABLE_HEADING_DAY'));
 	$headerCols = array(
 		array('align' => 'left', 'valign' => 'bottom', 'width' => '45', 'text' => (sysLanguage::get('TABLE_HEADING_MONTH'))),
 		array('align' => 'left', 'valign' => 'bottom', 'width' => '35', 'text' => ($col2Text)),
@@ -630,7 +630,35 @@
 			));*/
 		}
 	}
- $favoritesTable->append($favoritesList);
+  $saveSetButton = htmlBase::newElement('button')
+  ->setName('saveSet')
+  ->setId('saveSet')
+  ->setText('Save Set');
+
+  $QadminFavs = Doctrine_Query::create()
+  ->from('AdminFavorites a')
+  ->orderBy('a.admin_favs_name')
+  ->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+
+  $adminFavdiv = htmlBase::newElement('div')
+	->setId('AllFavs')
+	  ->css(array(
+		  'display' => 'none'
+  ));
+  $adminFavsSelect = htmlBase::newElement('selectbox')
+  ->setName('selected_fav')
+  ->addClass('favSelectbox');
+
+  $adminFavsSelect->addOption('0','--New Set--');
+
+  foreach($QadminFavs as $adminFav){
+	  $adminFavsSelect->addOption($adminFav['admin_favs_id'],$adminFav['admin_favs_name']);
+  }
+
+$adminFavdiv->append($adminFavsSelect);
+
+
+ $favoritesTable->append($favoritesList)->append($saveSetButton)->append($adminFavdiv);
 
 /*End Favorites Links*/
 
@@ -707,5 +735,6 @@
         </ul>
 
     </div>
-<?php
+   <?php
+}
 ?>

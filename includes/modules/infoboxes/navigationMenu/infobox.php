@@ -78,7 +78,17 @@ class InfoBoxNavigationMenu extends InfoBoxAbstract
 				$itemLink->setHref(itw_app_link($getParams, $application, $item->link->page));
 			}
 			elseif ($item->link->type == 'category'){
-				$itemLink->setHref(itw_app_link($item->link->get_vars, $item->link->application, $item->link->page));
+				$catPage = 'default';
+				$ct = explode('=',$item->link->get_vars);
+				$ct2 = explode('_', $ct[1]);
+				$catId = $ct2[count($ct2) - 1];
+				$QCategory = Doctrine_Manager::getInstance()
+					->getCurrentConnection()
+					->fetchAssoc("select * from categories c left join categories_description cd on c.categories_id=cd.categories_id where c.categories_id = ".$catId.' and cd.language_id='.Session::get('languages_id'));
+				if (sizeof($QCategory) > 0) {
+					$catPage = $QCategory[0]['categories_seo_url'];
+				}
+				$itemLink->setHref(itw_app_link(null, $item->link->application, $catPage));
 			}
 			elseif ($item->link->type == 'custom') {
 				$itemLink->setHref($item->link->url);
@@ -248,23 +258,6 @@ class InfoBoxNavigationMenu extends InfoBoxAbstract
 		});
 		<?php } ?>
 	});
-	<?php if ($WidgetProperties->use_cufon == 'true'){ ?>
-	$(document).ready(function(){
-		Cufon.replace('#<?php echo $WidgetProperties->menuId; ?>.ui-navigation-menu', {
-		<?php if (!empty($WidgetProperties->cufon_text_shadow)){ ?>
-		textShadow: '<?php echo $WidgetProperties->cufon_text_shadow; ?>',
-		<?php } ?>
-		hover: {
-			<?php if (!empty($WidgetProperties->cufon_text_shadow_hover)){ ?>
-				textShadow: <?php echo "'" .$WidgetProperties->cufon_text_shadow_hover . "'" . (!empty($WidgetProperties->cufon_hover_color) ? ',' : '' ); ?>
-			<?php }
-				if (!empty($WidgetProperties->cufon_hover_color)){?>
-			color: '<?php echo $WidgetProperties->cufon_hover_color; ?>'
-			<?php } ?>
-		}
-		});
-	});
-	<?php } ?>
 	<?php
  		$javascript = '/* Navigation Menu --BEGIN-- */' . "\n" .
 			ob_get_contents();

@@ -21,7 +21,7 @@ class membershipUpdate_cron {
 
 	public function timeToBill($date){
 		$dateArr = $this->parseDate($date);
-		return (date('Y-m-d', mktime(0,0,0,$dateArr['month'],$dateArr['day'],$dateArr['year'])) == date('Y-m-d'))  /*((date('Y-m-d', mktime(0,0,0,$dateArr['month'],$dateArr['day'],$dateArr['year'])) >= date('Y-m-d', mktime(0,0,0,12,20,2011))) && (date('Y-m-d', mktime(0,0,0,$dateArr['month'],$dateArr['day'],$dateArr['year'])) <= date('Y-m-d', mktime(0,0,0,12,29,2011))))*/;
+		return (date('Y-m-d', mktime(0,0,0,$dateArr['month'],$dateArr['day'],$dateArr['year'])) == date('Y-m-d'))  /*((date('Y-m-d', mktime(0,0,0,$dateArr['month'],$dateArr['day'],$dateArr['year'])) >= date('Y-m-d', mktime(0,0,0,10,19,2011))) && (date('Y-m-d', mktime(0,0,0,$dateArr['month'],$dateArr['day'],$dateArr['year'])) <= date('Y-m-d', mktime(0,0,0,10,24,2011))))*/;
 	}
 
 	public function getBillingAttempts($oID){

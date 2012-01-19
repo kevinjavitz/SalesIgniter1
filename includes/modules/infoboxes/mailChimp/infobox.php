@@ -23,6 +23,7 @@ class InfoBoxMailChimp extends InfoBoxAbstract {
 
 			$htmlEmail = htmlBase::newElement('input')
 						->setName('email_address')
+						->setValue('Email Address')
 						->setLabel(sysLanguage::get('INFOBOX_MAILCHIMP_EMAIL_ADDRESS'))
 						->setLabelPosition('before')
 						->setLabelSeparator('<br/>')
@@ -43,6 +44,9 @@ class InfoBoxMailChimp extends InfoBoxAbstract {
 
 		ob_start();
 ?>
+		$('#emailMailChimp').click(function(){
+			$(this).val('');
+		});
 		$('.mailChimpSignup').click(function() {
 
 				$.ajax({

@@ -13,15 +13,15 @@ $(document).ready(function (){
 					if (typeof listingData == 'object'){
 						$(listingData).each(function (i){
 							var $row = $('<tr>').appendTo('#reservations > tbody');
-							$('<td>').addClass('main').append('<input type="checkbox" name="print[]" class="rowBox" value="' + listingData[i][7] + '">').appendTo($row);
+							$('<td>').addClass('main').append('<input type="checkbox" name="print[]" class="rowBox" value="' + listingData[i][8] + '">').appendTo($row);
 							$('<td>').addClass('main').append(listingData[i][0]).appendTo($row);
-							for (var col=1; col<7; col++){
+							for (var col=1; col<8; col++){
 								$('<td>').addClass('main').append(listingData[i][col]).appendTo($row);
 							}
 						});
 					}else{
 						var $row = $('<tr>').appendTo('#reservations > tbody');
-						$('<td colspan="8">').addClass('main').append(listingData).appendTo($row);
+						$('<td colspan="9">').addClass('main').append(listingData).appendTo($row);
 					}
 				}
 			}

@@ -13,7 +13,7 @@ $(document).ready(function (){
 });
 </script>
 <?php
-	require(DIR_WS_CLASSES . 'template.php');
+	require(sysConfig::get('DIR_WS_CLASSES') . 'template.php');
 	$thisTemplate = Session::get('tplDir');
   	$thisApp = $App->getAppName();
     $thisAppPage = $App->getAppPage() .'.php';

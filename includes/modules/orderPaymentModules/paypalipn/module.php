@@ -1,158 +1,160 @@
 <?php
-class OrderPaymentPaypalipn extends StandardPaymentModule {
+class OrderPaymentPaypalipn extends StandardPaymentModule
+{
 
-	public function __construct(){
+	public function __construct() {
 		/*
 		 * Default title and description for modules that are not yet installed
 		 */
 		$this->setTitle('Credit/Debit Card (via PayPal)');
 		$this->setDescription('Credit/Debit Card (via PayPal)');
-		
+
 		$this->init('paypalipn');
-		
+
 		if ($this->isEnabled() === true){
 			$this->email_footer = sysLanguage::get('MODULE_PAYMENT_PAYPALIPN_TEXT_EMAIL_FOOTER');
 			$this->identifier = 'osCommerce PayPal IPN v2.1';
 
 			if ($this->getConfigData('MODULE_PAYMENT_PAYPALIPN_GATEWAY_SERVER') == 'Live'){
 				$this->setFormUrl('https://www.paypal.com/cgi-bin/webscr');
-			}else{
+			}
+			else {
 				$this->setFormUrl('https://www.sandbox.paypal.com/cgi-bin/webscr');
 			}
 		}
 	}
 
-	function validatePost(){
+	function validatePost() {
 		global $order, $orderTotalModules, $onePageCheckout, $currencies, $ShoppingCart;
 		$userAccount = &Session::getReference('userAccount');
 		if (!$onePageCheckout->isMembershipCheckout()){
-		$order->createOrder();
-		$order->insertOrderTotals();
-		$order->insertStatusHistory();
-		// initialized for the email confirmation
-		$products_ordered = '';
+			$order->createOrder();
+			$order->insertOrderTotals();
+			$order->insertStatusHistory();
+			// initialized for the email confirmation
+			$products_ordered = '';
 
-		foreach ($ShoppingCart->getProducts() as $cartProduct) {
-			$order->insertOrderedProduct($cartProduct, &$products_ordered);
+			foreach($ShoppingCart->getProducts() as $cartProduct){
+				$order->insertOrderedProduct($cartProduct, &$products_ordered);
 
-			EventManager::notify('CheckoutProcessInsertOrderedProduct', $cartProduct, &$products_ordered);
+				EventManager::notify('CheckoutProcessInsertOrderedProduct', $cartProduct, &$products_ordered);
+				// #################### Added CCGV ######################
+				//$orderTotalModules->update_credit_account($cartProduct);//ICW ADDED FOR CREDIT CLASS SYSTEM
+				// #################### End Added CCGV ######################
+			}
 
+			// lets start with the email confirmation
 			// #################### Added CCGV ######################
-			//$orderTotalModules->update_credit_account($cartProduct);//ICW ADDED FOR CREDIT CLASS SYSTEM
+			//$orderTotalModules->apply_credit();//ICW ADDED FOR CREDIT CLASS SYSTEM
 			// #################### End Added CCGV ######################
+
+			EventManager::notify('CheckoutProcessPostProcess', &$order);
+			//$order->sendNewOrderEmail();
 		}
-
-		// lets start with the email confirmation
-		// #################### Added CCGV ######################
-		//$orderTotalModules->apply_credit();//ICW ADDED FOR CREDIT CLASS SYSTEM
-		// #################### End Added CCGV ######################
-
-		EventManager::notify('CheckoutProcessPostProcess', &$order);
-
-		//$order->sendNewOrderEmail();
-		}else{
+		else {
 			$order->info['is_rental'] = '1';
-					$order->info['bill_attempts'] = '1';
-					$planID = $onePageCheckout->onePage['rentalPlan']['id'];
+			$order->info['bill_attempts'] = '1';
+			$planID = $onePageCheckout->onePage['rentalPlan']['id'];
 
-					$order->createOrder();
+			$order->createOrder();
 
-					if (isset($onePageCheckout->onePage['info']['account_action']) === true){
-						if (isset($onePageCheckout->onePage['info']['payment'])){
-							$paymentInfo = $onePageCheckout->onePage['info']['payment'];
-							$rentalPlan = $onePageCheckout->onePage['rentalPlan'];
+			if (isset($onePageCheckout->onePage['info']['account_action']) === true){
+				if (isset($onePageCheckout->onePage['info']['payment'])){
+					$paymentInfo = $onePageCheckout->onePage['info']['payment'];
+					$rentalPlan = $onePageCheckout->onePage['rentalPlan'];
 
-							$membershipMonths = $rentalPlan['months'];
-							$membershipDays = $rentalPlan['days'];
-							$numberOfRentals = $rentalPlan['no_of_titles'];
-							$paymentTerm = 'N';//not used
-							$billPrice = tep_add_tax($rentalPlan['price'], $rentalPlan['tax_rate']);
+					$membershipMonths = $rentalPlan['months'];
+					$membershipDays = $rentalPlan['days'];
+					$numberOfRentals = $rentalPlan['no_of_titles'];
+					$paymentTerm = 'N'; //not used
+					$billPrice = tep_add_tax($rentalPlan['price'], $rentalPlan['tax_rate']);
 
-							$nextBillDate = strtotime('+' . $membershipMonths . ' month +' . $membershipDays . ' day');
-							if (isset($paymentTerm)){
-								if ($paymentTerm == 'M'){
-									$nextBillDate = strtotime('+1 month');
-								}elseif ($paymentTerm == 'Y'){
-									$nextBillDate = strtotime('+12 month');
-								}
-							}
-
-							if ($rentalPlan['free_trial'] > 0){
-								$freeTrialPeriod = $rentalPlan['free_trial'];
-								$freeTrialEnds = time();
-								if ($rentalPlan['free_trial'] > 0){
-									$nextBillDate = strtotime('+'.$freeTrialPeriod.' day');
-									$freeTrialEnds = strtotime('+'.$freeTrialPeriod.' day');
-								}
-
-								if ($freeTrialEnds > time() && $rentalPlan['free_trial_amount'] > 0){
-									$billPrice = tep_add_tax($rentalPlan['free_trial_amount'], $rentalPlan['tax_rate']);
-								}
-							}
-
-							$membership =& $userAccount->plugins['membership'];
-							$membership->setPlanId($planID);
-							$membership->setMembershipStatus('M');
-							$membership->setActivationStatus('N');
-							if (isset($freeTrialEnds)){
-								$membership->setFreeTrailEnd($freeTrialEnds);
-							}
-							$membership->setNextBillDate($nextBillDate);
-							$membership->setPaymentTerm($paymentTerm);
-							$membership->setPaymentMethod($onePageCheckout->onePage['info']['payment']['id']);
-							$membership->setRentalAddress($userAccount->plugins['addressBook']->getDefaultAddressId());
-							if (!empty($paymentInfo['cardDetails']['cardNumber'])){
-								$membership->setCreditCardNumber($paymentInfo['cardDetails']['cardNumber']);
-								$membership->setCreditCardExpirationDate($paymentInfo['cardDetails']['cardExpMonth'] . $paymentInfo['cardDetails']['cardExpYear']);
-								if (!empty($paymentInfo['cardDetails']['cardCvvNumber'])){
-									$membership->setCreditCardCvvNumber($paymentInfo['cardDetails']['cardCvvNumber']);
-								}
-							}
-							$membership->createNewMembership();
+					$nextBillDate = strtotime('+' . $membershipMonths . ' month +' . $membershipDays . ' day');
+					if (isset($paymentTerm)){
+						if ($paymentTerm == 'M'){
+							$nextBillDate = strtotime('+1 month');
+						}
+						elseif ($paymentTerm == 'Y') {
+							$nextBillDate = strtotime('+12 month');
 						}
 					}
 
+					if ($rentalPlan['free_trial'] > 0){
+						$freeTrialPeriod = $rentalPlan['free_trial'];
+						$freeTrialEnds = time();
+						if ($rentalPlan['free_trial'] > 0){
+							$nextBillDate = strtotime('+' . $freeTrialPeriod . ' day');
+							$freeTrialEnds = strtotime('+' . $freeTrialPeriod . ' day');
+						}
 
-					$order->insertOrderTotals();
-					$order->insertStatusHistory();
-
-					$products_ordered = '';
-
-					for ($i=0, $n=sizeof($order->products); $i<$n; $i++) {
-						$order->insertMembershipProduct($order->products[$i], &$products_ordered);
+						if ($freeTrialEnds > time() && $rentalPlan['free_trial_amount'] > 0){
+							$billPrice = tep_add_tax($rentalPlan['free_trial_amount'], $rentalPlan['tax_rate']);
+						}
 					}
 
-					EventManager::notify('CheckoutProcessPostProcess', &$order);
+					$membership =& $userAccount->plugins['membership'];
+					$membership->setPlanId($planID);
+					$membership->setMembershipStatus('M');
+					$membership->setActivationStatus('N');
+					if (isset($freeTrialEnds)){
+						$membership->setFreeTrailEnd($freeTrialEnds);
+					}
+					$membership->setNextBillDate($nextBillDate);
+					$membership->setPaymentTerm($paymentTerm);
+					$membership->setPaymentMethod($onePageCheckout->onePage['info']['payment']['id']);
+					$membership->setRentalAddress($userAccount->plugins['addressBook']->getDefaultAddressId());
+					if (!empty($paymentInfo['cardDetails']['cardNumber'])){
+						$membership->setCreditCardNumber($paymentInfo['cardDetails']['cardNumber']);
+						$membership->setCreditCardExpirationDate($paymentInfo['cardDetails']['cardExpMonth'] . $paymentInfo['cardDetails']['cardExpYear']);
+						if (!empty($paymentInfo['cardDetails']['cardCvvNumber'])){
+							$membership->setCreditCardCvvNumber($paymentInfo['cardDetails']['cardCvvNumber']);
+						}
+					}
+					$membership->createNewMembership();
+				}
+			}
 
-					//$order->sendNewOrderEmail();
+			$order->insertOrderTotals();
+			$order->insertStatusHistory();
+
+			$products_ordered = '';
+
+			for($i = 0, $n = sizeof($order->products); $i < $n; $i++){
+				$order->insertMembershipProduct($order->products[$i], &$products_ordered);
+			}
+
+			EventManager::notify('CheckoutProcessPostProcess', &$order);
+			//$order->sendNewOrderEmail();
 		}
-		
+
 		if (isset($order->newOrder['orderID'])){
-				$order_id = $order->newOrder['orderID'];
-		}else{
-				$order_id = '';
+			$order_id = $order->newOrder['orderID'];
+		}
+		else {
+			$order_id = '';
 		}
 		if (Session::exists('cartID')){
 			Session::set('cart_PayPal_IPN_ID', Session::get('cartID') . '-' . $order_id);
-		}else{
+		}
+		else {
 			return false;
 		}
 
 		return true;
 	}
 
-	function process_cancel_button(){
+	function process_cancel_button() {
 		$alias = $this->getConfigData('MODULE_PAYMENT_PAYPALIPN_ID');
 		$returnUrl = itw_app_link(null, 'account', 'membership_cancel', 'SSL');
-		
+
 		$process_button_string = htmlBase::newElement('button')
-		->usePreset('continue')
-		->setHref('https://www.paypal.com/cgi-bin/webscr?cmd=_subscr-find&alias=' . $alias . '&return=' . $returnUrl)
-		->draw();
+			->usePreset('continue')
+			->setHref('https://www.paypal.com/cgi-bin/webscr?cmd=_subscr-find&alias=' . $alias . '&return=' . $returnUrl)
+			->draw();
 		return $process_button_string;
 	}
 
-	function getHiddenFields(){
+	function getHiddenFields() {
 		global $order, $currencies, $userAccount, $onePageCheckout;
 
 		$AddressBook =& $userAccount->plugins['addressBook'];
@@ -162,11 +164,14 @@ class OrderPaymentPaypalipn extends StandardPaymentModule {
 		$deliveryCountryInfo = $AddressBook->getCountryInfo($deliveryAddress['entry_country_id']);
 		$billingCountryInfo = $AddressBook->getCountryInfo($billingAddress['entry_country_id']);
 
-		if (Session::exists('planid') && Session::get('planid') < 1 && Session::get('plan_id') > 0) Session::set('planid', Session::get('plan_id'));
+		if (Session::exists('planid') && Session::get('planid') < 1 && Session::get('plan_id') > 0) {
+			Session::set('planid', Session::get('plan_id'));
+		}
 
 		if ($this->getConfigData('MODULE_PAYMENT_PAYPALIPN_CURRENCY') == 'Selected Currency'){
 			$my_currency = Session::get('currency');
-		}else{
+		}
+		else {
 			$my_currency = substr($this->getConfigData('MODULE_PAYMENT_PAYPALIPN_CURRENCY'), 5);
 		}
 
@@ -179,7 +184,7 @@ class OrderPaymentPaypalipn extends StandardPaymentModule {
 			$parameters['cmd'] = '_cart';
 			$parameters['upload'] = '1';
 			$shipping = Session::get('shipping');
-			for ($i = 0, $n = sizeof($order->products); $i < $n; $i++){
+			for($i = 0, $n = sizeof($order->products); $i < $n; $i++){
 				$item = $i + 1;
 				$tax_value = ($order->products[$i]['tax'] / 100) * $order->products[$i]['final_price'];
 
@@ -191,40 +196,14 @@ class OrderPaymentPaypalipn extends StandardPaymentModule {
 				if ($i == 0){
 					if (sysConfig::get('DISPLAY_PRICE_WITH_TAX') == 'true'){
 						$shipping_cost = $order->info['shipping_cost'];
-					}else{
+					}
+					else {
 						$module = substr($shipping['id'], 0, strpos($shipping['id'], '_'));
 						$shipping_tax = tep_get_tax_rate($GLOBALS[$module]->tax_class, $deliveryAddress['entry_country_id'], $order->delivery['zone_id']);
 						$shipping_cost = $order->info['shipping_cost'] + tep_calculate_tax($order->info['shipping_cost'], $shipping_tax);
 					}
 
 					$parameters['shipping_' . $item] = number_format($shipping_cost * $currencies->get_value($my_currency), $currencies->get_decimal_places($my_currency));
-				}
-
-				if (isset($order->products[$i]['attributes'])){
-					for ($j = 0, $n2 = sizeof($order->products[$i]['attributes']); $j < $n2; $j++){
-						if (sysConfig::get('DOWNLOAD_ENABLED') == 'true'){
-							$attributes_query = "select popt.products_options_name, poval.products_options_values_name, pa.options_values_price, pa.price_prefix, pad.products_attributes_maxdays, pad.products_attributes_maxcount , pad.products_attributes_filename
-                                                   from " . TABLE_PRODUCTS_OPTIONS . " popt, " . TABLE_PRODUCTS_OPTIONS_VALUES . " poval, " . TABLE_PRODUCTS_ATTRIBUTES . " pa
-                                                   left join " . TABLE_PRODUCTS_ATTRIBUTES_DOWNLOAD . " pad
-                                                   on pa.products_attributes_id=pad.products_attributes_id
-                                                   where pa.products_id = '" . $order->products[$i]['id'] . "'
-                                                   and pa.options_id = '" . $order->products[$i]['attributes'][$j]['option_id'] . "'
-                                                   and pa.options_id = popt.products_options_id
-                                                   and pa.options_values_id = '" . $order->products[$i]['attributes'][$j]['value_id'] . "'
-                                                   and pa.options_values_id = poval.products_options_values_id
-                                                   and popt.language_id = '" . Session::get('languages_id') . "'
-                                                   and poval.language_id = '" . Session::get('languages_id') . "'";
-							$attributes = tep_db_query($attributes_query);
-						}else{
-							$attributes = tep_db_query("select popt.products_options_name, poval.products_options_values_name, pa.options_values_price, pa.price_prefix from " . TABLE_PRODUCTS_OPTIONS . " popt, " . TABLE_PRODUCTS_OPTIONS_VALUES . " poval, " . TABLE_PRODUCTS_ATTRIBUTES . " pa where pa.products_id = '" . $order->products[$i]['id'] . "' and pa.options_id = '" . $order->products[$i]['attributes'][$j]['option_id'] . "' and pa.options_id = popt.products_options_id and pa.options_values_id = '" . $order->products[$i]['attributes'][$j]['value_id'] . "' and pa.options_values_id = poval.products_options_values_id and popt.language_id = '" . Session::get('languages_id') . "' and poval.language_id = '" . Session::get('languages_id') . "'");
-						}
-						$attributes_values = tep_db_fetch_array($attributes);
-
-						// Unfortunately PayPal only accepts two attributes per product, so the
-						// third attribute onwards will not be shown at PayPal
-						$parameters['on' . $j . '_' . $item] = $attributes_values['products_options_name'];
-						$parameters['os' . $j . '_' . $item] = $attributes_values['products_options_values_name'];
-					}
 				}
 			}
 
@@ -233,11 +212,13 @@ class OrderPaymentPaypalipn extends StandardPaymentModule {
 			if ($this->getConfigData('MOVE_TAX_TO_TOTAL_AMOUNT') == 'True'){
 				// PandA.nl move tax to total amount
 				$parameters['amount'] = number_format(($order->info['total'] - $order->info['shipping_cost']) * $currencies->get_value($my_currency), $currencies->get_decimal_places($my_currency));
-			}else{
+			}
+			else {
 				// default
 				$parameters['amount'] = number_format(($order->info['total'] - $order->info['shipping_cost'] - $order->info['tax']) * $currencies->get_value($my_currency), $currencies->get_decimal_places($my_currency));
 			}
-		}else{
+		}
+		else {
 			if ($onePageCheckout->isMembershipCheckout() === false){
 				$parameters['cmd'] = '_xclick';
 				$parameters['redirect_cmd'] = '_xclick';
@@ -248,7 +229,8 @@ class OrderPaymentPaypalipn extends StandardPaymentModule {
 			if ($this->getConfigData('MOVE_TAX_TO_TOTAL_AMOUNT') == 'True'){
 				// PandA.nl move tax to total amount
 				$parameters['amount'] = number_format($order->info['total'] * $currencies->get_value($my_currency), $currencies->get_decimal_places($my_currency));
-			}else{
+			}
+			else {
 				// default
 				$parameters['amount'] = number_format(($order->info['total'] - $order->info['tax']) * $currencies->get_value($my_currency), $currencies->get_decimal_places($my_currency));
 			}
@@ -275,7 +257,8 @@ class OrderPaymentPaypalipn extends StandardPaymentModule {
 			$parameters['address_country_code'] = $deliveryCountryInfo['countries_iso_code_2'];
 			$parameters['address_country'] = $deliveryAddress['countries']['countries_name'];
 			$parameters['payer_email'] = $onePageCheckout->onePage['info']['email_address'];
-		}else{
+		}
+		else {
 			$parameters['no_shipping'] = '1';
 			$parameters['H_PhoneNumber'] = $onePageCheckout->onePage['info']['telephone'];
 			$parameters['first_name'] = $deliveryAddress['entry_firstname'];
@@ -291,14 +274,15 @@ class OrderPaymentPaypalipn extends StandardPaymentModule {
 
 		$parameters['currency_code'] = $my_currency;
 		$parameters['invoice'] = substr(Session::get('cart_PayPal_IPN_ID'), strpos(Session::get('cart_PayPal_IPN_ID'), '-') + 1);
-		$parameters['custom'] = Session::getSessionId().';'.$userAccount->getCustomerId().';'.$_SERVER['REMOTE_ADDR'];
+		$parameters['custom'] = Session::getSessionId() . ';' . $userAccount->getCustomerId() . ';' . $_SERVER['REMOTE_ADDR'];
 		//$parameters['custom'] = $userAccount->getCustomerId();
 		$parameters['no_note'] = '1';
 		//$parameters['notify_url'] = sysConfig::get('HTTP_SERVER') . sysConfig::getDirWsCatalog(). 'gateway_response.php';
-		if(sysConfig::get('ENABLE_SSL') == 'true'){
-			$parameters['notify_url'] = sysConfig::get('HTTPS_SERVER') . sysConfig::getDirWsCatalog(). 'ext/modules/payment/paypal_ipn/ipn.php';
-		}else{
-			$parameters['notify_url'] = sysConfig::get('HTTP_SERVER') . sysConfig::getDirWsCatalog(). 'ext/modules/payment/paypal_ipn/ipn.php';
+		if (sysConfig::get('ENABLE_SSL') == 'true'){
+			$parameters['notify_url'] = sysConfig::get('HTTPS_SERVER') . sysConfig::getDirWsCatalog() . 'ext/modules/payment/paypal_ipn/ipn.php';
+		}
+		else {
+			$parameters['notify_url'] = sysConfig::get('HTTP_SERVER') . sysConfig::getDirWsCatalog() . 'ext/modules/payment/paypal_ipn/ipn.php';
 		}
 		if ($this->getConfigData('MODULE_PAYMENT_PAYPALIPN_GATEWAY_SERVER') != 'Live'){
 			$parameters['test_ipn'] = '1';
@@ -306,10 +290,11 @@ class OrderPaymentPaypalipn extends StandardPaymentModule {
 		$parameters['cbt'] = '';
 		$parameters['rm'] = '2';
 		if ($onePageCheckout->isMembershipCheckout() === false){
-			$parameters['return'] = itw_app_link('action=sessionClean&order_id='.$parameters['invoice'], 'account', 'default', 'SSL');
+			$parameters['return'] = itw_app_link('action=sessionClean&order_id=' . $parameters['invoice'], 'account', 'default', 'SSL');
 			$parameters['cancel_return'] = itw_app_link(null, 'checkout', 'default', 'SSL');
-		}else{
-			$parameters['return'] = itw_app_link('action=sessionClean&order_id='.$parameters['invoice'], 'account', 'default', 'SSL');
+		}
+		else {
+			$parameters['return'] = itw_app_link('action=sessionClean&order_id=' . $parameters['invoice'], 'account', 'default', 'SSL');
 			$parameters['cancel_return'] = itw_app_link(null, 'checkout', 'default', 'SSL');
 		}
 		$parameters['bn'] = $this->identifier;
@@ -319,71 +304,73 @@ class OrderPaymentPaypalipn extends StandardPaymentModule {
 			$parameters['page_style'] = $this->getConfigData('MODULE_PAYMENT_PAYPALIPN_PAGE_STYLE');
 		}
 
-		if ($onePageCheckout->isMembershipCheckout() === true){			
-			    $Qcustomer = Doctrine_Query::create()
+		if ($onePageCheckout->isMembershipCheckout() === true){
+			$Qcustomer = Doctrine_Query::create()
 				->from('Customers c')
 				->leftJoin('c.CustomersMembership cm')
 				->where('c.customers_id = ?', $userAccount->getCustomerId())
 				->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
-			    if(isset($Qcustomer[0])){
-					$QplanInfo = Doctrine_Query::create()
+			if (isset($Qcustomer[0])){
+				$QplanInfo = Doctrine_Query::create()
 					->from('Membership m')
 					->leftJoin('m.MembershipPlanDescription md')
 					->where('plan_id=?', $Qcustomer[0]['CustomersMembership']['plan_id'])
 					->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
-			    }
-
-
-				if (isset($QplanInfo[0])){
-					$planInfo = $QplanInfo[0];
-
-					if ($this->getConfigData('MOVE_TAX_TO_TOTAL_AMOUNT') == 'True'){
-						$a3Value = $order->info['total'] * $currencies->get_value($my_currency);
-					}else{
-						$a3Value = ($order->info['total'] - $order->info['tax']) * $currencies->get_value($my_currency);
-					}
-					$packagePrice = number_format($a3Value, $currencies->get_decimal_places($my_currency));
-
-					if ($planInfo['free_trial'] > 0){
-						$parameters['a1'] = $planInfo['free_trial_amount'];
-						$parameters['p1'] = $planInfo['free_trial'];
-						$parameters['t1'] = 'D';
-					}
-
-					if ($planInfo['membership_days'] > 0){
-						$p3Val = $planInfo['membership_days'];
-						$t3Val = 'D';
-					} elseif ($planInfo['membership_months'] > 0){
-						$p3Val = $planInfo['membership_months'];
-						$t3Val = 'M';
-					}
-					
-					if (isset($p3Val)){
-						$parameters['p3'] = $p3Val;
-						$parameters['t3'] = $t3Val;
-					}
-
-					$parameters['cmd'] = '_xclick-subscriptions';
-					$parameters['custom'] = Session::getSessionId().';'.$userAccount->getCustomerId().';'.$_SERVER['REMOTE_ADDR'];
-					$parameters['item_name'] = $planInfo['MembershipPlanDescription'][0]['name'];
-					$parameters['no_note'] = '1';
-					$parameters['a3'] = $packagePrice;
-					//$parameters['modify'] = '1';
-					$parameters['src'] = '1';
-					$parameters['sra'] = '1';
-				}
 			}
+
+			if (isset($QplanInfo[0])){
+				$planInfo = $QplanInfo[0];
+
+				if ($this->getConfigData('MOVE_TAX_TO_TOTAL_AMOUNT') == 'True'){
+					$a3Value = $order->info['total'] * $currencies->get_value($my_currency);
+				}
+				else {
+					$a3Value = ($order->info['total'] - $order->info['tax']) * $currencies->get_value($my_currency);
+				}
+				$packagePrice = number_format($a3Value, $currencies->get_decimal_places($my_currency));
+
+				if ($planInfo['free_trial'] > 0){
+					$parameters['a1'] = $planInfo['free_trial_amount'];
+					$parameters['p1'] = $planInfo['free_trial'];
+					$parameters['t1'] = 'D';
+				}
+
+				if ($planInfo['membership_days'] > 0){
+					$p3Val = $planInfo['membership_days'];
+					$t3Val = 'D';
+				}
+				elseif ($planInfo['membership_months'] > 0) {
+					$p3Val = $planInfo['membership_months'];
+					$t3Val = 'M';
+				}
+
+				if (isset($p3Val)){
+					$parameters['p3'] = $p3Val;
+					$parameters['t3'] = $t3Val;
+				}
+
+				$parameters['cmd'] = '_xclick-subscriptions';
+				$parameters['custom'] = Session::getSessionId() . ';' . $userAccount->getCustomerId() . ';' . $_SERVER['REMOTE_ADDR'];
+				$parameters['item_name'] = $planInfo['MembershipPlanDescription'][0]['name'];
+				$parameters['no_note'] = '1';
+				$parameters['a3'] = $packagePrice;
+				//$parameters['modify'] = '1';
+				$parameters['src'] = '1';
+				$parameters['sra'] = '1';
+			}
+		}
 
 		if ($this->getConfigData('MODULE_PAYMENT_PAYPALIPN_EWP_STATUS') == 'True'){
 			$process_button_string = tep_draw_hidden_field('cmd', '_s-xclick') . "\n" .
-			tep_draw_hidden_field('encrypted', $this->buildEwpString($parameters)) . "\n";
-		}else{
+				tep_draw_hidden_field('encrypted', $this->buildEwpString($parameters)) . "\n";
+		}
+		else {
 			$process_button_string = '';
-			while (list($key, $value) = each($parameters)){
+			while(list($key, $value) = each($parameters)){
 				$process_button_string .= tep_draw_hidden_field($key, $value) . "\n";
 			}
 		}
-		if ($this->getConfigData('MODULE_PAYMENT_PAYPALIPN_DEBUG_EMAIL') != '') {
+		if ($this->getConfigData('MODULE_PAYMENT_PAYPALIPN_DEBUG_EMAIL') != ''){
 			$email_body = $process_button_string;
 			/*To Debug
 			$myFile = sysConfig::getDirFsCatalog(). 'file2.txt';
@@ -391,23 +378,23 @@ class OrderPaymentPaypalipn extends StandardPaymentModule {
 			fwrite($fh, '\n'.$email_body.'\n');
 			fclose($fh);
 			End Debug*/
-			tep_mail(sysConfig::get('STORE_OWNER'), $this->getConfigData('MODULE_PAYMENT_PAYPALIPN_DEBUG_EMAIL'), sprintf(sysLanguage::get('EMAIL_SUBJECT'),'PayPal Debug'), htmlentities($email_body), 'Paypal Debug', sysConfig::get('STORE_OWNER_EMAIL_ADDRESS'));
+			tep_mail(sysConfig::get('STORE_OWNER'), $this->getConfigData('MODULE_PAYMENT_PAYPALIPN_DEBUG_EMAIL'), sprintf(sysLanguage::get('EMAIL_SUBJECT'), 'PayPal Debug'), htmlentities($email_body), 'Paypal Debug', sysConfig::get('STORE_OWNER_EMAIL_ADDRESS'));
 		}
 
 		//echo $process_button_string;
 		//itwExit();
 		return $process_button_string;
 	}
-	
-	private function buildEwpString(&$parameters){
+
+	private function buildEwpString(&$parameters) {
 		global $userAccount;
 		$parameters['cert_id'] = $this->getConfigData('MODULE_PAYMENT_PAYPALIPN_EWP_CERT_ID');
 		$random_string = rand(100000, 999999) . '-' . $userAccount->getCustomerId() . '-';
 		$data = '';
-		while (list($key, $value) = each($parameters)){
+		while(list($key, $value) = each($parameters)){
 			$data .= $key . '=' . $value . "\n";
 		}
-		
+
 		$openSslPath = $this->getConfigData('MODULE_PAYMENT_PAYPALIPN_EWP_OPENSSL');
 		$ipnId = $this->getConfigData('MODULE_PAYMENT_PAYPALIPN_ID');
 		$ewpWorkingDir = $this->getConfigData('MODULE_PAYMENT_PAYPALIPN_EWP_WORKING_DIRECTORY') . '/';
@@ -448,7 +435,8 @@ class OrderPaymentPaypalipn extends StandardPaymentModule {
 			$data = '-----BEGIN PKCS7-----' . "\n" . $data[1] . "\n" . '-----END PKCS7-----';
 
 			unlink($encryptedFile);
-		}else{
+		}
+		else {
 			exec($openSslPath . ' smime -sign -in ' . $dataFile . ' -signer ' . $publicKeyFile . ' -inkey ' . $privateKeyFile . ' -outform der -nodetach -binary > ' . $signedFile);
 			unlink($dataFile);
 
@@ -480,7 +468,7 @@ class OrderPaymentPaypalipn extends StandardPaymentModule {
 		tep_redirect(itw_app_link(null, 'checkout', 'success', 'SSL'));*/
 	}
 
-	function processPaymentCron($orderID){
+	function processPaymentCron($orderID) {
 		global $order;
 		$order_status_id = OrderPaymentModules::getModule('paypalipn')->getConfigData('MODULE_PAYMENT_PAYPALIPN_COMP_ORDER_STATUS_ID');
 		$newStatus = new OrdersPaymentsHistory();
@@ -511,37 +499,39 @@ class OrderPaymentPaypalipn extends StandardPaymentModule {
 		return true;
 	}
 
-	function onInstall(){
+	function onInstall() {
 
 		$Qstatus = Doctrine_Query::create()
-		->select('s.orders_status_id, sd.orders_status_name')
-		->from('OrdersStatus s')
-		->leftJoin('s.OrdersStatusDescription sd')
-		->where('sd.language_id = ?', (int) Session::get('languages_id'))
-		->andWhere('sd.orders_status_name=?', 'Preparing [PayPal IPN]')
-		->orderBy('s.orders_status_id')
-		->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+			->select('s.orders_status_id, sd.orders_status_name')
+			->from('OrdersStatus s')
+			->leftJoin('s.OrdersStatusDescription sd')
+			->where('sd.language_id = ?', (int)Session::get('languages_id'))
+			->andWhere('sd.orders_status_name=?', 'Preparing [PayPal IPN]')
+			->orderBy('s.orders_status_id')
+			->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 
-		if(count($Qstatus) > 0){
+		if (count($Qstatus) > 0){
 			$status_id = $Qstatus[0]['order_status_id'];
-		}else{
+		}
+		else {
 			$OrdersStatus = Doctrine_Core::getTable('OrdersStatus');
 			$Status = $OrdersStatus->getRecord();
 			$Description = $Status->OrdersStatusDescription;
 			foreach(sysLanguage::getLanguages() as $lInfo){
 				$Description[$lInfo['id']]->language_id = $lInfo['id'];
-				$Description[$lInfo['id']]->orders_status_name =  'Preparing [PayPal IPN]';
+				$Description[$lInfo['id']]->orders_status_name = 'Preparing [PayPal IPN]';
 			}
 
 			$Status->save();
 			$status_id = $Status->orders_status_id;
 		}
-		
+
 		$Qupdate = Doctrine_Query::create()
-		->update('ModulesConfiguration')
-		->set('configuration_value', '?', (empty($status_id) ? '1' : $status_id))
-		->where('configuration_key = ?', 'MODULE_PAYMENT_PAYPALIPN_PREPARE_ORDER_STATUS_ID')
-		->execute();
+			->update('ModulesConfiguration')
+			->set('configuration_value', '?', (empty($status_id) ? '1' : $status_id))
+			->where('configuration_key = ?', 'MODULE_PAYMENT_PAYPALIPN_PREPARE_ORDER_STATUS_ID')
+			->execute();
 	}
 }
+
 ?>

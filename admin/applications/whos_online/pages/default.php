@@ -74,5 +74,5 @@
 	</tr>
 </table></div>
 <div style="margin:.5em;"><?php
-	echo '<b>' . sysLanguage::get('TEXT_MY_IP_ADDRESS') . ':</b>&nbsp;' . tep_get_ip_address() . '<br><small>' . TEXT_NOT_AVAILABLE . '</small>';
+	echo '<b>' . sysLanguage::get('TEXT_MY_IP_ADDRESS') . ':</b>&nbsp;' . tep_get_ip_address() . '<br><small>' . sysConfig::get('TEXT_NOT_AVAILABLE') . '</small>';
 ?></div>

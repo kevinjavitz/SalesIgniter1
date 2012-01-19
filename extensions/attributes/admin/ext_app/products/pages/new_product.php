@@ -50,13 +50,13 @@ class attributes_admin_products_new_product extends Extension_attributes {
 		$loadSetButton = htmlBase::newElement('button')
 		->usePreset('load')
 		->setId('loadSet')
-		->setText(TEXT_BUTTON_LOAD_SET);
+		->setText(sysLanguage::get('TEXT_BUTTON_LOAD_SET'));
 
 		$buttonBar = htmlBase::newElement('div')
 		->css(array(
 			'text-align' => 'right'
 		))
-		->append($newOptionButton)->append($loadSetButton);
+		/*->append($newOptionButton)*/->append($loadSetButton);
 
 		$currentGroup = htmlBase::newElement('fieldset')
 		->append(htmlBase::newElement('legend')->html('Current Group'));
@@ -409,7 +409,6 @@ class attributes_admin_products_new_product extends Extension_attributes {
 			$optionId = $_POST['option'];
 		}
 		$html = '';
-		$OptionContainer = false;
 		if ($optionId > 0){
 			$Option = Doctrine_Query::create()
 			->from('ProductsOptions o')
@@ -681,9 +680,9 @@ class attributes_admin_products_new_product extends Extension_attributes {
 
 				$OptionContainer->append($OptionsTable);
 			}
-
+			return $OptionContainer;
 		}
-		return $OptionContainer;
+		return false;
 	}
 
 	public function getInventoryEntry($data){

@@ -22,7 +22,7 @@ class productListing_productsPricePayPerRental {
 		return $selectSortKeys;
 	}
 
-	public function show(&$productClass){
+	public function show(&$productClass, &$purchaseTypesCol){
 		global $currencies;
 		$tableRow = array();
 		$purchaseTypeClass = $productClass->getPurchaseType('reservation');
@@ -159,7 +159,7 @@ class productListing_productsPricePayPerRental {
 					$payPerRentalButton = htmlBase::newElement('button')
 					->setType('submit')
 					->setText(sysLanguage::get('TEXT_BUTTON_RESERVE'))
-					->setId('inCart')
+					->addClass('inCart')
 					->setName('add_reservation_product');
 					$isav = true;
 					if (Session::exists('isppr_shipping_cost')) {
@@ -301,6 +301,7 @@ class productListing_productsPricePayPerRental {
 					if (isset($htmlDropoff)) {
 						$pageForm->append($htmlDropoff);
 					}
+					$purchaseTypesCol = 'reservation';
 					$pageForm->append($htmlRentalQty);
 					$pageForm->append($htmlProductsId);
 					$pageForm->append($payPerRentalButton);
@@ -450,13 +451,14 @@ class productListing_productsPricePayPerRental {
 					$payPerRentalButton = htmlBase::newElement('button')
 					->setType('submit')
 					->setText(sysLanguage::get('TEXT_BUTTON_RESERVE'));
-
+					$purchaseTypesCol = '';
 					if(Session::exists('isppr_selected') == false || Session::get('isppr_selected') == false){
 						$payPerRentalButton
 						->setName('no_dates_selected');
 					}else{
 						$payPerRentalButton
 						->setName('no_inventory');
+						$payPerRentalButton->setText(sysLanguage::get('TEXT_BUTTON_RESERVE_OUT_OF_STOCK'));
 					}
 
 					EventManager::notify('ProductListingModuleShowBeforeShow', 'reservation', $productClass, &$payPerRentalButton);

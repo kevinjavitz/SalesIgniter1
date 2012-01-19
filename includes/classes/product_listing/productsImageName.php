@@ -11,7 +11,7 @@ class productListing_productsImageName {
 		return $selectSortKeys;
 	}
 
-	public function show(&$productClass){
+	public function show(&$productClass, &$purchaseTypesCol){
 		global $cPath;
 		if (isset($_GET['manufacturers_id'])) {
 			$addedGetVar = '&manufacturers_id=' . $_GET['manufacturers_id'];

@@ -1,6 +1,6 @@
 <?php
 	$hasError = false;
-	$userAccount = new rentalStoreUser($_GET['cID']);
+	$userAccount = new rentalStoreUser((isset($_GET['cID']) ? $_GET['cID'] : false));
 	$userAccount->loadPlugins();
 	$addressBook =& $userAccount->plugins['addressBook'];
 	$membership =& $userAccount->plugins['membership'];
@@ -32,6 +32,7 @@
 	if (array_key_exists('customers_gender', $_POST)) $accountValidation['entry_gender'] = $_POST['customers_gender'];
 	if (array_key_exists('customers_newsletter', $_POST)) $accountValidation['newsletter'] = $_POST['customers_newsletter'];
 	if (array_key_exists('customers_telephone', $_POST)) $accountValidation['telephone'] = $_POST['customers_telephone'];
+	if (array_key_exists('customers_notes', $_POST)) $accountValidation['notes'] = $_POST['customers_notes'];
 	if (array_key_exists('customers_fax', $_POST)) $accountValidation['fax'] = $_POST['customers_fax'];
 	if (array_key_exists('customers_dob', $_POST)) $accountValidation['dob'] = $_POST['customers_dob'];
 	
@@ -44,6 +45,7 @@
 		$userAccount->setEmailAddress($accountValidation['email_address']);
 		$userAccount->setPassword($accountValidation['password']);
 		$userAccount->setTelephoneNumber($accountValidation['telephone']);
+		$userAccount->setNotes($accountValidation['notes']);
 		$userAccount->setFaxNumber($accountValidation['fax']);
 		$userAccount->setNewsLetter($accountValidation['newsletter']);
 		if (isset($accountValidation['entry_gender'])){
@@ -52,11 +54,19 @@
 		if (isset($accountValidation['dob'])){
 			$userAccount->setDateOfBirth(strftime(sysLanguage::getDateFormat('short'),strtotime($accountValidation['dob'])));
 		}
+		$userAccount->setMemberNumber((!empty($_POST['customers_number']) ? $_POST['customers_number'] : tep_create_random_value(8)));
+		$userAccount->setAccountFrozen((isset($_POST['customers_account_frozen'])));
 
 		if (isset($accountValidation['city_birth'])){
 			$userAccount->setCityBirth($accountValidation['city_birth']);
 		}
-		$userAccount->updateCustomerAccount();
+		if (isset($_GET['cID'])){
+			$userAccount->updateCustomerAccount();
+			$addressBook->updateAddress((int)$_POST['default_address_id'], $accountValidation);
+		}else{
+			$userAccount->createNewAccount();
+			$addressBook->insertAddress($accountValidation, true);
+		}
 
 		if (array_key_exists('planid', $_POST) || array_key_exists('activate', $_POST) || array_key_exists('make_member', $_POST)){
 			if (array_key_exists('activate', $_POST)){
@@ -113,27 +123,36 @@
 		
 			if ($emailEventName !== false){
 				$emailEvent = new emailEvent($emailEventName, $userAccount->getLanguageId());
-				$currentPlan = Doctrine_Core::getTable('Membership')->findOneByPlanId((int)$_POST['planid'])->toArray();
+				$QcurrentPlan = Doctrine_Query::create()
+				->from('Membership m')
+				->leftJoin('m.MembershipPlanDescription mpd')
+				->where('m.plan_id = ?', (int)$_POST['planid'])
+				->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 
 				$emailEvent->setVars(array(
 					'customerFirstName' => $userAccount->getFirstName(),
 					'customerLastName' => $userAccount->getLastName(),
-					'currentPlanPackageName' => $currentPlan['MembershipPlanDescription'][0]['name'],
-					'currentPlanMembershipDays' => $currentPlan['membership_days'],
-					'currentPlanNumberOfTitles' => $currentPlan['no_of_titles'],
-					'currentPlanFreeTrial' => $currentPlan['free_trial'],
-					'currentPlanPrice' => $currentPlan['price']
+					'currentPlanPackageName' => $QcurrentPlan[0]['MembershipPlanDescription'][0]['name'],
+					'currentPlanMembershipDays' => $QcurrentPlan[0]['membership_days'],
+					'currentPlanNumberOfTitles' => $QcurrentPlan[0]['no_of_titles'],
+					'currentPlanFreeTrial' => $QcurrentPlan[0]['free_trial'],
+					'currentPlanPrice' => $QcurrentPlan[0]['price']
 				));
 
 				if (isset($_POST['prev_plan_id']) && !empty($_POST['prev_plan_id']) && $_POST['planid'] != $_POST['prev_plan_id']){
-					$previousPlan = Doctrine_Core::getTable('Membership')->findOneByPlanId((int)$_POST['prev_plan_id'])->toArray();
+					//$previousPlan = Doctrine_Core::getTable('Membership')->findOneByPlanId((int)$_POST['prev_plan_id'])->toArray();
+					$QprevPlan = Doctrine_Query::create()
+						->from('Membership m')
+						->leftJoin('m.MembershipPlanDescription mpd')
+						->where('m.plan_id = ?', (int)$_POST['prev_plan_id'])
+						->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 
 					$emailEvent->setVars(array(
-						'previousPlanPackageName' => $previousPlan['MembershipPlanDescription'][0]['name'],
-						'previousPlanMembershipDays' => $previousPlan['membership_days'],
-						'previousPlanNumberOfTitles' => $previousPlan['no_of_titles'],
-						'previousPlanFreeTrial' => $previousPlan['free_trial'],
-						'previousPlanPrice' => $previousPlan['price']
+						'previousPlanPackageName' => $QprevPlan[0]['MembershipPlanDescription'][0]['name'],
+						'previousPlanMembershipDays' =>  $QprevPlan[0]['membership_days'],
+						'previousPlanNumberOfTitles' =>  $QprevPlan[0]['no_of_titles'],
+						'previousPlanFreeTrial' =>  $QprevPlan[0]['free_trial'],
+						'previousPlanPrice' =>  $QprevPlan[0]['price']
 					));
 				}
 				if(isset($_POST['sendEmail'])){

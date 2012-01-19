@@ -33,9 +33,14 @@ class TemplateManagerLayouts extends Doctrine_Record
 			'length' => '11',
 		));
 		$this->hasColumn('layout_name', 'string', 128, array(
-			'type' => 'string',
-			'length' => '128',
-		));
+				'type' => 'string',
+				'length' => '128',
+			));
+		$this->hasColumn('layout_type', 'string', 128, array(
+				'type' => 'string',
+				'length' => '128',
+				'default' => 'desktop'
+			));
 	}
 
 	public function setUp()

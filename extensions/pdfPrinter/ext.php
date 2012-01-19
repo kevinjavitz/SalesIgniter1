@@ -109,7 +109,11 @@ function tep_cfg_get_layout_name($layoutName){
 		->from('PDFTemplateManagerLayouts')
 	    ->where('layout_id = ?', $layoutName)
 		->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
-	return $QLayouts[0]['layout_name'];
+	if(isset($QLayouts[0])){
+		return $QLayouts[0]['layout_name'];
+	}else{
+		return '';
+	}
 }
 
 function tep_cfg_pull_down_layout_list($layoutName, $key = '') {

@@ -110,7 +110,7 @@ class ExceptionManager {
 	public function add($Exception){
 		if ($this->reportsAllowed() === false) return;
 		foreach($this->errorCodes as $type => $codes){
-			if (sysConfig::inSet($type, 'ERROR_REPORTING_LEVEL')){
+			if (class_exists('sysConfig') && (sysConfig::inSet($type, 'ERROR_REPORTING_LEVEL') || isset($_GET['showErrors']))){
 				if ($Exception instanceof ErrorException){
 					if (in_array($Exception->getSeverity(), $codes)){
 						if ($this->requireClass($type)){

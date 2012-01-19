@@ -1,16 +1,35 @@
+<?php
+if(Session::exists('tplDir') === false){
+	Session::set('tplDir', 'fallback');
+}
+$stylesheetLink = sysConfig::getDirWsCatalog() . 'extensions/templateManager/catalog/globalFiles/stylesheet.php?' .
+	'&env=admin' .
+	'&' . Session::getSessionName() . '=' . Session::getSessionId() .
+	'&tplDir=' . Session::get('tplDir') .
+	'&import=' . implode(',', $App->getStylesheetFiles()) .
+	(isset($stylesheetCache) && $stylesheetCache === false || isset($_GET['noCache']) ? '&noCache' : '');
+
+$javascriptLink = sysConfig::getDirWsCatalog() . 'extensions/templateManager/catalog/globalFiles/javascript.php?' .
+	'&env=admin' .
+	'&' . Session::getSessionName() . '=' . Session::getSessionId() .
+	'&tplDir=' . Session::get('tplDir') .
+	'&import=' . implode(',', $App->getJavascriptFiles()) .
+	(isset($javascriptCache) && $javascriptCache === false || isset($_GET['noCache']) ? '&noCache' : '');
+?>
 <!DOCTYPE html>
 <html <?php echo sysLanguage::getHtmlParams(); ?>>
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=<?php echo sysLanguage::getCharset(); ?>">
 		<title><?php echo sprintf(sysLanguage::get('TITLE'), sysConfig::get('STORE_NAME')); ?></title>
 		<base href="<?php echo (($request_type == 'SSL') ? sysConfig::get('HTTPS_SERVER') : sysConfig::get('HTTP_SERVER')) . sysConfig::get('DIR_WS_ADMIN'); ?>">
-		<link rel="stylesheet" type="text/css" href="<?php echo sysConfig::getDirWsCatalog();?>extensions/templateManager/catalog/globalFiles/stylesheet.php?import=<?php echo implode(',', $App->getStylesheetFiles());?>&env=admin&<?php echo Session::getSessionName() . '=' . Session::getSessionId();?>" />
+		<link rel="stylesheet" type="text/css" href="<?php echo $stylesheetLink;?>" />
 		<script type="text/javascript">
 			var CKEDITOR_BASEPATH = '<?php echo sysConfig::getDirWsAdmin() . 'rental_wysiwyg/';?>';
 			var allGetParams = '<?php echo substr(tep_get_all_get_params(), 0, -1);?>';
 			var serverName = '<?php echo $_SERVER['SERVER_NAME'];?>';
 			var DIR_WS_ADMIN = '<?php echo sysConfig::getDirWsAdmin();?>';
 			var DIR_WS_CATALOG = '<?php echo sysConfig::getDirWsCatalog();?>';
+			var DIR_FS_ADMIN = '<?php echo sysConfig::getDirFsAdmin();?>';
 			var DIR_FS_CATALOG = '<?php echo sysConfig::getDirFsCatalog();?>';
 			var ENABLE_SSL = '<?php echo (sysConfig::exists('ENABLE_SSL') ? sysConfig::get('ENABLE_SSL') : 'false');?>';
 			var SID = '<?php echo SID;?>';
@@ -22,8 +41,25 @@
 			var thisAppPage = '<?php echo $App->getAppPage();?>';
 			var thisAppExt = '<?php echo (isset($_GET['appExt']) && !empty($_GET['appExt']) ? $_GET['appExt'] : null);?>';
 			var productID = '<?php echo (int)(isset($_GET['pID']) ? $_GET['pID'] : '0');?>';
+			
+			var jsLanguage = {
+				defines: [],
+				set: function (k, v){
+					this.defines[k] = v;
+				},
+				get: function (key){
+					return this.defines[key] || '';
+				}
+			};
+<?php
+	if (sysLanguage::hasJavascriptDefines() === true){
+		foreach(sysLanguage::getJavascriptDefines() as $k => $v){
+			echo '			jsLanguage.set(\'' . $k . '\', "' . $v . '");' . "\n";
+		}
+	}
+?>
 		</script>
-		<script type="text/javascript" src="<?php echo sysConfig::getDirWsCatalog();?>extensions/templateManager/catalog/globalFiles/javascript.php?import=<?php echo implode(',', $App->getJavascriptFiles());?>&env=admin&<?php echo Session::getSessionName() . '=' . Session::getSessionId();?>"></script>
+		<script type="text/javascript" src="<?php echo $javascriptLink;?>"></script>
 <?php
 if (isset($_GET['oError'])){
 	echo '		<script type="text/javascript">alert(\'Onetime rentals has been disabled. If you would like to enable it, please contact www.itwebexperts.com\');</script>' . "\n";
@@ -70,6 +106,8 @@ echo '			});' . "\n" .
 		<footer><?php
 			require(sysConfig::getDirFsAdmin() . 'includes/footer.php');
 		?></footer>
+		<div class="sysMsgBlock" style="position:fixed;top:0px;left:0px;text-align:center;width:60%;margin-left:20%;margin-right:20%;display:none;">
+		</div>
 	</body>
 	<div id="expiredSessionWindow" title="Session Has Expired" style="display:none;">
 		<p>Your session has expired, please click ok to log back in.</p>

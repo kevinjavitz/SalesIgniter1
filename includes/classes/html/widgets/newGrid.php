@@ -61,18 +61,20 @@ class htmlWidget_newGrid implements htmlWidgetPlugin {
 
 		$output = htmlBase::newElement('div');
 
-		$buttonBar = htmlBase::newElement('div')
-			->addClass('ui-widget ui-widget-header ui-corner-all gridButtonBar')
-			->css(array(
-				'margin-bottom' => '.5em',
-				'text-align' => 'right'
-			));
+		if (!empty($this->buttons)){
+			$buttonBar = htmlBase::newElement('div')
+				->addClass('ui-widget ui-widget-header ui-corner-all gridButtonBar')
+				->css(array(
+					'margin-bottom' => '.5em',
+					'text-align' => 'right'
+				));
 
-		foreach($this->buttons as $button){
-			$buttonBar->append($button);
+			foreach($this->buttons as $button){
+				$buttonBar->append($button);
+			}
+
+			$output->append($buttonBar);
 		}
-
-		$output->append($buttonBar);
 
 		if ($this->useSortBy === true){
 			$this->gridElement

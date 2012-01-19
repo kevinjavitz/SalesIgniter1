@@ -24,13 +24,15 @@ class productListing_productsPriceNew {
 		return $selectSortKeys;
 	}
 
-	public function show(&$productClass){
+	public function show(&$productClass, &$purchaseTypesCol){
 
 		global $currencies;
 		$tableRow = array();
 
 		$buyNowButton = htmlBase::newElement('button')->setText(sysLanguage::get('TEXT_BUTTON_BUY_NOW'));
+		$purchaseTypesCol = 'new';
 		if($productClass->isNotAvailable()){
+			$purchaseTypesCol = '';
 			$buyNowButton->disable();
 			$buyNowButton->setText(sysLanguage::get('TEXT_AVAILABLE').': '. strftime(sysLanguage::getDateFormat('short'), strtotime($productClass->getAvailableDate())));
 		}

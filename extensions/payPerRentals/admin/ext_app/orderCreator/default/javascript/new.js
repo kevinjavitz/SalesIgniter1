@@ -6,88 +6,102 @@ $(document).ready(function (){
 	var autoChanged = false;
 
 	$('.reservationDates').live('click', function (){
-        var $Row = $(this).parent().parent().parent().parent();
-        var $self = $Row.find('.selectDialog');
-		$self.html('');
-        var $selfInput = $(this);
-		var $AttrInput = $Row.find('.productAttribute');
-		var $qtyInput = $Row.find('.productQty');
-		var $purchaseTypeSelected = $Row.find('.purchaseType option:selected');
-		var $barcodeName = $Row.find('.barcodeName').attr('barid');
-		productsID = $Row.attr('data-id');
-		var attrParams = 'pID=' + $Row.attr('data-id')+'&barcode='+$barcodeName;
-		if ($AttrInput) {
-			attrParams = attrParams + '&id[reservation][' + $AttrInput.attr('attrval') + ']=' + $AttrInput.val();
+		var mainField = this;
+        var $Row = $(this).parentsUntil('tbody').last();
+
+		var attrv = 'idP='+ $Row.attr('data-id')+'&pID='+ $Row.attr('data-product_id');
+		if ($Row.find('.productAttribute').size() > 0) {
+			attrv = attrv + '&id[reservation]=';
+			$Row.find('.productAttribute').each(function(){
+				attrv = attrv+'{'+$(this).attr('attrval')+'}'+$(this).val();
+			});
+
 		}
-		var $closeBut = $('<div style=""><a class="closeBut" href="#"><span class="ui-icon ui-icon-closethick">close</span></a></div>');
-		$closeBut.insertBefore($self);
-		showAjaxLoader($selfInput, 'small');
+		showAjaxLoader($(mainField), 'small');
 		$.ajax({
 			cache: false,
 			dataType: 'json',
 			type:'post',
-			data: attrParams,
+			data: attrv,
 			url: js_app_link('appExt=orderCreator&app=default&appPage=new&action=loadReservationData'),
 			success: function (data) {
-				$self.html(data.calendar);
+				var $dialog = $('<div></div>').dialog({
+					title: 'Select Reservation Settings',
+					width: 600,
+					height: 561,
+					open: function (){
+						$(this).html(data.calendar);
+					},
+					close:function(){
+						removeAjaxLoader($(mainField));
+						$dialog.dialog('destroy').remove();
+					},
+					buttons: {
+						'Add To Cart': function (){
+							var self = this;
+							if($(self).find('.start_date').val() != '' && $(self).find('.start_date').val() != ''){
+								showAjaxLoader($(self).parent(), 'large');
+								var myStartDate = $(self).find('.start_date').val();
 
-				$('.closeBut').click(function() {
-					removeAjaxLoader($selfInput);
-					$self.html('');
-					$self.hide();
-					$(this).hide();
-					return false;
-				});
+								if($(self).find('.start_time').size() > 0){
+									myStartDate = myStartDate+' '+$(self).find('.start_time').val();
+								}
 
-				$('.inCart').live('click', function(event) {
-					showAjaxLoader($self, 'large');
-					var insVal = -1;
-					if($self.find('.hasInsurance').attr('checked') == true){
-						insVal = 1;
-					}
-					$.ajax({
-						cache: false,
-						dataType: 'json',
-						type:'post',
-						data: attrParams,
-						url: js_app_link('appExt=orderCreator&app=default&appPage=new&action=saveResInfo&id=' + $Row.attr('data-id') + '&start_date=' + $self.find('.start_date').val() + '&end_date=' + $self.find('.end_date').val() + '&shipping=' + $self.find('input[name="rental_shipping"]:checked').val() + '&qty=' + $self.find('.rental_qty').val() + '&purchase_type=' + $purchaseTypeSelected.val()+ '&hasInsurance=' + insVal),
-						success: function (data) {
-							//update priceEx
+								var myEndDate = $(self).find('.end_date').val();
 
-							$selfInput.val($self.find('.start_date').val() + ',' + $self.find('.end_date').val());
-							$qtyInput.val($self.find('.rental_qty').val());
-							var $shippingInput = $Row.find('.reservationShipping');
-							var $shippingText = $Row.find('.reservationShippingText');
-							var $shipRadio = $self.find('input[name="rental_shipping"]:checked');
-							if ($shipRadio.size() > 0) {
-								var valShip = $shipRadio.val().split('_');
-								$shippingInput.val(valShip[1]);
-								$shippingText.html($shipRadio.parent().parent().find('td:eq(0)').html());
+								if($(self).find('.end_time').size() > 0){
+									myEndDate = myEndDate+' '+$(self).find('.end_time').val();
+								}
+								var postData1 = attrv + '&start_date='+myStartDate+'&end_date='+myEndDate+'&days_before='+$(self).find('input[name="rental_shipping"]:checked').attr('days_before')+'&days_after='+$(self).find('input[name="rental_shipping"]:checked').attr('days_after')+'&shipping='+$(self).find('input[name="rental_shipping"]:checked').val()+'&qty='+$Row.find('.productQty').val();
+								var addCartData = {};
+								var postData = $.extend(addCartData, {
+									start_date : myStartDate,
+									end_date   : myEndDate,
+									days_before   : $(self).find('input[name="rental_shipping"]:checked').attr('days_before'),
+									days_after   : $(self).find('input[name="rental_shipping"]:checked').attr('days_after'),
+									shipping   : $(self).find('input[name="rental_shipping"]:checked').val(),
+									qty        : $Row.find('.productQty').val()
+								});
+
+								var insVal = -1;
+								if($(self).find('.hasInsurance').attr('checked') == true){
+									insVal = 1;
+								}
+								$.ajax({
+									cache: false,
+									dataType: 'json',
+									type:'post',
+									data: postData1,
+									url: js_app_link('appExt=orderCreator&app=default&appPage=new&action=saveResInfo'),
+									success: function (postResp) {
+										//update priceEx
+
+										$Row.find('.resDateHidden').val(postData.start_date + ',' + postData.end_date);
+										$Row.find('.res_start_date').html(postData.start_date);
+										$Row.find('.res_end_date').html(postData.end_date);
+										$Row.find('.productQty').val(postData.qty);
+										$Row.find('.priceEx').val(postResp.price).trigger('keyup');
+
+										var $shippingInput = $Row.find('.reservationShipping');
+										var $shippingText = $Row.find('.reservationShippingText');
+										var $shipRadio = $(self).find('input[name="rental_shipping"]:checked');
+										if ($shipRadio.size() > 0) {
+											var valShip = $shipRadio.val().split('_');
+											$shippingInput.val(valShip[1]);
+											$shippingText.html($shipRadio.parent().parent().find('td:eq(0)').html());
+										}
+
+										removeAjaxLoader($(self).parent());
+										removeAjaxLoader($(mainField));
+										$dialog.dialog('destroy').remove();
+									}
+								});
+							}else{
+								alert('Please select dates');
 							}
-							$Row.find('.priceEx').val(data.price).trigger('keyup');
-							removeAjaxLoader($self);
-							$('.closeBut').trigger('click');
 						}
-					});
-					event.stopImmediatePropagation();
+					}
 				});
-
-				$self.css('background-color', '#ffffff');
-				$self.css('border', '1px solid #000000');
-				$self.css('padding', '10px');
-				$self.css('width', '600px');
-				$self.css('position', 'absolute');
-				var posi = $selfInput.offset();
-				$self.css('top', (posi.top - 200) + 'px');
-				$self.css('left', (posi.left + 100) + 'px');
-
-				$('.closeBut').css('position', 'relative');
-				$('.closeBut').css('z-index', '1000');
-				$('.closeBut').css('left', '800px');
-				$('.closeBut').css('top', '-120px');
-				$self.show();
-				$self.focus();
-
 			}
 		})
 
@@ -95,14 +109,14 @@ $(document).ready(function (){
 
 
 	$('.productAttribute').live('change', function (){
-        var $Row = $(this).parent().parent().parent().parent();
+        var $Row = $(this).parentsUntil('tbody').last();
 		$Row.find('.reservationDates').val('');
 	});
 
 
 	$('.eventf, .reservationShipping, .gatef').live('change', function(){
 		var $self = $(this);
-		var $Row = $(this).parent().parent().parent().parent();
+		var $Row =$(this).parentsUntil('tbody').last();
 		var $ShippingInput = $Row.find('.reservationShipping option:selected');
 		var $qtyInput = $Row.find('.productQty');
 		var selectedQty = $qtyInput.val();
@@ -114,7 +128,9 @@ $(document).ready(function (){
 		$.ajax({
 			cache: false,
 			dataType: 'json',
-			url: js_app_link('appExt=orderCreator&app=default&appPage=new&action=saveResInfo&id=' + $Row.attr('data-id')+ '&event=' + eventS.val()+ '&gate=' + gateS.val() + '&shipping=' + $ShippingInput.val() + '&qty=' + selectedQty+'&purchase_type='+$purchaseTypeSelected.val()+'&days_before='+$ShippingInput.attr('days_before')+'&days_after='+$ShippingInput.attr('days_after')),
+			data:'idP=' + $Row.attr('data-id')+ '&event=' + eventS.val()+ '&gate=' + gateS.val() + '&shipping=' + $ShippingInput.val() + '&qty=' + selectedQty+'&purchase_type='+$purchaseTypeSelected.val()+'&days_before='+$ShippingInput.attr('days_before')+'&days_after='+$ShippingInput.attr('days_after'),
+			type:'post',
+			url: js_app_link('appExt=orderCreator&app=default&appPage=new&action=saveResInfo'),
 			success: function (data) {
 
 				if(data.success == true){

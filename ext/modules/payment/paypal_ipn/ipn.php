@@ -119,8 +119,11 @@
 
 			if (isset($_POST['amount3']) && (int)$_POST['amount3'] == (int) $new_amount){
 				$next_billing_date = $membershipTemp['membership_days'];
-
-				tep_db_query('insert into ' . TABLE_MEMBERSHIP_UPDATE . ' (customers_id, plan_id, upgrade_date) values ("' . $customerID . '", "' . $planID . '", "' . $next_billing_date . '")');
+				$membershipUpdate = new MembershipUpdate();
+				$membershipUpdate->customers_id = $customerID;
+				$membershipUpdate->plan_id = $planID;
+				$membershipUpdate->upgrade_date = $next_billing_date;
+				$membershipUpdate->save();
 				itwExit();
 			}
 		}elseif ($account_action == 'payment'){
@@ -154,7 +157,7 @@
 				//tep_db_query('update ' . TABLE_CUSTOMERS . ' set canceled = "1" where customers_id = "' . $customerID . '"');
 				Doctrine_Query::create()
 				->update('CustomersMembership')
-				->set('canceled = ?','1')
+				->set('canceled','?','1')
 				->where('customers_id = ?', $customerID)
 				->execute();
 
@@ -164,7 +167,15 @@
 					'email' => sysConfig::get('STORE_OWNER_EMAIL_ADDRESS')
 				));
 			}else{
-				tep_db_query('update ' . 'customers_membership' . ' set canceled = "0", ismember = "U", activate = "N" where customers_id = "' . $customerID . '"');
+				Doctrine_Query::create()
+				->update('CustomersMembership')
+				->set('canceled','?','0')
+				->set('ismember','?','U')
+				->set('activate','?','N')
+				->where('customers_id = ?', $customerID)
+				->execute();
+
+				//tep_db_query('update ' . 'customers_membership' . ' set canceled = "0", ismember = "U", activate = "N" where customers_id = "' . $customerID . '"');
 
 				$emailEvent->setEvent('membership_expired');
 				$emailEvent->sendEmail(array(
@@ -184,10 +195,15 @@
 	if ($result == 'VERIFIED'){
 		if (is_numeric($orderID) && $orderID > 0){
 			
-			$order_query = tep_db_query("select currency, currency_value from " . TABLE_ORDERS . " where orders_id = '" . $orderID . "' and customers_id = '" . $customerID . "'");
-			if (tep_db_num_rows($order_query) > 0){
+			//$order_query = tep_db_query("select currency, currency_value from " . TABLE_ORDERS . " where orders_id = '" . $orderID . "' and customers_id = '" . $customerID . "'");
+			$QOrder = Doctrine_Query::create()
+			->from('Orders')
+			->where('orders_id = ?', $orderID)
+			->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 
-				$order_db = tep_db_fetch_array($order_query);
+			if (count($QOrder) > 0){
+
+				//$order_db = tep_db_fetch_array($order_query);
 				$order = new OrderProcessor($orderID);
 				$QTotals = Doctrine_Query::create()
 				->from('OrdersTotal')
@@ -205,7 +221,7 @@
 				}
 				$order_status_id = sysConfig::get('DEFAULT_ORDERS_STATUS_ID');
 
-				$pricing = ((number_format($QTotals->value * $order_db['currency_value'], $currencies->get_decimal_places($order_db['currency']))) - $_POST['mc_gross']);
+				$pricing = ((number_format($QTotals->value * $QOrder[0]['currency_value'], $currencies->get_decimal_places($QOrder[0]['currency']))) - $_POST['mc_gross']);
 
 				if ($pricing <= 0.05 && $pricing >= -0.05){
 					if (((int)OrderPaymentModules::getModule('paypalipn')->getConfigData('MODULE_PAYMENT_PAYPALIPN_COMP_ORDER_STATUS_ID') > 0) && ($paymentStatus == 'Completed')){
@@ -239,7 +255,14 @@
 					$customer_notified = '1';
 				}
 
-				tep_db_query("update " . TABLE_ORDERS . " set orders_status = '" . $order_status_id . "', last_modified = now() where orders_id = '" . $orderID . "'");
+				$QUpdateOrder = Doctrine_Query::create()
+					->update('Orders')
+					->set('orders_status', '?', $order_status_id)
+					->set('last_modified', '?', date('Y-m-d H:i:s'))
+					->where('orders_id=?',$orderID)
+					->execute();
+
+				/*tep_db_query("update " . TABLE_ORDERS . " set orders_status = '" . $order_status_id . "', last_modified = now() where orders_id = '" . $orderID . "'");
 
 				$sql_data_array = array(
 					'orders_id' => $orderID,
@@ -248,7 +271,16 @@
 					'customer_notified' => $customer_notified,
 					'comments' => 'PayPal IPN Verified [' . $comment_status . ']'
 				);
-				tep_db_perform(TABLE_ORDERS_STATUS_HISTORY, $sql_data_array);
+				tep_db_perform(TABLE_ORDERS_STATUS_HISTORY, $sql_data_array);*/
+				$OrdersStatusHistory = new OrdersStatusHistory();
+				$OrdersStatusHistory->orders_id = $orderID;
+				$OrdersStatusHistory->orders_status_id = $order_status_id;
+				$OrdersStatusHistory->date_added = date('Y-m-d H:i:s');
+				$OrdersStatusHistory->customer_notified = $customer_notified;
+				$OrdersStatusHistory->comments = 'PayPal IPN Verified [' . $comment_status . ']';
+				$OrdersStatusHistory->save();
+
+
 
 				//insert payment History				
 				if ($planID !== false && $paymentStatus == 'FreeTrial' && isset($_POST['period1'])){
@@ -265,36 +297,70 @@
 
 					$next_billing_date = date('Y-m-d h:i:s', strtotime('+' . $periodTime . ' day'));
 
-					$updateArray = array(
+					/*$updateArray = array(
 						'ismember' => 'M',
 						'activate' => 'Y',
 						'membership_date' => date('Ymdhis'),
 						'next_bill_date' => $next_billing_date,
 						'plan_id' => $planID
 					);
-					tep_db_perform('customers_membership', $updateArray, 'update', 'customers_id = "' . $customerID . '"');
+					tep_db_perform('customers_membership', $updateArray, 'update', 'customers_id = "' . $customerID . '"');*/
+					Doctrine_Query::create()
+						->update('CustomersMembership')
+						->set('membership_date ', '?', date('Ymdhis'))
+						->set('ismember','?','M')
+						->set('activate','?','Y')
+						->set('next_bill_date','?', $next_billing_date)
+						->set('plan_id','?', $planID)
+						->where('customers_id = ?', $customerID)
+						->execute();
 
-					$membershipArray = array(
+
+					/*$membershipArray = array(
 						'customers_id' => $customerID,
 						'plan_id' => $planID,
 						'upgrade_date' => $next_billing_date
 					);
-					tep_db_perform(TABLE_MEMBERSHIP_UPDATE, $membershipArray);
+					tep_db_perform(TABLE_MEMBERSHIP_UPDATE, $membershipArray);*/
 
-					$membershipBillingArray = array(
+					$MembersipUpdateInsert = new MembershipUpdate();
+					$MembersipUpdateInsert->customers_id = $customerID;
+					$MembersipUpdateInsert->plan_id = $planID;
+					$MembersipUpdateInsert->upgrade_date = $next_billing_date;
+					$MembersipUpdateInsert->save();
+
+					/*$membershipBillingArray = array(
 						'customers_id' => $customerID,
 						'error' => 'Free Trial Started (' . $periodTime . ' ' . $periodType . ')',
 						'date' => 'now()',
 						'status' => 'F'
 					);
-					tep_db_perform(TABLE_MEMBERSHIP_BILLING_REPORT, $membershipBillingArray);
+					tep_db_perform(TABLE_MEMBERSHIP_BILLING_REPORT, $membershipBillingArray);*/
+					$membershipBillingReportInsert = new MembershipBillingReport();
+					$membershipBillingReportInsert->customers_id = $customerID;
+					$membershipBillingReportInsert->error = 'Free Trial Started (' . $periodTime . ' ' . $periodType . ')';
+					$membershipBillingReportInsert->date = date('Y-m-d H:i:s');
+					$membershipBillingReportInsert->status = 'F';
+					$membershipBillingReportInsert->save();
 
-					tep_db_query('delete from ' . TABLE_MEMBERSHIP_UPDATE_TEMP . ' where customers_id = "' . $customerID . '"');
+
+					//tep_db_query('delete from ' . TABLE_MEMBERSHIP_UPDATE_TEMP . ' where customers_id = "' . $customerID . '"');
+					$QDeleteMemebershipTemp = Doctrine_Query::create()
+						->delete('MembershipUpdateTemp')
+						->where('customers_id=?', $customerID)
+						->execute();
 				}
 
 				if ($planID !== false){
 					if ($paymentStatus == 'Denied' || $paymentStatus == 'Reversed' || $paymentStatus == 'Failed' || $paymentStatus == 'Voided' || $paymentStatus == 'Pending'){
-						tep_db_query('insert into ' . TABLE_MEMBERSHIP_BILLING_REPORT . ' (customers_id, error, date, status) values ("' . (int) $customerID . '", "Transaction ' . $paymentStatus . '", now(), "D")');
+						//tep_db_query('insert into ' . TABLE_MEMBERSHIP_BILLING_REPORT . ' (customers_id, error, date, status) values ("' . (int) $customerID . '", "Transaction ' . $paymentStatus . '", now(), "D")');
+						$membeshipBillingReport = new MembershipBillingReport();
+						$membeshipBillingReport->customers_id = $customerID;
+						$membeshipBillingReport->error = 'Transaction ' . $paymentStatus;
+						$membeshipBillingReport->date = date('Y-m-d H:i:s');
+						$membeshipBillingReport->status = 'D';
+						$membeshipBillingReport->save();
+
 					}
 				}
 
@@ -305,8 +371,14 @@
 		}
 	}else{
 		if (isset($_POST['invoice']) && is_numeric($_POST['invoice']) && ($_POST['invoice'] > 0)){
-			$check_query = tep_db_query("select orders_id from " . TABLE_ORDERS . " where orders_id = '" . $_POST['invoice'] . "' and customers_id = '" . (int) $customerTextId . "'");
-			if (tep_db_num_rows($check_query) > 0){
+			//$check_query = tep_db_query("select orders_id from " . TABLE_ORDERS . " where orders_id = '" . $_POST['invoice'] . "' and customers_id = '" . (int) $customerTextId . "'");
+
+			$QOrderC = Doctrine_Query::create()
+				->from('Orders')
+				->where('orders_id = ?', $_POST['invoice'])
+				->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+
+			if (count($QOrderC) > 0){
 				$comment_status = $paymentStatus;
 
 				if ($paymentStatus == 'Pending'){
@@ -315,7 +387,7 @@
 					$comment_status .= '; ' . $_POST['reason_code'];
 				}
 
-				tep_db_query("update " . TABLE_ORDERS . " set orders_status = '" . ((sysConfig::get('MODULE_PAYMENT_PAYPALIPN_ORDER_STATUS_ID') > 0) ? sysConfig::get('MODULE_PAYMENT_PAYPALIPN_ORDER_STATUS_ID') : sysConfig::get('DEFAULT_ORDERS_STATUS_ID')) . "', last_modified = now() where orders_id = '" . $_POST['invoice'] . "'");
+				/*tep_db_query("update " . TABLE_ORDERS . " set orders_status = '" . ((sysConfig::get('MODULE_PAYMENT_PAYPALIPN_ORDER_STATUS_ID') > 0) ? sysConfig::get('MODULE_PAYMENT_PAYPALIPN_ORDER_STATUS_ID') : sysConfig::get('DEFAULT_ORDERS_STATUS_ID')) . "', last_modified = now() where orders_id = '" . $_POST['invoice'] . "'");
 
 				$sql_data_array = array(
 					'orders_id' => $_POST['invoice'],
@@ -324,7 +396,23 @@
 					'customer_notified' => '0',
 					'comments' => 'PayPal IPN Invalid [' . $comment_status . ']'
 				);
-				tep_db_perform(TABLE_ORDERS_STATUS_HISTORY, $sql_data_array);
+				tep_db_perform(TABLE_ORDERS_STATUS_HISTORY, $sql_data_array);*/
+
+				$QUpdateOrder = Doctrine_Query::create()
+					->update('Orders')
+					->set('orders_status', '?', ((OrderPaymentModules::getModule('paypalipn')->getConfigData('MODULE_PAYMENT_PAYPALIPN_ORDER_STATUS_ID') > 0) ? OrderPaymentModules::getModule('paypalipn')->getConfigData('MODULE_PAYMENT_PAYPALIPN_ORDER_STATUS_ID') : sysConfig::get('DEFAULT_ORDERS_STATUS_ID')))
+					->set('last_modified', '?', date('Y-m-d H:i:s'))
+					->where('orders_id = ?', $_POST['invoice'])
+					->execute();
+
+				$OrdersStatusHistory = new OrdersStatusHistory();
+				$OrdersStatusHistory->orders_id = $_POST['invoice'];
+				$OrdersStatusHistory->orders_status_id = (OrderPaymentModules::getModule('paypalipn')->getConfigData('MODULE_PAYMENT_PAYPALIPN_ORDER_STATUS_ID') > 0) ? OrderPaymentModules::getModule('paypalipn')->getConfigData('MODULE_PAYMENT_PAYPALIPN_ORDER_STATUS_ID') : sysConfig::get('DEFAULT_ORDERS_STATUS_ID');
+				$OrdersStatusHistory->date_added = date('Y-m-d H:i:s');
+				$OrdersStatusHistory->customer_notified = '0';
+				$OrdersStatusHistory->comments = 'PayPal IPN Invalid [' . $comment_status . ']';
+				$OrdersStatusHistory->save();
+
 			}
 		}
 	}

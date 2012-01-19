@@ -110,10 +110,20 @@ if ($ShoppingCart->countContents() > 0) {
      ->setType('submit');
 
 	$link = itw_app_link(null,'products','all');
-	if (isset($navigation->snapshot['get']) && sizeof($navigation->snapshot['get']) > 0) {
-		if(isset($navigation->snapshot['get']['cPath'])){
-			$link = itw_app_link('cPath='.$navigation->snapshot['get']['cPath'],'index','default');
+	$lastPath = $navigation->getPath(3);
+	if ($lastPath){
+		$getVars = array();
+		if (is_array($lastPath['get'])){
+			foreach($lastPath['get'] as $k => $v){
+				if($k == 'app' || $k == 'appPage')
+					continue;
+				$getVars[] = $k . '=' . $v;
+			}
+		}else{
+			$getVars[] = $lastPath['get'];
 		}
+
+		$link = itw_app_link(implode('&', $getVars), $lastPath['app'], $lastPath['appPage'], $lastPath['mode']);
 	}
 
 	$continueButtonHtml = htmlBase::newElement('button')

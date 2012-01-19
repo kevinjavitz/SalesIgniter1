@@ -20,6 +20,16 @@ if($valid){
 	$Commentt->comment_author = $_POST['comment_author'];
 	$Commentt->comment_email = $_POST['comment_email'];
 	$Comment->save();
+	$emailEvent = new emailEvent('blog_comment', Session::get('languages_id'));
+	$link = itw_admin_app_link('appExt=blog&pID='.$_POST['post_seo'],'blog_posts','new_post');
+	$emailEvent->setVars(array(
+			'link' => $link,
+		));
+
+	$emailEvent->sendEmail(array(
+			'email' => sysConfig::get('STORE_OWNER_EMAIL_ADDRESS'),
+			'name' => sysConfig::get('STORE_OWNER')
+		));
 	$messageStack->addSession('pageStack', 'Thank you, if approved your comment will be posted', 'success');
 }else{
 	$messageStack->addSession('pageStack', 'Sorry, the code entered was invalid', 'error');

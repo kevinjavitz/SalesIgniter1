@@ -596,6 +596,12 @@
 	<define key="TEXT_CHANGE_ADDRESS"><![CDATA[Change Address]]></define>
 	<define key="TEXT_MIN"><![CDATA[Min rental ]]></define>
 	<define key="TEXT_OUT_OF_STOCK"><![CDATA[Out of Stock ]]></define>
+	<define key="TEXT_BUTTON_ALL_NEW"><![CDATA[Buy Now New Selected Products ]]></define>
+	<define key="TEXT_BUTTON_ALL_USED"><![CDATA[Buy Now Used Selected Products ]]></define>
+	<define key="TEXT_BUTTON_ALL_STREAM"><![CDATA[Buy Now Stream Selected Products ]]></define>
+	<define key="TEXT_BUTTON_ALL_DOWNLOAD"><![CDATA[Buy Now Download Selected Products ]]></define>
+	<define key="TEXT_BUTTON_ALL_RESERVATION"><![CDATA[Reserve Now Selected Products]]></define>
+	<define key="TEXT_BUTTON_RESERVE_OUT_OF_STOCK"><![CDATA[Out of Stock]]></define>
 	<define key="RENTAL_CUSTOMER_IS_PAST_DUE"><![CDATA[We have not been able to process your membership payment. Please update your credit card on file by  <a style="color:red;" href="%s">clicking here</a> ]]></define>
 
 	<define key="EXTENSION_PAY_PER_RENTALS_ERROR_NO_INVENTORY_FOR_SELECTED_DATES"><![CDATA[There is no inventory for the selected dates.]]></define>

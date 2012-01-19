@@ -143,7 +143,18 @@
 	<define key="ENTRY_CITY_BIRTH"><![CDATA[City of birth:]]></define>
 	<define key="ENTRY_CIF"><![CDATA[Fiscal code:]]></define>
 	<define key="ENTRY_VAT"><![CDATA[VAT:]]></define>
+	<define key="TAB_ORDER_HISTORY"><![CDATA[Order History]]></define>
+	<define key="TABLE_HEADING_ORDER_TOTAL"><![CDATA[Order Total]]></define>
+	<define key="TABLE_HEADING_DATE_PURCHASED"><![CDATA[Date Purchased]]></define>
+	<define key="TEXT_DATE_ORDER_CREATED"><![CDATA[Date Purchased:]]></define>
+	<define key="TEXT_DATE_ORDER_LAST_MODIFIED"><![CDATA[Last Modified:]]></define>
+	<define key="TEXT_INFO_PAYMENT_METHOD"><![CDATA[Payment Method:]]></define>
+	
+	<define key="ENTRY_NUMBER"><![CDATA[Member Number: ]]></define>
+	<define key="ENTRY_FROZEN"><![CDATA[Account Is Frozen: ]]></define>
 	<define key="PASSWORD"><![CDATA[Password:]]></define>
 	<define key="PASSWORD_CONFIRMATION"><![CDATA[Password Confirmation:]]></define>
 	<define key="TEXT_SEND_EMAIL"><![CDATA[Email customer membership info:]]></define>
+	<define key="ENTRY_NOTES_INPUT"><![CDATA[Notes:]]></define>
+
 </definitions>

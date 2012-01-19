@@ -50,6 +50,7 @@
 			$AppArray['ext'][$extName] = array();
 			
 			$ExtApplications = new DirectoryIterator($Extension->getPathname() . '/admin/base_app/');
+			$AppArray['ext'][$extName]['configure']['configure.php'] = (isset($perms['ext'][$extName]['configure']['configure.php']) ? $perms['ext'][$extName]['configure']['configure.php'] : false);
 			foreach($ExtApplications as $ExtApplication){
 				if ($ExtApplication->isDot() || $ExtApplication->isFile()) continue;
 				$appName = $ExtApplication->getBasename();
@@ -201,6 +202,8 @@
 	));
 	
 	$infoBox->addContentRow($BoxesTable->draw());
+
+	EventManager::notify('AdminExtraPermissions', &$infoBox, $_GET['gID']);
 
 	if ($groupId != 1){
 		$cancelButton = htmlBase::newElement('button')->usePreset('cancel')

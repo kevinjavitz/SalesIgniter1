@@ -201,14 +201,14 @@ class rentalStoreUser_membership extends StandardClass {
 
 	public function getCreditCardInfo(){
 		$userAccount =& $this->getUserAccount();
-		$QcreditCard = dataAccess::setQuery('select card_num, exp_date, card_cvv from {customers_membership} where customers_id = {customers_id}')
-		->setTable('{customers_membership}', 'customers_membership')
-		->setValue('{customers_id}', $userAccount->getCustomerId())
-		->runQuery();
+		$QcreditCard = Doctrine_Query::create()
+			->from('CustomersMembership')
+			->where('customers_id = ?', $this->customerId)
+			->fetchArray();
 		return array(
-			'cardNumEnc' => $QcreditCard->getVal('card_num'),
-			'expDateEnc' => $QcreditCard->getVal('exp_date'),
-			'cardCvvEnc' => $QcreditCard->getVal('card_cvv')
+			'cardNumEnc' => $QcreditCard[0]['card_num'],
+			'expDateEnc' => $QcreditCard[0]['exp_date'],
+			'cardCvvEnc' => $QcreditCard[0]['card_cvv']
 		);
 	}
 
