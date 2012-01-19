@@ -37,6 +37,87 @@ function getUrlVars(){
 	return vars;
 }
 
+function print_r (array, return_val) {
+	// Prints out or returns information about the specified variable
+	//
+	// version: 1107.2516
+	// discuss at: http://phpjs.org/functions/print_r
+	// +   original by: Michael White (http://getsprink.com)
+	// +   improved by: Ben Bryan
+	// +      input by: Brett Zamir (http://brett-zamir.me)
+	// +      improved by: Brett Zamir (http://brett-zamir.me)
+	// +   improved by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
+	// -    depends on: echo
+	// *     example 1: print_r(1, true);
+	// *     returns 1: 1
+	var output = '',
+		pad_char = ' ',
+		pad_val = 4,
+		d = this.window.document,
+		getFuncName = function (fn) {
+			var name = (/\W*function\s+([\w\$]+)\s*\(/).exec(fn);
+			if (!name) {
+				return '(Anonymous)';
+			}
+			return name[1];
+		},
+		repeat_char = function (len, pad_char) {
+			var str = '';
+			for (var i = 0; i < len; i++) {
+				str += pad_char;
+			}
+			return str;
+		},
+		formatArray = function (obj, cur_depth, pad_val, pad_char) {
+			if (cur_depth > 0) {
+				cur_depth++;
+			}
+
+			var base_pad = repeat_char(pad_val * cur_depth, pad_char);
+			var thick_pad = repeat_char(pad_val * (cur_depth + 1), pad_char);
+			var str = '';
+
+			if (typeof obj === 'object' && obj !== null && obj.constructor && getFuncName(obj.constructor) !== 'PHPJS_Resource') {
+				str += 'Array\n' + base_pad + '(\n';
+				for (var key in obj) {
+					if (Object.prototype.toString.call(obj[key]) === '[object Array]') {
+						str += thick_pad + '[' + key + '] => ' + formatArray(obj[key], cur_depth + 1, pad_val, pad_char);
+					}
+					else {
+						str += thick_pad + '[' + key + '] => ' + obj[key] + '\n';
+					}
+				}
+				str += base_pad + ')\n';
+			}
+			else if (obj === null || obj === undefined) {
+				str = '';
+			}
+			else { // for our "resource" class
+				str = obj.toString();
+			}
+
+			return str;
+		};
+
+	output = formatArray(array, 0, pad_val, pad_char);
+
+	if (return_val !== true) {
+		if (d.body) {
+			this.echo(output);
+		}
+		else {
+			try {
+				d = XULDocument; // We're in XUL, so appending as plain text won't work; trigger an error out of XUL
+				this.echo('<pre xmlns="http://www.w3.org/1999/xhtml" style="white-space:pre;">' + output + '</pre>');
+			} catch (e) {
+				this.echo(output); // Outputting as plain text may work in some plain XML
+			}
+		}
+		return true;
+	}
+	return output;
+}
+
 function urldecode(str){
     // Decodes URL-encoded string  
     // 
@@ -59,7 +140,11 @@ function urldecode(str){
     // *     example 2: urldecode('http%3A%2F%2Fkevin.vanzonneveld.net%2F');
     // *     returns 2: 'http://kevin.vanzonneveld.net/'    // *     example 3: urldecode('http%3A%2F%2Fwww.google.nl%2Fsearch%3Fq%3Dphp.js%26ie%3Dutf-8%26oe%3Dutf-8%26aq%3Dt%26rls%3Dcom.ubuntu%3Aen-US%3Aunofficial%26client%3Dfirefox-a');
     // *     returns 3: 'http://www.google.nl/search?q=php.js&ie=utf-8&oe=utf-8&aq=t&rls=com.ubuntu:en-US:unofficial&client=firefox-a'
-    return decodeURIComponent(str.replace(/\+/g, '%20'));
+    var returnVal = '';
+    if (typeof str != 'object' && str.length > 0){
+    	returnVal = decodeURIComponent(str.replace(/\+/g, '%20'));
+    }
+    return returnVal;
 }
 
 function parse_str (str, array){
@@ -318,23 +403,32 @@ function makeTabsVertical(selector){
 }
 
 function showToolTip(settings){
+	var elOffset = settings.el.offset();
+
 	var $toolTip = $('<div>')
 	.addClass('ui-widget')
 	.addClass('ui-widget-content')
 	.addClass('ui-corner-all')
 	.css({
 		position: 'absolute',
-		left: settings.offsetLeft,
-		top: settings.offsetTop,
+		left: elOffset.left,
+		top: elOffset.top,
 		zIndex: 9999,
 		padding: '5px',
 		whiteSpace: 'nowrap'
 	})
 	.html(settings.tipText)
 	.appendTo($(document.body));
+
+	$toolTip.css('left', (elOffset.left + settings.el.width()));
+	$toolTip.css('top', (elOffset.top - $toolTip.height()));
+
 	//alert((settings.offsetLeft + 200) + ' >= ' + $(window).width());
-	if ((settings.offsetLeft + 200) >= $(window).width()){
-		$toolTip.css('left', (settings.offsetLeft - $toolTip.width()));
+	if ((elOffset.left + 300) >= $(window).width()){
+		$toolTip.css('left', (elOffset.left - $toolTip.width()));
+	}
+	if ((elOffset.top - $toolTip.height()) <= 0){
+		$toolTip.css('top', (elOffset.top + settings.el.height() + $toolTip.height()));
 	}
 	return $toolTip;
 }
@@ -457,6 +551,32 @@ function StripTags(strMod){
 		}
 	}
 	return strMod;
+}
+
+function liveMessage(message, timeout){
+	$('.sysMsgBlock').show();
+	timeout = timeout || 2500;
+	
+	var SysMsgBlockMessage = $('<div class="sysMsgBlock_message ui-corner-all ui-state-active"></div>').css({
+		margin     : '.3em',
+		lineHeight : '3em',
+		display    : 'none',
+		background : '#595353',
+		color      : '#ffffff',
+		fontSize   : '1.3em'
+	}).html(message);
+	
+	SysMsgBlockMessage.hide().appendTo($('.sysMsgBlock'))
+	.fadeIn('fast', function (){
+		setTimeout(function (){
+			SysMsgBlockMessage.fadeOut('slow', function() {
+				$(this).remove();
+				if ($('.sysMsgBlock_message').size() <= 0){
+					$('.sysMsgBlock').hide();
+				}
+			});
+		}, timeout);
+	});
 }
 
 function confirmDialog(options){
@@ -791,32 +911,27 @@ $(document).ready(function (){
 		}
 	});
 
+	$('[tooltip]').live('mouseover mouseout click', function (e){
+		if (e.type == 'mouseover'){
+			this.Tooltip = showToolTip({
+				el: $(this),
+				tipText: $(this).attr('tooltip')
+			});
+		}else{
+			this.Tooltip.remove();
+		}
+	});
+
 	$('.ui-icon').live('mouseover mouseout click', function (e){
 		if (e.type == 'mouseover'){
 			this.style.cursor = 'pointer';
-			
-			if ($(this).attr('tooltip')){
-				var offSet = $(this).offset();
-				this.Tooltip = showToolTip({
-					offsetTop: offSet.top - $(this).height() - 10,
-					offsetLeft: offSet.left + $(this).width(),
-					tipText: $(this).attr('tooltip')
-				});
-			}
 		}else if (e.type == 'mouseout'){
 			this.style.cursor = 'default';
-			
-			if ($(this).attr('tooltip')){
-				this.Tooltip.remove();
-			}
 		}else if (e.type == 'click'){
-			if ($(this).attr('tooltip')){
-				this.Tooltip.remove();
-			}
 		}
 	});
 	
-	$('.ui-button').button();
+	$('button, a[type="button"]').button();
 	
 	$('.phpTraceView').live('click', function (e){
 		e.preventDefault();
@@ -868,6 +983,78 @@ $(document).ready(function (){
 			$(this).parent().parent().next().show();
 		}
 	});
+
+	$('a.passProtect, button.passProtect').each(function (){
+		$(this).click(function (e){
+			var self = this;
+			if ($(self).data('validated') && $(self).data('validated') == 'true'){
+				$(self).removeData('validated');
+				return true;
+			}
+
+			$('#validationPopup').remove();
+			var PopupBlock = $('<div id="validationPopup"></div>')
+				.addClass('ui-widget ui-widget-content ui-corner-all')
+				.html('<span style="position:absolute;top:.2em;right:.2em;" class="ui-icon ui-icon-closethick"></span>Enter Password<br><input type="password" name="password" size="13"><br><button type="button" style="font-size:.7em;"><span>Submit</span></button>')
+				.css({
+					position: 'absolute',
+					background: '#cccccc',
+					boxShadow: '0px 3px 4px 0px #CCC',
+					padding: '.5em',
+					top: $(this).offset().top + $(this).height(),
+					left: $(this).offset().left
+				}).appendTo(document.body);
+
+			if ((PopupBlock.offset().left + PopupBlock.width()) >= $(window).width()){
+				PopupBlock.css('left', $(this).offset().left - PopupBlock.width() + $(this).width());
+			}
+
+			var validatePass = function (val){
+				liveMessage(jsLanguage.get('TEXT_VALIDATING_OVERRIDE'));
+				$.ajax({
+					cache: false,
+					url: js_app_link('app=admin_members&appPage=default&action=validateOverride'),
+					dataType: 'json',
+					type: 'post',
+					data: {
+						password: val
+					},
+					success: function (Resp){
+						PopupBlock.remove();
+						if (Resp.status == true){
+							liveMessage(jsLanguage.get('TEXT_OVERRIDE_VALIDATED'));
+							$(self).data('validated', 'true');
+							$(self).trigger('click');
+						}else{
+							liveMessage(jsLanguage.get('TEXT_OVERRIDE_NOT_VALIDATED'));
+							$(self).data('validated', 'false');
+						}
+					}
+				});
+			};
+
+			PopupBlock.find('.ui-icon-closethick').click(function (){
+				PopupBlock.remove();
+			});
+
+			PopupBlock.find('button').click(function (){
+				validatePass(PopupBlock.find('input[name=password]').val());
+			}).button();
+
+			PopupBlock.find('input[name=password]').keypress(function (event){
+				if (event.which == '13'){
+					validatePass($(this).val());
+				}
+			});
+
+			if (!$(self).data('validated') || $(self).data('validated') == 'false'){
+				e.preventDefault();
+				e.stopPropagation();
+				e.stopImmediatePropagation();
+				return false;
+			}
+		});
+	});
 });
 
 $.fn.watch = function(props, func, interval, id) {
@@ -911,15 +1098,17 @@ $.fn.watch = function(props, func, interval, id) {
             func: func,
             vals: []
         };
-        $.each(data.props, function(i) {
-        	if (data.props[i] == 'offsetTop'){
-        		data.vals[i] = el.offset().top;
-        	}else if (data.props[i] == 'offsetLeft'){
-        		data.vals[i] = el.offset().left;
-        	}else{
-        		data.vals[i] = el.css(data.props[i]);
-        	}
-        });
+	    if (data.props){
+		    $.each(data.props, function(i) {
+			    if (data.props[i] == 'offsetTop'){
+				    data.vals[i] = el.offset().top;
+			    }else if (data.props[i] == 'offsetLeft'){
+				    data.vals[i] = el.offset().left;
+			    }else{
+				    data.vals[i] = el.css(data.props[i]);
+			    }
+		    });
+	    }
         el.data(id, data);
     });
 
@@ -929,6 +1118,7 @@ $.fn.watch = function(props, func, interval, id) {
 
         var changed = false;
         var i = 0;
+	    if (w && w.props){
         for (i; i < w.props.length; i++) {
         	if (w.props[i] == 'offsetTop'){
                 var newVal = el.offset().top;
@@ -947,6 +1137,7 @@ $.fn.watch = function(props, func, interval, id) {
             var _t = this;
             w.func.apply(_t, [w, i])
         }
+	    }
     }
 }
 $.fn.unwatch = function(id) {

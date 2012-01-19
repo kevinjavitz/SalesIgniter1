@@ -11,14 +11,15 @@ class productListing_productsPriceStream {
 		return $selectSortKeys;
 	}
 
-	public function show(&$productClass){
+	public function show(&$productClass, &$purchaseTypesCol){
 		$purchaseTypeStream = $productClass->getPurchaseType('stream', true);
 		if ($purchaseTypeStream->hasInventory()){
 			$buyNowButton = htmlBase::newElement('button')
 			->setText(sysLanguage::get('TEXT_BUTTON_BUY_NOW'))
 			->setHref(itw_app_link(tep_get_all_get_params(array('action', 'products_id')) . 'action=buy_stream_product&products_id=' . $productClass->getID()), true);
-
+			$purchaseTypesCol = 'stream';
 			if ($productClass->isNotAvailable() ){
+				$purchaseTypesCol = '';
 				$buyNowButton->disable();
 				$buyNowButton->setText(sysLanguage::get('TEXT_AVAILABLE').': '. strftime(sysLanguage::getDateFormat('short'), strtotime($productClass->getAvailableDate())));
 			}

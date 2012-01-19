@@ -65,9 +65,11 @@
   }
 
   function getServiceAreas(){
-      $QserviceAreas = tep_db_query('select * from ' . TABLE_PRODUCTS_INVENTORY_CENTERS);
+	$QserviceAreas = Doctrine_Manager::getInstance()
+		->getCurrentConnection()
+		->fetchAssoc('select * from ' . TABLE_PRODUCTS_INVENTORY_CENTERS);
       $serviceAreas = array();
-      while($serviceArea = tep_db_fetch_array($QserviceAreas)){
+      foreach($QserviceAreas as $serviceArea){
           $serviceAreas[] = array(
               'id'      => $serviceArea['inventory_center_id'],
               'name'    => $serviceArea['inventory_center_name'],

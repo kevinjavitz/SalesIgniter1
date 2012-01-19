@@ -78,7 +78,7 @@ class Extension_imageRot extends ExtensionBase {
 
 	public function showBannerGroup($group,$isnotName, $settings = null){
 
-		require_once(DIR_FS_CATALOG . 'includes/classes/template.php');
+		require_once(sysConfig::getDirFsCatalog() . 'includes/classes/template.php');
 		$templateFile = 'banner.tpl';
 		$templateDir = dirname(__FILE__) . '/catalog/ext_app/banners/template/';
 		if (is_null($settings) === false && isset($settings['template_file'])){
@@ -133,7 +133,7 @@ class Extension_imageRot extends ExtensionBase {
 	}
 
 }
-
+if (!function_exists('getFlashMovie')){
  function getFlashMovie($moviePath, $movieDesc, $w, $h){
     $movie = '<!--[if !IE]> -->';
     $movie .= '<object type="application/x-shockwave-flash" data="'.$moviePath.'" width="' . $w . '" height="' . $h . '">';
@@ -152,8 +152,9 @@ class Extension_imageRot extends ExtensionBase {
 
     return $movie;
 }
+}
 
-
+if (!function_exists('tep_get_group_tree_list')){
 function tep_get_group_tree_list($checked = false, $include_itself = true) {
 
           if (!is_array($checked)){
@@ -170,9 +171,11 @@ function tep_get_group_tree_list($checked = false, $include_itself = true) {
 
     return $catList;
 }
+}
 
+if (!function_exists('tep_set_banners_status')){
 function tep_set_banners_status($banner_id, $status) {
 		return tep_db_query("update banner_manager_banners set banners_status = " . $status . " where banners_id = '" . (int)$banner_id . "'");
 }
-
+}
 ?>

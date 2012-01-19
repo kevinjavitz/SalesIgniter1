@@ -1,6 +1,6 @@
 <?php
-	$Module = OrderShippingModules::getModule($_GET['module']);
-	$ModuleMethods = $Module->getMethods();
+	$Module1 = OrderShippingModules::getModule($_GET['module'], true);
+	$ModuleMethods = $Module1->getMethods();
 	
 	$Methods = Doctrine_Core::getTable('ModulesShippingUpsReservationMethods');
 

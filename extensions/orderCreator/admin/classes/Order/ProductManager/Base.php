@@ -43,6 +43,10 @@ class OrderCreatorProductManager extends OrderProductManager implements Serializ
 			$Product->setQuantity($pInfo['qty']);
 			$Product->setPrice($pInfo['price']);
 			$Product->setTaxRate($pInfo['tax_rate']);
+
+			if (isset($pInfo['barcode_id'])){
+				$Product->setBarcodeId($pInfo['barcode_id']);
+			}
 			
 			if (isset($pInfo['attributes'])){
 				$Product->updateInfo(array(
@@ -119,6 +123,11 @@ product[85544][price]:17.99
 		->addClass('productTable')
 		->css('width', '100%');
 
+		$buttonAdd = htmlBase::newElement('button')
+		->addClass('insertProductIcon')
+		->attr('data-product_entry_method', sysConfig::get('EXTENSION_ORDER_CREATOR_PRODUCT_FIND_METHOD'))
+		->setText('Add Product To Order');
+
 		$productTableHeaderColumns = array(
 			array('colspan' => 2, 'text' => sysLanguage::get('TABLE_HEADING_PRODUCTS')),
 			array('text' => 'Barcode'),
@@ -128,7 +137,7 @@ product[85544][price]:17.99
 			array('text' => sysLanguage::get('TABLE_HEADING_PRICE_INCLUDING_TAX')),
 			array('text' => sysLanguage::get('TABLE_HEADING_TOTAL_EXCLUDING_TAX')),
 			array('text' => sysLanguage::get('TABLE_HEADING_TOTAL_INCLUDING_TAX')),
-			array('text' => '<span class="ui-icon ui-icon-plusthick insertProductIcon"></span>')
+			array('text' => $buttonAdd->draw())
 		);
 		
 		foreach($productTableHeaderColumns as $i => $cInfo){

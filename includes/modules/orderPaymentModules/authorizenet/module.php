@@ -11,7 +11,20 @@
 */
 
 	class OrderPaymentAuthorizenet extends CreditCardModule {
-
+		var $isCron;
+		var $removeOrderOnFail;
+		var $requireCvv;
+		var $testMode;
+		var $cim_mode;
+		var $curlCompiled;
+		var $can_reuse;
+		var $startNumbersRejected;
+		var $allowedTypes;
+		var $gatewayUrl;
+		var $login;
+		var $transkey;
+		var $urlCIM;
+		var $params;
 		public function __construct(){
 			/*
 			 * Default title and description for modules that are not yet installed

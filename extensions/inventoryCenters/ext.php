@@ -27,13 +27,7 @@ class Extension_inventoryCenters extends ExtensionBase {
 		
 		EventManager::attachEvents(array(
 			'ApplicationTopBeforeCartAction',
-			'ProductInventoryQuantityHasInventoryQueryBeforeExecute',
-			'ProductInventoryQuantityUpdateStockQueryBeforeExecute',
-			'ProductInventoryQuantityGetInventoryItemsQueryBeforeExecute',
 			'ProductInventoryQuantityGetInventoryItemsArrayPopulate',
-			'ProductInventoryBarcodeHasInventoryQueryBeforeExecute',
-			'ProductInventoryBarcodeUpdateStockQueryBeforeExecute',
-			'ProductInventoryBarcodeGetInventoryItemsQueryBeforeExecute',
 			'ProductInventoryBarcodeGetInventoryItemsArrayPopulate',
 			'ProductListingQueryBeforeExecute'
 		), null, $this);
@@ -56,6 +50,16 @@ class Extension_inventoryCenters extends ExtensionBase {
 		
 		if ($appExtension->isAdmin()){
 			EventManager::attachEvent('BoxMarketingAddLink', null, $this);
+		}
+		if ($appExtension->isCatalog()){
+			EventManager::attachEvents(array(
+					'ProductInventoryQuantityHasInventoryQueryBeforeExecute',
+					'ProductInventoryBarcodeHasInventoryQueryBeforeExecute',
+					'ProductInventoryBarcodeUpdateStockQueryBeforeExecute',
+					'ProductInventoryBarcodeGetInventoryItemsQueryBeforeExecute',
+					'ProductInventoryQuantityUpdateStockQueryBeforeExecute',
+					'ProductInventoryQuantityGetInventoryItemsQueryBeforeExecute'
+			), null, $this);
 		}
 	}
 	

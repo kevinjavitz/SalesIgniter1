@@ -84,7 +84,8 @@ h4 { font-size: 13px;color: #c30;margin: 10px;font-weight: bold; }
 		sysConfig::getDirFsCatalog() . 'ext/jQuery/themes/smoothness/ui.autocomplete.css',
 		sysConfig::getDirFsCatalog() . 'ext/jQuery/themes/smoothness/ui.button.css',
 		sysConfig::getDirFsCatalog() . 'ext/jQuery/themes/smoothness/ui.stars.css',
-		sysConfig::getDirFsCatalog() . 'ext/jQuery/themes/smoothness/ui.menu.css'
+		sysConfig::getDirFsCatalog() . 'ext/jQuery/themes/smoothness/ui.menu.css',
+		sysConfig::getDirFsCatalog() . 'ext/jQuery/external/virtualKeyboard/jquery.keyboard.css'
 	);
 
 	foreach($sources as $filePath){
@@ -216,6 +217,9 @@ a.productListingRowPagerLink:hover { text-decoration:none; }
 .pageHeaderContainer .pageHeaderText { vertical-align:middle; }
 .pageHeaderContainer .ui-icon { margin-left:.3em;display:inline-block;vertical-align:middle; }
 .pageContent { margin:.2em; }
+th.ui-widget-header{
+	line-height:14px;
+}
 .pageButtonBar { text-align:right; padding:.3em; margin-top:.5em; }
 .ui-dialog .ui-dialog-buttonpane button {padding: 5px;}
 a.readMore, a.readMore:link, a.readMore:visited, a.readMore:active {color: #c40000; text-decoration: underline; font-weight: bold; }

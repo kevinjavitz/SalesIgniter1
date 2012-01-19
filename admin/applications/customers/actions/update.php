@@ -1,6 +1,6 @@
 <?php
 	$hasError = false;
-	$userAccount = new rentalStoreUser($_GET['cID']);
+	$userAccount = new rentalStoreUser((isset($_GET['cID']) ? $_GET['cID'] : false));
 	$userAccount->loadPlugins();
 	$addressBook =& $userAccount->plugins['addressBook'];
 	$membership =& $userAccount->plugins['membership'];
@@ -32,6 +32,7 @@
 	if (array_key_exists('customers_gender', $_POST)) $accountValidation['entry_gender'] = $_POST['customers_gender'];
 	if (array_key_exists('customers_newsletter', $_POST)) $accountValidation['newsletter'] = $_POST['customers_newsletter'];
 	if (array_key_exists('customers_telephone', $_POST)) $accountValidation['telephone'] = $_POST['customers_telephone'];
+	if (array_key_exists('customers_notes', $_POST)) $accountValidation['notes'] = $_POST['customers_notes'];
 	if (array_key_exists('customers_fax', $_POST)) $accountValidation['fax'] = $_POST['customers_fax'];
 	if (array_key_exists('customers_dob', $_POST)) $accountValidation['dob'] = $_POST['customers_dob'];
 	
@@ -44,6 +45,7 @@
 		$userAccount->setEmailAddress($accountValidation['email_address']);
 		$userAccount->setPassword($accountValidation['password']);
 		$userAccount->setTelephoneNumber($accountValidation['telephone']);
+		$userAccount->setNotes($accountValidation['notes']);
 		$userAccount->setFaxNumber($accountValidation['fax']);
 		$userAccount->setNewsLetter($accountValidation['newsletter']);
 		if (isset($accountValidation['entry_gender'])){
@@ -52,11 +54,19 @@
 		if (isset($accountValidation['dob'])){
 			$userAccount->setDateOfBirth(strftime(sysLanguage::getDateFormat('short'),strtotime($accountValidation['dob'])));
 		}
+		$userAccount->setMemberNumber((!empty($_POST['customers_number']) ? $_POST['customers_number'] : tep_create_random_value(8)));
+		$userAccount->setAccountFrozen((isset($_POST['customers_account_frozen'])));
 
 		if (isset($accountValidation['city_birth'])){
 			$userAccount->setCityBirth($accountValidation['city_birth']);
 		}
-		$userAccount->updateCustomerAccount();
+		if (isset($_GET['cID'])){
+			$userAccount->updateCustomerAccount();
+			$addressBook->updateAddress((int)$_POST['default_address_id'], $accountValidation);
+		}else{
+			$userAccount->createNewAccount();
+			$addressBook->insertAddress($accountValidation, true);
+		}
 
 		if (array_key_exists('planid', $_POST) || array_key_exists('activate', $_POST) || array_key_exists('make_member', $_POST)){
 			if (array_key_exists('activate', $_POST)){

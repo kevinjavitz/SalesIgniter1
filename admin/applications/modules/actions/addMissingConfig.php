@@ -1,5 +1,5 @@
 <?php
-	require(DIR_FS_CATALOG . 'includes/classes/' . $set . '.php');
+	require(sysConfig::getDirFsCatalog() . 'includes/classes/' . $set . '.php');
 	switch ($set){
 		case 'payment':
 			payment::addMissingConfig($_GET['module']);

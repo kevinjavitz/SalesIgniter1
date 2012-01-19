@@ -1,10 +1,12 @@
 <info>
 	<code>realex</code>
 	<title_key>MODULE_PAYMENT_REALEX_TEXT_TITLE</title_key>
-	<status_key>MODULE_PAYMENT_REALEX_STATUS</status_key>
 	<description_key>MODULE_PAYMENT_REALEX_TEXT_DESCRIPTION</description_key>
+	<installed_key>INSTALLED</installed_key>
+	<status_key>MODULE_PAYMENT_REALEX_STATUS</status_key>
 	<zone_key>MODULE_PAYMENT_REALEX_ZONE</zone_key>
 	<checkout_method_key>MODULE_PAYMENT_REALEX_CHECKOUT_METHOD</checkout_method_key>
+	<display_order_key>DISPLAY_ORDER</display_order_key>
 	<order_status_key>MODULE_PAYMENT_REALEX_ORDER_STATUS_ID</order_status_key>
-	<sort_key>MODULE_PAYMENT_REALEX_SORT_ORDER</sort_key>
+	<visible_key>VISIBLE</visible_key>
 </info>

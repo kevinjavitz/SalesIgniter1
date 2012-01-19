@@ -15,6 +15,10 @@ class OrderCreatorTotal extends OrderTotal implements Serializable {
 		}
 	}
 
+	public function isEditable(){
+		return (isset($this->totalInfo['editable']) && $this->totalInfo['editable'] === false ? false : true);
+	}
+
 	public function setModuleType($val){
 		$this->totalInfo['module_type'] = $val;
 	}

@@ -94,6 +94,10 @@ $conn->setCollate(sysConfig::get('SYSTEM_CHARACTER_SET_COLLATION'));
 	// set the application parameters
 	sysConfig::load();
 
+require(sysConfig::getDirFsCatalog() . 'includes/classes/MultipleInheritance.php');
+require(sysConfig::getDirFsCatalog() . 'includes/classes/Importable/Installable.php');
+require(sysConfig::getDirFsCatalog() . 'includes/classes/Importable/SortedDisplay.php');
+
 require(sysConfig::getDirFsCatalog() . 'includes/classes/cache.php');
 require(sysConfig::getDirFsCatalog() . 'includes/classes/Profiler/Base.php');
 require(sysConfig::getDirFsCatalog() . 'includes/classes/htmlBase.php');
@@ -102,20 +106,7 @@ require(sysConfig::getDirFsCatalog() . 'includes/classes/htmlBase.php');
 	set_error_handler(array($ExceptionManager, 'addError'));
 	set_exception_handler(array($ExceptionManager, 'add'));
 
-	// if gzip_compression is enabled, start to buffer the output
-	if ( (sysConfig::get('GZIP_COMPRESSION') == 'true') && ($ext_zlib_loaded = extension_loaded('zlib')) && (PHP_VERSION >= '4') ) {
-		if (($ini_zlib_output_compression = (int)ini_get('zlib.output_compression')) < 1) {
-			if (PHP_VERSION >= '4.0.4') {
-				ob_start('ob_gzhandler');
-			}
-		} else {
-			ini_set('zlib.output_compression_level', GZIP_LEVEL);
-		}
-	}
-
 	require(sysConfig::getDirFsCatalog() . 'includes/classes/eventManager/Manager.php');
-	require(sysConfig::getDirFsCatalog() . 'includes/classes/eventManager/Event.php');
-	require(sysConfig::getDirFsCatalog() . 'includes/classes/eventManager/EventActionResponse.php');
 
 	require(sysConfig::getDirFsCatalog() . 'includes/classes/application.php');
 	$App = new Application((isset($_GET['app']) ? $_GET['app'] : ''), (isset($_GET['appPage']) ? $_GET['appPage'] : ''));
@@ -130,6 +121,8 @@ require(sysConfig::getDirFsCatalog() . 'includes/classes/htmlBase.php');
 	require(sysConfig::getDirFsCatalog() . 'includes/functions/general.php');
 	require(sysConfig::getDirFsCatalog() . 'includes/functions/crypt.php');
 	require(sysConfig::getDirFsCatalog() . 'includes/classes/system_modules_loader.php');
+	require(sysConfig::getDirFsCatalog() . 'includes/classes/ModuleBase.php');
+	require(sysConfig::getDirFsCatalog() . 'includes/classes/ModuleConfigReader.php');
 	require(sysConfig::getDirFsCatalog() . 'includes/modules/infoboxes/InfoBoxAbstract.php');
 	require(sysConfig::getDirFsCatalog() . 'includes/functions/html_output.php');
 
@@ -327,9 +320,9 @@ require(sysConfig::getDirFsCatalog() . 'includes/classes/htmlBase.php');
 	//$seo_urls = new SEO_URL(Session::get('languages_id'));
 
 	// currency
-	if (Session::exists('currency') === false || isset($_GET['currency']) || ( (sysConfig::get('USE_DEFAULT_LANGUAGE_CURRENCY') == 'true') && (LANGUAGE_CURRENCY != Session::get('currency')) ) ) {
+	if (Session::exists('currency') === false || isset($_GET['currency']) || ( (sysConfig::get('USE_DEFAULT_LANGUAGE_CURRENCY') == 'true') && (sysConfig::get('LANGUAGE_CURRENCY') != Session::get('currency')) ) ) {
 		if (isset($_GET['currency'])) {
-			if (!$currency = tep_currency_exists($_GET['currency'])) $currency = (sysConfig::get('USE_DEFAULT_LANGUAGE_CURRENCY') == 'true') ? LANGUAGE_CURRENCY : sysConfig::get('DEFAULT_CURRENCY');
+			if (!$currency = tep_currency_exists($_GET['currency'])) $currency = (sysConfig::get('USE_DEFAULT_LANGUAGE_CURRENCY') == 'true') ? sysConfig::get('LANGUAGE_CURRENCY') : sysConfig::get('DEFAULT_CURRENCY');
 		} else {
 			$currency = sysConfig::get('DEFAULT_CURRENCY');
 		}
@@ -338,7 +331,8 @@ require(sysConfig::getDirFsCatalog() . 'includes/classes/htmlBase.php');
 
 	// navigation history
 	if (Session::exists('navigation') === false){
-		Session::set('navigation', new navigationHistory);
+		$navigation = new navigationHistory();
+		Session::set('navigation', $navigation);
 	}
 	$navigation = &Session::getReference('navigation');
 	$navigation->add_current_page();
@@ -599,64 +593,10 @@ require(sysConfig::getDirFsCatalog() . 'includes/classes/htmlBase.php');
 	// infobox
 	require(sysConfig::getDirFsCatalog() . 'includes/classes/boxes.php');
 
-	// calculate category path
-	if (isset($_GET['cPath'])) {
-		$cPath = $_GET['cPath'];
-		$cPathValid = true;
-		$check = explode('_', $cPath);
-		foreach($check as $catId){
-			if (!is_numeric($catId)){
-				$cPathValid = false;
-				break;
-			}
-		}
-		if ($cPathValid === false){
-			$cPath = '';
-			unset($_GET['cPath']);
-		}
-	} elseif (isset($_GET['products_id']) && !isset($_GET['manufacturers_id'])) {
-		$cPath = tep_get_product_path($_GET['products_id']);
-	} else {
-		$cPath = '';
-	}
+Session::set('current_category_id', '-1');
+Session::remove('current_app_page');
 
-	// calculate funways category path
-	if (isset($_GET['fcPath'])) {
-		$fcPath = $_GET['fcPath'];
-		/* } elseif (isset($_GET['products_id']) && !isset($_GET['manufacturers_id'])) {
-		$fcPath = tep_get_product_path($_GET['products_id']);*/
-	} else {
-		$fcPath = 0;
-	}
-
-	if (tep_not_null($cPath)) {
-		$cPath_array = tep_parse_category_path($cPath);
-		$cPath = implode('_', $cPath_array);
-		$current_category_id = $cPath_array[(sizeof($cPath_array)-1)];
-	} else {
-		$current_category_id = 0;
-	}
-
-	if (tep_not_null($fcPath)) {
-		$fcPath_array = tep_parse_funways_category_path($fcPath);
-		$fcPath = implode('_', $fcPath_array);
-		$current_fcategory_id = $fcPath_array[(sizeof($fcPath_array)-1)];
-	} else {
-		$current_fcategory_id = 0;
-	}
-
-	// add category names or the manufacturer name to the breadcrumb trail
-	if (isset($cPath_array)) {
-		for ($i=0, $n=sizeof($cPath_array); $i<$n; $i++) {
-			$Qcategory = mysql_query('select categories_name from categories_description where categories_id = "' . (int) $cPath_array[$i] . '" and language_id = "' . Session::get('languages_id') . '"');
-			if (mysql_num_rows($Qcategory)){
-				$Category = mysql_fetch_assoc($Qcategory);
-				$breadcrumb->add($Category['categories_name'], itw_app_link('cPath=' . implode('_', array_slice($cPath_array, 0, ($i+1))), 'index', 'default'));
-			} else {
-				break;
-			}
-		}
-	} elseif (isset($_GET['manufacturers_id'])) {
+if (isset($_GET['manufacturers_id'])) {
 		$Qmanufacturer = mysql_query('select manufacturers_name from manufacturers where manufacturers_id = "' . (int) $_GET['manufacturers_id'] . '"');
 		if (mysql_num_rows($Qmanufacturer)){
 			$Manufacturer = mysql_fetch_assoc($Qmanufacturer);

@@ -39,13 +39,13 @@
 				sprintf(
 					sysLanguage::get('ADMIN_EMAIL_TEXT'),
 					$Qcheck['admin_firstname'],
-					HTTP_SERVER . DIR_WS_ADMIN,
+					sysConfig::get('HTTP_SERVER') . sysConfig::getDirWsAdmin(),
 					$Qcheck['admin_email_address'],
 					$makePassword,
-					STORE_OWNER
+					sysConfig::get('STORE_OWNER')
 				),
-				STORE_OWNER,
-				STORE_OWNER_EMAIL_ADDRESS
+				sysConfig::get('STORE_OWNER'),
+				sysConfig::get('STORE_OWNER_EMAIL_ADDRESS')
 			);
 			
 			$Admin = Doctrine_Core::getTable('Admin')->findOneByAdminId($Qcheck['admin_id']);

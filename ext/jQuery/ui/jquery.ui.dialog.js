@@ -1,5 +1,5 @@
 /*
- * jQuery UI Dialog 1.8.11
+ * jQuery UI Dialog 1.8.14
  *
  * Copyright 2011, AUTHORS.txt (http://jqueryui.com/about)
  * Dual licensed under the MIT or GPL Version 2 licenses.
@@ -37,6 +37,18 @@ var uiDialogClasses =
 		maxWidth: true,
 		minHeight: true,
 		minWidth: true
+	},
+	// support for jQuery 1.3.2 - handle common attrFn methods for dialog
+	attrFn = $.attrFn || {
+		val: true,
+		css: true,
+		html: true,
+		text: true,
+		data: true,
+		width: true,
+		height: true,
+		offset: true,
+		click: true
 	};
 
 $.widget("ui.dialog", {
@@ -132,7 +144,7 @@ $.widget("ui.dialog", {
 				)
 				.prependTo(uiDialog),
 
-			uiDialogTitlebarClose = (options.allowClose == true ? $('<a href="#"></a>')
+			uiDialogTitlebarClose = $('<a href="#"></a>')
 				.addClass(
 					'ui-dialog-titlebar-close ' +
 					'ui-corner-all'
@@ -156,21 +168,25 @@ $.widget("ui.dialog", {
 					self.close(event);
 					return false;
 				})
-			.appendTo(uiDialogTitlebar) : null),
+			.appendTo(uiDialogTitlebar),
 
-			uiDialogTitlebarCloseText = (options.allowClose == true ? (self.uiDialogTitlebarCloseText = $('<span></span>'))
+			uiDialogTitlebarCloseText = (self.uiDialogTitlebarCloseText = $('<span></span>'))
 				.addClass(
 					'ui-icon ' +
 					'ui-icon-closethick'
 				)
 				.text(options.closeText)
-			.appendTo(uiDialogTitlebarClose) : null),
+			.appendTo(uiDialogTitlebarClose),
 
 			uiDialogTitle = $('<span></span>')
 				.addClass('ui-dialog-title')
 				.attr('id', titleId)
 				.html(title)
 				.prependTo(uiDialogTitlebar);
+
+		if (options.allowClose == false){
+			uiDialogTitlebarClose.hide();
+		}
 
 		//handling of deprecated beforeclose (vs beforeClose) option
 		//Ticket #4669 http://dev.jqueryui.com/ticket/4669
@@ -378,12 +394,21 @@ $.widget("ui.dialog", {
 					{ click: props, text: name } :
 					props;
 				var button = $('<button type="button"></button>')
-					.attr( props, true )
-					.unbind('click')
 					.click(function() {
 						props.click.apply(self.element[0], arguments);
 					})
 					.appendTo(uiButtonSet);
+				// can't use .attr( props, true ) with jQuery 1.3.2.
+				$.each( props, function( key, value ) {
+					if ( key === "click" ) {
+						return;
+					}
+					if ( key in attrFn ) {
+						button[ key ]( value );
+					} else {
+						button.attr( key, value );
+					}
+				});
 				if ($.fn.button) {
 					button.button();
 				}
@@ -623,6 +648,13 @@ $.widget("ui.dialog", {
 				// convert whatever was passed in o a string, for html() to not throw up
 				$(".ui-dialog-title", self.uiDialogTitlebar).html("" + (value || '&#160;'));
 				break;
+			case "allowClose":
+				if (value) {
+					uiDialog.find('.ui-dialog-titlebar-close').show();
+				} else {
+					uiDialog.find('.ui-dialog-titlebar-close').hide();
+				}
+				break;
 		}
 
 		$.Widget.prototype._setOption.apply(self, arguments);
@@ -683,7 +715,7 @@ $.widget("ui.dialog", {
 });
 
 $.extend($.ui.dialog, {
-	version: "1.8.11",
+	version: "1.8.14",
 
 	uuid: 0,
 	maxZ: 0,
@@ -804,8 +836,8 @@ $.extend($.ui.dialog.overlay, {
 	width: function() {
 		var scrollWidth,
 			offsetWidth;
-		// handle IE 6
-		if ($.browser.msie && $.browser.version < 7) {
+		// handle IE
+		if ( $.browser.msie ) {
 			scrollWidth = Math.max(
 				document.documentElement.scrollWidth,
 				document.body.scrollWidth

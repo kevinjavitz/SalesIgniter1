@@ -126,7 +126,7 @@ function tep_redirect($url) {
 
 	header('Location: ' . $url);
 
-	if (STORE_PAGE_PARSE_TIME == 'true') {
+	if (sysConfig::get('STORE_PAGE_PARSE_TIME') == 'true') {
 		if (!is_object($logger)) $logger = new logger;
 		$logger->timer_stop();
 	}
@@ -308,8 +308,8 @@ function tep_get_category_tree($parent_id = '0', $spacing = '', $exclude = '', $
 }
 
 function tep_info_image($image, $alt, $width = '', $height = '') {
-	if (tep_not_null($image) && (file_exists(DIR_FS_CATALOG_IMAGES . $image)) ) {
-		$image = tep_image(DIR_WS_CATALOG_IMAGES . $image, $alt, $width, $height);
+	if (tep_not_null($image) && (file_exists(sysConfig::get('DIR_FS_CATALOG_IMAGES') . $image)) ) {
+		$image = tep_image(sysConfig::get('DIR_WS_CATALOG_IMAGES') . $image, $alt, $width, $height);
 	} else {
 		$image = sysLanguage::get('TEXT_IMAGE_NONEXISTENT');
 	}
@@ -940,14 +940,14 @@ function tep_display_tax_value($value, $padding = TAX_DECIMAL_PLACES) {
 }
 
 function tep_mail($to_name, $to_email_address, $email_subject, $email_text, $from_email_name, $from_email_address, $attachments = '') {
-	if (SEND_EMAILS != 'true') return false;
+	if (sysConfig::get('SEND_EMAILS') != 'true') return false;
 
 	// Instantiate a new mail object
 	$message = new email(array('X-Mailer: osCommerce'));
 
 	// Build the text version
 	$text = strip_tags($email_text);
-	if (EMAIL_USE_HTML == 'true') {
+	if (sysConfig::get('EMAIL_USE_HTML') == 'true') {
 		$message->add_html($email_text, $text);
 	} else {
 		$message->add_text($text);
@@ -1517,7 +1517,8 @@ function tep_cfg_pull_down_country_list($country_id) {
 	return tep_draw_pull_down_menu('configuration_value', tep_get_countries(), $country_id);
 }
 
-function tep_cfg_pull_down_order_status_list($status_id) {
+function tep_cfg_pull_down_order_status_list($status_id, $key = '') {
+	$name = (($key) ? 'configuration[' . $key . ']' : 'configuration_value');
 	$Qstatus = Doctrine_Query::create()
 	->select('s.orders_status_id, sd.orders_status_name')
 	->from('OrdersStatus s')
@@ -1527,7 +1528,7 @@ function tep_cfg_pull_down_order_status_list($status_id) {
 	->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 
 	$htmlSelect = htmlBase::newElement('selectbox')
-	->setName('configuration_value')
+	->setName($name)
 	->selectOptionByValue($status_id);
 
 	foreach($Qstatus as $sInfo){
@@ -1535,7 +1536,7 @@ function tep_cfg_pull_down_order_status_list($status_id) {
 		$name = $sInfo['OrdersStatusDescription'][0]['orders_status_name'];
 		$htmlSelect->addOption($id, $name);
 	}
-	return $htmlSelect->draw();
+	return '<br>' . $htmlSelect->draw();
 }
 
 
@@ -1616,6 +1617,7 @@ function tep_cfg_select_option_elements($select_array, $key_value, $key = '') {
 	for ($i=0, $n=sizeof($select_array); $i<$n; $i++) {
 		$elArr[] = array(
 			'value' => $select_array[$i],
+			'labelPosition' => 'after',
 			'label' => $select_array[$i]
 		);
 	}
@@ -1701,6 +1703,9 @@ function tep_cfg_payment_fee($selected, $key=''){
 
 
 
+function tep_cfg_show_installed_status($value, $key = ''){
+	return '<br><b>' . $value . '</b>';
+}
 function tep_cfg_select_multioption_element($select_array, $key_value, $key = '') {
 	for ($i=0; $i<sizeof($select_array); $i++) {
 		if (is_array($select_array[$i]) && array_key_exists('id', $select_array[$i])){
@@ -1791,7 +1796,7 @@ function tep_cfg_pull_down_google_zone_classes_element($zone_class_id, $key = ''
 function tep_cfg_pull_down_order_statuses($order_status_id, $key = '') {
 	$name = (($key) ? 'configuration[' . $key . ']' : 'configuration_value');
 
-	$statusesArray = array(array('id' => '0', 'text' => sysLanguage::get('TEXT_DEFAULT')));
+	$statusesArray = array();
 
 	foreach(getOrderStatuses(null, (int) Session::get('languages_id')) as $sInfo){
 		$statuses_array[] = array(
@@ -1807,7 +1812,7 @@ function tep_cfg_pull_down_order_statuses_element($order_status_id, $key = '') {
 	$selectBox = htmlBase::newElement('selectbox')
 	->setName((($key) ? 'configuration[' . $key . ']' : 'configuration_value'));
 
-	$selectBox->addOption('0', sysLanguage::get('TEXT_DEFAULT'));
+	//$selectBox->addOption('0', sysLanguage::get('TEXT_DEFAULT'));
 	foreach(getOrderStatuses(null, (int) Session::get('languages_id')) as $sInfo){
 		$selectBox->addOption(
 			$sInfo['orders_status_id'],
@@ -2048,6 +2053,15 @@ function tep_draw_products_pull_down($name, $parameters = '', $exclude = '') {
 			return true;
 		}
 		return false;
+	}
+	function str_lreplace($search, $replace, $subject){
+		$pos = strrpos($subject, $search);
+		if($pos === false){
+			return $subject;
+		}
+		else{
+			return substr_replace($subject, $replace, $pos, strlen($search));
+		}
 	}
 
 ?>

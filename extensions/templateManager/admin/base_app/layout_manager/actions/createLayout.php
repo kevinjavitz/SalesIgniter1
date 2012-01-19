@@ -18,7 +18,32 @@
 	if ($Container->Configuration){
 		$Container->Configuration->clear();
 	}
-	$Container->sort_order = (int) $el->attr('data-sort_order');
+	$Container->sort_order = (int)$el->attr('data-sort_order');
+	$Container->is_anchor = (int)$el->attr('data-is_anchor');
+	$Container->anchor_id = (int)$el->attr('data-anchor_id');
+
+	if(!empty($Container->anchor_id) && (int)$Container->anchor_id > 0){
+
+		if ($el->attr('data-container_id')){
+			if ($Container->Children){
+				$Container->Children->clear();
+			}
+			if ($Container->Columns){
+				$Container->Columns->clear();
+			}
+			$TemplateLayoutsContainer = Doctrine_Core::getTable('TemplateManagerLayoutsContainers');
+			$Original = $TemplateLayoutsContainer->find((int)$Container->anchor_id);
+			LoadAllContainerData($Original, $Container);
+		}else{
+			if ($Container->Widgets){
+				$Container->Widgets->clear();
+			}
+			$TemplateManagerLayoutsColumns = Doctrine_Core::getTable('TemplateManagerLayoutsColumns');
+			$Original = $TemplateManagerLayoutsColumns->find((int)$Container->anchor_id);
+			LoadAllColumnData($Original, $Container);
+		}
+		return;
+	}
 
 	// process css for id and classes
 	if ($el->attr('data-styles')){
@@ -75,10 +100,22 @@ if (isset($_GET['lID'])){
 	$Layout->template_id = (int) $_GET['tID'];
 }
 $Layout->layout_name = $_POST['layoutName'];
+$Layout->layout_type = $_POST['layoutType'];
 
 if (isset($_POST['layout_template'])){
 	$LayoutTplDir = sysConfig::getDirFsCatalog() . 'extensions/templateManager/layoutTemplates/' . $_POST['layout_template'] . '/';
 	$TemplateLayoutSource = file_get_contents($LayoutTplDir . 'layout_content_source.php');
+	if ($Layout->layout_type == 'desktop'){
+		$layoutWidth = '960';
+	}
+	elseif ($Layout->layout_type == 'smartphone'){
+		$layoutWidth = '480';
+	}
+	elseif ($Layout->layout_type == 'tablet'){
+		$layoutWidth = '960';
+	}
+	$TemplateLayoutSource = str_replace('{$LAYOUT_WIDTH}', $layoutWidth, $TemplateLayoutSource);
+
 	$TemplateLayout = phpQuery::newDocumentHTML($TemplateLayoutSource);
 	foreach($TemplateLayout->children() as $child){
 		$childObj = pq($child);
@@ -90,6 +127,7 @@ if (isset($_POST['layout_template'])){
 $Layout->save();
 $layoutId = $Layout->layout_id;
 $layoutName = $Layout->layout_name;
+$layoutType = $Layout->layout_type;
 
 $Reset = $TemplatePages->findAll();
 foreach($Reset as $rInfo){
@@ -196,10 +234,11 @@ if (isset($_POST['applications']['ext'])){
 }
 
 EventManager::attachActionResponse(array(
-	'success' => true,
-	'layoutId' => $layoutId,
-	'layoutName' => $layoutName
-), 'json');
+		'success' => true,
+		'layoutId' => $layoutId,
+		'layoutName' => $layoutName,
+		'layoutType' => (isset($layoutType)?ucfirst($layoutType):'')
+	), 'json');
 ?>
 <?php
 /*

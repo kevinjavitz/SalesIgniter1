@@ -85,41 +85,53 @@ $(document).ready(function (){
 	);
 	
 	ob_start();
-	include(DIR_WS_APP . 'customers/pages_tabs/edit/customer_info.php');
+	include(sysConfig::getDirFsAdmin() . 'applications/customers/pages_tabs/edit/customer_info.php');
 	$customerInfoTab = ob_get_contents();
 	ob_end_clean();
 	
 	ob_start();
-	include(DIR_WS_APP . 'customers/pages_tabs/edit/membership_info.php');
+	include(sysConfig::getDirFsAdmin() . 'applications/customers/pages_tabs/edit/membership_info.php');
 	$membershipInfoTab = ob_get_contents();
 	ob_end_clean();
-	
+
+	if (isset($_GET['cID'])){
+ob_start();
+include(sysConfig::getDirFsAdmin() . 'applications/customers/pages_tabs/edit/order_history.php');
+$orderHistoryTab = ob_get_contents();
+ob_end_clean();
+
+
+ob_start();
+include(sysConfig::getDirFsAdmin() . 'applications/customers/pages_tabs/edit/billing_history.php');
+$rentalTab1 = ob_get_contents();
+ob_end_clean();
+
 	ob_start();
-	include(DIR_WS_APP . 'customers/pages_tabs/edit/billing_history.php');
-	$rentalTab1 = ob_get_contents();
-	ob_end_clean();
-	
-	ob_start();
-	include(DIR_WS_APP . 'customers/pages_tabs/edit/current_rentals.php');
+	include(sysConfig::getDirFsAdmin() . 'applications/customers/pages_tabs/edit/current_rentals.php');
 	$rentalTab2 = ob_get_contents();
 	ob_end_clean();
 	
 	ob_start();
-	include(DIR_WS_APP . 'customers/pages_tabs/edit/rental_history.php');
+	include(sysConfig::getDirFsAdmin() . 'applications/customers/pages_tabs/edit/rental_history.php');
 	$rentalTab3 = ob_get_contents();
 	ob_end_clean();
 	
 	ob_start();
-	include(DIR_WS_APP . 'customers/pages_tabs/edit/rental_issue_history.php');
+	include(sysConfig::getDirFsAdmin() . 'applications/customers/pages_tabs/edit/rental_issue_history.php');
 	$rentalTab4 = ob_get_contents();
 	ob_end_clean();
-	
+	}
+
 	$tabsObj = htmlBase::newElement('tabs')
 	->setId('customerTabs')
 	->addTabHeader('customerTab1', array('text' => 'Customer Info'))
 	->addTabPage('customerTab1', array('text' => $customerInfoTab))
 	->addTabHeader('customerTab2', array('text' => 'Membership Info'))
-	->addTabPage('customerTab2', array('text' => $membershipInfoTab))
+	->addTabPage('customerTab2', array('text' => $membershipInfoTab));
+
+	if (isset($_GET['cID'])){
+		$tabsObj->addTabHeader('orderHistoryTab', array('text' => sysLanguage::get('TAB_ORDER_HISTORY')))
+	->addTabPage('orderHistoryTab', array('text' => $orderHistoryTab))
 	->addTabHeader('rentalTab1', array('text' => sysLanguage::get('HEADING_BILLING_HISTORY')))
 	->addTabPage('rentalTab1', array('text' => $rentalTab1))
 	->addTabHeader('rentalTab2', array('text' => sysLanguage::get('HEADING_CURRENT_RENTALS')))
@@ -128,10 +140,19 @@ $(document).ready(function (){
 	->addTabPage('rentalTab3', array('text' => $rentalTab3))
 	->addTabHeader('rentalTab4', array('text' => sysLanguage::get('HEADING_ISSUE_HISTORY')))
 	->addTabPage('rentalTab4', array('text' => $rentalTab4));
-	
+	}
+
+if (isset($_GET['cID'])){
 	EventManager::notify('AdminCustomerEditBuildTabs', $Customer, &$tabsObj);
+}else{
+	EventManager::notify('AdminCustomerInsertBuildTabs', $Customer, &$tabsObj);
+}
 	
-	$updateButton = htmlBase::newElement('button')->setType('submit')->usePreset('save')->setText(sysLanguage::get('TEXT_BUTTON_UPDATE'));
+	$updateButton = htmlBase::newElement('button')
+		->setType('submit')
+		->usePreset('save')
+		->setText((isset($_GET['cID']) ? sysLanguage::get('TEXT_BUTTON_UPDATE') : sysLanguage::get('TEXT_BUTTON_INSERT')));
+
 	$cancelButton = htmlBase::newElement('button')->usePreset('cancel')->setText(sysLanguage::get('TEXT_BUTTON_CANCEL'))
 	->setHref(itw_app_link(null, null, 'default', 'SSL'));
 	

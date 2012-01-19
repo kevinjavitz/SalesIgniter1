@@ -1,5 +1,6 @@
 <?php
-class OrderTotalShipping extends OrderTotalModule {
+class OrderTotalShipping extends OrderTotalModuleBase
+{
 
 	public function __construct() {
 		/*
@@ -7,9 +8,9 @@ class OrderTotalShipping extends OrderTotalModule {
 		 */
 		$this->setTitle('Shipping');
 		$this->setDescription('Order Shipping Cost');
-		
+
 		$this->init('shipping');
-		
+
 		if ($this->isInstalled() === true){
 			$this->allowFreeShipping = $this->getConfigData('MODULE_ORDER_TOTAL_SHIPPING_FREE_SHIPPING');
 			$this->freeShipDestination = $this->getConfigData('MODULE_ORDER_TOTAL_SHIPPING_DESTINATION');
@@ -18,17 +19,23 @@ class OrderTotalShipping extends OrderTotalModule {
 	}
 
 	public function process() {
-		global $order, $shippingModules, $ShoppingCart, $onePageCheckout, $userAccount;
+		global $order, $shippingModules, $ShoppingCart, $onePageCheckout;
 
+		$userAccount = &Session::getReference('userAccount');
 		$addressBook = $userAccount->plugins['addressBook'];
 		if ($addressBook->entryExists('delivery') === true){
 			$deliveryAddress = $addressBook->getAddress('delivery');
-		}else{
+		}
+		else {
 			$deliveryAddress = $addressBook->getAddress('billing');
 		}
 
 		if (is_object($onePageCheckout)){
 			$shippingInfo = $onePageCheckout->onePage['info']['shipping'];
+		}
+		elseif (Session::exists('pointOfSale')) {
+			$pointOfSale = &Session::getReference('pointOfSale');
+			$shippingInfo = $pointOfSale->order['info']['shipping'];
 		}
 
 		if (!empty($shippingInfo)){
@@ -37,15 +44,18 @@ class OrderTotalShipping extends OrderTotalModule {
 			$shippingTitle = $shippingInfo['title'];
 		}
 
-		EventManager::notify('BeforeShowShippingOrderTotals', &$this);
 		if (isset($shippingTitle)){
-			if ($this->allowFreeShipping == 'True') {
-				switch ($this->freeShipDestination) {
+			if ($this->allowFreeShipping == 'True'){
+				switch($this->freeShipDestination){
 					case 'National':
-						if ($deliveryAddress['country_id'] == sysConfig::get('STORE_COUNTRY')) $pass = true;
+						if ($deliveryAddress['country_id'] == sysConfig::get('STORE_COUNTRY')) {
+							$pass = true;
+						}
 						break;
 					case 'International':
-						if ($deliveryAddress['country_id'] != sysConfig::get('STORE_COUNTRY')) $pass = true;
+						if ($deliveryAddress['country_id'] != sysConfig::get('STORE_COUNTRY')) {
+							$pass = true;
+						}
 						break;
 					case 'Both':
 						$pass = true;
@@ -55,7 +65,7 @@ class OrderTotalShipping extends OrderTotalModule {
 						break;
 				}
 
-				if ( ($pass == true) && ( ($order->info['total'] - $shippingCost) >= $this->freeShipAmount) ) {
+				if (($pass == true) && (($order->info['total'] - $shippingCost) >= $this->freeShipAmount)){
 					$order->info['shipping_method'] = $this->getTitle();
 					$order->info['total'] -= $shippingCost;
 					$order->info['shipping_cost'] = 0;
@@ -76,18 +86,32 @@ class OrderTotalShipping extends OrderTotalModule {
 				$order->info['tax_groups']["$shipping_tax_description"] += tep_calculate_tax($shippingCost, $shipping_tax);
 				$order->info['total'] += tep_calculate_tax($shippingCost, $shipping_tax);
 
-				if (sysConfig::get('DISPLAY_PRICE_WITH_TAX') == 'true') $shippingCost += tep_calculate_tax($shippingCost, $shipping_tax);
+				if (sysConfig::get('DISPLAY_PRICE_WITH_TAX') == 'true') {
+					$shippingCost += tep_calculate_tax($shippingCost, $shipping_tax);
+				}
 			}
 
 			$this->addOutput(array(
-				'module' => $module->getCode(),
-				'method' => substr($shippingModule, strpos($shippingModule, '_')+1),
-				'title'  => $shippingTitle . ':',
-				'text'   => $this->formatAmount($shippingCost),
-				'value'  => $shippingCost
-			));
+					'module' => $module->getCode(),
+					'method' => substr($shippingModule, strpos($shippingModule, '_') + 1),
+					'title' => $shippingTitle . ':',
+					'text' => $this->formatAmount($shippingCost),
+					'value' => $shippingCost
+				));
 		}
 
+		$totalShippingCost = 0;
+		EventManager::notify('OrderTotalShippingProcess', &$totalShippingCost, &$shippingCost);
+
+		if (isset($shippingCost) && $shippingCost > 0 && $totalShippingCost > 0){
+			$totalShippingCost += $shippingCost;
+			$this->addOutput(array(
+					'title' => '<b>Total Shipping Cost</b>:',
+					'text' => $this->formatAmount($totalShippingCost),
+					'value' => $totalShippingCost
+				));
+		}
 	}
 }
+
 ?>

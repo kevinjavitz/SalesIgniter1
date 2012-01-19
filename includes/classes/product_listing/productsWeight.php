@@ -10,7 +10,7 @@ class productListing_productsWeight {
 		);
 		return $selectSortKeys;
 	}
-	public function show(&$productClass){
+	public function show(&$productClass, &$purchaseTypesCol){
 		if ($productClass->hasWeight()){
 			return (int)$productClass->getWeight();
 		}

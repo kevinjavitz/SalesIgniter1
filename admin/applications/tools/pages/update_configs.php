@@ -106,6 +106,7 @@ addConfiguration('PRODUCT_LISTING_TYPE', 8, 'Use rows or columns for product lis
 addConfiguration('PRODUCT_LISTING_TOTAL_WIDTH', 8, 'When using columns for product listing content area width to use when calculating image width', 'When using columns for product listing content area width to use when calculating image width', '600', "");
 addConfiguration('PRODUCT_LISTING_PRODUCTS_COLUMNS', 8, 'When using columns for product listing number of products to display in a row', 'When using columns for product listing number of products to display in a row', '4', "");
 addConfiguration('PRODUCT_LISTING_PRODUCTS_LIMIT', 8, 'Number of products to list per page', 'Number of products to list per page (max 25)', '12', "");
+addConfiguration('PRODUCT_LISTING_SELECT_MULTIPLES', 8, 'Can add to cart multiple items', 'Can add to cart multiple items?', 'false', "tep_cfg_select_option(array('true', 'false'),");
 addConfiguration('PRODUCT_LISTING_PRODUCTS_LIMIT_ARRAY', 8, 'Results Per Page drop down values', 'Results Per Page drop down values (comma seperated example:<br>12,24,48,96)', '12,24,48,96', "");
 addConfiguration('TOOLTIP_DESCRIPTION_ENABLED', 8, 'Enable product image tooltip description for products listing?', 'Enable product image tooltip description for products listing?', 'true', "tep_cfg_select_option(array('true', 'false'),");
 addConfiguration('TOOLTIP_DESCRIPTION_BUTTONS', 8, 'Show buttons in product image tooltip description for products listing?', 'Show buttons in product image tooltip description for products listing?', 'true', "tep_cfg_select_option(array('true', 'false'),");
@@ -230,10 +231,34 @@ function installInfobox($boxPath, $className, $extName = null){
 }
 
 function importPDFLayouts(){
-
 	$PDFTemplateLayouts = Doctrine_Core::getTable('PDFTemplateLayouts');
 	$PDFTemplatesInfoboxes = Doctrine_Core::getTable('PDFTemplatesInfoboxes');
-	require(sysConfig::getDirFsCatalog() . 'ext/pdfLayouts/installDataInvoice.php');
+	$Qcount = Doctrine_Query::create()
+	->from('PDFTemplateManagerLayouts')
+	->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+
+	if(count($Qcount) == 0){
+		require(sysConfig::getDirFsCatalog() . 'ext/pdfLayouts/installDataInvoice.php');
+	}
+
+}
+
+function updateCategoriesSEOUrls(){
+	$QCategories = Doctrine_Query::create()
+	->from('Categories c')
+	->leftJoin('c.CategoriesDescription cd')
+	->execute();
+	$languages = tep_get_languages();
+	foreach($QCategories as $Category){
+		$CategoriesDescription =& $Category->CategoriesDescription;
+		for ($i=0, $n=sizeof($languages); $i<$n; $i++) {
+			$lID = $languages[$i]['id'];
+			if($CategoriesDescription[$lID]->categories_seo_url == ''){
+				$CategoriesDescription[$lID]->categories_seo_url = tep_friendly_seo_url($CategoriesDescription[$lID]->categories_name);
+			}
+		}
+		$Category->save();
+	}
 
 }
 
@@ -304,6 +329,7 @@ addStatus('Shipped');
 addInfoPage('maintenance_page','<div style="margin:0 auto;text-align:center;"><img src="'.sysConfig::getDirWsCatalog().'images/logo.png" /> <p style="font-size:30px;">This Site Is Under Maintenance</p> </div>');
 
 updatePagesDescription();
+updateCategoriesSEOUrls();
 importPDFLayouts();
 
 Doctrine_Query::create()
@@ -317,5 +343,9 @@ add_extra_fields('modules_shipping_zone_reservation_methods','weight_rates','TEX
 add_extra_fields('modules_shipping_zone_reservation_methods','min_rental_number'," INT( 1 ) NOT NULL DEFAULT  '0'");
 add_extra_fields('modules_shipping_zone_reservation_methods','min_rental_type'," INT( 1 ) NOT NULL DEFAULT  '0'");
 
+
 ?>
-Configuration Updated.
+Configuration Updated. Ignore errors, if any.<br/>
+Don't forget to update layout configurations with the categories and infopages.
+Don't forget to add missing configs for every extension.
+Don't forget to reinstall all modules if this is an upgrade.

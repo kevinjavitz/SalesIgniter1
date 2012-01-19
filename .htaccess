@@ -106,7 +106,7 @@ AddType audio/x-wav .wav
 
 Options +FollowSymLinks
 RewriteEngine On 
-RewriteBase /SalesIgniter/
+RewriteBase /
 
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d

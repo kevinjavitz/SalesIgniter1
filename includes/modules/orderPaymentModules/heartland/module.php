@@ -1,10 +1,9 @@
 <?php
 class OrderPaymentHeartland extends StandardPaymentModule {
-
+	   var $identifier;
+	   var $username;
 	public function __construct(){
-		/*
-		 * Default title and description for modules that are not yet installed
-		 */
+
 		$this->setTitle('Credit/Debit Card (via Heartland)');
 		$this->setDescription('Credit/Debit Card (via Heartland)');
 		

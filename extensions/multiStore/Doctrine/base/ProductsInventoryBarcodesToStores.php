@@ -12,13 +12,20 @@
 
 class ProductsInventoryBarcodesToStores extends Doctrine_Record {
 
-	public function setUp(){
+	public function setUp() {
+		parent::setUp();
 		$this->setUpParent();
 		
 		$this->hasOne('Stores', array(
-			'local' => 'inventory_store_id',
-			'foreign' => 'stores_id'
-		));
+				'local' => 'inventory_store_id',
+				'foreign' => 'stores_id'
+			));
+
+		$this->hasOne('ProductsInventoryBarcodes', array(
+				'local' => 'barcode_id',
+				'foreign' => 'barcode_id',
+				'cascade' => array('delete')
+			));
 	}
 	
 	public function setUpParent(){

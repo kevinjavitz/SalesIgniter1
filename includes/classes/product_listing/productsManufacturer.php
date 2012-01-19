@@ -12,7 +12,7 @@ class productListing_productsManufacturer {
 		return $selectSortKeys;
 	}
 
-	public function show(&$productClass){
+	public function show(&$productClass, &$purchaseTypesCol){
 		if ($productClass->hasManufacturer()){
 			return '<a href="' . htmlspecialchars(itw_app_link('manufacturers_id=' . $productClass->getManufacturerID(), 'index', 'default')) . '">' . htmlspecialchars($productClass->getManufacturerName()) . '</a>';
 		}

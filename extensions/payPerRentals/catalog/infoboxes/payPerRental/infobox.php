@@ -16,13 +16,13 @@ class InfoBoxPayPerRental extends InfoBoxAbstract {
 
 	public function addPPrChildren($child, $currentPath, &$ulElement){
 		global $current_category_id;
-		$currentPath .= '_' . $child['categories_id'];
+		//$currentPath .= '_' . $child['categories_id'];
 
 		$childLinkEl = htmlBase::newElement('a')
 				->addClass('ui-widget ui-widget-content ui-corner-all cats')
 				->css('border-color', 'transparent')
 				->html('<span class="ui-icon ui-icon-triangle-1-e ui-icon-categories-bullet" style="vertical-align:middle;"></span><span style="display:inline-block;vertical-align:middle;">' . $child['CategoriesDescription'][Session::get('languages_id')]['categories_name'] . '</span>')
-				->attr('rel', $currentPath);
+				->attr('rel', $child['CategoriesDescription'][Session::get('languages_id')]['categories_seo_url']);
 		//->setHref(itw_app_link('cPath=' . $currentPath, 'index', 'default'));
 
 		if ($child['categories_id'] == $current_category_id){
@@ -182,7 +182,7 @@ class InfoBoxPayPerRental extends InfoBoxAbstract {
 		if($showCategories){
 
 			$Qcategories = Doctrine_Query::create()
-			->select('c.categories_id, cd.categories_name, c.parent_id, c.ppr_show_in_menu')
+			->select('c.categories_id, cd.categories_name, c.categories_seo_url, c.parent_id, c.ppr_show_in_menu')
 			->from('Categories c')
 			->leftJoin('c.CategoriesDescription cd')
 			->where('c.parent_id = ?', '0')
@@ -206,11 +206,12 @@ class InfoBoxPayPerRental extends InfoBoxAbstract {
 			if ($Result){
 				foreach($Result as $idx => $cInfo){
 					$categoryId = $cInfo['categories_id'];
+					$catId = $cInfo['CategoriesDescription'][0]['categories_seo_url'];
 					$parentId = $cInfo['parent_id'];
 					$categoryName = $cInfo['CategoriesDescription'][0]['categories_name'];
 					if ($cInfo['ppr_show_in_menu'] == 1){
 						$headerEl = htmlBase::newElement('h3');
-						if (isset($cPath_array) && $cPath_array[0] == $categoryId){
+						if ($current_category_id == $categoryId){
 							$headerEl->addClass('currentCategory');
 						}
 						$headerEl->html($categoryName);
@@ -239,7 +240,7 @@ class InfoBoxPayPerRental extends InfoBoxAbstract {
 									->addClass('ui-widget ui-widget-content ui-corner-all cats')
 									->css('border-color', 'transparent')
 									->html('<span class="ui-icon ui-icon-triangle-1-e ui-icon-categories-bullet" style="vertical-align:middle;"></span><span class="ui-categories-text" style="vertical-align:middle;">'.sysLanguage::get('INFOBOX_CATEGORIES_VIEW_PRODUCTS').'</span>')
-									->attr('rel', $categoryId);
+									->attr('rel', $catId);
 
 							$liElement = htmlBase::newElement('li')
 									->append($childLinkEl);

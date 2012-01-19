@@ -6,7 +6,7 @@ jQuery(function($){
 		closeText: 'schließen',
 		prevText: '&#x3c;zurück',
 		nextText: 'Vor&#x3e;',
-		currentText: 'Kalender',
+		currentText: 'heute',
 		monthNames: ['Januar','Februar','März','April','Mai','Juni',
 		'Juli','August','September','Oktober','November','Dezember'],
 		monthNamesShort: ['Jan','Feb','Mär','Apr','Mai','Jun',
