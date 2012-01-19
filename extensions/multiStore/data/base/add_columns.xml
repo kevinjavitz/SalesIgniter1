@@ -3,7 +3,6 @@
 		<admins_main_store>
 			<type>integer</type>
 			<length>4</length>
-			<autoincrement>false</autoincrement>
 		</admins_main_store>
 		<admins_stores>
 			<type>string</type>
