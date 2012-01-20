@@ -161,7 +161,7 @@ if (!isset($WidgetSettings->linked_to)){
 			->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 		foreach($Qcategories as $category){
 			$catArr[$category['categories_id']] = array(
-				'name' => $category['categories_name']
+				'name' => addslashes($category['categories_name'])
 			);
 			
 			$Children = makeCategoriesArray($category['categories_id']);
