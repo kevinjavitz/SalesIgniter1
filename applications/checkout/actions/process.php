@@ -356,10 +356,14 @@
 						if(sysConfig::get('EXTENSION_PAY_PER_RENTALS_PROCESS_SEND') == 'True'){
 							$temp = $order->info['total'];
 							$order->info['total'] = 0;
-							$PaymentModule->processPayment();
+                            if ($checkPayment === true) {
+							    $PaymentModule->processPayment();
+                            }
 							$order->info['total'] = $temp;
 						}else{
-							$PaymentModule->processPayment();
+                            if ($checkPayment === true) {
+							    $PaymentModule->processPayment();
+                           	}
 						}
 						if ($messageStack->size('pageStack') > 0){
 							$error = true;
@@ -402,7 +406,9 @@
 							$order->sendNewOrderEmail();
 
 							// load the after_process function from the payment modules
-							$PaymentModule->afterOrderProcess();
+                            if ($checkPayment === true) {
+							    $PaymentModule->afterOrderProcess();
+                            }
 
 							$ShoppingCart->emptyCart(true);
 
@@ -452,7 +458,9 @@
 								}
 
 								if ($billPrice > 0){
-									$PaymentModule->processPayment();
+                            		if ($checkPayment === true) {
+									    $PaymentModule->processPayment();
+                                    }
 									if ($messageStack->size('pageStack') > 0){
 										$error = true;
 										ob_start();
@@ -499,8 +507,9 @@
 							EventManager::notify('CheckoutProcessPostProcess', &$order);
 
 							$order->sendNewOrderEmail();
-
-							$PaymentModule->afterOrderProcess();
+                            if ($checkPayment === true) {
+							    $PaymentModule->afterOrderProcess();
+                            }
 						}
 
 						//$ShoppingCart->emptyCart(true);
