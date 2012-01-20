@@ -28,12 +28,24 @@
                                             'CheckoutProcessPostProcess',
                                             'CheckoutAddBlockAfterCart',
                                             'CheckoutAddBlockBeforeOrderTotalsTop',
+                                            'OnepageCheckoutProcessCheckout',
                                        ), null, $this);
         }
 
         public function CheckoutPreInit(){
             if(Session::exists('giftCertificate_balance'))
                 Session::remove('giftCertificate_balance');
+        }
+
+        public function OnepageCheckoutProcessCheckout($onePageCheckout){
+            global $checkPayment, $PaymentModule, $order;
+            if(!$onePageCheckout->isGiftCertificateCheckout()){
+                if(Session::exists('giftCertificate_balance') && $order->info['total'] <= 0){
+                    $PaymentModule = null;
+                    $checkPayment = false;
+                }
+            }
+
         }
 
         public function CheckoutAddBlockBeforeOrderTotalsTop(){
