@@ -1,18 +1,13 @@
 <?php
-class OrderShippingUpsReservation extends OrderShippingModuleBase
-{
+class OrderShippingUpsReservation extends OrderShippingModule {
 
-	private $quotes;
-
-	private $methods = array();
-
-	public function __construct() {
+	public function __construct(){
 		/*
 		 * Default title and description for modules that are not yet installed
 		 */
 		$this->setTitle('UPS Reservation');
 		$this->setDescription('United Postal Service');
-
+		
 		$this->init('upsreservation');
 
 			/*$this->types = array(
@@ -39,53 +34,49 @@ class OrderShippingUpsReservation extends OrderShippingModuleBase
 				'XPD'    => 'Worldwide Expedited'
 			);*/
 
-			try{
+			if (class_exists('ModulesShippingUpsReservationMethods')){
 				$Qmethods = Doctrine_Query::create()
-					->from('ModulesShippingUpsReservationMethods m')
-					->leftJoin('m.ModulesShippingUpsReservationMethodsDescription md')
-					->orderBy('sort_order')
-					->execute()
-					->toArray(true);
+				->from('ModulesShippingUpsReservationMethods m')
+				->leftJoin('m.ModulesShippingUpsReservationMethodsDescription md')
+				->orderBy('sort_order')
+				->execute()
+				->toArray(true);
 				if ($Qmethods){
 					foreach($Qmethods as $mInfo){
 						$this->methods[$mInfo['method_id']] = array(
-							'status' => $mInfo['method_status'],
-							'upscode' => $mInfo['method_upscode'],
-							'text' => $mInfo['ModulesShippingUpsReservationMethodsDescription'][Session::get('languages_id')]['method_text'],
-							'markup' => $mInfo['method_markup'],
-							'days_before' => $mInfo['method_days_before'],
-							'days_after' => $mInfo['method_days_after'],
+							'status'     => $mInfo['method_status'],
+							'upscode'     => $mInfo['method_upscode'],
+							'text'       => $mInfo['ModulesShippingUpsReservationMethodsDescription'][Session::get('languages_id')]['method_text'],
+							'markup'       => $mInfo['method_markup'],
+							'days_before'       => $mInfo['method_days_before'],
+							'days_after'       => $mInfo['method_days_after'],
 							'sort_order' => $mInfo['sort_order'],
-							'default' => $mInfo['method_default']
+							'default'    => $mInfo['method_default']
 						);
 						foreach(sysLanguage::getLanguages() as $lInfo){
-							if (isset($mInfo['ModulesShippingUpsReservationMethodsDescription'][$lInfo['id']])){
+							if(isset($mInfo['ModulesShippingUpsReservationMethodsDescription'][$lInfo['id']])){
 								$this->methods[$mInfo['method_id']][$lInfo['id']] = array(
-									'text' => $mInfo['ModulesShippingUpsReservationMethodsDescription'][$lInfo['id']]['method_text']
+									'text'       => $mInfo['ModulesShippingUpsReservationMethodsDescription'][$lInfo['id']]['method_text']
 								);
 							}
 						}
 					}
 				}
-			} catch(Doctrine_Connection_Exception $e){
-
 			}
-
+			
 			$this->packagePickup = $this->getConfigData('MODULE_ORDER_SHIPPING_UPS_RESERVATION_PICKUP');
 			$this->packageContainer = $this->getConfigData('MODULE_ORDER_SHIPPING_UPS_RESERVATION_PACKAGE');
 			$this->addressType = $this->getConfigData('MODULE_ORDER_SHIPPING_UPS_RESERVATION_RES');
-			$this->handlingCost = ($this->getConfigData('MODULE_SHIPPING_UPS_RESERVATION_HANDLING') != '')
-				? $this->getConfigData('MODULE_SHIPPING_UPS_RESERVATION_HANDLING') : 0;
+			$this->handlingCost = ($this->getConfigData('MODULE_SHIPPING_UPS_RESERVATION_HANDLING')!='')?$this->getConfigData('MODULE_SHIPPING_UPS_RESERVATION_HANDLING'):0;
+
 	}
 
-
-	public function getUpsTitle($upscode) {
+	public function getUpsTitle($upscode){
 		foreach($this->methods as $method){
 			if (isset($method['upscode']) && $method['upscode'] == $upscode){
 				if ($method[Session::get('languages_id')]['text']){
 					return $method[Session::get('languages_id')]['text'];
-				}
-				else {
+				}else{
 					return $method['text'];
 				}
 			}
@@ -120,10 +111,9 @@ class OrderShippingUpsReservation extends OrderShippingModuleBase
 		$shipping_num_boxes = 1;
 		$this->getNumBoxes($shipping_weight, $shipping_num_boxes);
 
-		if (isset($method) && !empty($method)){
+		if ( isset($method) && !empty($method)) {
 			$prod = $method;
-		}
-		else {
+		} else {
 			$prod = 'GND';
 		}
 
@@ -146,40 +136,38 @@ class OrderShippingUpsReservation extends OrderShippingModuleBase
 			$this->_upsContainer($this->packageContainer);
 			if ($shipping_weight == 0){
 				$this->_upsWeight(1);
-			}
-			else {
+			}else{
 				$this->_upsWeight($shipping_weight);
 			}
 			$this->_upsRescom($this->addressType);
 			$upsQuote = $this->_upsGetQuote();
 
 			$this->quotes = array(
-				'id' => $this->getCode(),
-				'module' => $this->getTitle(),
-				'icon' => tep_image(DIR_WS_ICONS . 'shipping_ups.gif', $this->getTitle()),
+				'id'      => $this->getCode(),
+				'module'  => $this->getTitle(),
+				'icon'    => tep_image(DIR_WS_ICONS . 'shipping_ups.gif', $this->getTitle()),
 				'methods' => array()
 			);
 
-			if ((is_array($upsQuote)) && (sizeof($upsQuote) > 0)){
+			if ( (is_array($upsQuote)) && (sizeof($upsQuote) > 0) ) {
 				if ($shipping_num_boxes > 0 && $shipping_weight > 0){
-					$numBoxes = $shipping_num_boxes;
+					$numBoxes =  $shipping_num_boxes;
 					$this->quotes['module'] .= ' (' . $shipping_num_boxes . ' x ' . $shipping_weight . 'lbs)';
-				}
-				else {
+				}else{
 					$numBoxes = 1;
 				}
 
 				$methods = array();
 				$qsize = sizeof($upsQuote);
-				for($i = 0; $i < $qsize; $i++){
+				for ($i=0; $i<$qsize; $i++) {
 					list($type, $cost) = each($upsQuote[$i]);
-					if (isset($this->methods)){
+					if(isset($this->methods)){
 						foreach($this->methods as $methodId => $mInfo){
 							if ($mInfo['status'] == 'True' && ($method == 'method' . $methodId || $method == '')){
 								if ($type == $mInfo['upscode']){
 									$this->quotes['methods'][] = array(
-										'id' => 'method' . $methodId,
-										'title' => $mInfo['text'],
+										'id'      => 'method' . $methodId,
+										'title'   => $mInfo['text'],
 										'default' => $mInfo['default'],
 										'cost'    => ($cost + $this->handlingCost) * $numBoxes + ($cost + $this->handlingCost) * $numBoxes * ($mInfo['markup'] / 100),
 										'showCost'    => ($cost + $this->handlingCost) * $numBoxes + ($cost + $this->handlingCost) * $numBoxes * ($mInfo['markup'] / 100),
@@ -193,18 +181,16 @@ class OrderShippingUpsReservation extends OrderShippingModuleBase
 				}
 
 				$classId = $this->getTaxClass();
-				if ($classId > 0){
+				if ($classId > 0) {
 					$this->quotes['tax'] = tep_get_tax_rate($classId, $deliveryAddress['country_id'], $deliveryAddress['zone_id']);
 				}
-			}
-			else {
+			}else{
 				$this->quotes['error'] = 'An error occured with the UPS shipping calculations.<br>' . $upsQuote . '<br>If you prefer to use UPS as your shipping method, please contact the store owner.';
 			}
-		}
-		else {
+		}else{
 			$this->quotes = array(
-				'id' => $this->getCode(),
-				'module' => $this->getTitle(),
+				'id'      => $this->getCode(),
+				'module'  => $this->getTitle(),
 				'methods' => array()
 			);
 
@@ -222,30 +208,30 @@ class OrderShippingUpsReservation extends OrderShippingModuleBase
 			}
 
 			$classId = $this->getTaxClass();
-			if ($classId > 0){
+			if ($classId > 0) {
 				$deliveryAddress = $this->getDeliveryAddress();
 				$this->quotes['tax'] = tep_get_tax_rate($classId, $deliveryAddress['country_id'], $deliveryAddress['zone_id']);
 			}
+
 		}
 		return $this->quotes;
 	}
-
-	public function _upsProduct($prod) {
+	
+	public function _upsProduct($prod){
 		$this->_upsProductCode = $prod;
 	}
 
-	public function _upsOrigin($postal, $country) {
+	public function _upsOrigin($postal, $country){
 		$this->_upsOriginPostalCode = $postal;
 		$this->_upsOriginCountryCode = $country;
 	}
 
-	public function _upsDest($postal, $country) {
+	public function _upsDest($postal, $country){
 		$postal = str_replace(' ', '', $postal);
 
-		if ($country == 'US'){
+		if ($country == 'US') {
 			$this->_upsDestPostalCode = substr($postal, 0, 5);
-		}
-		else {
+		} else {
 			$this->_upsDestPostalCode = $postal;
 		}
 
@@ -253,7 +239,7 @@ class OrderShippingUpsReservation extends OrderShippingModuleBase
 	}
 
 	public function _upsRate($foo) {
-		switch($foo){
+		switch ($foo) {
 			case 'RDP':
 				$this->_upsRateCode = 'Regular+Daily+Pickup';
 				break;
@@ -273,25 +259,25 @@ class OrderShippingUpsReservation extends OrderShippingModuleBase
 	}
 
 	public function _upsContainer($foo) {
-		switch($foo){
+		switch ($foo) {
 			case 'CP': // Customer Packaging
-				$this->_upsContainerCode = '00';
-				break;
+			$this->_upsContainerCode = '00';
+			break;
 			case 'ULE': // UPS Letter Envelope
-				$this->_upsContainerCode = '01';
-				break;
+			$this->_upsContainerCode = '01';
+			break;
 			case 'UT': // UPS Tube
-				$this->_upsContainerCode = '03';
-				break;
+			$this->_upsContainerCode = '03';
+			break;
 			case 'UEB': // UPS Express Box
-				$this->_upsContainerCode = '21';
-				break;
+			$this->_upsContainerCode = '21';
+			break;
 			case 'UW25': // UPS Worldwide 25 kilo
-				$this->_upsContainerCode = '24';
-				break;
+			$this->_upsContainerCode = '24';
+			break;
 			case 'UW10': // UPS Worldwide 10 kilo
-				$this->_upsContainerCode = '25';
-				break;
+			$this->_upsContainerCode = '25';
+			break;
 		}
 	}
 
@@ -300,13 +286,13 @@ class OrderShippingUpsReservation extends OrderShippingModuleBase
 	}
 
 	public function _upsRescom($foo) {
-		switch($foo){
+		switch ($foo) {
 			case 'RES': // Residential Address
-				$this->_upsResComCode = '1';
-				break;
+			$this->_upsResComCode = '1';
+			break;
 			case 'COM': // Commercial Address
-				$this->_upsResComCode = '2';
-				break;
+			$this->_upsResComCode = '2';
+			break;
 		}
 	}
 
@@ -334,7 +320,7 @@ class OrderShippingUpsReservation extends OrderShippingModuleBase
 		);
 
 		$http = new httpClient();
-		if ($http->Connect('www.ups.com', 80)){
+		if ($http->Connect('www.ups.com', 80)) {
 			$http->addHeader('Host', 'www.ups.com');
 			$http->addHeader('User-Agent', 'SalesIgniter');
 			$http->addHeader('Connection', 'Close');
@@ -344,8 +330,7 @@ class OrderShippingUpsReservation extends OrderShippingModuleBase
 			}
 
 			$http->Disconnect();
-		}
-		else {
+		} else {
 			return 'error';
 		}
 
@@ -354,36 +339,27 @@ class OrderShippingUpsReservation extends OrderShippingModuleBase
 		$errorret = 'error'; // only return error if NO rates returned
 		//print_r($body_array);
 		$n = sizeof($body_array);
-		for($i = 0; $i < $n; $i++){
+		for ($i=0; $i<$n; $i++) {
 			$result = explode('%', $body_array[$i]);
 			$errcode = substr($result[0], -1);
-			switch($errcode){
+			switch ($errcode) {
 				case 3:
-					if (is_array($returnval)) {
-						$returnval[] = array($result[1] => $result[8]);
-					}
+					if (is_array($returnval)) $returnval[] = array($result[1] => $result[8]);
 					break;
 				case 4:
-					if (is_array($returnval)) {
-						$returnval[] = array($result[1] => $result[8]);
-					}
+					if (is_array($returnval)) $returnval[] = array($result[1] => $result[8]);
 					break;
 				case 5:
 					$errorret = $result[1];
 					break;
 				case 6:
-					if (is_array($returnval)) {
-						$returnval[] = array($result[3] => $result[10]);
-					}
+					if (is_array($returnval)) $returnval[] = array($result[3] => $result[10]);
 					break;
 			}
 		}
-		if (empty($returnval)) {
-			$returnval = $errorret;
-		}
+		if (empty($returnval)) $returnval = $errorret;
 
 		return $returnval;
 	}
 }
-
 ?>

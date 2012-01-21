@@ -14,7 +14,7 @@ class productListing_productsInventoryCentersSortOrder {
 		return $selectSortKeys;
 	}
 
-	public function show(&$productClass, &$purchaseTypesCol){
+	public function show(&$productClass){
 
 		return false;
 	}

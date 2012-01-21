@@ -1,8 +1,0 @@
-<info>
-	<code>refund</code>
-	<title_key>MODULE_ORDER_TOTAL_REFUND_TITLE</title_key>
-	<description_key>MODULE_ORDER_TOTAL_REFUND_DESCRIPTION</description_key>
-	<installed_key>INSTALLED</installed_key>
-	<status_key>STATUS</status_key>
-	<display_order_key>DISPLAY_ORDER</display_order_key>
-</info>

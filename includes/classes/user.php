@@ -130,8 +130,6 @@ class RentalStoreUser implements Serializable {
 		
 			$customerInfo = array(
 				'id'                 => $customer['customers_id'],
-				'frozen'             => ($customer['customers_account_frozen'] == '1'),
-				'memberNumber'       => $customer['customers_number'],
 				'default_address_id' => $customer['customers_default_address_id'],
 				'delivery_address_id' => $customer['customers_delivery_address_id'],
 				'firstName'          => $customer['customers_firstname'],
@@ -143,7 +141,6 @@ class RentalStoreUser implements Serializable {
 				'fullName'           => $customer['customers_firstname'] . ' ' . $customer['customers_lastname'],
 				'emailAddress'       => $customer['customers_email_address'],
 				'telephone'          => $customer['customers_telephone'],
-				'notes'              => $customer['customers_notes'],
 				'fax'                => $customer['customers_fax'],
 				'languageId'         => $customer['language_id']
 			);
@@ -155,11 +152,7 @@ class RentalStoreUser implements Serializable {
 			$this->setCustomerInfo($customerInfo);
 		}
 	}
-
-	public function isFrozen(){
-		return ($this->customerInfo['frozen'] === true);
-	}
-
+	
 	public function isProvider(){
 		return ((isset($this->customerInfo['is_provider']))?($this->customerInfo['is_provider'] === true) : false);
 	}
@@ -189,8 +182,6 @@ class RentalStoreUser implements Serializable {
 			$Qcustomer = Doctrine_Query::create()
 			->from('Customers')
 			->where('customers_email_address = ?', $username)
-			->orWhere('customers_telephone = ?', $username)
-			->orWhere('customers_number = ?', $username)
 			->execute();
 			$noValidate = false;
 		}
@@ -325,17 +316,12 @@ class RentalStoreUser implements Serializable {
 		global $currencies;
 		if ($this->customerInfo['id'] > 0) return $this->customerInfo['id'];
 
-		if (!isset($this->customerInfo['password']) || empty($this->customerInfo['password'])){
-			$this->customerInfo['password'] = tep_create_random_value(sysConfig::get('ENTRY_PASSWORD_MIN_LENGTH'));
-		}
-
 		$newUser = new Customers();
 		$newUser->customers_firstname = $this->customerInfo['firstName'];
 		$newUser->customers_lastname = $this->customerInfo['lastName'];
 		$newUser->customers_email_address = $this->customerInfo['emailAddress'];
 		$newUser->customers_gender = $this->customerInfo['gender'];
 		$newUser->customers_telephone = $this->customerInfo['telephone'];
-		$newUser->customers_notes = $this->customerInfo['notes'];
 		$newUser->customers_fax = $this->customerInfo['fax'];
 		$newUser->customers_password = $this->encryptPassword($this->customerInfo['password']);
 		$newUser->customers_dob = $this->customerInfo['dob'];
@@ -345,10 +331,7 @@ class RentalStoreUser implements Serializable {
 		//$newUser->customers_referral = $this->customerInfo['referral'];
 
 		EventManager::notify('NewCustomerAccountBeforeExecute', &$newUser);
-
-		$newUser->customers_number = $this->customerInfo['memberNumber'];
-		$newUser->customers_account_frozen = ($this->customerInfo['frozen'] === true ? '1' : '0');
-
+		
 		$newUser->save();
 		$this->customerInfo['id'] = $newUser->customers_id;
 		
@@ -427,11 +410,6 @@ class RentalStoreUser implements Serializable {
 	
 	public function updateUserLogins(){
 		$CustomersInfo = Doctrine::getTable('CustomersInfo')->find($this->customerInfo['id']);
-		if(!isset($CustomersInfo)){
-			$CustomersInfo = new CustomersInfo;
-			$CustomersInfo->customers_info_number_of_logons = 0;
-			$CustomersInfo->customers_info_date_account_last_modified = date('Y-m-d H:i:s');
-		}
 		$CustomersInfo->customers_info_number_of_logons++;
 		$CustomersInfo->customers_info_date_of_last_logon = date('Y-m-d H:i:s');
 		$CustomersInfo->save();
@@ -445,7 +423,6 @@ class RentalStoreUser implements Serializable {
 		$Customer->customers_lastname = $this->customerInfo['lastName'];
 		$Customer->customers_email_address = $this->customerInfo['emailAddress'];
 		$Customer->customers_telephone = $this->customerInfo['telephone'];
-		$Customer->customers_notes = $this->customerInfo['notes'];
 		$Customer->customers_fax = $this->customerInfo['fax'];
 		$Customer->customers_newsletter = (isset($this->customerInfo['newsletter']) ? $this->customerInfo['newsletter'] : 0);
 		$Customer->language_id = $this->customerInfo['languageId'];
@@ -465,10 +442,7 @@ class RentalStoreUser implements Serializable {
 		if (sysConfig::get('ACCOUNT_GENDER') == 'true'){
 			$Customer->customers_gender = $this->customerInfo['gender'];
 		}
-
-		$Customer->customers_number = $this->customerInfo['memberNumber'];
-		$Customer->customers_account_frozen = ($this->customerInfo['frozen'] === true ? '1' : '0');
-
+		
 		$Customer->save();
 
 		$AddressBook = Doctrine::getTable('AddressBook')->find($this->plugins['addressBook']->getDefaultAddressId());
@@ -549,7 +523,7 @@ class RentalStoreUser implements Serializable {
 		$name = $this->getFullName();
 		$email_address = $this->getEmailAddress();
 		$request = 'The customer, ' . $name . ' has requested to reactivate his membership account.';
-		tep_mail(sysConfig::get('STORE_OWNER'), sysConfig::get('STORE_OWNER_EMAIL_ADDRESS'), sysLanguage::get('EMAIL_SUBJECT'), $request, $name, $email_address);
+		tep_mail(STORE_OWNER, STORE_OWNER_EMAIL_ADDRESS, sysLanguage::get('EMAIL_SUBJECT'), $request, $name, $email_address);
 
 		$messageStack->addSession('pageStack', 'Your reactivation request has been sent', 'success');
 	}
@@ -576,10 +550,6 @@ class RentalStoreUser implements Serializable {
 
 	public function setTelephoneNumber($val){
 		$this->customerInfo['telephone'] = $val;
-	}
-
-	public function setNotes($val){
-		$this->customerInfo['notes'] = $val;
 	}
 
 	public function setPassword($val){
@@ -614,14 +584,6 @@ class RentalStoreUser implements Serializable {
 		$this->customerInfo['languageId'] = $val;
 	}
 
-	public function setMemberNumber($val){
-		$this->customerInfo['memberNumber'] = $val;
-	}
-
-	public function setAccountFrozen($val){
-		$this->customerInfo['frozen'] = $val;
-	}
-
 	public function getLanguageId(){
 		return $this->customerInfo['languageId'];
 	}
@@ -641,7 +603,6 @@ class RentalStoreUser implements Serializable {
 		return $this->customerInfo['fullName'];
 	}
 
-	public function getMemberNumber() { return $this->customerInfo['memberNumber']; }
 	public function getEmailAddress(){ return $this->customerInfo['emailAddress']; }
 	public function getFirstName(){ return $this->customerInfo['firstName']; }
 	public function getLastName(){ return $this->customerInfo['lastName']; }

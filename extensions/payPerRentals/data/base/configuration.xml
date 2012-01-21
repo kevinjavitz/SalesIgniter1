@@ -53,7 +53,7 @@
 		</EXTENSION_PAY_PER_RENTALS_LENGTH_METHOD>
 
 		<EXTENSION_PAY_PER_RENTALS_CHOOSE_PICKUP>
-			<value>False</value>
+			<value>True</value>
 			<title>Allowing customer to choose pickup location?</title>
 			<description>Customer is allowed to choose pickup location(Must have Inventory Centers Extension)</description>
 			<sort_order>10</sort_order>
@@ -61,7 +61,7 @@
 		</EXTENSION_PAY_PER_RENTALS_CHOOSE_PICKUP>
 
 		<EXTENSION_PAY_PER_RENTALS_CHOOSE_DROPOFF>
-			<value>False</value>
+			<value>True</value>
 			<title>Allowing customer to choose dropoff location?</title>
 			<description>Customer is allowed to choose dropoff location(Must have Inventory Centers Extension)</description>
 			<sort_order>11</sort_order>
@@ -69,7 +69,7 @@
 		</EXTENSION_PAY_PER_RENTALS_CHOOSE_DROPOFF>
 
 		<EXTENSION_PAY_PER_RENTALS_ENABLE_TIME>
-			<value>False</value>
+			<value>True</value>
 			<title>Enable pickup/dropoff time of day?</title>
 			<description>Customer is allowed to choose pickup/dropoff Time of the day(Store hours) </description>
 			<sort_order>12</sort_order>
@@ -114,14 +114,6 @@
 			<set_function>tep_cfg_select_option(array('True','False'),</set_function>
 		</EXTENSION_PAY_PER_RENTALS_SHOW_QTY_LISTING>
 
-		<EXTENSION_PAY_PER_RENTALS_SHOW_TRACKING_HISTORY_INFO>
-			<value>True</value>
-			<title>Show tracking on history info?</title>
-			<description>Show Tracking on history info. </description>
-			<sort_order>16</sort_order>
-			<set_function>tep_cfg_select_option(array('True','False'),</set_function>
-		</EXTENSION_PAY_PER_RENTALS_SHOW_TRACKING_HISTORY_INFO>
-
 		<EXTENSION_PAY_PER_RENTALS_AUTO_SEND>
 			<value>True</value>
 			<title>Auto send reservations on date they should be sent instead of using send reservations page </title>
@@ -145,14 +137,6 @@
 			<sort_order>20</sort_order>
 			<set_function>tep_cfg_select_option(array('True','False'),</set_function>
 		</EXTENSION_PAY_PER_RENTALS_USE_EVENTS>
-
-		<EXTENSION_PAY_PER_RENTALS_USE_PRO_RATED>
-			<value>True</value>
-			<title>Use prorated calculation of prices</title>
-			<description>Use prorated calculation of prices.</description>
-			<sort_order>20</sort_order>
-			<set_function>tep_cfg_select_option(array('True','False'),</set_function>
-		</EXTENSION_PAY_PER_RENTALS_USE_PRO_RATED>
 
 		<EXTENSION_PAY_PER_RENTALS_USE_EVENTS_QTY>
 			<value>True</value>
@@ -196,7 +180,7 @@
 		</EXTENSION_PAY_PER_RENTALS_SHOW_VIEW_ALL_BUTTON>
 
 		<EXTENSION_PAY_PER_RENTALS_CHECK_GOOGLE_ZONES_BEFORE>
-			<value>False</value>
+			<value>True</value>
 			<title>Check Google zones before selecting shipping methods </title>
 			<description>If reservation before is selected the shipping methods will be filtered by google zone.</description>
 			<sort_order>23</sort_order>
@@ -305,13 +289,6 @@
 			<sort_order>29</sort_order>
 			<set_function>tep_cfg_select_option(array('True','False'),</set_function>
 		</EXTENSION_PAY_PER_RENTALS_SHOW_SHIPPING>
-		<EXTENSION_PAY_PER_RENTALS_USE_ONE_SHIPPING_METHOD>
-			<title>Use only one shipping method for all the products on order</title>
-			<value>False</value>
-			<description>Use only one shipping method for all the products on order. To be used only with reservation shipping "per order".</description>
-			<sort_order>29</sort_order>
-			<set_function>tep_cfg_select_option(array('True','False'),</set_function>
-		</EXTENSION_PAY_PER_RENTALS_USE_ONE_SHIPPING_METHOD>
         <EXTENSION_PAY_PER_RENTALS_USE_GLOBAL_MIN_RENTAL_DAYS>
 			<value>True</value>
 			<title>Use minimum rental days global</title>
@@ -425,60 +402,6 @@
 			<sort_order>31</sort_order>
 			<set_function>tep_cfg_select_option(array('True','False'),</set_function>
 		</EXTENSION_PAY_PER_RENTALS_PROCESS_SEND>
-		<EXTENSION_PAY_PER_RENTALS_ALLOW_PRO_RATED_DISCOUNTS>
-			<value>False</value>
-			<title>Do you want to allow pro rated discounts?</title>
-			<description>If true pro rated discounts will be refunded to the customer from total order.</description>
-			<sort_order>31</sort_order>
-			<set_function>tep_cfg_select_option(array('True','False'),</set_function>
-		</EXTENSION_PAY_PER_RENTALS_ALLOW_PRO_RATED_DISCOUNTS>
-		<EXTENSION_PAY_PER_RENTALS_USE_FULL_DAYS>
-			<value>False</value>
-			<title>Do you want to use only full days into price calculations?</title>
-			<description>Use only full days into price calculations</description>
-			<sort_order>31</sort_order>
-			<set_function>tep_cfg_select_option(array('True','False'),</set_function>
-		</EXTENSION_PAY_PER_RENTALS_USE_FULL_DAYS>
-
-		<EXTENSION_PAY_PER_RENTALS_MORE_HOURS_ONE_DAY>
-			<value>False</value>
-			<title>If using only full days into price calculations more than one hour is considered a day</title>
-			<description>If using only full days into price calculations more than one hour is considered a day</description>
-			<sort_order>31</sort_order>
-			<set_function>tep_cfg_select_option(array('True','False'),</set_function>
-		</EXTENSION_PAY_PER_RENTALS_MORE_HOURS_ONE_DAY>
-
-		<EXTENSION_PAY_PER_RENTALS_SHOW_TRACKING_NUMBER_COLUMN>
-			<value>True</value>
-			<title>Do you want to show the tracking number column?</title>
-			<description>Show the tracking number column</description>
-			<sort_order>31</sort_order>
-			<set_function>tep_cfg_select_option(array('True','False'),</set_function>
-		</EXTENSION_PAY_PER_RENTALS_SHOW_TRACKING_NUMBER_COLUMN>
-
-		<EXTENSION_PAY_PER_RENTALS_SHOW_RESERVATION_STATUS_COLUMN>
-			<value>True</value>
-			<title>Do you want to show the reservation status column?</title>
-			<description>Show the reservation status column</description>
-			<sort_order>31</sort_order>
-			<set_function>tep_cfg_select_option(array('True','False'),</set_function>
-		</EXTENSION_PAY_PER_RENTALS_SHOW_RESERVATION_STATUS_COLUMN>
-
-		<EXTENSION_PAY_PER_RENTALS_SEND_EMAIL_RETURN>
-			<value>True</value>
-			<title>Do you want to send email on return reservation?</title>
-			<description>Send email on return reservation</description>
-			<sort_order>31</sort_order>
-			<set_function>tep_cfg_select_option(array('True','False'),</set_function>
-		</EXTENSION_PAY_PER_RENTALS_SEND_EMAIL_RETURN>
-
-		<EXTENSION_PAY_PER_RENTALS_SEND_EMAIL_SEND>
-			<value>True</value>
-			<title>Do you want to send email on send reservation?</title>
-			<description>Send email on send reservation</description>
-			<sort_order>31</sort_order>
-			<set_function>tep_cfg_select_option(array('True','False'),</set_function>
-		</EXTENSION_PAY_PER_RENTALS_SEND_EMAIL_SEND>
 		<EXTENSION_PAY_PER_RENTALS_GOOGLE_MAPS_API_KEY>
 			<value>ABQIAAAAJfeNSDfdlXtgf6gjHMTzDBT0_i__oM-cAYP-svDeQzBBv_RytBShCDbtJySULQi-i9FDwsHX8pK4aQ</value>
 			<title>Google Maps API Key</title>

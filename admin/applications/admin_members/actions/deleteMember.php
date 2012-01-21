@@ -4,7 +4,5 @@
 		$Admin->delete();
 	}
 
-	EventManager::attachActionResponse(array(
-			'success' => true
-		), 'json');
+	EventManager::attachActionResponse(itw_app_link(null, null, 'default'), 'redirect');
 ?>

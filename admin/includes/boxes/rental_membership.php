@@ -96,7 +96,4 @@
 	}
 
 	EventManager::notify('BoxMembershipAddLink', &$contents);
-if(count($contents['children']) == 0){
-	$contents = array();
-}
 ?>

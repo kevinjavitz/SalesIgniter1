@@ -1,56 +1,4 @@
 <?php
-
-function LoadAllWidgetData(&$Data, &$New){
-	$New->identifier = $Data->identifier;
-	$New->sort_order = $Data->sort_order;
-	foreach($Data->Configuration as $Config){
-		$New->Configuration[$Config->configuration_key]->configuration_value = $Config->configuration_value;
-	}
-	foreach($Data->Styles as $Style){
-		$New->Styles[$Style->definition_key]->definition_value = $Style->definition_value;
-	}
-}
-function LoadAllColumnData(&$Data, &$New){
-	$New->sort_order = $Data->sort_order;
-	foreach($Data->Configuration as $Config){
-		$New->Configuration[$Config->configuration_key]->configuration_value  = $Config->configuration_value;
-	}
-	foreach($Data->Styles as $Style){
-		$New->Styles[$Style->definition_key]->definition_value = $Style->definition_value;
-	}
-	if ($Data->Widgets && $Data->Widgets->count() > 0){
-		foreach($Data->Widgets as $wInfo){
-			$newWidget = $New->Widgets->getTable()->create();
-			LoadAllWidgetData($wInfo, $newWidget);
-			$New->Widgets->add($newWidget);
-		}
-	}
-}
-function LoadAllContainerData(&$Data, &$New){
-	$New->sort_order = $Data->sort_order;
-	foreach($Data->Configuration as $Config){
-		$New->Configuration[$Config->configuration_key]->configuration_value  = $Config->configuration_value;
-	}
-	foreach($Data->Styles as $Style){
-		$New->Styles[$Style->definition_key]->definition_value = $Style->definition_value;
-	}
-
-	if ($Data->Children && $Data->Children->count() > 0){
-		foreach($Data->Children as $Container){
-			$NewContainer = $New->Children->getTable()->create();
-			LoadAllContainerData($Container, $NewContainer);
-			$New->Children->add($NewContainer);
-		}
-	}else
-		if ($Data->Columns && $Data->Columns->count() > 0){
-			foreach($Data->Columns as $col){
-				$NewColumn = $New->Columns->getTable()->create();
-				LoadAllColumnData($col, $NewColumn);
-				$New->Columns->add($NewColumn);
-			}
-		}
-}
-
 function parseElementSettings($el, &$Container) {
 	if ($el->attr('data-styles')){
 		$Styles = json_decode(urldecode($el->attr('data-styles')));
@@ -297,39 +245,10 @@ function parseElement(&$el, &$parent) {
 		$Container->Configuration->clear();
 	}
 	$Container->sort_order = (int)$el->attr('data-sort_order');
-	$Container->is_anchor = (int)$el->attr('data-is_anchor');
-	$Container->anchor_id = (int)$el->attr('data-anchor_id');
 
 	if ($el->attr('tmid')){
 		$newElementHolder[$el->attr('tmid')] = $Container;
 	}
-
-	//here I check the anchor id if is not blank and anchor is 0 then I'll duplicate the container
-	//after that I exit the function?
-	if(!empty($Container->anchor_id) && (int)$Container->anchor_id > 0){
-
-		if ($el->attr('data-container_id')){
-			if ($Container->Children){
-				$Container->Children->clear();
-			}
-			if ($Container->Columns){
-				$Container->Columns->clear();
-			}
-			$TemplateLayoutsContainer = Doctrine_Core::getTable('TemplateManagerLayoutsContainers');
-			$Original = $TemplateLayoutsContainer->find((int)$Container->anchor_id);
-			LoadAllContainerData($Original, $Container);
-		}else{
-			if ($Container->Widgets){
-				$Container->Widgets->clear();
-			}
-			$TemplateManagerLayoutsColumns = Doctrine_Core::getTable('TemplateManagerLayoutsColumns');
-			$Original = $TemplateManagerLayoutsColumns->find((int)$Container->anchor_id);
-			LoadAllColumnData($Original, $Container);
-		}
-		return;
-	}
-
-
 
 	parseElementSettings($el, $Container);
 
@@ -371,48 +290,6 @@ function parseElement(&$el, &$parent) {
 		else {
 			$newParent = ($el->hasClass('column') ? null : (isset($Container) ? $Container : null));
 			parseElement($childObj, $newParent);
-		}
-	}
-
-	if ($el->attr('data-container_id')){
-		$QContainerAnchors = Doctrine_Query::create()
-			->from('TemplateManagerLayoutsContainers')
-			->where('anchor_id = ?',$el->attr('data-container_id'))
-			->execute();
-		foreach($QContainerAnchors as $anchor){
-			if ($anchor->Styles){
-				$anchor->Styles->clear();
-			}
-			if ($anchor->Configuration){
-				$anchor->Configuration->clear();
-			}
-			if ($anchor->Children){
-				$anchor->Children->clear();
-			}
-			if ($anchor->Columns){
-				$anchor->Columns->clear();
-			}
-			LoadAllContainerData($Container, $anchor);
-			$anchor->save();
-		}
-	}else{
-		$QContainerAnchors = Doctrine_Query::create()
-			->from('TemplateManagerLayoutsColumns')
-			->where('anchor_id = ?',$el->attr('data-column_id'))
-			->execute();
-		foreach($QContainerAnchors as $anchor){
-			if ($anchor->Styles){
-				$anchor->Styles->clear();
-			}
-			if ($anchor->Configuration){
-				$anchor->Configuration->clear();
-			}
-			if ($anchor->Widgets){
-				$anchor->Widgets->clear();
-			}
-
-			LoadAllColumnData($Container, $anchor);
-			$anchor->save();
 		}
 	}
 }

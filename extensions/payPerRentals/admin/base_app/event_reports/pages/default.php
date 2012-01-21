@@ -14,16 +14,12 @@
 	->andWhereIn('opr.rental_state', array('out', 'reserved'));
 
 $f = false;
-if (isset($_GET['start_date']) && !empty($_GET['start_date'])){
+if (isset($_GET['start_date'])){
 	$Qorders->andWhere('opr.start_date=?', $_GET['start_date']);
 }
 
 if (isset($_GET['event_name']) && !empty($_GET['event_name'])){
 	$Qorders->andWhere('opr.event_name = ?', $_GET['event_name']);
-}
-
-if (isset($_GET['event_gate']) && !empty($_GET['event_gate'])){
-	$Qorders->andWhere('opr.event_gate = ?', $_GET['event_gate']);
 }
 
 if(isset($_GET['sortEvent'])){
@@ -90,16 +86,16 @@ $tableGrid = htmlBase::newElement('newGrid')
 	->setQuery($Qorders);
 
 $gridHeaderColumns = array(
-	array('text' => '<a href="'.itw_app_link('appExt=payPerRentals&sortEvent='.(isset($_GET['sortEvent'])?($_GET['sortEvent'] == 'ASC'?'DESC':'ASC'):'ASC').(isset($_GET['event_name'])&&!empty($_GET['event_name'])?'&event_name='.$_GET['event_name']:'').(isset($_GET['start_date'])&&!empty($_GET['start_date'])?'&start_date='.$_GET['start_date']:'').(isset($_GET['event_gate'])&&!empty($_GET['event_gate'])?'&event_gate='.$_GET['event_gate']:''),null,null).'">'.sysLanguage::get('TABLE_HEADING_EVENT').'</a>'),
+	array('text' => '<a href="'.itw_app_link('appExt=payPerRentals&sortEvent='.(isset($_GET['sortEvent'])?($_GET['sortEvent'] == 'ASC'?'DESC':'ASC'):'ASC').(isset($_GET['event_name'])?'&event_name='.$_GET['event_name']:''),null,null).'">'.sysLanguage::get('TABLE_HEADING_EVENT').'</a>'),
 	//array('text' => '<a href="'.itw_app_link('appExt=payPerRentals&sortDate='.(isset($_GET['sortDate'])?($_GET['sortDate'] == 'ASC'?'DESC':'ASC'):'ASC').(isset($_GET['event_name'])?'&event_name='.$_GET['event_name']:''),null,null).'">'.sysLanguage::get('TABLE_HEADING_DATE').'</a>'),
-	array('text' => '<a href="'.itw_app_link('appExt=payPerRentals&sortDateReserved='.(isset($_GET['sortDateReserved'])?($_GET['sortDateReserved'] == 'ASC'?'DESC':'ASC'):'ASC').(isset($_GET['event_name'])&&!empty($_GET['event_name'])?'&event_name='.$_GET['event_name']:'').(isset($_GET['start_date'])&&!empty($_GET['start_date'])?'&start_date='.$_GET['start_date']:'').(isset($_GET['event_gate'])&&!empty($_GET['event_gate'])?'&event_gate='.$_GET['event_gate']:''),null,null).'">'.sysLanguage::get('TABLE_HEADING_DATE_RESERVED').'</a>'),
-	array('text' => '<a href="'.itw_app_link('appExt=payPerRentals&sortGate='.(isset($_GET['sortGate'])?($_GET['sortGate'] == 'ASC'?'DESC':'ASC'):'ASC').(isset($_GET['event_name'])&&!empty($_GET['event_name'])?'&event_name='.$_GET['event_name']:'').(isset($_GET['start_date'])&&!empty($_GET['start_date'])?'&start_date='.$_GET['start_date']:'').(isset($_GET['event_gate'])&&!empty($_GET['event_gate'])?'&event_gate='.$_GET['event_gate']:''),null,null).'">'.sysLanguage::get('TABLE_HEADING_GATE').'</a>'),
-	array('text' => '<a href="'.itw_app_link('appExt=payPerRentals&sortLastname='.(isset($_GET['sortLastname'])?($_GET['sortLastname'] == 'ASC'?'DESC':'ASC'):'ASC').(isset($_GET['event_name'])&&!empty($_GET['event_name'])?'&event_name='.$_GET['event_name']:'').(isset($_GET['start_date'])&&!empty($_GET['start_date'])?'&start_date='.$_GET['start_date']:'').(isset($_GET['event_gate'])&&!empty($_GET['event_gate'])?'&event_gate='.$_GET['event_gate']:''),null,null).'">'.sysLanguage::get('TABLE_HEADING_LASTNAME').'</a>'),
-	array('text' => '<a href="'.itw_app_link('appExt=payPerRentals&sortFirstname='.(isset($_GET['sortFirstname'])?($_GET['sortFirstname'] == 'ASC'?'DESC':'ASC'):'ASC').(isset($_GET['event_name'])&&!empty($_GET['event_name'])?'&event_name='.$_GET['event_name']:'').(isset($_GET['start_date'])&&!empty($_GET['start_date'])?'&start_date='.$_GET['start_date']:'').(isset($_GET['event_gate'])&&!empty($_GET['event_gate'])?'&event_gate='.$_GET['event_gate']:''),null,null).'">'.sysLanguage::get('TABLE_HEADING_FIRSTNAME').'</a>'),
-	array('text' => '<a href="'.itw_app_link('appExt=payPerRentals&sortProduct='.(isset($_GET['sortProduct'])?($_GET['sortProduct'] == 'ASC'?'DESC':'ASC'):'ASC').(isset($_GET['event_name'])&&!empty($_GET['event_name'])?'&event_name='.$_GET['event_name']:'').(isset($_GET['start_date'])&&!empty($_GET['start_date'])?'&start_date='.$_GET['start_date']:'').(isset($_GET['event_gate'])&&!empty($_GET['event_gate'])?'&event_gate='.$_GET['event_gate']:''),null,null).'">'.sysLanguage::get('TABLE_HEADING_PRODUCT_NAME').'</a>'),
-	array('text' => '<a href="'.itw_app_link('appExt=payPerRentals&sortQty='.(isset($_GET['sortQty'])?($_GET['sortQty'] == 'ASC'?'DESC':'ASC'):'ASC').(isset($_GET['event_name'])&&!empty($_GET['event_name'])?'&event_name='.$_GET['event_name']:'').(isset($_GET['start_date'])&&!empty($_GET['start_date'])?'&start_date='.$_GET['start_date']:'').(isset($_GET['event_gate'])&&!empty($_GET['event_gate'])?'&event_gate='.$_GET['event_gate']:''),null,null).'">'.sysLanguage::get('TABLE_HEADING_QUANTITY').'</a>'),
-	array('text' => '<a href="'.itw_app_link('appExt=payPerRentals&sortInsurance='.(isset($_GET['sortInsurance'])?($_GET['sortInsurance'] == 'ASC'?'DESC':'ASC'):'ASC').(isset($_GET['event_name'])&&!empty($_GET['event_name'])?'&event_name='.$_GET['event_name']:'').(isset($_GET['start_date'])&&!empty($_GET['start_date'])?'&start_date='.$_GET['start_date']:'').(isset($_GET['event_gate'])&&!empty($_GET['event_gate'])?'&event_gate='.$_GET['event_gate']:''),null,null).'">'.sysLanguage::get('TABLE_HEADING_INSURANCE').'</a>'),
-	array('text' => '<a href="'.itw_app_link('appExt=payPerRentals&sortPrice='.(isset($_GET['sortPrice'])?($_GET['sortPrice'] == 'ASC'?'DESC':'ASC'):'ASC').(isset($_GET['event_name'])&&!empty($_GET['event_name'])?'&event_name='.$_GET['event_name']:'').(isset($_GET['start_date'])&&!empty($_GET['start_date'])?'&start_date='.$_GET['start_date']:'').(isset($_GET['event_gate'])&&!empty($_GET['event_gate'])?'&event_gate='.$_GET['event_gate']:''),null,null).'">'.sysLanguage::get('TABLE_HEADING_PRICE').'</a>')
+	array('text' => '<a href="'.itw_app_link('appExt=payPerRentals&sortDateReserved='.(isset($_GET['sortDateReserved'])?($_GET['sortDateReserved'] == 'ASC'?'DESC':'ASC'):'ASC').(isset($_GET['event_name'])?'&event_name='.$_GET['event_name']:''),null,null).'">'.sysLanguage::get('TABLE_HEADING_DATE_RESERVED').'</a>'),
+	array('text' => '<a href="'.itw_app_link('appExt=payPerRentals&sortGate='.(isset($_GET['sortGate'])?($_GET['sortGate'] == 'ASC'?'DESC':'ASC'):'ASC').(isset($_GET['event_name'])?'&event_name='.$_GET['event_name']:''),null,null).'">'.sysLanguage::get('TABLE_HEADING_GATE').'</a>'),
+	array('text' => '<a href="'.itw_app_link('appExt=payPerRentals&sortLastname='.(isset($_GET['sortLastname'])?($_GET['sortLastname'] == 'ASC'?'DESC':'ASC'):'ASC').(isset($_GET['event_name'])?'&event_name='.$_GET['event_name']:''),null,null).'">'.sysLanguage::get('TABLE_HEADING_LASTNAME').'</a>'),
+	array('text' => '<a href="'.itw_app_link('appExt=payPerRentals&sortFirstname='.(isset($_GET['sortFirstname'])?($_GET['sortFirstname'] == 'ASC'?'DESC':'ASC'):'ASC').(isset($_GET['event_name'])?'&event_name='.$_GET['event_name']:''),null,null).'">'.sysLanguage::get('TABLE_HEADING_FIRSTNAME').'</a>'),
+	array('text' => '<a href="'.itw_app_link('appExt=payPerRentals&sortProduct='.(isset($_GET['sortProduct'])?($_GET['sortProduct'] == 'ASC'?'DESC':'ASC'):'ASC').(isset($_GET['event_name'])?'&event_name='.$_GET['event_name']:''),null,null).'">'.sysLanguage::get('TABLE_HEADING_PRODUCT_NAME').'</a>'),
+	array('text' => '<a href="'.itw_app_link('appExt=payPerRentals&sortQty='.(isset($_GET['sortQty'])?($_GET['sortQty'] == 'ASC'?'DESC':'ASC'):'ASC').(isset($_GET['event_name'])?'&event_name='.$_GET['event_name']:''),null,null).'">'.sysLanguage::get('TABLE_HEADING_QUANTITY').'</a>'),
+	array('text' => '<a href="'.itw_app_link('appExt=payPerRentals&sortInsurance='.(isset($_GET['sortInsurance'])?($_GET['sortInsurance'] == 'ASC'?'DESC':'ASC'):'ASC').(isset($_GET['event_name'])?'&event_name='.$_GET['event_name']:''),null,null).'">'.sysLanguage::get('TABLE_HEADING_INSURANCE').'</a>'),
+	array('text' => '<a href="'.itw_app_link('appExt=payPerRentals&sortPrice='.(isset($_GET['sortPrice'])?($_GET['sortPrice'] == 'ASC'?'DESC':'ASC'):'ASC').(isset($_GET['event_name'])?'&event_name='.$_GET['event_name']:''),null,null).'">'.sysLanguage::get('TABLE_HEADING_PRICE').'</a>')
 );
 
 $limitField = htmlBase::newElement('selectbox')
@@ -124,18 +120,13 @@ $searchForm = htmlBase::newElement('form')
 $startdateField = htmlBase::newElement('input')->setName('start_date')
 	->setLabel(sysLanguage::get('HEADING_TITLE_START_DATE'))->setLabelPosition('before')->setId('start_date');
 
-if (isset($_GET['start_date']) && !empty($_GET['start_date'])){
+if (isset($_GET['start_date'])){
 	$startdateField->setValue($_GET['start_date']);
 }
 
 $eventSelect = htmlBase::newElement('selectbox')
 	->setName('event_name')
 	->setLabel('Event Name: ')
-	->setLabelPosition('before');
-
-$gateSelect = htmlBase::newElement('selectbox')
-	->setName('event_gate')
-	->setLabel('Event Gate: ')
 	->setLabelPosition('before');
 
 /*$startdateField = htmlBase::newElement('input')
@@ -149,17 +140,6 @@ if (isset($_GET['start_date']) && !empty($_GET['start_date'])){
 } */
 if (isset($_GET['event_name']) && !empty($_GET['event_name'])){
 	$eventSelect->selectOptionByValue($_GET['event_name']);
-	$QgatesSelected = Doctrine_Query::create()
-		->from('PayPerRentalEvents')
-		->where('events_name = ?', $_GET['event_name'])
-		->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
-	if(isset($QgatesSelected[0])){
-		$gatesSelected = explode(',',$QgatesSelected[0]['gates']);
-	}
-}
-
-if (isset($_GET['event_gate']) && !empty($_GET['event_gate'])){
-	$gateSelect->selectOptionByValue($_GET['event_gate']);
 }
 
 $Qevents = Doctrine_Query::create()
@@ -171,18 +151,6 @@ foreach($Qevents as $iEvent){
 	$eventSelect->addOption($iEvent['events_name'], $iEvent['events_name']);
 }
 
-$Qgates = Doctrine_Query::create()
-	->from('PayPerRentalGates');
-if(isset($gatesSelected)){
-	$Qgates->whereIn('gates_id', $gatesSelected);
-}
-$Qgates = $Qgates->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
-
-$gateSelect->addOption('','all');
-foreach($Qgates as $iGate){
-	$gateSelect->addOption($iGate['gate_name'], $iGate['gate_name']);
-}
-
 $submitButton = htmlBase::newElement('button')
 	->setType('submit')
 	->usePreset('save')
@@ -191,7 +159,6 @@ $submitButton = htmlBase::newElement('button')
 $searchForm
 ->append($limitField)
 ->append($eventSelect)
-->append($gateSelect)
 ->append($startdateField)
 ->append($submitButton);
 

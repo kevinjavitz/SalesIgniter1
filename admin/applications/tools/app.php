@@ -1,3 +1,3 @@
 <?php
-	$appContent = $App->getAppContentFile();
+$appContent = $App->getAppContentFile();
 ?>

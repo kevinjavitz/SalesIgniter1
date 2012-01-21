@@ -36,7 +36,7 @@
 				'entry_city'           => $_POST['billing_city'],
 				'entry_country_id'     => $_POST['billing_country'],
 			);
-	            	if(sysConfig::get('TERMS_CONDITIONS_CHECKOUT') == 'true' && sysConfig::get('TERMS_CONDITIONS_SHOPPING_CART') == 'false' && sysConfig::get('CHECKOUT_TERMS_FORCE_AGREE') == 'true'){
+	            	if (sysConfig::get('TERMS_CONDITIONS_CHECKOUT') !== 'false'){
 	                	if (array_key_exists('terms', $_POST)){
 	                    		$accountValidation['terms'] = $_POST['terms'];
 	                	}else{

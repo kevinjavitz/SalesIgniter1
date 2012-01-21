@@ -15,14 +15,6 @@
 	}else{
 		$Store = $Stores->create();
 	}
-	$isDefault = 0;
-	if(isset($_POST['is_default'])){
-		$isDefault = 1;
-		Doctrine_Query::create()
-		->update('Stores')
-		->set('is_default','?','0')
-		->execute();
-	}
 
 	$Store->stores_name = $_POST['stores_name'];
 	$Store->stores_domain = $_POST['stores_domain'];
@@ -31,11 +23,10 @@
 	$Store->stores_template = $_POST['stores_template'];
 	$Store->stores_zip = $_POST['stores_zip'];
 	$Store->stores_location = $_POST['stores_location'];
-	$Store->is_default = $isDefault;
-	if(isset($_POST['stores_countries'])){
-		$Store->stores_countries = implode(',',$_POST['stores_countries']);
-	}
-	$Store->stores_owner = $_POST['stores_owner'];
+
+/* Auto Upgrade ( Version 1.0 to 1.1 ) --BEGIN-- */
+				$Store->stores_owner = $_POST['stores_owner'];
+/* Auto Upgrade ( Version 1.0 to 1.1 ) --END-- */
 
 	$CategoriesToStores = $Store->CategoriesToStores;
 	//$ProductsToStores = $Store->ProductsToStores;

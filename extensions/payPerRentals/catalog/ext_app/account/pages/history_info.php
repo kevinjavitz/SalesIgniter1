@@ -31,21 +31,19 @@ class payPerRentals_catalog_account_history_info extends Extension_payPerRentals
 
 	public function  OrderInfoProductTableBody($OrderProduct, $trackingCompanies){
 		/*Here there is a problem with reservations created from Inventory Report*/
-		if(sysConfig::get('EXTENSION_PAY_PER_RENTALS_SHOW_TRACKING_HISTORY_INFO') == 'True'){
-			$Qreservations = Doctrine_Query::create()
-			->from('Orders o')
-			->leftJoin('o.OrdersProducts op')
-			->leftJoin('op.OrdersProductsReservation opr')
-			->where('opr.orders_products_id=?', $OrderProduct->getIdString())
-			->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+		$Qreservations = Doctrine_Query::create()
+		->from('Orders o')
+		->leftJoin('o.OrdersProducts op')
+		->leftJoin('op.OrdersProductsReservation opr')
+		->where('opr.orders_products_id=?', $OrderProduct->getIdString())
+		->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 
-			foreach($Qreservations as $iReservation){
-				echo '            <td class="main" align="right" valign="top"><a href="' . (isset($trackingCompanies[strtolower($iReservation['OrdersProducts'][0]['OrdersProductsReservation'][0]['tracking_type'])]['url'])?($trackingCompanies[strtolower($iReservation['OrdersProducts'][0]['OrdersProductsReservation'][0]['tracking_type'])]['url'] . $iReservation['OrdersProducts'][0]['OrdersProductsReservation'][0]['tracking_number']):'#')  . '">'.(isset($trackingCompanies[strtolower($iReservation['OrdersProducts'][0]['OrdersProductsReservation'][0]['tracking_type'])]['url'])?'Track Order':'Not Shipped').'</a></td>' . "\n";
-				break;
-			}
-			if(count($Qreservations) <= 0){
-				echo '            <td class="main" align="right" valign="top">'  . '</td>' . "\n";
-			}
+		foreach($Qreservations as $iReservation){
+			echo '            <td class="main" align="right" valign="top"><a href="' . (isset($trackingCompanies[strtolower($iReservation['OrdersProducts'][0]['OrdersProductsReservation'][0]['tracking_type'])]['url'])?($trackingCompanies[strtolower($iReservation['OrdersProducts'][0]['OrdersProductsReservation'][0]['tracking_type'])]['url'] . $iReservation['OrdersProducts'][0]['OrdersProductsReservation'][0]['tracking_number']):'#')  . '">'.(isset($trackingCompanies[strtolower($iReservation['OrdersProducts'][0]['OrdersProductsReservation'][0]['tracking_type'])]['url'])?'Track Order':'Not Shipped').'</a></td>' . "\n";
+			break;
+		}
+		if(count($Qreservations) <= 0){
+			echo '            <td class="main" align="right" valign="top">'  . '</td>' . "\n";
 		}
 	}
 	

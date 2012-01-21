@@ -45,7 +45,7 @@
 				$arrowIcon->setType('circleTriangleEast');
 			}
 
-			if (sysConfig::get('DEFAULT_CURRENCY') == $currencyCode){
+			if (DEFAULT_CURRENCY == $currencyCode){
 				$currencyTitle = '<b>' . $currencyTitle . ' (' . sysLanguage::get('TEXT_DEFAULT') . ')</b>';
 		    }
 

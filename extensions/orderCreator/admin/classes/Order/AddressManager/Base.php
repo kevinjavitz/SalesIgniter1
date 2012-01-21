@@ -4,15 +4,12 @@ require(dirname(__FILE__) . '/Address.php');
 class OrderCreatorAddressManager extends OrderAddressManager implements Serializable {
 
 	public function __construct($addressArray = null){
-		$this->addressHeadings['customer'] = sysLanguage::get('TEXT_ADDRESS_CUSTOMER');
-
-		if(sysConfig::get('EXTENSION_ORDER_CREATOR_SHOW_BILLING_ADDRESS') == 'True'){
-			$this->addressHeadings['billing'] = sysLanguage::get('TEXT_ADDRESS_BILLING');
-		}
-		if(sysConfig::get('EXTENSION_ORDER_CREATOR_SHOW_DELIVERY_ADDRESS') == 'True'){
-			$this->addressHeadings['delivery'] = sysLanguage::get('TEXT_ADDRESS_DELIVERY');
-		}
-
+		$this->addressHeadings = array(
+			'customer' => sysLanguage::get('TEXT_ADDRESS_CUSTOMER'),
+			'billing' => sysLanguage::get('TEXT_ADDRESS_BILLING'),
+			'delivery' => sysLanguage::get('TEXT_ADDRESS_DELIVERY')
+		);
+		
 		if (sysConfig::exists('EXTENSION_PAY_PER_RENTALS_CHOOSE_PICKUP') && sysConfig::get('EXTENSION_PAY_PER_RENTALS_CHOOSE_PICKUP') == 'True'){
 			$this->addressHeadings['pickup'] = sysLanguage::get('TEXT_ADDRESS_PICKUP');
 		}
@@ -53,26 +50,17 @@ class OrderCreatorAddressManager extends OrderAddressManager implements Serializ
 	}
 	
 	public function updateFromPost(){
-		if (!isset($_POST['address']['billing'])){
-			$_POST['address']['billing'] = $_POST['address']['customer'];
-		}
-		if (!isset($_POST['address']['delivery'])){
-			$_POST['address']['delivery'] = $_POST['address']['customer'];
-		}
-
 		foreach($_POST['address'] as $type => $aInfo){
-			if(isset($this->addresses[$type])){
-				$this->addresses[$type]->setName($aInfo['entry_name']);
-				$this->addresses[$type]->setFiscalCode($aInfo['entry_cif']);
-				$this->addresses[$type]->setVATNumber($aInfo['entry_vat']);
-				$this->addresses[$type]->setCompany($aInfo['entry_company']);
-				$this->addresses[$type]->setStreetAddress($aInfo['entry_street_address']);
-				$this->addresses[$type]->setSuburb($aInfo['entry_suburb']);
-				$this->addresses[$type]->setCity($aInfo['entry_city']);
-				$this->addresses[$type]->setPostcode($aInfo['entry_postcode']);
-				$this->addresses[$type]->setState($aInfo['entry_state']);
-				$this->addresses[$type]->setCountry($aInfo['entry_country']);
-			}
+			$this->addresses[$type]->setName($aInfo['entry_name']);
+			$this->addresses[$type]->setFiscalCode($aInfo['entry_cif']);
+			$this->addresses[$type]->setVATNumber($aInfo['entry_vat']);
+			$this->addresses[$type]->setCompany($aInfo['entry_company']);
+			$this->addresses[$type]->setStreetAddress($aInfo['entry_street_address']);
+			$this->addresses[$type]->setSuburb($aInfo['entry_suburb']);
+			$this->addresses[$type]->setCity($aInfo['entry_city']);
+			$this->addresses[$type]->setPostcode($aInfo['entry_postcode']);
+			$this->addresses[$type]->setState($aInfo['entry_state']);
+			$this->addresses[$type]->setCountry($aInfo['entry_country']);
 		}
 	}
 	
@@ -83,21 +71,16 @@ class OrderCreatorAddressManager extends OrderAddressManager implements Serializ
 			$Address->address_type = $type;
 			$Address->entry_format_id = $addressObj->getFormatId();
 			$Address->entry_name = $addressObj->getName();
-			if(sysConfig::get('ACCOUNT_COMPANY') == 'true'){
-				$Address->entry_company = $addressObj->getCompany();
-			}
+			$Address->entry_company = $addressObj->getCompany();
 			$Address->entry_street_address = $addressObj->getStreetAddress();
 			$Address->entry_suburb = $addressObj->getSuburb();
 			$Address->entry_city = $addressObj->getCity();
 			$Address->entry_postcode = $addressObj->getPostcode();
 			$Address->entry_state = $addressObj->getState();
 			$Address->entry_country = $addressObj->getCountry();
-			if(sysConfig::get('ACCOUNT_FISCAL_CODE') == 'true'){
-				$Address->entry_cif = $addressObj->getCIF();
-			}
-			if(sysConfig::get('ACCOUNT_VAT_NUMBER') == 'true'){
-				$Address->entry_vat = $addressObj->getVAT();
-			}
+
+			$Address->entry_cif = $addressObj->getCIF();
+			$Address->entry_vat = $addressObj->getVAT();
 			$CollectionObj->add($Address);
 		}
 	}
@@ -118,23 +101,15 @@ class OrderCreatorAddressManager extends OrderAddressManager implements Serializ
 
 			$Address->entry_format_id = $addressObj->getFormatId();
 			$Address->entry_name = $addressObj->getName();
-
-			if(sysConfig::get('ACCOUNT_COMPANY') == 'true'){
-				$Address->entry_company = $addressObj->getCompany();
-			}
-
+			$Address->entry_company = $addressObj->getCompany();
 			$Address->entry_street_address = $addressObj->getStreetAddress();
 			$Address->entry_suburb = $addressObj->getSuburb();
 			$Address->entry_city = $addressObj->getCity();
 			$Address->entry_postcode = $addressObj->getPostcode();
 			$Address->entry_state = $addressObj->getState();
 			$Address->entry_country = $addressObj->getCountry();
-			if(sysConfig::get('ACCOUNT_FISCAL_CODE') == 'true'){
-				$Address->entry_cif = $addressObj->getCIF();
-			}
-			if(sysConfig::get('ACCOUNT_VAT_NUMBER') == 'true'){
-				$Address->entry_vat = $addressObj->getVAT();
-			}
+			$Address->entry_cif = $addressObj->getCIF();
+			$Address->entry_vat = $addressObj->getVAT();
 			$Address->save();
 		}
 	}
@@ -267,19 +242,12 @@ class OrderCreatorAddressManager extends OrderAddressManager implements Serializ
 
 		if (is_null($Address) === false){
 			$nameInput->val($Address->getName());
-			if(sysConfig::get('ACCOUNT_COMPANY') == 'true'){
-				$companyInput->val($Address->getCompany());
-			}
-
+			$companyInput->val($Address->getCompany());
 			$addressInput->val($Address->getStreetAddress());
 			$suburbInput->val($Address->getSuburb());
 			$cityInput->val($Address->getCity());
-			if(sysConfig::get('ACCOUNT_FISCAL_CODE') == 'true'){
-				$cifInput->val($Address->getCIF());
-			}
-			if(sysConfig::get('ACCOUNT_VAT_NUMBER') == 'true'){
-				$vatInput->val($Address->getVAT());
-			}
+			$cifInput->val($Address->getCIF());
+			$vatInput->val($Address->getVAT());
 
 			$postcodeInput->val($Address->getPostcode());
 
@@ -299,30 +267,26 @@ class OrderCreatorAddressManager extends OrderAddressManager implements Serializ
 			)
 		));
 
-		if(sysConfig::get('ACCOUNT_COMPANY') == 'true'){
-			$htmlTable->addBodyRow(array(
+		$htmlTable->addBodyRow(array(
+			'columns' => array(
+				array('text' => sysLanguage::get('ENTRY_COMPANY')),
+				array('text' => $companyInput)
+			)
+		));
+
+		$htmlTable->addBodyRow(array(
 				'columns' => array(
-					array('text' => sysLanguage::get('ENTRY_COMPANY')),
-					array('text' => $companyInput)
+					array('text' => sysLanguage::get('ENTRY_CIF')),
+					array('text' => $cifInput)
 				)
-			));
-		}
-		if(sysConfig::get('ACCOUNT_FISCAL_CODE') == 'true'){
-			$htmlTable->addBodyRow(array(
-					'columns' => array(
-						array('text' => sysLanguage::get('ENTRY_CIF')),
-						array('text' => $cifInput)
-					)
-			));
-		}
-		if(sysConfig::get('ACCOUNT_VAT_NUMBER') == 'true'){
-			$htmlTable->addBodyRow(array(
-					'columns' => array(
-						array('text' => sysLanguage::get('ENTRY_VAT')),
-						array('text' => $vatInput)
-					)
-			));
-		}
+		));
+
+		$htmlTable->addBodyRow(array(
+				'columns' => array(
+					array('text' => sysLanguage::get('ENTRY_VAT')),
+					array('text' => $vatInput)
+				)
+		));
 
 		$htmlTable->addBodyRow(array(
 			'columns' => array(

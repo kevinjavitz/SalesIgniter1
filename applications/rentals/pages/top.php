@@ -24,7 +24,7 @@
   }
   $productListing->setQuery($listing_sql);
   
-  ob_start();
+  ob_start()
         $products_count = MAX_DISPLAY_SEARCH_RESULTS;
         include(DIR_WS_MODULES . FILENAME_PRODUCT_LISTING);
   $pageContents = ob_get_contents();

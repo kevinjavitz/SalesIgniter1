@@ -1,6 +1,6 @@
 <?php
 	$extension = basename($_GET['ext']);
-	$extensionDir = sysConfig::getDirFsCatalog() . 'extensions/' . $extension . '/';
+	$extensionDir = DIR_FS_CATALOG . 'extensions/' . $extension . '/';
 
 	$config = simplexml_load_file($extensionDir . 'data/base/configuration.xml', 'SimpleXMLElement', LIBXML_NOCDATA);
 	$ConfigurationGroup = Doctrine_Core::getTable('ConfigurationGroup');

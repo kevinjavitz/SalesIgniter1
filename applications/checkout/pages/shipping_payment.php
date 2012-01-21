@@ -251,6 +251,9 @@
 		<div class="ui-widget-text"><?php
 			$radio_buttons = 0;
 			for ($i=0, $n=sizeof($quotes); $i<$n; $i++) {
+				if ($quotes[$i]['id'] == 'reservation'){ //should be zonereservation
+					continue;
+				}
 
 				$contents = EventManager::notifyWithReturn('CheckoutShippingMethodsAfterQuote', &$quotes[$i]);
 				if (!empty($contents)){

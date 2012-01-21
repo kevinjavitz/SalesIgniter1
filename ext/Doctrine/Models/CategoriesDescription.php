@@ -13,7 +13,6 @@
 class CategoriesDescription extends Doctrine_Record {
 
 	public function setUp(){
-		parent::setUp();
 		$this->setUpParent();
 		
 		$this->setAttribute(Doctrine::ATTR_COLL_KEY, 'language_id');

@@ -24,14 +24,6 @@ function parseElement(el){
 		$(el).attr('data-container_id', $(el).data('container_id'));
 	}
 
-	if ($(el).data('anchor_id')){
-		$(el).attr('data-anchor_id', $(el).data('anchor_id'));
-	}
-
-	if ($(el).data('is_anchor')){
-		$(el).attr('data-is_anchor', $(el).data('is_anchor'));
-	}
-
 	if ($(el).data('column_id')){
 		$(el).attr('data-column_id', $(el).data('column_id'));
 	}

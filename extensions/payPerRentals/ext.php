@@ -41,7 +41,6 @@ class Extension_payPerRentals extends ExtensionBase {
 			'ShoppingCartFind',
 			'ShoppingCartFindKey',
 			'UpdateTotalsCheckout',
-			'BeforeShowShippingOrderTotals',
 			'CouponsPurchaseTypeRestrictionCheck'
 		), null, $this);
 
@@ -87,30 +86,28 @@ class Extension_payPerRentals extends ExtensionBase {
 		global $onePageCheckout, $ShoppingCart;
 		$weight = 0;
 		$selectedMethod = '';
-		$Module = OrderShippingModules::getModule('zonereservation', true);
-		if($Module->getType() == 'Order' && sysConfig::get('EXTENSION_PAY_PER_RENTALS_USE_ONE_SHIPPING_METHOD') == 'False'){
-			foreach($ShoppingCart->getProducts() as $cartProduct) {
-						if ($cartProduct->hasInfo('reservationInfo') === true){
-							$reservationInfo1 = $cartProduct->getInfo('reservationInfo');
-							if(isset($reservationInfo1['shipping']) && isset($reservationInfo1['shipping']['module']) && $reservationInfo1['shipping']['module'] == 'zonereservation'){
-								$selectedMethod = $reservationInfo1['shipping']['id'];
-								$weight += $cartProduct->getWeight();
-							}
+
+		foreach($ShoppingCart->getProducts() as $cartProduct) {
+					if ($cartProduct->hasInfo('reservationInfo') === true){
+						$reservationInfo1 = $cartProduct->getInfo('reservationInfo');
+						if(isset($reservationInfo1['shipping']) && isset($reservationInfo1['shipping']['module']) && $reservationInfo1['shipping']['module'] == 'zonereservation'){
+							$selectedMethod = $reservationInfo1['shipping']['id'];
+							$weight += $cartProduct->getWeight();
 						}
-			}
-
-
-			$quotes = array($Module->quote($selectedMethod, $weight));
-
-
-			$onePageCheckout->onePage['info']['reservationshipping'] = array(
-									'id'     => 'zonereservation_' .(isset($quotes[0]['methods'][0]['id'])?$quotes[0]['methods'][0]['id']:''),
-									'module' => 'zonereservation',
-									'method' => 'zonereservation',
-									'title'  => isset($quotes[0]['methods'][0]['title'])?$quotes[0]['methods'][0]['title']:'',
-									'cost'   => isset($quotes[0]['methods'][0]['cost'])?$quotes[0]['methods'][0]['cost']:''
-			);
+					}
 		}
+
+		$Module = OrderShippingModules::getModule('zonereservation', true);
+		$quotes = array($Module->quote($selectedMethod, $weight));
+
+
+		$onePageCheckout->onePage['info']['reservationshipping'] = array(
+								'id'     => 'zonereservation_' .(isset($quotes[0]['methods'][0]['id'])?$quotes[0]['methods'][0]['id']:''),
+								'module' => 'zonereservation',
+								'method' => 'zonereservation',
+								'title'  => isset($quotes[0]['methods'][0]['title'])?$quotes[0]['methods'][0]['title']:'',
+								'cost'   => isset($quotes[0]['methods'][0]['cost'])?$quotes[0]['methods'][0]['cost']:''
+		);
 	}
 	
 	public function CouponEditPurchaseTypeBeforeOutput(&$checkbox, $name, $Coupon){
@@ -388,18 +385,14 @@ class Extension_payPerRentals extends ExtensionBase {
 	}
 
 	public function BoxMarketingAddLink(&$contents){
-		if (sysPermissions::adminAccessAllowed('default_orders', 'show_reports', 'payPerRentals') === true){
-			$contents['children'][] = array(
-				'link'       => itw_app_link('appExt=payPerRentals','show_reports','default_orders','SSL'),
-				'text' => 'Rental Order Reports'
-			);
-		}
-		if (sysPermissions::adminAccessAllowed('default', 'reservations_reports', 'payPerRentals') === true){
-			$contents['children'][] = array(
-				'link'       => itw_app_link('appExt=payPerRentals','reservations_reports','default','SSL'),
-				'text' => 'Rental Inventory Report'
-			);
-		}
+		$contents['children'][] = array(
+			'link'       => itw_app_link('appExt=payPerRentals','show_reports','default_orders','SSL'),
+			'text' => 'Rental Order Reports'
+		);
+		$contents['children'][] = array(
+			'link'       => itw_app_link('appExt=payPerRentals','reservations_reports','default','SSL'),
+			'text' => 'Rental Inventory Report'
+		);
 	}
 
 	public function BeforeShowShippingOrderTotals(&$orderTotals){
@@ -425,7 +418,8 @@ class Extension_payPerRentals extends ExtensionBase {
 			$taxClassId = $module->getTaxClass();
 			if ($taxClassId > 0) {
 				$shipping_tax = tep_get_tax_rate($taxClassId, $deliveryAddress['entry_country_id'], $deliveryAddress['entry_zone_id']);
-				$shipping_tax_description = tep_get_tax_description($taxClassId, $deliveryAddress['entry_country_id'], $deliveryAddress['entry_zone_id']);		
+				$shipping_tax_description = tep_get_tax_description($taxClassId, $deliveryAddress['entry_country_id'], $deliveryAddress['entry_zone_id']);
+			    //echo 'hh'.$shipping_tax.'--'.$shipping_tax_description;
 				$order->info['tax'] += tep_calculate_tax($shippingCost, $shipping_tax);
 				$order->info['tax_groups']["$shipping_tax_description"] += tep_calculate_tax($shippingCost, $shipping_tax);
 				$order->info['total'] += tep_calculate_tax($shippingCost, $shipping_tax);

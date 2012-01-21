@@ -47,8 +47,8 @@ class OrderCreatorProduct extends OrderProduct implements Serializable {
 		$taxAddress = $Editor->AddressManager->getAddress('billing');
 		$this->setTaxRate(tep_get_tax_rate(
 			$this->productClass->getTaxClassId(),
-			(is_object($taxAddress) ? $taxAddress->getCountryId() : -1),
-				(is_object($taxAddress) ? $taxAddress->getZoneId() : -1)
+			$taxAddress->getCountryId(),
+			$taxAddress->getZoneId()
 		));
 	}
 	
@@ -64,7 +64,7 @@ class OrderCreatorProduct extends OrderProduct implements Serializable {
 		$this->pInfo['purchase_type'] = $val;
 		
 		$this->purchaseTypeClass = $this->productClass->getPurchaseType($val);
-
+		
 		$this->pInfo['products_price'] = $this->purchaseTypeClass->getPrice();
 		$this->pInfo['final_price'] = $this->purchaseTypeClass->getPrice();
 
@@ -92,18 +92,6 @@ class OrderCreatorProduct extends OrderProduct implements Serializable {
 	public function setPrice($val){
 		$this->pInfo['products_price'] = $val;
 		$this->pInfo['final_price'] = $val;
-	}
-
-	public function setBarcodeId($val){
-		$this->pInfo['barcode_id'] = $val;
-	}
-
-	public function getBarcodeId(){
-		return $this->pInfo['barcode_id'];
-	}
-
-	public function hasBarcodeId(){
-		return (isset($this->pInfo['barcode_id']));
 	}
 
 	public function getTaxRateEdit(){

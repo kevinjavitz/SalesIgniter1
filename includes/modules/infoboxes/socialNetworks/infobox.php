@@ -20,14 +20,13 @@ class InfoBoxSocialNetworks extends InfoBoxAbstract {
 	public function show(){
 
 		$boxWidgetProperties = $this->getWidgetProperties();
-		$facebook = (isset($boxWidgetProperties->facebook) && $boxWidgetProperties->facebook!= '')?'<a target="_blank" href="'.$boxWidgetProperties->facebook.'"><img src="'. sysConfig::getDirWsCatalog() .'templates/' . Session::get('tplDir') .'/images/facebookSocial.png" /></a>'. sysLanguage::get('INFOBOX_SOCIAL_NETWORKS_FACEBOOK_TEXT'):'';
-		$twitter = (isset($boxWidgetProperties->twitter) && $boxWidgetProperties->twitter != '')?'<a href="'.$boxWidgetProperties->twitter.'" target="_blank"><img src="'. sysConfig::getDirWsCatalog() .'templates/' . Session::get('tplDir') .'/images/twitterSocial.png" /></a>'. sysLanguage::get('INFOBOX_SOCIAL_NETWORKS_TWITTER_TEXT'):'';
-		$youtube = (isset($boxWidgetProperties->youtube) && $boxWidgetProperties->youtube != '')?'<a href="'.$boxWidgetProperties->youtube.'" target="_blank"><img src="'. sysConfig::getDirWsCatalog() .'templates/' . Session::get('tplDir') .'/images/youtubeSocial.png" /></a>'. sysLanguage::get('INFOBOX_SOCIAL_NETWORKS_YOUTUBE_TEXT'):'';
-		$email = (isset($boxWidgetProperties->email) && $boxWidgetProperties->email != '')?'<a href="'.$boxWidgetProperties->email.'" target="_blank"><img src="'. sysConfig::getDirWsCatalog() .'templates/' . Session::get('tplDir') .'/images/emailSocial.png" /></a>'. sysLanguage::get('INFOBOX_SOCIAL_NETWORKS_EMAIL_TEXT'):'';
+		$facebook = (isset($boxWidgetProperties->facebook) && $boxWidgetProperties->facebook!= '')?'<a target="_blank" href="'.$boxWidgetProperties->facebook.'"><img src="'. sysConfig::getDirWsCatalog() .'images/facebookSocial.png" /></a>'. sysLanguage::get('INFOBOX_SOCIAL_NETWORKS_FACEBOOK_TEXT'):'';
+		$twitter = (isset($boxWidgetProperties->twitter) && $boxWidgetProperties->twitter != '')?'<a href="'.$boxWidgetProperties->twitter.'" target="_blank"><img src="'. sysConfig::getDirWsCatalog() .'images/twitterSocial.png" /></a>'. sysLanguage::get('INFOBOX_SOCIAL_NETWORKS_TWITTER_TEXT'):'';
+		$email = (isset($boxWidgetProperties->email) && $boxWidgetProperties->email != '')?'<a href="'.$boxWidgetProperties->email.'" target="_blank"><img src="'. sysConfig::getDirWsCatalog() .'images/emailSocial.png" /></a>'. sysLanguage::get('INFOBOX_SOCIAL_NETWORKS_EMAIL_TEXT'):'';
 
 		$htmlText = htmlBase::newElement('div')
 		->addClass('socialNetworks')
-		->html(sysLanguage::get('INFOBOX_SOCIAL_NETWORKS_TEXT') . $facebook .$twitter .$youtube .$email);
+		->html(sysLanguage::get('INFOBOX_SOCIAL_NETWORKS_TEXT') . $facebook .$twitter .$email);
 
 		$this->setBoxContent($htmlText->draw());
 		return $this->draw();

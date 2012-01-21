@@ -17,13 +17,13 @@ class blogInstall extends extensionInstaller {
 	}
 	
 	public function install(){
-		if (sysConfig::exists('EXTENSION_BLOG_ENABLED') === true) return;
+		if (defined('EXTENSION_BLOG_ENABLED')) return;
 		
 		parent::install();
 	}
 	
 	public function uninstall($remove = false){
-		if (sysConfig::exists('EXTENSION_BLOG_ENABLED') === false) return;
+		if (!defined('EXTENSION_BLOG_ENABLED')) return;
 		
 		parent::uninstall($remove);
 	}

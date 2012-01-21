@@ -96,7 +96,66 @@ class OrderCreatorProductPurchaseTypeReservation extends PurchaseType_reservatio
 			$starting,
 			$this->overBookingAllowed()
 		);
+		/*
+		foreach($newReservations as $reservationProductAll){
+			$reservationProduct = $reservationProductAll->getInfo();
+			if (isset($reservationProduct['OrdersProductsReservation'])){
 
+				foreach($reservationProduct['OrdersProductsReservation'] as $iReservation){
+					$reservationArr = array();
+
+					$startDateArr = date_parse($iReservation['start_date']);
+					$endDateArr = date_parse($iReservation['end_date']);
+
+					$startTime = mktime($startDateArr['hour'],$startDateArr['minute'],$startDateArr['second'],$startDateArr['month'],$startDateArr['day']-$iReservation['shipping_days_before'],$startDateArr['year']);
+					$endTime = mktime($endDateArr['hour'],$endDateArr['minute'],$endDateArr['second'],$endDateArr['month'],$endDateArr['day']+$iReservation['shipping_days_after'],$endDateArr['year']);
+
+					$dateStart = date('Y-n-j', $startTime);
+					$timeStart = date('G:i', $startTime);
+
+					$dateEnd = date('Y-n-j', $endTime);
+					$timeEnd = date('G:i', $endTime);
+
+					if($timeStart == '0:00'){
+						$reservationArr['start'] = $dateStart;
+					}else{
+						$reservationArr['start_time'] = $timeStart;
+						$reservationArr['start_date'] = $dateStart;
+						$reservationArr['end_time'] = '23:59';
+						$reservationArr['end_date'] = $dateStart;
+						$nextStartTime = strtotime('+1 day', strtotime($dateStart));
+						$prevEndTime = strtotime('-1 day', strtotime($dateEnd));
+						if( $nextStartTime <= $prevEndTime){
+							$reservationArr['start'] = date('Y-n-j', $nextStartTime);
+						}
+					}
+
+					if($timeEnd == '0:00'){
+						$reservationArr['end'] = $dateEnd;
+					}else{
+						if(!isset($reservationArr['start_time'])){
+							$reservationArr['start_time'] = '0:00';
+						}
+						$reservationArr['start_date'] = $dateEnd;
+						$reservationArr['end_time'] = $timeEnd;
+						$reservationArr['end_date'] = $dateEnd;
+						$nextStartTime = strtotime('+1 day', strtotime($dateStart));
+						$prevEndTime = strtotime('-1 day', strtotime($dateEnd));
+						if( $nextStartTime <= $prevEndTime){
+							$reservationArr['end'] = date('Y-n-j', $prevEndTime);
+						}
+					}
+
+				    $reservationArr['barcode'] = $iReservation['barcode_id'];//if barcode_id is null or 0 this means is quantity and check will be made with the total qty at some point.
+					$reservationArr['qty'] = 1;
+
+					$reservArr[] = $reservationArr;
+				}
+			}
+
+		}*/
+
+		//$bookedDates = array();
 		foreach($reservArr as $iReservation){
 			if (isset($iReservation['start']) && isset($iReservation['end'])){
 				$startTime = strtotime($iReservation['start']);
@@ -166,9 +225,7 @@ class OrderCreatorProductPurchaseTypeReservation extends PurchaseType_reservatio
 			'shipping_method' => (isset($shippingInfo[1])?$shippingInfo[1]:''),
 			'start_date'      => $resInfo['start_date'],
 			'end_date'        => $resInfo['end_date'],
-			'days_before'        => $resInfo['days_before'],
-			'days_after'        => $resInfo['days_after'],
-			'quantity'        => $resInfo['quantity']
+			'quantity'        => $resInfo['rental_qty']
 		);
 		if (sysConfig::get('EXTENSION_PAY_PER_RENTALS_USE_EVENTS') == 'True'){
 			$dataArray['event_name'] = $resInfo['event_name'];

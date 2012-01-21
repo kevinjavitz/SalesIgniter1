@@ -66,44 +66,6 @@
 	<define key="TOTAL_SALES"><![CDATA[Recovered Sales:]]></define>
 	<define key="TOTAL_SALES_EXPLANATION"><![CDATA[ (Possible sales from customers who abanoned carts & were notified via RCS)]]></define>
 	<define key="TOTAL_RECOVERED"><![CDATA[Total Recovered:]]></define>
-
-	<define key="HEADING_TITLE_SALES_REPORT"><![CDATA[Statistics: Sales Report]]></define>
-	<define key="TABLE_HEADING_DATE"><![CDATA[Date]]></define>
-	<define key="TABLE_HEADING_SALES"><![CDATA[Total Rentals]]></define>
-	<define key="TABLE_HEADING_LATE_FEES"><![CDATA[Total Late Fees]]></define>
-	<define key="TABLE_HEADING_SALES_TAX"><![CDATA[Total Sales Tax]]></define>
-	<define key="TABLE_HEADING_COUPONS"><![CDATA[Total Coupons]]></define>
-	<define key="TABLE_HEADING_CREDITS"><![CDATA[Total Credits]]></define>
-	<define key="TABLE_HEADING_STORE_TO_STORE_INCOME"><![CDATA[Owed From Main]]></define>
-	<define key="TABLE_HEADING_STORE_TO_STORE_EXPENSE"><![CDATA[Owed To Main]]></define>
-	<define key="TEXT_ENTRY_SALES"><![CDATA[Sales]]></define>
-	<define key="TEXT_ENTRY_LATE_FEES"><![CDATA[Late Fees]]></define>
-	<define key="TEXT_ENTRY_SALES_TAX"><![CDATA[Sales Tax]]></define>
-	<define key="TEXT_ENTRY_COUPONS"><![CDATA[Coupons]]></define>
-	<define key="TEXT_ENTRY_CREDITS"><![CDATA[Credits]]></define>
-	<define key="TEXT_ENTRY_DAILY"><![CDATA[Daily]]></define>
-	<define key="TEXT_ENTRY_MONTHLY"><![CDATA[Monthly]]></define>
-	<define key="TEXT_ENTRY_YEARLY"><![CDATA[Yearly]]></define>
-	<define key="TEXT_ENTRY_DATE_FROM"><![CDATA[Date From]]></define>
-	<define key="TEXT_ENTRY_DATE_TO"><![CDATA[Date To]]></define>
-	<define key="TEXT_ENTRY_MONTH_FROM"><![CDATA[Month From]]></define>
-	<define key="TEXT_ENTRY_MONTH_TO"><![CDATA[Month To]]></define>
-	<define key="TEXT_ENTRY_YEAR_FROM"><![CDATA[Year From]]></define>
-	<define key="TEXT_ENTRY_YEAR_TO"><![CDATA[Year To]]></define>
-	<define key="TEXT_ENTRY_STORES"><![CDATA[Select Stores]]></define>
-	<define key="TEXT_ENTRY_INCOME_COLUMNS"><![CDATA[Select Income Columns]]></define>
-	<define key="TEXT_ENTRY_EXPENSE_COLUMNS"><![CDATA[Select Expense Columns]]></define>
-	<define key="TEXT_ENTRY_STORE_TO_STORE_INCOME"><![CDATA[Store To Store Payments]]></define>
-	<define key="TEXT_ENTRY_STORE_TO_STORE_EXPENSE"><![CDATA[Store To Store Payments]]></define>
-	<define key="TEXT_ENTRY_PAYMENT_MODULES"><![CDATA[Select Payment Modules]]></define>
-	<define key="TEXT_BUTTON_GENERATE"><![CDATA[Generate Report]]></define>
-	<define key="TEXT_BUTTON_GENERATE_CSV"><![CDATA[Generate Csv Report]]></define>
-	<define key="TEXT_INFO_CHECK_ALL_STORES"><![CDATA[Select All Stores]]></define>
-	<define key="TEXT_INFO_CHECK_ALL_INCOME"><![CDATA[Select All Income Columns]]></define>
-	<define key="TEXT_INFO_CHECK_ALL_EXPENSE"><![CDATA[Select All Expense Columns]]></define>
-	<define key="TEXT_INFO_CHECK_ALL_PAYMENT"><![CDATA[Select All Payment Modules]]></define>
-	<define key="HEADING_TITLE_PRODUCT"><![CDATA[Product]]></define>
-	<define key="HEADING_TITLE_INVENTORY_CENTER"><![CDATA[Inventory Center]]></define>
-	<define key="TABLE_HEADING_RENTAL_MEMBERSHIPS"><![CDATA[Memberships]]></define>
+	<define key="TABLE_HEADING_RENTAL_MEMBERSHIPS"><![CDATA[Rental<br/>Memberships]]></define>
 
 </definitions>

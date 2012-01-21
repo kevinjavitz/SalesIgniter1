@@ -139,28 +139,31 @@ class payPerRentals_catalog_checkout_default extends Extension_payPerRentals {
 		}
 		//After will be removed so is not need for a check
 		//if (sysConfig::get('EXTENSION_PAY_PER_RENTALS_DATE_SELECTION') == 'Before'){
-			//$hasShipping = false;
+			$hasShipping = false;
 			foreach($ShoppingCart->getProducts() as $cartProduct){
 				if ($cartProduct->hasInfo('reservationInfo') === false){
 					$onlyReservations = false;
+				}else{
+					$resInfo = $cartProduct->getInfo('reservationInfo');
+					if (isset($resInfo['shipping'])){
+						if ($hasShipping === false){
+							$hasShipping = true;
+						}
+					}
 				}
 			}
 
-			/*if(sysConfig::get('EXTENSION_PAY_PER_RENTALS_USE_ONE_SHIPPING_METHOD') == 'True'){
-				foreach($ShoppingCart->getProducts() as $cartProduct){
-					if ($cartProduct->hasInfo('reservationInfo')){
-						$pInfo1 = $cartProduct->getInfo();
-						unset($pInfo1['reservationInfo']['shipping']);
-						$cartProduct->updateInfo($pInfo1);
+			if ($hasShipping === false){
+				Session::set('shipping', false);
+			}
 
-					}
+			if ($onlyReservations === true){
+				if ($hasShipping === false){
+					$onePageCheckout->onePage['info']['shipping'] = false;
+					$onePageCheckout->onePage['shippingEnabled'] = false;
+				} else {
 				}
-			}*/
-
-
-			//$onePageCheckout->onePage['info']['shipping'] = false;
-			//$onePageCheckout->onePage['shippingEnabled'] = false;
-
+			}
 			Session::set('onlyReservations', $onlyReservations);
 		//}
 	}
@@ -207,8 +210,6 @@ class payPerRentals_catalog_checkout_default extends Extension_payPerRentals {
 							array('text' => '(' . $currencies->format($shippingInfo['cost'], true, $order->info['currency'], $order->info['currency_value']) . ')')
 						)
 					);
-				}else if($Module->getType() == 'Order'){
-					$showStoreMethods = true;
 				}
 			}else{
 				$showStoreMethods = true;

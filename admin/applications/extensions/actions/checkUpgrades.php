@@ -1,5 +1,5 @@
 <?php
-	require(sysConfig::getDirFsCatalog() . 'includes/classes/extensionInstaller.php');
+	require(DIR_FS_CATALOG . 'includes/classes/extensionInstaller.php');
 	
 	$extension = basename($_GET['ext']);
 	$installer = new extensionInstaller($extension);

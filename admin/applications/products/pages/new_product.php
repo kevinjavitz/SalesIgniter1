@@ -7,19 +7,15 @@
 	}
 
 	$manufacturers_array = array(array('id' => '', 'text' => sysLanguage::get('TEXT_NONE')));
-	$Qmanufacturers = Doctrine_Manager::getInstance()
-	->getCurrentConnection()
-	->fetchAssoc("select manufacturers_id, manufacturers_name from manufacturers order by manufacturers_name");
-	foreach($Qmanufacturers as $manufacturers){
+	$manufacturers_query = tep_db_query("select manufacturers_id, manufacturers_name from " . TABLE_MANUFACTURERS . " order by manufacturers_name");
+	while ($manufacturers = tep_db_fetch_array($manufacturers_query)) {
 		$manufacturers_array[] = array('id' => $manufacturers['manufacturers_id'],
 		'text' => $manufacturers['manufacturers_name']);
 	}
 
 	$tax_class_array = array(array('id' => '0', 'text' => sysLanguage::get('TEXT_NONE')));
-	$QtaxClass = Doctrine_Manager::getInstance()
-	->getCurrentConnection()
-	->fetchAssoc("select tax_class_id, tax_class_title from tax_class order by tax_class_title");
-	foreach($QtaxClass as $tax_class){
+	$tax_class_query = tep_db_query("select tax_class_id, tax_class_title from " . TABLE_TAX_CLASS . " order by tax_class_title");
+	while ($tax_class = tep_db_fetch_array($tax_class_query)) {
 		$tax_class_array[] = array('id' => $tax_class['tax_class_id'],
 		'text' => $tax_class['tax_class_title']);
 	}
@@ -120,14 +116,14 @@ for ($i=0, $n=sizeof($tax_class_array); $i<$n; $i++) {
 ?>
   </ul>
 
-  <div id="page-1"><?php include(sysConfig::get('DIR_WS_APP') . 'products/pages_tabs/tab_general.php');?></div>
-  <div id="page-8"><?php include(sysConfig::get('DIR_WS_APP') . 'products/pages_tabs/tab_images.php');?></div>
-  <div id="page-2"><?php include(sysConfig::get('DIR_WS_APP') . 'products/pages_tabs/tab_description.php');?></div>
-  <div id="page-3"><?php include(sysConfig::get('DIR_WS_APP') . 'products/pages_tabs/tab_pricing.php');?></div>
-  <div id="page-4"><?php include(sysConfig::get('DIR_WS_APP') . 'products/pages_tabs/tab_inventory.php');?></div>
-  <div id="page-5"><?php include(sysConfig::get('DIR_WS_APP') . 'products/pages_tabs/tab_box_set.php');?></div>
-  <div id="page-r"><?php include(sysConfig::get('DIR_WS_APP') . 'products/pages_tabs/tab_rental_membership.php');?></div>
-  <div id="page-categories"><?php include(sysConfig::get('DIR_WS_APP') . 'products/pages_tabs/tab_categories.php');?></div>
+  <div id="page-1"><?php include(DIR_WS_APP . 'products/pages_tabs/tab_general.php');?></div>
+  <div id="page-8"><?php include(DIR_WS_APP . 'products/pages_tabs/tab_images.php');?></div>
+  <div id="page-2"><?php include(DIR_WS_APP . 'products/pages_tabs/tab_description.php');?></div>
+  <div id="page-3"><?php include(DIR_WS_APP . 'products/pages_tabs/tab_pricing.php');?></div>
+  <div id="page-4"><?php include(DIR_WS_APP . 'products/pages_tabs/tab_inventory.php');?></div>
+  <div id="page-5"><?php include(DIR_WS_APP . 'products/pages_tabs/tab_box_set.php');?></div>
+  <div id="page-r"><?php include(DIR_WS_APP . 'products/pages_tabs/tab_rental_membership.php');?></div>
+  <div id="page-categories"><?php include(DIR_WS_APP . 'products/pages_tabs/tab_categories.php');?></div>
 <?php
 	$contents = EventManager::notifyWithReturn('NewProductTabBody', &$Product);
 	if (!empty($contents)){

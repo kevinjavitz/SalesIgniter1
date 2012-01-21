@@ -35,8 +35,6 @@
 	<define key="ERROR_CATALOG_IMAGE_DIRECTORY_DOES_NOT_EXIST"><![CDATA[Error: Catalog images directory does not exist: %s.]]></define>
 	<define key="ERROR_CANNOT_MOVE_CATEGORY_TO_PARENT"><![CDATA[Error: Category cannot be moved into child category.]]></define>
   	<define key="TEXT_CATEGORIES_SEO_URL"><![CDATA[Category SEO URL:]]></define>
-	<define key="TEXT_PARENT_CATEGORY"><![CDATA[Parent Category:]]></define>
-
 	<define key="TEXT_CATEGORIES_DESCRIPTION"><![CDATA[Categories Description:]]></define>
 	<define key="EMPTY_CATEGORY"><![CDATA[Empty Category]]></define>
 </definitions>

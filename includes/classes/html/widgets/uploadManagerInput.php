@@ -19,8 +19,6 @@ class htmlWidget_uploadManagerInput implements htmlWidgetPlugin {
 		$this->isMulti = false;
 		$this->fileType = 'image';
 		$this->showPhpUploadSize = false;
-		$this->showCaption = false;
-		$this->showDescription = false;
 		$this->previewFiles = array();
 		$this->setVal = null;
 	}
@@ -229,26 +227,6 @@ class htmlWidget_uploadManagerInput implements htmlWidgetPlugin {
 			'margin' => '.5em'
 		))
 		->append($previewThumbContainer);
-
-		if($this->hasCaption){
-			$captionInput = htmlBase::newElement('input')
-			->setName('caption_'.str_lreplace('.','_',$imgSrc))
-			->setLabel('Title:')
-			->setValue($this->captions[str_lreplace('.','_',$imgSrc)])
-			->setLabelPosition('before');
-			$previewContainer->append($captionInput);
-		}
-
-		if($this->hasDescription){
-			$descInput = htmlBase::newElement('textarea')
-				->setName('desc_'.str_lreplace('.','_',$imgSrc))
-				->html($this->descs[str_lreplace('.','_',$imgSrc)])
-				->attr('rows','8')
-				->attr('cols','5');
-			$descLabel = htmlBase::newElement('span')
-			->html('Description:');
-			$previewContainer->append($descLabel)->append($descInput);
-		}
 				
 		return $previewContainer;
 	}
@@ -267,16 +245,6 @@ class htmlWidget_uploadManagerInput implements htmlWidgetPlugin {
 		$this->showPreview = $val;
 		return $this;
 	}
-
-	public function hasCaption($val){
-		$this->hasCaption = $val;
-		return $this;
-	}
-
-	public function hasDescription($val){
-		$this->hasDescription = $val;
-		return $this;
-	}
 	
 	public function autoUpload($val){
 		$this->autoUpload = $val;
@@ -293,10 +261,8 @@ class htmlWidget_uploadManagerInput implements htmlWidgetPlugin {
 		return $this;
 	}
 	
-	public function setPreviewFile($val, $caption='', $desc = ''){
+	public function setPreviewFile($val){
 		$this->previewFiles[] = $val;
-		$this->captions[str_lreplace('.','_',$val)] = $caption;
-		$this->descs[str_lreplace('.','_',$val)] = $desc;
 		return $this;
 	}
 	

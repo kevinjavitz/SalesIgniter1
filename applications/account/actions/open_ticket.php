@@ -29,11 +29,11 @@ if (tep_not_null($productID) && tep_not_null($problemText)){
 	$problemText,
 	$product['products_id']
 	));
-	tep_mail(sysConfig::get('STORE_OWNER'), sysConfig::get('STORE_OWNER_EMAIL_ADDRESS'), sysLanguage::get('EMAIL_SUBJECT_REPORT'), $emailText, sysConfig::get('STORE_OWNER'), sysConfig::get('STORE_OWNER_EMAIL_ADDRESS'));
+	tep_mail(sysConfig::get('STORE_OWNER'), sysConfig::get('STORE_OWNER_EMAIL_ADDRESS'), sysLanguage::get('EMAIL_SUBJECT_REPORT'), $emailText, STORE_OWNER, STORE_OWNER_EMAIL_ADDRESS);
 
 	tep_redirect(itw_app_link(null, 'contact_us', 'success'));
 } else {
 	$error = true;
-	$messageStack->add('pageStack',sysLanguage::get('ENTRY_EMAIL_ADDRESS_CHECK_ERROR'), 'error');
+	$messageStack->add('pageStack', ENTRY_EMAIL_ADDRESS_CHECK_ERROR, 'erro');
 }
 ?>

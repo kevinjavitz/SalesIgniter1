@@ -1,7 +1,6 @@
 <?php
 	global $currencies;
 
-	$purchaseTypes = array();
 	if (is_array($listingData)){
 		$listingTable = htmlBase::newElement('table')->setCellPadding(3)->setCellSpacing(0)->attr('width', '100%');
 		foreach($listingData as $row => $rowInfo){
@@ -26,10 +25,6 @@
 
 				if (isset($colInfo['addCls'])){
 					$rowColumns[$col]['addCls'] = $colInfo['addCls'];
-				}
-
-				if(isset($colInfo['purchaseType']) && !empty($colInfo['purchaseType'])){
-					$purchaseTypes[$colInfo['purchaseType']] = 1;
 				}
 			}
 
@@ -134,71 +129,6 @@
 </div>
 <br />
 <?php } ?>
-
-<?php
-	 if(sysConfig::get('PRODUCT_LISTING_SELECT_MULTIPLES') == 'true'){
-	 ?>
-	<div class="productListingRowPager ui-corner-all">
-		<table cellpadding="3" cellspacing="0" border="0" width="100%">
-			<tr>
-				<td><input type="checkbox" value="1" name="selectAllProducts" class="selectAllProductsID"/>Select All</td>
-				<?php
-				foreach($purchaseTypes as $pType => $pVal){
-					$pButton = htmlBase::newElement('button')
-					->setText(sysLanguage::get('TEXT_BUTTON_ALL_'.strtoupper($pType)))
-					->addClass('buyp')
-					->attr('pType', $pType);
-					echo '<td>'.$pButton->draw().'</td>';
-				}
-				?>
-			</tr>
-		</table>
-		<script type="text/javascript">
-			$(document).ready(function(){
-				$('.selectAllProductsID').change(function(){
-					if($(this).is(':checked')){
-
-						$('.selectProductsID').each(function(){
-							$(this).attr('checked', true);
-						});
-					}else{
-						$('.selectProductsID').each(function(){
-							$(this).attr('checked', false);
-						});
-					}
-
-				});
-
-				$('.buyp').click(function(){
-					var data = { 'selectProduct[]' : [],'pType':$(this).attr('pType'),'selectQty[]' : [],'selectStartDate[]' : [],'selectEndDate[]' : [],'selectDaysBefore[]' : [],'selectDaysAfter[]' : [],'selectPickup[]' : [],'selectDropoff[]' : []};
-					$(".selectProductsID:checked").each(function() {
-						data['selectProduct[]'].push($(this).val());
-						data['selectQty[]'].push($(this).parent().parent().find("input[name=rental_qty]").val());
-						data['selectStartDate[]'].push($(this).parent().parent().find("input[name=start_date]").val());
-						data['selectEndDate[]'].push($(this).parent().parent().find("input[name=end_date]").val());
-						data['selectDaysBefore[]'].push($(this).parent().parent().find("input[name=days_before]").val());
-						data['selectDaysAfter[]'].push($(this).parent().parent().find("input[name=days_before]").val());
-						data['selectPickup[]'].push($(this).parent().parent().find("input[name=pickup]").val());
-						data['selectDropoff[]'].push($(this).parent().parent().find("input[name=dropoff]").val());
-
-					});
-					$.ajax({
-						cache: false,
-						url: js_app_link('action=addMultiple&app=shoppingCart&appPage=default'),
-						data: data,
-						type: 'post',
-						success: function (data){
-							js_redirect(js_app_link('app=shoppingCart&appPage=default'));
-						}
-					});
-				});
-			});
-		</script>
-	</div>
-	<?php
-	 }
-	?>
-
  <div class="productListingRowContents"><?php echo $listingTable->draw();?></div>
 <?php if (isset($pager) || isset($sorter)){ ?>
 <br />

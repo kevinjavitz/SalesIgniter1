@@ -23,7 +23,6 @@
 	<define key="ENTRY_NOTIFY_COMMENTS"><![CDATA[Append Comments:]]></define>
 	<define key="ENTRY_PASSWORD"><![CDATA[Account Password:]]></define>
 	<define key="ENTRY_SEARCH_CUSTOMER"><![CDATA[Search For Customer:]]></define>
-	<define key="ENTRY_MEMBER_NUMBER"><![CDATA[Member Number:]]></define>
 	
 	<define key="TEXT_BUTTON_SAVE_AS_ORDER"><![CDATA[Save As Order]]></define>
 	<define key="TEXT_BUTTON_UPDATE_ORDER"><![CDATA[Update Order]]></define>
@@ -61,6 +60,5 @@
 	<define key="ENTRY_CIF"><![CDATA[Fiscal code:]]></define>
 	<define key="ENTRY_VAT"><![CDATA[VAT:]]></define>
 	<define key="ENTRY_DOB"><![CDATA[Date Of Birth:]]></define>
-	<define key="TEXT_BUTTON_INVOICE_PDF"><![CDATA[PDF Invoice]]></define>
 
 </definitions>

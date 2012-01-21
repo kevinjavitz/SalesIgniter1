@@ -55,25 +55,6 @@
 			$accountValidation['password']
 		);
 
-		$link = itw_app_link(null, 'account', 'default', 'SSL');
-
-		if (Session::exists('on_create_account_action')){
-			$eInfo = Session::get('on_create_account_action');
-			if ($eInfo['type'] == 'redirect'){
-				$getVars = array();
-				if (isset($eInfo['getVars'])){
-					foreach($eInfo['getVars'] as $k => $v){
-						$getVars[] = $k . '=' . $v;
-					}
-				}
-				$link = itw_app_link(
-					implode('&', $getVars),
-					(isset($eInfo['app']) ? $eInfo['app'] : null),
-					(isset($eInfo['appPage']) ? $eInfo['appPage'] : null)
-				);
-			}
-		}
-
-		EventManager::attachActionResponse($link, 'redirect');
+		EventManager::attachActionResponse(itw_app_link(null, 'account', 'default', 'SSL'), 'redirect');
 	}
 ?>

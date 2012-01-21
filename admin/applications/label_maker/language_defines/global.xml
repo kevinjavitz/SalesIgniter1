@@ -15,8 +15,6 @@
 	<define key="TABLE_HEADING_TYPE"><![CDATA[Type]]></define>
 	<define key="TEXT_ALL_CENTERS"><![CDATA[All Centers]]></define>	
 	<define key="TABLE_HEADING_DATE_SENT"><![CDATA[Date Sent]]></define>
-	<define key="TABLE_HEADING_DOWNLOAD_FILE"><![CDATA[Download File]]></define>
-
 	<define key="TEXT_BUTTON_GENERATE_LABELS"><![CDATA[Generate Labels]]></define>
 	<define key="TEXT_BUTTON_PRINT_PAGE"><![CDATA[Print Page]]></define>
 	

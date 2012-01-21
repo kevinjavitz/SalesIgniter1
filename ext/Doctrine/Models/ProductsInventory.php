@@ -13,7 +13,6 @@
 class ProductsInventory extends Doctrine_Record {
 
 	public function setUp(){
-		parent::setUp();
 
 		$this->hasMany('Products', array(
 			'local' => 'products_id',

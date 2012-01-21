@@ -6,7 +6,7 @@ class productListing_productsPackages {
 		return false;
 	}
 
-	public function show(&$productClass, &$purchaseTypesCol){
+	public function show(&$productClass){
 		global $currencies;
 		$tableRow = array();
 		$purchaseTypeClass = $productClass->getPurchaseType('reservation');

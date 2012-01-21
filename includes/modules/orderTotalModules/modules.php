@@ -13,7 +13,7 @@ class OrderTotalModules extends SystemModulesLoader {
 		if (self::hasModules() === true) {
 			foreach(self::getModules() as $moduleName => $moduleClass){
 				if ($moduleClass->isEnabled() === true){
-					$enabledModulesId[] = (int)$moduleClass->getDisplayOrder();
+					$enabledModulesId[] = (int)$moduleClass->getSortOrder();
 					$enabledModules[] = $moduleClass;
 					$enabledModulesName[] = $moduleName;
 				}
@@ -33,7 +33,7 @@ class OrderTotalModules extends SystemModulesLoader {
 							'title' => $moduleOutput[$i]['title'],
 							'text' => $moduleOutput[$i]['text'],
 							'value' => $moduleOutput[$i]['value'],
-							'sort_order' => $moduleClass->getDisplayOrder()
+							'sort_order' => $moduleClass->getSortOrder()
 						);
 					}
 				}
@@ -67,7 +67,7 @@ class OrderTotalModules extends SystemModulesLoader {
 			if (self::hasModules() === true) {
 				foreach(self::getModules() as $moduleName => $moduleClass){
 					if ($moduleClass->isEnabled() === true){
-						$enabledModulesId[] = $moduleClass->getDisplayOrder();
+						$enabledModulesId[] = $moduleClass->getSortOrder();
 						$enabledModules[] = $moduleClass;
 					}
 				}

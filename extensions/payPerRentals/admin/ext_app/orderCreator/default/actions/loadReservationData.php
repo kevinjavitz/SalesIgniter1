@@ -1,8 +1,8 @@
 <?php
 	$pID_string	= array();
 	$purchaseTypeClasses = array();
-	$OrderProduct = $Editor->ProductManager->get((int)$_POST['idP']);
 
+	$OrderProduct = $Editor->ProductManager->get($_POST['pID']);
    	$OrderProduct->setPurchaseType('reservation');
 	$Product = $OrderProduct->productClass;
 

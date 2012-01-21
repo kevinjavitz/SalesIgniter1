@@ -1,6 +1,5 @@
 <?php
-class OrderTotalSubtotal extends OrderTotalModuleBase
-{
+class OrderTotalSubtotal extends OrderTotalModule {
 
 	public function __construct() {
 		/*
@@ -8,7 +7,7 @@ class OrderTotalSubtotal extends OrderTotalModuleBase
 		 */
 		$this->setTitle('Sub-Total');
 		$this->setDescription('Order Sub-Total');
-
+		
 		$this->init('subtotal');
 	}
 
@@ -16,11 +15,10 @@ class OrderTotalSubtotal extends OrderTotalModuleBase
 		global $order;
 
 		$this->addOutput(array(
-				'title' => $this->getTitle() . ':',
-				'text' => $this->formatAmount($order->info['subtotal']),
-				'value' => $order->info['subtotal']
-			));
+			'title' => $this->getTitle() . ':',
+			'text'  => $this->formatAmount($order->info['subtotal']),
+			'value' => $order->info['subtotal']
+		));
 	}
 }
-
 ?>

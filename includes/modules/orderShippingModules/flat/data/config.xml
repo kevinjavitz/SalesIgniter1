@@ -1,50 +1,42 @@
 <configurations>
 	<configuration>
-		<tab><![CDATA[General]]></tab>
-		<title><![CDATA[Installed Status]]></title>
-		<key><![CDATA[INSTALLED]]></key>
-		<value><![CDATA[False]]></value>
-		<description><![CDATA[Tells if the module is installed or not]]></description>
-		<set_function><![CDATA[tep_cfg_show_installed_status(]]></set_function>
-	</configuration>
-	<configuration>
-		<tab><![CDATA[General]]></tab>
 		<title><![CDATA[Enable Flat Shipping]]></title>
-		<key><![CDATA[STATUS]]></key>
-		<value><![CDATA[False]]></value>
+		<key><![CDATA[MODULE_ORDER_SHIPPING_FLAT_STATUS]]></key>
+		<value><![CDATA[True]]></value>
 		<description><![CDATA[Do you want to offer flat rate shipping?]]></description>
+		<sort_order>1</sort_order>
 		<set_function><![CDATA[tep_cfg_select_option(array('True', 'False'),]]></set_function>
 	</configuration>
 	<configuration>
-		<tab><![CDATA[General]]></tab>
-		<title><![CDATA[Tax Class]]></title>
-		<key><![CDATA[TAX_CLASS]]></key>
-		<value><![CDATA[0]]></value>
-		<description><![CDATA[Use the following tax class on the shipping fee.]]></description>
-		<use_function><![CDATA[tep_get_tax_class_title]]></use_function>
-		<set_function><![CDATA[tep_cfg_pull_down_tax_classes(]]></set_function>
-	</configuration>
-	<configuration>
-		<tab><![CDATA[General]]></tab>
-		<title><![CDATA[Shipping Zone]]></title>
-		<key><![CDATA[ZONE]]></key>
-		<value><![CDATA[0]]></value>
-		<description><![CDATA[If a zone is selected, only enable this shipping method for that zone.]]></description>
-		<use_function><![CDATA[tep_get_zone_class_title]]></use_function>
-		<set_function><![CDATA[tep_cfg_pull_down_zone_classes(]]></set_function>
-	</configuration>
-	<configuration>
-		<tab><![CDATA[General]]></tab>
-		<title><![CDATA[Display Order]]></title>
-		<key><![CDATA[DISPLAY_ORDER]]></key>
-		<value><![CDATA[0]]></value>
-		<description><![CDATA[Display Order. Lowest is displayed first.]]></description>
-	</configuration>
-	<configuration>
-		<tab><![CDATA[General]]></tab>
 		<title><![CDATA[Shipping Cost]]></title>
 		<key><![CDATA[MODULE_ORDER_SHIPPING_FLAT_COST]]></key>
 		<value><![CDATA[5.00]]></value>
 		<description><![CDATA[The shipping cost for all orders using this shipping method.]]></description>
+		<sort_order>2</sort_order>
+	</configuration>
+	<configuration>
+		<title><![CDATA[Tax Class]]></title>
+		<key><![CDATA[MODULE_ORDER_SHIPPING_FLAT_TAX_CLASS]]></key>
+		<value><![CDATA[0]]></value>
+		<description><![CDATA[Use the following tax class on the shipping fee.]]></description>
+		<sort_order>3</sort_order>
+		<use_function><![CDATA[tep_get_tax_class_title]]></use_function>
+		<set_function><![CDATA[tep_cfg_pull_down_tax_classes(]]></set_function>
+	</configuration>
+	<configuration>
+		<title><![CDATA[Shipping Zone]]></title>
+		<key><![CDATA[MODULE_ORDER_SHIPPING_FLAT_ZONE]]></key>
+		<value><![CDATA[0]]></value>
+		<description><![CDATA[If a zone is selected, only enable this shipping method for that zone.]]></description>
+		<sort_order>4</sort_order>
+		<use_function><![CDATA[tep_get_zone_class_title]]></use_function>
+		<set_function><![CDATA[tep_cfg_pull_down_zone_classes(]]></set_function>
+	</configuration>
+	<configuration>
+		<title><![CDATA[Sort Order]]></title>
+		<key><![CDATA[MODULE_ORDER_SHIPPING_FLAT_SORT_ORDER]]></key>
+		<value><![CDATA[0]]></value>
+		<description><![CDATA[Sort order of display.]]></description>
+		<sort_order>5</sort_order>
 	</configuration>
 </configurations>

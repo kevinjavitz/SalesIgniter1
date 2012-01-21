@@ -14,11 +14,9 @@
 
 	$infobox = htmlBase::newElement('div');
 
-	$infobox->append($invoiceButton);
-	if(sysConfig::get('SHOW_PACKING_SLIP_BUTTONS') == 'true'){
-		$infobox->append($packingSlipButton);
-	}
-	$infobox->append($backButton);
+	$infobox->append($invoiceButton)
+	->append($packingSlipButton)
+	->append($backButton);
 
 	EventManager::notify('AdminOrderDetailsAddButton', $oID, &$infobox);
 
@@ -45,22 +43,18 @@
 			array('addCls' => 'main', 'text' => $Order->getTelephone())
 		)
 	));
-    if(sysConfig::get('SHOW_IP_ADDRESS_ORDERS_DETAILS') == 'true'){
-		$infoTable->addBodyRow(array(
-			'columns' => array(
-				array('addCls' => 'main', 'text' => '<b>' . sysLanguage::get('ENTRY_IPADDRESS') . '</b>'),
-				array('addCls' => 'main', 'text' => $Order->getIPAddress())
-			)
-		));
-    }
-    $oEmail = $Order->getEmailAddress();
-	if(strpos($oEmail, '@') === false){
-		$oEmail = 'N/A';
-	}
+
+	$infoTable->addBodyRow(array(
+		'columns' => array(
+			array('addCls' => 'main', 'text' => '<b>' . sysLanguage::get('ENTRY_IPADDRESS') . '</b>'),
+			array('addCls' => 'main', 'text' => $Order->getIPAddress())
+		)
+	));
+
 	$infoTable->addBodyRow(array(
 		'columns' => array(
 			array('addCls' => 'main', 'text' => '<b>' . sysLanguage::get('ENTRY_EMAIL_ADDRESS') . '</b>'),
-			array('addCls' => 'main', 'text' => '<a href="mailto:' . $oEmail . '"><u>' . $oEmail . '</u></a>')
+			array('addCls' => 'main', 'text' => '<a href="mailto:' . $Order->getEmailAddress() . '"><u>' . $Order->getEmailAddress() . '</u></a>')
 		)
 	));
 
@@ -121,9 +115,9 @@
 	if ($Order->hasStatusHistory()){
 		foreach($Order->getStatusHistory() as $history){
 			if ($history['customer_notified'] == '1'){
-				$icon = '<img src="images/icons/tick.gif"/>';
+				$icon = tep_image(DIR_WS_ICONS . 'tick.gif', ICON_TICK);
 			}else{
-				$icon = '<img src="images/icons/cross.gif"/>';
+				$icon = tep_image(DIR_WS_ICONS . 'cross.gif', ICON_CROSS);
 			}
 			
 			$historyTable->addBodyRow(array(
@@ -177,12 +171,11 @@
 			array('text' => '<b>' . $tracker['heading'] . ':</b> ')
 		);
 		foreach($tracker['data'] as $fieldName){
-			$trackNum = $orderInfo[$fieldName];
 			$bodyCols[] = array(
-				'text' => tep_draw_input_field($fieldName, $trackNum, 'size="40" maxlength="40"')
+				'text' => tep_draw_input_field($fieldName, $orderInfo[$fieldName], 'size="40" maxlength="40"')
 			);
 			$bodyCols[] = array(
-				'text' => htmlBase::newElement('button')->setHref($tracker['link'] . $trackNum, false, '_blank')->setText('Track')
+				'text' => htmlBase::newElement('button')->setHref($tracker['link'] . $orderInfo[$fieldName], false, '_blank')->setText('Track')
 			);
 		}
 		$trackingTable->addBodyRow(array(
@@ -221,9 +214,5 @@
 ?>
 <br />
 <div style="text-align:right"><?php
-	echo $invoiceButton->draw();
-	if(sysConfig::get('SHOW_PACKING_SLIP_BUTTONS') == 'true'){
-		echo $packingSlipButton->draw();
-	}
-	echo $backButton->draw();
+	echo $invoiceButton->draw() . $packingSlipButton->draw() . $backButton->draw();
 ?></div>

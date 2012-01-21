@@ -7,7 +7,7 @@ class productListing_membershipRental {
 		return $selectSortKeys;
 	}
 
-	public function show(&$productClass, &$purchaseTypesCol){
+	public function show(&$productClass){
 		global $rentalQueue;
 		$purchaseTypeClass = $productClass->getPurchaseType('rental');
 

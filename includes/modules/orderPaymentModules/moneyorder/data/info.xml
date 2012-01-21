@@ -1,12 +1,11 @@
 <info>
 	<code>moneyorder</code>
 	<title_key>MODULE_PAYMENT_MONEYORDER_TEXT_TITLE</title_key>
+	<status_key>MODULE_PAYMENT_MONEYORDER_STATUS</status_key>
 	<description_key>MODULE_PAYMENT_MONEYORDER_TEXT_DESCRIPTION</description_key>
-	<installed_key>INSTALLED</installed_key>
-	<status_key>STATUS</status_key>
-	<zone_key>ZONE</zone_key>
-	<checkout_method_key>CHECKOUT_METHOD</checkout_method_key>
-	<display_order_key>DISPLAY_ORDER</display_order_key>
-	<order_status_key>ORDER_STATUS_ID</order_status_key>
-	<visible_key>VISIBLE</visible_key>
+	<zone_key>MODULE_PAYMENT_MONEYORDER_ZONE</zone_key>
+	<checkout_method_key>MODULE_PAYMENT_MONEYORDER_CHECKOUT_METHOD</checkout_method_key>
+	<sort_key>MODULE_PAYMENT_MONEYORDER_SORT_ORDER</sort_key>
+	<order_status_key>MODULE_PAYMENT_MONEYORDER_ORDER_STATUS_ID</order_status_key>
+	<visible_key>MODULE_PAYMENT_MONEYORDER_VISIBLE</visible_key>
 </info>

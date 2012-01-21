@@ -1,17 +1,4 @@
 <?php
-	$numberInput = htmlBase::newElement('input')
-	->setName('customers_number')
-	->setRequired(false)
-	->attr('size', 12)
-	->attr('maxlength', 12)
-	->val($Customer->customers_number);
-	
-	$frozenInput = htmlBase::newElement('checkbox')
-	->setName('customers_account_frozen')
-	->setRequired(false)
-	->setChecked(($Customer->customers_account_frozen == 1))
-	->val(1);
-	
 	$firstNameInput = htmlBase::newElement('input')
 	->setName('customers_firstname')
 	->setRequired(true)
@@ -49,10 +36,6 @@
 	$telephoneInput = htmlBase::newElement('input')
 	->setName('customers_telephone')
 	->val($Customer->customers_telephone);
-
-	$notesInput = htmlBase::newElement('textarea')
-	->setName('customers_notes')
-	->val($Customer->customers_notes);
 	
 	$faxInput = htmlBase::newElement('input')
 	->setName('customers_fax')
@@ -147,19 +130,10 @@ if (sysConfig::get('ACCOUNT_FISCAL_CODE') == 'true'){
 	if (isset($dobInput)){
 		$personalTableRows[3] = array(sysLanguage::get('ENTRY_DATE_OF_BIRTH') => $dobInput);
 	}
-	
-	if (isset($cityBirthInput)){
-		$personalTableRows[8] = array(sysLanguage::get('ENTRY_CITY_BIRTH') => $cityBirthInput);
-	}
-	
 
-	if (isset($numberInput)){
-		$personalTableRows[6] = array(sysLanguage::get('ENTRY_NUMBER') => $numberInput);
-	}
-
-	if (isset($frozenInput)){
-		$personalTableRows[7] = array(sysLanguage::get('ENTRY_FROZEN') => $frozenInput);
-	}
+if (isset($cityBirthInput)){
+	$personalTableRows[6] = array(sysLanguage::get('ENTRY_CITY_BIRTH') => $cityBirthInput);
+}
 
 	$personalTable = htmlBase::newElement('table')->setCellPadding(3)->setCellSpacing(0);
 	foreach($personalTableRows as $key => $rInfo){
@@ -209,7 +183,7 @@ if (sysConfig::get('ACCOUNT_FISCAL_CODE') == 'true'){
 		0 => array(sysLanguage::get('ENTRY_STREET_ADDRESS') => $streetAddressInput),
 		2 => array(sysLanguage::get('ENTRY_POST_CODE') => $postcodeInput),
 		3 => array(sysLanguage::get('ENTRY_CITY') => $cityInput),
-		5 => array(sysLanguage::get('ENTRY_COUNTRY') => $countryInput)
+		5 => array(sysLanguage::get('ENTRY_COUNTRY') => $countryInput),
 	);
 	
 	if (isset($suburbInput)){
@@ -252,8 +226,7 @@ if (isset($vatInput)){
 	 */
 	$contactTableRows = array(
 		0 => array(sysLanguage::get('ENTRY_TELEPHONE_NUMBER') => $telephoneInput),
-		1 => array(sysLanguage::get('ENTRY_FAX_NUMBER') => $faxInput),
-		2 => array(sysLanguage::get('ENTRY_NOTES_INPUT') => $notesInput)
+		1 => array(sysLanguage::get('ENTRY_FAX_NUMBER') => $faxInput)
 	);
 	
 	$contactTable = htmlBase::newElement('table')->setCellPadding(3)->setCellSpacing(0);

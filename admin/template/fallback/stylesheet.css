@@ -61,8 +61,6 @@ a.linkAreaTitle { font-family: Tahoma, Verdana, Arial, sans-serif; font-size: 12
 .headerMenuHeading { border: 1px solid transparent; text-decoration:none;vertical-align:middle;line-height:2.8em;margin:0em .2em;padding:0em .5em;display:block; }
 .headerMenuHeadingBlock { float:left;line-height:3em; }
 
-.headerBlock { line-height:3em; }
-
 /* Navigation Menu --BEGIN-- */
 .ui-navigation-menu { position:relative;background-color:transparent;border: none;line-height:inherit;font-size:inherit; }
 .ui-navigation-menu ol { background-color:transparent;list-style:none;padding:0;margin:0;border:none;line-height:inherit;z-index: 100; }

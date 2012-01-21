@@ -1,5 +1,5 @@
 <?php
-class OrderTotalPointsRewards extends OrderTotalModuleBase {
+class OrderTotalPointsRewards extends OrderTotalModule {
 	public function __construct(){
 		/*
 		 * Default title and description for modules that are not yet installed

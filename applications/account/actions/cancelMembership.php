@@ -37,8 +37,8 @@
 	}
 
 	$emailEvent->sendEmail(array(
-		'email' => sysConfig::get('STORE_OWNER_EMAIL_ADDRESS'),
-		'name' => sysConfig::get('STORE_OWNER')
+		'email' => STORE_OWNER_EMAIL_ADDRESS,
+		'name' => STORE_OWNER
 	));
 
 	$messageStack->add_session('pageStack', sysLanguage::get('CANCELLATION_EMAIL_SENT'), 'success');

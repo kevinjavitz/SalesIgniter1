@@ -171,8 +171,8 @@ class productListing_row extends productListing {
 					foreach($this->templateData['listingHeaders'] as $idx => $header){
 						$key = $header['key'];
 						$align = $header['align'];
-						$purchaseTypeCol = '';
-						$text = $this->columnInfo[$key]['showModule']->show($product, &$purchaseTypeCol);
+
+						$text = $this->columnInfo[$key]['showModule']->show($product);
 
 						if ($header['disabled'] === true){
 							if ($text !== false){
@@ -183,8 +183,7 @@ class productListing_row extends productListing {
 						$this->templateData['listingColumns'][$key][$rows] = array(
 							'align'  => $align,
 							'addCls' => 'main',
-							'text'   => $text,
-							'purchaseType' => $purchaseTypeCol
+							'text'   => $text
 						);
 					}
 					$rows++;
@@ -204,7 +203,7 @@ class productListing_row extends productListing {
 			if ($this->showNoProducts === false) return false;
 
 			$div = htmlBase::newElement('div')
-			->addClass('ui-widget ui-widget-content ui-corner-all noproducts')
+			->addClass('ui-widget ui-widget-content ui-corner-all')
 			->html(sysLanguage::get('PRODUCT_LISTING_NO_PRODUCTS'))
 			->css(array(
 				'text-align' => 'center',
@@ -243,8 +242,7 @@ class productListing_row extends productListing {
 					$boxContents[$row][$col] = array(
 						'addCls' => $rInfo['addCls'],
 						'align'  => $rInfo['align'],
-						'text'   => ($rInfo['text'] === false ? '&nbsp;' : $rInfo['text']),
-						'purchaseType' =>$rInfo['purchaseType']
+						'text'   => ($rInfo['text'] === false ? '&nbsp;' : $rInfo['text'])
 					);
 				}
 				$col++;

@@ -1,22 +1,7 @@
 <?php
-class OrderShippingUsps extends OrderShippingModuleBase
-{
+class OrderShippingUsps extends OrderShippingModule {
 
-	private $handlingCost;
-
-	private $useServer;
-
-	private $userId;
-
-	private $userPass;
-
-	private $types;
-
-	private $intl_types;
-
-	private $quotes;
-
-	public function __construct() {
+	public function __construct(){
 		/*
 		 * Default title and description for modules that are not yet installed
 		 */

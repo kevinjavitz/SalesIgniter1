@@ -26,13 +26,13 @@
 				sprintf(
 					sysLanguage::get('ADMIN_EMAIL_TEXT'),
 					$Admin->admin_firstname,
-					sysConfig::get('HTTP_SERVER') . sysConfig::getDirWsAdmin(),
+					HTTP_SERVER . DIR_WS_ADMIN,
 					$Admin->admin_email_address,
 					$hiddenPassword,
-					sysConfig::get('STORE_OWNER')
+					STORE_OWNER
 				),
-				sysConfig::get('STORE_OWNER'),
-				sysConfig::get('STORE_OWNER_EMAIL_ADDRESS')
+				STORE_OWNER,
+				STORE_OWNER_EMAIL_ADDRESS
 			);
 			
 			$link = itw_app_link(tep_get_all_get_params(array('action', 'mID')) . 'mID=' . $Admin->admin_id);

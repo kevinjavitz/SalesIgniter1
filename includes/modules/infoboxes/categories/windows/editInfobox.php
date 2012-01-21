@@ -40,7 +40,7 @@ $selectedCategory = isset($WidgetSettings->selected_category)?$WidgetSettings->s
 $categoryTree = htmlBase::newElement('selectbox')
 		->setName('selected_category')
 		->setId('selectedCategory')
-		->setLabel(sysLanguage::get('TEXT_SELECT_PARENT_CATEGORY'))
+		->setLabel(sysLanguage::get('Please select a parent category'))
 		->setLabelPosition('before');
 $categoryTree->addOption('', sysLanguage::get('--select--'));
 foreach($categoryTreeList as $category){

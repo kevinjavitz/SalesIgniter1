@@ -496,10 +496,10 @@
         $xtra_headers = array();
       }
 
-      if (sysConfig::get('EMAIL_TRANSPORT') == 'smtp') {
-        return mail($to_addr, $subject, $this->output, 'From: ' . $from . $this->lf . 'To: ' . $to . $this->lf . implode($this->lf, $this->headers) . $this->lf . implode($this->lf, $xtra_headers),"-f".sysConfig::get('STORE_OWNER_EMAIL_ADDRESS'));
+      if (EMAIL_TRANSPORT == 'smtp') {
+        return mail($to_addr, $subject, $this->output, 'From: ' . $from . $this->lf . 'To: ' . $to . $this->lf . implode($this->lf, $this->headers) . $this->lf . implode($this->lf, $xtra_headers),"-f".STORE_OWNER_EMAIL_ADDRESS);
       } else {
-        return mail($to, $subject, $this->output, 'From: '.$from.$this->lf.implode($this->lf, $this->headers).$this->lf.implode($this->lf, $xtra_headers),"-f".sysConfig::get('STORE_OWNER_EMAIL_ADDRESS'));
+        return mail($to, $subject, $this->output, 'From: '.$from.$this->lf.implode($this->lf, $this->headers).$this->lf.implode($this->lf, $xtra_headers),"-f".STORE_OWNER_EMAIL_ADDRESS);
       }
     }
 

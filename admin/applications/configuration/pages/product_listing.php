@@ -1,7 +1,7 @@
 <form name="productListing" action="<?php echo itw_app_link('action=saveProductListing');?>" method="post">
 <?php
 	$listingClasses = array();
-	$dirObj = new DirectoryIterator(sysConfig::getDirFsCatalog() . 'includes/classes/product_listing/');
+	$dirObj = new DirectoryIterator(DIR_FS_CATALOG . 'includes/classes/product_listing/');
 	while($dirObj->valid()){
 		if ($dirObj->isDot() || $dirObj->isDir()){
 			$dirObj->next();
@@ -13,7 +13,7 @@
 		$dirObj->next();
 	}
 	
-	$dirObj = new DirectoryIterator(sysConfig::getDirFsCatalog() . 'extensions/');
+	$dirObj = new DirectoryIterator(DIR_FS_CATALOG . 'extensions/');
 	while($dirObj->valid()){
 		if ($dirObj->isDot() || $dirObj->isFile()){
 			$dirObj->next();
@@ -40,7 +40,7 @@
 	
 	$templates = array();
 	$ignoreTemplates = array('email', 'help', 'help-text', 'Closed', 'fallback', 'new');
-	$dirObj = new DirectoryIterator(sysConfig::getDirFsCatalog() . 'templates/');
+	$dirObj = new DirectoryIterator(DIR_FS_CATALOG . 'templates/');
 	while($dirObj->valid()){
 		if ($dirObj->isDot() || $dirObj->isFile() || in_array($dirObj->getBasename(), $ignoreTemplates)){
 			$dirObj->next();

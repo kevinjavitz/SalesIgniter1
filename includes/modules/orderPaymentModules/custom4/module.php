@@ -1,6 +1,5 @@
 <?php
-class OrderPaymentCustom4 extends StandardPaymentModule
-{
+class OrderPaymentCustom4 extends StandardPaymentModule {
 
 	public function __construct() {
 		global $order;
@@ -9,7 +8,7 @@ class OrderPaymentCustom4 extends StandardPaymentModule
 		 */
 		$this->setTitle('Custom Payment #4');
 		$this->setDescription('Custom Payment #4');
-
+		
 		$this->init('custom4');
 
 		if (is_object($order) && $this->isEnabled() == true){
@@ -19,44 +18,42 @@ class OrderPaymentCustom4 extends StandardPaymentModule
 		}
 	}
 
-	public function sendPaymentRequest($requestData) {
+	public function sendPaymentRequest($requestData){
 		return $this->onResponse(array(
-				'orderID' => $requestData['orderID'],
-				'amount' => $requestData['amount'],
-				'message' => 'Awaiting Payment',
-				'success' => /*2*/
-				1
-			));
+			'orderID' => $requestData['orderID'],
+			'amount'  => $requestData['amount'],
+			'message' => 'Awaiting Payment',
+			'success' => /*2*/1
+		));
 	}
 
-	public function processPayment() {
+	public function processPayment(){
 		global $order;
-
+		
 		return $this->sendPaymentRequest(array(
-				'orderID' => $order->newOrder['orderID'],
-				'amount' => $order->info['total']
-			));
+			'orderID' => $order->newOrder['orderID'],
+			'amount'  => $order->info['total']
+		));
 	}
 
-	public function processPaymentCron($orderID) {
+	public function processPaymentCron($orderID){
 		global $order;
 		$order->info['payment_method'] = $this->title;
-
+		
 		$this->processPayment();
 		return true;
 	}
-
-	private function onResponse($logData) {
+		
+	private function onResponse($logData){
 		$this->onSuccess($logData);
 		return true;
 	}
-
-	private function onSuccess($logData) {
+		
+	private function onSuccess($logData){
 		$this->logPayment($logData);
 	}
-
-	private function onFail($info) {
+		
+	private function onFail($info){
 	}
 }
-
 ?>

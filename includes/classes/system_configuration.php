@@ -283,11 +283,9 @@
 		 * @return void
 		 */
 		public static function load(){
-			$ResultSet = Doctrine_Manager::getInstance()
-				->getCurrentConnection()
-				->fetchAssoc('select configuration_key, configuration_value from configuration');
-			foreach($ResultSet as $cInfo){
-				self::set($cInfo['configuration_key'], $cInfo['configuration_value']);
+			$Qconfig = mysql_query('select configuration_key, configuration_value from configuration');
+			while($cfg = mysql_fetch_assoc($Qconfig)){
+				self::set($cfg['configuration_key'], $cfg['configuration_value']);
 			}
 		}
 		
@@ -301,14 +299,14 @@
 		 * @return void
 		 */
 		public static function set($k, $v, $protected = false){
-			if (isset(self::$protectedKeys[$k])){
+			if (in_array($k, self::$protectedKeys)){
 				trigger_error('Key Already Defined As Protected. (' . $k . ')', E_USER_ERROR);
 //				throw new Exception('Key Already Defined As Protected. (' . $k . ')');
 				return;
 			}
 			
 			if ($protected === true){
-				self::$protectedKeys[$k] = true;
+				self::$protectedKeys[] = $k;
 			}
 			
 			/* 
@@ -346,11 +344,10 @@
 			if (isset(self::$config[$k])){
 				$return = self::$config[$k];
 			}elseif ($load === true){
-				$ResultSet = Doctrine_Manager::getInstance()
-					->getCurrentConnection()
-					->fetchAssoc('select configuration_value from configuration where configuration_key = "' . $k . '"');
-				if ($ResultSet && sizeof($ResultSet > 0)){
-					self::set($k, $ResultSet[0]['configuration_value']);
+				$Qconfig = mysql_query('select configuration_value from configuration where configuration_key = "' . $k . '"');
+				if (mysql_num_rows($Qconfig)){
+					$cfg = mysql_fetch_assoc($Qconfig);
+					self::set($k, $cfg['configuration_value']);
 				}
 			}
 			return $return;

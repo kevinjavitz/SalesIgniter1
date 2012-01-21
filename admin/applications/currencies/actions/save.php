@@ -16,7 +16,7 @@
 	$newCurrency->value = $_POST['value'];
 	$newCurrency->save();
 	
-	if (isset($_POST['default'])) {
+	if (isset($_POST['default']) && ($_POST['default'] == 'on')) {
 		Doctrine_Query::create()
 		->update('Configuration')
 		->set('configuration_value', '?', $newCurrency->code)

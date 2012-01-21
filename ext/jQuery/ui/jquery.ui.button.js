@@ -13,15 +13,17 @@
  */
 (function( $, undefined ) {
 
-var lastActive, startXPos, startYPos, clickDragged,
+var lastActive,
 	baseClasses = "ui-button ui-widget ui-state-default ui-corner-all",
 	stateClasses = "ui-state-hover ui-state-active ",
 	typeClasses = "ui-button-icons-only ui-button-icon-only ui-button-text-icons ui-button-text-icon-primary ui-button-text-icon-secondary ui-button-text-only",
-	formResetHandler = function() {
-		var buttons = $( this ).find( ":ui-button" );
-		setTimeout(function() {
-			buttons.button( "refresh" );
-		}, 1 );
+	formResetHandler = function( event ) {
+		$( ":ui-button", event.target.form ).each(function() {
+			var inst = $( this ).data( "button" );
+			setTimeout(function() {
+				inst.refresh();
+			}, 1 );
+		});
 	},
 	radioGroup = function( radio ) {
 		var name = radio.name,
@@ -51,10 +53,6 @@ $.widget( "ui.button", {
 		}
 	},
 	_create: function() {
-		if ($(this.element).hasClass('ui-button')){
-			alert('Already A jQuery Button');
-			return;
-		}
 		this.element.closest( "form" )
 			.unbind( "reset.button" )
 			.bind( "reset.button", formResetHandler );
@@ -98,54 +96,23 @@ $.widget( "ui.button", {
 				}
 				$( this ).removeClass( hoverClass );
 			})
-			.bind( "click.button", function( event ) {
-				if ( options.disabled ) {
-					event.preventDefault();
-					event.stopImmediatePropagation();
-				}
-			});
-
-		this.element
 			.bind( "focus.button", function() {
 				// no need to check disabled, focus won't be triggered anyway
-				self.buttonElement.addClass( focusClass );
+				$( this ).addClass( focusClass );
 			})
 			.bind( "blur.button", function() {
-				self.buttonElement.removeClass( focusClass );
+				$( this ).removeClass( focusClass );
 			});
 
 		if ( toggleButton ) {
 			this.element.bind( "change.button", function() {
-				if ( clickDragged ) {
-					return;
-				}
 				self.refresh();
-			});
-			// if mouse moves between mousedown and mouseup (drag) set clickDragged flag
-			// prevents issue where button state changes but checkbox/radio checked state
-			// does not in Firefox (see ticket #6970)
-			this.buttonElement
-				.bind( "mousedown.button", function( event ) {
-					if ( options.disabled ) {
-						return;
-					}
-					clickDragged = false;
-					startXPos = event.pageX;
-					startYPos = event.pageY;
-				})
-				.bind( "mouseup.button", function( event ) {
-					if ( options.disabled ) {
-						return;
-					}
-					if ( startXPos !== event.pageX || startYPos !== event.pageY ) {
-						clickDragged = true;
-					}
 			});
 		}
 
 		if ( this.type === "checkbox" ) {
 			this.buttonElement.bind( "click.button", function() {
-				if ( options.disabled || clickDragged ) {
+				if ( options.disabled ) {
 					return false;
 				}
 				$( this ).toggleClass( "ui-state-active" );
@@ -153,7 +120,7 @@ $.widget( "ui.button", {
 			});
 		} else if ( this.type === "radio" ) {
 			this.buttonElement.bind( "click.button", function() {
-				if ( options.disabled || clickDragged ) {
+				if ( options.disabled ) {
 					return false;
 				}
 				$( this ).addClass( "ui-state-active" );
@@ -212,21 +179,24 @@ $.widget( "ui.button", {
 		// $.Widget.prototype._setOptionDisabled so it's easy to proxy and can
 		// be overridden by individual plugins
 		this._setOption( "disabled", options.disabled );
-		this._resetButton();
 	},
 
 	_determineButtonType: function() {
-
+		
 		if ( this.element.is(":checkbox") ) {
 			this.type = "checkbox";
-		} else if ( this.element.is(":radio") ) {
-			this.type = "radio";
-		} else if ( this.element.is("input") ) {
-			this.type = "input";
 		} else {
-			this.type = "button";
+			if ( this.element.is(":radio") ) {
+				this.type = "radio";
+			} else {
+				if ( this.element.is("input") ) {
+					this.type = "input";
+				} else {
+					this.type = "button";
+				}
+			}
 		}
-
+		
 		if ( this.type === "checkbox" || this.type === "radio" ) {
 			// we don't search against the document in case the element
 			// is disconnected from the DOM
@@ -280,7 +250,6 @@ $.widget( "ui.button", {
 			} else {
 				this.element.removeAttr( "disabled" );
 			}
-			return;
 		}
 		this._resetButton();
 	},
@@ -330,14 +299,14 @@ $.widget( "ui.button", {
 				.text(),
 			icons = this.options.icons,
 			multipleIcons = icons.primary && icons.secondary,
-			buttonClasses = [];
+			buttonClasses = [];  
 
-		if (buttonElement.attr('icon') && buttonElement.attr('icon').length > 0){
+		if (buttonElement.attr('icon') != ''){
 			icons = {
 				primary: buttonElement.attr('icon')
 			};
 		}
-
+		
 		if ( icons.primary || icons.secondary ) {
 			if ( this.options.text ) {
 				buttonClasses.push( "ui-button-text-icon" + ( multipleIcons ? "s" : ( icons.primary ? "-primary" : "-secondary" ) ) );
@@ -387,8 +356,6 @@ $.widget( "ui.buttonset", {
 	},
 	
 	refresh: function() {
-		var ltr = this.element.css( "direction" ) === "ltr";
-		
 		this.buttons = this.element.find( this.options.items )
 			.filter( ":ui-button" )
 				.button( "refresh" )
@@ -401,10 +368,10 @@ $.widget( "ui.buttonset", {
 			})
 				.removeClass( "ui-corner-all ui-corner-left ui-corner-right" )
 				.filter( ":first" )
-					.addClass( ltr ? "ui-corner-left" : "ui-corner-right" )
+					.addClass( "ui-corner-left" )
 				.end()
 				.filter( ":last" )
-					.addClass( ltr ? "ui-corner-right" : "ui-corner-left" )
+					.addClass( "ui-corner-right" )
 				.end()
 			.end();
 	},

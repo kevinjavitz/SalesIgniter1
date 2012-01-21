@@ -1,58 +1,50 @@
 <configurations>
 	<configuration>
-		<tab><![CDATA[General]]></tab>
-		<title><![CDATA[Installed Status]]></title>
-		<key><![CDATA[INSTALLED]]></key>
-		<value><![CDATA[False]]></value>
-		<description><![CDATA[Tells if the module is installed or not]]></description>
-		<set_function><![CDATA[tep_cfg_show_installed_status(]]></set_function>
-	</configuration>
-	<configuration>
-		<tab><![CDATA[General]]></tab>
 		<title><![CDATA[Display Coupon Value]]></title>
-		<key><![CDATA[STATUS]]></key>
-		<value><![CDATA[False]]></value>
+		<key><![CDATA[MODULE_ORDER_TOTAL_COUPON_STATUS]]></key>
+		<value><![CDATA[True]]></value>
 		<description><![CDATA[Do you want to display the Discount Coupon value?]]></description>
+		<sort_order>1</sort_order>
 		<set_function><![CDATA[tep_cfg_select_option(array('True', 'False'),]]></set_function>
 	</configuration>
 	<configuration>
-		<tab><![CDATA[General]]></tab>
-		<title><![CDATA[Tax Class]]></title>
-		<key><![CDATA[TAX_CLASS]]></key>
-		<value><![CDATA[0]]></value>
-		<description><![CDATA[Use the following tax class when treating Discount Coupon as Credit Note.]]></description>
-		<set_function><![CDATA[tep_cfg_pull_down_tax_classes(]]></set_function>
-		<use_function><![CDATA[tep_get_tax_class_title]]></use_function>
+		<title><![CDATA[Sort order of display]]></title>
+		<key><![CDATA[MODULE_ORDER_TOTAL_COUPON_SORT_ORDER]]></key>
+		<value><![CDATA[12]]></value>
+		<description><![CDATA[Sort order of display. Lowest is displayed first.]]></description>
+		<sort_order>2</sort_order>
 	</configuration>
 	<configuration>
-		<tab><![CDATA[General]]></tab>
-		<title><![CDATA[Display Order]]></title>
-		<key><![CDATA[DISPLAY_ORDER]]></key>
-		<value><![CDATA[0]]></value>
-		<description><![CDATA[Display Order. Lowest is displayed first.]]></description>
-	</configuration>
-	<configuration>
-		<tab><![CDATA[General]]></tab>
 		<title><![CDATA[Include Shipping]]></title>
 		<key><![CDATA[MODULE_ORDER_TOTAL_COUPON_INC_SHIPPING]]></key>
 		<value><![CDATA[True]]></value>
 		<description><![CDATA[Include Shipping in calculation]]></description>
+		<sort_order>3</sort_order>
 		<set_function><![CDATA[tep_cfg_select_option(array('True', 'False'),]]></set_function>
 	</configuration>
 	<configuration>
-		<tab><![CDATA[General]]></tab>
 		<title><![CDATA[Include Tax]]></title>
 		<key><![CDATA[MODULE_ORDER_TOTAL_COUPON_INC_TAX]]></key>
 		<value><![CDATA[True]]></value>
 		<description><![CDATA[Include Tax in calculation]]></description>
+		<sort_order>4</sort_order>
 		<set_function><![CDATA[tep_cfg_select_option(array('True', 'False'),]]></set_function>
 	</configuration>
 	<configuration>
-		<tab><![CDATA[General]]></tab>
 		<title><![CDATA[Re-calculate Tax]]></title>
 		<key><![CDATA[MODULE_ORDER_TOTAL_COUPON_CALC_TAX]]></key>
 		<value><![CDATA[None]]></value>
 		<description><![CDATA[Re-Calculate Tax]]></description>
+		<sort_order>5</sort_order>
 		<set_function><![CDATA[tep_cfg_select_option(array('None', 'Standard', 'Credit Note'),]]></set_function>
+	</configuration>
+	<configuration>
+		<title><![CDATA[Tax Class]]></title>
+		<key><![CDATA[MODULE_ORDER_TOTAL_COUPON_TAX_CLASS]]></key>
+		<value><![CDATA[0]]></value>
+		<description><![CDATA[Use the following tax class when treating Discount Coupon as Credit Note.]]></description>
+		<sort_order>6</sort_order>
+		<set_function><![CDATA[tep_cfg_pull_down_tax_classes(]]></set_function>
+		<use_function><![CDATA[tep_get_tax_class_title]]></use_function>
 	</configuration>
 </configurations>

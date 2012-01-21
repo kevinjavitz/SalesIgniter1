@@ -3,7 +3,6 @@
 
  	$selectedFacebook = (isset($WidgetSettings->facebook)?$WidgetSettings->facebook:'');
    	$selectedTwitter = (isset($WidgetSettings->twitter)?$WidgetSettings->twitter:'');
-	$selectedYoutube = (isset($WidgetSettings->youtube)?$WidgetSettings->youtube:'');
 	$selectedEmail = (isset($WidgetSettings->email)?$WidgetSettings->email:'');
 
 	$linkFacebook = htmlBase::newElement('input')
@@ -13,10 +12,6 @@
 	$linkTwitter = htmlBase::newElement('input')
 	->setName('twitter')
 	->setValue($selectedTwitter);
-
-	$linkYoutube = htmlBase::newElement('input')
-	->setName('youtube')
-	->setValue($selectedYoutube);
 
 	$linkEmail = htmlBase::newElement('input')
 	->setName('email')
@@ -32,13 +27,6 @@
 		'columns' => array(
 			array('text' => 'Twitter Link:'),
 			array('text' => $linkTwitter->draw())
-		)
-	));
-
-$WidgetSettingsTable->addBodyRow(array(
-		'columns' => array(
-			array('text' => 'Youtube Link:'),
-			array('text' => $linkYoutube->draw())
 		)
 	));
 

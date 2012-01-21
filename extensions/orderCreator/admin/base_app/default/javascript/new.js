@@ -5,8 +5,8 @@ function number_format(number){
 }
 
 $(document).ready(function (){
-
-	/*$('select[name="payment_method"]').live('change', function(){
+	//var getVars = getUrlVars();
+	$('select[name="payment_method"]').change(function(){
 		var $self = $(this);
 		showAjaxLoader($self, 'small');
 
@@ -28,12 +28,8 @@ $(document).ready(function (){
 				//removeAjaxLoader($self);
 			}
 		});
-	}); */
-	$('.resReports').click(function(){
-		var newwindow=window.open(js_app_link('appExt=payPerRentals&app=reservations_reports&appPage=default'),'name','height=700,width=960');
-		if (window.focus) {newwindow.focus()}
-		return false;
 	});
+
 	$('#emailEstimate').click(function(){
 		$.ajax({
 			url: js_app_link('appExt=orderCreator&app=default&appPage=new&action=sendEstimateEmail'),
@@ -53,15 +49,8 @@ $(document).ready(function (){
 	});
 
 	$('input[name=customer_search]').autocomplete({
-		html: true,
 		source: js_app_link('appExt=orderCreator&app=default&appPage=new&action=findCustomer'),
 		select: function (e, ui){
-			if (ui.item.value == 'no-select') return false;
-			if (ui.item.value == 'disabled'){
-				alert(ui.item.reason);
-				return false;
-			}
-
 			showAjaxLoader($('.addressTable'), 'xlarge');
 			$.ajax({
 				cache: false,
@@ -74,27 +63,12 @@ $(document).ready(function (){
 					$('.billingAddress').html(data.billing);
 					$('.deliveryAddress').html(data.delivery);
 					$('.pickupAddress').html(data.pickup);
-					$.each(data.field_values, function (k, v){
-						$('*[name=' + k + ']').val(v);
-					});
+					$('input[name=email]').val(data.email_address);
+					$('input[name=telephone]').val(data.telephone);
 					$('input[name=account_password]').attr('disabled', 'disabled');
-					$('input[name=member_number]').attr('disabled', 'disabled');
-
+					
 					$('.productSection, .totalSection, .paymentSection, .commentSection').show();
-
-					if (data.productTable){
-						$('.productTable').replaceWith(data.productTable);
-					}
-
-					if (data.orderTotalTable){
-						$('.orderTotalTable').replaceWith(data.orderTotalTable);
-					}
-
-					if (data.paymentsTable){
-						$('.paymentsTable').replaceWith(data.paymentsTable);
-					}
-
-					$('select[name="payment_method"]').change(function(){
+					$('select[name="payment_method"]').live('change', function(){
 						var $self = $(this);
 						showAjaxLoader($self, 'small');
 
@@ -110,16 +84,19 @@ $(document).ready(function (){
 									$('.paymentProcessButton').button();
 								}else if (typeof data.success == 'object'){
 									alert(data.success.error_message);
+								}else{
+									//alert('Payment Failed');
 								}
+								//removeAjaxLoader($self);
 							}
 						});
 					});
 					$('select[name="payment_method"]').trigger('change');
-					$('select[name=customers_store]').trigger('change');
+					$('.purchaseType').trigger('change');
 				}
 			});
-			$('input[name=customer_search]').val('');
-			return true;
+			$('input[name=customer_search]').val(ui.item.label);
+			return false;
 		}
 	});
 	
@@ -135,9 +112,8 @@ $(document).ready(function (){
 	});
 	
 	$('.purchaseType').live('change', function (){
-		var self = this;
-		var $Row = $(self).parentsUntil('tbody').last();
-		var prType = $(self).val();
+		var $Row = $(this).parent().parent().parent().parent().parent();
+		var prType = $(this).val();
 
 		showAjaxLoader($Row, 'normal');
 		$.ajax({
@@ -145,68 +121,25 @@ $(document).ready(function (){
 			cache: false,
 			dataType: 'json',
 			success: function (data){
-				if (data.hasError == true){
-					alert(data.errorMessage);
-					$(self).val('');
-				}else{
-					$Row.find('td:eq(1)').html(data.name);
-					$Row.find('td:eq(2)').html(data.barcodes);
-					//$Row.find('td:eq(2)').find('select').combobox();
-
-					$Row.find('.priceEx').val(data.price).trigger('keyup');
-					var isEvent = false;
-					if($('.eventf').size() > 0){
-						isEvent = true;
-					}
-					if(prType == 'reservation' && isEvent == false){
-						$('.productQty').attr('readonly','readonly');
-					}
-					if(isEvent && $Row.find('.eventf').val() != '0'){
-						$('.reservationShipping').trigger('change');
-					}
+				$Row.find('td:eq(1)').html(data.name);
+				$Row.find('.priceEx').val(data.price).trigger('keyup');
+				var isEvent = false;
+				if($('.eventf').size() > 0){
+					isEvent = true;
 				}
+				if(prType == 'reservation' && isEvent == false){
+					$('.productQty').attr('readonly','readonly');
+				}
+				if(isEvent && $Row.find('.eventf').val() != '0'){
+					$('.reservationShipping').trigger('change');
+				}
+
+				$('.barcodeName').live('focus',function(){
+					if($(this).val() == ''){
+						$(this).keyup().autocomplete("search", "");
+					}
+				});
 				removeAjaxLoader($Row);
-			}
-		})
-	});
-
-	$('.purchaseType').live('updateInfo', function (){
-		var self = this;
-		var $Row = $(self).parentsUntil('tbody').last();
-		var prType = $(self).val();
-
-		showAjaxLoader($Row, 'normal');
-		$.ajax({
-			url: js_app_link('rType=ajax&appExt=orderCreator&app=default&appPage=new&action=updateInfoOrderProduct&id=' + $Row.attr('data-id') + '&purchase_type=' + $(this).val()),
-			cache: false,
-			dataType: 'json',
-			success: function (data){
-				if (data.hasError == true){
-					alert(data.errorMessage);
-					$(self).val('');
-				}else{
-					$Row.find('td:eq(1)').html(data.name);
-					$Row.find('td:eq(2)').html(data.barcodes);
-					//$Row.find('td:eq(2)').find('select').combobox();
-
-					$Row.find('.priceEx').val(data.price).trigger('keyup');
-					var isEvent = false;
-					if($('.eventf').size() > 0){
-						isEvent = true;
-					}
-					if(prType == 'reservation' && isEvent == false){
-						$('.productQty').attr('readonly','readonly');
-					}
-					if(isEvent && $Row.find('.eventf').val() != '0'){
-						$('.reservationShipping').trigger('change');
-					}
-					$('.barcodeName').live('focus',function(){
-						if($(this).val() == ''){
-							$(this).keyup().autocomplete("search", "");
-						}
-					});
-				}
-				removeAjaxLoader($Row);	
 			}
 		})
 	});
@@ -214,9 +147,8 @@ $(document).ready(function (){
 	$('.barcodeName').live('keyup', function() {
 					var $rowVal = $(this).parent().parent();
 					var attributeVal = 'mId='+ $rowVal.attr('data-id') + '&purchaseType=' + $rowVal.find('.purchaseType').val();
-					attributeVal += '&id[reservation]=';
 					$rowVal.find('.productAttribute option:selected').each(function() {
-						attributeVal += '{' + $(this).parent().attr('attrval') + '}' + $(this).val();/*this part needs updated for attributes*/
+						attributeVal += '&id[reservation][' + $(this).parent().attr('attrval') + ']=' + $(this).val();
 					});
 
 					var link = js_app_link('appExt=orderCreator&app=default&appPage=new&action=getBarcodes');
@@ -251,36 +183,35 @@ $(document).ready(function (){
 		$Row.find('.priceIn').html(number_format(Price + (Price * (TaxRate/100))));
 		$Row.find('.priceInTotal').html(number_format(((Price * Quantity) + ((Price * Quantity) * (TaxRate/100)))));
 
-		var $TotalRow = null;
 		var total = 0;
-		var subtotal = 0;
-		var tax = 0;
-		$('.priceEx').each(function (){
-			var Quantity = parseFloat($(this).parent().parent().find('.productQty').val());
-			var Price = parseFloat($(this).val());
+		var $TotalElement = null;
+		$('.orderTotalType').each(function (){
+			var $Row = $(this).parent().parent();
+			if ($(this).val() == 'subtotal'){
+				var subtotal = 0;
+				$('.priceEx').each(function (){
+					subtotal += parseFloat($(this).val()) * parseFloat($(this).parent().parent().find('.productQty').val());
+				});
 
-			subtotal += Price * Quantity;
-			tax += (Price * Quantity) * (parseFloat($(this).parent().parent().find('.taxRate').val()) / 100);
-		});
-
-		$('.orderTotalTable > tbody > tr').each(function (){
-			var $Row = $(this);
-			if ($Row.data('code') == 'subtotal'){
 				$Row.find('.orderTotalValue').val(number_format(subtotal));
 				total += subtotal;
-			}else if ($Row.data('code') == 'tax'){
+			}else if ($(this).val() == 'tax'){
+				var tax = 0;
+				$('.priceEx').each(function (){
+					tax += (parseFloat($(this).val()) * parseFloat($(this).parent().parent().find('.productQty').val())) * (parseFloat($(this).parent().parent().find('.taxRate').val()) / 100);
+				});
+
 				$Row.find('.orderTotalValue').val(number_format(tax));
 				total += tax;
-			}else if ($Row.data('code') == 'shipping'){
+			}else if ($(this).val() == 'shipping'){
 				total += parseFloat($Row.find('.orderTotalValue').val());
-			}else if ($Row.data('code') == 'total'){
-				$TotalRow = $(this);
+			}else if ($(this).val() == 'total'){
+				$TotalElement = $(this);
 			}
 		});
 		
-		if ($TotalRow){
-			$TotalRow.find('.orderTotalValue span').html(number_format(total));
-			$TotalRow.find('.orderTotalValue input').val(number_format(total));
+		if ($TotalElement){
+			$TotalElement.parent().parent().find('.orderTotalValue').val(number_format(total));
 		}
 	})
 
@@ -317,57 +248,10 @@ $(document).ready(function (){
 
 	$('.insertProductIcon').live('click', function (){
 		var $TableBody = $(this).parent().parent().parent().parent().find('tbody');
-		var productInput = '';
 
-		var loadProductRow = function (pID, prtype){
-			showAjaxLoader($Row, 'normal');
-			$.ajax({
-				cache: false,
-				dataType: 'json',
-				url: js_app_link('appExt=orderCreator&app=default&appPage=new&action=loadProductRow&pID=' + pID+'&purchaseType=' + prtype),
-				success: function (data) {
-					removeAjaxLoader($Row);
-					if (data.hasError == true){
-						alert(data.errorMessage);
-					}
-					else {
-						var html = data.html;
-						var $myRow = $(html).insertAfter($Row);
-						$Row.remove();
-						var va = $myRow.find('.purchaseType option:nth-child(2)').val();
-						//alert(va);
-						//alert($myRow.find('.purchaseType option').size());
-						if($myRow.find('.purchaseType option').size() == 2){
-							$myRow.parent().find('.purchaseType').first().val(va);
-						}
-						$myRow.find('.purchaseType').trigger('change');
-
-					}
-				}
-			});
-		};
-
-		var $Row;
-		if ($(this).data('product_entry_method') == 'autosuggest'){
-			productInput = '<input class="productSearch" name="product_search" style="width:95%">';
-		}else if ($(this).data('product_entry_method') == 'dropmenu'){
-			showAjaxLoader($('.productSection'), 'xlarge');
-			$.ajax({
-				cache: false,
-				url: js_app_link('appExt=orderCreator&app=default&appPage=new&action=getProductsDropBox'),
-				dataType: 'html',
-				success: function (data){
-					$Row.find('.productInput').html(data);
-					$Row.find('.productSelectBox').change(function (){
-						loadProductRow($(this).val());
-					});
-					removeAjaxLoader($('.productSection'));
-				}
-			});
-		}
-		$Row = $('<tr></tr>')
+		var $Row = $('<tr></tr>')
 			.append('<td class="ui-widget-content" align="right" valign="top" style="border-top:none"></td>')
-			.append('<td class="ui-widget-content productInput" valign="top" style="border-top:none;border-left:none">' + productInput + '</td>')
+			.append('<td class="ui-widget-content" valign="top" style="border-top:none;border-left:none"><input class="productSearch" name="product_search" style="width:95%"></td>')
 			.append('<td class="ui-widget-content" valign="top" style="border-top:none;border-left:none"></td>')
 			.append('<td class="ui-widget-content" valign="top" style="border-top:none;border-left:none"></td>')
 			.append('<td class="ui-widget-content" align="right" valign="top" style="border-top:none;border-left:none"></td>')
@@ -378,15 +262,26 @@ $(document).ready(function (){
 			.append('<td class="ui-widget-content" align="right" valign="top" style="border-top:none;border-left:none"><span class="ui-icon ui-icon-closethick deleteIcon"></span></td>');
 
 		$TableBody.prepend($Row);
-
-		if ($(this).data('product_entry_method') == 'autosuggest'){
-			$Row.find('.productSearch').autocomplete({
-				source: js_app_link('appExt=orderCreator&app=default&appPage=new&action=findProduct'),
-				select: function (e, ui) {
-					loadProductRow(ui.item.value, ui.item.prtype);
-				}
-			});
-		}
+	
+		$TableBody.find('.productSearch').autocomplete({
+			source: js_app_link('appExt=orderCreator&app=default&appPage=new&action=findProduct'),
+			select: function (e, ui){
+				showAjaxLoader($Row, 'normal');
+				$.ajax({
+					cache: false,
+					dataType: 'html',
+					url: js_app_link('appExt=orderCreator&app=default&appPage=new&action=loadProductRow&pID=' + ui.item.value +'&purchaseType=' + ui.item.prtype),
+					success: function (html){
+						removeAjaxLoader($Row);
+						$(html).insertAfter($Row);
+						/*change for single purchaseType*/
+						$(html).find('.priceEx').trigger('keyup');
+						$Row.remove();
+						$('.purchaseType').first().trigger('change');
+					}
+				});
+			}
+		});
 	});
 
 	$('.deleteProductIcon').live('click', function (){
@@ -399,7 +294,7 @@ $(document).ready(function (){
 			success: function (data){
 				removeAjaxLoader($Row);
 				$Row.remove();
-				$('.priceEx').trigger('keyup');
+				$('.priceEx:eq(0)').trigger('keyup');
 			}
 		});
 	});
@@ -470,9 +365,7 @@ $(document).ready(function (){
 	});
 	$('select[name="payment_method"]').trigger('change');
 
-	//$('.purchaseType').trigger('change');
-	$('.purchaseType').trigger('updateInfo');
-
+	$('.purchaseType').trigger('change');
 	$('.paymentRefundButton').click(function (){
 		var $self = $(this);
 		showAjaxLoader($self, 'small');
@@ -540,26 +433,51 @@ $(document).ready(function (){
 		}
 	});
 	
+	function getTotalsTotal(exclude){
+		exclude = exclude || [];
+		var returnVal = 0;
+		$('.orderTotalTable > tbody').find('.orderTotalType').each(function (){
+			if ($.inArray($(this).val(), exclude) == -1){
+				returnVal += parseFloat($(this).parent().parent().find('.orderTotalValue').val());
+			}
+		});
+		return returnVal;
+	}
+	
 	function getTotalRow(type){
-		return $('.orderTotalTable > tbody').find('tr[data-code=' + type + ']');
+		var $returnVal;
+		$('.orderTotalTable > tbody').find('.orderTotalType').each(function (){
+			if ($(this).val() == type){
+				$returnVal = $(this).parent().parent();
+				return;
+			}
+		});
+		return $returnVal;
 	}
 	
 	$('.orderTotalValue').live('keyup', function (){
-		var total = 0;
-		$('.orderTotalTable > tbody > tr').each(function (){
-			if ($(this).data('code') == 'total'){
-				return;
-			}
-
-			if ($(this).find('div.orderTotalValue').size() > 0){
-				total += parseFloat($(this).find('.orderTotalValue').html());
-			}else if ($(this).find('input.orderTotalValue').size() > 0){
-				total += parseFloat($(this).find('.orderTotalValue').val());
-			}
-		});
+		var $tableTbody = $(this).parent().parent().parent();
+		var $selectBox = $(this).parent().parent().find('.orderTotalType');
 		var $totalRow = getTotalRow('total');
-		$totalRow.find('.orderTotalValue span').html(total);
-		$totalRow.find('.orderTotalValue input').val(total);
+		if ($selectBox.val() == 'subtotal'){
+			var TotalsValues = parseFloat(getTotalsTotal(['total', $selectBox.val()]));
+			var ThisVal = parseFloat($(this).val());
+			$totalRow.find('.orderTotalValue').val(
+				Math.round((TotalsValues + ThisVal) * 100) / 100
+			);
+		}else if ($selectBox.val() == 'shipping'){
+			var TotalsValues = parseFloat(getTotalsTotal(['total', $selectBox.val()]));
+			var ThisVal = parseFloat($(this).val());
+			$totalRow.find('.orderTotalValue').val(
+				Math.round((TotalsValues + ThisVal) * 100) / 100
+			);
+		}else if ($selectBox.val() != 'total'){
+			var TotalsValues = parseFloat(getTotalsTotal(['total', $selectBox.val()]));
+			var ThisVal = parseFloat($(this).val());
+			$totalRow.find('.orderTotalValue').val(
+				Math.round((TotalsValues + ThisVal) * 100) / 100
+			);
+		}
 	});
 	
 	$('.orderTotalTable > tbody').sortable({

@@ -40,7 +40,7 @@ class Extension_orderCreator extends ExtensionBase {
 			'OrdersGridButtonsBeforeAdd',
 			'EstimatesGridButtonsBeforeAdd',
 			'OrdersListingBeforeExecute',
-			'OrdersProductsReservationListingBeforeExecuteUtilities',
+			'OrdersProductsReservationListingBeforeExecute',
 			'AdminOrdersListingBeforeExecute',
 			'OrderQueryBeforeExecute',
 			'ReservationCheckQueryBeforeExecute',
@@ -60,7 +60,7 @@ class Extension_orderCreator extends ExtensionBase {
 		}
 	}
 
-	public function OrdersProductsReservationListingBeforeExecuteUtilities(&$Qorders){
+	public function OrdersProductsReservationListingBeforeExecute(&$Qorders){
 		if(!isset($_GET['isEstimate'])){
 			$Qorders->andWhere('opr.is_estimate = ?', '0');
 		}
@@ -99,12 +99,10 @@ class Extension_orderCreator extends ExtensionBase {
 
 
 	public function BoxCustomersAddLink(&$contents){
-		if (sysPermissions::adminAccessAllowed('estimates', 'default','orderCreator') === true){
-			$contents['children'][] = array(
-				'link' => itw_app_link('appExt=orderCreator','estimates','default'),
-				'text' => 'Estimates'
-			);
-		}
+		$contents['children'][] = array(
+			'link' => itw_app_link('appExt=orderCreator','estimates','default'),
+			'text' => 'Estimates'
+		);
 	}
 	
 	public function OrdersGridButtonsBeforeAdd(&$gridButtons){

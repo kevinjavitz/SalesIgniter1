@@ -1,141 +1,131 @@
 <configurations>
 	<configuration>
-		<tab><![CDATA[General]]></tab>
-		<title><![CDATA[Installed Status]]></title>
-		<key><![CDATA[INSTALLED]]></key>
-		<value><![CDATA[False]]></value>
-		<description><![CDATA[Tells if the module is installed or not]]></description>
-		<set_function><![CDATA[tep_cfg_show_installed_status(]]></set_function>
-	</configuration>
-	<configuration>
-		<tab><![CDATA[General]]></tab>
 		<title><![CDATA[Enable Authorize.net Module]]></title>
-		<key><![CDATA[STATUS]]></key>
-		<value><![CDATA[False]]></value>
+		<key><![CDATA[MODULE_PAYMENT_AUTHORIZENET_STATUS]]></key>
+		<value><![CDATA[True]]></value>
 		<description><![CDATA[Do you want to accept Authorize.net payments?]]></description>
+		<sort_order>1</sort_order>
 		<set_function><![CDATA[tep_cfg_select_option(array('True', 'False'),]]></set_function>
 	</configuration>
 	<configuration>
-		<tab><![CDATA[General]]></tab>
-		<title><![CDATA[Display Order]]></title>
-		<key><![CDATA[DISPLAY_ORDER]]></key>
+		<title><![CDATA[Sort order of display]]></title>
+		<key><![CDATA[MODULE_PAYMENT_AUTHORIZENET_SORT_ORDER]]></key>
 		<value><![CDATA[0]]></value>
-		<description><![CDATA[Display Order. Lowest is displayed first.]]></description>
+		<description><![CDATA[Sort order of display. Lowest is displayed first.]]></description>
+		<sort_order>2</sort_order>
 	</configuration>
 	<configuration>
-		<tab><![CDATA[SalesIgniter Settings]]></tab>
 		<title><![CDATA[Payment Zone]]></title>
-		<key><![CDATA[ZONE]]></key>
+		<key><![CDATA[MODULE_PAYMENT_AUTHORIZENET_ZONE]]></key>
 		<value><![CDATA[0]]></value>
 		<description><![CDATA[If a zone is selected, only enable this payment method for that zone.]]></description>
+		<sort_order>3</sort_order>
 		<use_function><![CDATA[tep_get_zone_class_title]]></use_function>
 		<set_function><![CDATA[tep_cfg_pull_down_zone_classes(]]></set_function>
 	</configuration>
 	<configuration>
-		<tab><![CDATA[SalesIgniter Settings]]></tab>
 		<title><![CDATA[Set Order Status]]></title>
-		<key><![CDATA[ORDER_STATUS_ID]]></key>
+		<key><![CDATA[MODULE_PAYMENT_AUTHORIZENET_ORDER_STATUS_ID]]></key>
 		<value><![CDATA[0]]></value>
 		<description><![CDATA[Set the status of orders made with this payment module to this value]]></description>
+		<sort_order>4</sort_order>
 		<use_function><![CDATA[tep_get_order_status_name]]></use_function>
 		<set_function><![CDATA[tep_cfg_pull_down_order_statuses(]]></set_function>
 	</configuration>
 	<configuration>
-		<tab><![CDATA[SalesIgniter Settings]]></tab>
 		<title><![CDATA[Accepted Checkout Method]]></title>
-		<key><![CDATA[CHECKOUT_METHOD]]></key>
+		<key><![CDATA[MODULE_PAYMENT_AUTHORIZENET_CHECKOUT_METHOD]]></key>
 		<value><![CDATA[Normal]]></value>
 		<description><![CDATA[Allow this payment module to be used for (Rental membership signup, Normal checkout or Both )]]></description>
+		<sort_order>5</sort_order>
 		<set_function><![CDATA[tep_cfg_select_option(array('Membership','Normal','Both'),]]></set_function>
 	</configuration>
 	<configuration>
-	<tab><![CDATA[SalesIgniter Settings]]></tab>
 		<title><![CDATA[Payment method visible]]></title>
-		<key><![CDATA[VISIBLE]]></key>
+		<key><![CDATA[MODULE_PAYMENT_AUTHORIZENET_VISIBLE]]></key>
 		<value><![CDATA[Both]]></value>
 		<description><![CDATA[Where is this payment method visible: Admin, Catalog or Both )]]></description>
 		<sort_order>5</sort_order>
 		<set_function><![CDATA[tep_cfg_select_option(array('Admin','Catalog','Both'),]]></set_function>
 	</configuration>
 	<configuration>
-		<tab><![CDATA[Gateway Settings]]></tab>
 		<title><![CDATA[Enable CIM]]></title>
 		<key><![CDATA[MODULE_PAYMENT_AUTHORIZENET_CIM]]></key>
 		<value><![CDATA[False]]></value>
 		<description><![CDATA[Do you want to enable CIM for future orders?]]></description>
+		<sort_order>1</sort_order>
 		<set_function><![CDATA[tep_cfg_select_option(array('True', 'False'),]]></set_function>
 	</configuration>
 	<configuration>
-		<tab><![CDATA[Gateway Settings]]></tab>
 		<title><![CDATA[Login Username]]></title>
 		<key><![CDATA[MODULE_PAYMENT_AUTHORIZENET_LOGIN]]></key>
 		<value><![CDATA[55tZyWtL9629]]></value>
 		<description><![CDATA[The login username used for the Authorize.net service]]></description>
+		<sort_order>6</sort_order>
 	</configuration>
 	<configuration>
-		<tab><![CDATA[Gateway Settings]]></tab>
 		<title><![CDATA[Login Transaction Key]]></title>
 		<key><![CDATA[MODULE_PAYMENT_AUTHORIZENET_TRANSKEY]]></key>
 		<value><![CDATA[2h6t5Vh8n8Xd5EVZ]]></value>
 		<description><![CDATA[The transaction key used for the Authorize.net service]]></description>
+		<sort_order>7</sort_order>
 	</configuration>
 	<configuration>
-		<tab><![CDATA[System Settings]]></tab>
 		<title><![CDATA[cURL Setup]]></title>
 		<key><![CDATA[MODULE_PAYMENT_AUTHORIZENET_CURL]]></key>
 		<value><![CDATA[Not Compiled]]></value>
 		<description><![CDATA[Whether cURL is compiled into PHP or not. Windows users, select not compiled.]]></description>
+		<sort_order>8</sort_order>
 		<set_function><![CDATA[tep_cfg_select_option(array('Not Compiled','Compiled'),]]></set_function>
 	</configuration>
 	<configuration>
-		<tab><![CDATA[System Settings]]></tab>
 		<title><![CDATA[cURL Path]]></title>
 		<key><![CDATA[MODULE_PAYMENT_AUTHORIZENET_CURL_PATH]]></key>
 		<value><![CDATA[The Path To cURL]]></value>
 		<description><![CDATA[For Not Compiled mode only, input path to the cURL binary (i.e. c:/curl/curl)]]></description>
+		<sort_order>9</sort_order>
 	</configuration>
 	<configuration>
-		<tab><![CDATA[Transaction Settings]]></tab>
 		<title><![CDATA[Transaction Mode]]></title>
 		<key><![CDATA[MODULE_PAYMENT_AUTHORIZENET_TESTMODE]]></key>
 		<value><![CDATA[Test]]></value>
 		<description><![CDATA[Transaction mode used for processing orders]]></description>
+		<sort_order>10</sort_order>
 		<set_function><![CDATA[tep_cfg_select_option(array('Test','Test And Debug','Production'),]]></set_function>
 	</configuration>
 	<configuration>
-		<tab><![CDATA[Transaction Settings]]></tab>
 		<title><![CDATA[Transaction Method]]></title>
 		<key><![CDATA[MODULE_PAYMENT_AUTHORIZENET_METHOD]]></key>
 		<value><![CDATA[Credit Card]]></value>
 		<description><![CDATA[Transaction method used for processing orders]]></description>
+		<sort_order>11</sort_order>
 		<set_function><![CDATA[tep_cfg_select_option(array('Credit Card','eCheck'),]]></set_function>
 	</configuration>
 	<configuration>
-		<tab><![CDATA[Transaction Settings]]></tab>
 		<title><![CDATA[Processing Mode]]></title>
 		<key><![CDATA[MODULE_PAYMENT_AUTHORIZENET_CCMODE]]></key>
 		<value><![CDATA[Authorize And Capture]]></value>
 		<description><![CDATA[Credit card processing mode]]></description>
+		<sort_order>12</sort_order>
 		<set_function><![CDATA[tep_cfg_select_option(array('Authorize And Capture','Authorize Only'),]]></set_function>
 	</configuration>
 	<configuration>
-		<tab><![CDATA[Transaction Settings]]></tab>
 		<title><![CDATA[Customer Notifications]]></title>
 		<key><![CDATA[MODULE_PAYMENT_AUTHORIZENET_EMAIL_CUSTOMER]]></key>
 		<value><![CDATA[False]]></value>
 		<description><![CDATA[Should Authorize.Net e-mail a receipt to the customer?]]></description>
+		<sort_order>13</sort_order>
 		<set_function><![CDATA[tep_cfg_select_option(array('True','False'),]]></set_function>
 	</configuration>
 	<configuration>
-		<tab><![CDATA[SalesIgniter Settings]]></tab>
 		<title><![CDATA[Accepted Credit Cards]]></title>
 		<key><![CDATA[MODULE_PAYMENT_AUTHORIZENET_ACCEPTED_CC]]></key>
 		<value><![CDATA[Visa, Mastercard]]></value>
 		<description><![CDATA[The credit cards you currently accept]]></description>
+		<sort_order>14</sort_order>
 		<set_function><![CDATA[tep_cfg_select_multioption(array('Visa','Mastercard','Amex','Discover'),]]></set_function>
 	</configuration>
 	<configuration>
-	<tab><![CDATA[Transaction Settings]]></tab>
 		<title><![CDATA[Reject Credit Cards starting with]]></title>
 		<key><![CDATA[MODULE_PAYMENT_AUTHORIZENET_REJECTED_CC]]></key>
 		<value><![CDATA[4024]]></value>

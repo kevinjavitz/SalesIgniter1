@@ -10,15 +10,13 @@ class productListing_productsPriceDownload {
 		);
 		return $selectSortKeys;
 	}
-	public function show(&$productClass, &$purchaseTypesCol){
+	public function show(&$productClass){
 		$purchaseTypeDownload = $productClass->getPurchaseType('download', true);
 		if ($purchaseTypeDownload->hasInventory()){
 			$buyNowButton = htmlBase::newElement('button')
 			->setText(sysLanguage::get('TEXT_BUTTON_BUY_NOW'))
 			->setHref(itw_app_link(tep_get_all_get_params(array('action', 'products_id')) . 'action=buy_download_product&products_id=' . $productClass->getID()), true);
-			$purchaseTypesCol = 'download';
 			if ($productClass->isNotAvailable() ){
-				$purchaseTypesCol = '';
 				$buyNowButton->disable();
 				$buyNowButton->setText(sysLanguage::get('TEXT_AVAILABLE').': '. strftime(sysLanguage::getDateFormat('short'), strtotime($productClass->getAvailableDate())));
 			}

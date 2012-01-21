@@ -41,7 +41,6 @@ if (is_array($listingData)) {
 		}
 	}
 	?>
-<div style="clear:both"></div>
 <div class="productListingColContainer ui-corner-all-big">
 	<?php
  if (isset($sorter)) {
@@ -167,9 +166,6 @@ if (is_array($listingData)) {
 	}
 	$totalWidth = sysConfig::get('PRODUCT_LISTING_TOTAL_WIDTH');
 	$productsPerRow = sysConfig::get('PRODUCT_LISTING_PRODUCTS_COLUMNS');
-	if(count($listingData) < $productsPerRow){
-		$productsPerRow = count($listingData);
-	}
 	$imageWidth = ($totalWidth / $productsPerRow) - 3;
 	$imageContainerWidth = ($totalWidth / $productsPerRow);
 	if(isset($pager)) {

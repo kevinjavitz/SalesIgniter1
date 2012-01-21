@@ -1,5 +1,5 @@
 /*
- * jQuery UI Autocomplete 1.8.14
+ * jQuery UI Autocomplete 1.8.11
  *
  * Copyright 2011, AUTHORS.txt (http://jqueryui.com/about)
  * Dual licensed under the MIT or GPL Version 2 licenses.
@@ -190,13 +190,13 @@ $.widget( "ui.autocomplete", {
 
 					if ( false !== self._trigger( "select", event, { item: item } ) ) {
 						self.element.val( item.value );
-						// reset the term after the select event
-						// this allows custom select handling to work properly
-						self.term = self.element.val();
-
-						self.close( event );
-						self.selectedItem = item;
 					}
+					// reset the term after the select event
+					// this allows custom select handling to work properly
+					self.term = self.element.val();
+
+					self.close( event );
+					self.selectedItem = item;
 				},
 				blur: function( event, ui ) {
 					// don't set the value of the text field if it's already correct
@@ -490,12 +490,12 @@ $.widget("ui.menu", {
 		this.deactivate();
 		if (this.hasScroll()) {
 			var offset = item.offset().top - this.element.offset().top,
-				scroll = this.element.scrollTop(),
+				scroll = this.element.attr("scrollTop"),
 				elementHeight = this.element.height();
 			if (offset < 0) {
-				this.element.scrollTop( scroll + offset);
+				this.element.attr("scrollTop", scroll + offset);
 			} else if (offset >= elementHeight) {
-				this.element.scrollTop( scroll + offset - elementHeight + item.height());
+				this.element.attr("scrollTop", scroll + offset - elementHeight + item.height());
 			}
 		}
 		this.active = item.eq(0)
@@ -610,170 +610,3 @@ $.widget("ui.menu", {
 });
 
 }(jQuery));
-
-/*
- * jQuery UI Autocomplete HTML Extension
- *
- * Copyright 2010, Scott González (http://scottgonzalez.com)
- * Dual licensed under the MIT or GPL Version 2 licenses.
- *
- * http://github.com/scottgonzalez/jquery-ui-extensions
- */
-(function( $ ) {
-
-	var proto = $.ui.autocomplete.prototype,
-		initSource = proto._initSource;
-
-	function filter( array, term ) {
-		var matcher = new RegExp( $.ui.autocomplete.escapeRegex(term), "i" );
-		return $.grep( array, function(value) {
-			return matcher.test( $( "<div>" ).html( value.label || value.value || value ).text() );
-		});
-	}
-
-	$.extend( proto, {
-		_initSource: function() {
-			if ( this.options.html && $.isArray(this.options.source) ) {
-				this.source = function( request, response ) {
-					response( filter( this.options.source, request.term ) );
-				};
-			} else {
-				initSource.call( this );
-			}
-		},
-
-		_renderItem: function( ul, item) {
-			return $( "<li></li>" )
-				.data( "item.autocomplete", item )
-				.append( $( "<a></a>" )[ this.options.html ? "html" : "text" ]( item.label ) )
-				.appendTo( ul );
-		}
-	});
-
-})( jQuery );
-
-(function( $ ) {
-	$.widget( "ui.combobox", {
-		_create: function() {
-			var self = this,
-				select = this.element.hide(),
-				selected = select.children( ":selected" ),
-				value = selected.val() ? selected.text() : "";
-			var input = this.input = $( "<input>" )
-				.insertAfter( select )
-				.val( value )
-				.autocomplete({
-					delay: 0,
-					minLength: 0,
-					source: function( request, response ) {
-						var matcher = new RegExp( $.ui.autocomplete.escapeRegex(request.term), "i" );
-						response( select.children( "option" ).map(function() {
-							var text = $( this ).text();
-							if ( this.value && ( !request.term || matcher.test(text) ) )
-								return {
-									label: text.replace(
-										new RegExp(
-											"(?![^&;]+;)(?!<[^<>]*)(" +
-												$.ui.autocomplete.escapeRegex(request.term) +
-												")(?![^<>]*>)(?![^&;]+;)", "gi"
-										), "<strong>$1</strong>" ),
-									value: text,
-									option: this
-								};
-						}) );
-					},
-					select: function( event, ui ) {
-						ui.item.option.selected = true;
-						self._trigger( "selected", event, {
-							item: ui.item.option
-						});
-					},
-					change: function( event, ui ) {
-						if ( !ui.item ) {
-							var matcher = new RegExp( "^" + $.ui.autocomplete.escapeRegex( $(this).val() ) + "$", "i" ),
-								valid = false;
-							select.children( "option" ).each(function() {
-								if ( $( this ).text().match( matcher ) ) {
-									this.selected = valid = true;
-									return false;
-								}
-							});
-							if ( !valid ) {
-								// remove invalid value, as it didn't match anything
-								$( this ).val( "" );
-								select.val( "" );
-								input.data( "autocomplete" ).term = "";
-								return false;
-							}
-						}
-					}
-				})
-				.addClass( "ui-widget ui-widget-content ui-corner-left" );
-
-			input.data( "autocomplete" )._renderItem = function( ul, item ) {
-				return $( "<li></li>" )
-					.data( "item.autocomplete", item )
-					.append( "<a>" + item.label + "</a>" )
-					.appendTo( ul );
-			};
-
-			this.button = $( "<button type='button'>&nbsp;</button>" )
-				.attr( "tabIndex", -1 )
-				.attr( "title", "Show All Items" )
-				.insertAfter( input )
-				.button({
-					icons: {
-						primary: "ui-icon-triangle-1-s"
-					},
-					text: false
-				})
-				.removeClass( "ui-corner-all" )
-				.addClass( "ui-corner-right ui-button-icon" )
-				.click(function() {
-					// close if already visible
-					if ( input.autocomplete( "widget" ).is( ":visible" ) ) {
-						input.autocomplete( "close" );
-						return;
-					}
-
-					// work around a bug (likely same cause as #5265)
-					$( this ).blur();
-
-					// pass empty string as value to search for, displaying all results
-					input.autocomplete( "search", "" );
-					input.focus();
-				});
-
-			this.button.find('.ui-button-text').remove();
-
-			input.css({
-				marginRight: 0,
-				verticalAlign: 'middle',
-				borderRight: 0
-			});
-			
-			this.button.css({
-				height: input.outerHeight(),
-				width: input.outerHeight(),
-				verticalAlign: 'middle',
-				borderColor: '#AAA'
-			});
-
-			this.button.find('.ui-button-icon-primary').css({
-				display: 'block',
-				position: 'relative',
-				float: 'none',
-				top: 0,
-				left: 0,
-				marginLeft: 0
-			});
-		},
-
-		destroy: function() {
-			this.input.remove();
-			this.button.remove();
-			this.element.show();
-			$.Widget.prototype.destroy.call( this );
-		}
-	});
-})( jQuery );

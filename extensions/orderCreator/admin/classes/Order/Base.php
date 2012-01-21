@@ -5,9 +5,7 @@ require(dirname(__FILE__) . '/TotalManager/Base.php');
 require(dirname(__FILE__) . '/PaymentManager/Base.php');
 
 class OrderCreator extends Order implements Serializable {
-
-	private $data = array();
-
+	
 	public function __construct($orderId = null){
 		if (is_null($orderId) === false){
 			$this->mode = 'edit';
@@ -72,7 +70,6 @@ class OrderCreator extends Order implements Serializable {
 				),
 				array(
 					'module_type' => 'total',
-					'editable' => false,
 					'title' => 'Total:',
 					'value' => 0.00,
 					'sort_order' => 3
@@ -101,8 +98,7 @@ class OrderCreator extends Order implements Serializable {
 			'AddressManager' => $this->AddressManager,
 			'TotalManager' => $this->TotalManager,
 			'PaymentManager' => $this->PaymentManager,
-			'errorMessages' => $this->errorMessages,
-			'data' => $this->data
+			'errorMessages' => $this->errorMessages
 		);
 		return serialize($data);
 	}
@@ -112,18 +108,6 @@ class OrderCreator extends Order implements Serializable {
 		foreach($data as $key => $dInfo){
 			$this->$key = $dInfo;
 		}
-	}
-
-	public function setData($k, $v){
-		$this->data[$k] = $v;
-	}
-
-	public function getData($k){
-		return $this->data[$k];
-	}
-
-	public function hasData($k){
-		return (isset($this->data[$k]));
 	}
 	
 	public function addErrorMessage($val){
@@ -205,10 +189,8 @@ class OrderCreator extends Order implements Serializable {
 	}
 	
 	public function getPassword(){
-		if (isset($_POST['account_password']) && !empty($_POST['account_password'])){
+		if (isset($_POST['account_password'])){
 			return $_POST['account_password'];
-		}else{
-			return tep_create_random_value(sysConfig::get('ENTRY_PASSWORD_MIN_LENGTH'));
 		}
 	}
 
@@ -239,58 +221,11 @@ class OrderCreator extends Order implements Serializable {
 
 		return $input->draw();
 	}
-
-	public function editDriversLicense(){
-		$input = htmlBase::newElement('input')
-			->setName('drivers_license')
-			->val($this->getDriversLicense());
-
-		return $input->draw();
-	}
-
-	public function editPassPort(){
-		$input = htmlBase::newElement('input')
-			->setName('passport')
-			->val($this->getPassPort());
-
-		return $input->draw();
-	}
-
-	public function editRoomNumber(){
-		$input = htmlBase::newElement('input')
-			->setName('room_number')
-			->val($this->getRoomNumber());
-
-		return $input->draw();
-	}
-
-	public function setMemberNumber($val){
-		$this->Order['customers_number'] = $val;
-	}
-
-	public function getMemberNumber(){
-		$Qcustomer = Doctrine_Query::create()
-			->select('customers_number')
-			->from('Customers')
-			->where('customers_id = ?', $this->getCustomerId())
-			->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
-		return $Qcustomer[0]['customers_number'];
-	}
-
-	public function editMemberNumber(){
-		$input = htmlBase::newElement('input')
-			->attr('max_length', 12)
-			->setName('member_number')
-			->val($this->getMemberNumber());
-
-		return $input->draw();
-	}
 	
 	public function createCustomerAccount($CollectionObj){
 		$CustomerAddress = $this->AddressManager->getAddress('customer');
 		
 		$CollectionObj->language_id = Session::get('languages_id');
-		$CollectionObj->customers_number = $this->Order['customers_number'];
 		$CollectionObj->customers_firstname = $CustomerAddress->getFirstName();
 		$CollectionObj->customers_lastname = $CustomerAddress->getLastName();
 		$CollectionObj->customers_email_address = $this->getEmailAddress();
@@ -314,9 +249,7 @@ class OrderCreator extends Order implements Serializable {
 		
 		$AddressBook = new AddressBook();
 		$AddressBook->entry_gender = $CustomerAddress->getGender();
-		if(sysConfig::get('ACCOUNT_COMPANY') == 'true'){
-			$AddressBook->entry_company = $CustomerAddress->getCompany();
-		}
+		$AddressBook->entry_company = $CustomerAddress->getCompany();
 		$AddressBook->entry_firstname = $CustomerAddress->getFirstName();
 		$AddressBook->entry_lastname = $CustomerAddress->getLastName();
 		$AddressBook->entry_street_address = $CustomerAddress->getStreetAddress();
@@ -353,12 +286,11 @@ class OrderCreator extends Order implements Serializable {
 				$emailEvent->setVar($var, $val);
 			}
 		}
-		if(sysConfig::get('EXTENSION_ORDER_CREATOR_SEND_WELCOME_EMAIL') == 'True'){
-			$emailEvent->sendEmail(array(
-				'email' => $emailAddress,
-				'name'  => $fullName
-			));
-		}
+
+		$emailEvent->sendEmail(array(
+			'email' => $emailAddress,
+			'name'  => $fullName
+		));
 	}
 	
 	public function sendNewOrderEmail($CollectionObj){

@@ -10,7 +10,7 @@
 		)
 	));
 
-	$dir = new DirectoryIterator(sysConfig::getDirFsCatalog() . 'extensions/');
+	$dir = new DirectoryIterator(DIR_FS_CATALOG . 'extensions/');
 	$sorted = array();
 	foreach($dir as $fileObj){
 		if ($fileObj->isDot() || $fileObj->isFile()) continue;
@@ -26,19 +26,17 @@
 			require(sysConfig::getDirFsCatalog() . 'extensions/' . $extensionName . '/ext.php');
 		}
 		$classObj = new $className;
-		if (sysPermissions::adminAccessAllowed('configure', 'configure', $classObj->getExtensionKey()) === true){
-			$extensions[] = array(
-				'name'        => $classObj->getExtensionName(),
-				'dir'         => $classObj->getExtensionDir(),
-				'version'     => $classObj->getExtensionVersion(),
+		$extensions[] = array(
+			'name'        => $classObj->getExtensionName(),
+			'dir'         => $classObj->getExtensionDir(),
+			'version'     => $classObj->getExtensionVersion(),
 
-				'key'         => $classObj->getExtensionKey(),
-				'configKeys'  => $classObj->getExtensionConfigKeys(),
-				'installed'   => $classObj->isInstalled(),
-				'enabled'     => $classObj->isEnabled(),
-				'canInstall'  => file_exists($classObj->getExtensionDir() . '/install/install.php')
-			);
-		}
+			'key'         => $classObj->getExtensionKey(),
+			'configKeys'  => $classObj->getExtensionConfigKeys(),
+			'installed'   => $classObj->isInstalled(),
+			'enabled'     => $classObj->isEnabled(),
+			'canInstall'  => file_exists($classObj->getExtensionDir() . '/install/install.php')
+		);
 	}
 
 	$allowedUpgrades = false;
@@ -192,7 +190,7 @@
 					if (stristr($use_function, '->')) {
 						$class_method = explode('->', $use_function);
 						if (!is_object(${$class_method[0]})) {
-							include(sysConfig::get('DIR_WS_CLASSES') . $class_method[0] . '.php');
+							include(DIR_WS_CLASSES . $class_method[0] . '.php');
 							${$class_method[0]} = new $class_method[0]();
 						}
 						$keys .= tep_call_function($class_method[1], $value['value'], ${$class_method[0]});
@@ -209,7 +207,7 @@
 			$infoBox->addContentRow($keys);
 		} else {
 			$installButton = htmlBase::newElement('button')->setText(sysLanguage::get('IMAGE_INSTALL'))
-			->setHref(itw_app_link('ext=' . $extensions[$i]['key'] . '&action=install&showErrors'));
+			->setHref(itw_app_link('ext=' . $extensions[$i]['key'] . '&action=install'));
 
 			$infoBox->addButton($installButton);
 		}
@@ -285,7 +283,7 @@
   <div class="ui-widget ui-widget-content ui-corner-all" style="width:99%;margin-right:5px;margin-left:5px;">
    <div style="width:99%;margin:5px;">
     <?php echo $tableGrid->draw();?>
-    <div class="smallText" style="padding:5px;"><?php echo sysLanguage::get('TEXT_EXTENSION_DIRECTORY') . ' ' . sysConfig::getDirFsCatalog() . 'extensions/';?></div>
+    <div class="smallText" style="padding:5px;"><?php echo sysLanguage::get('TEXT_EXTENSION_DIRECTORY') . ' ' . DIR_FS_CATALOG . 'extensions/';?></div>
    </div>
   </div>
  </div>

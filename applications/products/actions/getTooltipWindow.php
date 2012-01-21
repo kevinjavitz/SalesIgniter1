@@ -1,5 +1,4 @@
 <?php
-	$navigation->remove_current_page();
 	$productID = (int)$_GET['products_id'];
 	$product = new Product((int)$_GET['products_id']);
 	$pageButtons = '';

@@ -94,13 +94,12 @@ function tep_redirect($url) {
   function tep_random_select($query) {
     $random_product = '';
 
-	$Random = Doctrine_Manager::getInstance()
-		->getCurrentConnection()
-		->fetchAssoc($query);
+    $Qrandom = dataAccess::setQuery($query);
+    $Qrandom->runQuery();
 
-    if (sizeof($Random) > 0) {
-      $random_row = tep_rand(0, (sizeof($Random) - 1));
-      $random_product = $Random[$random_row];
+    if ($Qrandom->numberOfRows() > 0) {
+      $random_row = tep_rand(0, ($Qrandom->numberOfRows() - 1));
+      $random_product = $Qrandom->dataSeek($random_row);
     }
 
     return $random_product;
@@ -124,11 +123,45 @@ function tep_redirect($url) {
   function tep_get_products_name($product_id, $language = '') {
     if (empty($language)) $language = Session::get('languages_id');
 
-	$ResultSet = Doctrine_Manager::getInstance()
-		->getCurrentConnection()
-		->fetchArray("select products_name from " . TABLE_PRODUCTS_DESCRIPTION . " where products_id = '" . (int)$product_id . "' and language_id = '" . (int)$language_id . "'");
+    $product_query = tep_db_query("select products_name from " . TABLE_PRODUCTS_DESCRIPTION . " where products_id = '" . (int)$product_id . "' and language_id = '" . (int)$language . "'");
+    $product = tep_db_fetch_array($product_query);
 
-	return $ResultSet[0]['products_name'];
+    return $product['products_name'];
+  }
+
+////
+// Return a product's special price (returns nothing if there is no offer)
+// TABLES: products
+  function tep_get_products_special_price($product_id) {
+    $product_query = tep_db_query("select specials_new_products_price from " . TABLE_SPECIALS . " where products_id = '" . (int)$product_id . "' and status");
+    $product = tep_db_fetch_array($product_query);
+
+    return $product['specials_new_products_price'];
+  }
+
+////
+// Return a product's stock
+// TABLES: products
+  function tep_get_products_stock($products_id) {
+    $products_id = tep_get_prid($products_id);
+    $stock_query = tep_db_query("select products_quantity from " . TABLE_PRODUCTS . " where products_id = '" . (int)$products_id . "'");
+    $stock_values = tep_db_fetch_array($stock_query);
+
+    return $stock_values['products_quantity'];
+  }
+
+////
+// Check if the required stock is available
+// If insufficent stock is available return an out of stock message
+  function tep_check_stock($products_id, $products_quantity) {
+    $stock_left = tep_get_products_stock($products_id) - $products_quantity;
+    $out_of_stock = '';
+
+    if ($stock_left < 0) {
+      $out_of_stock = '<span class="markProductOutOfStock">' . STOCK_MARK_PRODUCT_OUT_OF_STOCK . '</span>';
+    }
+
+    return $out_of_stock;
   }
 
 ////
@@ -184,27 +217,35 @@ function tep_get_all_get_params($exclude_array = '') {
 
   function tep_get_countries($countries_id = '', $with_iso_codes = false)
 {
-	if ($countries_id != '')
+	$countries_array = array();
+	if (tep_not_null($countries_id))
 	{
 		if ($with_iso_codes == true)
 		{
-			$query = "select countries_name, countries_iso_code_2, countries_iso_code_3 from " . TABLE_COUNTRIES . " where countries_id = '" . (int)$countries_id . "' order by countries_name";
+			$countries = tep_db_query("select countries_name, countries_iso_code_2, countries_iso_code_3 from " . TABLE_COUNTRIES . " where countries_id = '" . (int)$countries_id . "' order by countries_name");
+			$countries_values = tep_db_fetch_array($countries);
+			$countries_array = array('countries_name' => $countries_values['countries_name'],
+				'countries_iso_code_2' => $countries_values['countries_iso_code_2'],
+				'countries_iso_code_3' => $countries_values['countries_iso_code_3']);
 		}
 		else
 		{
-			$query = "select countries_name from " . TABLE_COUNTRIES . " where countries_id = '" . (int)$countries_id . "'";
+			$countries = tep_db_query("select countries_name from " . TABLE_COUNTRIES . " where countries_id = '" . (int)$countries_id . "'");
+			$countries_values = tep_db_fetch_array($countries);
+			$countries_array = array('countries_name' => $countries_values['countries_name']);
 		}
 	}
 	else
 	{
-		$query = "select countries_id, countries_name from " . TABLE_COUNTRIES . " order by countries_name";
+		$countries = tep_db_query("select countries_id, countries_name from " . TABLE_COUNTRIES . " order by countries_name");
+		while ($countries_values = tep_db_fetch_array($countries))
+		{
+			$countries_array[] = array('countries_id' => $countries_values['countries_id'],
+				'countries_name' => $countries_values['countries_name']);
+		}
 	}
-	
-	$ResultSet = Doctrine_Manager::getInstance()
-		->getCurrentConnection()
-		->fetchArray($query);
 
-	return $ResultSet;
+	return $countries_array;
 }
 
 ////
@@ -224,12 +265,13 @@ function tep_get_all_get_params($exclude_array = '') {
         $cPath_new = $current_category_id;
       } else {
         $cPath_new = '';
-			$Categories = Doctrine_Core::getTable('Categories')->getRecordInstance();
+        $last_category_query = tep_db_query("select parent_id from " . TABLE_CATEGORIES . " where categories_id = '" . (int)$cPath_array[($cp_size-1)] . "'");
+        $last_category = tep_db_fetch_array($last_category_query);
 
-			$lastParent = $Categories->getParentId((int) $cPath_array[(sizeof($cPath_array)-1)]);
-			$currentParent = $Categories->getParentId((int) $current_category_id);
+        $current_category_query = tep_db_query("select parent_id from " . TABLE_CATEGORIES . " where categories_id = '" . (int)$current_category_id . "'");
+        $current_category = tep_db_fetch_array($current_category_query);
 
-        if ($lastParent == $currentParent) {
+        if ($last_category['parent_id'] == $current_category['parent_id']) {
           for ($i=0; $i<($cp_size-1); $i++) {
             $cPath_new .= '_' . $cPath_array[$i];
           }
@@ -940,10 +982,8 @@ function tep_get_all_get_params($exclude_array = '') {
 // Recursively go through the categories and retreive all parent categories IDs
 // TABLES: categories
   function tep_get_parent_categories(&$categories, $categories_id) {
-    $Parents = Doctrine_Manager::getInstance()
-		->getCurrentConnection()
-		->fetchAssoc("select parent_id from " . TABLE_CATEGORIES . " where categories_id = '" . (int)$categories_id . "'");
-    foreach ($Parents as $parent_categories) {
+    $parent_categories_query = tep_db_query("select parent_id from " . TABLE_CATEGORIES . " where categories_id = '" . (int)$categories_id . "'");
+    while ($parent_categories = tep_db_fetch_array($parent_categories_query)) {
       if ($parent_categories['parent_id'] == 0) return true;
       $categories[sizeof($categories)] = $parent_categories['parent_id'];
       if ($parent_categories['parent_id'] != $categories_id) {
@@ -958,19 +998,19 @@ function tep_get_all_get_params($exclude_array = '') {
   function tep_get_product_path($products_id) {
     $cPath = '';
 
-    $Category = Doctrine_Manager::getInstance()
-		->getCurrentConnection()
-		->fetchAssoc("select p2c.categories_id from " . TABLE_PRODUCTS . " p, " . TABLE_PRODUCTS_TO_CATEGORIES . " p2c where p.products_id = '" . (int)$products_id . "' and p.products_status = '1' and p.products_id = p2c.products_id limit 1");
-    if (sizeof($Category) > 0) {
+    $category_query = tep_db_query("select p2c.categories_id from " . TABLE_PRODUCTS . " p, " . TABLE_PRODUCTS_TO_CATEGORIES . " p2c where p.products_id = '" . (int)$products_id . "' and p.products_status = '1' and p.products_id = p2c.products_id limit 1");
+    if (tep_db_num_rows($category_query)) {
+      $category = tep_db_fetch_array($category_query);
+
       $categories = array();
-      tep_get_parent_categories($categories, $Category[0]['categories_id']);
+      tep_get_parent_categories($categories, $category['categories_id']);
 
       $categories = array_reverse($categories);
 
       $cPath = implode('_', $categories);
 
       if (tep_not_null($cPath)) $cPath .= '_';
-      $cPath .= $Category[0]['categories_id'];
+      $cPath .= $category['categories_id'];
     }
 
     return $cPath;
@@ -1073,14 +1113,14 @@ function tep_get_prid($uprid) {
 //                    e.g. info@mytepshop.com
 
   function tep_mail($to_name, $to_email_address, $email_subject, $email_text, $from_email_name, $from_email_address, $attachments = '') {
-    if (sysConfig::get('SEND_EMAILS') != 'true') return false;
+    if (SEND_EMAILS != 'true') return false;
 
     // Instantiate a new mail object
     $message = new email(array('X-Mailer: osCommerce Mailer'));
 
     // Build the text version
     $text = strip_tags($email_text);
-    if (sysConfig::get('EMAIL_USE_HTML') == 'true') {
+    if (EMAIL_USE_HTML == 'true') {
       $message->add_html($email_text, $text);
     } else {
       $message->add_text($text);
@@ -1437,20 +1477,20 @@ function tep_get_prid($uprid) {
   
 	function addChildren($child, $currentPath, &$ulElement) {
 		global $current_category_id;
-		//$currentPath .= '_' . $child['categories_id'];
+		$currentPath .= '_' . $child['categories_id'];
 
 		$childLinkEl = htmlBase::newElement('a')
 		->addClass('ui-widget ui-widget-content ui-corner-all')
 		->css('border-color', 'transparent')
 		->html('<span class="ui-icon ui-icon-triangle-1-e ui-icon-categories-bullet" style="vertical-align:middle;"></span><span style="display:inline-block;vertical-align:middle;">' . $child['CategoriesDescription'][Session::get('languages_id')]['categories_name'] . '</span>')
-		->setHref(itw_app_link(null, 'index', $child['CategoriesDescription'][Session::get('languages_id')]['categories_seo_url']));
+		->setHref(itw_app_link('cPath=' . $currentPath, 'index', 'default'));
 			
 		if ($child['categories_id'] == $current_category_id){
 			$childLinkEl->addClass('selected');
 		}
 		
 		$Qchildren = Doctrine_Query::create()
-		->select('c.categories_id, cd.categories_name,cd.categories_seo_url, c.parent_id')
+		->select('c.categories_id, cd.categories_name, c.parent_id')
 		->from('Categories c')
 		->leftJoin('c.CategoriesDescription cd')
 		->where('c.parent_id = ?', $child['categories_id'])
@@ -1516,15 +1556,6 @@ function tep_get_prid($uprid) {
 	}
 	function getJsDateFormat(){
 		echo 'mm/dd/yy';
-	}
-	function str_lreplace($search, $replace, $subject){
-		$pos = strrpos($subject, $search);
-		if($pos === false){
-			return $subject;
-		}
-		else{
-			return substr_replace($subject, $replace, $pos, strlen($search));
-		}
 	}
 
 ?>

@@ -1,5 +1,5 @@
 <?php
-class OrderTotalGiftCertificate extends OrderTotalModuleBase {
+class OrderTotalGiftCertificate extends OrderTotalModule {
     public function __construct(){
         /*
            * Default title and description for modules that are not yet installed

@@ -463,16 +463,19 @@ class rentalStoreUser_addressBook {
 
 	public function getStateZoneId($countryId, $state){
 		$zone_id = -1;
-		$Check = Doctrine_Manager::getInstance()
-			->getCurrentConnection()
-			->fetchAssoc('select count(*) as total from ' . TABLE_ZONES . ' where zone_country_id = "' . $countryId . '"');
-		if ($Check[0]['total'] > 0) {
+		$Qcheck = dataAccess::setQuery('select count(*) as total from {zones} where zone_country_id = {country}')
+		->setTable('{zones}', TABLE_ZONES)
+		->setValue('{country}', $countryId)
+		->runQuery();
+		if ($Qcheck->getVal('total') > 0) {
 			$zone_id = 0;
-			$Zone = Doctrine_Manager::getInstance()
-				->getCurrentConnection()
-				->fetchAssoc('select distinct zone_id from ' . TABLE_ZONES . ' where zone_country_id = "' . $countryId . '" and (zone_name = "' . $state . '" or zone_code = "' . $state . '")');
-			if (sizeof($Zone) == 1){
-				$zone_id = $Zone[0]['zone_id'];
+			$Qzone = dataAccess::setQuery('select distinct zone_id from {zones} where zone_country_id = {country} and (zone_name = {state} or zone_code = {state})')
+			->setTable('{zones}', TABLE_ZONES)
+			->setValue('{country}', $countryId)
+			->setValue('{state}', $state)
+			->runQuery();
+			if ($Qzone->numberOfRows() == 1){
+				$zone_id = $Qzone->getVal('zone_id');
 			}
 		}
 		return $zone_id;

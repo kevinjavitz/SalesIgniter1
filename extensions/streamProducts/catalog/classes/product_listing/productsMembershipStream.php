@@ -1,7 +1,7 @@
 <?php
 class productListing_productsMembershipStream {
 
-	public function show(&$productClass, &$purchaseTypesCol){
+	public function show(&$productClass){
 		if ($productClass->canRent('member_stream')){
 			$viewStreamButton = htmlBase::newElement('button')
 			->setText(sysLanguage::get('TEXT_BUTTON_VIEW_STREAM'))

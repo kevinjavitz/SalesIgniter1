@@ -11,10 +11,10 @@ class htmlWidget_button implements htmlWidgetPlugin {
 		//$this->textElement = new htmlElement('span');
 
 		$this->buttonElement
-		//->addClass('ui-button')
-		//->addClass('ui-widget')
-		//->addClass('ui-state-default')
-		//->addClass('ui-corner-all')
+		->addClass('ui-button')
+		->addClass('ui-widget')
+		->addClass('ui-state-default')
+		->addClass('ui-corner-all')
 		->attr('type', 'button');
 		
 		$this->settings = array(

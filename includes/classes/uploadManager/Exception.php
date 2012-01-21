@@ -19,42 +19,38 @@
 		const CODE_53 = 'File size exceeds the set limit for uploads.';
 		
 		const CODE_70 = 'chmod is not allowed.';
-
-		const CODE_99 = 'Error Uploading File.';
+		
 		const CODE_ = 'Unknown error, file not saved.';
 		
 
-	public function __construct($code, $prepend = '') {
-		parent::__construct(constant(__CLASS__ . '::CODE_' . $code) . $prepend, $code);
-
-		$type = $this->getErrorType();
-		if ($code == 0){
-			$type = 'success';
+		public function __construct($code){
+			parent::__construct(constant(__CLASS__ . '::CODE_' . $code), $code);
+			
+			$type = $this->getErrorType();
+			if ($code == 0){
+				$type = 'success';
+			}elseif ($code > 0 && $code < 70){
+				$type = 'error';
+			}elseif ($code > 69){
+				$type = 'warning';
+			}
+			$this->setErrorType($type);
 		}
-		elseif ($code > 0 && $code < 70) {
-			$type = 'error';
+		
+		public function setDetailLevel($val){
+			$this->errorDetail = $val;
 		}
-		elseif ($code > 69) {
-			$type = 'warning';
+		
+		public function getDetailLevel(){
+			return $this->errorDetail;
 		}
-		$this->setErrorType($type);
+		
+		public function setErrorType($val){
+			$this->errorType = $val;
+		}
+		
+		public function getErrorType(){
+			return $this->errorType;
+		}
 	}
-
-	public function setDetailLevel($val) {
-		$this->errorDetail = $val;
-	}
-
-	public function getDetailLevel() {
-		return $this->errorDetail;
-	}
-
-	public function setErrorType($val) {
-		$this->errorType = $val;
-	}
-
-	public function getErrorType() {
-		return $this->errorType;
-	}
-}
-
 ?>

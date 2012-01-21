@@ -1,144 +1,29 @@
 <?php
-$code = $_GET['module'];
-$Module = OrderShippingModules::getModule($code, true);
-if (is_dir(sysConfig::getDirFsCatalog() . 'includes/modules/orderShippingModules/' . $code . '/Doctrine/')){
-	Doctrine_Core::loadModels(sysConfig::getDirFsCatalog() . 'includes/modules/orderShippingModules/' . $code . '/Doctrine/', Doctrine_Core::MODEL_LOADING_AGGRESSIVE);
-}
-$infoBox = htmlBase::newElement('infobox');
-$infoBox->setHeader('<b>' . sysLanguage::get('TEXT_INFO_HEADING_EDIT') . '</b>');
-$infoBox->setButtonBarLocation('top');
+	$Module = OrderShippingModules::getModule($_GET['module']);
+	
+	$infoBox = htmlBase::newElement('infobox');
+	$infoBox->setHeader('<b>' . sprintf(sysLanguage::get('TEXT_INFO_HEADING_EDIT_MODULE'), $Module->getTitle()) . '</b>');
+	$infoBox->setButtonBarLocation('top');
 
-$saveButton = htmlBase::newElement('button')->addClass('saveButton')->usePreset('save');
-$cancelButton = htmlBase::newElement('button')->addClass('cancelButton')->usePreset('cancel');
+	$saveButton = htmlBase::newElement('button')->addClass('saveButton')->usePreset('save');
+	$cancelButton = htmlBase::newElement('button')->addClass('cancelButton')->usePreset('cancel');
 
-$infoBox->addButton($saveButton)->addButton($cancelButton);
+	$infoBox->addButton($saveButton)->addButton($cancelButton);
 
-$Config = new ModuleConfigReader(
-	$_GET['module'],
-	$_GET['moduleType'],
-	(isset($_GET['modulePath']) ? $_GET['modulePath'] : false)
-);
-
-$tabs = array();
-$tabsPages = array();
-$tabId = 1;
-foreach($Config->getConfig() as $cfg){
-	if (!isset($tabs[$cfg->getTab()])){
-		$tabs[$cfg->getTab()] = array(
-			'panelId' => 'page-' . $tabId,
-			'panelHeader' => $cfg->getTab(),
-			'panelTable' => htmlBase::newElement('table')
-				->addClass('configTable')
-				->setCellPadding(5)
-				->setCellSpacing(0)
-		);
-		$tabId++;
-	}
-
-	if ($cfg->hasSetFunction() === true){
-		$function = $cfg->getSetFunction();
-		switch(true){
-			case (stristr($function, 'tep_cfg_select_option')):
-				$type = 'radio';
-				$function = str_replace(
-					'tep_cfg_select_option',
-					'tep_cfg_select_option_elements',
-					$function
-				);
-				break;
-			case (stristr($function, 'tep_cfg_pull_down_order_statuses')):
-				$type = 'drop';
-				$function = str_replace(
-					'tep_cfg_pull_down_order_statuses',
-					'tep_cfg_pull_down_order_statuses_element',
-					$function
-				);
-				break;
-			case (stristr($function, 'tep_cfg_pull_down_zone_classes')):
-				$type = 'drop';
-				$function = str_replace(
-					'tep_cfg_pull_down_zone_classes',
-					'tep_cfg_pull_down_zone_classes_element',
-					$function
-				);
-				break;
-			case (stristr($function, 'tep_cfg_select_multioption')):
-			case (stristr($function, '_selectOptions')):
-				$type = 'checkbox';
-				$function = str_replace(
-					array(
-						'tep_cfg_select_multioption',
-						'_selectOptions'
-					),
-					'tep_cfg_select_multioption_element',
-					$function
-				);
-				break;
+	foreach($Module->getConfigData() as $cInfo){
+		$key = $cInfo['configuration_key'];
+		$value = $cInfo['configuration_value'];
+		
+		if (isset($cInfo['set_function']) && !empty($cInfo['set_function']) && $cInfo['set_function'] != 'isArea') {
+			eval('$field = ' . $cInfo['set_function'] . "'" . $value . "', '" . $key . "');");
+		} else if (isset($value['set_function']) && $value['set_function'] == 'isArea') {
+			$field = tep_draw_textarea_field('configuration[' . $key . ']', 'hard', 30, 5, $value, 'class="makeModFCK"');
+		}else {
+			$field = tep_draw_input_field('configuration[' . $key . ']', $value);
 		}
-		eval('$inputField = ' . $function . "'" . $cfg->getValue() . "', '" . $cfg->getKey() . "');");
-
-		if (is_object($inputField)){
-			if ($type == 'checkbox'){
-				$inputField->setName('configuration[' . $cfg->getKey() . '][]');
-			}
-			else {
-				$inputField->setName('configuration[' . $cfg->getKey() . ']');
-			}
-		}
-		elseif (substr($inputField, 0, 3) == '<br') {
-			$inputField = substr($inputField, 4);
-		}
+					
+		$infoBox->addContentRow('<b>' . $cInfo['configuration_title'] . '</b><br>' . $cInfo['configuration_description'] . '<br>' . $field);
 	}
-	else {
-		$inputField = tep_draw_input_field('configuration[' . $cfg->getKey() . ']', $cfg->getValue());
-	}
-
-	$tabs[$cfg->getTab()]['panelTable']->addBodyRow(array(
-			'columns' => array(
-				array(
-					'text' => '<b>' . $cfg->getTitle() . '</b>',
-					'addCls' => 'main',
-					'valign' => 'top'
-				),
-				array(
-					'text' => $inputField,
-					'addCls' => 'main',
-					'valign' => 'top'
-				),
-				array(
-					'text' => $cfg->getDescription(),
-					'addCls' => 'main',
-					'valign' => 'top'
-				)
-			)
-		));
-}
-
-EventManager::notify(
-	'ModuleEditWindowAddFields',
-	&$tabs,
-	$_GET['module'],
-	$_GET['moduleType'],
-	(isset($_GET['modulePath']) ? $_GET['modulePath'] : false)
-);
-
-$tabPanel = htmlBase::newElement('tabs')
-	->addClass('makeTabPanel')
-	->setId('module_tabs');
-foreach($tabs as $pInfo){
-	$tabPanel->addTabHeader($pInfo['panelId'], array('text' => $pInfo['panelHeader']))
-		->addTabPage($pInfo['panelId'], array('text' => $pInfo['panelTable']));
-}
-
-EventManager::notify(
-	'ModuleEditWindowBeforeDraw',
-	&$tabPanel,
-	$_GET['module'],
-	$_GET['moduleType'],
-	(isset($_GET['modulePath']) ? $_GET['modulePath'] : false)
-);
-
-$infoBox->addContentRow($tabPanel->draw());
 	
 	$Qcheck = Doctrine_Query::create()
 	->select('MAX(method_id) as nextId')
@@ -315,8 +200,8 @@ $infoBox->addContentRow($tabPanel->draw());
 	}
 ?>
 <script>
-	$(document).ready(function(){
-		$(this).find('.insertIcon').live("click", function (){
+	function editWindowOnLoad(){
+		$(this).find('.insertIcon').click(function (){
 			var nextId = $(this).parent().parent().parent().parent().attr('data-next_id');
 			var langId = $(this).parent().parent().parent().parent().attr('language_id');
 			$(this).parent().parent().parent().parent().attr('data-next_id', parseInt(nextId)+1);
@@ -337,11 +222,11 @@ $infoBox->addContentRow($tabPanel->draw());
 			var $newTr = $('<tr></tr>').append($td1).append($td2).append($td3).append($td4).append($td5).append($td51).append($td6).append($td7).append($td71).append($td72).append($td73).append($td8).append($td9);
 			$(this).parent().parent().parent().parent().find('tbody').append($newTr);
 		});
-	});
+	}
 </script>
 <?php
 	$javascript = ob_get_contents();
 	ob_end_clean();
-
+	
 	EventManager::attachActionResponse($infoBox->draw() . $javascript, 'html');
 ?>

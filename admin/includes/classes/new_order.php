@@ -750,7 +750,7 @@
           $status = $orders_status_array[$this->info['order_status']];;
           $datePurchased = tep_date_long($check_status['date_purchased']);
           
-          require_once(sysConfig::get('DIR_WS_CLASSES') .'email_events.php');
+          require_once(DIR_WS_CLASSES.'email_events.php');
           $email_event = new email_event(ORDER_UPDATE_EMAIL);
           $email_event->sendEmail(array(
               'email' => $this->customer['email_address'],

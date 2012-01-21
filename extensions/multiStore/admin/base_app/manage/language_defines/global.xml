@@ -13,10 +13,10 @@
 	<define key="TEXT_STORES_LOCATION"><![CDATA[<b>Stores Location:</b>]]></define>
 	<define key="BOX_HEADING_NEW_STORE"><![CDATA[Create A New Store]]></define>
 	<define key="TEXT_BUTTON_NEW_STORE"><![CDATA[New Store]]></define>
-	<define key="TEXT_STORES_OWNER"><![CDATA[<b>Store Owner:</b>]]></define>
-	<define key="TEXT_STORES_IS_DEFAULT"><![CDATA[<b>Is Default Store:</b>]]></define>
-	<define key="TEXT_STORES_COUNTRIES"><![CDATA[<b>Countries for the store:</b>]]></define>
 
+<!-- Auto Upgrade ( Version 1.0 to 1.1 ) -BEGIN- -->
+	<define key="TEXT_STORES_OWNER"><![CDATA[<b>Store Owner:</b>]]></define>
+<!-- Auto Upgrade ( Version 1.0 to 1.1 ) -END- -->
 
 	<define key="TEXT_INFO_DELETE_INTRO"><![CDATA[Are you sure you want to delete this store?]]></define>
 </definitions>

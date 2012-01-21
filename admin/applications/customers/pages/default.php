@@ -52,8 +52,7 @@ if(!$f){
 	->setCurrentPage((isset($_GET['page']) ? (int)$_GET['page'] : 0))
 	->setQuery($Qcustomers);
 
-$tableGrid->addButtons(array(
-		htmlBase::newElement('button')->setText('New')->addClass('newButton'),
+	$tableGrid->addButtons(array(
 		htmlBase::newElement('button')->setText('Edit')->addClass('editButton')->disable(),
 		htmlBase::newElement('button')->setText('Delete')->addClass('deleteButton')->disable(),
 		htmlBase::newElement('button')->setText('Orders')->addClass('ordersButton')->disable(),
@@ -107,7 +106,7 @@ $tableGrid->addButtons(array(
 			$Qorders = Doctrine_Query::create()
 			->select('count(*) as total')
 			->from('Orders o')
-			->where('o.customers_id = ?', $customerId);
+			->where('customers_id = ?', $customerId);
 
 			EventManager::notify('OrdersListingBeforeExecute', &$Qorders);
 
@@ -160,8 +159,7 @@ $tableGrid->addButtons(array(
 				'rowAttr' => array(
 					'data-customer_id'    => $customerId,
 					'data-customer_email' => $customer['customers_email_address'],
-					'data-has_customers' => ($Qorders[0]['total'] > 0 ? 'true' : 'false'),
-					'data-has_orders' => ($Qorders[0]['total'] > 0 ? 'true' : 'false')
+					'data-has_customers'     => ($Qorders[0]['total'] > 0 ? 'true' : 'false')
 				),
 				'columns' => $tableGridBody
 			));

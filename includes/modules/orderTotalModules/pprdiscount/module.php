@@ -1,6 +1,5 @@
 <?php
-class OrderTotalPprdiscount extends OrderTotalModuleBase
-{
+class OrderTotalPprdiscount extends orderTotalModule {
 
 	public function __construct() {
 		/*
@@ -8,13 +7,13 @@ class OrderTotalPprdiscount extends OrderTotalModuleBase
 		 */
 		$this->setTitle('PPR Discount');
 		$this->setDescription('PPR Discount');
-
+		
 		$this->init('pprdiscount');
-
+		
 		if ($this->isInstalled() === true){
 
 			$this->allowpprDiscount = $this->getConfigData('MODULE_ORDER_TOTAL_PPR_DISCOUNT_ENABLE');
-			$this->showpprDiscount = $this->getConfigData('STATUS');
+			$this->showpprDiscount = $this->getConfigData('MODULE_ORDER_TOTAL_PPRDISCOUNT_STATUS');
 			$this->pprDiscountAmount = $this->getConfigData('MODULE_ORDER_TOTAL_PPR_DISCOUNT_MAX_AMOUNT');
 			$this->pprDiscountDays = $this->getConfigData('MODULE_ORDER_TOTAL_PPR_DISCOUNT_MAX_DAYS');
 		}
@@ -24,13 +23,13 @@ class OrderTotalPprdiscount extends OrderTotalModuleBase
 		global $order, $appExtension, $userAccount, $ShoppingCart;
 		$pprExt = $appExtension->getExtension('payPerRentals');
 
-		if ($this->allowpprDiscount == 'True' && ($pprExt !== false && $pprExt->isEnabled() === true)){
+		if ($this->allowpprDiscount == 'True' && ($pprExt !== false && $pprExt->isEnabled() === true)) {
 			$prodIds = array();
 			$prodIds[] = -1;
-			foreach($ShoppingCart->getProducts() as $cartProduct){
+			foreach($ShoppingCart->getProducts() as $cartProduct) {
 				$pID_string = $cartProduct->getIdString();
 				$purchaseType = $cartProduct->getPurchaseType();
-				if ($purchaseType == 'new' || $purchaseType == 'used'){
+				if($purchaseType == 'new' || $purchaseType == 'used'){
 					$prodIds[] = $pID_string;
 				}
 			}
@@ -55,7 +54,7 @@ class OrderTotalPprdiscount extends OrderTotalModuleBase
 					foreach($opInfo['OrdersProductsReservation'] as $oprInfo){
 						$product = new product($opInfo['products_id']);
 						$purchaseTypeClass = $product->getPurchaseType('reservation');
-						$discount += tep_add_tax($opInfo['final_price'], $opInfo['products_tax']) * $opInfo['products_quantity']; //this will need a revise to take into account only reservation products price
+						$discount += tep_add_tax($opInfo['final_price'],$opInfo['products_tax'])*$opInfo['products_quantity'];//this will need a revise to take into account only reservation products price
 						$discount -= $purchaseTypeClass->getDepositAmount();
 						break;
 					}
@@ -64,21 +63,19 @@ class OrderTotalPprdiscount extends OrderTotalModuleBase
 			if ($discount > $this->pprDiscountAmount){
 				$discount = $this->pprDiscountAmount;
 			}
-			if ($order->info['total'] - $discount > 0){
+			if($order->info['total'] - $discount >0){
 				$order->info['total'] -= $discount;
-			}
-			else {
+			}else{
 				$order->info['total'] = 0;
 			}
-			if ($discount > 0 && ($this->showpprDiscount == 'True')){
+			if($discount > 0 && ($this->showpprDiscount == 'True') ){
 				$this->addOutput(array(
-						'title' => $this->getTitle() . ':',
-						'text' => '-' . $this->formatAmount($discount),
-						'value' => -$discount
-					));
+					'title' => $this->getTitle() . ':',
+					'text'  => '-'.$this->formatAmount($discount),
+					'value' => -$discount
+				));
 			}
 		}
 	}
 }
-
 ?>

@@ -13,8 +13,6 @@
 class OrdersStatus extends Doctrine_Record {
 
 	public function setUp(){
-		parent::setUp();
-		
 		$this->hasMany('OrdersStatusDescription', array(
 			'local' => 'orders_status_id',
 			'foreign' => 'orders_status_id',

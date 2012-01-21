@@ -1,5 +1,5 @@
 <?php
-	require(sysConfig::get('DIR_WS_CLASSES') . 'rental_queue.php');
+	require(DIR_WS_CLASSES . 'rental_queue.php');
 	require('../includes/classes/product.php');
 	$processed = array(
 		'noneInQueue' => array(),
@@ -16,11 +16,10 @@
 		$Customers = Doctrine_Query::create()
 		->select('customers_id')
 		->from('CustomersMembership')
-		->where('ismember = ?', 'M')
-		->andWhere('activate = ?', 'Y')
-		->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
-
-		foreach($Customers as $customer){
+		->where('ismember', 'M')
+		->andWhere('activate', 'Y')
+		->execute();
+		foreach($Customers->toArray() as $customer){
 			if (in_array($customer['customers_id'], $processed['noneInQueue'])) continue;
 
 			$userAccount = new rentalStoreUser($customer['customers_id']);
@@ -97,7 +96,7 @@
 								$rentalQueue->incrementTopRentals($products[$i]['id']);
 
 								$shipmentDate = date('Y-m-d');
-								$arrivalDate = date('Y-m-d', mktime(0,0,0,date('m'),(date('d') + (int)sysConfig::get('RENTAL_QUEUE_DAYS_INTERVAL')),date('Y')));
+								$arrivalDate = date('Y-m-d', mktime(0,0,0,date('m'),date('d')+RENTAL_QUEUE_DAYS_INTERVAL,date('Y')));
 
 								$NewRentedQueue = new RentedQueue();
 								$NewRentedQueue->customers_id = $QproductsQueue['customers_id'];
@@ -142,7 +141,7 @@
 								));
 
 								$emailEvent->sendEmail(array(
-									'name'  => $userAccount->getFirstName(),
+									'name'  => $full_name,
 									'email' => $userAccount->getEmailAddress()
 								));
 

@@ -47,7 +47,4 @@
 	}
 
 	EventManager::notify('BoxDataManagementAddLink', &$contents);
-	if(count($contents['children']) == 0){
-		$contents = array();
-	}
 ?>

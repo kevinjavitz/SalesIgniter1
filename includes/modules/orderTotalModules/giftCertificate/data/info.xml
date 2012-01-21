@@ -1,8 +1,7 @@
 <info>
-	<code>giftCertificate</code>
-	<title_key>MODULE_ORDER_TOTAL_GIFT_CERTIFICATES_TITLE</title_key>
-	<description_key>MODULE_ORDER_TOTAL_GIFT_CERTIFICATES_DESCRIPTION</description_key>
-	<installed_key>INSTALLED</installed_key>
-	<status_key>STATUS</status_key>
-	<display_order_key>DISPLAY_ORDER</display_order_key>
+    <code>giftCertificate</code>
+    <title_key>MODULE_ORDER_TOTAL_GIFT_CERTIFICATES_TITLE</title_key>
+    <status_key>MODULE_ORDER_TOTAL_GIFT_CERTIFICATES_STATUS</status_key>
+    <description_key>MODULE_ORDER_TOTAL_GIFT_CERTIFICATES_DESCRIPTION</description_key>
+    <sort_key>MODULE_ORDER_TOTAL_GIFT_CERTIFICATES_SORT_ORDER</sort_key>
 </info>

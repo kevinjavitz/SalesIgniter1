@@ -15,9 +15,6 @@ a img {border:none;}
 }
 
 #construct { border:1px dashed blue; }
-#construct.desktop { }
-#construct.smartphone { width: 480px;margin-left:auto;margin-right:auto; }
-#construct.tablet { width: 960px;margin-left:auto;margin-right:auto; }
 /*#construct-header { position: fixed;bottom: 0;left: 0;width: 100%;z-index: 9999; }*/
 
 .showOutline div, .showOutline li { outline: 1px dashed blue; }

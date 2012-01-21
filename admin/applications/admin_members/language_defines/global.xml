@@ -37,10 +37,6 @@
 	<define key="TEXT_INFO_LOGDATE"><![CDATA[Last Access: ]]></define>
 	<define key="TEXT_INFO_LOGNUM"><![CDATA[Log Number: ]]></define>
 	<define key="TEXT_INFO_GROUP"><![CDATA[Group Level: ]]></define>
-	<define key="TEXT_INFO_FAVORITES"><![CDATA[Load Favorites Set]]></define>
-	<define key="TEXT_STANDARD"><![CDATA[Standard]]></define>
-	<define key="TABLE_HEADING_INFO"><![CDATA[Info]]></define>
-
 	<define key="TEXT_INFO_ERROR"><![CDATA[<font color="red">Email address has already been used! Please try again.</font>]]></define>
 	<define key="JS_ALERT_FIRSTNAME"><![CDATA[- Required: Firstname]]></define>
 	<define key="JS_ALERT_LASTNAME"><![CDATA[- Required: Lastname]]></define>
@@ -67,12 +63,9 @@
 	<define key="TEXT_INFO_GROUPS_BOXES"><![CDATA[<b>Boxes Permission:</b><br>Give access to selected boxes.]]></define>
 	<define key="TEXT_INFO_GROUPS_BOXES_INCLUDE"><![CDATA[Include files stored in: ]]></define>
 	<define key="TEXT_INFO_HEADING_DEFINE"><![CDATA[Define Group]]></define>
-	<define key="TEXT_BUTTON_SAVE"><![CDATA[Save]]></define>
 	<define key="TEXT_BUTTON_GROUPS"><![CDATA[Groups]]></define>
 	<define key="TEXT_BUTTON_NEW_MEMBER"><![CDATA[New Member]]></define>
 	<define key="TEXT_BUTTON_NEW_GROUP"><![CDATA[New Group]]></define>
 	<define key="TABLE_CUSTOMER_LOGIN_ALLOWED"><![CDATA[Customer Login Allowed]]></define>	
 	<define key="TEXT_BUTTON_FILE_PERMISSION"><![CDATA[File Permissions]]></define>
-	
-	<define key="TEXT_INFO_OVERRIDE_PASSWORD"><![CDATA[Override Password ( Used for password protected actions )]]></define>
 </definitions>

@@ -6,10 +6,6 @@ $templateName = $Layout->Template->Configuration['DIRECTORY']->configuration_val
 	var templateName = '<?php echo $templateName;?>';
 	var layoutId = '<?php echo (int)$_GET['lID'];?>';
 </script>
-<div class="pageHeading"><?php
-	echo sysLanguage::get('HEADING_TITLE_LAYOUT_EDITOR');
-	?></div>
-<br />
 <div id="topButtonBar" style="text-align:right;margin:.5em;"><?php
 	echo htmlBase::newElement('button')->usePreset('back')->setText('Back To Layout Listing')
 	->setHref(itw_app_link('appExt=templateManager&tID=' . $Layout->Template->template_id, 'layout_manager', 'layouts'))->draw();
@@ -158,8 +154,6 @@ function processContainerChildren($MainObj, &$El){
 		$NewEl = htmlBase::newElement('div')
 			->attr('data-container_id', $childObj->container_id)
 			->attr('data-sort_order', (int) $childObj->sort_order)
-			->attr('data-anchor_id', $childObj->anchor_id)
-			->attr('data-is_anchor', $childObj->is_anchor)
 			->addClass('container');
 
 		if ($childObj->Styles->count() > 0){
@@ -185,8 +179,6 @@ function processContainerColumns(&$Container, $Columns){
 		$ColEl = htmlBase::newElement('div')
 			->attr('data-column_id', $col->column_id)
 			->attr('data-sort_order', (int) $col->sort_order)
-			->attr('data-is_anchor', $col->is_anchor)
-			->attr('data-anchor_id', $col->anchor_id)
 			->addClass('column');
 
 		if ($col->Styles->count() > 0){
@@ -241,9 +233,7 @@ function processContainerColumns(&$Container, $Columns){
 	}
 }
 
-$Construct = htmlBase::newElement('div')
-	->attr('id', 'construct')
-	->addClass($Layout->layout_type);
+$Construct = htmlBase::newElement('div')->attr('id', 'construct');
 if ($Layout->Styles->count() > 0){
 	addStyles($Construct, $Layout->Styles);
 }else{
@@ -263,8 +253,6 @@ if ($Layout->Containers && $Layout->Containers->count() > 0){
 		$MainEl = htmlBase::newElement('div')
 			->attr('data-container_id', $MainObj->container_id)
 			->attr('data-sort_order', (int) $MainObj->sort_order)
-			->attr('data-anchor_id', $MainObj->anchor_id)
-			->attr('data-is_anchor', $MainObj->is_anchor)
 			->addClass('container');
 
 		if ($MainObj->Styles->count() > 0){
@@ -305,12 +293,6 @@ echo $Construct->draw();
 		<tr>
 			<td>Id:</td>
 			<td><input type="text" name="id"></td>
-			<td>Use As Anchor</td>
-			<td><select name="is_anchor" class="isAnchor">
-				<option value="0" selected>False</option>
-				<option value="1">True</option>
-				</select>
-			</td>
 		</tr>
 		<tr>
 			<td>Width:</td>
@@ -318,56 +300,7 @@ echo $Construct->draw();
 				<option value="auto">Auto</option>
 				<option value="px" selected>Pixels</option>
 				<!--<option value="em">Em</option>-->
-				<option value="%">Percent</option>
-			</td>
-			<td><div class="containerOnly">Tie to container:</div><div class="columnOnly">Tie to column:</div></td>
-			<td><div class="containerOnly">
-			<?php
-			 $QContainersAnchors = Doctrine_Query::create()
-			 ->from('TemplateManagerLayoutsContainers')
-			 ->where('is_anchor = ?', '1')
-			 ->execute();
-			 $selectAnchors = htmlBase::newElement('selectbox')
-			 ->setName('anchor_id')
-			 ->addClass('anchorID');
-			$selectAnchors->addOption('0', 'Please Select');
-			foreach($QContainersAnchors as $anchor){
-				$layout_name = $anchor->Layout->layout_name;
-				if(!empty($anchor->Configuration['id']->configuration_value)){
-					$layout_container_id = 'container_'.$anchor->Configuration['id']->configuration_value;
-				}else{
-					$layout_container_id = 'container_'.$anchor->container_id;
-				}
-				$anchorName = $layout_name.'_'.$layout_container_id;
-				$selectAnchors->addOption($anchor->container_id, $anchorName);
-			}
-			echo $selectAnchors->draw();
-			?></div>
-
-				<div class="columnOnly">
-<?php
-			 $QContainersAnchors = Doctrine_Query::create()
-	->from('TemplateManagerLayoutsColumns')
-	->where('is_anchor = ?', '1')
-	->execute();
-	$selectAnchors = htmlBase::newElement('selectbox')
-		->setName('anchor_id')
-		->addClass('anchorID');
-	$selectAnchors->addOption('0', 'Please Select');
-	foreach($QContainersAnchors as $anchor){
-		$layout_name = $anchor->Layout->layout_name;
-		if(!empty($anchor->Configuration['id']->configuration_value)){
-			$layout_container_id = 'column_'.$anchor->Configuration['id']->configuration_value;
-		}else{
-			$layout_container_id = 'column_'.$anchor->column_id;
-		}
-		$anchorName = $layout_name.'_'.$layout_container_id;
-		$selectAnchors->addOption($anchor->column_id, $anchorName);
-	}
-	echo $selectAnchors->draw();
-	?></div>
-
-			</td>
+				<option value="%">Percent</option></td>
 		</tr>
 	</table>
 	<div class="widthSlider"></div>

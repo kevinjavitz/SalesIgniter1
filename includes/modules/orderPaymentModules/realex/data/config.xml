@@ -1,60 +1,43 @@
 <configurations>
 	<configuration>
-		<tab><![CDATA[General]]></tab>
-		<title><![CDATA[Installed Status]]></title>
-		<key><![CDATA[INSTALLED]]></key>
-		<value><![CDATA[False]]></value>
-		<description><![CDATA[Tells if the module is installed or not]]></description>
-		<set_function><![CDATA[tep_cfg_show_installed_status(]]></set_function>
-	</configuration>
-	<configuration>
-		<tab><![CDATA[General]]></tab>
 		<title><![CDATA[Enable Realex Module]]></title>
 		<key><![CDATA[MODULE_PAYMENT_REALEX_STATUS]]></key>
-		<value><![CDATA[False]]></value>
+		<value><![CDATA[True]]></value>
 		<description><![CDATA[Do you want to accept Realex payments?]]></description>
+		<sort_order>1</sort_order>
 		<set_function><![CDATA[tep_cfg_select_option(array('True', 'False'),]]></set_function>
 	</configuration>
 	<configuration>
-		<tab><![CDATA[General]]></tab>
-		<title><![CDATA[Display Order]]></title>
-		<key><![CDATA[DISPLAY_ORDER]]></key>
+		<title><![CDATA[Sort order of display]]></title>
+		<key><![CDATA[MODULE_PAYMENT_REALEX_SORT_ORDER]]></key>
 		<value><![CDATA[0]]></value>
 		<description><![CDATA[Sort order of display. Lowest is displayed first.]]></description>
+		<sort_order>2</sort_order>
 	</configuration>
 	<configuration>
-		<tab><![CDATA[General]]></tab>
-		<title><![CDATA[Payment method visible]]></title>
-		<key><![CDATA[VISIBLE]]></key>
-		<value><![CDATA[Both]]></value>
-		<description><![CDATA[Where is this payment method visible: Admin, Catalog or Both )]]></description>
-		<sort_order>5</sort_order>
-		<set_function><![CDATA[tep_cfg_select_option(array('Admin','Catalog','Both'),]]></set_function>
-	</configuration>
-	<configuration>
-		<tab><![CDATA[General]]></tab>
 		<title><![CDATA[Payment Zone]]></title>
 		<key><![CDATA[MODULE_PAYMENT_REALEX_ZONE]]></key>
 		<value><![CDATA[0]]></value>
 		<description><![CDATA[If a zone is selected, only enable this payment method for that zone.]]></description>
+		<sort_order>3</sort_order>
 		<use_function><![CDATA[tep_get_zone_class_title]]></use_function>
 		<set_function><![CDATA[tep_cfg_pull_down_zone_classes(]]></set_function>
 	</configuration>
 	<configuration>
-		<tab><![CDATA[General]]></tab>
 		<title><![CDATA[Set Order Status]]></title>
 		<key><![CDATA[MODULE_PAYMENT_REALEX_ORDER_STATUS_ID]]></key>
 		<value><![CDATA[0]]></value>
 		<description><![CDATA[Set the status of orders made with this payment module to this value]]></description>
+		<sort_order>4</sort_order>
 		<use_function><![CDATA[tep_get_order_status_name]]></use_function>
 		<set_function><![CDATA[tep_cfg_pull_down_order_statuses(]]></set_function>
 	</configuration>
 	<configuration>
-		<tab><![CDATA[General]]></tab>
 		<title><![CDATA[Accepted Checkout Method]]></title>
-		<key><![CDATA[CHECKOUT_METHOD]]></key>
+		<key><![CDATA[MODULE_PAYMENT_REALEX_CHECKOUT_METHOD]]></key>
 		<value><![CDATA[Normal]]></value>
 		<description><![CDATA[Allow this payment module to be used for (Rental membership signup, Normal checkout or Both )]]></description>
+		<sort_order>5</sort_order>
 		<set_function><![CDATA[tep_cfg_select_option(array('Membership','Normal','Both'),]]></set_function>
 	</configuration>
 	<configuration>
@@ -62,24 +45,28 @@
 		<key><![CDATA[MODULE_PAYMENT_REALEX_MERCHANT_ID]]></key>
 		<value><![CDATA[55tZyWtL9629]]></value>
 		<description><![CDATA[The login username used for the Realex service]]></description>
+		<sort_order>6</sort_order>
 	</configuration>
 	<configuration>
 		<title><![CDATA[Shared Secret]]></title>
 		<key><![CDATA[MODULE_PAYMENT_REALEX_SHARED_SECRET]]></key>
 		<value><![CDATA[2h6t5Vh8n8Xd5EVZ]]></value>
 		<description><![CDATA[The shared secret used for the Realex Payments service]]></description>
+		<sort_order>7</sort_order>
 	</configuration>
 	<configuration>
 		<title><![CDATA[Gateway Url]]></title>
 		<key><![CDATA[MODULE_PAYMENT_REALEX_URL]]></key>
 		<value><![CDATA[https://epage.payandshop.com/epage-remote.cgi]]></value>
 		<description><![CDATA[This is the URL of the Realex Gateway]]></description>
+		<sort_order>10</sort_order>
 	</configuration>
 	<configuration>
 		<title><![CDATA[Accepted Credit Cards]]></title>
 		<key><![CDATA[MODULE_PAYMENT_REALEX_ACCEPTED_CC]]></key>
 		<value><![CDATA[Visa, Mastercard]]></value>
 		<description><![CDATA[The credit cards you currently accept]]></description>
+		<sort_order>14</sort_order>
 		<set_function><![CDATA[tep_cfg_select_multioption(array('Solo','Diners','Delta','Switch','Laser','Visa','Mastercard','Amex','Discover'),]]></set_function>
 	</configuration>
 	<configuration>
@@ -87,5 +74,6 @@
 		<key><![CDATA[MODULE_PAYMENT_REALEX_REJECTED_CC]]></key>
 		<value><![CDATA[4024]]></value>
 		<description><![CDATA[Add starting CC values separated by comma]]></description>
+		<sort_order>14</sort_order>
 	</configuration>
 </configurations>

@@ -7,8 +7,6 @@
 		$Category = $Categories->getRecord();
 	}
 
-
-
 	$languages = tep_get_languages();
 ?>
 <form name="new_category" action="<?php echo itw_app_link(tep_get_all_get_params(array('app', 'appName', 'action')) . 'action=saveCategory');?>" method="post" enctype="multipart/form-data">
@@ -31,8 +29,8 @@
   ?>
  </ul>
 
- <div id="page-1"><?php include(sysConfig::getDirFsAdmin() . 'applications/categories/pages_tabs/tab_general.php');?></div>
- <div id="page-2"><?php include(sysConfig::getDirFsAdmin() . 'applications/categories/pages_tabs/tab_description.php');?></div>
+ <div id="page-1"><?php include(DIR_WS_APP . 'categories/pages_tabs/tab_general.php');?></div>
+ <div id="page-2"><?php include(DIR_WS_APP . 'categories/pages_tabs/tab_description.php');?></div>
   <?php
    $contents = EventManager::notifyWithReturn('NewCategoryTabBody', &$Category);
    if (!empty($contents)){

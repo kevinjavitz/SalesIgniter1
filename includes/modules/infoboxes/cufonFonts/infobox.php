@@ -13,7 +13,6 @@ class InfoBoxCufonFonts extends InfoBoxAbstract {
 	public function __construct(){
 		global $App;
 		$this->init('cufonFonts');
-		$this->buildJavascriptMultiple = true;
 	}
 
 	public function show(){
@@ -26,58 +25,26 @@ class InfoBoxCufonFonts extends InfoBoxAbstract {
 	public function buildJavascript(){
 		$boxWidgetProperties = $this->getWidgetProperties();
 
-		ob_start();
-		readfile(sysConfig::getDirFsCatalog().'templates/'.Session::get('tplDir').'/fonts/'.$boxWidgetProperties->applied_font.'.js');
-		?>
-		Cufon.replace('<?php echo $boxWidgetProperties->applied_elements;?>', {
-		<?php if (!empty($boxWidgetProperties->cufon_text_shadow)){ ?>
-		textShadow: '<?php echo $boxWidgetProperties->cufon_text_shadow; ?>',
-		<?php } ?>
-		<?php if (!empty($boxWidgetProperties->cufon_color)){ ?>
-		color: '<?php echo $boxWidgetProperties->cufon_color; ?>',
-		<?php } ?>
-		<?php if (!empty($boxWidgetProperties->cufon_font_family)){ ?>
-		fontFamily: '<?php echo $boxWidgetProperties->cufon_font_family; ?>',
-		<?php } ?>
-		<?php if (!empty($boxWidgetProperties->cufon_font_size)){ ?>
-		fontSize: '<?php echo $boxWidgetProperties->cufon_font_size; ?>',
-		<?php } ?>
-		<?php if (!empty($boxWidgetProperties->cufon_font_stretch)){ ?>
-		fontStretch: '<?php echo $boxWidgetProperties->cufon_font_stretch; ?>',
-		<?php } ?>
-		<?php if (!empty($boxWidgetProperties->cufon_font_style)){ ?>
-		fontStyle: '<?php echo $boxWidgetProperties->cufon_font_style; ?>',
-		<?php } ?>
-		<?php if (!empty($boxWidgetProperties->cufon_font_weight)){ ?>
-		fontWeight: '<?php echo $boxWidgetProperties->cufon_font_weight; ?>',
-		<?php } ?>
-		hover: {
-			<?php if (!empty($boxWidgetProperties->cufon_text_shadow_hover)){ ?>
-			textShadow: <?php echo "'" .$boxWidgetProperties->cufon_text_shadow_hover . "'" . (!empty($boxWidgetProperties->cufon_hover_font_family)||!empty($boxWidgetProperties->cufon_hover_color)||!empty($boxWidgetProperties->cufon_hover_font_size)||!empty($boxWidgetProperties->cufon_hover_font_weight)||!empty($boxWidgetProperties->cufon_hover_font_style) ? ',' : '' ); ?>
-			<?php }?>
-			<?php if (!empty($boxWidgetProperties->cufon_hover_font_family)){ ?>
-			fontFamily: <?php echo "'" .$boxWidgetProperties->cufon_hover_font_family . "'" . (!empty($boxWidgetProperties->cufon_hover_color)||!empty($boxWidgetProperties->cufon_hover_font_size)||!empty($boxWidgetProperties->cufon_hover_font_weight)||!empty($boxWidgetProperties->cufon_hover_font_style) ? ',' : '' ); ?>
-			<?php }?>
-		<?php if (!empty($boxWidgetProperties->cufon_hover_font_size)){ ?>
-		fontSize: <?php echo "'" .$boxWidgetProperties->cufon_hover_font_size . "'" . (!empty($boxWidgetProperties->cufon_hover_color)||!empty($boxWidgetProperties->cufon_hover_font_weight)||!empty($boxWidgetProperties->cufon_hover_font_style) ? ',' : '' ); ?>
-		<?php }?>
-
-		<?php if (!empty($boxWidgetProperties->cufon_hover_font_weight)){ ?>
-		fontWeight: <?php echo "'" .$boxWidgetProperties->cufon_hover_font_weight . "'" . (!empty($boxWidgetProperties->cufon_hover_color)||!empty($boxWidgetProperties->cufon_hover_font_style) ? ',' : '' ); ?>
-		<?php }?>
-		<?php if (!empty($boxWidgetProperties->cufon_hover_font_style)){ ?>
-		fontStyle: <?php echo "'" .$boxWidgetProperties->cufon_hover_font_style . "'" . (!empty($boxWidgetProperties->cufon_hover_color) ? ',' : '' ); ?>
-		<?php }?>
-		<?php if (!empty($boxWidgetProperties->cufon_hover_color)){?>
-				color: '<?php echo $boxWidgetProperties->cufon_hover_color; ?>'
-		<?php } ?>
+		$javascript = '';
+		
+		$javascript = '/* Cufon Fonts --BEGIN-- */' . "\n" .
+		'	$(document).ready(function (){' . "\n" ;
+		if(!empty($boxWidgetProperties->applied_elements)){
+		$javascript .= '   Cufon.replace("'.$boxWidgetProperties->applied_elements.'");' . "\n";
 		}
-		});
-		<?php
-		$javascript = ob_get_contents();
-		ob_end_clean();
+		$javascript .=
+		'	});' . "\n" .
+		'/* Cufon Fonts --END-- */' . "\n";
 
 		return $javascript;
+	}
+
+	public function getJavascriptSources(){
+		$boxWidgetProperties = $this->getWidgetProperties();
+		return array(
+			dirname(__FILE__) . '/javascript/cufon-yui.js',
+			sysConfig::getDirFsCatalog().'templates/'.Session::get('tplDir').'/fonts/'.$boxWidgetProperties->applied_font.'.js'
+		);
 	}
 	
 	public function onTemplateExport(&$iInfo, $data){

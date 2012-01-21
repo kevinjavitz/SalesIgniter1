@@ -119,10 +119,6 @@ class htmlWidget_checkbox implements htmlWidgetPlugin {
 				$button->attr('disabled', 'disabled');
 			}
 			
-			if (isset($bInfo['addCls'])){
-				$button->addClass($bInfo['addCls']);
-			}
-
 			if (isset($data['addCls'])){
 				$button->addClass($data['addCls']);
 			}

@@ -1,48 +1,40 @@
 <configurations>
 	<configuration>
-		<tab><![CDATA[General]]></tab>
-		<title><![CDATA[Installed Status]]></title>
-		<key><![CDATA[INSTALLED]]></key>
-		<value><![CDATA[False]]></value>
-		<description><![CDATA[Tells if the module is installed or not]]></description>
-		<set_function><![CDATA[tep_cfg_show_installed_status(]]></set_function>
-	</configuration>
-	<configuration>
-		<tab><![CDATA[General]]></tab>
 		<title><![CDATA[Display PPR Discount]]></title>
-		<key><![CDATA[STATUS]]></key>
-		<value><![CDATA[False]]></value>
+		<key><![CDATA[MODULE_ORDER_TOTAL_PPRDISCOUNT_STATUS]]></key>
+		<value><![CDATA[True]]></value>
 		<description><![CDATA[Do you want to display the ppr discount?]]></description>
+		<sort_order>1</sort_order>
 		<set_function><![CDATA[tep_cfg_select_option(array('True', 'False'),]]></set_function>
 	</configuration>
 	<configuration>
-		<tab><![CDATA[General]]></tab>
-		<title><![CDATA[Display Order]]></title>
-		<key><![CDATA[DISPLAY_ORDER]]></key>
+		<title><![CDATA[Sort order of display]]></title>
+		<key><![CDATA[MODULE_ORDER_TOTAL_PPRDISCOUNT_SORT_ORDER]]></key>
 		<value><![CDATA[0]]></value>
-		<description><![CDATA[Display Order. Lowest is displayed first.]]></description>
+		<description><![CDATA[Sort order of display. Lowest is displayed first.]]></description>
+		<sort_order>2</sort_order>
 	</configuration>
 	<configuration>
-		<tab><![CDATA[General]]></tab>
 		<title><![CDATA[Allow PPR Discount]]></title>
 		<key><![CDATA[MODULE_ORDER_TOTAL_PPR_DISCOUNT_ENABLE]]></key>
 		<value><![CDATA[False]]></value>
 		<description><![CDATA[Do you want to allow ppr discount?]]></description>
+		<sort_order>3</sort_order>
 		<set_function><![CDATA[tep_cfg_select_option(array('True', 'False'),]]></set_function>
 	</configuration>
     <configuration>
-	    <tab><![CDATA[General]]></tab>
 		<title><![CDATA[Number of days before the discount is calculated from the reservation orders]]></title>
 		<key><![CDATA[MODULE_ORDER_TOTAL_PPR_DISCOUNT_MAX_DAYS]]></key>
 		<value><![CDATA[30]]></value>
 		<description><![CDATA[The orders amde before this number of days won't be taken into account when calculating the discount]]></description>
+		<sort_order>4</sort_order>
 	</configuration>
      <configuration>
-	     <tab><![CDATA[General]]></tab>
 		<title><![CDATA[Maximum amount to be taken into account when calculating the discount]]></title>
 		<key><![CDATA[MODULE_ORDER_TOTAL_PPR_DISCOUNT_MAX_AMOUNT]]></key>
 		<value><![CDATA[300]]></value>
 		<description><![CDATA[The orders amde before this number of days won't be taken into account when calculating the discount]]></description>
+		<sort_order>5</sort_order>
 	</configuration>
 
 </configurations>

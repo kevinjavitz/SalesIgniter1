@@ -4,9 +4,8 @@
 
 	<define key="INFOBOX_SOCIAL_NETWORKS_TEXT"><![CDATA[]]></define>
 
-	<define key="INFOBOX_SOCIAL_NETWORKS_FACEBOOK_TEXT"><![CDATA[]]></define>
-	<define key="INFOBOX_SOCIAL_NETWORKS_TWITTER_TEXT"><![CDATA[]]></define>
-	<define key="INFOBOX_SOCIAL_NETWORKS_YOUTUBE_TEXT"><![CDATA[]]></define>
+	<define key="INFOBOX_SOCIAL_NETWORKS_FACEBOOK_TEXT"><![CDATA[<span style="display:inline-block;width:140px;vertical-align:top;padding-top:10px;">Be a "Fan" of your local dive shop in Facebook</span>]]></define>
+	<define key="INFOBOX_SOCIAL_NETWORKS_TWITTER_TEXT"><![CDATA[<span style="display:inline-block;width:140px;vertical-align:top;padding-top:10px;">Follow us on Twitter - scuba news and dive gear specials</span>]]></define>
 	<define key="INFOBOX_SOCIAL_NETWORKS_EMAIL_TEXT"><![CDATA[]]></define>
 
 </definitions>                                                                       

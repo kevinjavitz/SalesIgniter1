@@ -11,16 +11,16 @@ class Template {
 			$baseDir = '/';
 		}
 
-		if (file_exists(sysConfig::getDirFsCatalog() . 'templates/' . Session::get('tplDir') . '/' . $baseDir . $fileName)){
-			$this->baseDir = sysConfig::getDirFsCatalog() . 'templates/' . Session::get('tplDir') . '/' . $baseDir;
-		}elseif (file_exists(sysConfig::getDirFsCatalog() . 'templates/' . Session::get('tplDir') . '/' . $fileName)){
-			$this->baseDir = sysConfig::getDirFsCatalog() . 'templates/' . Session::get('tplDir') . '/';
-		}elseif (file_exists(sysConfig::getDirFsCatalog() . 'templates/fallback/' . $baseDir . $fileName)){
-			$this->baseDir = sysConfig::getDirFsCatalog() . 'templates/fallback/' . $baseDir;
+		if (file_exists(DIR_FS_CATALOG . 'templates/' . Session::get('tplDir') . '/' . $baseDir . $fileName)){
+			$this->baseDir = DIR_FS_CATALOG . 'templates/' . Session::get('tplDir') . '/' . $baseDir;
+		}elseif (file_exists(DIR_FS_CATALOG . 'templates/' . Session::get('tplDir') . '/' . $fileName)){
+			$this->baseDir = DIR_FS_CATALOG . 'templates/' . Session::get('tplDir') . '/';
+		}elseif (file_exists(DIR_FS_CATALOG . 'templates/fallback/' . $baseDir . $fileName)){
+			$this->baseDir = DIR_FS_CATALOG . 'templates/fallback/' . $baseDir;
 		}elseif (file_exists($baseDir . $fileName)){
 			$this->baseDir = $baseDir;
 		}else{
-			$this->baseDir = sysConfig::getDirFsCatalog() . 'templates/fallback/';
+			$this->baseDir = DIR_FS_CATALOG . 'templates/fallback/';
 		}
 		
 		$this->setTemplateFile($fileName);

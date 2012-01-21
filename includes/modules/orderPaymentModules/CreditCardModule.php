@@ -9,27 +9,21 @@
 
 	This script and it's source is not redistributable
 */
-require(sysConfig::getDirFsCatalog() . 'includes/classes/curl/Response.php');
-require(sysConfig::getDirFsCatalog() . 'includes/classes/curl/Request.php');
-
-class CreditCardModule extends PaymentModuleBase
-{
-
-	public $requireCvv = false;
-
-	public $gatewayResponse = false;
-
-	public $testMode = false;
-
-	public $allowedTypes = array();
-
-	public $acceptedTypes = array();
-
-	public $cardTypes = array(
-		'Visa' => 'Visa',
-		'Mastercard' => 'Mastercard',
-		'Discover' => 'Discover',
-		'Amex' => 'American Express',
+	require(sysConfig::getDirFsCatalog() . 'includes/classes/curl/Response.php');
+	require(sysConfig::getDirFsCatalog() . 'includes/classes/curl/Request.php');
+	
+	abstract class CreditCardModule extends PaymentModuleBase {
+		public $requireCvv = false;
+		public $gatewayResponse = false;
+		public $testMode = false;
+		public $allowedTypes = array();
+		public $acceptedTypes = array();
+		
+		public $cardTypes = array(
+			'Visa' => 'Visa',
+			'Mastercard' => 'Mastercard',
+			'Discover' => 'Discover',
+			'Amex' => 'American Express',
 			'Delta' => 'Delta',
 			'Switch' => 'Switch',
 			'Diners' => 'Diners',

@@ -66,11 +66,10 @@ class Session {
 	}
 
 	public static function _read($key){
-		$ResultSet = Doctrine_Manager::getInstance()
-			->getCurrentConnection()
-			->fetchAssoc('select value from sessions where sesskey = "' . $key .'" and expiry > "' . time() . '"');
-		if (sizeof($ResultSet) > 0){
-			$value = stripslashes($ResultSet[0]['value']);
+		$Qvalue = mysql_query('select value from sessions where sesskey = "' . $key .'" and expiry > "' . time() . '"');
+		if (mysql_num_rows($Qvalue)){
+			$Result = mysql_fetch_assoc($Qvalue);
+			$value = stripslashes($Result['value']);
 			if (!empty($value)){
 				return $value;
 			}
@@ -79,32 +78,24 @@ class Session {
 	}
 
 	public static function _write($key, $val){
-		$Check = Doctrine_Manager::getInstance()
-			->getCurrentConnection()
-			->fetchAssoc('select count(*) as total from sessions where sesskey = "' . $key . '"');
+		$Qcheck = mysql_query('select count(*) as total from sessions where sesskey = "' . $key . '"');
+		$check = mysql_fetch_assoc($Qcheck);
 
-		if ($Check[0]['total'] <= 0){
-			$queryStr = 'insert into sessions (sesskey, value, expiry) values ("' . $key . '", "' . addslashes($val) . '", "' . (time() + self::$sessionLife) . '")';
+		if ($check['total'] <= 0){
+			mysql_query('insert into sessions (sesskey, value, expiry) values ("' . $key . '", "' . addslashes($val) . '", "' . (time() + self::$sessionLife) . '")') or die('ERROR:' . mysql_error());
 		}else{
-			$queryStr = 'update sessions set value = "' . addslashes($val) . '", expiry = "' . (time() + self::$sessionLife) . '" where sesskey = "' . $key . '"';
+			mysql_query('update sessions set value = "' . addslashes($val) . '", expiry = "' . (time() + self::$sessionLife) . '" where sesskey = "' . $key . '"') or die('ERROR:' . mysql_error());
 		}
-		Doctrine_Manager::getInstance()
-			->getCurrentConnection()
-			->exec($queryStr);
 		return true;
 	}
 
 	public static function _destroy($key){
-		Doctrine_Manager::getInstance()
-			->getCurrentConnection()
-			->exec('delete from sessions where sesskey = "' . $key . '"');
+		mysql_query('delete from sessions where sesskey = "' . $key . '"');
 		return true;
 	}
 
 	public static function _gc($maxLifetime){
-		Doctrine_Manager::getInstance()
-			->getCurrentConnection()
-			->exec('delete from sessions where expiry < "' . time() . '"');
+		mysql_query('delete from sessions where expiry < "' . time() . '"');
 		return true;
 	}
 

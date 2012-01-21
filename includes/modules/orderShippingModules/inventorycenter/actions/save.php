@@ -1,6 +1,6 @@
 <?php
-	$Module1 = OrderShippingModules::getModule($_GET['module'], true);
-	$ModuleMethods = $Module1->getMethods();
+	$Module = OrderShippingModules::getModule($_GET['module']);
+	$ModuleMethods = $Module->getMethods();
 	
 	$Methods = Doctrine_Core::getTable('ModulesShippingInventoryCenterMethods');
 	$saveArray = array();

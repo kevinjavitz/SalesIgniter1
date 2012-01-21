@@ -1,105 +1,96 @@
 <configurations>
 	<configuration>
-		<tab><![CDATA[General]]></tab>
-		<title><![CDATA[Installed Status]]></title>
-		<key><![CDATA[INSTALLED]]></key>
-		<value><![CDATA[False]]></value>
-		<description><![CDATA[Tells if the module is installed or not]]></description>
-		<set_function><![CDATA[tep_cfg_show_installed_status(]]></set_function>
-	</configuration>
-	<configuration>
-		<tab><![CDATA[General]]></tab>
 		<title><![CDATA[Enable CIC Payment Module]]></title>
-		<key><![CDATA[STATUS]]></key>
-		<value><![CDATA[False]]></value>
+		<key><![CDATA[MODULE_PAYMENT_CMCIC_STATUS]]></key>
+		<value><![CDATA[True]]></value>
 		<description><![CDATA[Do you want to accept cic payments?]]></description>
+		<sort_order>1</sort_order>
 		<set_function><![CDATA[tep_cfg_select_option(array('True', 'False'),]]></set_function>
 	</configuration>
 	<configuration>
-		<tab><![CDATA[General]]></tab>
-		<title><![CDATA[Display Order]]></title>
-		<key><![CDATA[DISPLAY_ORDER]]></key>
+		<title><![CDATA[Sort order of display]]></title>
+		<key><![CDATA[MODULE_PAYMENT_CMCIC_SORT_ORDER]]></key>
 		<value><![CDATA[0]]></value>
-		<description><![CDATA[Display Order. Lowest is displayed first.]]></description>
+		<description><![CDATA[Sort order of display. Lowest is displayed first.]]></description>
+		<sort_order>2</sort_order>
 	</configuration>
 	<configuration>
-	<tab><![CDATA[General]]></tab>
 		<title><![CDATA[Payment method visible]]></title>
-		<key><![CDATA[VISIBLE]]></key>
+		<key><![CDATA[MODULE_PAYMENT_CMCIC_VISIBLE]]></key>
 		<value><![CDATA[Both]]></value>
 		<description><![CDATA[Where is this payment method visible: Admin, Catalog or Both )]]></description>
 		<sort_order>5</sort_order>
 		<set_function><![CDATA[tep_cfg_select_option(array('Admin','Catalog','Both'),]]></set_function>
 	</configuration>
 	<configuration>
-		<tab><![CDATA[General]]></tab>
 		<title><![CDATA[Payment Zone]]></title>
-		<key><![CDATA[ZONE]]></key>
+		<key><![CDATA[MODULE_PAYMENT_CMCIC_ZONE]]></key>
 		<value><![CDATA[0]]></value>
 		<description><![CDATA[If a zone is selected, only enable this payment method for that zone.]]></description>
+		<sort_order>3</sort_order>
 		<use_function><![CDATA[tep_get_zone_class_title]]></use_function>
 		<set_function><![CDATA[tep_cfg_pull_down_zone_classes(]]></set_function>
 	</configuration>
 	<configuration>
-		<tab><![CDATA[General]]></tab>
 		<title><![CDATA[Set Order Status]]></title>
-		<key><![CDATA[ORDER_STATUS_ID]]></key>
+		<key><![CDATA[MODULE_PAYMENT_CMCIC_ORDER_STATUS_ID]]></key>
 		<value><![CDATA[0]]></value>
 		<description><![CDATA[Set the status of orders made with this payment module to this value]]></description>
+		<sort_order>4</sort_order>
 		<use_function><![CDATA[tep_get_order_status_name]]></use_function>
 		<set_function><![CDATA[tep_cfg_pull_down_order_statuses(]]></set_function>
 	</configuration>
 	<configuration>
-		<tab><![CDATA[General]]></tab>
 		<title><![CDATA[Accepted Checkout Method]]></title>
-		<key><![CDATA[CHECKOUT_METHOD]]></key>
+		<key><![CDATA[MODULE_PAYMENT_CMCIC_CHECKOUT_METHOD]]></key>
 		<value><![CDATA[Normal]]></value>
 		<description><![CDATA[Allow this payment module to be used for (Rental membership signup, Normal checkout or Both )]]></description>
+		<sort_order>5</sort_order>
 		<set_function><![CDATA[tep_cfg_select_option(array('Membership','Normal','Both'),]]></set_function>
 	</configuration>
 	<configuration>
-		<tab><![CDATA[General]]></tab>
 		<title><![CDATA[Bank for the transaction]]></title>
 		<key><![CDATA[MODULE_PAYMENT_CMCIC_BANQUE]]></key>
 		<value><![CDATA[CiC]]></value>
 		<description><![CDATA[Bank for the transaction]]></description>
+		<sort_order>6</sort_order>
 		<set_function><![CDATA[tep_cfg_select_option(array('CiC','CreditMut','OBC'),]]></set_function>
 	</configuration>
 	<configuration>
-		<tab><![CDATA[General]]></tab>
 		<title><![CDATA[Bank for the transaction]]></title>
 		<key><![CDATA[MODULE_PAYMENT_CMCIC_MODE]]></key>
 		<value><![CDATA[test]]></value>
 		<description><![CDATA[Mode]]></description>
+		<sort_order>7</sort_order>
 		<set_function><![CDATA[tep_cfg_select_option(array('test','production'),]]></set_function>
 	</configuration>
 	<configuration>
-		<tab><![CDATA[General]]></tab>
 		<title><![CDATA[Simulation Mode]]></title>
 		<key><![CDATA[MODULE_PAYMENT_CMCIC_SIMULATION]]></key>
 		<value><![CDATA[Yes]]></value>
 		<description><![CDATA[Simulation mode]]></description>
+		<sort_order>8</sort_order>
 		<set_function><![CDATA[tep_cfg_select_option(array('Yes','No'),]]></set_function>
 	</configuration>
 	<configuration>
-		<tab><![CDATA[General]]></tab>
 		<title><![CDATA[TPE Number]]></title>
 		<key><![CDATA[MODULE_PAYMENT_CMCIC_TPE]]></key>
 		<value><![CDATA[123456]]></value>
 		<description><![CDATA[Tpe number]]></description>
+		<sort_order>9</sort_order>
 	</configuration>
 	<configuration>
-		<tab><![CDATA[General]]></tab>
 		<title><![CDATA[Version]]></title>
 		<key><![CDATA[MODULE_PAYMENT_CMCIC_VERSION]]></key>
 		<value><![CDATA[3.0]]></value>
 		<description><![CDATA[Version]]></description>
+		<sort_order>10</sort_order>
 	</configuration>
 	<configuration>
-		<tab><![CDATA[General]]></tab>
 		<title><![CDATA[Company Name]]></title>
 		<key><![CDATA[MODULE_PAYMENT_CMCIC_SOCIETE]]></key>
 		<value><![CDATA[Company Name]]></value>
 		<description><![CDATA[Company Name]]></description>
+		<sort_order>11</sort_order>
 	</configuration>
 </configurations>

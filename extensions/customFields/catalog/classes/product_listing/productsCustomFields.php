@@ -21,7 +21,7 @@ class productListing_productsCustomFields {
 		return $selectSortKeys;
 	}
 
-	public function show(&$productClass, &$purchaseTypesCol){
+	public function show(&$productClass){
 		global $appExtension;
 		$productInfo = $productClass->productInfo;
 

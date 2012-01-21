@@ -119,7 +119,7 @@ class productListing_col extends productListing {
 			if ($this->showNoProducts === false) return false;
 
 			$div = htmlBase::newElement('div')
-			->addClass('ui-widget ui-widget-content ui-corner-all noproducts')
+			->addClass('ui-widget ui-widget-content ui-corner-all')
 			->html(sysLanguage::get('PRODUCT_LISTING_NO_PRODUCTS'))
 			->css(array(
 				'text-align' => 'center',

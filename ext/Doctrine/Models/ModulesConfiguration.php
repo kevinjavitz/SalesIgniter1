@@ -1,7 +1,6 @@
 <?php
 class ModulesConfiguration extends Doctrine_Record {
 	public function setUp(){
-		parent::setUp();
 		$this->setAttribute(Doctrine::ATTR_COLL_KEY, 'configuration_key');
 	}
 	

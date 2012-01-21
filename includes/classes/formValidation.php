@@ -88,12 +88,12 @@ class formValidation extends ArrayIterator {
 		);
 
 		
-		$this->validationRules['terms'] = array(
+			$this->validationRules['terms'] = array(
 				'validate'              => 1,
 				'validation_type'       => 'checkbox|required',
 				'values'                => '1',
 				'errorMessage_checkbox' => sysLanguage::get('ENTRY_TERMS_ERROR_CHECKBOX')
-		);
+			);
 
 		
 		$this->validationRules['password'] = array(

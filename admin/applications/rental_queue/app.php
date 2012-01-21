@@ -12,7 +12,7 @@
 		$membership =& $userAccount->plugins['membership'];
 		$addressBook =& $userAccount->plugins['addressBook'];
 		
-		require(sysConfig::getDirFsAdmin() . 'includes/classes/rental_queue.php');
+		require('includes/classes/rental_queue.php');
 		$rentalQueue = new rentalQueue_admin($_GET['cID']);
 	}
 ?>

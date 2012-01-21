@@ -170,29 +170,5 @@ class Order {
 		}
 		return $email;
 	}
-
-	public function getDriversLicense(){
-		$num = '';
-		if (isset($this->Order['customers_drivers_license'])){
-			$num = $this->Order['customers_drivers_license'];
-		}
-		return $num;
-	}
-
-	public function getPassPort(){
-		$passport = '';
-		if (isset($this->Order['customers_passport'])){
-			$passport = $this->Order['customers_passport'];
-		}
-		return $passport;
-	}
-
-	public function getRoomNumber(){
-		$room_number = '';
-		if (isset($this->Order['customers_room_number'])){
-			$room_number = $this->Order['customers_room_number'];
-		}
-		return $room_number;
-	}
 }
 ?>

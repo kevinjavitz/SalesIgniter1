@@ -46,7 +46,7 @@
     }
 
     function write($message, $type) {
-      error_log(strftime(sysConfig::get('STORE_PARSE_DATE_TIME_FORMAT')) . ' [' . $type . '] ' . $message . "\n", 3, sysConfig::get('STORE_PAGE_PARSE_TIME_LOG'));
+      error_log(strftime(STORE_PARSE_DATE_TIME_FORMAT) . ' [' . $type . '] ' . $message . "\n", 3, STORE_PAGE_PARSE_TIME_LOG);
     }
   }
 ?>

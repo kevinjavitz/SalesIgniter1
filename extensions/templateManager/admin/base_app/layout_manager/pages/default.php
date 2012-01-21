@@ -4,7 +4,7 @@ $tableGrid = htmlBase::newElement('newGrid')
 
 $tableGrid->addHeaderRow(array(
 	'columns' => array(
-		array('text' => 'Template Name')
+		array('text' => 'Template Name'),
 	)
 ));
 
@@ -18,21 +18,27 @@ $tableGrid->addButtons(array(
 	htmlBase::newElement('button')->setText('Delete')->addClass('deleteButton')->disable()
 ));
 
-$Templates = Doctrine_Core::getTable('TemplateManagerTemplates')
-	->findAll();
-foreach($Templates as $Template){
+$Qtemplates = Doctrine_Query::create()
+	->select('t.template_id, tc.configuration_value as template_name')
+	->from('TemplateManagerTemplates t')
+	->leftJoin('t.Configuration tc')
+	->where('configuration_key = ?', 'NAME')
+	->orderBy('template_name')
+	->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+
+foreach($Qtemplates as $tInfo){
 	$tableGrid->addBodyRow(array(
 		'rowAttr' => array(
-			'data-template_id' => $Template->template_id
+			'data-template_id' => $tInfo['template_id']
 		),
 		'columns' => array(
-			array('text' => '<span class="ui-icon ui-icon-folder-collapsed"></span><span>' . ucfirst($Template->Configuration['NAME']->configuration_value) . '</span>')
+			array('text' => '<span class="ui-icon ui-icon-folder-collapsed"></span><span>' . ucfirst($tInfo['template_name']) . '</span>')
 		)
 	));
 }
 ?>
 <div class="pageHeading"><?php
-	echo sysLanguage::get('HEADING_TITLE_TEMPLATES');
+	echo sysLanguage::get('HEADING_TITLE');
 	?></div>
 <br />
 <div class="gridContainer">

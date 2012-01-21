@@ -17,7 +17,7 @@
 		$pageContents .= $notFoundDiv->draw() . $buttonBar->draw();
 	} else {
 		$pageTitle = $product->getName();
-		if ($product->hasModel() && sysConfig::get('PRODUCT_INFO_SHOW_MODEL') == 'true'){
+		if ($product->hasModel()){
 			$pageTitle .= '&nbsp;<span class="smallText">[' . $product->getModel() . ']</span>';
 		}
 		$product->updateViews();
@@ -25,8 +25,8 @@
 
 		$showAlsoPurchased = false;
 		if (isset($_GET['products_id'])) {
-			$orders_query = mysql_query("select p.products_id, p.products_image from orders_products opa, orders_products opb, orders o, products p where opa.products_id = '" . (int)$_GET['products_id'] . "' and opa.orders_id = opb.orders_id and opb.products_id != '" . (int)$_GET['products_id'] . "' and opb.products_id = p.products_id and opb.orders_id = o.orders_id and p.products_status = '1' group by p.products_id order by o.date_purchased desc limit " . sysConfig::get('MAX_DISPLAY_ALSO_PURCHASED')) or die(mysql_error());
-			$num_products_ordered = mysql_num_rows($orders_query);
+			$orders_query = tep_db_query("select p.products_id, p.products_image from " . TABLE_ORDERS_PRODUCTS . " opa, " . TABLE_ORDERS_PRODUCTS . " opb, " . TABLE_ORDERS . " o, " . TABLE_PRODUCTS . " p where opa.products_id = '" . (int)$_GET['products_id'] . "' and opa.orders_id = opb.orders_id and opb.products_id != '" . (int)$_GET['products_id'] . "' and opb.products_id = p.products_id and opb.orders_id = o.orders_id and p.products_status = '1' group by p.products_id order by o.date_purchased desc limit " . MAX_DISPLAY_ALSO_PURCHASED);
+			$num_products_ordered = tep_db_num_rows($orders_query);
 			if ($num_products_ordered >= sysConfig::get('MIN_DISPLAY_ALSO_PURCHASED')) {
 				$showAlsoPurchased = true;
 			}
@@ -98,7 +98,7 @@
 	}
 	
 	$link = itw_app_link('cPath=' . tep_get_product_path($product->getID()), 'index', 'default');
-    $lastPath = $navigation->getPath(2);
+        $lastPath = $navigation->getPath(1);
 	if ($lastPath){
 		$getVars = array();
 		if (is_array($lastPath['get'])){

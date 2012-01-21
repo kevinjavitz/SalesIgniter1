@@ -11,7 +11,7 @@ class productListing_productsModel {
 		return $selectSortKeys;
 	}
 
-	public function show(&$productClass, &$purchaseTypesCol){
+	public function show(&$productClass){
 		if ($productClass->hasModel()){
 			return htmlspecialchars($productClass->getModel());
 		}

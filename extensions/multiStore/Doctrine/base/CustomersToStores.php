@@ -20,7 +20,7 @@ class CustomersToStores extends Doctrine_Record {
 		$Customers = Doctrine::getTable('Customers')->getRecordInstance();
 		$Stores = Doctrine::getTable('Stores')->getRecordInstance();
 
-		$Customers->hasOne('CustomersToStores', array(
+		$Customers->hasMany('CustomersToStores', array(
 			'local'   => 'customers_id',
 			'foreign' => 'customers_id',
 			'cascade' => array('delete')

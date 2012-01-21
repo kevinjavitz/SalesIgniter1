@@ -13,7 +13,7 @@
 class Orders extends Doctrine_Record {
 
 	public function setUp(){
-		parent::setUp();
+		$this->setUpParent();
 		
 		$this->hasOne('Customers', array(
 			'local' => 'customers_id',
@@ -55,7 +55,10 @@ class Orders extends Doctrine_Record {
 			'cascade' => array('delete')
 		));
 	}
-
+	
+	public function setUpParent(){
+	}
+	
 	public function preInsert($event){
 		$this->date_purchased = date('Y-m-d H:i:s');
 	}
@@ -242,9 +245,6 @@ class Orders extends Doctrine_Record {
 		'notnull' => true,
 		'autoincrement' => false,
 		));
-		$this->hasColumn('customers_drivers_license', 'string', 128);
-		$this->hasColumn('customers_passport', 'string', 128);
-		$this->hasColumn('customers_room_number', 'string', 128);
 		$this->hasColumn('bill_attempts', 'integer', 1, array(
 		'type' => 'integer',
 		'length' => 1,

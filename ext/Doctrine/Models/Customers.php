@@ -13,8 +13,6 @@
 class Customers extends Doctrine_Record {
 	
 	public function setUp(){
-		parent::setUp();
-		
 		$this->hasMany('AddressBook', array(
 			'local' => 'customers_id',
 			'foreign' => 'customers_id',
@@ -54,17 +52,6 @@ class Customers extends Doctrine_Record {
 			'unsigned' => 0,
 			'primary' => true,
 			'autoincrement' => true,
-		));
-		$this->hasColumn('customers_number', 'string', 12, array(
-			'type' => 'string',
-			'length' => 12
-		));
-		$this->hasColumn('customers_account_frozen', 'integer', 1, array(
-			'type' => 'integer',
-			'length' => 1,
-			'default' => 0,
-			'primary' => false,
-			'autoincrement' => false,
 		));
 		$this->hasColumn('language_id', 'integer', 4, array(
 			'type' => 'integer',
@@ -148,16 +135,6 @@ class Customers extends Doctrine_Record {
 				'primary' => false,
 				'default' => '',
 				'notnull' => true,
-				'autoincrement' => false,
-			));
-
-		$this->hasColumn('customers_notes', 'string', null, array(
-				'type' => 'string',
-				'length' => null,
-				'fixed' => false,
-				'primary' => false,
-				'default' => '',
-				'notnull' => false,
 				'autoincrement' => false,
 			));
 		$this->hasColumn('customers_fax', 'string', 32, array(

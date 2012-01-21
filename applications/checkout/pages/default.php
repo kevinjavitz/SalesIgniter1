@@ -27,7 +27,7 @@ echo tep_get_pages_content(13);
 		<td width="10"><?php echo tep_draw_separator('pixel_trans.gif', '10', '1'); ?></td>
 		<td class="main" id="checkoutMessage"><?php echo '<b>' . sysLanguage::get('TITLE_CONTINUE_CHECKOUT_PROCEDURE') . '</b><br>' . sysLanguage::get('TEXT_CONTINUE_CHECKOUT_PROCEDURE'); ?></td>
 		<td width="10"><?php echo tep_draw_separator('pixel_trans.gif', '10', '1'); ?></td>
-		<?php if (sysConfig::get('TERMS_CONDITIONS_CHECKOUT') == 'true' && sysConfig::get('TERMS_CONDITIONS_SHOPPING_CART') == 'false'){?>
+		<?php if (sysConfig::get('TERMS_CONDITIONS_SHOPPING_CART') == 'false'){?>
 		<td class="main"><div id="agreeMessage"><?php echo tep_draw_checkbox_field('terms', '1', false) . '&nbsp;<a href="' . itw_app_link('appExt=infoPages', 'show_page', 'conditions', 'SSL') . '" onclick="popupWindow(\'' . itw_app_link('appExt=infoPages&dialog=true', 'show_page', 'conditions', 'SSL') . '\',\'800\',\'600\');return false;">' . sysLanguage::get('TEXT_AGREE_TO_TERMS') . '</a>';?></div></td>
 		<?php }else{ ?>
 		<td class="main" style="display:none;"> <?php echo tep_draw_checkbox_field('terms', '1', true);?></td>

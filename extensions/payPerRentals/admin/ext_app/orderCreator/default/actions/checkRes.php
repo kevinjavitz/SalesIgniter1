@@ -13,19 +13,10 @@
 		$total_weight = (int)$_POST['rental_qty'] * $product->getWeight();
 		OrderShippingModules::calculateWeight();
 	    $rInfo = '';
-	    if ($Editor->hasData('store_id')){
-		    $rInfo = array(
-			    'store_id' => $Editor->getData('store_id')
-		    );
-	    }
-	    $onlyShow = true;
-	    if(sysconfig::get('EXTENSION_PAY_PER_RENTALS_SHORT_PRICE') == 'True'){
-		    $onlyShow = false;
-	    }
-		$pricing = $purchaseTypeClass->getReservationPrice($starting_date, $ending_date, $rInfo, $semName, isset($_POST['hasInsurance'])?true:false, $onlyShow);
+		$pricing = $purchaseTypeClass->getReservationPrice($starting_date, $ending_date, $rInfo, $semName, isset($_POST['hasInsurance'])?true:false);
 	    if (is_array($pricing) && is_numeric($pricing['price'])){
 		    $price += $pricing['price'];
-		    $message .= strip_tags($pricing['message']);
+		    $message .= $pricing['message'].'<br/>';
 		    $success = true;
 	    }
 	}

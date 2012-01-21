@@ -20,6 +20,9 @@ class OrderCreatorPaymentManager extends OrderPaymentManager implements Serializ
 	public function processPayment($moduleName, &$CollectionObj = null){
 		global $Editor;
 		$Module = OrderPaymentModules::getModule($moduleName);
+		if (is_null($CollectionObj) === false){
+			$Module->logToCollection($CollectionObj);
+		}
 		$BillingAddress = $Editor->AddressManager->getAddress('billing');
 
 		if(is_object($BillingAddress)){
@@ -78,11 +81,7 @@ class OrderCreatorPaymentManager extends OrderPaymentManager implements Serializ
 
 			$RequestData['cardCvv'] = $_POST['payment_cc_cvv'];
 		}
-
-		if (is_null($CollectionObj) === false){
-			$Module->logToCollection($CollectionObj);
-			$RequestData['orderID'] = $CollectionObj->orders_id;
-		}
+		
 		$success = $Module->sendPaymentRequest($RequestData);
 		if ($success === true){
 			return true;
@@ -313,14 +312,19 @@ class OrderCreatorPaymentManager extends OrderPaymentManager implements Serializ
 			'text' => '&nbsp;'
 		);
 		
-
+		$QpaymentMethods = Doctrine_Query::create()
+		->from('Modules')
+		->where('modules_type = ?', 'order_payment')
+		->andWhere('modules_status = ?', '1')
+		->orderBy('modules_code')
+		->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 		
 		$PaymentMethodDrop = htmlBase::newElement('selectbox')
 		->setName('payment_method')
 		->css('width', '300px');
-
-		foreach(OrderPaymentModules::getModules() as $Module){
-			if ($Module->hasFormUrl() === false){
+		foreach($QpaymentMethods as $mInfo){
+			$Module = OrderPaymentModules::getModule($mInfo['modules_code']);
+			if ($Module !== false && $Module->hasFormUrl() === false){
 				$PaymentMethodDrop->addOption($Module->getCode(), $Module->getTitle());
 			}
 		}

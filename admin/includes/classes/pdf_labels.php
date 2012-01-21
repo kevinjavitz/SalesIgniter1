@@ -119,34 +119,6 @@ class PDF_Labels
 						'checkbox_value'   => 'rental_' . $Queue['customers_queue_id']
 					);
 
-					if(sysConfig::get('EXTENSION_CUSTOM_FIELDS_SHOW_DOWNLOAD_FILE_COLUMN') == 'True'){
-						$Qfields = Doctrine_Query::create()
-							->select('group_id')
-							->from('ProductsCustomFieldsGroupsToProducts')
-							->where('product_id = ?', $Queue['Products']['products_id'])
-							->execute(array(), Doctrine::HYDRATE_ARRAY);
-
-						$QfieldsProduct = Doctrine_Query::create()
-							->from('ProductsCustomFields f')
-							->leftJoin('f.ProductsCustomFieldsDescription fd')
-							->leftJoin('f.ProductsCustomFieldsToGroups f2g')
-							->where('f2g.group_id = ?', $Qfields[0]['group_id'])
-							->andWhere('f.input_type = ?', 'upload')
-							->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
-
-						if(isset($QfieldsProduct[0])){
-							$Qvalue = Doctrine_Query::create()
-								->select('value')
-								->from('ProductsCustomFieldsToProducts')
-								->where('product_id = ?', $Queue['Products']['products_id'])
-								->andWhere('field_id = ?', $QfieldsProduct[0]['field_id'])
-								->fetchOne();
-							if($Qvalue){
-								$dataArray[$idx]['filename'] = stripslashes($Qvalue['value']);
-							}
-						}
-					}
-
 					if (isset($Queue['ProductsInventoryBarcodes']) && !empty($Queue['ProductsInventoryBarcodes'])){
 						$dataArray[$idx]['barcode_id'] = $Queue['ProductsInventoryBarcodes']['barcode_id'];
 						$dataArray[$idx]['barcode'] = $Queue['ProductsInventoryBarcodes']['barcode'];
@@ -236,33 +208,6 @@ class PDF_Labels
 							'date_sent'        => $resInfo['date_shipped'],
 							'checkbox_value'   => 'reservation_' . $resInfo['orders_products_reservations_id']
 						);
-
-						if(sysConfig::get('EXTENSION_CUSTOM_FIELDS_SHOW_DOWNLOAD_FILE_COLUMN') == 'True'){
-							$Qfields = Doctrine_Query::create()
-								->select('group_id')
-								->from('ProductsCustomFieldsGroupsToProducts')
-								->where('product_id = ?', $OrderProduct['products_id'])
-								->execute(array(), Doctrine::HYDRATE_ARRAY);
-							$QfieldsProduct = Doctrine_Query::create()
-								->from('ProductsCustomFields f')
-								->leftJoin('f.ProductsCustomFieldsDescription fd')
-								->leftJoin('f.ProductsCustomFieldsToGroups f2g')
-								->where('f2g.group_id = ?', $Qfields[0]['group_id'])
-								->andWhere('f.input_type = ?', 'upload')
-								->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
-							if(isset($QfieldsProduct[0])){
-								$Qvalue = Doctrine_Query::create()
-									->select('value')
-									->from('ProductsCustomFieldsToProducts')
-									->where('product_id = ?', $OrderProduct['products_id'])
-									->andWhere('field_id = ?', $QfieldsProduct[0]['field_id'])
-									->fetchOne();
-								if($Qvalue){
-									$dataArray[$idx]['filename'] = stripslashes($Qvalue['value']);
-								}
-							}
-						}
-
 
 						if (isset($resInfo['ProductsInventoryBarcodes']) && !empty($resInfo['ProductsInventoryBarcodes'])){
 							$dataArray[$idx]['barcode_id'] = $resInfo['ProductsInventoryBarcodes']['barcode_id'];
@@ -372,7 +317,8 @@ class PDF_Labels
 						}
 					}
 				}
-				$myArray = array(
+
+				$this->listingData[] = array(
 					'customers_name'   => $itemData['customers_name'],
 					'addressFormatted' => $itemData['addressFormatted'],
 					'products_name'    => $itemData['products_name'],
@@ -380,13 +326,9 @@ class PDF_Labels
 					'date_sent'        => $itemData['date_sent'],
 					'barcode'          => (isset($itemData['barcode']) ? $itemData['barcode'] : 'Quantity Tracking'),
 					'barcode_type'     => (isset($itemData['type']) ? $itemData['type'] : 'Code128Auto'),
-					'inventory_center' => $inventoryCenterName
+					'inventory_center' => $inventoryCenterName,
+					'checkbox_value'   => $itemData['checkbox_value']
 				);
-				if(sysConfig::get('EXTENSION_CUSTOM_FIELDS_SHOW_DOWNLOAD_FILE_COLUMN') == 'True'){
-					$myArray['filename'] = $itemData['filename'];
-				}
-				$myArray['checkbox_value'] = $itemData['checkbox_value'];
-				$this->listingData[] = $myArray;
 			}
 		}
 		/*
@@ -498,21 +440,16 @@ class PDF_Labels
 				case 'json':
 					$returnArray = array();
 					foreach($this->listingData as $listingInfo){
-						$myArray = array(
+						$returnArray[] = array(
 							$listingInfo['customers_name'],
 							$listingInfo['addressFormatted'],
 							htmlspecialchars(stripslashes($listingInfo['products_name']), ENT_QUOTES),
 							$listingInfo['barcode'],
 							$listingInfo['inventory_center'],
 							$typeNames[$listingInfo['products_type']],
-							tep_date_short($listingInfo['date_sent'])
+							tep_date_short($listingInfo['date_sent']),
+							$listingInfo['checkbox_value']
 						);
-
-						if(sysConfig::get('EXTENSION_CUSTOM_FIELDS_SHOW_DOWNLOAD_FILE_COLUMN') == 'True'){
-							$myArray[] = '<a href="'.sysConfig::getDirWsCatalog().'images/'.$listingInfo['filename'].'">'.$listingInfo['filename'].'</a>';
-						}
-						$myArray[] = $listingInfo['checkbox_value'];
-						$returnArray[] = $myArray;
 						/*$returnArray[] = '[' .
 						'"' . $listingInfo['customers_name'] . '", ' .
 						'"' . $listingInfo['addressFormatted'] . '", ' .

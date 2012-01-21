@@ -86,7 +86,7 @@
                   "\nPayment Method: " . $paymentMethod;
 
           //STORE_OWNER_EMAIL_ADDRESS;
-          mail(sysConfig::get('STORE_OWNER_EMAIL_ADDRESS'),$subject,$body,"From:".sysConfig::get('EMAIL_FROM'));
+          mail(STORE_OWNER_EMAIL_ADDRESS,$subject,$body,"From:".EMAIL_FROM);
           $messageStack->addSession('pageStack', sysLanguage::get('UPGRADE_EMAIL_SENT'), 'success');
 
           tep_redirect(itw_app_link(null, 'account', 'default', 'SSL'));

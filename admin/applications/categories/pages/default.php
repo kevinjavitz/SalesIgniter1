@@ -4,8 +4,8 @@
 		if (!empty($settings['categoryImage']) && file_exists(sysConfig::getDirFsCatalog() . 'images/' . $settings['categoryImage'])){
 			$imageHtml = htmlBase::newElement('image')
 			->setSource(sysConfig::getDirWsCatalog() . 'images/' . $settings['categoryImage'])
-			->setWidth(sysConfig::get('SMALL_IMAGE_WIDTH'))
-			->setHeight(sysConfig::get('SMALL_IMAGE_HEIGHT'))
+			->setWidth(SMALL_IMAGE_WIDTH)
+			->setHeight(SMALL_IMAGE_HEIGHT)
 			->thumbnailImage(true);
 		}else{
 			$imageHtml = htmlBase::newElement('span')

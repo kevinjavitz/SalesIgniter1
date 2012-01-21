@@ -103,10 +103,6 @@ $manager->setCurrentConnection('mainConnection');
 // set application wide parameters
 	sysConfig::load();
 
-require(sysConfig::getDirFsCatalog() . 'includes/classes/MultipleInheritance.php');
-require(sysConfig::getDirFsCatalog() . 'includes/classes/Importable/Installable.php');
-require(sysConfig::getDirFsCatalog() . 'includes/classes/Importable/SortedDisplay.php');
-
 	require(sysConfig::getDirFsCatalog() . 'includes/classes/Profiler/Base.php');
 	//require(sysConfig::getDirFsCatalog() . 'includes/classes/html/dom/phpQuery.php');
 	require(sysConfig::getDirFsCatalog() . 'includes/classes/htmlBase.php');
@@ -141,16 +137,7 @@ require(sysConfig::getDirFsCatalog() . 'includes/classes/Importable/SortedDispla
 	/*
 	 * Include all classes that could be included in a session variable --END--
 	 */
-
-require(sysConfig::getDirFsCatalog() . 'includes/classes/system_modules_loader.php');
-require(sysConfig::getDirFsCatalog() . 'includes/classes/ModuleInstaller.php');
-require(sysConfig::getDirFsCatalog() . 'includes/classes/ModuleBase.php');
-require(sysConfig::getDirFsCatalog() . 'includes/classes/ModuleConfigReader.php');
-require(sysConfig::getDirFsCatalog() . 'includes/modules/infoboxes/InfoBoxAbstract.php');
-require(sysConfig::getDirFsCatalog() . 'includes/modules/pdfinfoboxes/PDFInfoBoxAbstract.php');
-require(sysConfig::getDirFsCatalog() . 'includes/modules/orderShippingModules/modules.php');
-require(sysConfig::getDirFsCatalog() . 'includes/modules/orderPaymentModules/modules.php');
-require(sysConfig::getDirFsCatalog() . 'includes/modules/orderTotalModules/modules.php');
+	
 	require(sysConfig::getDirFsCatalog() . 'includes/classes/application.php');
 	require(sysConfig::getDirFsCatalog() . 'includes/classes/extension.php');
 
@@ -170,6 +157,8 @@ require(sysConfig::getDirFsCatalog() . 'includes/classes/message_stack.php');
 $messageStack = new messageStack;
 
 require(sysConfig::getDirFsCatalog() . 'includes/classes/eventManager/Manager.php');
+require(sysConfig::getDirFsCatalog() . 'includes/classes/eventManager/Event.php');
+require(sysConfig::getDirFsCatalog() . 'includes/classes/eventManager/EventActionResponse.php');
 
 	$appExtension->postSessionInit();
 
@@ -187,6 +176,12 @@ require(sysConfig::getDirFsCatalog() . 'includes/classes/eventManager/Manager.ph
 	}
 
 // initialize the message stack for output messages
+	require(sysConfig::getDirFsCatalog() . 'includes/classes/system_modules_loader.php');
+	require(sysConfig::getDirFsCatalog() . 'includes/modules/infoboxes/InfoBoxAbstract.php');
+	require(sysConfig::getDirFsCatalog() . 'includes/modules/pdfinfoboxes/PDFInfoBoxAbstract.php');
+	require(sysConfig::getDirFsCatalog() . 'includes/modules/orderShippingModules/modules.php');
+	require(sysConfig::getDirFsCatalog() . 'includes/modules/orderPaymentModules/modules.php');
+	require(sysConfig::getDirFsCatalog() . 'includes/modules/orderTotalModules/modules.php');
 
 	$appExtension->loadExtensions();
 

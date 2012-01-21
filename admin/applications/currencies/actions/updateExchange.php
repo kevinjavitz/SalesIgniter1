@@ -7,7 +7,7 @@
 	->execute();
 	foreach($Qcurrencies as $currency){
 		$quote_function = 'quote_' . CURRENCY_SERVER_PRIMARY . '_currency';
-		$rate = $quote_function($currency->code, sysConfig::get('DEFAULT_CURRENCY'));
+		$rate = $quote_function($currency->code);
 		
 		if (empty($rate) && (tep_not_null(CURRENCY_SERVER_BACKUP))){
 			$messageStack->addSession(
@@ -17,7 +17,7 @@
 			);
 			
 			$quote_function = 'quote_' . CURRENCY_SERVER_BACKUP . '_currency';
-			$rate = $quote_function($currency->code, sysConfig::get('DEFAULT_CURRENCY'));
+			$rate = $quote_function($currency->code);
 			
 			$server_used = CURRENCY_SERVER_BACKUP;
 		}

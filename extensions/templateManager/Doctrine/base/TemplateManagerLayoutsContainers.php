@@ -46,21 +46,12 @@ class TemplateManagerLayoutsContainers extends Doctrine_Record
 			'type' => 'integer',
 			'length' => '3',
 		));
-		$this->hasColumn('is_anchor', 'integer', 1, array(
-				'type' => 'integer',
-				'length' => '1',
-		));
-
-		$this->hasColumn('anchor_id', 'integer', 11, array(
-				'type' => 'integer',
-				'length' => '11',
-		));
 	}
 
 	public function setUp()
 	{
 		parent::setUp();
-		$this->hasOne('TemplateManagerLayouts as Layout', array(
+		$this->hasOne('TemplateManagerLayouts', array(
 			'local' => 'layout_id',
 			'foreign' => 'layout_id'));
 
