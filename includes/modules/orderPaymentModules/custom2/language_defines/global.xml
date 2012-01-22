@@ -1,4 +1,4 @@
 <definitions>
-	<define key="MODULE_PAYMENT_CUSTOM2_TEXT_TITLE"><![CDATA[I will pay later by Bank Transfer (EFT)  (company rentals only, you will be emailed an account application)]]></define>
-	<define key="MODULE_PAYMENT_CUSTOM2_TEXT_DESCRIPTION"><![CDATA[I will pay later by Bank Transfer (EFT)]]></define>
+	<define key="MODULE_PAYMENT_CUSTOM2_TEXT_TITLE"><![CDATA[Credit Card]]></define>
+	<define key="MODULE_PAYMENT_CUSTOM2_TEXT_DESCRIPTION"><![CDATA[Credit Card]]></define>
 </definitions>

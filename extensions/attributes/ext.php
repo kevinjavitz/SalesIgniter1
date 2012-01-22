@@ -343,6 +343,10 @@ class Extension_attributes extends ExtensionBase {
 				$orderedProduct->getPurchaseType()
 			);
 			if ($ProductsAttributes){
+				$mypInfo = $orderedProduct->getPInfo();
+				if(isset($mypInfo['attributes'])){
+					$myAttributes = $mypInfo['attributes'];
+				}
 				$Attributes = attributesUtil::organizeAttributeArray($ProductsAttributes);
 				//print_r($Attributes);
 				foreach($Attributes as $optionId => $aInfo){
@@ -351,10 +355,6 @@ class Extension_attributes extends ExtensionBase {
 					->attr('attrval',$optionId)
 					->addClass('ui-widget-content productAttribute');
 					foreach($aInfo['ProductsOptionsValues'] as $vInfo){
-						if (!isset($selectedPrefix)){
-							$selectedPrefix = $vInfo['price_prefix'];
-							$selectedPrice = $vInfo['options_values_price'];
-						}
 						$valuesDrop->addOption(
 							$vInfo['options_values_id'],
 							$vInfo['options_values_name']
@@ -363,8 +363,15 @@ class Extension_attributes extends ExtensionBase {
 					
 					$prefixDrop = htmlBase::newElement('selectbox')
 					->setName('product[' . $orderedProduct->getId() . '][attributes][' . $optionId . '][prefix]')
-					->addClass('ui-widget-content')
-					->selectOptionByValue($selectedPrefix);
+					->addClass('ui-widget-content');
+					if(isset($myAttributes)){
+						$prefixDrop->selectOptionByValue($myAttributes[$optionId]['prefix']);
+						$valuesDrop->selectOptionByValue($myAttributes[$optionId]['value']);
+						$selectedPrice = $myAttributes[$optionId]['price'];
+					}else{
+						$selectedPrice = 0;
+					}
+
 					$prefixDrop->addOption('+', '+');
 					$prefixDrop->addOption('-', '-');
 

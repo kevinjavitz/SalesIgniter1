@@ -13,6 +13,8 @@
 class OrdersStatusDescription extends Doctrine_Record {
 
 	public function setUp(){
+		parent::setUp();
+		
 		$this->setAttribute(Doctrine::ATTR_COLL_KEY, 'language_id');
 		$this->hasOne('OrdersStatus', array(
 			'local' => 'orders_status_id',

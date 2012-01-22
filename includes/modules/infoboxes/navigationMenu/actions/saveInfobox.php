@@ -94,7 +94,3 @@ if (!isset($_POST['linked_to'])){
 
 $WidgetProperties['menuId'] = $_POST['menu_id'];
 $WidgetProperties['forceFit'] = (isset($_POST['force_fit']) ? 'true' : 'false');
-$WidgetProperties['use_cufon'] = (isset($_POST['use_cufon']) ? 'true' : 'false');
-$WidgetProperties['cufon_text_shadow'] = $_POST['cufon_text_shadow'];
-$WidgetProperties['cufon_text_shadow_hover'] = $_POST['cufon_text_shadow_hover'];
-$WidgetProperties['cufon_hover_color'] = $_POST['cufon_hover_color'];

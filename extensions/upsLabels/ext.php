@@ -36,6 +36,7 @@ class Extension_upsLabels extends ExtensionBase {
     public function OrderInfoAddBlock($orderId){
 
        $labelLink = itw_app_link('appExt=upsLabels&oID='.$orderId,'ship_ups','default');
+       $labelLinkGenerate = itw_app_link('appExt=upsLabels&action=shipOrdersAuto&oID=' . $orderId, 'ship_ups', 'default');
 
 		return
 			'<div class="ui-widget ui-widget-content ui-corner-all" style="padding:1em;">' .
@@ -43,6 +44,9 @@ class Extension_upsLabels extends ExtensionBase {
 					'<tr>' .
 						'<td><table cellpadding="3" cellspacing="0">' .
                             '<tr>
+							 <td class="main" valign="top">' . '<a target="_blank" href="'.$labelLinkGenerate.'">Generate UPS Label</a></td>
+							</tr>
+                            <tr>
 							 <td class="main" valign="top">' . '<a target="_blank" href="'.$labelLink.'">Print UPS Label</a></td>
 							</tr>
 						</table></td>' .

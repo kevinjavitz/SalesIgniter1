@@ -695,6 +695,37 @@ function alertWindow(message){
 	});
 }
 
+function showToolTip(settings){
+	var elOffset = settings.el.offset();
+
+	var $toolTip = $('<div>')
+		.addClass('ui-widget')
+		.addClass('ui-widget-content')
+		.addClass('ui-corner-all')
+		.css({
+			position: 'absolute',
+			left: elOffset.left,
+			top: elOffset.top,
+			zIndex: 9999,
+			padding: '5px',
+			whiteSpace: 'nowrap'
+		})
+		.html(settings.tipText)
+		.appendTo($(document.body));
+
+	$toolTip.css('left', (elOffset.left + settings.el.width()));
+	$toolTip.css('top', (elOffset.top - $toolTip.height()));
+
+	//alert((settings.offsetLeft + 200) + ' >= ' + $(window).width());
+	if ((elOffset.left + 200) >= $(window).width()){
+		$toolTip.css('left', (elOffset.left - $toolTip.width()));
+	}
+	if ((elOffset.top - $toolTip.height()) <= 0){
+		$toolTip.css('top', (elOffset.top + settings.el.height() + $toolTip.height()));
+	}
+	return $toolTip;
+}
+
 $(document).ready(function (){
 	$(document).parsecss($.parsecss.jquery);
 	
@@ -797,7 +828,7 @@ $(document).ready(function (){
 		});
 	});
 	
-	$('.ui-button').each(function (){
+	$('a[type=button], button').each(function (){
 		var disable = false;
 		if ($(this).hasClass('ui-state-disabled')){
 			disable = true;
@@ -829,6 +860,25 @@ $(document).ready(function (){
 			traceTable.show();
 			$(this).html('Hide Trace');
 		}
+	});
+
+	$('.useKeyboard').keyboard({
+		layout   : 'qwerty'
+	});
+	
+	$('[tooltip]').live('mouseover mouseout click', function (e){
+		if (e.type == 'mouseover'){
+			this.Tooltip = showToolTip({
+				el: $(this),
+				tipText: $(this).attr('tooltip')
+			});
+		}else{
+			this.Tooltip.remove();
+		}
+	});
+
+	$('[required=true]').each(function (){
+		$('<a style="display: inline-block;" tooltip="Input Required" class="ui-icon ui-icon-gear ui-icon-required"></a>').insertAfter(this);
 	});
 });
 

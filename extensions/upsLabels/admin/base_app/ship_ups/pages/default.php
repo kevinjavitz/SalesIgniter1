@@ -345,7 +345,18 @@ if ($order){
 		}
         }
 	}else{
-		echo '<img src="'.sysConfig::getDirWsCatalog().'extensions/upsLabels/tracking/'.$QOrders[0]['ups_track_num'].'.png">';
+
+		    echo '<h1>Send Labels:</h1>';
+			$sendTrackArr = explode(',', $QOrders[0]['ups_track_num']);
+			foreach($sendTrackArr as $trackingNumber){
+				echo '<img src="'.sysConfig::getDirWsCatalog().'extensions/upsLabels/tracking/'.$trackingNumber.'.png">';
+			}
+
+			echo '<h1>Return Labels:</h1>';
+			$sendTrackArr = explode(',', $QOrders[0]['ups_track_num2']);
+			foreach($sendTrackArr as $trackingNumber){
+				echo '<img src="'.sysConfig::getDirWsCatalog().'extensions/upsLabels/tracking/'.$trackingNumber.'.png">';
+			}
 		//echo '<img src="'.sysConfig::getDirWsCatalog().'extensions/upsLabels/tracking/'.$QOrders[0]['ups_track_num2'].'.png">';
 	}
 }else{

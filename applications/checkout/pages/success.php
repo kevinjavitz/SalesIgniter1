@@ -369,3 +369,6 @@ for($i=0, $n=sizeof($trackings); $i<$n; $i++){
 		//tep_redirect( itw_app_link(null,'rentals','queue'));
 	}
 ?>
+<div class="" style="display:none;">
+	<iframe src="<?php echo itw_app_link(null,'account','success_outside');?>"></iframe>
+</div>

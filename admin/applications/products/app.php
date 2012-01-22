@@ -30,21 +30,16 @@
 	
 		require(sysConfig::getDirFsCatalog() . 'includes/classes/currencies.php');
 		$currencies = new currencies();
-	
-		// Ultimate SEO URLs v2.1
-		// If the action will affect the cache entries
-		if (isset($_GET['action'])){
-			if (preg_match('/(insert|update|setflag|setfflag)/', $_GET['action'])) include_once('includes/reset_seo_cache.php');
-		}
+
 	
 		$trackMethods = array(
 			array('id' => 'quantity', 'text' => 'Use Quantity Tracking'),
 			array('id' => 'barcode', 'text' => 'Use Barcode Tracking')
 		);
-	
-		// check if the catalog image directory exists
-		if (is_dir(DIR_FS_CATALOG_IMAGES)){
-			if (!is_writeable(DIR_FS_CATALOG_IMAGES)){
+
+		$dir = sysConfig::getDirFsCatalog().'images';
+		if (is_dir($dir)){
+			if (!is_writeable($dir)){
 				$messageStack->add('footerStack', sysLanguage::get('ERROR_CATALOG_IMAGE_DIRECTORY_NOT_WRITEABLE'), 'error');
 			}
 		}else{

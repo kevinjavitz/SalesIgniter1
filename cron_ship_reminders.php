@@ -6,7 +6,7 @@ $invExt = $appExtension->getExtension('inventoryCenters');
 	if ($pprExt !== false && $pprExt->isEnabled() === true && $invExt !== false && $invExt->isEnabled() === true){
 		if(sysConfig::get('EXTENSION_INVENTORY_CENTERS_ENABLE_REMINDERS') == 'True'){
 			$day_before_due = (int)sysConfig::get('EXTENSION_INVENTORY_CENTERS_REMINDERS_SHIPPING');
-			$date_before_due = date('Y-m-d H:i:s', strtotime('+ '.$day_before_due . ' days', strtotime(date('Y-m-d'))));
+			$date_before_due = date('Y-m-d H:i:s', strtotime('- '.$day_before_due . ' days', strtotime(date('Y-m-d'))));
 			$ReservationQuery = Doctrine_Query::create()
 			->from('Orders o')
 			->leftJoin('o.Customers c')
@@ -14,11 +14,11 @@ $invExt = $appExtension->getExtension('inventoryCenters');
 			->leftJoin('o.OrdersProducts op')
 			->leftJoin('op.OrdersProductsReservation opr')
 			//->where('opr.orders_products_reservations_id = ?', $bID)
-			->where('DATE_SUB(opr.start_date, INTERVAL opr.shipping_days_before DAY) <= ?', $date_before_due)
+			->where('DATE_SUB(opr.start_date, INTERVAL opr.shipping_days_before DAY) <= ?', $date_before_due);
 			//->andWhere('DATE_SUB(opr.start_date, INTERVAL opr.shipping_days_before DAY) >= ?', date('Y-m-d H:i:s'))
 			//->andWhere('opr.rental_state = ?', 'out')
 
-			->andWhere('parent_id IS NULL');
+			//->andWhere('parent_id IS NULL');
 			//todo email for late not returned items--auto_send_return_rentals does that
 
 			EventManager::notify('OrdersListingBeforeExecute', &$ReservationQuery);
@@ -57,24 +57,37 @@ $invExt = $appExtension->getExtension('inventoryCenters');
 				}
 				foreach($list as $email=>$val){
 					$rented_list[$email]['list'] .= 'Order ID: '. $oInfo->orders_id.'<br/>'.implode('<br/>',$val);
+					if(!empty($oInfo->ups_track_num)){
+						$sendTrackArr = explode(',',$oInfo->ups_track_num);
+					}
+					if(isset($sendTrackArr)){
+						foreach($sendTrackArr as $trackingNumber){
+							if(file_exists(sysConfig::getDirFsCatalog(). 'extensions/upsLabels/tracking/'.$trackingNumber.'.png')){
+								$rented_list[$email]['attach'][] = 'extensions/upsLabels/tracking/'.$trackingNumber.'.png';
+							}else{
+								$file = (itw_admin_app_link('appExt=upsLabels&action=shipOrdersAuto&oID=' . $oInfo->orders_id, 'ship_ups', 'default'));
+								if(!empty($file)){
+									$ch=curl_init();
+									curl_setopt($ch,CURLOPT_URL, $file);
+									curl_exec($ch);
+									curl_close($ch);
+								}
 
-					if(file_exists(sysConfig::getDirFsCatalog(). 'extensions/upsLabels/tracking/'.$oInfo->ups_track_num.'.png')){
-						$rented_list[$email]['attach'][] = 'extensions/upsLabels/tracking/'.$oInfo->ups_track_num.'.png';
-					}else{
-						$file = (itw_admin_app_link('appExt=upsLabels&action=shipOrdersAuto&oID=' . $oInfo->orders_id, 'ship_ups', 'default'));
-						if(!empty($file)){
-							$ch=curl_init();
-							curl_setopt($ch,CURLOPT_URL, $file);
-							curl_exec($ch);
-							curl_close($ch);
-						}
-
-						$QNewOrder = Doctrine_Query::create()
-						->from('Orders o')
-						->andWhere('o.orders_id = ?', $oInfo->orders_id)
-						->fetchOne();
-						if(file_exists(sysConfig::getDirFsCatalog(). 'extensions/upsLabels/tracking/'.$QNewOrder->ups_track_num.'.png')){
-							$rented_list[$email]['attach'][] = 'extensions/upsLabels/tracking/'.$QNewOrder->ups_track_num.'.png';
+								$QNewOrder = Doctrine_Query::create()
+								->from('Orders o')
+								->andWhere('o.orders_id = ?', $oInfo->orders_id)
+								->fetchOne();
+								if(!empty($QNewOrder->ups_track_num)){
+									$sendTrackArr1 = explode(',',$QNewOrder->ups_track_num);
+								}
+								if(isset($sendTrackArr1)){
+									foreach($sendTrackArr1 as $trackingNumber1){
+										if(file_exists(sysConfig::getDirFsCatalog(). 'extensions/upsLabels/tracking/'.$trackingNumber1.'.png')){
+											$rented_list[$email]['attach'][] = 'extensions/upsLabels/tracking/'.$trackingNumber1.'.png';
+										}
+									}
+								}
+							}
 						}
 					}
 				}
@@ -93,7 +106,9 @@ $invExt = $appExtension->getExtension('inventoryCenters');
 				$sendVariables = array();
 				$sendVariables['email'] = $email;
 				$sendVariables['name'] = $QFirstname[0]['customers_firstname'];
-				$sendVariables['attach'] = $rented['attach'];
+				if(isset($rented['attach'])){
+					$sendVariables['attach'] = $rented['attach'];
+				}
             	$emailEvent->sendEmail($sendVariables);
 			}
 		}

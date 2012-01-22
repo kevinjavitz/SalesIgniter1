@@ -1,6 +1,7 @@
 <definitions>
-	<define key="HEADING_TITLE"><![CDATA[Template Infobox Manager]]></define>
-	<define key="HEADING_TITLE_TEMPLATE"><![CDATA[Template:]]></define>
+	<define key="HEADING_TITLE_TEMPLATES"><![CDATA[Template Manager]]></define>
+	<define key="HEADING_TITLE_LAYOUTS"><![CDATA[Template Layouts]]></define>
+	<define key="HEADING_TITLE_LAYOUT_EDITOR"><![CDATA[Template Layout Editor]]></define>
 
 	<define key="TEXT_TRASH_BIN"><![CDATA[Drop here to remove]]></define>
 	<define key="TEXT_INFO_EXTENSION_BOXES"><![CDATA[Extension Boxes (%s)]]></define>

@@ -171,6 +171,7 @@ else {
 		sysConfig::getDirFsCatalog() . 'ext/jQuery/jQuery-min.js',
 		sysConfig::getDirFsCatalog() . 'ext/jQuery/ui/minified/jquery.ui.core.min.js',
 		sysConfig::getDirFsCatalog() . 'ext/jQuery/ui/minified/jquery.ui.widget.min.js',
+		sysConfig::getDirFsCatalog() . 'ext/jQuery/ui/minified/jquery.effects.core.min.js',
 		sysConfig::getDirFsCatalog() . 'ext/jQuery/ui/minified/jquery.ui.mouse.min.js',
 		sysConfig::getDirFsCatalog() . 'ext/jQuery/ui/minified/jquery.ui.position.min.js',
 		sysConfig::getDirFsCatalog() . 'ext/jQuery/ui/minified/jquery.ui.draggable.min.js',
@@ -181,7 +182,10 @@ else {
 		sysConfig::getDirFsCatalog() . 'ext/jQuery/ui/jquery.ui.dialog.js',
 		sysConfig::getDirFsCatalog() . 'ext/jQuery/ui/jquery.ui.datepicker.js',
 		sysConfig::getDirFsCatalog() . 'ext/jQuery/ui/jquery.ui.accordion.js',
-		sysConfig::getDirFsCatalog() . 'ext/jQuery/ui/jquery.ui.stars.js'
+		sysConfig::getDirFsCatalog() . 'ext/jQuery/ui/jquery.ui.stars.js',
+		sysConfig::getDirFsCatalog() . 'ext/jQuery/ui/jquery.ui.progressbar.js',
+		sysConfig::getDirFsCatalog() . 'ext/jQuery/ui/jquery.effects.fade.js',
+		sysConfig::getDirFsCatalog() . 'ext/jQuery/external/virtualKeyboard/jquery.keyboard.js'
 	);
 
 	if ($env == 'admin'){

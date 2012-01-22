@@ -2,21 +2,13 @@
 
 	//$success = $Editor->PaymentManager->refundPayment($_POST['payment_module']);
 
-	$QpaymentMethods = Doctrine_Query::create()
-	->from('Modules')
-	->where('modules_type = ?', 'order_payment')
-	->andWhere('modules_status = ?', '1')
-	->orderBy('modules_code')
-	->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
-
 	$PaymentMethodDrop = htmlBase::newElement('selectbox')
 	->setName('payment_method')
 	->css('width', '300px');
 	$PaymentMethodDrop->selectOptionByValue($_POST['payment_method']);
 
-	foreach($QpaymentMethods as $mInfo){
-		$Module = OrderPaymentModules::getModule($mInfo['modules_code']);
-		if ($Module !== false && $Module->hasFormUrl() === false){
+	foreach(OrderPaymentModules::getModules() as $Module){
+		if ($Module->hasFormUrl() === false){
 			$PaymentMethodDrop->addOption($Module->getCode(), $Module->getTitle());
 		}
 	}

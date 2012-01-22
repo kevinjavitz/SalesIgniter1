@@ -57,4 +57,8 @@
 			$messageStack->add('pageStack', $msg, 'error');
 		}
 	}
+
+OrderPaymentModules::loadModules();
+OrderShippingModules::loadModules();
+OrderTotalModules::loadModules();
 ?>

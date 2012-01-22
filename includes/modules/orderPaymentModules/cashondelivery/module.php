@@ -10,7 +10,8 @@
 	This script and it's source is not redistributable
 */
 
-class OrderPaymentCashondelivery extends StandardPaymentModule {
+class OrderPaymentCashondelivery extends StandardPaymentModule
+{
 
 	public function __construct(){
 		global $order;

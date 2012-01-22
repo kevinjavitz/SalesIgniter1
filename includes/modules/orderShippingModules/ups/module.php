@@ -1,40 +1,53 @@
 <?php
-class OrderShippingUps extends OrderShippingModule {
+class OrderShippingUps extends OrderShippingModuleBase
+{
 
-	public function __construct(){
+	private $types;
+
+	private $packagePickup;
+
+	private $packageContainer;
+
+	private $addressType;
+
+	private $handlingCost;
+
+	private $quotes;
+
+	public function __construct() {
 		/*
 		 * Default title and description for modules that are not yet installed
 		 */
 		$this->setTitle('UPS');
 		$this->setDescription('United Postal Service');
-		
+
 		$this->init('ups');
-		
+
 		if ($this->isEnabled() === true){
 			$this->types = array(
-				'1DM'    => 'Next Day Air Early AM',
-				'1DML'   => 'Next Day Air Early AM Letter',
-				'1DA'    => 'Next Day Air',
-				'1DAL'   => 'Next Day Air Letter',
-				'1DAPI'  => 'Next Day Air Intra (Puerto Rico)',
-				'1DP'    => 'Next Day Air Saver',
-				'1DPL'   => 'Next Day Air Saver Letter',
-				'2DM'    => '2nd Day Air AM',
-				'2DML'   => '2nd Day Air AM Letter',
-				'2DA'    => '2nd Day Air',
-				'2DAL'   => '2nd Day Air Letter',
-				'3DS'    => '3 Day Select',
-				'GND'    => 'Ground',
+				'1DM' => 'Next Day Air Early AM',
+				'1DML' => 'Next Day Air Early AM Letter',
+				'1DA' => 'Next Day Air',
+				'1DAL' => 'Next Day Air Letter',
+				'1DAPI' => 'Next Day Air Intra (Puerto Rico)',
+				'1DP' => 'Next Day Air Saver',
+				'1DPL' => 'Next Day Air Saver Letter',
+				'2DM' => '2nd Day Air AM',
+				'2DML' => '2nd Day Air AM Letter',
+				'2DA' => '2nd Day Air',
+				'2DAL' => '2nd Day Air Letter',
+				'3DS' => '3 Day Select',
+				'GND' => 'Ground',
 				'GNDCOM' => 'Ground Commercial',
 				'GNDRES' => 'Ground Residential',
-				'STD'    => 'Canada Standard',
-				'XPR'    => 'Worldwide Express',
-				'XPRL'   => 'worldwide Express Letter',
-				'XDM'    => 'Worldwide Express Plus',
-				'XDML'   => 'Worldwide Express Plus Letter',
-				'XPD'    => 'Worldwide Expedited'
+				'STD' => 'Canada Standard',
+				'XPR' => 'Worldwide Express',
+				'XPRL' => 'worldwide Express Letter',
+				'XDM' => 'Worldwide Express Plus',
+				'XDML' => 'Worldwide Express Plus Letter',
+				'XPD' => 'Worldwide Expedited'
 			);
-			
+
 			$this->packagePickup = $this->getConfigData('MODULE_ORDER_SHIPPING_UPS_PICKUP');
 			$this->packageContainer = $this->getConfigData('MODULE_ORDER_SHIPPING_UPS_PACKAGE');
 			$this->addressType = $this->getConfigData('MODULE_ORDER_SHIPPING_UPS_RES');
@@ -94,6 +107,16 @@ class OrderShippingUps extends OrderShippingModule {
 		$this->_upsWeight($shipping_weight);
 		$this->_upsRescom($this->addressType);
 		$upsQuote = $this->_upsGetQuote();
+		if($method != ''){
+			$qsize1 = sizeof($upsQuote);
+			for ($i1=0; $i1<$qsize1; $i1++) {
+				list($type1, $cost1) = each($upsQuote[$i1]);
+					if($type1 != $method){
+						unset($upsQuote[$i1]);
+					}
+			}
+			$upsQuote = array_values($upsQuote);
+		}
 
 		$this->quotes = array(
 			'id'      => $this->getCode(),
@@ -113,7 +136,12 @@ class OrderShippingUps extends OrderShippingModule {
 			$methods = array();
 			$qsize = sizeof($upsQuote);
 			for ($i=0; $i<$qsize; $i++) {
-				list($type, $cost) = each($upsQuote[$i]);
+
+				foreach($upsQuote[$i] as $k => $v){
+					$type = $k;
+					$cost = $v;
+				}
+
 				$this->quotes['methods'][] = array(
 					'id'    => $type,
 					'title' => $this->types[$type],
@@ -123,7 +151,7 @@ class OrderShippingUps extends OrderShippingModule {
 			}
 
 			$classId = $this->getTaxClass();
-			if ($classId > 0) {
+			if ($classId > 0){
 				$this->quotes['tax'] = tep_get_tax_rate($classId, $deliveryAddress['country_id'], $deliveryAddress['zone_id']);
 			}
 		}else{
@@ -136,13 +164,6 @@ class OrderShippingUps extends OrderShippingModule {
 				'methods' => array()
 			);
 
-			$this->quotes['methods'][] = array(
-						'id'      => 'method' . $methodId,
-						'title'   => $mInfo['text'],
-						'cost'	  =>0,
-						'showCost'	  =>0
-			);
-
 			$classId = $this->getTaxClass();
 			if ($classId > 0) {
 				$deliveryAddress = $this->getDeliveryAddress();
@@ -152,22 +173,23 @@ class OrderShippingUps extends OrderShippingModule {
 		}
 		return $this->quotes;
 	}
-	
-	public function _upsProduct($prod){
+
+	public function _upsProduct($prod) {
 		$this->_upsProductCode = $prod;
 	}
 
-	public function _upsOrigin($postal, $country){
+	public function _upsOrigin($postal, $country) {
 		$this->_upsOriginPostalCode = $postal;
 		$this->_upsOriginCountryCode = $country;
 	}
 
-	public function _upsDest($postal, $country){
+	public function _upsDest($postal, $country) {
 		$postal = str_replace(' ', '', $postal);
 
-		if ($country == 'US') {
+		if ($country == 'US'){
 			$this->_upsDestPostalCode = substr($postal, 0, 5);
-		} else {
+		}
+		else {
 			$this->_upsDestPostalCode = $postal;
 		}
 
@@ -175,7 +197,7 @@ class OrderShippingUps extends OrderShippingModule {
 	}
 
 	public function _upsRate($foo) {
-		switch ($foo) {
+		switch($foo){
 			case 'RDP':
 				$this->_upsRateCode = 'Regular+Daily+Pickup';
 				break;
@@ -195,25 +217,25 @@ class OrderShippingUps extends OrderShippingModule {
 	}
 
 	public function _upsContainer($foo) {
-		switch ($foo) {
+		switch($foo){
 			case 'CP': // Customer Packaging
-			$this->_upsContainerCode = '00';
-			break;
+				$this->_upsContainerCode = '00';
+				break;
 			case 'ULE': // UPS Letter Envelope
-			$this->_upsContainerCode = '01';
-			break;
+				$this->_upsContainerCode = '01';
+				break;
 			case 'UT': // UPS Tube
-			$this->_upsContainerCode = '03';
-			break;
+				$this->_upsContainerCode = '03';
+				break;
 			case 'UEB': // UPS Express Box
-			$this->_upsContainerCode = '21';
-			break;
+				$this->_upsContainerCode = '21';
+				break;
 			case 'UW25': // UPS Worldwide 25 kilo
-			$this->_upsContainerCode = '24';
-			break;
+				$this->_upsContainerCode = '24';
+				break;
 			case 'UW10': // UPS Worldwide 10 kilo
-			$this->_upsContainerCode = '25';
-			break;
+				$this->_upsContainerCode = '25';
+				break;
 		}
 	}
 
@@ -222,13 +244,13 @@ class OrderShippingUps extends OrderShippingModule {
 	}
 
 	public function _upsRescom($foo) {
-		switch ($foo) {
+		switch($foo){
 			case 'RES': // Residential Address
-			$this->_upsResComCode = '1';
-			break;
+				$this->_upsResComCode = '1';
+				break;
 			case 'COM': // Commercial Address
-			$this->_upsResComCode = '2';
-			break;
+				$this->_upsResComCode = '2';
+				break;
 		}
 	}
 
@@ -256,7 +278,7 @@ class OrderShippingUps extends OrderShippingModule {
 		);
 
 		$http = new httpClient();
-		if ($http->Connect('www.ups.com', 80)) {
+		if ($http->Connect('www.ups.com', 80)){
 			$http->addHeader('Host', 'www.ups.com');
 			$http->addHeader('User-Agent', 'SalesIgniter');
 			$http->addHeader('Connection', 'Close');
@@ -266,7 +288,8 @@ class OrderShippingUps extends OrderShippingModule {
 			}
 
 			$http->Disconnect();
-		} else {
+		}
+		else {
 			return 'error';
 		}
 
@@ -276,27 +299,36 @@ class OrderShippingUps extends OrderShippingModule {
 		$errorret = 'error'; // only return error if NO rates returned
 
 		$n = sizeof($body_array);
-		for ($i=0; $i<$n; $i++) {
+		for($i = 0; $i < $n; $i++){
 			$result = explode('%', $body_array[$i]);
 			$errcode = substr($result[0], -1);
-			switch ($errcode) {
+			switch($errcode){
 				case 3:
-					if (is_array($returnval)) $returnval[] = array($result[1] => $result[8]);
+					if (is_array($returnval)) {
+						$returnval[] = array($result[1] => $result[8]);
+					}
 					break;
 				case 4:
-					if (is_array($returnval)) $returnval[] = array($result[1] => $result[8]);
+					if (is_array($returnval)) {
+						$returnval[] = array($result[1] => $result[8]);
+					}
 					break;
 				case 5:
 					$errorret = $result[1];
 					break;
 				case 6:
-					if (is_array($returnval)) $returnval[] = array($result[3] => $result[10]);
+					if (is_array($returnval)) {
+						$returnval[] = array($result[3] => $result[10]);
+					}
 					break;
 			}
 		}
-		if (empty($returnval)) $returnval = $errorret;
+		if (empty($returnval)) {
+			$returnval = $errorret;
+		}
 
 		return $returnval;
 	}
 }
+
 ?>

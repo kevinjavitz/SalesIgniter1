@@ -8,16 +8,18 @@
  */
 
 $layoutName = '';
+$layoutType = 'desktop';
 $selApps = array();
 if (isset($_GET['lID'])){
 	$QLayout = Doctrine_Query::create()
-	->select('layout_id, layout_name')
+	->select('layout_id, layout_name, layout_type')
 	->from('TemplateManagerLayouts')
 	->where('layout_id = ?', (int) $_GET['lID'])
 	->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 
 	$layoutId = $QLayout[0]['layout_id'];
 	$layoutName = $QLayout[0]['layout_name'];
+	$layoutType = $QLayout[0]['layout_type'];
 
 	$QselApps = Doctrine_Query::create()
 	->from('TemplatePages')
@@ -54,6 +56,52 @@ $SettingsTable->addBodyRow(array(
 	)
 ));
 
+$SettingsTable->addBodyRow(array(
+		'columns' => array(
+			array('text' => 'Display Type:'),
+			array('text' => htmlBase::newElement('selectbox')
+				->setName('layoutType')
+				->addOption('desktop', 'Desktop')
+				->addOption('smartphone', 'Smart Phone')
+				->addOption('tablet', 'Tablet')
+				->selectOptionByValue($layoutType)
+				->draw())
+		)
+	));
+
+function makeCategoriesArray($parentId = 0){
+	$catArr = array();
+	$Qcategories = Doctrine_Query::create()
+		->from('Categories c')
+		->leftJoin('c.CategoriesDescription cd')
+		->where('parent_id = ?', $parentId)
+		->andWhere('language_id = ?', Session::get('languages_id'))
+		->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+	foreach($Qcategories as $category){
+		$catArr[$category['categories_id']] = array(
+			'name' => $category['CategoriesDescription'][0]['categories_seo_url']
+		);
+
+		$Children = makeCategoriesArray($category['categories_id']);
+		if (!empty($Children)){
+			$catArr[$category['categories_id']]['children'] = $Children;
+		}
+	}
+
+	return $catArr;
+}
+$CatArr = makeCategoriesArray(0);
+
+function buildCategorisPages($CatArr, &$AppArray, $appName, $selApps){
+	foreach($CatArr as $cat){
+		$pageName = $cat['name'];
+		$AppArray[$appName][$pageName] = (isset($selApps[$appName][$pageName]) ? $selApps[$appName][$pageName] : false);
+		if (isset($cat['children']) && sizeof($cat['children']) > 0){
+			buildCategorisPages($cat['children'], $AppArray, $appName, $pageName, $selApps);
+		}
+	}
+}
+
 $Applications = new DirectoryIterator(sysConfig::getDirFsCatalog() . 'applications/');
 $AppArray = array();
 foreach($Applications as $AppDir){
@@ -63,7 +111,9 @@ foreach($Applications as $AppDir){
 	$appName = $AppDir->getBasename();
 
 	$AppArray[$appName] = array();
-
+	if($appName == 'index'){
+		buildCategorisPages($CatArr, $AppArray, $appName, $selApps);
+	}
 	if (is_dir($AppDir->getPathname() . '/pages/')){
 		$Pages = new DirectoryIterator($AppDir->getPathname() . '/pages/');
 		foreach($Pages as $Page){
@@ -97,8 +147,34 @@ foreach($Extensions as $Extension){
 			$appName = $ExtApplication->getBasename();
 
 			$AppArray['ext'][$extName][$appName] = array();
+			if ($Extension->getBasename() == 'infoPages'){
+				$Qpages = Doctrine_Query::create()
+					->select('page_key')
+					->from('Pages')
+					->where('page_type = ?', 'page')
+					->orderBy('page_key asc')
+					->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+				if ($Qpages){
+					foreach($Qpages as $pInfo){
+						$pageName = $pInfo['page_key'];
 
-			if (is_dir($ExtApplication->getPathname() . '/pages/')){
+						$AppArray['ext'][$extName][$appName][$pageName] = (isset($selApps['ext'][$extName][$appName][$pageName]) ? $selApps['ext'][$extName][$appName][$pageName] : false);
+					}
+				}
+			}elseif ($Extension->getBasename() == 'categoriesPages' && $appExtension->isInstalled('categoriesPages') && $appExtension->isEnabled('categoriesPages')){
+				$Qpages = Doctrine_Query::create()
+					->select('page_key')
+					->from('CategoriesPages')
+					->orderBy('page_key asc')
+					->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+				if ($Qpages){
+					foreach($Qpages as $pInfo){
+						$pageName = $pInfo['page_key'];
+
+						$AppArray['ext'][$extName][$appName][$pageName] = (isset($selApps['ext'][$extName][$appName][$pageName]) ? $selApps['ext'][$extName][$appName][$pageName] : false);
+					}
+				}
+			}elseif (is_dir($ExtApplication->getPathname() . '/pages/')){
 				$ExtPages = new DirectoryIterator($ExtApplication->getPathname() . '/pages/');
 				foreach($ExtPages as $ExtPage){
 					if ($ExtPage->isDot() || $ExtPage->isDir()){

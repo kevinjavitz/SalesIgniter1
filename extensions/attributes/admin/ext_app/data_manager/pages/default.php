@@ -49,6 +49,8 @@ class attributes_admin_data_manager_default extends Extension_attributes {
 				'v_attribute_' . $i . '_image',
 				'v_attribute_' . $i . '_views',
 				'v_attribute_' . $i . '_price',
+				'v_attribute_' . $i . '_purchasetypes',
+				'v_attribute_' . $i . '_useinventory',
 				'v_attribute_' . $i . '_sort'
 			));
 		}
@@ -84,6 +86,8 @@ class attributes_admin_data_manager_default extends Extension_attributes {
 					$productRow['v_attribute_' . $realCount . '_image'] = $attribute['options_values_image'];
 					$productRow['v_attribute_' . $realCount . '_views'] = implode(';', $views);
 					$productRow['v_attribute_' . $realCount . '_price'] = $attribute['options_values_price'];
+					$productRow['v_attribute_' . $realCount . '_purchasetypes'] = $attribute['purchase_types'];
+					$productRow['v_attribute_' . $realCount . '_useinventory'] = $attribute['use_inventory'];
 					$productRow['v_attribute_' . $realCount . '_sort'] = $attribute['sort_order'];
 				}
 			}
@@ -111,6 +115,8 @@ class attributes_admin_data_manager_default extends Extension_attributes {
 				$image = $items['v_attribute_' . $count . '_image'];
 				$views = $items['v_attribute_' . $count . '_views'];
 				$price = $items['v_attribute_' . $count . '_price'];
+				$purchase_types = $items['v_attribute_' . $count . '_purchasetypes'];
+				$use_inventory = $items['v_attribute_' . $count . '_useinventory'];
 				$sort = $items['v_attribute_' . $count . '_sort'];
 				
 				$optionName = $crumb[0];
@@ -148,6 +154,8 @@ class attributes_admin_data_manager_default extends Extension_attributes {
 					$ProductsAttributes[$attributeCount]->options_values_id = $attribute['ProductsOptionsValuesToProductsOptions'][0]['products_options_values_id'];
 					$ProductsAttributes[$attributeCount]->options_values_image = $image;
 					$ProductsAttributes[$attributeCount]->options_values_price = abs($price);
+					$ProductsAttributes[$attributeCount]->purchase_types = $purchase_types;
+					$ProductsAttributes[$attributeCount]->use_inventory = $use_inventory;
 					$ProductsAttributes[$attributeCount]->price_prefix = ($price >= 0 ? '+' : '-');
 					$ProductsAttributes[$attributeCount]->sort_order = $sort;
 					

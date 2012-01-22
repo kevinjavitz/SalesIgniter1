@@ -86,6 +86,16 @@ class Admin extends Doctrine_Record {
 			'autoincrement' => false
 		));
 		
+		$this->hasColumn('admin_override_password', 'string', 40, array(
+			'type' => 'string',
+			'length' => 40,
+			'fixed' => false,
+			'primary' => false,
+			'default' => '',
+			'notnull' => true,
+			'autoincrement' => false
+		));
+		
 		$this->hasColumn('admin_created', 'timestamp', null, array(
 			'type' => 'timestamp',
 			'primary' => false,
@@ -117,6 +127,27 @@ class Admin extends Doctrine_Record {
 			'notnull' => true,
 			'autoincrement' => false
 		));
+
+		$this->hasColumn('admin_favs_id', 'integer', 4, array(
+				'type' => 'integer',
+				'length' => 4,
+				'unsigned' => 0,
+				'primary' => false,
+				'default' => '0',
+				'notnull' => true,
+				'autoincrement' => false
+		));
+
+		$this->hasColumn('admin_simple_admin', 'integer', 1, array(
+				'type' => 'integer',
+				'length' => 1,
+				'unsigned' => 0,
+				'primary' => false,
+				'default' => '0',
+				'notnull' => true,
+				'autoincrement' => false
+		));
+
 		$this->hasColumn('config_home', 'string', null, array(
 			'type' => 'string',
 			'length' => null,

@@ -502,26 +502,7 @@ $editTable->addBodyRow(array(
 		array('text' => '<input type="checkbox" name="force_fit" value="true"' . (isset($WidgetSettings->forceFit) && $WidgetSettings->forceFit == 'true' ? ' checked=checked' : '') . '> Expand To Fit Container'),
 	)
 ));
-$editTable->addBodyRow(array(
-	'columns' => array(
-		array('text' => '<input type="checkbox" name="use_cufon" value="true"' . (isset($WidgetSettings->use_cufon) && $WidgetSettings->use_cufon == 'true' ? ' checked=checked' : '') . '> Use cufon'),
-	)
-));
-$editTable->addBodyRow(array(
-	'columns' => array(
-		array('text' => '<input type="text" name="cufon_text_shadow" value="'. (isset($WidgetSettings->cufon_text_shadow)  ? $WidgetSettings->cufon_text_shadow : '') . '"> cufon font text shadow (e.g. 1px 1px #ccc)'),
-	)
-));
-$editTable->addBodyRow(array(
-	'columns' => array(
-		array('text' => '<input type="text" name="cufon_text_shadow_hover" value="'. (isset($WidgetSettings->cufon_text_shadow_hover)  ? $WidgetSettings->cufon_text_shadow_hover : '') . '"> cufon font text shadow on hover (e.g. 1px 1px #ccc)'),
-	)
-));
-$editTable->addBodyRow(array(
-	'columns' => array(
-		array('text' => '<input type="text" name="cufon_hover_color" value="'. (isset($WidgetSettings->cufon_hover_color)  ? $WidgetSettings->cufon_hover_color : '') . '"> cufon font text shadow')
-	)
-));
+
 
 if (!isset($WidgetSettings->linked_to)){
 	$editTable->addBodyRow(array(

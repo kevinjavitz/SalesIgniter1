@@ -1,0 +1,5 @@
+<definitions>
+	<define key="ENTRY_ADMINS_STORES"><![CDATA[Allowed Stores]]></define>
+	<define key="ENTRY_ADMINS_ENABLED_BUTTONS"><![CDATA[<h2>Enabled Buttons</h2>]]></define>
+
+</definitions>

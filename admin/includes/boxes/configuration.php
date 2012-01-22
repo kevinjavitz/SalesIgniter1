@@ -251,4 +251,7 @@
 			unset($QconfigurationGroups);
 		}
 	}
+	if(count($contents['children']) == 0){
+		$contents = array();
+	}
 ?>

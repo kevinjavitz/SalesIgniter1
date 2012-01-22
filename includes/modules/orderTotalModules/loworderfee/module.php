@@ -1,5 +1,6 @@
 <?php
-class OrderTotalLoworderfee extends orderTotalModule {
+class OrderTotalLoworderfee extends OrderTotalModuleBase
+{
 
 	public function __construct() {
 		/*
@@ -7,9 +8,9 @@ class OrderTotalLoworderfee extends orderTotalModule {
 		 */
 		$this->setTitle('Low Order Fee');
 		$this->setDescription('Low Order Fee');
-		
+
 		$this->init('loworderfee');
-		
+
 		if ($this->isInstalled() === true){
 			$this->taxClass = $this->getConfigData('MODULE_ORDER_TOTAL_LOWORDERFEE_TAX_CLASS');
 			$this->allowFees = $this->getConfigData('MODULE_ORDER_TOTAL_LOWORDERFEE_LOW_ORDER_FEE');
@@ -22,19 +23,27 @@ class OrderTotalLoworderfee extends orderTotalModule {
 	public function process() {
 		global $order;
 
-		if ($this->allowFees == 'True') {
-			switch ($this->feesDestination) {
+		if ($this->allowFees == 'True'){
+			switch($this->feesDestination){
 				case 'National':
-					if ($order->delivery['country_id'] == sysConfig::get('STORE_COUNTRY')) $pass = true; break;
+					if ($order->delivery['country_id'] == sysConfig::get('STORE_COUNTRY')) {
+						$pass = true;
+					}
+					break;
 				case 'International':
-					if ($order->delivery['country_id'] != sysConfig::get('STORE_COUNTRY')) $pass = true; break;
+					if ($order->delivery['country_id'] != sysConfig::get('STORE_COUNTRY')) {
+						$pass = true;
+					}
+					break;
 				case 'Both':
-					$pass = true; break;
+					$pass = true;
+					break;
 				default:
-					$pass = false; break;
+					$pass = false;
+					break;
 			}
 
-			if ( ($pass == true) && ( ($order->info['total'] - $order->info['shipping_cost']) < $this->lowOrderAmount) ) {
+			if (($pass == true) && (($order->info['total'] - $order->info['shipping_cost']) < $this->lowOrderAmount)){
 				$tax = tep_get_tax_rate($this->taxClass, $order->delivery['country']['id'], $order->delivery['zone_id']);
 				$tax_description = tep_get_tax_description($this->taxClass, $order->delivery['country']['id'], $order->delivery['zone_id']);
 
@@ -43,12 +52,13 @@ class OrderTotalLoworderfee extends orderTotalModule {
 				$order->info['total'] += $this->lowOrderFee + tep_calculate_tax($this->lowOrderFee, $tax);
 
 				$this->addOutput(array(
-					'title' => $this->getTitle() . ':',
-					'text'  => $this->formatAmount(tep_add_tax($this->lowOrderFee, $tax)),
-					'value' => tep_add_tax($this->lowOrderFee, $tax)
-				));
+						'title' => $this->getTitle() . ':',
+						'text' => $this->formatAmount(tep_add_tax($this->lowOrderFee, $tax)),
+						'value' => tep_add_tax($this->lowOrderFee, $tax)
+					));
 			}
 		}
 	}
 }
+
 ?>

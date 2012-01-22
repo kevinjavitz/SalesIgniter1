@@ -20,7 +20,7 @@ function tep_href_link($page = '', $parameters = '', $connection = 'NONSSL', $ad
 	}
 	if ( !is_object($seo_urls) ){
 		if ( !class_exists('SEO_URL') ){
-			include_once(DIR_WS_CLASSES . 'seo.class.php');
+			include_once(sysConfig::get('DIR_WS_CLASSES') . 'seo.class.php');
 		}
 		$seo_urls = new SEO_URL(Session::get('languages_id'));
 	}
@@ -59,14 +59,11 @@ function buildAppLink($o){
 		$paramsParsed = true;
 		if ($o['app'] == 'product' && isset($vars['products_id'])){
 			if (!isset($productNameResults[(int)$vars['products_id']])){
-				$Qproduct = Doctrine_Query::create()
-				->select('products_name')
-				->from('ProductsDescription')
-				->where('products_id = ?', (int)$vars['products_id'])
-				->andWhere('language_id = ?', Session::get('languages_id'))
-				->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
-			
-				$productName = seoUrlClean($Qproduct[0]['products_name']);
+				$ResultSet = Doctrine_Manager::getInstance()
+					->getCurrentConnection()
+					->fetchAssoc('select products_name from products_description where products_id = "' . (int)$vars['products_id'] . '" and language_id = "' . Session::get('languages_id') . '"');
+
+				$productName = seoUrlClean($ResultSet[0]['products_name']);
 				$productNameResults[(int)$vars['products_id']]['products_name'] = $productName;
 			}else{
 				$productName = $productNameResults[(int)$vars['products_id']]['products_name'];
@@ -316,8 +313,8 @@ function tep_draw_selection_field($name, $type, $value = '', $checked = false, $
 
 	if (tep_not_null($value)) $selection .= ' value="' . tep_output_string($value) . '"';
 
-	if ( ($checked == true) || ( isset($GLOBALS[$name]) && is_string($GLOBALS[$name]) && ( ($GLOBALS[$name] == 'on') || (isset($value) && (stripslashes($GLOBALS[$name]) == $value)) ) ) ) {
-		$selection .= ' CHECKED';
+	if ( ($checked == true)  ) {
+		$selection .= ' checked="checked"';
 	}
 
 	if (tep_not_null($parameters)) $selection .= ' ' . $parameters;

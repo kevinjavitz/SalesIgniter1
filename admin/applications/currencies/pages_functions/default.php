@@ -1,5 +1,5 @@
 <?php
-  function quote_oanda_currency($code, $base = DEFAULT_CURRENCY) {
+  function quote_oanda_currency($code, $base) {
 	$page = file('http://www.oanda.com/convert/fxdaily?value=1&redirected=1&exch=' . $code .  '&format=CSV&dest=Get+Table&sel_list=' . $base);
 
 	$match = array();
@@ -13,7 +13,7 @@
 	}
 }
 
-function quote_xe_currency($to, $from = DEFAULT_CURRENCY) {
+function quote_xe_currency($to, $from) {
 	$page = file('http://www.xe.net/ucc/convert.cgi?Amount=1&From=' . $from . '&To=' . $to);
 
 	$match = array();

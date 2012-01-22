@@ -11,7 +11,7 @@
 			<set_function>tep_cfg_select_option(array('True','False'),</set_function>
 		</EXTENSION_GOOGLE_ANALYTICS_ENABLED>
 		<EXTENSION_GOOGLE_ANALYTICS_TRACKING_GENERAL>
-			<title>Gooogle Analytics Tracking Code</title>			
+			<title>Gooogle Analytics Tracking Code</title>
 			<description>Google Analytics tracking code.</description>
 			<sort_order>2</sort_order>
 			<set_function>isArea</set_function>
@@ -21,5 +21,32 @@
 			<description>google-site-verification code</description>
 			<sort_order>2</sort_order>
 		</EXTENSION_GOOGLE_ANALYTICS_META_VERIFICATION>
+
+		<EXTENSION_GOOGLE_ANALYTICS_TRACKING_ID>
+			<title>Gooogle analytics tracking id</title>
+			<description>UA-xxxxx-x</description>
+			<sort_order>2</sort_order>
+		</EXTENSION_GOOGLE_ANALYTICS_TRACKING_ID>
+
+		<EXTENSION_GOOGLE_ANALYTICS_CONVERSION_ID>
+			<title>Gooogle adwords conversion id</title>
+			<description>1234567890</description>
+			<sort_order>2</sort_order>
+		</EXTENSION_GOOGLE_ANALYTICS_CONVERSION_ID>
+
+		<EXTENSION_GOOGLE_ANALYTICS_USE_TRACKING_ANALYTICS>
+			<title>Do you want to track conversions with analytics?</title>
+			<value>True</value>
+			<description>Do you want to track conversions with analytics?</description>
+			<sort_order>1</sort_order>
+			<set_function>tep_cfg_select_option(array('True','False'),</set_function>
+		</EXTENSION_GOOGLE_ANALYTICS_USE_TRACKING_ANALYTICS>
+		<EXTENSION_GOOGLE_ANALYTICS_USE_TRACKING_ADWORDS>
+			<title>Do you want to track adwords conversions?</title>
+			<value>True</value>
+			<description>Do you want to track adwords conversions?</description>
+			<sort_order>1</sort_order>
+			<set_function>tep_cfg_select_option(array('True','False'),</set_function>
+		</EXTENSION_GOOGLE_ANALYTICS_USE_TRACKING_ADWORDS>
 	</Configuration>
 </ConfigurationGroup>

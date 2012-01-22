@@ -73,6 +73,13 @@
    <th class="ui-widget-header" style="text-align:left;border-left:none;border-right:none;"><?php echo sysLanguage::get('TABLE_HEADING_INVENTORY_CENTER');?></th>
    <th class="ui-widget-header" style="text-align:left;border-left:none;border-right:none;"><?php echo sysLanguage::get('TABLE_HEADING_TYPE');?></th>
    <th class="ui-widget-header" style="text-align:left;border-left:none;"><?php echo sysLanguage::get('TABLE_HEADING_DATE_SENT');?></th>
+	  <?php
+	  if(sysConfig::get('EXTENSION_CUSTOM_FIELDS_SHOW_DOWNLOAD_FILE_COLUMN') == 'True'){
+	  ?>
+	        <th class="ui-widget-header" style="text-align:left;border-left:none;"><?php echo sysLanguage::get('TABLE_HEADING_DOWNLOAD_FILE');?></th>
+		  <?php
+		}
+?>
   </tr>
  </thead>
  <tbody>

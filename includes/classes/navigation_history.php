@@ -10,27 +10,34 @@ Copyright (c) 2003 osCommerce
 Released under the GNU General Public License
 */
 
-	class navigationHistory {
-		public $path, $snapshot;
+	class navigationHistory implements Serializable{
+
+		private $path = array();
+		public $snapshot = array();
+
         public function __construct(){
             $this->reset();
         }
 
 		public function reset() {
-			$this->path = array();
-			$this->snapshot = array();
+			unset($this->path);
+			unset($this->snapshot);
 		}
 
 		public function add_current_page() {
 			global $request_type, $cPath;
 
             $thisGetParamsString = implode('|',$_GET);
-			$set = 'true';
-
-			for ($i=0, $n=sizeof($this->path); $i<$n; $i++) {
+			$set = true;
+			for ($i=0; $i<count($this->path); $i++) {
                 $getParamsString = implode('|',$this->path[$i]['get']);
 				if ( $this->path[$i]['app'] == $_GET['app'] &&  $this->path[$i]['appPage'] == $_GET['appPage'] && $getParamsString == $thisGetParamsString) {
-					if (isset($cPath)) {
+					//array_splice($this->path, $i,1);
+					unset($this->path[$i]);
+					$this->path = array_values($this->path);
+					//$set = false;
+					break;
+					/*if (isset($cPath)) {
 						if (!isset($this->path[$i]['get']['cPath'])) {
 							continue;
 						} else {
@@ -44,7 +51,7 @@ Released under the GNU General Public License
 
 								for ($j=0, $n2=sizeof($old_cPath); $j<$n2; $j++) {
 									if ($old_cPath[$j] != $new_cPath[$j]) {
-										array_splice($this->path, ($i));
+										//array_splice($this->path, ($i));
 										$set = 'true';
 										break 2;
 									}
@@ -52,14 +59,14 @@ Released under the GNU General Public License
 							}
 						}
 					} else {
-						array_splice($this->path, ($i));
+						//array_splice($this->path, ($i));
 						$set = 'true';
 						break;
-					}
+					} */
 				}
 			}
 
-			if ($set == 'true') {
+			if ($set == true) {
 				$this->path[] = array('app' => $_GET['app'],
                 'appPage' =>$_GET['appPage'],
 				'mode' => $request_type,
@@ -147,14 +154,22 @@ Released under the GNU General Public License
 			}
 		}
 
-        public function unserialize($broken) {
-			for(reset($broken);$kv=each($broken);) {
-				$key=$kv['key'];
-				if (gettype($this->$key)!="user function")
-				$this->$key=$kv['value'];
+		public function serialize(){
+			$serialize = array();
+			foreach(get_object_vars($this) as $varName => $varVal){
+				if ($varVal instanceof Closure){
+					unset($this->$varName);
+				}else{
+					$serialize[$varName] = $varVal;
+				}
 			}
+			return serialize($serialize);
 		}
-        public function __destruct(){
-        }
-	}
+
+		public function unserialize($data){
+			$data = unserialize($data);
+			foreach($data as $varName => $varVal){
+				$this->$varName = $varVal;
+			}
+		}	}
 ?>

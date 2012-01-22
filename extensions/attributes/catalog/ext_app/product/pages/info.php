@@ -105,7 +105,8 @@ class attributes_catalog_product_info extends Extension_attributes {
 				default:
 					$input = htmlBase::newElement('selectbox')
 					->setName('id[' . $settings['purchase_type'] . '][' . $optionId . ']')
-					->addOption('', 'Please Select');
+					->addClass('attrSelect');
+					//->addOption('', 'Please Select');
 
 					if ($oInfo['use_image'] == '1'){
 						$input->addClass('useImage');
@@ -173,7 +174,7 @@ class attributes_catalog_product_info extends Extension_attributes {
 			));
 		}
 
-		return $table->draw();
+		return '<div class="attributesDiv" pID="'.$product->productInfo['products_id'].'" purchase_type="'.$settings['purchase_type'].'">'.$table->draw().'</div>';
 	}
 }
 ?>

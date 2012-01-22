@@ -44,4 +44,16 @@ $(document).ready(function (){
 		offset: 10 //zooming div default offset(default offset value is 10)
 		//position: "right" //zooming div position(default position value is "right")
 	});
+	$('.inCart').live('click', function() {
+			$(this).parent().parent().append('<input type="hidden" name="add_reservation_product">');
+			if($('.attributesTable')){
+				$('.attributesTable').hide();
+				$(this).parent().parent().append($('.attributesTable'));
+			}
+			$('.selected_period').removeAttr('disabled');
+			$(this).closest('form').submit();
+			return false;
+	});
+
+
 });

@@ -28,14 +28,13 @@ abstract class InfoBoxAbstract {
 		$this->boxCode = $boxCode;
 		$this->boxTemplateDefaultDir = sysConfig::getDirFsCatalog() . 'extensions/templateManager/widgetTemplates/';
 		$this->boxCurrentTemplateDir = sysConfig::getDirFsCatalog() . 'templates/' . (Session::exists('tplDir') ? Session::get('tplDir') : 'fallback') . '/boxes/';
-		
-		$Qinfobox = Doctrine_Query::create()
-		->from('TemplatesInfoboxes i')
-		->where('i.box_code = ?', $this->boxCode)
-		->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
-		if ($Qinfobox){
+
+		$ResultSet = Doctrine_Manager::getInstance()
+			->getCurrentConnection()
+			->fetchAssoc('select * from templates_infoboxes where box_code = "' . $this->boxCode . '"');
+		if ($ResultSet && sizeof($ResultSet) > 0){
 			$this->installed = true;
-			$this->boxData = $Qinfobox[0];
+			$this->boxData = $ResultSet[0];
 			
 			//$this->setBoxTemplateFile($this->boxData['template_file']);
 		}
