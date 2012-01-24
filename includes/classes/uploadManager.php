@@ -1,17 +1,21 @@
 <?php
-	require(dirname(__FILE__) . '/uploadManager/Exception.php');
-	require(dirname(__FILE__) . '/uploadManager/Abstract.php');
-	require(dirname(__FILE__) . '/uploadManager/UploadFile.php');
-	require(dirname(__FILE__) . '/uploadManager/UploadFileMock.php');
+require(dirname(__FILE__) . '/uploadManager/Exception.php');
+require(dirname(__FILE__) . '/uploadManager/Abstract.php');
+require(dirname(__FILE__) . '/uploadManager/UploadFile.php');
+require(dirname(__FILE__) . '/uploadManager/UploadFileMock.php');
 
 class UploadManager implements SplSubject
 {
 
-		private $destination;
-		private $permissions;
-		private $extensions;
-		private $status = 0;
-		private $observers = array();
+	private $destination;
+
+	private $permissions;
+
+	private $extensions;
+
+	private $status = 0;
+
+	private $observers = array();
 
 	/**
 	 * @var UploadManagerException
@@ -33,7 +37,7 @@ class UploadManager implements SplSubject
 
 	const   ERROR_UPLOAD_ERROR = 99;
 
-		const   WARNING_CHMOD_NOT_ALLOWED = 70;
+	const   WARNING_CHMOD_NOT_ALLOWED = 70;
 
 	public function __construct($destination = '', $permissions = '777', $extensions = '') {
 		$this->setDestination($destination);
@@ -44,29 +48,29 @@ class UploadManager implements SplSubject
 		$this->ftpRes->connect();
 	}
 
-		public function attach(SplObserver $obs){
-			$id = spl_object_hash($obs);
+	public function attach(SplObserver $obs) {
+		$id = spl_object_hash($obs);
 
-			$this->observers[$id] = $obs;
+		$this->observers[$id] = $obs;
+	}
+
+	public function detach(SplObserver $obs) {
+		$id = spl_object_hash($obs);
+
+		unset($this->observers[$id]);
+	}
+
+	public function notify() {
+		foreach($this->observers as $obs){
+			$obs->update($this);
 		}
+	}
 
-		public function detach(SplObserver $obs){
-			$id = spl_object_hash($obs);
-
-			unset($this->observers[$id]);
-		}
-
-		public function notify(){
-			foreach ($this->observers as $obs){
-				$obs->update($this);
-			}
-		}
-
-		public function processFile(UploadFile $file){
-			$this->assert(($this->extensionIsAllowed($file) === false), self::ERROR_TYPE_NOT_ALLOWED);
-			$this->assert(($this->destinationExists() === false), self::ERROR_DESTINATION_DOES_NOT_EXIST);
-			$this->assert(($this->destinationIsWritable() === false), self::ERROR_DESTINATION_NOT_WRITABLE);
-			$this->assert(($file->hasError() !== UPLOAD_ERR_OK), $file->hasError());
+	public function processFile(UploadFile $file) {
+		$this->assert(($this->extensionIsAllowed($file) === false), self::ERROR_TYPE_NOT_ALLOWED);
+		$this->assert(($this->destinationExists() === false), self::ERROR_DESTINATION_DOES_NOT_EXIST);
+		$this->assert(($this->destinationIsWritable() === false), self::ERROR_DESTINATION_NOT_WRITABLE);
+		$this->assert(($file->hasError() !== UPLOAD_ERR_OK), $file->hasError());
 
 		if ($this->status == 0){
 			$file->setFtpRes($this->ftpRes);
@@ -95,13 +99,13 @@ class UploadManager implements SplSubject
 		}
 	}
 
-		public function getException(){
-			return $this->exceptionObj;
-		}
+	public function getException() {
+		return $this->exceptionObj;
+	}
 
-		public function status() {
-			return $this->status;
-		}
+	public function status() {
+		return $this->status;
+	}
 
 	public function setExtensions($val) {
 		if (!empty($val)){
@@ -117,31 +121,32 @@ class UploadManager implements SplSubject
 		}
 	}
 
-		public function setPermissions($val){
-			$this->permissions = octdec($val);
-		}
+	public function setPermissions($val) {
+		$this->permissions = octdec($val);
+	}
 
-		public function setDestination($val){
-			$this->destination = $val;
-		}
+	public function setDestination($val) {
+		$this->destination = $val;
+	}
 
-		public function getDestination(){
-			return $this->destination;
-		}
+	public function getDestination() {
+		return $this->destination;
+	}
 
-		public function extensionIsAllowed(UploadFile $file){
-			if (sizeof($this->extensions) > 0){
-				$fileName = $file->getName();
-				if (!in_array(strtolower(substr($fileName, strrpos($fileName, '.')+1)), $this->extensions)){
-					return false;
-				}
+	public function extensionIsAllowed(UploadFile $file) {
+		if (sizeof($this->extensions) > 0){
+			$fileName = $file->getName();
+			if (!in_array(strtolower(substr($fileName, strrpos($fileName, '.') + 1)), $this->extensions)){
+				return false;
 			}
-			return true;
 		}
+		return true;
+	}
 
 	public function destinationIsWritable() {
 		if (!is_writeable($this->destination)){
-			if ($this->ftpRes && $this->ftpRes->makeWritable($this->destination)){
+			/* Using ftp user which is able to write to all folders/files */
+			if ($this->ftpRes){
 				return true;
 			}
 			return false;
@@ -149,11 +154,12 @@ class UploadManager implements SplSubject
 		return true;
 	}
 
-		public function destinationExists(){
-			if (is_dir($this->destination)) {
-				return true;
-			}
-			return false;
+	public function destinationExists() {
+		if (is_dir($this->destination)){
+			return true;
 		}
+		return false;
 	}
+}
+
 ?>
