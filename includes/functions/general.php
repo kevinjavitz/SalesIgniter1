@@ -188,21 +188,21 @@ function tep_get_all_get_params($exclude_array = '') {
 	{
 		if ($with_iso_codes == true)
 		{
-			$query = "select countries_name, countries_iso_code_2, countries_iso_code_3 from " . TABLE_COUNTRIES . " where countries_id = '" . (int)$countries_id . "' order by countries_name";
+			$query = "select countries_name, countries_iso_code_2, countries_iso_code_3 from countries where countries_id = '" . (int)$countries_id . "' order by countries_name";
 		}
 		else
 		{
-			$query = "select countries_name from " . TABLE_COUNTRIES . " where countries_id = '" . (int)$countries_id . "'";
+			$query = "select countries_name from countries where countries_id = '" . (int)$countries_id . "'";
 		}
 	}
 	else
 	{
-		$query = "select countries_id, countries_name from " . TABLE_COUNTRIES . " order by countries_name";
+		$query = "select countries_id, countries_name from countries order by countries_name";
 	}
 	
 	$ResultSet = Doctrine_Manager::getInstance()
 		->getCurrentConnection()
-		->fetchArray($query);
+		->fetchAssoc($query);
 
 	return $ResultSet;
 }
@@ -304,8 +304,7 @@ function tep_get_all_get_params($exclude_array = '') {
 // Alias function to tep_get_countries()
   function tep_get_country_name($country_id) {
     $country_array = tep_get_countries($country_id);
-
-    return $country_array['countries_name'];
+    return $country_array[0]['countries_name'];
   }
 
 ////

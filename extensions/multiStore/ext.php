@@ -199,6 +199,20 @@ class Extension_multiStore extends ExtensionBase {
 		if ($App->getEnv() == 'catalog'){
 			sysConfig::set('HTTP_SERVER', 'http://' . $this->storeInfo['stores_domain']);
 			sysConfig::set('HTTPS_SERVER', 'https://' . $this->storeInfo['stores_ssl_domain']);
+			$defaultCurrency = $this->storeInfo['default_currency'];
+
+			if (Session::exists('currencyStore'.$this->storeInfo['stores_id']) === false || isset($_GET['currency']) ) {
+				if (isset($_GET['currency'])) {
+					if (!$currency = tep_currency_exists($_GET['currency'])) $currency = $defaultCurrency;
+				} else {
+					$currency = $defaultCurrency;
+				}
+				Session::set('currency', $currency);
+				Session::set('currencyStore'.$this->storeInfo['stores_id'], $currency);
+			}else{
+				Session::set('currency', Session::get('currencyStore'.$this->storeInfo['stores_id']));
+			}
+
 			if(sysConfig::get('EXTENSION_MULTI_STORE_REDIRECT_BY_COUNTRY') == 'True'){
 				include(sysConfig::getDirFsCatalog().'extensions/multiStore/geoip/geoip.php');
 				$gi = geoip_open(sysConfig::getDirFsCatalog().'extensions/multiStore/geoip/GeoIP.dat',GEOIP_STANDARD);

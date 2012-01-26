@@ -66,6 +66,8 @@ $GEOIP_COUNTRY_NAMES = array(
 	$storeLocation = htmlBase::newElement('input')->setName('stores_location');
 	$storeOwner = htmlBase::newElement('input')->setName('stores_owner');
 	$isDefault = htmlBase::newElement('checkbox')->setName('is_default');
+	$defaultCurrency = htmlBase::newElement('selectbox')->setName('default_currency');
+
 $table = htmlBase::newElement('table')
 	->setCellPadding(3)
 	->setCellSpacing(0)
@@ -128,6 +130,15 @@ $table->addBodyRow(array(
 		$storeLocation->setValue($Qstore['stores_location']);
 		$storeOwner->setValue($Qstore['stores_owner']);
 		$isDefault->setChecked($Qstore['is_default'] == '1'?true:false);
+		$defaultCurrency->selectOptionByValue($Qstore['default_currency']);
+	}
+
+	$QCurrencies = Doctrine_Query::create()
+	->from('CurrenciesTable')
+	->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+
+	foreach($QCurrencies as $currency){
+		$defaultCurrency->addOption($currency['code'], $currency['title']);
 	}
 
 	$templatesSet = htmlBase::newElement('selectbox')->setName('stores_template');
@@ -221,6 +232,12 @@ $table->addBodyRow(array(
 		'columns' => array(
 			array('addCls' => 'main','text' => sysLanguage::get('TEXT_STORES_LOCATION')),
 			array('addCls' => 'main','text' => $storeLocation->draw())
+		)
+	));
+	$storeInfoTable->addBodyRow(array(
+		'columns' => array(
+			array('addCls' => 'main','text' => sysLanguage::get('TEXT_STORES_DEFAULT_CURRENCY')),
+			array('addCls' => 'main','text' => $defaultCurrency->draw())
 		)
 	));
 	$storeInfoTable->addBodyRow(array(

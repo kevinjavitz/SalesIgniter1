@@ -20,17 +20,25 @@ class OrderShippingZone extends OrderShippingModuleBase
 				->from('ModulesShippingZoneMethods')
 				->orderBy('sort_order')
 				->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
-			if ($Qmethods){
-				foreach($Qmethods as $mInfo){
-					$this->methods[$mInfo['method_id']] = array(
-						'countries' => explode(',', $mInfo['method_countries']),
-						'cost' => explode(',', $mInfo['method_cost']),
-						'handling' => $mInfo['method_handling_cost'],
-						'sort_order' => $mInfo['sort_order']
-					);
+			try{
+				if ($Qmethods){
+					foreach($Qmethods as $mInfo){
+						$this->methods[$mInfo['method_id']] = array(
+							'countries' => explode(',', $mInfo['method_countries']),
+							'cost' => explode(',', $mInfo['method_cost']),
+							'handling' => $mInfo['method_handling_cost'],
+							'sort_order' => $mInfo['sort_order']
+						);
+					}
 				}
+			}catch(Doctrine_Connection_Exception $e){
+
 			}
 		}
+	}
+
+	public function getMethods() {
+		return $this->methods;
 	}
 
 	public function quote($module = '') {

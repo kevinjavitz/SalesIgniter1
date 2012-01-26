@@ -31,6 +31,7 @@
 	$Store->stores_template = $_POST['stores_template'];
 	$Store->stores_zip = $_POST['stores_zip'];
 	$Store->stores_location = $_POST['stores_location'];
+	$Store->default_currency = $_POST['default_currency'];
 	$Store->is_default = $isDefault;
 	if(isset($_POST['stores_countries'])){
 		$Store->stores_countries = implode(',',$_POST['stores_countries']);

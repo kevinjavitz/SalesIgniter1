@@ -18,6 +18,11 @@ class ProductsOptions extends Doctrine_Record {
 			'foreign' => 'products_options_id',
 			'cascade' => array('delete')
 		));
+		$this->hasMany('ProductsOptionsValuesToProductsOptions', array(
+				'local' => 'products_options_id',
+				'foreign' => 'products_options_id',
+				'cascade' => array('delete')
+			));
 	}
 	
 	public function setTableDefinition(){

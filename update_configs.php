@@ -32,6 +32,8 @@ add_extra_fields('admin','admins_stores'," text NOT NULL");
 add_extra_fields('admin','admins_main_store',"int(11) NOT NULL");
 add_extra_fields('admin','admin_simple_admin',"int(1) NOT NULL default '0'");
 add_extra_fields('admin','admin_favs_id',"int(11) NOT NULL");
+add_extra_fields('languages','forced_default',"int(1) NOT NULL default '0'");
+
 
 mkdir(sysConfig::getDirFsCatalog().'temp/pdf');
 mkdir(sysConfig::getDirFsCatalog().'cache');

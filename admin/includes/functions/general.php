@@ -1722,16 +1722,16 @@ function tep_cfg_select_multioption_element($select_array, $key_value, $key = ''
 			'label' => $label
 		);
 	}
+	$key_values = explode(',', $key_value);
 	$elements = htmlBase::newElement('checkbox')->addGroup(array(
 		'name'      => (($key) ? 'configuration[' . $key . '][]' : 'configuration_value[]'),
 		'separator' => '<br />',
+		'checked' => $key_values,
 		'data'      => $elArr
 	));
 
-	$key_values = explode(',', $key_value);
-	foreach($key_values as $v){
-		$elements->setChecked($v);
-	}
+
+
 	return $elements;
 }
 ////
