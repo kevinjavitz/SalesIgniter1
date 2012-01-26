@@ -89,6 +89,16 @@ class Products extends Doctrine_Record {
 			'autoincrement' => false,
 			'scale'         => 4
 		));
+		$this->hasColumn('products_keepit_price', 'decimal', 15, array(
+				'type'          => 'decimal',
+				'length'        => 15,
+				'unsigned'      => 0,
+				'primary'       => false,
+				'default'       => '0.0000',
+				'notnull'       => true,
+				'autoincrement' => false,
+				'scale'         => false
+		));
 		$this->hasColumn('products_price_used', 'decimal', 15, array(
 			'type'          => 'decimal',
 			'length'        => 15,
