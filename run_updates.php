@@ -1,5 +1,6 @@
 <?php
 set_time_limit(0);
+update_extra();
 require('includes/application_top.php');
 
 function getColumnsToEncode($TableName, $collation){
@@ -272,9 +273,9 @@ function addConfiguration($key, $group, $title, $desc, $default, $func) {
 }
 
 function add_extra_fields($table, $column, $column_attr = 'VARCHAR(255) NULL'){
-
-	$db=sysConfig::get('DB_DATABASE');
-	$link = mysql_connect(sysConfig::get('DB_SERVER'), sysConfig::get('DB_SERVER_USERNAME'), sysConfig::get('DB_SERVER_PASSWORD'));
+	$configXml = simplexml_load_file('includes/configure.xml');
+	$db = $configXml->config[7]->value;
+	$link = mysql_connect($configXml->config[4]->value, $configXml->config[5]->value, $configXml->config[6]->value);
 	if (! $link){
 		die(mysql_error());
 	}
@@ -426,6 +427,19 @@ function importPDFLayouts(){
 
 }
 
+function tep_get_languages() {
+	$languages_query = tep_db_query("select languages_id, name, code, image, directory from " . TABLE_LANGUAGES . " where status = '1' order by sort_order");
+	while ($languages = tep_db_fetch_array($languages_query)) {
+		$languages_array[] = array('id' => $languages['languages_id'],
+			'name' => $languages['name'],
+			'code' => $languages['code'],
+			'image' => $languages['image'],
+			'directory' => $languages['directory']);
+	}
+
+	return $languages_array;
+}
+
 function updateCategoriesSEOUrls(){
 	$QCategories = Doctrine_Query::create()
 		->from('Categories c')
@@ -466,14 +480,16 @@ function addEmailTemplate($name, $event, $attach, $subject, $content){
 	}
 }
 
-function update_configs(){
-
-	/*add_extra_fields('admin','admin_override_password',"VARCHAR( 40 ) NOT NULL DEFAULT  ''");
+function update_extra(){
+	add_extra_fields('admin','admin_override_password',"VARCHAR( 40 ) NOT NULL DEFAULT  ''");
 	add_extra_fields('admin','admins_stores'," text NOT NULL");
 	add_extra_fields('admin','admins_main_store',"int(11) NOT NULL");
 	add_extra_fields('admin','admin_simple_admin',"int(1) NOT NULL default '0'");
 	add_extra_fields('admin','admin_favs_id',"int(11) NOT NULL");
-	add_extra_fields('languages','forced_default',"int(1) NOT NULL default '0'");*/
+	add_extra_fields('languages','forced_default',"int(1) NOT NULL default '0'");
+}
+
+function update_configs(){
 
 
 	mkdir(sysConfig::getDirFsCatalog().'temp/pdf');

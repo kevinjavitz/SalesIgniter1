@@ -124,6 +124,7 @@ require(sysConfig::getDirFsCatalog() . 'includes/classes/htmlBase.php');
 	require(sysConfig::getDirFsCatalog() . 'includes/classes/ModuleBase.php');
 	require(sysConfig::getDirFsCatalog() . 'includes/classes/ModuleConfigReader.php');
 	require(sysConfig::getDirFsCatalog() . 'includes/modules/infoboxes/InfoBoxAbstract.php');
+	require(sysConfig::getDirFsCatalog() . 'includes/modules/pdfinfoboxes/PDFInfoBoxAbstract.php');
 	require(sysConfig::getDirFsCatalog() . 'includes/functions/html_output.php');
 
 	//Email Template Manager Start
