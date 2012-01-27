@@ -1,6 +1,6 @@
 <?php
 
-require(sysConfig::getDirFsCatalog() . 'includes/modules/pdfinfoboxes/PDFInfoBoxAbstract.php');
+
 require(sysConfig::getDirFsCatalog() . 'includes/classes/Order/Base.php');
 
 require_once(sysConfig::getDirFsCatalog(). 'dompdf/dompdf_config.inc.php');

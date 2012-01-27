@@ -35,6 +35,7 @@
 
 	$infoBox->addContentRow('Sort Order:' . '<br>' . tep_draw_input_field('sort_order', $Package->sort_order));
 	$infoBox->addContentRow('Default Plan:' . '<br>' . tep_draw_checkbox_field('default_plan', '1', ($Package->default_plan == '1')));
+	$infoBox->addContentRow('Is not recurring:' . '<br>' . tep_draw_checkbox_field('not_reccurring', '1', ($Package->reccurring == '0')));
 	$infoBox->addContentRow(sysLanguage::get('TEXT_ENTRY_FREE_TRIAL_AMOUNT') . '<br>' . tep_draw_input_field('free_trial_amount', $Package->free_trial_amount));
 	$infoBox->addContentRow(sysLanguage::get('TEXT_ENTRY_MEMBERSHIP_MONTHS') . '<br>' . tep_draw_input_field('membership_months', $Package->membership_months));
 	$infoBox->addContentRow(sysLanguage::get('TEXT_ENTRY_MEMBERSHIP_DAYS') . '<br>' . tep_draw_input_field('membership_days', $Package->membership_days));

@@ -17,6 +17,9 @@
 	$onePageCheckout = new osC_onePageCheckout();
 	$onePageCheckout->setMode('');
  	$ShoppingCart->emptyCart(true);
+	$membership =& $userAccount->plugins['membership'];
+	$membership->loadMembershipInfo();
+	$membership->loadPlanInfo();
 	if(Session::exists('add_to_queue_product_id')){
 		$pID = Session::get('add_to_queue_product_id');
 		$attribs = Session::get('add_to_queue_product_attrib');

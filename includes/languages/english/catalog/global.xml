@@ -488,6 +488,7 @@
 
 	<define key="PURCHASE_TYPE_RESERVATION_SHOW_SHOPPING_CART"><![CDATA[ Reservation]]></define>
 	<define key="PURCHASE_TYPE_USED_SHOW_SHOPPING_CART"><![CDATA[ Used]]></define>
+	<define key="PURCHASE_TYPE_RENTAL_SHOW_SHOPPING_CART"><![CDATA[ Rental]]></define>
 	<define key="PURCHASE_TYPE_STREAM_SHOW_SHOPPING_CART"><![CDATA[ Stream]]></define>
 	<define key="PURCHASE_TYPE_DOWNLOAD_SHOW_SHOPPING_CART"><![CDATA[ Download]]></define>
 	<define key="PPR_PRICE_BASED_ON"><![CDATA[ <br/>Price based on: ]]></define>

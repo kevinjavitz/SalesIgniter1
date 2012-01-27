@@ -126,7 +126,7 @@ function tep_redirect($url) {
 
 	$ResultSet = Doctrine_Manager::getInstance()
 		->getCurrentConnection()
-		->fetchArray("select products_name from " . TABLE_PRODUCTS_DESCRIPTION . " where products_id = '" . (int)$product_id . "' and language_id = '" . (int)$language_id . "'");
+		->fetchAssoc("select products_name from products_description where products_id = '" . (int)$product_id . "' and language_id = '" . (int)$language . "'");
 
 	return $ResultSet[0]['products_name'];
   }

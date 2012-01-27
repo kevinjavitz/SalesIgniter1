@@ -169,6 +169,9 @@
 				case 'new':
 					$showType = sysLanguage::get('PURCHASE_TYPE_NEW_SHOW_SHOPPING_CART');
 					break;
+				case 'rental':
+					$showType = sysLanguage::get('PURCHASE_TYPE_RENTAL_SHOW_SHOPPING_CART');
+					break;
 				case 'used':
 					$showType = sysLanguage::get('PURCHASE_TYPE_USED_SHOW_SHOPPING_CART');
 					break;

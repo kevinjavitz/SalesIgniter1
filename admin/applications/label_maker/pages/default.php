@@ -33,13 +33,13 @@
 	$selectBox->addOption('all', sysLanguage::get('TEXT_ALL'));
 	$selectBox->addOption('rental', sysLanguage::get('TEXT_RENTAL'));
 	
-	if (defined('EXTENSION_PAY_PER_RENTALS_ENABLED') && EXTENSION_PAY_PER_RENTALS_ENABLED == 'True'){
+	if (defined('EXTENSION_PAY_PER_RENTALS_ENABLED') && sysConfig::get('EXTENSION_PAY_PER_RENTALS_ENABLED') == 'True'){
 		$selectBox->addOption('onetime', sysLanguage::get('TEXT_PAY_PER_RENTAL'));
 	}
 	echo $selectBox->draw();
 ?></div>
 <?php
-	if (defined('EXTENSION_INVENTORY_CENTERS_ENABLED') && EXTENSION_INVENTORY_CENTERS_ENABLED == 'True'){
+	if (defined('EXTENSION_INVENTORY_CENTERS_ENABLED') && sysConfig::get('EXTENSION_INVENTORY_CENTERS_ENABLED') == 'True'){
 		$selectBox = htmlBase::newElement('selectbox')
 		->setName('invCenter')
 		->setId('invCenter')
@@ -48,8 +48,10 @@
 		
 		$selectBox->addOption('', sysLanguage::get('TEXT_ALL_CENTERS'));
 		
-		$QinventoryCenter = tep_db_query('select * from ' . TABLE_PRODUCTS_INVENTORY_CENTERS . ' order by inventory_center_name');
-		while($inventoryCenter = tep_db_fetch_array($QinventoryCenter)){
+		$QinventoryCenter = Doctrine_Manager::getInstance()
+			->getCurrentConnection()
+			->fetchAssoc('select * from products_inventory_centers order by inventory_center_name');
+		foreach($QinventoryCenter as $inventoryCenter){
 			$selectBox->addOption($inventoryCenter['inventory_center_id'], $inventoryCenter['inventory_center_name']);
 		}
 		echo '<div class="hideForPrint main" style="text-align:right;margin:.5em;">' . 

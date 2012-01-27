@@ -348,9 +348,13 @@ class OrderPaymentPaypalipn extends StandardPaymentModule
 					$parameters['p3'] = $p3Val;
 					$parameters['t3'] = $t3Val;
 				}
-
-				$parameters['cmd'] = '_xclick-subscriptions';
-				$parameters['custom'] = Session::getSessionId() . ';' . $userAccount->getCustomerId() . ';' . $_SERVER['REMOTE_ADDR'];
+				if($planInfo['reccurring'] == 1){
+					$parameters['cmd'] = '_xclick-subscriptions';
+					$parameters['custom'] = Session::getSessionId() . ';' . $userAccount->getCustomerId() . ';' . $_SERVER['REMOTE_ADDR'];
+				}else{
+					$parameters['cmd'] = '_xclick';
+					$parameters['custom'] = Session::getSessionId() . ';' . $userAccount->getCustomerId() . ';' . $_SERVER['REMOTE_ADDR'] .';nonrecurring';
+				}
 				$parameters['item_name'] = $planInfo['MembershipPlanDescription'][0]['name'];
 				$parameters['no_note'] = '1';
 				$parameters['a3'] = $packagePrice;

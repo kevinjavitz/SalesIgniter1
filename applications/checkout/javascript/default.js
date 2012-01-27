@@ -143,8 +143,8 @@ $(document).ready(function (){
 				if (data.errorMsg != ''){
 					alert(data.errorMsg);
 				}
-	            //$('.orderTotalsList').html(data.orderTotalRows);
-	            updateTotals();
+	            $('.orderTotalsList').html(data.orderTotalRows);
+	            //updateTotals();
             }
         });
         return false;

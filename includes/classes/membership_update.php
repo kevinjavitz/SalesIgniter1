@@ -74,6 +74,10 @@ class membershipUpdate_cron {
 		return ($this->billingAction == 'trial');
 	}
 
+	public function isRecurring(){
+		return ($this->userAccount->plugins['membership']->isRecurringPlan());
+	}
+
 	public function setCurrentCustomer(&$userAccount){
 		$this->userAccount =& $userAccount;
 

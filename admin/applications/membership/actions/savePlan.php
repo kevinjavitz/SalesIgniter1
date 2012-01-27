@@ -42,6 +42,7 @@
 		$Plan->no_of_titles = $_POST['no_of_titles'];
 		$Plan->price = $_POST['price'];
 		$Plan->rent_tax_class_id = $_POST['rent_tax_class_id'];
+		$Plan->reccurring = (isset($_POST['not_reccurring'])?0:1);
 		$Plan->save();
 		
 		if (isset($_POST['default_plan'])){

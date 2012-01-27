@@ -24,6 +24,10 @@
 	if(isset($textArr[2])){
 		$customerIp = $textArr[2];
 	}
+	$nonrecurring = false;
+	if(isset($textArr[3]) && $textArr[3] == 'nonrecurring'){
+		$nonrecurring = true;
+	}
 	chdir('../../../../');
 	require('includes/application_top.php');
 	require('includes/classes/order.php');
@@ -85,6 +89,9 @@
 				}
 				break;
 		}
+	}
+	if($nonrecurring){
+		$account_action = 'payment';
 	}
 
 	$planID = false;

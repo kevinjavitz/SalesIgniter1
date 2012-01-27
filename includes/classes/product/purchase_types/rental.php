@@ -32,7 +32,8 @@ class PurchaseType_rental extends PurchaseTypeAbstract {
 			$this->productInfo = array(
 				'id'      => $productInfo['products_id'],
 				'isBox'   => $ProductCls->isBox(),
-				'price'   => null
+				'price'   => null,
+				'keepPrice' => $productInfo['products_keepit_price']
 			);
 
 			$this->inventoryCls = new ProductInventory(
@@ -57,8 +58,43 @@ class PurchaseType_rental extends PurchaseTypeAbstract {
 	}
 
 	public function processAddToCart(&$pInfo){
-		$pInfo['price'] = $this->productInfo['price'];
-		$pInfo['final_price'] = $this->productInfo['price'];
+		$pInfo['price'] = $this->productInfo['keepPrice'];
+		$pInfo['final_price'] = $this->productInfo['keepPrice'];
+		$pInfo['queue_id'] = $_POST['queue_id'];
+	}
+
+	/*public function addToCartPrepare(&$pInfo){
+		$pInfo['price'] = $this->productInfo['keepPrice'];
+		$pInfo['final_price'] = $this->productInfo['keepPrice'];
+		$pInfo['queue_id'] = $_POST['queue_id'];
+	} */
+
+
+	public function onInsertOrderedProduct($cartProduct, $orderId, &$orderedProduct, &$products_ordered) {
+		$pID = (int)$cartProduct->getIdString();
+		$pInfo = $cartProduct->getInfo();
+		$queueID = $pInfo['queue_id'];
+
+		$Qrented = Doctrine_Query::create()
+			->from('RentedQueue')
+			->where('customers_queue_id = ?', $queueID)
+			->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+		if(isset($Qrented[0])){
+			$Barcode = Doctrine_Core::getTable('ProductsInventoryBarcodes')->find($Qrented[0]['products_barcode']);
+			if ($Barcode){
+				$Barcode->status = 'P';
+				$Barcode->save();
+			}
+			$orderedProduct->barcode_id = $Qrented[0]['products_barcode'];
+		}
+
+		Doctrine_Query::create()
+			->delete('RentedQueue')
+			->where('customers_queue_id = ?', $queueID)
+			->execute();
+		$orderedProduct->purchase_type = 'rental';
+		$orderedProduct->save();
+
 	}
 
 	public function canUseSpecial(){

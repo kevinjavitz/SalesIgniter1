@@ -335,10 +335,28 @@
 }else{
 	$pageContents .= sysLanguage::get('TEXT_QUEUE_EMPTY');
 
-	$pageButtons = htmlBase::newElement('button')
-	->usePreset('continue')
-	->setHref(itw_app_link(null,'index','default'))
-	->draw();
+	$pageContents .= '<div style="margin-top:20px;">'
+		. (isset($updatePickup)?$pickupReqCol->draw().'<br/>'. $updatePickup->draw().'<br/>':'')
+		.'</div>';
+	$pageContent->set('pageForm', array(
+			'name' => 'update_rental_queue',
+			'action' => itw_app_link('action=updateQueue', 'rentals', 'queue'),
+			'method' => 'post'
+		));
+
+	$link = itw_app_link(null, 'products', 'all');
+	if (isset($navigation->snapshot['get']) && sizeof($navigation->snapshot['get']) > 0){
+		if (isset($navigation->snapshot['get']['cPath'])){
+			$link = itw_app_link('cPath=' . $navigation->snapshot['get']['cPath'], 'index', 'default');
+		}
+	}
+
+	$continueButtonHtml = htmlBase::newElement('button')
+		->setName('continue')
+		->setText(sysLanguage::get('TEXT_BUTTON_CONTINUE_CART'))
+		->setHref($link);
+
+	$pageButtons = $continueButtonHtml->draw();
 }
 	}
 
