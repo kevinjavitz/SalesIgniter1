@@ -52,6 +52,27 @@
 				'text' => sysLanguage::get('BOX_RENTAL_MEMBERSHIP_RENTAL_PASTDUE')
 			);
 		}
+
+		if (sysPermissions::adminAccessAllowed('rental_queue', 'pickup_requests') === true){
+			$contents['children'][] = array(
+				'link' => itw_app_link(null, 'rental_queue', 'pickup_requests', 'SSL'),
+				'text' => sysLanguage::get('BOX_RENTAL_MEMBERSHIP_RENTAL_PICKUP_REQUESTS')
+			);
+		}
+
+		if (sysPermissions::adminAccessAllowed('rental_queue', 'pickup_requests_types') === true){
+			$contents['children'][] = array(
+				'link' => itw_app_link(null, 'rental_queue', 'pickup_requests_types', 'SSL'),
+				'text' => sysLanguage::get('BOX_RENTAL_MEMBERSHIP_RENTAL_PICKUP_REQUESTS_TYPES')
+			);
+		}
+
+		if (sysPermissions::adminAccessAllowed('rental_queue', 'pickup_requests_report') === true){
+			$contents['children'][] = array(
+				'link' => itw_app_link(null, 'rental_queue', 'pickup_requests_report', 'SSL'),
+				'text' => sysLanguage::get('BOX_RENTAL_MEMBERSHIP_RENTAL_PICKUP_REQUESTS_REPORT')
+			);
+		}
 		
 		if (
 			sysPermissions::adminAccessAllowed('rental_queue', 'rented') === true || 

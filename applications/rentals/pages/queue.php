@@ -41,20 +41,47 @@
 			'text' => sysLanguage::get('TABLE_HEADING_ARRIVAL_DATE')
 		);
 
-		$i = 1;
-		if ($Qshipped){
-			foreach($Qshipped as $sInfo){
-				if ($i % 2 == 1) {
-					$info_box_contents[] = array('params' => 'class="productListing-even"');
-				}else{
-					$info_box_contents[] = array('params' => 'class="productListing-odd"');
-				}
+	$QPickupRequests = Doctrine_Query::create()
+		->from('PickupRequests pr')
+		->leftJoin('pr.PickupRequestsTypes prt')
+		->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 
-				$productsName = '<a target="_blank" href="'.itw_app_link('products_id='.$sInfo['products_id'],'product','info').'">'.tep_get_products_name($sInfo['products_id']).'</a>';
-				$shipDate = $sInfo['shipment_date'];
-				$shipDateString = date("m/d/Y", strtotime($shipDate));
-				$arrivalDate = $sInfo['arrival_date'];
-				$arrivalDateString = date("m/d/Y", strtotime($arrivalDate));
+	if(count($QPickupRequests) > 0){
+		/*$info_box_contents[0][] = array(
+			   'align' => 'left',
+			   'params' => 'class="ui-widget-header"',
+			   'text' => sysLanguage::get('TABLE_HEADING_PICKUP_REQUEST')
+		   );*/
+		$updatePickup = htmlBase::newElement('button')
+			->setType('submit')
+			->addClass('updatePickupButton')
+			->setText(sysLanguage::get('TEXT_BUTTON_UPDATE_PICKUP_REQUESTS'));
+	}
+
+	$i = 1;
+	$p = 1;
+	if ($Qshipped){
+		foreach($Qshipped as $sInfo){
+			if ($i % 2 == 1) {
+				$info_box_contents[] = array('params' => 'class="productListing-even"');
+			}else{
+				$info_box_contents[] = array('params' => 'class="productListing-odd"');
+			}
+
+			$productsName = '<a target="_blank" href="'.itw_app_link('products_id='.$sInfo['products_id'],'product','info').'">'.tep_get_products_name($sInfo['products_id']).'</a>';
+			$Product = new product($sInfo['products_id']);
+			if($p == 1 && $Product->getKeepPrice() > 0){
+				$info_box_contents[0][] = array(
+					'align' => 'left',
+					'params' => 'class="ui-widget-header"',
+					'text' => sysLanguage::get('TABLE_HEADING_KEEP_IT')
+				);
+				$p++;
+			}
+			$shipDate = $sInfo['shipment_date'];
+			$shipDateString = date("m/d/Y", strtotime($shipDate));
+			$arrivalDate = $sInfo['arrival_date'];
+			$arrivalDateString = date("m/d/Y", strtotime($arrivalDate));
 
 				$info_box_contents[$i][] = array(
 					'params' => 'class="productListing-data"',
@@ -67,27 +94,71 @@
 					'text' => $shipDateString
 				);
 
-				$info_box_contents[$i][] = array(
-					'align' => 'left',
-					'params' => 'class="productListing-data" valign="top"',
-					'text' => $arrivalDateString
-				);
-				$i++;
+			$info_box_contents[$i][] = array(
+				'align' => 'left',
+				'params' => 'class="productListing-data" valign="top"',
+				'text' => $arrivalDateString
+			);
 
+			$keepCol = '';
+			if($Product->getKeepPrice() > 0){
+				$buyNowButton = htmlBase::newElement('button')
+					->setText(sysLanguage::get('TEXT_BUTTON_BUY_NOW'))
+					->setHref(itw_app_link(tep_get_all_get_params(array('action', 'products_id')) . 'action=keepIt&products_id=' .$sInfo['products_id'].'&customers_queue_id='.$sInfo['customers_queue_id'] ), true);
+				$keepCol = 'Price: ' . $currencies->format($Product->getKeepPrice()) .'&nbsp;'. $buyNowButton->draw();
+			}
+
+			//if($p > 1){
+			$info_box_contents[$i][] = array(
+				'align' => 'left',
+				'params' => 'class="productListing-data" valign="top"',
+				'text' => $keepCol
+			);
+			//}
+
+
+
+			$i++;
+
+		}
+	}
+	$shippedProducts = $i - 1;
+
+	if(count($QPickupRequests) > 0){
+		$QCustomersToPickupRequest = Doctrine_Query::create()
+			->from('PickupRequests pr')
+			->leftJoin('pr.PickupRequestsTypes prt')
+			->leftJoin('pr.CustomersToPickupRequests rptpr')
+			//->where('pr.start_date <= now()')
+			->andWhere('rptpr.customers_id = ?', $userAccount->getCustomerId())
+			->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+
+		$pickupReqCol = htmlBase::newElement('selectbox')
+		//->setName('pickupRequest['.$sInfo['customers_queue_id'].']');
+		->setName('pickupRequest')
+		->setId('pickupRequest');
+		$pickupReqCol->addOption('-1','Select Pickup Request');
+		if(count($QCustomersToPickupRequest) > 0){
+			$pickupReqCol->selectOptionByValue($QCustomersToPickupRequest[0]['pickup_requests_id']);
+		}
+		foreach($QPickupRequests as $req){
+			if(strtotime($req['start_date']) >= strtotime('+'.sysConfig::get('REQUEST_PICKUP_BEFORE_DAYS').' DAY',time())){
+				$pickupReqCol->addOption($req['pickup_requests_id'], strftime(sysLanguage::getDateFormat('short'), strtotime($req['start_date'])).'&nbsp;'.$req['PickupRequestsTypes']['type_name']);
 			}
 		}
-		$shippedProducts = $i - 1;
-		
-		if ($shippedProducts){
-			ob_start();
-			echo '<div><b>' . sysLanguage::get('TEXT_SHIPPED_MOVIES') . ' - ' . $shippedProducts . '</b><br><br>';
-			new productListingBox($info_box_contents);
-			echo '</div><br>';
-			$pageContents .= ob_get_contents();
-			ob_end_clean();
-		}
-		
-		$Qrental = Doctrine_Query::create()
+
+	}
+
+	if ($shippedProducts){
+		ob_start();
+		echo  '<div><b>' . sysLanguage::get('TEXT_SHIPPED_MOVIES') . ' - ' . $shippedProducts . '</b><br><br>';
+		new productListingBox($info_box_contents);
+		echo '</div><br/>';
+		$pageContents .= ob_get_contents();
+		ob_end_clean();
+	}
+
+	$Qrental = Doctrine_Query::create()
 		->from('RentalQueueTable')
 		->where('customers_id = ?', $userAccount->getCustomerId());
 		EventManager::notify('RentalQueueBeforeExecute', &$Qrental);
@@ -232,15 +303,17 @@
 			</td>
 		</tr>
 	</table>
-<?php
-	$pageContents .= ob_get_contents();
-	ob_end_clean();
-	
-	$pageContent->set('pageForm', array(
-		'name' => 'update_rental_queue',
-		'action' => itw_app_link('action=updateQueue', 'rentals', 'queue'),
-		'method' => 'post'
-	));
+			                    <?php
+   	$pageContents .= ob_get_contents();
+		ob_end_clean();
+	$pageContents .= '<div style="margin-top:20px;">'
+			. (isset($updatePickup)?$pickupReqCol->draw().'<br/>'. $updatePickup->draw().'<br/>':'')
+			.'</div>';
+		$pageContent->set('pageForm', array(
+				'name' => 'update_rental_queue',
+				'action' => itw_app_link('action=updateQueue', 'rentals', 'queue'),
+				'method' => 'post'
+			));
 
 	$link = itw_app_link(null, 'products', 'all');
 	if (isset($navigation->snapshot['get']) && sizeof($navigation->snapshot['get']) > 0){
