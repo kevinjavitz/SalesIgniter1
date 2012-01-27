@@ -58,9 +58,9 @@
 	if(isset($_POST['payment_status'])){
 		$paymentStatus = $_POST['payment_status'];
 	}
-	if(isset($_POST['payment_status'])){
-    	$customerID = (int)$customerTextId;
-	}
+
+    $customerID = (int)$customerTextId;
+
 
 	if (isset($_POST['txn_type'])){
 		switch($_POST['txn_type']){
@@ -77,7 +77,7 @@
 				$account_action = 'cancel';
 				break;
 			case 'subscr_signup':
-				if (isset($_POST['amount1'])){
+				if (isset($_POST['period1'])){
 					$account_action = 'free_trial';
 					$paymentStatus = 'FreeTrial';
 				}else{
