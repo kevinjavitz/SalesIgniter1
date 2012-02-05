@@ -1,14 +1,11 @@
 function updateTotals(){
-    var isShip = false;
-    $(':radio[name="shipping_method"]:checked').each(function(){
-                         $(this).click();
-                        isShip = true;
-    });
-	if($(':hidden[name="shipping_method"]')){
-		setOnlyShippingMethod();
-		isShip = true;
+	$('input[name=shipping_method]:checked').each(function(){
+		$(this).click();
+	});
+
+	if($('input[name=shipping_method]').length == 1){
+		updateShipping($('input[name=shipping_method]').val());
 	}
-    if (isShip == false){
          $('.orderTotalsList').each(function (){
                     showAjaxLoader($(this), 'large');
          });
@@ -28,30 +25,29 @@ function updateTotals(){
                     $('.orderTotalsList').html(data.orderTotalRows);
                 }
          });
-    }
+
 }
 
-function setOnlyShippingMethod(){
-	if($(':radio[name="shipping_method"]')){}else {
-		$('.orderTotalsList').each(function (){
-			showAjaxLoader($(this).parent(), 'large');
-		});
-		var linkParams = js_get_all_get_params(['app', 'appPage', 'action']);
-		$.ajax({
-			url: js_app_link(linkParams + 'rType=ajax&app=checkout&appPage=default&action=setShippingMethod'),
-			cache: false,
-			dataType: 'json',
-			type: 'post',
-			data: 'shipping_method=' + $(':hidden[name="shipping_method"]').val(),
-			success: function (data){
-				$('.orderTotalsList').each(function (){
-					removeAjaxLoader($(this).parent(), 'large', 'append');
-				});
-				$('.orderTotalsList').html(data.orderTotalRows);
-			}
-		});
-	}
+function updateShipping(val){
+	$('.orderTotalsList').each(function (){
+		showAjaxLoader($(this).parent(), 'large');
+	});
+	var linkParams = js_get_all_get_params(['app', 'appPage', 'action']);
+	$.ajax({
+		url: js_app_link(linkParams + 'rType=ajax&app=checkout&appPage=default&action=setShippingMethod'),
+		cache: false,
+		dataType: 'json',
+		type: 'post',
+		data: 'shipping_method=' + val,
+		success: function (data){
+			$('.orderTotalsList').each(function (){
+				removeAjaxLoader($(this).parent(), 'large', 'append');
+			});
+			$('.orderTotalsList').html(data.orderTotalRows);
+		}
+	});
 }
+
 $(document).ready(function (){
 	$('.shippingAddressDiff').live('click',function (){
 		if (this.checked){
@@ -143,8 +139,8 @@ $(document).ready(function (){
 				if (data.errorMsg != ''){
 					alert(data.errorMsg);
 				}
-	            $('.orderTotalsList').html(data.orderTotalRows);
-	            //updateTotals();
+	            //$('.orderTotalsList').html(data.orderTotalRows);
+	            updateTotals();
             }
         });
         return false;
@@ -265,9 +261,6 @@ $(document).ready(function (){
                         return false;
                     }
                 }
-	        if($(':hidden[name="shipping_method"]:checked')){
-		        setOnlyShippingMethod();
-	        }
         }
         if ($('#currentPage').val() == 'success'){
             js_redirect(DIR_WS_CATALOG);
@@ -326,9 +319,6 @@ $(document).ready(function (){
                         	 $(this).trigger('click');
                      	 });
 					 }
-			if($(':hidden[name="shipping_method"]:checked')){
-	                    setOnlyShippingMethod();
-	                }
 	                $('.shipInfo').css('cursor','pointer');
 	                 $('.shipInfo').click(function(){
 		                 link = js_app_link('appExt=payPerRentals&app=show_shipping&appPage=default_all&dialog=true');
@@ -465,22 +455,7 @@ $(document).ready(function (){
 		$('.shippingRow.ui-state-active').removeClass('ui-corner-all ui-state-active');
 		$(this).parent().parent().removeClass('ui-state-hover').addClass('ui-corner-all ui-state-active');
 
-		$('.orderTotalsList').each(function (){
-			showAjaxLoader($(this).parent(), 'large');
-		});
-		var linkParams = js_get_all_get_params(['app', 'appPage', 'action']);
-		$.ajax({
-			url: js_app_link(linkParams + 'rType=ajax&app=checkout&appPage=default&action=setShippingMethod'),
-			cache: false,
-			dataType: 'json',
-			type: 'post',
-			data: 'shipping_method=' + $(this).val(),
-			success: function (data){
-				$('.orderTotalsList').each(function (){
-					removeAjaxLoader($(this).parent(), 'large', 'append');
-				});
-				$('.orderTotalsList').html(data.orderTotalRows);
-			}
-		});
+		updateShipping($(this).val());
 	});
+
 });

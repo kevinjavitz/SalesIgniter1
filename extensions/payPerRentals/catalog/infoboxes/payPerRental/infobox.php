@@ -937,7 +937,7 @@ class InfoBoxPayPerRental extends InfoBoxAbstract {
 		if(Session::exists('button_text')){
 			$butText = Session::get('button_text');
 		}else{
-			$butText = '';
+			$butText = 'Update';
 		}
 		?>;
 		var selectedDateId = null;
@@ -1091,6 +1091,8 @@ class InfoBoxPayPerRental extends InfoBoxAbstract {
 		            $('<?php echo '#'.$WidgetProperties->boxID;?> .dstart').val($(this).find('.dstart').val());
 					$('<?php echo '#'.$WidgetProperties->boxID;?> .dend').val($(this).find('.dend').val());
 					$('<?php echo '#'.$WidgetProperties->boxID;?> .rentbbut').trigger('click');
+					$('form[name$="selectPPR"]').submit();
+
 					$(this).dialog( "close" );
 				}
 			}

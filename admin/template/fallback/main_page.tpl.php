@@ -83,7 +83,7 @@ echo '			});' . "\n" .
 ?>
 	</head>
 	<body topmargin="0" leftmargin="0" bgcolor="#FFFFFF">
-		<header><?php
+		<header class="adminHeader"><?php
 			require(sysConfig::getDirFsAdmin() . 'includes/header.php');
 		?></header>
 		<table border="0" width="100%" cellspacing="0" cellpadding="15">

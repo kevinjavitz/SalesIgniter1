@@ -76,7 +76,7 @@
 					array('text' => ($products[$i]['canSend'] === true ? tep_draw_checkbox_field('queueItem[]', $QqueueID->getVal('customers_queue_id')) : ''), 'align' => 'center'),
 					array('text' => $products[$i]['id']),
 					array('text' => $products[$i]['priority'], 'align' => 'center'),
-					array('text' => '<a href="' . tep_href_link(FILENAME_RENTAL_QUEUE_DETAILS, 'action=viewProduct&cID=' . $cID . '&pID=' . $products[$i]['id']) . '#page-4">' . $products[$i]['name'] . '</a>'),
+					array('text' => '<a href="' . itw_app_link('action=viewProduct&cID=' . $cID . '&pID=' . $products[$i]['id'],'rental_queue','details') . '#page-4">' . $products[$i]['name'] . '</a>'),
 					array('text' => tep_draw_pull_down_menu('barcode[' . $QqueueID->getVal('customers_queue_id') . ']', $barcodeArray[$products[$i]['id']], $selected, 'class="barcodeMenu"'))
 				)
 			));
@@ -114,7 +114,7 @@
 	</tr>
 	<tr>
 	 <td class="main">' . sysLanguage::get('TABLE_HEADING_ITEMS') . ':</td>
-	 <td class="main">' . $totalRented . ' ( <a href="' . tep_href_link('return_rentals.php', 'cID=' . $cID) . '">' . sprintf(sysLanguage::get('TEXT_RENTED_QUEUE'), $userAccount->getFullName()) .'</a> )</td>
+	 <td class="main">' . $totalRented . ' ( <a href="' . itw_app_link('cID=' . $cID,'rental_queue','return') . '">' . sprintf(sysLanguage::get('TEXT_RENTED_QUEUE'), $userAccount->getFullName()) .'</a> )</td>
 	</tr>
    </table>';
 ?>

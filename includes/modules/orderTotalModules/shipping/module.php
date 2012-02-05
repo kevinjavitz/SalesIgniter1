@@ -33,10 +33,6 @@ class OrderTotalShipping extends OrderTotalModuleBase
 		if (is_object($onePageCheckout)){
 			$shippingInfo = $onePageCheckout->onePage['info']['shipping'];
 		}
-		elseif (Session::exists('pointOfSale')) {
-			$pointOfSale = &Session::getReference('pointOfSale');
-			$shippingInfo = $pointOfSale->order['info']['shipping'];
-		}
 
 		if (!empty($shippingInfo)){
 			$shippingCost = $shippingInfo['cost'];

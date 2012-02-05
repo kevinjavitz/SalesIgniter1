@@ -64,6 +64,7 @@ if (sysConfig::get('RENTAL_UPGRADE_CYCLE') == 'true'){
               $orderId = $membershipUpdate->insertOrder();
               if (is_numeric($orderId) === true){
                   if ($membershipUpdate->processPayment($orderId) === true){
+	                  EventManager::notify('CronPaymentSuccess', $membershipUpdate);
                       $membershipUpdate->updateCustomersNextBillDate();
                       $membershipUpdate->updateStreamingAccess();
                       if ($membershipUpdate->isFromTrial() === true){

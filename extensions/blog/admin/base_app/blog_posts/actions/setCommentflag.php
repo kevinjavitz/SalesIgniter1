@@ -6,5 +6,5 @@
 		}
 
 	}
-	EventManager::attachActionResponse(itw_app_link(tep_get_all_get_params(array('action', 'flag'))), 'redirect');
+	EventManager::attachActionResponse(itw_app_link(tep_get_all_get_params(array('action', 'flag'))).'#page-comments', 'redirect');
 ?>

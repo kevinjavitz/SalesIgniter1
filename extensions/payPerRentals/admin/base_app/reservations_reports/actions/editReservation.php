@@ -26,10 +26,28 @@
 
 	if ($json['success'] === true){
 		if($type == 'reservation'){
+			$startDate = date_parse($_POST['start_date_edit']);
+			$endDate = date_parse($_POST['end_date_edit']);
+			$startParsed= mktime(
+				$startDate['hour'],
+				$startDate['minute'],
+				$startDate['second'],
+				$startDate['month'],
+				$startDate['day'],
+				$startDate['year']
+			);
+			$endParsed = mktime(
+				$endDate['hour'],
+				$endDate['minute'],
+				$endDate['second'],
+				$endDate['month'],
+				$endDate['day'],
+				$endDate['year']
+			);
 			if ($rID != 0){
 				$orderProductsReservation = Doctrine_Core::getTable('OrdersProductsReservation')->find($rID);
-				$orderProductsReservation->start_date = $_POST['start_date_edit'];
-				$orderProductsReservation->end_date = $_POST['end_date_edit'];
+				$orderProductsReservation->start_date = date('Y-m-d H:i:s', $startParsed);
+				$orderProductsReservation->end_date = date('Y-m-d H:i:s', $endParsed);
 				$orderProductsReservation->rental_status_id = $_POST['rental_status_edit'];
 				$orderProductsReservation->save();
 			}else{
@@ -43,24 +61,9 @@
                                 'item_id'   => $barcodeId
                             );
 
-                            $startDate = date_parse($_POST['start_date_edit']);
-                            $endDate = date_parse($_POST['end_date_edit']);
-                            $bookingInfo['start_date'] = mktime(
-                                $startDate['hour'],
-                                $startDate['minute'],
-                                $startDate['second'],
-                                $startDate['month'],
-                                $startDate['day'],
-                                $startDate['year']
-                            );
-                            $bookingInfo['end_date'] = mktime(
-                                $endDate['hour'],
-                                $endDate['minute'],
-                                $endDate['second'],
-                                $endDate['month'],
-                                $endDate['day'],
-                                $endDate['year']
-                            );
+
+                            $bookingInfo['start_date'] = $startParsed;
+                            $bookingInfo['end_date'] = $endParsed;
 
                             $bookingInfo['quantity'] = 1;
                             $bookingInfo['shipping_days_before'] = 0;
@@ -81,8 +84,8 @@
                             /*end dates*/
                             if ($numBookings == 0){
                                 $orderProductsReservation = new OrdersProductsReservation();
-                                $orderProductsReservation->start_date = $_POST['start_date_edit'];
-                                $orderProductsReservation->end_date = $_POST['end_date_edit'];
+                                $orderProductsReservation->start_date = date('Y-m-d H:i:s', $bookingInfo['start_date']);
+                                $orderProductsReservation->end_date = date('Y-m-d H:i:s', $bookingInfo['end_date']);
                                 $orderProductsReservation->track_method = 'barcode';
                                 $orderProductsReservation->barcode_id = $barcodeId;
                                 $orderProductsReservation->rental_state = 'out';
@@ -97,8 +100,8 @@
                     }
                 }else{
                      $orderProductsReservation = new OrdersProductsReservation();
-                     $orderProductsReservation->start_date = $_POST['start_date_edit'];
-                     $orderProductsReservation->end_date = $_POST['end_date_edit'];
+                     $orderProductsReservation->start_date = date('Y-m-d H:i:s',$startParsed);
+                     $orderProductsReservation->end_date = date('Y-m-d H:i:s',$endParsed);
                      $orderProductsReservation->track_method = 'barcode';
                      $orderProductsReservation->barcode_id = $_GET['barcode_id'];
                      $orderProductsReservation->rental_state = 'out';
@@ -108,21 +111,39 @@
                 }
 			}
 		}else{
+			$startDate = date_parse($_POST['date_added_edit']);
+			$endDate = date_parse($_POST['return_date_edit']);
+			$startParsed= mktime(
+				$startDate['hour'],
+				$startDate['minute'],
+				$startDate['second'],
+				$startDate['month'],
+				$startDate['day'],
+				$startDate['year']
+			);
+			$endParsed = mktime(
+				$endDate['hour'],
+				$endDate['minute'],
+				$endDate['second'],
+				$endDate['month'],
+				$endDate['day'],
+				$endDate['year']
+			);
 			if ($rID != 0){
 				$rentedProducts = Doctrine_Core::getTable('RentedProducts')->find($rID);
 				$rentedProducts->customers_id = $_POST['customers_edit'];
-				$rentedProducts->date_added = $_POST['date_added_edit'];
-				$rentedProducts->return_date = $_POST['return_date_edit'];
+				$rentedProducts->date_added =  date('Y-m-d H:i:s',$startParsed);
+				$rentedProducts->return_date =  date('Y-m-d H:i:s',$endParsed);
 				$rentedProducts->rental_status_id = $_POST['rental_status_edit'];
 				$rentedProducts->save();
 				//add rental queue table reference
 			}else{
 				$rentedProducts = new RentedProducts();
 				$rentedProducts->customers_id = $_POST['customers_edit'];
-				$rentedProducts->date_added = $_POST['date_added_edit'];
-				$rentedProducts->shipment_date = $_POST['date_added_edit'];
-				$rentedProducts->arrival_date = date('Y-m-d',strtotime('+' . sysConfig::get('RENTAL_QUEUE_DAYS_INTERVAL') .' days', strtotime($_POST['date_added_edit'])));
-				$rentedProducts->return_date = $_POST['return_date_edit'];
+				$rentedProducts->date_added = date('Y-m-d H:i:s',$startParsed);
+				$rentedProducts->shipment_date = date('Y-m-d H:i:s',$startParsed);
+				$rentedProducts->arrival_date = date('Y-m-d',strtotime('+' . sysConfig::get('RENTAL_QUEUE_DAYS_INTERVAL') .' days', $startParsed));
+				$rentedProducts->return_date = date('Y-m-d H:i:s',$endParsed);
 				$rentedProducts->rental_status_id = $_POST['rental_status_edit'];
 				$rentedProducts->products_barcode = $_GET['barcode_id'];
 				$rentedProducts->products_id = $_GET['products_id'];				

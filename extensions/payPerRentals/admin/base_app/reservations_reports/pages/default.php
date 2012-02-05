@@ -264,10 +264,10 @@
 	->leftJoin('p.ProductsDescription pd')	
 	->leftJoin('p.ProductsInventory pi')
 	->leftJoin('pi.ProductsInventoryBarcodes pib')
-	->leftJoin('pi.ProductsInventoryQuantity piq')
 	->leftJoin('pib.OrdersProductsReservation opr')
 	->leftJoin('pib.RentedProducts rp')
-	->where('pd.language_id = ?', $lID);
+	->where('pd.language_id = ?', $lID)
+	->andWhere('pib.barcode_id is not null');
 
 	if ($purchaseType == 'both'){
 		$Qproducts->andWhere('pi.type = "rental" or pi.type = "reservation"');

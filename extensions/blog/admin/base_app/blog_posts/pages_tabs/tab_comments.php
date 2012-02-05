@@ -16,7 +16,8 @@ $rows = 0;
 $Query = Doctrine_Query::create()
 ->select('c.*, pc.*')
 ->from('BlogCommentToPost c')
-->leftJoin('c.BlogComments pc');
+->leftJoin('c.BlogComments pc')
+->orderBy('pc.comment_date desc');
 
 if (isset($Post)){
 	$Query->andWhere('c.blog_post_id = ?', (int) $Post['post_id']);
@@ -35,13 +36,7 @@ if ($comments){
 	foreach ($comments as $comment){
 		$commentId = $comment['blog_comment_id'];
 		$rows++;
-
-
-		if ((!isset($_GET['cID']) || $_GET['cID'] == $commentId) && !isset($cInfo) && (substr($action, 0, 3) != 'new')){
-
-			$cInfo_array = array_merge($comment);
-			$cInfo = new objectInfo($cInfo_array);
-		}
+		$cInfo = new objectInfo($comment);
 
 		$statusIcon = htmlBase::newElement('icon');
 		if ($cInfo->BlogComments['comment_status'] == '1'){
@@ -55,7 +50,8 @@ if ($comments){
 		$arrowIcon = htmlBase::newElement('icon')
 		->setHref(itw_app_link(tep_get_all_get_params(array('action', 'cID')) . 'cID=' . $commentId, null, null, 'SSL'));
 
-		if (isset($cInfo) && $commentId == $cInfo->blog_comment_id){
+		if (isset($cInfo) && $commentId == $cInfo->blog_comment_id && isset($_GET['cID']) && $_GET['cID'] == $commentId){
+			$myInfo = $cInfo;
 			$addCls = 'ui-state-default';
 			$onclickLink = itw_app_link(tep_get_all_get_params(array('action', 'cID')), null, null, 'SSL');
 			$arrowIcon->setType('circleTriangleEast');
@@ -73,7 +69,9 @@ if ($comments){
 $infoBox = htmlBase::newElement('infobox');
 $editButton = htmlBase::newElement('button')->usePreset('edit');
 $deleteButton = htmlBase::newElement('button')->usePreset('delete');
-
+if(isset($myInfo)){
+	$cInfo = $myInfo;
+}
 if (!empty($action)){
 	$cancelButton = htmlBase::newElement('button')->usePreset('cancel')
 	->setHref(itw_app_link(tep_get_all_get_params(array('action')), null, null, 'SSL'));
@@ -100,9 +98,8 @@ switch ($action) {
 
 			$infoBox->setHeader('<b>' . $commentAuthor . '</b>');
 
-			$allGetParams = tep_get_all_get_params(array('action'));
 			$editButton->setHref(itw_app_link(tep_get_all_get_params(array('action', 'cID')) . 'cID=' . $cInfo->blog_comment_id, null, 'new_comment', 'SSL'));
-			$deleteButton->setHref(itw_app_link($allGetParams . 'cID=' . $cInfo->blog_comment_id . '&action=deleteComment', null, null, 'SSL'));
+			$deleteButton->setHref(itw_app_link(tep_get_all_get_params(array('action', 'cID')) . 'cID=' . $cInfo->blog_comment_id . '&action=deleteComment', null, null, 'SSL'));
 
 			$infoBox->addButton($editButton)->addButton($deleteButton);
 		} else{ // create category/product info

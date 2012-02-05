@@ -10,10 +10,140 @@
 	This script and it's source is not redistributable
 */
 
-class attributes_admin_data_manager_default extends Extension_attributes {
 
+class attributes_admin_data_manager_default extends Extension_attributes {
+	var $mapValues = array();
+	var $mapOptions = array();
+	var $productsRow = array();
+	var $productsAttributes = array();
+	var $nrGroups = 0;
+	var $nrValues = 0;
 	public function __construct(){
 		parent::__construct();
+
+		$mostAttributes = 0;
+		$Qattributes = Doctrine_Query::create()
+			->select('count(products_options_id) as total')
+			->from('ProductsOptionsToProductsOptionsGroups')
+			->groupBy('products_options_groups_id')
+			->where('products_options_id > ?', '0')
+			->andWhere('products_options_groups_id  > ?', '0')
+			->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+		foreach($Qattributes as $aTotal){
+			if ($aTotal['total'] > $mostAttributes){
+				$mostAttributes = $aTotal['total'];
+			}
+		}
+		$this->nrGroups = $mostAttributes + 1;
+
+		$mostAttributes = 0;
+		$Qattributes = Doctrine_Query::create()
+			->select('count(products_options_values_id) as total')
+			->from('ProductsOptionsValuesToProductsOptions')
+			->groupBy('products_options_id')
+			->where('products_options_id > ?', '0')
+			->andWhere('products_options_values_id  > ?', '0')
+			->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+
+		foreach($Qattributes as $aTotal){
+			if ($aTotal['total'] > $mostAttributes){
+				$mostAttributes = $aTotal['total'];
+			}
+		}
+
+		$this->nrValues = $mostAttributes+1;
+
+		$Qattributes = Doctrine_Query::create()
+			->from('Products p')
+			->leftJoin('p.ProductsAttributes a')
+			->leftJoin('a.ProductsAttributesViews av')
+			->leftJoin('a.ProductsOptionsGroups og')
+			->leftJoin('a.ProductsOptions o')
+			->leftJoin('o.ProductsOptionsToProductsOptionsGroups o2g')
+			->leftJoin('o.ProductsOptionsDescription od')
+			->leftJoin('a.ProductsOptionsValues ov')
+			->leftJoin('ov.ProductsOptionsValuesToProductsOptions v2o')
+			->leftJoin('ov.ProductsOptionsValuesDescription ovd')
+			->orderBy('o2g.sort_order, v2o.sort_order')
+			->execute()->toArray();
+
+
+
+		$lID = Session::get('languages_id');
+		foreach($Qattributes as $mainAttributes){
+			$u = 0;
+			$attr = array();
+			$mapOptions = array();
+			$options = array();
+			$groupName = '';
+			foreach($mainAttributes['ProductsAttributes'] as $attribute){
+				$groupName = isset($attribute['ProductsOptionsGroups']['products_options_groups_name'])?$attribute['ProductsOptionsGroups']['products_options_groups_name']:'';
+				$productRow['v_attribute_group'] = $groupName;
+
+				//foreach($attribute['ProductsOptions'] as $j => $option){
+				if(!isset($mapOptions[$attribute['ProductsOptions']['products_options_id']])){
+					$mapOptions[$attribute['ProductsOptions']['products_options_id']] = count($mapOptions) + 1;
+					$p = count($mapOptions);
+				}else{
+					$p = $mapOptions[$attribute['ProductsOptions']['products_options_id']];
+				}
+
+				/*if(!isset($mapValues[$attribute['ProductsOptionsValues']['products_options_values_id']])){
+							$mapValues[$attribute['ProductsOptionsValues']['products_options_values_id']] = count($mapValues) + 1;
+							$u = count($mapValues);
+						}else{
+							$u = $mapValues[$attribute['ProductsOptionsValues']['products_options_values_id']];
+						} */
+				$views = array();
+				if (array_key_exists('ProductsAttributesViews', $attribute)){
+					foreach($attribute['ProductsAttributesViews'] as $viewInfo){
+						$views[] = $viewInfo['view_name'] . ':' . $viewInfo['view_image'];
+					}
+				}
+
+				$u++;
+				$attr[$u] = array(
+					'option' => $p,
+					'name' => $attribute['ProductsOptionsValues']['ProductsOptionsValuesDescription'][$lID]['products_options_values_name'],
+					'image' => $attribute['options_values_image'],
+					'views' => implode(';', $views),
+					'price' => $attribute['options_values_price'],
+					'purchasetypes' => $attribute['purchase_types'],
+					'useinventory' => $attribute['use_inventory'],
+					'sort' => $attribute['ProductsOptionsValues']['ProductsOptionsValuesToProductsOptions'][0]['sort_order']);
+
+				$options[$p] = array('name'=> $attribute['ProductsOptions']['ProductsOptionsDescription'][$lID]['products_options_name'],
+					'sort'=> $attribute['ProductsOptions']['ProductsOptionsToProductsOptionsGroups'][0]['sort_order']);
+
+				//$productsAttributes[$attribute['products_id']][$u] = $attr;
+			}
+			$this->productsRow[$mainAttributes['products_id']] = array('group' => $groupName, 'options' => $options,'attributes' => $attr);
+		}
+
+		/*foreach($productsRow as $product_id => $options){
+		   $tempOptions = array();
+		   foreach($options as $k => $v){
+				if($k >= $nrGroups){
+					$p = $k-1;
+					while($p > 0){
+						if(!isset($options[$p])){
+							$tempOptions[$p] = $options[$k];
+							break;
+						}
+						$p--;
+					}
+				}else{
+					$tempOptions[$k] = $v;
+				}
+		   }
+			for($i=1;$i<$nrGroups;$i++ ){
+				if(!isset($tempOptions[$i])){
+					$tempOptions[$i] = array('name' =>'','sort' => '');
+				}
+			}
+			$productsRow[$product_id] = $tempOptions;
+		} */
+
 	}
 	
 	public function load(){
@@ -31,67 +161,64 @@ class attributes_admin_data_manager_default extends Extension_attributes {
 	}
 	
 	public function DataExportFullQueryFileLayoutHeader(&$dataExport){
-		$mostAttributes = 0;
-		$Qattributes = Doctrine_Query::create()
-		->select('count(products_attributes_id) as total')
-		->from('ProductsAttributes')
-		->groupBy('products_id')
-		->execute();
-		foreach($Qattributes as $aTotal){
-			if ($aTotal['total'] > $mostAttributes){
-				$mostAttributes = $aTotal['total'];
-			}
+		global $nrGroups, $nrValues;
+
+		for($i=1; $i<$this->nrGroups; $i++){
+			$dataExport->setHeaders(array(
+					'v_option_' . $i,
+					'v_option_' . $i . '_sort'
+				));
+		}
+
+		if($this->nrGroups - 1 > 0){
+			$dataExport->setHeaders(array(
+					'v_attribute_group',
+				));
 		}
 			
-		for($i=1; $i<$mostAttributes+1; $i++){
-			$dataExport->setHeaders(array(
-				'v_attribute_' . $i,
-				'v_attribute_' . $i . '_image',
-				'v_attribute_' . $i . '_views',
-				'v_attribute_' . $i . '_price',
-				'v_attribute_' . $i . '_purchasetypes',
-				'v_attribute_' . $i . '_useinventory',
-				'v_attribute_' . $i . '_sort'
-			));
+		for($i=1; $i<$this->nrValues; $i++){
+			for($j=1; $j<$this->nrGroups; $j++){
+				$dataExport->setHeaders(array(
+					'v_attribute_' . $i.'_option_'.$j,
+					'v_attribute_' . $i .'_option_'.$j. '_image',
+					'v_attribute_' . $i .'_option_'.$j. '_views',
+					'v_attribute_' . $i .'_option_'.$j. '_price',
+					'v_attribute_' . $i .'_option_'.$j. '_purchasetypes',
+					'v_attribute_' . $i .'_option_'.$j. '_useinventory',
+					'v_attribute_' . $i .'_option_'.$j. '_sort'
+				));
+			}
 		}
 	}
 	
 	public function DataExportBeforeFileLineCommit(&$productRow){
-		$Qattributes = Doctrine_Query::create()
-		->from('ProductsAttributes a')
-		->leftJoin('a.ProductsAttributesViews av')
-		->leftJoin('a.ProductsOptionsGroups og')
-		->leftJoin('a.ProductsOptions o')
-		->leftJoin('o.ProductsOptionsDescription od')
-		->leftJoin('a.ProductsOptionsValues ov')
-		->leftJoin('ov.ProductsOptionsValuesDescription ovd')
-		->where('a.products_id = ?', $productRow['products_id'])
-		->execute()->toArray();
-		if ($Qattributes){
+		 if(isset($this->productsRow[$productRow['products_id']])){
+			 $valArr = $this->productsRow[$productRow['products_id']];
+			 $productRow['v_attribute_group'] = $valArr['group'];
+			 foreach($valArr['options'] as $k => $v){
+				 $productRow['v_option_' .$k] = $v['name'];
+				 $productRow['v_option_' .$k .'_sort'] = $v['sort'];
+			 }
+			$countArr = array();
+			 foreach($valArr['attributes'] as $v){
+				 $p = $v['option'];
+				 if(isset($countArr[$p])){
+				    $countArr[$p]++;
+				 }else{
+					$countArr[$p] = 1;
+				 }
+				 $realCount = $countArr[$p].'_option_'.$p;
+				 $productRow['v_attribute_' . $realCount] = $v['name'];
+				 $productRow['v_attribute_' .  $realCount . '_image'] = $v['image'];
+				 $productRow['v_attribute_' .  $realCount . '_views'] = $v['views'];
+				 $productRow['v_attribute_' .  $realCount . '_price'] = $v['price'];
+				 $productRow['v_attribute_' .  $realCount . '_purchasetypes'] = $v['purchasetypes'];
+				 $productRow['v_attribute_' .  $realCount . '_useinventory'] = $v['useinventory'];
+				 $productRow['v_attribute_' .  $realCount . '_sort'] = $v['sort'];
 
-			$lID = Session::get('languages_id');
-			foreach($Qattributes as $i => $attribute){
-				if (isset($attribute['ProductsOptionsGroups']) && isset($attribute['ProductsOptions']['ProductsOptionsDescription']) && isset($attribute['ProductsOptionsValues']['ProductsOptionsValuesDescription'])){
-					$crumb = $attribute['ProductsOptionsGroups']['products_options_groups_name'] . '>' . $attribute['ProductsOptions']['ProductsOptionsDescription'][$lID]['products_options_name'] . '>' . $attribute['ProductsOptionsValues']['ProductsOptionsValuesDescription'][$lID]['products_options_values_name'];
+			 }
 
-					$views = array();
-					if (array_key_exists('ProductsAttributesViews', $attribute)){
-						foreach($attribute['ProductsAttributesViews'] as $viewInfo){
-							$views[] = $viewInfo['view_name'] . ':' . $viewInfo['view_image'];
-						}
-					}
-
-					$realCount = $i+1;
-					$productRow['v_attribute_' . $realCount] = $crumb;
-					$productRow['v_attribute_' . $realCount . '_image'] = $attribute['options_values_image'];
-					$productRow['v_attribute_' . $realCount . '_views'] = implode(';', $views);
-					$productRow['v_attribute_' . $realCount . '_price'] = $attribute['options_values_price'];
-					$productRow['v_attribute_' . $realCount . '_purchasetypes'] = $attribute['purchase_types'];
-					$productRow['v_attribute_' . $realCount . '_useinventory'] = $attribute['use_inventory'];
-					$productRow['v_attribute_' . $realCount . '_sort'] = $attribute['sort_order'];
-				}
-			}
-		}
+		 }
 	}
 	
 	public function DataImportBeforeSave(&$items, &$Product){

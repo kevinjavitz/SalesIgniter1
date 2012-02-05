@@ -11,7 +11,7 @@
 		$appendMsg .= 'Membership months or days must be more than 0';
 	}
 
-	if ($_POST['no_of_titles'] <= 0) {
+	if ($_POST['no_of_titles'] <= -1) {
 		$error = true;
 		$appendMsg .= 'Number of titles must be more than 0';
 	}

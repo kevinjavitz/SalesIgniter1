@@ -54,7 +54,7 @@
 						->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 					if($QRes){
 						if($QProductEvents[0]['qty'] < $checkedQty+$QRes[0]['total']){
-							$messageStack->addSession('pageStack','<span style="text-align: justify;font-size:20px;color:red;">There is not enough inventory for the product. <br/>You can still come to our tents at the event because Walk-Up Stock is available on a first come first serve basis from open to close.</span>', 'success');
+							$messageStack->addSession('pageStack',sysLanguage::get('TEXT_NOT_ENOUGH_INVENTORY'), 'success');
 							tep_redirect(itw_app_link(null, 'products', 'all'));
 							itwExit();
 						}
@@ -64,7 +64,7 @@
 				$product = new product($pID_info['id']);
 				$purchaseTypeClass = $product->getPurchaseType('reservation');
 				if($purchaseTypeClass->hasInventory($myQty) === false){
-					$messageStack->addSession('pageStack','<span style="text-align: justify;font-size:14px;color:red;">There is not enough inventory for the product.</span>', 'success');
+					$messageStack->addSession('pageStack',sysLanguage::get('TEXT_NOT_ENOUGH_INVENTORY'), 'success');
 					tep_redirect(itw_app_link(null, 'products', 'all'));
 					itwExit();
 				}
@@ -143,7 +143,7 @@
 						->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 						if($QRes){
 							if($QProductEvents[0]['qty'] < $checkedQty+$QRes[0]['total']){
-								$messageStack->addSession('pageStack','<span style="text-align: justify;font-size:20px;color:red;">There is not enough inventory for the product. <br/>You can still come to our tents at the event because Walk-Up Stock is available on a first come first serve basis from open to close.</span>', 'success');
+								$messageStack->addSession('pageStack',sysLanguage::get('TEXT_NOT_ENOUGH_INVENTORY'), 'success');
 								tep_redirect(itw_app_link(null, 'products', 'all'));
 								itwExit();
 							}
@@ -154,7 +154,7 @@
 					$purchaseTypeClass = $product->getPurchaseType('reservation');
 
 					if($purchaseTypeClass->hasInventory($myQty) === false){
-						$messageStack->addSession('pageStack','<span style="text-align: justify;font-size:14px;color:red;">There is not enough inventory for the product.</span>', 'success');
+						$messageStack->addSession('pageStack',sysLanguage::get('TEXT_NOT_ENOUGH_INVENTORY'), 'success');
 						tep_redirect(itw_app_link(null, 'products', 'all'));
 						itwExit();
 					}

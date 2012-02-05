@@ -3,6 +3,7 @@
 
 class barcodePopulate{
 
+
 	function barcodePopulate(){
 		$this->version = '1.0';
 		$this->languageID = Session::get('languages_id');
@@ -23,14 +24,212 @@ class barcodePopulate{
 			'v_quantity_out',
 			'v_quantity_purchased',
 			'v_quantity_reserved',
-			'v_attributes',//{Size}S{Color}blue
+			//'v_attributes',//{Size}S{Color}blue
 			'v_use_center',
 			'v_comments'
 		);
 	}
-	  /*TODO
-	   * change variable names and move to app
-	  */
+
+	public function array_cartesian() {
+		$_ = func_get_args();
+		if (count($_) == 0)
+			return array();
+		$a = array_shift($_);
+		if (count($_) == 0)
+			$c = array(array());
+		else
+			$c = call_user_func_array(__FUNCTION__, $_);
+		$r = array();
+		foreach($a as $v)
+			foreach($c as $p)
+				$r[] = array_merge(array($v), $p);
+		return $r;
+	}
+
+	public function concat(array $array) {
+		$current = array_shift($array);
+		if(count($array) > 0) {
+			$results = array();
+			$temp = $this->concat($array);
+			foreach($current as $word) {
+				foreach($temp as $value) {
+					$results[] =  $word . '-' . $value;
+				}
+			}
+			return $results;
+		}
+		else {
+			return $current;
+		}
+	}
+
+	public function back($k, $len, $max){
+		global $usedArray, $permsArray;
+		if($k-1 == $max) {
+			$finishArr = array();
+			for($i = 1; $i <= $max;$i++){
+				$finishArr[] = $permsArray[$i];
+			}
+			$this->finishArr[] = $finishArr;
+		}else{
+			for($i = 1; $i <= $len; $i++){
+					if(!$usedArray[$i] && $permsArray[$k-1] < $i){
+						$permsArray[$k] = $i;
+						$usedArray[$i] = 1;
+						$this->back($k+1, $len, $max);
+						$usedArray[$i] = 0;
+				   }
+			}
+		}
+	}
+
+	public function generateAttributesQuantity(&$pr, $myStore, $iID, $usecenter, $isStore, $optionArr, $combosArr, $nrValues){
+		$QInv = Doctrine_Query::create()
+		->from('ProductsInventoryQuantity')
+		->where('inventory_id = ?', $iID)
+		->andWhere('available > 0 OR qty_out > 0 OR broken > 0 OR purchased > 0 OR reserved > 0');
+
+		if ($usecenter == 1){
+			if ($isStore == 1){
+				$QInv->andWhere('inventory_store_id=?', $myStore);
+			}else if ($isStore == 2){
+				$QInv->andWhere('inventory_center_id=?', $myStore);
+			}
+		}
+
+		$QInv = $QInv->execute(array(),Doctrine_Core::HYDRATE_ARRAY);
+
+		$QAttrValue = Doctrine_Query::create()
+		->from('ProductsOptionsValues ov')
+		->leftJoin('ov.ProductsOptionsValuesDescription ovd')
+		->where('ovd.language_id = ?', Session::get('languages_id'))
+		->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+		$valuesArr = array();
+		foreach($QAttrValue as $attr){
+			$valuesArr[$attr['products_options_values_id']] = $attr['ProductsOptionsValuesDescription'][0]['products_options_values_name'];
+		}
+		//print_r($optionArr);
+		foreach($QInv as $inv){
+			$attrArray = attributesUtil::splitStringToArray($inv['attributes']);
+			$attributes = array();
+
+			foreach($attrArray as $k => $v){
+				$attributes[] = $valuesArr[$v];
+			}
+
+			if(count($attributes) == 1){
+				$isFound = false;
+				for($i=1;$i<=count($optionArr);$i++){
+					for($j=0;$j<count($optionArr[$i]);$j++){
+						$tempArr1 =explode('-', $optionArr[$i][$j]);
+						if( count(array_diff($tempArr1, $attributes))== 0){
+							$pr['v_attribute_'.($j+1).'_quantity_available'] = $inv['available'];
+							$isFound = true;
+							break;
+						}
+					}
+					if($isFound){
+						break;
+					}
+				}
+			}else{
+				$isFound = false;
+				for($i=1;$i<=count($combosArr);$i++){
+					for($j=0;$j<count($combosArr[$i]);$j++){
+						$tempArr1 = explode('-', $combosArr[$i][$j]);
+						if( count(array_diff($tempArr1, $attributes))== 0){
+							$pr['v_attribute_'.($j+$nrValues).'_quantity_available'] = $inv['available'];
+							$isFound = true;
+							break;
+						}
+					}
+					if($isFound){
+						break;
+					}
+				}
+			}
+
+		}
+	}
+
+	public function generateAttributesBarcodes(&$pr, $myStore, $iID, $usecenter, $isStore, $optionArr, $combosArr, $nrValues, &$myAttributes){
+		$QInv = Doctrine_Query::create()
+			->from('ProductsInventoryBarcodes pib')
+			->where('pib.inventory_id = ?', $iID);
+
+		if ($usecenter == 1){
+			if ($isStore == 1){
+				$QInv->leftJoin('pib.ProductsInventoryBarcodesToStores pibs')
+				->andWhere('pibs.inventory_store_id=?', $myStore);
+			}else if ($isStore == 2){
+				$QInv->leftJoin('pib.ProductsInventoryBarcodesToInventoryCenters pibc')
+				->andWhere('pibc.inventory_center_id=?', $myStore);
+			}
+		}
+
+		$QInv = $QInv->execute(array(),Doctrine_Core::HYDRATE_ARRAY);
+
+		$QAttrValue = Doctrine_Query::create()
+			->from('ProductsOptionsValues ov')
+			->leftJoin('ov.ProductsOptionsValuesDescription ovd')
+			->where('ovd.language_id = ?', Session::get('languages_id'))
+			->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+		$valuesArr = array();
+		foreach($QAttrValue as $attr){
+			$valuesArr[$attr['products_options_values_id']] = $attr['ProductsOptionsValuesDescription'][0]['products_options_values_name'];
+		}
+		//print_r($optionArr);
+		foreach($QInv as $inv){
+			$attrArray = attributesUtil::splitStringToArray($inv['attributes']);
+			$attributes = array();
+
+			foreach($attrArray as $k => $v){
+				$attributes[] = $valuesArr[$v];
+			}
+
+			if(count($attributes) == 1){
+				$isFound = false;
+				for($i=1;$i<=count($optionArr);$i++){
+					for($j=0;$j<count($optionArr[$i]);$j++){
+						$tempArr1 =explode('-', $optionArr[$i][$j]);
+						if( count(array_diff($tempArr1, $attributes))== 0){
+							if(!isset($pr['v_attribute_'.($j+1).'_barcode'])){
+								$pr['v_attribute_'.($j+1).'_barcode'] = $inv['barcode'];
+								$myAttributes[$myStore][$inv['attributes']] = 'v_attribute_'.($j+1).'_barcode';
+							}
+							$isFound = true;
+							break;
+						}
+					}
+					if($isFound){
+						break;
+					}
+				}
+			}else{
+				$isFound = false;
+				for($i=1;$i<=count($combosArr);$i++){
+
+					for($j=0;$j<count($combosArr[$i]);$j++){
+						$tempArr1 = explode('-', $combosArr[$i][$j]);
+						if( count(array_diff($tempArr1, $attributes))== 0){
+							if(!isset($pr['v_attribute_'.($j+$nrValues).'_barcode'])){
+								$pr['v_attribute_'.($j+$nrValues).'_barcode'] = $inv['barcode'];
+								$myAttributes[$myStore][$inv['attributes']] = 'v_attribute_'.($j+$nrValues).'_barcode';
+							}
+							$isFound = true;
+							break;
+						}
+					}
+					if($isFound){
+						break;
+					}
+				}
+			}
+		}
+	}
+
+
+
 	function getQuery($productModel = false, $productsID = false, $barcode = false){
 		global $appExtension;
 		$multiStore = $appExtension->getExtension('multiStore');
@@ -83,10 +282,154 @@ class barcodePopulate{
 
 
 		$QPurchaseTypes = Doctrine_Query::create()
-				->from('ProductsInventory')
-				->andWhereIn('products_id', $productsArr)
-				->orderBy('products_id')
-				->execute(array(),Doctrine_Core::HYDRATE_ARRAY);
+		->from('ProductsInventory')
+		->andWhereIn('products_id', $productsArr)
+		->orderBy('products_id')
+		->execute(array(),Doctrine_Core::HYDRATE_ARRAY);
+
+		if ($appExtension->isInstalled('attributes') && $appExtension->isEnabled('attributes')){
+		$mostAttributes = 0;
+		$Qattributes = Doctrine_Query::create()
+			->select('count(products_options_values_id) as total')
+			->from('ProductsOptionsValuesToProductsOptions')
+			->groupBy('products_options_id')
+			->where('products_options_id > ?', '0')
+			->andWhere('products_options_values_id  > ?', '0')
+			->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+
+		foreach($Qattributes as $aTotal){
+			if ($aTotal['total'] > $mostAttributes){
+				$mostAttributes = $aTotal['total'];
+			}
+		}
+
+		$nrValues = $mostAttributes+1;
+
+		$mostAttributes = 0;
+		$Qattributes = Doctrine_Query::create()
+			->select('count(products_options_id) as total')
+			->from('ProductsOptionsToProductsOptionsGroups')
+			->groupBy('products_options_groups_id')
+			->where('products_options_id > ?', '0')
+			->andWhere('products_options_groups_id  > ?', '0')
+			->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+		foreach($Qattributes as $aTotal){
+			if ($aTotal['total'] > $mostAttributes){
+				$mostAttributes = $aTotal['total'];
+			}
+		}
+		$nrGroups = $mostAttributes + 1;
+
+		for($i=1;$i<$nrValues;$i++){
+	        $this->fileHeaders[] = 'v_attribute_'.$i.'_quantity_available';
+		}
+
+		//it doesn't support
+
+		$languageId = Session::get('languages_id');
+
+		$Qoptions = Doctrine_Query::create()
+			->select('o.products_options_id, od.products_options_name')
+			->from('ProductsOptions o')
+			->leftJoin('o.ProductsOptionsDescription od')
+			->where('od.language_id = ?', $languageId);
+
+
+		$Result = $Qoptions->execute()->toArray();
+		//$countArr = array();
+		$optionArr = array();
+		if ($Result){
+			$k = 1;
+			foreach($Result as $oInfo){
+
+				$QoptionsValues = Doctrine_Query::create()
+					->select('ov.products_options_values_id, ovd.products_options_values_name, v2o.sort_order')
+					->from('ProductsOptionsValues ov')
+					->leftJoin('ov.ProductsOptionsValuesDescription ovd')
+					->leftJoin('ov.ProductsOptionsValuesToProductsOptions v2o')
+					->where('ovd.language_id = ?', $languageId)
+					->andWhere('v2o.products_options_id = ?', $oInfo['products_options_id'])
+					->orderBy('v2o.sort_order')
+					->execute()->toArray();
+				$i = 1;
+				$headerRows = array();
+				if ($QoptionsValues){
+					foreach($QoptionsValues as $vInfo){
+						$valuesDescription = $vInfo['ProductsOptionsValuesDescription'][$languageId];
+						//$headerRows['v_attribute_'.$i.'_quantity_available'] = ($valuesDescription['products_options_values_name']);
+						//$headerRows['v_attribute_'.$i.'_barcode'] = ($valuesDescription['products_options_values_name']);
+						$optionArr[$k][]  = ($valuesDescription['products_options_values_name']);
+						$i++;
+					}
+				}
+				//$countArr[] = $i;
+
+				//$mydata[] = $headerRows;
+				$k++;
+			}
+		}
+		$this->back(1, count($optionArr), $nrGroups-1);
+			//print_r($this->finishArr);
+			//echo '<br/>--------';
+			//itwExit();
+			$maxVal = -1;
+		$combosArr = array();
+			$p1 = 1;
+		foreach($this->finishArr as $permArr){
+			$tempArr = array();
+			for($i=0;$i<count($permArr);$i++){
+				$tempArr[$i] = $optionArr[$permArr[$i]];
+			}
+			$combos = $this->concat($tempArr);//call_user_func_array('array_cartesian', $optionArr);
+			$combosArr[$p1] = $combos;
+			$p1++;
+			if($maxVal < count($combos)){
+				$maxVal = count($combos);
+			}
+		}
+
+		for($i=$nrValues;$i<$nrValues+$maxVal;$i++){
+			$this->fileHeaders[] = 'v_attribute_'.$i.'_quantity_available';
+		}
+
+		for($i=1;$i<$nrValues;$i++){
+			$this->fileHeaders[] = 'v_attribute_'.$i.'_barcode';
+		}
+		for($i=$nrValues;$i<$nrValues+$maxVal;$i++){
+			$this->fileHeaders[] = 'v_attribute_'.$i.'_barcode';
+		}
+		//print_r($combosArr);
+		//	itwExit();
+		for($k=1;$k<=count($combosArr);$k++){
+			$headerRows = array();
+			if(isset($optionArr[$k])){
+				for($p=0;$p<count($optionArr[$k]);$p++){
+					$headerRows['v_attribute_'.($p+1).'_quantity_available'] = $optionArr[$k][$p];
+					$headerRows['v_attribute_'.($p+1).'_barcode'] = $optionArr[$k][$p];
+				}
+			}
+			for($p=0;$p<count($combosArr[$k]);$p++){
+				$headerRows['v_attribute_'.($p+$nrValues).'_quantity_available'] = $combosArr[$k][$p];
+				$headerRows['v_attribute_'.($p+$nrValues).'_barcode'] = $combosArr[$k][$p];
+			}
+			$mydata[] = $headerRows;
+		}
+		for($k=count($combosArr)+1;$k<=count($optionArr);$k++){
+			$headerRows = array();
+			if(isset($optionArr[$k])){
+				for($p=0;$p<count($optionArr[$k]);$p++){
+					$headerRows['v_attribute_'.($p+1).'_quantity_available'] = $optionArr[$k][$p];
+					$headerRows['v_attribute_'.($p+1).'_barcode'] = $optionArr[$k][$p];
+				}
+			}
+			$mydata[] = $headerRows;
+		}
+
+		//itwExit();
+		}
+
+
+		$usedStores = array();
 
 		if (count($QPurchaseTypes) > 0){
 			foreach($QPurchaseTypes as $qpur){
@@ -111,37 +454,15 @@ class barcodePopulate{
 				}else{
 					$products_model = '';
 				}
-
-				if ($appExtension->isInstalled('attributes') && $appExtension->isEnabled('attributes')){
-					$Qattributes = Doctrine_Query::create()
-						->from('ProductsAttributes a')
-						->leftJoin('a.ProductsAttributesViews av')
-						->leftJoin('a.ProductsOptionsGroups og')
-						->leftJoin('a.ProductsOptions o')
-						->leftJoin('o.ProductsOptionsDescription od')
-						->leftJoin('a.ProductsOptionsValues ov')
-						->leftJoin('ov.ProductsOptionsValuesDescription ovd')
-						->where('a.products_id = ?', $qpur['products_id'])
-						->execute()->toArray();
-					$optionsArr = array();
-					$valuesArr = array();
-					if ($Qattributes){
-						$lID = Session::get('languages_id');
-						foreach($Qattributes as $i => $attribute){
-							//if (isset($attribute['ProductsOptionsGroups']) && isset($attribute['ProductsOptions']['ProductsOptionsDescription']) && isset($attribute['ProductsOptionsValues']['ProductsOptionsValuesDescription'])){
-							$optionsArr[$attribute['ProductsOptions']['products_options_id']] = $attribute['ProductsOptions']['ProductsOptionsDescription'][$lID]['products_options_name'];
-							$valuesArr[$attribute['ProductsOptionsValues']['products_options_values_id']] = $attribute['ProductsOptionsValues']['ProductsOptionsValuesDescription'][$lID]['products_options_values_name'];
-							//}
-						}
-					}
-				}
 				              
 				if ($track_method == 'quantity'){
 					$QInv = Doctrine_Query::create()
-							->from('ProductsInventoryQuantity')
-							->where('inventory_id = ?', $iID)
-							->andWhere('available > 0 OR qty_out > 0 OR broken > 0 OR purchased > 0 OR reserved > 0');
-					
+					->from('ProductsInventoryQuantity')
+					->where('inventory_id = ?', $iID)
+					->andWhere('available > 0 OR qty_out > 0 OR broken > 0 OR purchased > 0 OR reserved > 0');
+
+
+
 					if ($usecenter == 1){
 						if ($isStore == 1){
 							$QInv->andWhere('inventory_store_id > 0');
@@ -152,8 +473,13 @@ class barcodePopulate{
 					      
 					$QInv = $QInv->execute(array(),Doctrine_Core::HYDRATE_ARRAY);
 
+
+					$usedStores = array();
+					$usedStores1 = array();
+
 					if (count($QInv) > 0){
 						foreach($QInv as $qi){
+							$pr = array();
 							$countData++;
 							if (isset($_POST['start_num']) && (!empty($_POST['start_num']) || $_POST['start_num'] == 0)){
 								if ($countData < $_POST['start_num']) continue;
@@ -172,54 +498,55 @@ class barcodePopulate{
 							$pr['v_quantity_reserved'] = $qi['reserved'];
 							$pr['v_purchase_type'] = $purtype;
 							$pr['v_use_center'] = $usecenter;
-							if(isset($qi['attributes'])){
-								$attributes = '';
-								if(!empty($qi['attributes'])){
-									$attrArray = attributesUtil::splitStringToArray($qi['attributes']);
-									foreach($attrArray as $k => $v){
-										$attributes .= '{'.$optionsArr[$k].'}'.$valuesArr[$v];
-									}
-								}
-								$pr['v_attributes'] = $attributes;/*move into extension*/
-							}
 
-
+							$myStore = -1;
 							if ($usecenter == 1){
 								if ($isStore == 1){
 									$pr['v_inventory_store_center'] = $inventoryCenterArray[$qi['inventory_store_id']];
+									$myStore = $qi['inventory_store_id'];
 								}else if ($isStore == 2){
 									$pr['v_inventory_store_center'] = $inventoryCenterArray[$qi['inventory_center_id']];
+									$myStore = $qi['inventory_center_id'];
 								}else{
 									$pr['v_inventory_store_center'] = '';
+									$myStore = 0;
 								}
 							}
-
 							$pr['v_barcode'] = '';
 							$pr['v_barcode_status'] = '';
 							//get comments for inventory_quantity
 
 							$Qcom = Doctrine_Query::create()
-										->select('comments')
-										->from('ProductsInventoryQuantityComments')
-										->where('quantity_id = ?',$qi['quantity_id'])
-										->execute(array(),Doctrine_Core::HYDRATE_ARRAY);
+								->select('comments')
+								->from('ProductsInventoryQuantityComments')
+								->where('quantity_id = ?',$qi['quantity_id'])
+								->execute(array(),Doctrine_Core::HYDRATE_ARRAY);
 							if (count($Qcom) > 0){
 								$pr['v_comments'] = $Qcom[0]['comments'];
 							}else{
 								$pr['v_comments'] = '';
 							}
-							$mydata[] = $pr;
+
+							if(($appExtension->isInstalled('attributes') && $appExtension->isEnabled('attributes')) && !isset($usedStores[$myStore])){
+								$usedStores[$myStore] = 1;
+								$this->generateAttributesQuantity(&$pr, $myStore, $iID, $usecenter, $isStore, $optionArr, $combosArr, $nrValues);
+								$mydata[] = $pr;
+							}elseif($appExtension->isInstalled('attributes') == false || $appExtension->isEnabled('attributes') == false){
+								$mydata[] = $pr;
+							}
+
+
 						}
 					}
-
 				}else{					
 					$QInv1 = Doctrine_Query::create()
 							->from('ProductsInventoryBarcodes')
 							->where('inventory_id = ?', $iID)
 							->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
-
+					$myAttributes = array();
 					if (count($QInv1) > 0){
 						foreach($QInv1 as $qi){
+							$pr = array();
 							$countData++;
 							if (isset($_POST['start_num']) && (!empty($_POST['start_num']) || $_POST['start_num'] == 0)){
 								if ($countData < $_POST['start_num']) continue;
@@ -238,16 +565,7 @@ class barcodePopulate{
 							$pr['v_quantity_reserved'] = '';
 							$pr['v_purchase_type'] = $purtype;
 							$pr['v_use_center'] = $usecenter;
-							if(isset($qi['attributes'])){
-								$attributes = '';
-								if(!empty($qi['attributes'])){
-									$attrArray = attributesUtil::splitStringToArray($qi['attributes']);
-									foreach($attrArray as $k => $v){
-										$attributes .= '{'.$optionsArr[$k].'}'.$valuesArr[$v];
-									}
-								}
-								$pr['v_attributes'] = $attributes;/*move into extension*/
-							}
+
 							$Qcom = Doctrine_Query::create()
 										->select('comments')
 										->from('ProductsInventoryBarcodesComments')
@@ -258,7 +576,7 @@ class barcodePopulate{
 							}else{
 								$pr['v_comments'] = '';
 							}
-
+							$myStore = -1;
 							if ($usecenter == 1){
 								if ($isStore == 1){
 									$Qbar = Doctrine_Query::create()
@@ -268,6 +586,7 @@ class barcodePopulate{
 
 									if (count($Qbar) > 0){
 										$pr['v_inventory_store_center'] = $inventoryCenterArray[$Qbar[0]['inventory_store_id']];
+										$myStore = $Qbar[0]['inventory_store_id'];
 									}
 								}
 								else if($isStore == 2){
@@ -277,19 +596,31 @@ class barcodePopulate{
 										->execute(array(),Doctrine_Core::HYDRATE_ARRAY);
 									if (count($Qbar) > 0){
 										$pr['v_inventory_store_center'] = $inventoryCenterArray[$Qbar[0]['inventory_center_id']];
+										$myStore = $Qbar[0]['inventory_center_id'];
 									}
 								}
 								else{
 									$pr['v_inventory_store_center'] = '';
+									$myStore = 0;
 
 								}
 							}
 							$pr['v_barcode'] = $qi['barcode'];
 							$pr['v_barcode_status'] = $qi['status'];
-							$mydata[] = $pr;
+
+							if(($appExtension->isInstalled('attributes') && $appExtension->isEnabled('attributes')) && (!isset($usedStores1[$myStore])) && !array_key_exists($qi['attributes'], $myAttributes[$myStore])){
+								$usedStores1[$myStore] = 1;
+								$this->generateAttributesBarcodes(&$pr, $myStore, $iID, $usecenter, $isStore, $optionArr, $combosArr, $nrValues, &$myAttributes);
+								$mydata[] = $pr;
+							}elseif($appExtension->isInstalled('attributes') == false || $appExtension->isEnabled('attributes') == false){
+								$mydata[] = $pr;
+							}elseif(array_key_exists($qi['attributes'], $myAttributes[$myStore])){
+								$pr[$myAttributes[$myStore][$qi['attributes']]] = $qi['barcode'];
+								$mydata[] = $pr;
+							}
+
 						}
 					}
-
 				}
 				if ($isExit){
 					break;
@@ -369,6 +700,65 @@ class barcodePopulate{
 			$this->fileLayout[$headerCol] = $colcount++;
 		}
 		unset($fileString[0]);
+		$fileString = array_values($fileString);
+
+		$i = 1;
+		$optionArr = array();
+		$combosArr = array();
+
+		while(true){
+			$cols = $this->cleanupValues(explode($this->colSeparator, $fileString[0]));
+			$strProd = ltrim(rtrim($cols[$this->fileLayout['v_products_model']]));
+			if(empty($strProd)){
+				$k = 1;
+				while(true){
+
+					if(!isset($cols[$this->fileLayout['v_attribute_'.$k.'_quantity_available']]) && !isset($cols[$this->fileLayout['v_attribute_'.$k.'_barcode']])){
+						break;
+					}else{
+						$strVal = ltrim(rtrim($cols[$this->fileLayout['v_attribute_'.$k.'_quantity_available']]));
+						$strValB = ltrim(rtrim($cols[$this->fileLayout['v_attribute_'.$k.'_barcode']]));
+						if(!empty($strVal)){
+							$myVal = strpos($strVal, '-');
+							$controller = 'attribute';
+							if($myVal === false){
+								$optionArr[$i][] = $strVal;
+							}else{
+								$combosArr[$i][] = $strVal;
+							}
+
+						}elseif(!empty($strValB)){
+							$myVal = strpos($strValB, '-');
+							$controller = 'attribute';
+							if($myVal === false){
+								$optionArr[$i][] = $strValB;
+							}else{
+								$combosArr[$i][] = $strValB;
+							}
+						}
+					}
+					$k++;
+					//if($k>10) break;//remove
+				}
+
+				unset($fileString[0]);
+				$fileString = array_values($fileString);
+			}else{
+				break;
+			}
+			$i++;
+			//if($i > 10) break;//remove
+		}
+		/*print_r($optionArr);
+		print_r($combosArr);
+		itwExit();*/
+		$nrValues = -1;
+		foreach($optionArr as $myOption){
+			if($nrValues < count($myOption)){
+				$nrValues = count($myOption);
+			}
+		}
+		$nrValues++;
 
 		$foundID = array();
 		foreach($fileString as $lineNumber => $line){
@@ -415,7 +805,45 @@ class barcodePopulate{
 			$purchaseType = isset($cols[$this->fileLayout['v_purchase_type']])?ltrim(rtrim($cols[$this->fileLayout['v_purchase_type']])):'';
 			$comments = isset($cols[$this->fileLayout['v_comments']])?ltrim(rtrim($cols[$this->fileLayout['v_comments']])):'';
 
-			$attributesString = isset($cols[$this->fileLayout['v_attributes']])?ltrim(rtrim($cols[$this->fileLayout['v_attributes']])):'';
+			//$attributesString = isset($cols[$this->fileLayout['v_attributes']])?ltrim(rtrim($cols[$this->fileLayout['v_attributes']])):'';
+			$QAttrValue = Doctrine_Query::create()
+				->from('ProductsOptionsValues ov')
+				->leftJoin('ov.ProductsOptionsValuesDescription ovd')
+				->leftJoin('ov.ProductsOptionsValuesToProductsOptions v2o')
+				->where('ovd.language_id = ?', Session::get('languages_id'))
+				->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+			$valuesArr = array();
+			$valuesNames = array();
+			$optionValuesArr = array();
+			foreach($QAttrValue as $attr){
+
+				$valuesArr[$attr['products_options_values_id']] = $attr['ProductsOptionsValuesDescription'][0]['products_options_values_name'];
+				$valuesNames[$attr['ProductsOptionsValuesDescription'][0]['products_options_values_name']] = $attr['products_options_values_id'];
+				$optionValuesArr[$attr['products_options_values_id']] = $attr['ProductsOptionsValuesToProductsOptions'][0]['products_options_id'];
+
+			}
+			$qtyAttr = array();
+			$barcodeNames = array();
+			$k = 1;
+
+			while(true){
+
+				if(isset($cols[$this->fileLayout['v_attribute_'.$k.'_quantity_available']]) || isset($cols[$this->fileLayout['v_attribute_'.$k.'_barcode']])){
+					$strVal = ltrim(rtrim($cols[$this->fileLayout['v_attribute_'.$k.'_quantity_available']]));
+					$strValB = ltrim(rtrim($cols[$this->fileLayout['v_attribute_'.$k.'_barcode']]));
+					if(!empty($strVal)){
+						$qtyAttr[$k] = $strVal;
+
+					}elseif(!empty($strValB)){
+						$barcodeNames[$k] = $strValB;
+					}
+				}else{
+					break;
+				}
+				$k++;
+			}
+
+
 
 			$useCenter = isset($cols[$this->fileLayout['v_use_center']])?ltrim(rtrim($cols[$this->fileLayout['v_use_center']])):'';
 			if (empty($useCenter)){
@@ -427,8 +855,10 @@ class barcodePopulate{
 			if (empty($inventoryCenter)){
 				$inventoryCenter = 0;
 			}
+			if(!isset($controller)){
+				$controller = 'normal';
+			}
 
-			$controller = 'normal';
 			//echo 'barcode:'. $barcodeNumber. ' barcode_status: '. $barcodeStatus;
 			//itwExit();
 			$commonLog = array(
@@ -466,36 +896,8 @@ class barcodePopulate{
 			}else{
 				$productID = $foundID[$productsModel];
 			}
-			$attributes = '';
-			if(!empty($attributesString)){
-				$attributesArr = attributesUtil::splitStringToArray($attributesString);
-				$Qattributes = Doctrine_Query::create()
-					->from('ProductsAttributes a')
-					->leftJoin('a.ProductsAttributesViews av')
-					->leftJoin('a.ProductsOptionsGroups og')
-					->leftJoin('a.ProductsOptions o')
-					->leftJoin('o.ProductsOptionsDescription od')
-					->leftJoin('a.ProductsOptionsValues ov')
-					->leftJoin('ov.ProductsOptionsValuesDescription ovd')
-					->where('a.products_id = ?', $productID)
-					->execute()->toArray();
-				$optionsArr = array();
-				$valuesArr = array();
-				if ($Qattributes){
-					$lID = Session::get('languages_id');
-					foreach($Qattributes as $i => $attribute){
-						//if (isset($attribute['ProductsOptionsGroups']) && isset($attribute['ProductsOptions']['ProductsOptionsDescription']) && isset($attribute['ProductsOptionsValues']['ProductsOptionsValuesDescription'])){
-						$optionsArr[$attribute['ProductsOptions']['ProductsOptionsDescription'][$lID]['products_options_name']] = $attribute['ProductsOptions']['products_options_id'];
-						$valuesArr[$attribute['ProductsOptionsValues']['ProductsOptionsValuesDescription'][$lID]['products_options_values_name']] = $attribute['ProductsOptionsValues']['products_options_values_id'];
-						//}
-					}
-				}
-				foreach($attributesArr as $k => $v){
-					$attributes .= '{'.$optionsArr[$k].'}'.$valuesArr[$v];
-				}
-			}
 
-			 
+
 			$inventory_store_center_id = 0;
 			if($useCenter){
 				if(isset($inventoryCenterArray[$inventoryCenter])){
@@ -510,8 +912,8 @@ class barcodePopulate{
 				}
 			}
 
-			if (empty($barcodeNumber)){
-				if (($qty_available > 0) || ($qty_broken > 0) || ($qty_out > 0) || ($qty_purchased > 0) || ($qty_reserved > 0)){
+			if (empty($barcodeNumber) && count($barcodeNames) == 0){
+				if (($qty_available > 0) || ($qty_broken > 0) || ($qty_out > 0) || ($qty_purchased > 0) || ($qty_reserved > 0)|| (count($qtyAttr) > 0)){
 					$track_method = 'quantity';
 
 					$Qinv = Doctrine_Query::create()
@@ -565,8 +967,10 @@ class barcodePopulate{
 					}
 
 					$Qinvq1 = $Qinvq1->execute();
+
 					$ist = true;
 					if ($Qinvq1){
+						//echo 'y1:'.$productID.'<br/>';
 						foreach($Qinvq1 as $qi){
 							$quantity_id = $qi->quantity_id;
 							$qi->available = $qty_available;
@@ -574,27 +978,150 @@ class barcodePopulate{
 							$qi->broken = $qty_broken;
 							$qi->purchased = $qty_purchased;
 							$qi->reserved = $qty_reserved;
-							if(!empty($attributes)){
-								//check attributes
+							if($controller == 'attribute'){
+								$attrArray = attributesUtil::splitStringToArray($qi->attributes);
+								$attributesArr = array();
+								foreach($attrArray as $k => $v){
+									$attributesArr[] = $valuesArr[$v];
+								}
+								if(count($attributesArr) == 1){
+									$isFound = false;
+									for($i=1;$i<=count($optionArr);$i++){
+										for($j=0;$j<count($optionArr[$i]);$j++){
+											$tempArr1 =explode('-', $optionArr[$i][$j]);
+											if( count(array_diff($tempArr1, $attributesArr))== 0){
+												//$pr['v_attribute_'.($j+1).'_quantity_available'] = $inv['available'];
+												$qi->available = $qtyAttr[$j+1];
+												unset($qtyAttr[$j+1]);
+												$qi->save();
+												//echo 'a:'.$qi->available;
+												$isFound = true;
+												break;
+											}
+										}
+										if($isFound){
+											break;
+										}
+									}
+								}else{
+									$isFound = false;
+									for($i=1;$i<=count($combosArr);$i++){
+										for($j=0;$j<count($combosArr[$i]);$j++){
+											$tempArr1 = explode('-', $combosArr[$i][$j]);
+											if( count(array_diff($tempArr1, $attributesArr))== 0){
+												//$pr['v_attribute_'.($j+$nrValues).'_quantity_available'] = $inv['available'];
+												$qi->available = $qtyAttr[$j+count($optionArr)+1];
+												unset($qtyAttr[$j+count($optionArr)+1]);
+												$qi->save();
+												//echo 'b:'.$qi->available;
+												$isFound = true;
+												break;
+											}
+										}
+										if($isFound){
+											break;
+										}
+									}
+								}
+								//find the attribute to update// if not found then add it
+							}else{
+								$qi->save();
 							}
-							$qi->save();
 							$ist = false;
 						}
 					}
 
+
+					$isFinshed = false;
 					if($ist){
-						$myInvq = new ProductsInventoryQuantity();
-						$myInvq->available = $qty_available;
-						$myInvq->qty_out = $qty_out;
-						$myInvq->broken = $qty_broken;
-						$myInvq->purchased = $qty_purchased;
-						$myInvq->inventory_id = $inventory_id;
-						$myInvq->reserved = $qty_reserved;
-						if(!empty($attributes)){
-							//check attributes
+
+						//check product attributes
+						//get optionValues arrays for every option where use inventory is true and purchase_type in set. if is only one use optionArr else make combinations and check against combosArr
+
+						//go through all optionArr[ and check if the attribute exists in position k
+						//echo 'y:'.$productID.'<br/>';
+						if($controller == 'attribute'){
+							$QProdAtrr = Doctrine_Query::create()
+								->from('ProductsAttributes')
+								->where('use_inventory=?', '1')
+								->andWhere('FIND_IN_SET(?, purchase_types) > 0', $purchaseType)
+								->andWhere('products_id=?', $productID)
+								->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+							//print_r($QProdAtrr);
+							$prodOptionsArr = array();
+							$prodCombosArr = array();
+							$optValues = array();
+							$optCombos = array();
+							foreach($QProdAtrr as $myAttr){
+								$prodOptionsArr[$myAttr['options_id']][] = $valuesArr[$myAttr['options_values_id']];
+								$optValues[] = $myAttr['options_id'];
+							}
+
+							if(count($prodOptionsArr) > 1){
+								$prodCombosArr = $this->concat($prodOptionsArr);
+							}
+
+							//echo '-----'.'<br/>';
+							//itwExit();
+							$isFinshed = true;
+							foreach($qtyAttr as $k => $v){
+								if(count($prodOptionsArr) == 1){
+									foreach($optionArr as $oValues){
+										if(in_array($oValues[$k-1],$prodOptionsArr[$optValues[0]])){
+											$myInvq = new ProductsInventoryQuantity();
+
+											$myInvq->qty_out = $qty_out;
+											$myInvq->broken = $qty_broken;
+											$myInvq->purchased = $qty_purchased;
+											$myInvq->inventory_id = $inventory_id;
+											$myInvq->reserved = $qty_reserved;
+											$myInvq->available = $v;
+											$myInvq->attributes = '{'.$optValues[0].'}'. $valuesNames[$oValues[$k-1]];
+											$myInvq->save();
+										}
+									}
+								}else{
+
+									foreach($qtyAttr as $k => $v){
+										foreach($combosArr as $oCombos){
+											$attrCombo = explode('-', $oCombos[$k-$nrValues]);
+											foreach($prodCombosArr as $oValues){
+												$prodAttrCombo = explode('-', $oValues);
+												if( count(array_diff($attrCombo, $prodAttrCombo))== 0){
+													$myCreatedAttr = '';
+													foreach($attrCombo as $attrElem){
+														$myCreatedAttr .= '{'.$optionValuesArr[$valuesNames[$attrElem]].'}'. $valuesNames[$attrElem];
+													}
+
+													$myInvq = new ProductsInventoryQuantity();
+
+													$myInvq->qty_out = $qty_out;
+													$myInvq->broken = $qty_broken;
+													$myInvq->purchased = $qty_purchased;
+													$myInvq->inventory_id = $inventory_id;
+													$myInvq->reserved = $qty_reserved;
+													$myInvq->available = $v;
+													$myInvq->attributes = $myCreatedAttr;
+													$myInvq->save();
+												}
+											}
+										}
+									}
+
+								}
+							}
+						} else{
+							$myInvq = new ProductsInventoryQuantity();
+							$myInvq->available = $qty_available;
+							$myInvq->qty_out = $qty_out;
+							$myInvq->broken = $qty_broken;
+							$myInvq->purchased = $qty_purchased;
+							$myInvq->inventory_id = $inventory_id;
+							$myInvq->reserved = $qty_reserved;
+							$myInvq->save();
 						}
 
-						$myInvq->save();
+
 						$quantity_id = $myInvq->quantity_id;
 						logNew('product_quantity', array_merge($commonLog, array(
 						'Products ID'      => $productID,
@@ -605,6 +1132,75 @@ class barcodePopulate{
 						'Products ID'      => $productID,
 						'Message'          => 'Updating existing Inventory quantity'
 						)));
+					}
+					/*I think this part should be removed*/
+					if($isFinshed == false && $controller == 'attribute'){
+						$QProdAtrr = Doctrine_Query::create()
+							->from('ProductsAttributes')
+							->where('use_inventory=?', '1')
+							->andWhere('FIND_IN_SET(?, purchase_types) > 0', $purchaseType)
+							->andWhere('products_id=?', $productID)
+							->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+
+						$prodOptionsArr = array();
+						$prodCombosArr = array();
+						$optValues = array();
+						$optCombos = array();
+						foreach($QProdAtrr as $myAttr){
+							$prodOptionsArr[$myAttr['options_id']][] = $valuesArr[$myAttr['options_values_id']];
+							$optValues[] = $myAttr['options_id'];
+						}
+
+						if(count($prodOptionsArr) > 1){
+							$prodCombosArr = $this->concat($prodOptionsArr);
+							$optCombos = $this->concat($optValues);
+						}
+
+						$isFinshed = true;
+						foreach($qtyAttr as $k => $v){
+							if(count($prodOptionsArr) == 1){
+								foreach($optionArr as $oValues){
+									if(in_array($oValues[$k-1],$prodOptionsArr[$optValues[0]])){
+										$myInvq = new ProductsInventoryQuantity();
+
+										$myInvq->qty_out = $qty_out;
+										$myInvq->broken = $qty_broken;
+										$myInvq->purchased = $qty_purchased;
+										$myInvq->inventory_id = $inventory_id;
+										$myInvq->reserved = $qty_reserved;
+										$myInvq->available = $v;
+										$myInvq->attributes = '{'.$optValues[0].'}'. $valuesNames[$oValues[$k-1]];
+										$myInvq->save();
+									}
+								}
+							}else{
+								foreach($qtyAttr as $k => $v){
+									foreach($combosArr as $oCombos){
+										$attrCombo = explode('-', $oCombos[$k-$nrValues]);
+										foreach($prodCombosArr as $oValues){
+											$prodAttrCombo = explode('-', $oValues);
+											if( count(array_diff($attrCombo, $prodAttrCombo))== 0){
+												$myCreatedAttr = '';
+												foreach($attrCombo as $attrElem){
+													$myCreatedAttr .= '{'.$optionValuesArr[$valuesNames[$attrElem]].'}'. $valuesNames[$attrElem];
+												}
+
+												$myInvq = new ProductsInventoryQuantity();
+
+												$myInvq->qty_out = $qty_out;
+												$myInvq->broken = $qty_broken;
+												$myInvq->purchased = $qty_purchased;
+												$myInvq->inventory_id = $inventory_id;
+												$myInvq->reserved = $qty_reserved;
+												$myInvq->available = $v;
+												$myInvq->attributes = $myCreatedAttr;
+												$myInvq->save();
+											}
+										}
+									}
+								}
+							}
+						}
 					}
 
 					$Qinvc = Doctrine_Query::create()
@@ -652,6 +1248,8 @@ class barcodePopulate{
 						'Message'     => 'No status exists for this products barcode. No action taken.'
 					)));
 					continue;
+				}else{
+					$barcodeStatus = 'A';//barcode status for attributes is automatically set as available.
 				}
 
 				$track_method = 'barcode';
@@ -709,24 +1307,89 @@ class barcodePopulate{
 					foreach($Qinvq as $qi){
 						$barcode_id = $qi->barcode_id;
 						$qi->status = $barcodeStatus;
-						if(!empty($attributes)){
-							//check attributes
+						if($controller == 'attribute'){
+
+						}else{
+							$qi->save();
 						}
-						$qi->save();
 						$ist = false;
 					}
 				}
 
 				if($ist){
-					$myInvq = new ProductsInventoryBarcodes();
-					$myInvq->barcode = $barcodeNumber;
-					$myInvq->inventory_id = $inventory_id;
-					if(!empty($attributes)){
-						//check attributes
+					if($controller == 'attribute'){
+						$QProdAtrr = Doctrine_Query::create()
+							->from('ProductsAttributes')
+							->where('use_inventory=?', '1')
+							->andWhere('FIND_IN_SET(?, purchase_types) > 0', $purchaseType)
+							->andWhere('products_id=?', $productID)
+							->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+						//print_r($QProdAtrr);
+						$prodOptionsArr = array();
+						$prodCombosArr = array();
+						$optValues = array();
+						$optCombos = array();
+						foreach($QProdAtrr as $myAttr){
+							$prodOptionsArr[$myAttr['options_id']][] = $valuesArr[$myAttr['options_values_id']];
+							$optValues[] = $myAttr['options_id'];
+						}
+
+						if(count($prodOptionsArr) > 1){
+							$prodCombosArr = $this->concat($prodOptionsArr);
+						}
+
+						//echo '-----'.'<br/>';
+						//itwExit();
+						$isFinshed = true;
+						foreach($barcodeNames as $k => $v){
+							if(count($prodOptionsArr) == 1){
+								foreach($optionArr as $oValues){
+									if(in_array($oValues[$k-1],$prodOptionsArr[$optValues[0]])){
+										$myInvq = new ProductsInventoryBarcodes();
+										$myInvq->barcode = $v;
+										$myInvq->inventory_id = $inventory_id;
+										$myInvq->status = $barcodeStatus;
+										$myInvq->attributes = '{'.$optValues[0].'}'. $valuesNames[$oValues[$k-1]];
+										$myInvq->save();
+										$barcode_id[] = $myInvq->barcode_id;
+									}
+								}
+							}else{
+
+								foreach($barcodeNames as $k => $v){
+									foreach($combosArr as $oCombos){
+										$attrCombo = explode('-', $oCombos[$k-$nrValues]);
+										foreach($prodCombosArr as $oValues){
+											$prodAttrCombo = explode('-', $oValues);
+											if( count(array_diff($attrCombo, $prodAttrCombo))== 0){
+												$myCreatedAttr = '';
+												foreach($attrCombo as $attrElem){
+													$myCreatedAttr .= '{'.$optionValuesArr[$valuesNames[$attrElem]].'}'. $valuesNames[$attrElem];
+												}
+
+												$myInvq = new ProductsInventoryBarcodes();
+												$myInvq->barcode = $v;
+												$myInvq->inventory_id = $inventory_id;
+												$myInvq->status = $barcodeStatus;
+												$myInvq->attributes = $myCreatedAttr;
+												$myInvq->save();
+												$barcode_id[] = $myInvq->barcode_id;
+
+											}
+										}
+									}
+								}
+
+							}
+						}
+					}else{
+						$myInvq = new ProductsInventoryBarcodes();
+						$myInvq->barcode = $barcodeNumber;
+						$myInvq->inventory_id = $inventory_id;
+						$myInvq->status = $barcodeStatus;
+						$myInvq->save();
+						$barcode_id[] = $myInvq->barcode_id;
 					}
-					$myInvq->status = $barcodeStatus;
-					$myInvq->save();
-					$barcode_id = $myInvq->barcode_id;
 					logNew('product_barcode', array_merge($commonLog, array(
 					'Products ID'      => $productID,
 					'Message'          => 'Updating existing Inventory'
@@ -741,7 +1404,7 @@ class barcodePopulate{
 				if($isStore == 1){
 					$Qinvbs = Doctrine_Query::create()
 								->from('ProductsInventoryBarcodesToStores')
-								->where('barcode_id = ?',$barcode_id)
+								->whereIn('barcode_id',$barcode_id)
 								->execute();
 
 					$ist = true;
@@ -754,10 +1417,12 @@ class barcodePopulate{
 					}
 
 					if($ist){
-						$myInvbs = new ProductsInventoryBarcodesToStores();
-						$myInvbs->barcode_id = $barcode_id;
-						$myInvbs->inventory_store_id = $inventory_store_center_id;
-						$myInvbs->save();
+						foreach($barcode_id as $iBar){
+							$myInvbs = new ProductsInventoryBarcodesToStores();
+							$myInvbs->barcode_id = $iBar;
+							$myInvbs->inventory_store_id = $inventory_store_center_id;
+							$myInvbs->save();
+						}
 						logNew('product_barcode', array_merge($commonLog, array(
 						'Products ID'      => $productID,
 						'Message'          => 'Updating existing Inventory'
@@ -772,7 +1437,7 @@ class barcodePopulate{
 				}else if($isStore == 2){
 							$Qinvbc = Doctrine_Query::create()
 									->from('ProductsInventoryBarcodesToInventoryCenters')
-									->where('barcode_id = ?',$barcode_id)
+									->whereIn('barcode_id',$barcode_id)
 									->execute();
 
 							$ist = true;
@@ -785,10 +1450,12 @@ class barcodePopulate{
 							}
 
 							if($ist){
-								$myInvbc = new ProductsInventoryBarcodesToInventoryCenters();
-								$myInvbc->barcode_id = $barcode_id;
-								$myInvbc->inventory_center_id = $inventory_store_center_id;
-								$myInvbc->save();
+								foreach($barcode_id as $iBar){
+									$myInvbc = new ProductsInventoryBarcodesToInventoryCenters();
+									$myInvbc->barcode_id = $iBar;
+									$myInvbc->inventory_center_id = $inventory_store_center_id;
+									$myInvbc->save();
+								}
 								logNew('product_barcode', array_merge($commonLog, array(
 								'Products ID'      => $productID,
 								'Message'          => 'Updating existing Inventory'
@@ -803,7 +1470,7 @@ class barcodePopulate{
 
 				$Qinvc = Doctrine_Query::create()
 							->from('ProductsInventoryBarcodesComments')
-							->where('barcode_id = ?',$barcode_id)
+							->whereIn('barcode_id',$barcode_id)
 							->execute();
 
 				$ist = true;
@@ -817,9 +1484,12 @@ class barcodePopulate{
 
 				if($ist){
 					if(!empty($comments)){
-						$myInvc = new ProductsInventoryBarcodesComments();
-						$myInvc->comments = $comments;
-						$myInvc->save();
+						foreach($barcode_id as $iBar){
+							$myInvc = new ProductsInventoryBarcodesComments();
+							$myInvc->barcode_id = $iBar;
+							$myInvc->comments = $comments;
+							$myInvc->save();
+						}
 						logNew('product_barcode', array_merge($commonLog, array(
 						'Products ID'      => $productID,
 						'Message'          => 'Updating existing Comments'

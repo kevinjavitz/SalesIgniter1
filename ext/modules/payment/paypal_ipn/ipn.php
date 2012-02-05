@@ -423,6 +423,9 @@
 			}
 		}
 	}
+	$membership =& $userAccount->plugins['membership'];
+	$membership->loadMembershipInfo();
+	$membership->loadPlanInfo();
     
 	require('includes/application_bottom.php');
 	?>

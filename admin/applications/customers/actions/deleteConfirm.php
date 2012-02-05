@@ -4,6 +4,7 @@
 		$isAllowed = true;
 		$errorMessages = array();
 		EventManager::notify('AdminDeleteCustomerCheckAllowed', &$isAllowed, &$errorMessages, $Customers);
+		EventManager::notify('CustomersBeforeDelete', $Customers);
 		if ($isAllowed === true){
 			$Customers->delete();
 			$response = array(
