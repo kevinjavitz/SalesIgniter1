@@ -329,12 +329,6 @@ class OrderPaymentPaypalipn extends StandardPaymentModule
 				}
 				$packagePrice = number_format($a3Value, $currencies->get_decimal_places($my_currency));
 
-				if ($planInfo['free_trial'] > 0){
-					$parameters['a1'] = $planInfo['free_trial_amount'];
-					$parameters['p1'] = $planInfo['free_trial'];
-					$parameters['t1'] = 'D';
-				}
-
 				if ($planInfo['membership_days'] > 0){
 					$p3Val = $planInfo['membership_days'];
 					$t3Val = 'D';
@@ -344,23 +338,32 @@ class OrderPaymentPaypalipn extends StandardPaymentModule
 					$t3Val = 'M';
 				}
 
-				if (isset($p3Val)){
-					$parameters['p3'] = $p3Val;
-					$parameters['t3'] = $t3Val;
-				}
 				if($planInfo['reccurring'] == 1){
 					$parameters['cmd'] = '_xclick-subscriptions';
 					$parameters['custom'] = Session::getSessionId() . ';' . $userAccount->getCustomerId() . ';' . $_SERVER['REMOTE_ADDR'];
+					if (isset($p3Val)){
+						$parameters['p3'] = $p3Val;
+						$parameters['t3'] = $t3Val;
+					}
+					if ($planInfo['free_trial'] > 0){
+						$parameters['a1'] = $planInfo['free_trial_amount'];
+						$parameters['p1'] = $planInfo['free_trial'];
+						$parameters['t1'] = 'D';
+					}
+					$parameters['item_name'] = $planInfo['MembershipPlanDescription'][0]['name'];
+					$parameters['no_note'] = '1';
+					$parameters['a3'] = $packagePrice;
+					//$parameters['modify'] = '1';
+					$parameters['src'] = '1';
+					$parameters['sra'] = '1';
+
 				}else{
 					$parameters['cmd'] = '_xclick';
+					$parameters['amount'] = $packagePrice;
+					$parameters['item_name'] = $planInfo['MembershipPlanDescription'][0]['name'];
+					$parameters['redirect_cmd'] = '_xclick';
 					$parameters['custom'] = Session::getSessionId() . ';' . $userAccount->getCustomerId() . ';' . $_SERVER['REMOTE_ADDR'] .';nonrecurring';
 				}
-				$parameters['item_name'] = $planInfo['MembershipPlanDescription'][0]['name'];
-				$parameters['no_note'] = '1';
-				$parameters['a3'] = $packagePrice;
-				//$parameters['modify'] = '1';
-				$parameters['src'] = '1';
-				$parameters['sra'] = '1';
 			}
 		}
 

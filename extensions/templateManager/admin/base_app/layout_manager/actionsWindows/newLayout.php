@@ -92,12 +92,13 @@ function makeCategoriesArray($parentId = 0){
 }
 $CatArr = makeCategoriesArray(0);
 
-function buildCategorisPages($CatArr, &$AppArray, $appName, $selApps){
+function buildCategorisPages($CatArr, &$AppArray, $appName){
+	global $selApps;
 	foreach($CatArr as $cat){
 		$pageName = $cat['name'];
 		$AppArray[$appName][$pageName] = (isset($selApps[$appName][$pageName]) ? $selApps[$appName][$pageName] : false);
 		if (isset($cat['children']) && sizeof($cat['children']) > 0){
-			buildCategorisPages($cat['children'], $AppArray, $appName, $pageName, $selApps);
+			buildCategorisPages($cat['children'], $AppArray, $appName, $pageName);
 		}
 	}
 }
@@ -112,7 +113,7 @@ foreach($Applications as $AppDir){
 
 	$AppArray[$appName] = array();
 	if($appName == 'index'){
-		buildCategorisPages($CatArr, $AppArray, $appName, $selApps);
+		buildCategorisPages($CatArr, $AppArray, $appName);
 	}
 	if (is_dir($AppDir->getPathname() . '/pages/')){
 		$Pages = new DirectoryIterator($AppDir->getPathname() . '/pages/');

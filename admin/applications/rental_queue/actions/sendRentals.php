@@ -1,6 +1,30 @@
 <?php
 	$queueItems = (isset($_POST['queueItem']) ? $_POST['queueItem'] : '');
 	$cID = $_GET['cID'];
+
+
+    if($usePickupRequest){
+		$QCustomersToPickupRequest = Doctrine_Query::create()
+		->from('PickupRequests pr')
+		->leftJoin('pr.CustomersToPickupRequests rptpr')
+		->andWhere('pr.start_date >= ?', date('Y-m-d'))
+		->andWhere('rptpr.customers_id = ?', $cID)
+		->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+
+	    if(isset($QCustomersToPickupRequest[0])){
+	        $shipmentDate = $QCustomersToPickupRequest[0]['start_date'];
+		    $pShip = date_parse($shipmentDate);
+	        $arrivalDate = date('Y-m-d', mktime($pShip['hour'],$pShip['minute'],$pShip['second'],$pShip['month'],$pShip['day']+sysConfig::get('RENTAL_QUEUE_DAYS_INTERVAL'), $pShip['year']));
+	    }else{
+		    $error = true;
+		    $messageStack->addSession('pageStack', 'No Pickup Request for client id: '.$cID, 'error');
+	    }
+    }else{
+	    $shipmentDate = date('Y-m-d');
+	    $arrivalDate = date('Y-m-d', mktime(0,0,0,date('m'),date('d')+sysConfig::get('RENTAL_QUEUE_DAYS_INTERVAL'),date('Y')));
+    }
+
+
 	$error = false;
 	if (!is_array($queueItems) || sizeof($queueItems) <= 0){
 		$error = true;
@@ -28,9 +52,6 @@
 			->fetchOne();
 
 			$rentalQueue->incrementTopRentals($QproductsQueue['products_id']);
-
-			$shipmentDate = date('Y-m-d');
-			$arrivalDate = date('Y-m-d', mktime(0,0,0,date('m'),date('d')+sysConfig::get('RENTAL_QUEUE_DAYS_INTERVAL'),date('Y')));
 
 			$NewRenedQueue = new RentedQueue();
 			$NewRenedQueue->customers_id = $QproductsQueue['customers_id'];

@@ -1,7 +1,16 @@
 <?php
 	$cID = $_GET['cID'];
 	$tableGrid = htmlBase::newElement('grid');
+$QCustomersToPickupRequest = Doctrine_Query::create()
+	->from('PickupRequests pr')
+	->leftJoin('pr.PickupRequestsTypes prt')
+	->leftJoin('pr.CustomersToPickupRequests rptpr')
+	->andWhere('rptpr.customers_id = ?', $cID)
+	->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 
+if(count($QCustomersToPickupRequest) > 0){
+	echo 'Pickup Request Date: '.$QCustomersToPickupRequest[0]['start_date'];
+}
 	$tableGrid->addHeaderRow(array(
 		'columns' => array(
 			array('text' => 'Send', 'align' => 'center'),

@@ -17,30 +17,52 @@
 	$major = -1;
 	$rent_array = array();
 
-	$Qcustomers = dataAccess::setQuery('select c.customers_id, c.customers_firstname, c.customers_lastname, c.customers_email_address from {customers} c left join {customers_membership} cm using(customers_id) where cm.ismember = "M" and cm.activate = "Y" and DATEDIFF(cm.next_bill_date,CURDATE()) >'.sysConfig::get('RENTAL_DAYS_CUSTOMER_PAST_DUE').' order by c.customers_id')
-	->setTable('{customers}', TABLE_CUSTOMERS)
-	->setTable('{customers_membership}', 'customers_membership');
-	while($Qcustomers->next() !== false){
-		$Qrented = dataAccess::setQuery('select count(customers_id) as rented from {rented_queue} where customers_id = {customer_id}')
-		->setTable('{rented_queue}', TABLE_RENTED_QUEUE)
-		->setValue('{customer_id}', $Qcustomers->getVal('customers_id'))
-		->runQuery();
+	$Qcustomers = Doctrine_Query::create()
+	->from('Customers c')
+	->leftJoin('c.CustomersMembership cm')
+	->where('cm.ismember = ?', 'M')
+	->andWhere('cm.activate = ?', 'Y')
+	->andWhere('DATEDIFF(cm.next_bill_date,CURDATE()) > ?', sysConfig::get('RENTAL_DAYS_CUSTOMER_PAST_DUE'))
+	->orderBy('c.customers_id');
 
-		$QnumberOfTitles = dataAccess::setQuery('select cm.plan_id, m.no_of_titles as num from {customers_membership} cm, {membership} m where m.plan_id = cm.plan_id and cm.customers_id = {customer_id}')
-		->setTable('{customers_membership}', 'customers_membership')
-		->setTable('{membership}', TABLE_MEMBER)
-		->setValue('{customer_id}', $Qcustomers->getVal('customers_id'))
-		->runQuery();
+	if(isset($_GET['pickupRequest'])){
+		$Qcustomers->leftJoin('c.CustomersToPickupRequests cpr')
+		->leftJoin('cpr.PickupRequests pr')
+		->andwhere('pr.start_date = ?', date('Y-m-d H:i:s', strtotime($_GET['pickupRequest'])));
+	}
+
+	$Qcustomers = $Qcustomers->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+
+
+	$QPickupRequests = Doctrine_Query::create()
+	->from('PickupRequests pr')
+	->leftJoin('pr.PickupRequestsTypes prt')
+	->where('pr.start_date >= ?', date('Y-m-d'))
+	->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+
+	foreach($Qcustomers as $iCustomer){
+
+		$Qrented = Doctrine_Query::create()
+		->select('count(customers_id) as rented')
+		->from('RentedQueue')
+		->where('customers_id = ?', $iCustomer['customers_id'])
+		->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+
+		$QnumberOfTitles = Doctrine_Query::create()
+		->from('CustomersMembership cm')
+		->leftJoin('cm.Membership m')
+		->where('cm.customers_id = ?', $iCustomer['customers_id'])
+		->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 
 		$position++;
 		$rent_array[$position] = array(
-			'customers_id'            => $Qcustomers->getVal('customers_id'),
-			'customers_firstname'     => $Qcustomers->getVal('customers_firstname'),
-			'customers_lastname'      => $Qcustomers->getVal('customers_lastname'),
-			'customers_email_address' => $Qcustomers->getVal('customers_email_address'),
-			'movies_rented'           => $Qrented->getVal('rented'),
-			'no_of_titles'            => $QnumberOfTitles->getVal('num'),
-			'titles_to_send'          => $QnumberOfTitles->getVal('num') - $Qrented->getVal('rented')
+			'customers_id'            => $iCustomer['customers_id'],
+			'customers_firstname'     => $iCustomer['customers_firstname'],
+			'customers_lastname'      => $iCustomer['customers_lastname'],
+			'customers_email_address' => $iCustomer['customers_email_address'],
+			'movies_rented'           => $Qrented[0]['rented'],
+			'no_of_titles'            => $QnumberOfTitles[0]['Membership']['no_of_titles'],
+			'titles_to_send'          => $QnumberOfTitles[0]['Membership']['no_of_titles'] - $Qrented[0]['rented']
 		);
 		if ($rent_array[$position]['titles_to_send'] > $major) $major = $rent_array[$position]['titles_to_send'];
 	}
@@ -67,9 +89,43 @@
 ?>
  <div class="pageHeading"><?php echo sysLanguage::get('HEADING_TITLE');?></div>
  <br />
+<?php
+if($usePickupRequest){
+	$pickupReq = htmlBase::newElement('selectbox')
+		->setName('pickupRequest')
+		->setId('pickupRequest');
+	$pickupReq->addOption('-1','Any Date');
+
+	if(isset($_GET['pickupRequest'])){
+   	    $pickupReq->selectOptionByValue($_GET['pickupRequest']);
+	}
+	$dateArr = array();
+	foreach($QPickupRequests as $pick){
+		if(!isset($dateArr[$pick['start_date']])){
+			$pickupReq->addOption(tep_date_short($pick['start_date']), tep_date_short($pick['start_date']));
+			$dateArr[$pick['start_date']] = 1;
+		}
+	}
+
+	$filterButton = htmlBase::newElement('button')
+	->setType('submit')
+	->setText('Filter');
+
+?>
+	<div class="" align="left"><form name="filter" method="get" action="<?php echo itw_app_link(null, null,null);?>">
+		Filter customers with pickup request date:<?php echo $pickupReq->draw().'&nbsp;&nbsp;'.$filterButton->draw();?>
+	</form>
+	</div>
+	<?php
+}
+	?>
  <div class="main" align="right" style="font-size:.8em;"><?php
+    $pickupRequestDate = '';
+	if(isset($_GET['pickupRequest'])){
+	   $pickupRequestDate = '&pickupRequestDate='.date('Y-m-d H:i:s', strtotime($_GET['pickupRequest']));
+    }
   $autoSendButton = htmlBase::newElement('button')->setText('Auto Send Rentals')
-  ->setHref(itw_app_link('action=autoSendRentals'));
+  ->setHref(itw_app_link('action=autoSendRentals'.$pickupRequestDate));
   echo $autoSendButton->draw();?></div>
  <br />
  <div style="width:100%;float:left;">
