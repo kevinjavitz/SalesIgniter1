@@ -61,6 +61,10 @@
 		<value>rentasurfboard.net</value>
 	</config>
 	<config protected="true">
+		<key>SYSTEM_FTP_PATH</key>
+		<value>/public_html/</value>
+	</config>
+	<config protected="true">
 		<key>SYSTEM_FTP_USERNAME</key>
 		<value>rentasun</value>
 	</config>
