@@ -105,7 +105,8 @@ AddType audio/x-wav .wav
 #php_value zlib.output_compression on
 
 Options +FollowSymLinks
-RewriteEngine On 
+RewriteEngine On
+RewriteRule ^installAuto($|/) - [L]
 RewriteBase /
 
 RewriteCond %{REQUEST_FILENAME} !-f
