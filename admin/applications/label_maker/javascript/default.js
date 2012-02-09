@@ -10,18 +10,19 @@ $(document).ready(function (){
 				if (data){
 					var listingData = data.listingData;
 					$('#reservations > tbody').empty();
+					var countCols = $('#reservations th').size();
 					if (typeof listingData == 'object'){
 						$(listingData).each(function (i){
 							var $row = $('<tr>').appendTo('#reservations > tbody');
-							$('<td>').addClass('main').append('<input type="checkbox" name="print[]" class="rowBox" value="' + listingData[i][7] + '">').appendTo($row);
+							$('<td>').addClass('main').append('<input type="checkbox" name="print[]" class="rowBox" value="' + listingData[i][countCols-1] + '">').appendTo($row);
 							$('<td>').addClass('main').append(listingData[i][0]).appendTo($row);
-							for (var col=1; col<7; col++){
+							for (var col=1; col<countCols-1; col++){
 								$('<td>').addClass('main').append(listingData[i][col]).appendTo($row);
 							}
 						});
 					}else{
 						var $row = $('<tr>').appendTo('#reservations > tbody');
-						$('<td colspan="8">').addClass('main').append(listingData).appendTo($row);
+						$('<td colspan="'+countCols+'">').addClass('main').append(listingData).appendTo($row);
 					}
 				}
 			}

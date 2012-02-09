@@ -1,0 +1,34 @@
+<ConfigurationGroup>
+	<title>Post Affiliate Pro</title>
+	<description>Post Affiliate Pro Integration</description>
+	<key>postaffiliatepro</key>
+	<Configuration>
+
+		<EXTENSION_PAP_ENABLED>
+			<title>Enable postaffiliatepro</title>
+			<value>True</value>
+			<description>Enable Or Disable The PostAffiliatePro Extension</description>
+			<sort_order>1</sort_order>
+			<set_function>tep_cfg_select_option(array('True','False'),</set_function>
+		</EXTENSION_PAP_ENABLED>
+		<EXTENSION_PAP_URL>
+			<title>Post Affiliate Pro installation URL</title>
+			<value>http://www.yoursite.com/pap4/</value>
+			<description>The URL of your Post Affiliate Pro 4 installation</description>
+			<sort_order>2</sort_order>
+		</EXTENSION_PAP_URL>
+                <EXTENSION_PAP_MERCH>
+			<title>Merchant username</title>
+			<value>merchant@example.com</value>
+			<description>The API username, usually the same as your merchant username</description>
+			<sort_order>3</sort_order>
+		</EXTENSION_PAP_MERCH>
+                <EXTENSION_PAP_PASS>
+			<title>Merchant password</title>
+			<value>demo123</value>
+			<description>The API password, usually the same as your merchant password</description>
+			<sort_order>3</sort_order>
+		</EXTENSION_PAP_PASS>
+
+	</Configuration>
+</ConfigurationGroup>

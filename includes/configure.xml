@@ -2,19 +2,19 @@
 <configuration>
 	<config protected="true">
 		<key>HTTP_DOMAIN_NAME</key>
-		<value>localhost</value>
+		<value>rentasurfboard.net</value>
 	</config>
 	<config protected="true">
 		<key>HTTPS_DOMAIN_NAME</key>
-		<value>localhost</value>
+		<value>rentasurfboard.net</value>
 	</config>
 	<config protected="false">
 		<key>DIR_WS_CATALOG</key>
-		<value>/SalesIgniter1/</value>
+		<value>/</value>
 	</config>
 	<config protected="true">
 		<key>DIR_FS_DOCUMENT_ROOT</key>
-		<value>D:/phpStormProjects</value>
+		<value>/home/rentasun/public_html</value>
 	</config>
 	<config protected="true">
 		<key>DB_SERVER</key>
@@ -22,15 +22,15 @@
 	</config>
 	<config protected="true">
 		<key>DB_SERVER_USERNAME</key>
-		<value>root</value>
+		<value>rentasun_si</value>
 	</config>
 	<config protected="true">
 		<key>DB_SERVER_PASSWORD</key>
-		<value></value>
+		<value>si22</value>
 	</config>
 	<config protected="true">
 		<key>DB_DATABASE</key>
-		<value>salesigniter_1</value>
+		<value>rentasun_si</value>
 	</config>
 	<config protected="true">
 		<key>ENABLE_SSL</key>
@@ -50,27 +50,31 @@
 	</config>
 	<config protected="true">
 		<key>SYSTEM_UPGRADE_USERNAME</key>
-		<value>myusername</value>
+		<value>rentasun</value>
 	</config>
 	<config protected="true">
 		<key>SYSTEM_UPGRADE_PASSWORD</key>
-		<value>mypassword</value>
+		<value>4b814d2d15c6b8003cac9af653460238</value>
 	</config>
 	<config protected="true">
 		<key>SYSTEM_FTP_SERVER</key>
-		<value>ftp.mydomain.com</value>
+		<value>rentasurfboard.net</value>
+	</config>
+	<config protected="true">
+		<key>SYSTEM_FTP_PATH</key>
+		<value>/public_html/</value>
 	</config>
 	<config protected="true">
 		<key>SYSTEM_FTP_USERNAME</key>
-		<value>username</value>
+		<value>rentasun</value>
 	</config>
 	<config protected="true">
 		<key>SYSTEM_FTP_PASSWORD</key>
-		<value>password</value>
+		<value>B74UqLBh~5XI</value>
 	</config>
 	<config protected="true">
 		<key>SYSTEM_INSTALL_DATE</key>
-		<value></value>
+		<value>Mon, 21 Nov 2011 21:20:30 -0500</value>
 	</config>
 	<config protected="true">
 		<key>SYSTEM_CHARACTER_SET</key>

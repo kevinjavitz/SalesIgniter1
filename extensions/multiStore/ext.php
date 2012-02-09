@@ -12,7 +12,11 @@
 
 class Extension_multiStore extends ExtensionBase {
 
-	public function __construct(){
+	private $storesArray = array();
+
+	private $storeInfoCache = array();
+
+	public function __construct() {
 		parent::__construct('multiStore');
 	}
 
@@ -24,6 +28,10 @@ class Extension_multiStore extends ExtensionBase {
 			'EmailEventSetAllowedVars',
 			'OrderQueryBeforeExecute',
 			'MetaTagsFetchPageQueryBeforeExecute',
+			'ProductInventoryBarcodeHasInventoryQueryBeforeExecute',
+			'ProductInventoryBarcodeGetInventoryItemsQueryBeforeExecute',
+			'ProductInventoryBarcodeGetInventoryItemsArrayPopulate',
+			'OrdersProductsReservationListingBeforeExecuteUtilities',
 			'MetaTagsFetchDefaultsQueryBeforeExecute',
 			'OrderSingleLoad'
 		), null, $this);
@@ -31,6 +39,7 @@ class Extension_multiStore extends ExtensionBase {
 		if ($appExtension->isCatalog()){
 			EventManager::attachEvents(array(
 				'CategoryQueryBeforeExecute',
+				'ModuleConfigReaderModuleConfigLoad',
 				'CustomerQueryBeforeExecute',
 				'ProductQueryBeforeExecute',
 				'ProductListingQueryBeforeExecute',
@@ -44,102 +53,140 @@ class Extension_multiStore extends ExtensionBase {
 		}
 		
 		if ($appExtension->isAdmin()){
-			if ($App->getAppName() == 'products' && !isset($_GET['stores_id'])){//Session::exists('current_store_id') === false){
-				$_GET['stores_id'] = 'all';
-			}
-			if (isset($_GET['stores_id']) && is_numeric($_GET['stores_id']) && $_GET['stores_id'] > 0){
-				$this->adminStoreId = $_GET['stores_id'];
-
-				Session::set('current_store_id', $_GET['stores_id']);
-				Session::remove('all_stores');
-			}elseif (isset($_GET['stores_id']) && $_GET['stores_id'] == 'all'){
-				unset($this->adminStoreId);
-				Session::set('current_store_id', 'all');
-				Session::set('all_stores','true');
-			}elseif(Session::exists('current_store_id') && Session::get('current_store_id') != 'all'){
-				$this->adminStoreId = Session::get('current_store_id');
-			}
-
-
 			EventManager::attachEvents(array(
 				'BoxConfigurationAddLink',
 				'AdminHeaderRightAddContent',
 				'AdminInventoryCentersListingQueryBeforeExecute',
+				'ProductInventoryReportsListingQueryBeforeExecute',
 				'MetaTagsAdminEditAddTabContents',
 				'MetaTagsAdminSaveQueryBeforeExecute',
+				'NewCustomerAccountBeforeExecute',
+				'CustomerInfoAddTableContainer',
+				'AdminOrdersListingBeforeExecute',
 				'ProductInventoryReportsListingQueryBeforeExecute'
 			), null, $this);
+			$App->addJavascriptFile('ext/jQuery/ui/jquery.ui.dropdownchecklist.js');
+			$App->addStylesheetFile('ext/jQuery/themes/smoothness/ui.dropdownchecklist.css');
+			$App->addJavascriptFile('extensions/multiStore/javascript/main.js');
+		}
+			
+			if ($App->getAppName() == 'customers'){
+				EventManager::attachEvents(array(
+						'CustomersListingQueryBeforeExecute'
+					), null, $this);
+			}
 			
 			if ($App->getAppName() == 'orders'){
 				EventManager::attachEvents(array(
-					'AdminOrdersListingBeforeExecute',
 					'OrdersListingAddGridHeader',
 					'OrdersListingAddGridBody'
 				), null, $this);
 			}
 			
-			if ($App->getAppName() == 'products' && isset($this->adminStoreId)){
+			if ($App->getAppName() == 'products'){
 				EventManager::attachEvents(array(
 					'AdminProductListingQueryBeforeExecute'
 				), null, $this);
 			}
 			
 			if ($App->getAppName() == 'categories'){
-				if (isset($this->adminStoreId)){
-					EventManager::attachEvents(array(
+
+				EventManager::attachEvents(array(
 						'CategoryListingQueryBeforeExecute'
-					), null, $this);
-				}
+				), null, $this);
 			}
-		}
 		
 		$this->loadStoreInfo();
 	}
 	
-	public function loadStoreInfo(){
+	public function loadStoreInfo() {
 		global $App;
-		if (isset($this->adminStoreId)){
+		if ($App->getEnv() == 'admin'){
+			$this->loadStoreInfoAdmin();
+		}
+		else {
+			$this->loadStoreInfoCatalog();
+		}
+	}
+
+	private function loadStoreInfoAdmin(){
+		if (Session::exists('login_id')){
+			$Qadmin = Doctrine_Query::create()
+				->from('Admin')
+				->where('admin_id = ?', Session::get('login_id'))
+				->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+
 			$Qstore = Doctrine_Query::create()
-			->from('Stores')
-			->where('stores_id = ?', $this->adminStoreId)
-			->execute(array(), Doctrine::HYDRATE_ARRAY);
+				->from('Stores')
+				->execute(array(), Doctrine::HYDRATE_ARRAY);
 			$this->storeInfo = $Qstore[0];
-		}elseif (getenv('HTTPS') == 'on' && Session::exists('current_store_id')){
-			$Qstore = Doctrine_Query::create()
-			->from('Stores')
-			->where('stores_id = ?', Session::get('current_store_id'))
-			->execute(array(), Doctrine::HYDRATE_ARRAY);
-			$this->storeInfo = $Qstore[0];
+
+			Session::set('admin_allowed_stores', explode(',', $Qadmin[0]['admins_stores']));
+			if (Session::exists('admin_showing_stores') === false || Session::get('admin_showing_stores') == '' || sizeof(Session::get('admin_showing_stores')) == 0){
+				Session::set('admin_showing_stores',  explode(',', $Qadmin[0]['admins_stores']));
+			}
+
+			if (isset($_GET['stores_id'])){
+				$validStores = array();
+				foreach($_GET['stores_id'] as $storeId){
+					if ($storeId == 'all') continue;
+					if (in_array($storeId, Session::get('admin_allowed_stores')) === false) continue;
+					$validStores[] = $storeId;
+				}
+				Session::set('admin_showing_stores', $validStores);
+				tep_redirect(itw_app_link(tep_get_all_get_params(array('action', 'stores_id'))));
+			}
 		}else{
+			$Qstore = Doctrine_Query::create()
+				->from('Stores')
+				->where('stores_id = ?', 1)
+				->execute(array(), Doctrine::HYDRATE_ARRAY);
+			$this->storeInfo = $Qstore[0];
+		}
+
+		Session::set('tplDir', 'fallback');
+
+		sysLanguage::set('HEAD_TITLE_TAG_DEFAULT', $this->storeInfo['stores_name']);
+
+		sysConfig::set('HTTP_COOKIE_DOMAIN', $this->storeInfo['stores_domain']);
+		sysConfig::set('HTTPS_COOKIE_DOMAIN', $this->storeInfo['stores_ssl_domain']);
+	}
+
+	private function loadStoreInfoCatalog(){
+		global $App;
+		if ((getenv('HTTPS') == 'on' && Session::exists('current_store_id')) || isset($_GET['forceStoreId'])) {
+			$checkId = Session::get('current_store_id');
+			if (isset($_GET['forceStoreId'])){
+				$checkId = $_GET['forceStoreId'];
+			}
+			$Qstore = mysql_query('select * from stores where stores_id = "' . $checkId . '"');
+		}
+		else {
 			$domainCheck = array($_SERVER['HTTP_HOST']);
 			if (substr($_SERVER['HTTP_HOST'], 0, 4) != 'www.'){
 				$domainCheck[] = 'www.' . $_SERVER['HTTP_HOST'];
-			}else{
+			}
+			else {
 				$domainCheck[] = substr($_SERVER['HTTP_HOST'], 4);
 			}
-		
+
 			if (getenv('HTTPS') == 'on'){
-				$Qstore = Doctrine_Query::create()
-				->from('Stores')
-				->whereIn('stores_ssl_domain', $domainCheck)
-				->execute(array(), Doctrine::HYDRATE_ARRAY);
-			}else{
-				$Qstore = Doctrine_Query::create()
-				->from('Stores')
-				->whereIn('stores_domain', $domainCheck)
-				->execute(array(), Doctrine::HYDRATE_ARRAY);
+				$checkCol = 'stores_ssl_domain';
 			}
-			$this->storeInfo = $Qstore[0];
+			else {
+				$checkCol = 'stores_domain';
+			}
+			$Qstore = mysql_query('select * from stores where ' . $checkCol . ' IN("' . implode('", "', $domainCheck) . '")');
 		}
+		$this->storeInfo = mysql_fetch_assoc($Qstore);
 		Session::set('tplDir', $this->storeInfo['stores_template']);
 
-		if(!Session::exists('current_store_id') || Session::get('current_store_id') != 'all'){
-			if (getenv('HTTPS') != 'on'){
+		if (!Session::exists('current_store_id') || (Session::get('current_store_id') != $this->storeInfo['stores_id'])){
+			//if (getenv('HTTPS') != 'on'){
 				Session::set('current_store_id', $this->storeInfo['stores_id']);
-			}
+			//}
 		}
-
-		if(Session::exists('current_store_id')){
+		else {
 			$Qconfig = mysql_query('select configuration_key, configuration_value from stores_configuration where stores_id = "' . Session::get('current_store_id') . '"');
 			if (mysql_num_rows($Qconfig)){
 				while($cInfo = mysql_fetch_assoc($Qconfig)){
@@ -147,24 +194,59 @@ class Extension_multiStore extends ExtensionBase {
 				}
 			}
 		}
-		
+
 		define('HEAD_TITLE_TAG_DEFAULT', $this->storeInfo['stores_name']);
 		if ($App->getEnv() == 'catalog'){
 			sysConfig::set('HTTP_SERVER', 'http://' . $this->storeInfo['stores_domain']);
 			sysConfig::set('HTTPS_SERVER', 'https://' . $this->storeInfo['stores_ssl_domain']);
+			$defaultCurrency = $this->storeInfo['default_currency'];
+
+			if (Session::exists('currencyStore'.$this->storeInfo['stores_id']) === false || isset($_GET['currency']) ) {
+				if (isset($_GET['currency'])) {
+					if (!$currency = tep_currency_exists($_GET['currency'])) $currency = $defaultCurrency;
+				} else {
+					$currency = $defaultCurrency;
+				}
+				Session::set('currency', $currency);
+				Session::set('currencyStore'.$this->storeInfo['stores_id'], $currency);
+			}else{
+				Session::set('currency', Session::get('currencyStore'.$this->storeInfo['stores_id']));
+			}
+
+			if(sysConfig::get('EXTENSION_MULTI_STORE_REDIRECT_BY_COUNTRY') == 'True'){
+				include(sysConfig::getDirFsCatalog().'extensions/multiStore/geoip/geoip.php');
+				$gi = geoip_open(sysConfig::getDirFsCatalog().'extensions/multiStore/geoip/GeoIP.dat',GEOIP_STANDARD);
+				$visitorCountry = geoip_country_name_by_addr($gi, $_SERVER['REMOTE_ADDR']);
+				geoip_close($gi);
+
+				$storeCountries = explode(',', $this->storeInfo['stores_countries']);
+				if(!in_array($visitorCountry, $storeCountries)){
+					$Qstoresr = mysql_query('select * from stores where FIND_IN_SET("'.$visitorCountry.'", stores_countries) > 0');
+					$redirectStoreInfo = false;
+					if (mysql_num_rows($Qstoresr)){
+						$redirectStoreInfo = mysql_fetch_assoc($Qstoresr);
+					}else{
+						$Qstoresr = mysql_query('select * from stores where is_default = 1');
+						$redirectStoreInfo = mysql_fetch_assoc($Qstoresr);
+					}
+					if($redirectStoreInfo !== false){
+						if($this->storeInfo['stores_domain'] != $redirectStoreInfo['stores_domain']){
+							tep_redirect('http://' . $redirectStoreInfo['stores_domain']);
+						}
+					}
+				}
+			}
 		}
 		sysConfig::set('HTTP_COOKIE_DOMAIN', $this->storeInfo['stores_domain']);
 		sysConfig::set('HTTPS_COOKIE_DOMAIN', $this->storeInfo['stores_ssl_domain']);
 	}
 
-/* Auto Upgrade ( Version 1.0 to 1.1 ) --BEGIN-- */
 	public function EmailEventSetAllowedVars(&$allowedVars){
 		$allowedVars['store_name'] = $this->storeInfo['stores_name'];
 		$allowedVars['store_owner'] = $this->storeInfo['stores_owner'];
 		$allowedVars['store_owner_email'] = $this->storeInfo['stores_email'];
 		$allowedVars['store_url'] = 'http://' . $this->storeInfo['stores_domain'];
 	}
-/* Auto Upgrade ( Version 1.0 to 1.1 ) --END-- */
 
 	public function ReviewsQueryBeforeExecute(&$Qreviews){
 		$Qreviews->leftJoin('p.ProductsToStores p2s')
@@ -172,29 +254,30 @@ class Extension_multiStore extends ExtensionBase {
 	}
 	
 	public function AdminProductListingQueryBeforeExecute(&$Qproducts){
-		if(isset($this->adminStoreId)){
+		if(Session::exists('admin_showing_stores')){
 			$Qproducts->leftJoin('p.ProductsToStores p2s')
-			->andWhere('p2s.stores_id = ?', $this->adminStoreId);
+				->andWhereIn('p2s.stores_id', Session::get('admin_showing_stores'));
 		}
 	}
-	public function AdminInventoryCentersListingQueryBeforeExecute(&$Qcenter){
-		if(isset($this->adminStoreId)){
-			$Qcenter->andWhere('FIND_IN_SET(?, replace(inventory_center_stores,";",",")) > 0', $this->adminStoreId);
+
+	public function AdminInventoryCentersListingQueryBeforeExecute(&$Qcenter) {
+		if (Session::exists('admin_showing_stores')){
+			$Qcenter->andWhereIn('inventory_center_stores', Session::get('admin_showing_stores'));
 		}
 	}
-	
-	public function CategoryListingQueryBeforeExecute(&$Qcategories){
-		$Qcategories->leftJoin('c.CategoriesToStores c2s')
-		->andWhere('c2s.stores_id = ?', $this->adminStoreId);
+
+	public function CategoryListingQueryBeforeExecute(&$Qcategories) {
+		$Qcategories
+			->leftJoin('c.CategoriesToStores c2s')
+			->whereIn('c2s.stores_id', Session::get('admin_showing_stores'));
 	}
-	
-	public function AdminOrdersListingBeforeExecute(&$Qorders){
-		$Qorders->leftJoin('o.OrdersToStores order2store')
-		->leftJoin('order2store.Stores store')
-		->addSelect('store.stores_name, order2store.stores_id');
-		if (isset($this->adminStoreId)){
-			$Qorders->andWhere('order2store.stores_id = ?', $this->adminStoreId);
-		}
+
+	public function AdminOrdersListingBeforeExecute(&$Qorders) {
+		$Qorders
+			->leftJoin('o.OrdersToStores order2store')
+			->leftJoin('order2store.Stores store')
+			->addSelect('store.stores_name, order2store.stores_id')
+			->whereIn('order2store.stores_id', Session::get('admin_showing_stores'));
 	}
 	
 	public function SeoUrlsInit(&$seoUrl){
@@ -202,14 +285,31 @@ class Extension_multiStore extends ExtensionBase {
 		$seoUrl->base_url_ssl = 'https://' . $this->storeInfo['stores_ssl_domain'] . sysConfig::getDirWsCatalog('SSL');
 	}
 	
-	public function getStoresArray(){
-		$Qstores = Doctrine_Query::create()
-		->select('stores_id, stores_name')
-		->from('Stores')
-		->orderBy('stores_name');
-		
-		$Result = $Qstores->execute(array(), Doctrine::HYDRATE_ARRAY);
-		return $Result;
+	public function getStoresArray($storesId = false, $nofilter = false) {
+		global $appExtension;
+		if ($storesId !== false){
+			if (!isset($this->storeInfoCache[$storesId])){
+				$Qstores = Doctrine_Query::create()
+					->from('Stores')
+					->where('stores_id = ?', $storesId)
+					->execute();
+				$this->storeInfoCache[$storesId] = $Qstores[0];
+			}
+			return $this->storeInfoCache[$storesId];
+		}else{
+			if (empty($this->storesArray)){
+				$Qstores = Doctrine_Query::create()
+					->from('Stores')
+					->orderBy('stores_name');
+
+				if ($appExtension->isAdmin() === true && $nofilter === false){
+					$Qstores->whereIn('stores_id', Session::get('admin_allowed_stores'));
+				}
+
+				$this->storesArray = $Qstores->execute();
+			}
+		}
+		return $this->storesArray;
 	}
 	
 	public function AdminHeaderRightAddContent(){
@@ -220,30 +320,25 @@ class Extension_multiStore extends ExtensionBase {
 			->attr('method', 'get')
 			->attr('action', itw_app_link(tep_get_all_get_params(array('action', 'stores_id'))));
 
-			/*
-			$params = array();
-			$stuff = parse_str(tep_get_all_get_params(array('action', 'app', 'appPage', 'stores_id')), &$params);
-			if (!empty($params)){
-				foreach($params as $k => $v){
-					$form->append(htmlBase::newElement('input')->setType('hidden')->setName($k)->val($v));
-				}
-			}
-			*/
-			
 			$selectBox = htmlBase::newElement('selectbox')
-			->setName('stores_id')
-			->attr('onchange', 'this.form.submit()');
-			
-			if (isset($this->adminStoreId)){
-				$selectBox->selectOptionByValue($this->adminStoreId);
-			}
-			
-			$selectBox->addOption('all', 'All Stores');
+				->setName('stores_id[]')
+				->attr('id', 'storeSelect')
+				->attr('multiple', 'multiple')/*
+			->attr('onchange', 'this.form.submit()')*/
+			;
+
+			$selectBox->addOption('all', 'All Allowed Stores', false);
+
 			foreach($Result as $sInfo){
-				$selectBox->addOption($sInfo['stores_id'], $sInfo['stores_name']);
+				$selectBox->addOption(
+					$sInfo['stores_id'],
+					$sInfo['stores_name'],
+					(in_array($sInfo['stores_id'], Session::get('admin_showing_stores')) ? true : false)
+				);
 			}
 			$form->append($selectBox);
-			return 'Store: ' . $form->draw();
+			$form->append(htmlBase::newElement('button')->setText('GO')->setType('submit'));
+			return '<span style="vertical-align:middle;">Showing Store(s): </span>' . $form->draw();
 		}
 		return '';
 	}
@@ -357,13 +452,25 @@ class Extension_multiStore extends ExtensionBase {
 		global $appExtension;
 		$isInventory = $appExtension->isInstalled('inventoryCenters') && $appExtension->isEnabled('inventoryCenters');
 		$extInventoryCenters = $appExtension->getExtension('inventoryCenters');
-		if($isInventory && $extInventoryCenters->stockMethod == 'Store' ){
-			if(!Session::exists('all_stores')){
+		if ($isInventory && $extInventoryCenters->stockMethod == 'Store'){
+			if (!Session::exists('admin_showing_stores')){
 				$Qproducts->leftJoin('pib.ProductsInventoryBarcodesToStores b2s')
-					  ->leftJoin('b2s.Stores s')
-					  ->andWhere('s.stores_id = ?', (int)Session::get('current_store_id'));
+					->leftJoin('b2s.Stores s')
+					->andWhereIn('s.stores_id', Session::get('admin_showing_stores'));
 			}
+		}elseif (Session::exists('admin_showing_stores')){
+				$Qproducts->leftJoin('pib.ProductsInventoryBarcodesToStores b2s')
+					->leftJoin('b2s.Stores s')
+					->andWhereIn('s.stores_id', Session::get('admin_showing_stores'));
 		}
+
+
+	}
+	
+	public function CustomersListingQueryBeforeExecute(&$Qcustomers){
+		$Qcustomers
+			->leftJoin('c.CustomersToStores c2s')
+			->whereIn('stores_id', Session::get('admin_showing_stores'));
 	}
 	
 	public function MetaTagsAdminEditAddTabContents(&$layout){
@@ -382,6 +489,27 @@ class Extension_multiStore extends ExtensionBase {
 				$selectBox->addOption($sInfo['stores_id'], $sInfo['stores_name']);
 			}
 			$layout = '<br><table cellpadding="4" cellspacing="4"><tr><td>Store:</td><td>' . $selectBox->draw() . '</td></tr></table><hr>' . $layout;
+		}
+	}
+	
+	public function ModuleConfigReaderModuleConfigLoad($cfgKey, $moduleCode, $moduleType, &$configVal) {
+
+		$Query = mysql_query('select ' .
+				'configuration_value' .
+				' from ' .
+				'stores_modules_configuration' .
+				' where ' .
+				'module_code = "' . $moduleCode . '"' .
+				' and ' .
+				'module_type = "' . $moduleType . '"' .
+				' and ' .
+				'configuration_key = "' . $cfgKey . '"' .
+				' and ' .
+				'store_id = "' . $this->storeInfo['stores_id'] . '"');
+		if (mysql_num_rows($Query)){
+			while($Result = mysql_fetch_assoc($Query)){
+				$configVal = $Result['configuration_value'];
+			}
 		}
 	}
 
@@ -404,10 +532,44 @@ class Extension_multiStore extends ExtensionBase {
 			}
 		}
 	}
+	
+	public function ProductInventoryBarcodeGetInventoryItemsQueryBeforeExecute($invData, &$Qcheck){
+		global $Editor, $appExtension;
+		$Qcheck->leftJoin('ib.ProductsInventoryBarcodesToStores ib2s')
+			->leftJoin('ib2s.Stores');
+		if ($appExtension->isAdmin()){
+			if (is_object($Editor)){
+				$Qcheck->andWhere('ib2s.inventory_store_id = ?', $Editor->getData('store_id'));
+			}else{
+				$Qcheck->andWhereIn('ib2s.inventory_store_id', Session::get('admin_showing_stores'));
+			}
+		}else{
+			$Qcheck->andWhere('ib2s.inventory_store_id = ?', Session::get('current_store_id'));
+		}
+
+	}
 
 	public function MetaTagsAdminSaveQueryBeforeExecute(&$Metatags){
 		$Metatags->stores_id = (($_POST['meta_stores_id'] == 'all') ? 0 : intVal($_POST['meta_stores_id']));
 	}
+	
+	public function ProductInventoryBarcodeHasInventoryQueryBeforeExecute($invData, &$Qcheck){
+		global $appExtension, $Editor;
+		if ($invData['use_store_inventory'] == '1'){
+			$Qcheck->leftJoin('ib.ProductsInventoryBarcodesToStores b2s')
+				->leftJoin('b2s.Stores');
+			if ($appExtension->isAdmin()){
+				if (is_object($Editor)){
+					$Qcheck->andWhere('b2s.inventory_store_id = ?', $Editor->getData('store_id'));
+				}else{
+					$Qcheck->andWhereIn('b2s.inventory_store_id', Session::get('admin_showing_stores'));
+				}
+			}else{
+				$Qcheck->andWhere('b2s.inventory_store_id = ?', Session::get('current_store_id'));
+			}
+		}
+	}
+
 
 	public function MetaTagsFetchPageQueryBeforeExecute(&$MetatagsQuery){
 		global $appExtension;
@@ -415,45 +577,50 @@ class Extension_multiStore extends ExtensionBase {
 			$this->MetaTagsCheckStores();
 			$MetatagsQuery->andWhere('stores_id = ?', (($_GET['meta_stores_id'] == 'all') ? 0 : intVal($_GET['meta_stores_id'])));
 		} else {
-			//$MetatagsQuery->andWhere('stores_id = ?', ((Session::get('current_store_id') == 'all') ? 0 : intVal(Session::get('current_store_id'))));
-			$lID = intval(Session::get('languages_id'));
-			if ( ! $lID ) $lID = 1;
-			if((Session::get('current_store_id') !== 'all')){
-				$check = Doctrine_Query::create()
-					->from('MetaTags m')
-					->where('m.language_id = ?', $lID)
-					->andWhere('m.type_page = ?', 'D')->andWhere('stores_id = ?', Session::get('current_store_id'))
-					->execute(null, Doctrine_Core::HYDRATE_ARRAY);
-				if($check && (!empty($check[0]['title']) || !empty($check[0]['description']) || !empty($check[0]['keywords']))){
-					$MetatagsQuery->andWhere('stores_id = ?', intVal(Session::get('current_store_id')));
-					return true;
-				}
-			}
-			$MetatagsQuery->andWhere('stores_id = ?', 0);
+			$MetatagsQuery->andWhere('stores_id = ?', ((Session::get('current_store_id') == 'all') ? 0 : intVal(Session::get('current_store_id'))));
 		}
 	}
 
+	public function ProductInventoryBarcodeGetInventoryItemsArrayPopulate($bInfo, &$barcodeArr){
+		$barcodeArr['store_id'] = $bInfo['ProductsInventoryBarcodesToStores']['inventory_store_id'];
+	}
+	public function CustomerInfoAddTableContainer($Customer){
+		$storeDrop = htmlBase::newElement('selectbox')
+			->setName('customers_store_id')
+			->addOption('', sysLanguage::get('TEXT_PLEASE_SELECT'))
+			->selectOptionByValue($Customer->CustomersToStores->stores_id);
+		foreach($this->getStoresArray() as $sInfo){
+			$storeDrop->addOption($sInfo['stores_id'], $sInfo['stores_name']);
+		}
+
+		return '<div class="main" style="margin-top:.5em;font-weight:bold;">Customers Store</div><div class="ui-widget ui-widget-content ui-corner-all" style="padding:.5em;">'.$storeDrop->draw().'</div>';
+	}
+	
+	public function OrdersProductsReservationListingBeforeExecuteUtilities(&$Qorders){
+		global $Editor, $appExtension;
+		$Qorders->leftJoin('ib.ProductsInventoryBarcodesToStores b2s')
+			->leftJoin('b2s.Stores');
+		if ($appExtension->isAdmin()){
+			if (is_object($Editor)){
+				$Qorders->andWhere('b2s.inventory_store_id = ?', $Editor->getData('store_id'));
+			}else{
+				$Qorders->andWhereIn('b2s.inventory_store_id', Session::get('admin_showing_stores'));
+			}
+		}else{
+			$Qorders->andWhere('b2s.inventory_store_id = ?', Session::get('current_store_id'));
+		}
+
+	}
+	
+	public function NewCustomerAccountBeforeExecute(&$newUser){
+		$newUser->CustomersToStores->stores_id = $_POST['customers_store_id'];
+	}
 	public function MetaTagsFetchDefaultsQueryBeforeExecute(&$MetatagsQuery){
 		global $appExtension;
 		if($appExtension->isAdmin()){
 			$MetatagsQuery->andWhere('stores_id = ?', (($_GET['meta_stores_id'] == 'all') ? 0 : intVal($_GET['meta_stores_id'])));
 		} else {
-			//$MetatagsQuery->andWhere('stores_id = ?', ((Session::get('current_store_id') == 'all') ? 0 : intVal(Session::get('current_store_id'))));
-			$lID = intval(Session::get('languages_id'));
-			if ( ! $lID ) $lID = 1;
-			if((Session::get('current_store_id') !== 'all')){
-				$check = Doctrine_Query::create()
-					->from('MetaTags m')
-					->where('m.language_id = ?', $lID)
-					->andWhere('m.type_page = ?', 'D')->andWhere('stores_id = ?', Session::get('current_store_id'))
-					->execute(null, Doctrine_Core::HYDRATE_ARRAY);
-				if($check && (!empty($check[0]['title']) || !empty($check[0]['description']) || !empty($check[0]['keywords']))){
-					$MetatagsQuery->andWhere('stores_id = ?', intVal(Session::get('current_store_id')));
-					return true;
-				}
-			}
-			$MetatagsQuery->andWhere('stores_id = ?', 0);
-
+			$MetatagsQuery->andWhere('stores_id = ?', ((Session::get('current_store_id') == 'all') ? 0 : intVal(Session::get('current_store_id'))));
 		}
 	}
 	

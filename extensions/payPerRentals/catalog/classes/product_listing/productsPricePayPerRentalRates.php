@@ -18,7 +18,7 @@ class productListing_productsPricePayPerRentalRates {
 		}
 		return $selectSortKeys;
 	}
-	public function show(&$productClass){
+	public function show(&$productClass, &$purchaseTypesCol){
 		global $currencies;
 		$tableRow = array();
 		$purchaseTypeClass = $productClass->getPurchaseType('reservation');

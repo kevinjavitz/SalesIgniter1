@@ -26,7 +26,7 @@
 				$moduleConfig = new Modules();
 				$moduleConfig->modules_code = $this->moduleCls->getCode();
 				$moduleConfig->modules_status = '1';
-				$moduleConfig->modules_type = 'order_total';
+				$moduleConfig->modules_type = 'orderTotal';
 			
 				$moduleConfiguration =& $moduleConfig->ModulesConfiguration;
 				$k = 0;

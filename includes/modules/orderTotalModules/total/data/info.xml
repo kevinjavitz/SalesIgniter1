@@ -1,7 +1,8 @@
 <info>
 	<code>total</code>
 	<title_key>MODULE_ORDER_TOTAL_TOTAL_TITLE</title_key>
-	<status_key>MODULE_ORDER_TOTAL_TOTAL_STATUS</status_key>
 	<description_key>MODULE_ORDER_TOTAL_TOTAL_DESCRIPTION</description_key>
-	<sort_key>MODULE_ORDER_TOTAL_TOTAL_SORT_ORDER</sort_key>
+	<installed_key>INSTALLED</installed_key>
+	<status_key>STATUS</status_key>
+	<display_order_key>DISPLAY_ORDER</display_order_key>
 </info>

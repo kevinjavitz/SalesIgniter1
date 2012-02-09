@@ -46,7 +46,6 @@
 		
 		public static function quote($method = '', $module = ''){
 			$quotes_array = array();
-			self::loadModules(true);
 			if (self::hasModules() === true) {
 				self::calculateWeight();
 				
@@ -89,7 +88,7 @@
 				$rates = array();
 				foreach(self::getModules() as $moduleName => $moduleClass){
 					if ($moduleName != 'reservation'){
-						$quotes = $moduleClass->quotes;
+						$quotes = $moduleClass->quote();
 						for($i=0, $n=sizeof($quotes['methods']); $i<$n; $i++){
 							if (isset($quotes['methods'][$i]['cost']) && $quotes['methods'][$i]['cost'] != '') {
 								$rates[] = array(

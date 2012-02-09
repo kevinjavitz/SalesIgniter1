@@ -12,7 +12,7 @@ class Extension_templateManager extends ExtensionBase {
 
 	public function postSessionInit(){
 		global $templateDir;
-		if (APPLICATION_ENVIRONMENT == 'catalog'){
+		//if (APPLICATION_ENVIRONMENT == 'catalog'){
 			if (isset($_GET['tplDir']) && is_dir(sysConfig::getDirFsCatalog() . 'templates/' . basename($_GET['tplDir']))) {
 				Session::set('tplDir', basename($_GET['tplDir']));
 			} else {
@@ -39,7 +39,7 @@ class Extension_templateManager extends ExtensionBase {
 			}else{
 				$templateDir = sysConfig::getDirWsCatalog() . 'templates/' . Session::get('tplDir') . '/';
 			}
-		}
+		//}
 	}
 
 	public function buildLayout(&$Construct, $layoutId){

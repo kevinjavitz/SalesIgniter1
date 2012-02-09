@@ -310,9 +310,9 @@
 				->select('p.*, pd.*')
 				->from('BlogPosts p')
 				->leftJoin('p.BlogPostsDescription pd')
-				//->leftJoin('p.BlogPostToCategories c')
-				//->leftJoin('c.BlogCategories cc')
-				//->leftJoin('cc.BlogCategoriesDescription cd')
+				->leftJoin('p.BlogPostToCategories c')
+				->leftJoin('c.BlogCategories cc')
+				->leftJoin('cc.BlogCategoriesDescription cd')
 				->where('p.post_status = 1')
 				->orderBy('p.post_date desc');
 
@@ -322,6 +322,9 @@
 			} else{
 				$Query->andWhere('pd.language_id = ?', (int) Session::get('languages_id'));
 				//$Query->andWhere('cd.language_id = ?', (int) Session::get('languages_id'));
+			}
+			if (is_null($seo_cat) === false){
+				$Query->andWhere('cd.blog_categories_seo_url = ?', $seo_cat);
 			}
 
 			if ($this->checkMultiStore === true){

@@ -31,8 +31,14 @@ class upsLabels_catalog_account_history_info extends Extension_upsLabels {
 			->from('Orders o')
 			->andWhere('o.orders_id = ?', $order_id)
 			->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
-
-		echo '<br/><b><a target="_blank" href="'.itw_app_link('action=showReturnLabel&track='.$QOrders[0]['ups_track_num2'],'account','default').'">Print UPS return label</a></b>';
+		if(isset($QOrders[0]['ups_track_num2'])){
+			$sendTrackArr = explode(',',$QOrders[0]['ups_track_num2']);
+		}
+		if(isset($sendTrackArr)){
+			foreach($sendTrackArr as $trackingNumber){
+				echo '<br/><b><a target="_blank" href="'.itw_app_link('action=showReturnLabel&track='.$trackingNumber,'account','default').'">Print UPS return label</a></b>';
+			}
+		}
 	}
 	
 

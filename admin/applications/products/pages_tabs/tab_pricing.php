@@ -78,7 +78,20 @@
 				                             array('text' => $inputGross->draw())
 			                             )
 			                        ));
-		}
+		}elseif($pricingTypeName == 'rental'){
+	        $inputNet = htmlBase::newElement('input')->addClass('netPricing');
+	        $inputNet->setName('products_keepit_price')
+		        ->setId('products_keepit_price')
+		        ->val((isset($Product) ? $Product['products_keepit_price'] : ''));
+
+			$inputTable->addBodyRow(array(
+					'columns' => array(
+						array('text' => sysLanguage::get('TEXT_PRODUCTS_PRICE_NET')),
+						array('text' => $inputNet->draw())
+					)
+				));
+
+        }
 
 		EventManager::notify('NewProductPricingTabBottom', (isset($Product) ? $Product : false), &$inputTable, &$pricingTypeName);
 		

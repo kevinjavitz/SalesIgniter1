@@ -171,5 +171,14 @@ class Membership extends Doctrine_Record {
 		'notnull' => true,
 		'autoincrement' => false,
 		));
+		$this->hasColumn('reccurring', 'integer', 1, array(
+				'type' => 'integer',
+				'length' => 1,
+				'unsigned' => 0,
+				'primary' => false,
+				'default' => '1',
+				'notnull' => true,
+				'autoincrement' => false,
+		));
 	}
 }

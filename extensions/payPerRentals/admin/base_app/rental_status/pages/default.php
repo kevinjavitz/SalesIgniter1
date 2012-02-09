@@ -98,7 +98,6 @@
 					    ->setValue($color);
 
  			 $saveButton = htmlBase::newElement('button')
-					        ->setType('submit')
 					        ->usePreset('save');
 			 $cancelButton = htmlBase::newElement('button')
 					        ->usePreset('cancel')
@@ -117,11 +116,9 @@
 				$infoBox->setHeader('<b>' . $rObject->rental_status_text . '</b>');
 				
 				$deleteButton = htmlBase::newElement('button')
-								->setType('submit')
 								->usePreset('delete')
 								->setHref(itw_app_link(tep_get_all_get_params(array('action', 'rID')) . 'action=deleteConfirm&rID=' . $rObject->rental_status_id));
 				$editButton = htmlBase::newElement('button')
-								->setType('submit')
 								->usePreset('edit')
 								->setHref(itw_app_link(tep_get_all_get_params(array('action', 'rID')) . 'action=edit' . '&rID=' . $rObject->rental_status_id, 'rental_status', 'default'));
 				

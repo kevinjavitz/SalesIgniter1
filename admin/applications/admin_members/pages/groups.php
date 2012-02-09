@@ -69,7 +69,7 @@
 	switch($action){
 		case 'edit_group':
 		case 'new_group':
-			$infoBox->setHeader('<b>' . (isset($gInfo) ?  sysLanguage::get('TEXT_INFO_HEADING_EDIT_GROUP') : TEXT_INFO_HEADING_GROUPS) . '</b>');
+			$infoBox->setHeader('<b>' . (isset($gInfo) ?  sysLanguage::get('TEXT_INFO_HEADING_EDIT_GROUP') : sysLanguage::get('TEXT_INFO_HEADING_GROUPS')) . '</b>');
 			$infoBox->setForm(array(
 				'name'   => 'group',
 				'action' => itw_app_link('action=saveGroup' . (isset($gInfo) ? '&gID=' . $gInfo->admin_groups_id : ''))
@@ -85,7 +85,7 @@
 			$saveButton = htmlBase::newElement('button')
 			->setType('submit')
 			->usePreset((isset($gInfo) ? 'save' : 'next'))
-			->setText((isset($gInfo) ? TEXT_BUTTON_SAVE : sysLanguage::get('TEXT_BUTTON_NEXT')));
+			->setText((isset($gInfo) ? sysLanguage::get('TEXT_BUTTON_SAVE') : sysLanguage::get('TEXT_BUTTON_NEXT')));
 
 			$cancelButton->setHref(itw_app_link($allGetParams . (isset($gInfo) ? 'gID=' . $gInfo->admin_groups_id : '')));
 

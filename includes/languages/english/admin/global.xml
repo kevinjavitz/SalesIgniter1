@@ -29,6 +29,10 @@
 	<define key="BOX_CONFIGURATION_CACHE"><![CDATA[Cache]]></define>
 	<define key="BOX_HEADING_MODULES"><![CDATA[Modules]]></define>
 	<define key="BOX_MODULES_PAYMENT"><![CDATA[Payment]]></define>
+	<define key="BOX_RENTAL_MEMBERSHIP_RENTAL_PASTDUE"><![CDATA[Membership Past Due]]></define>
+	<define key="BOX_RENTAL_MEMBERSHIP_RENTAL_PICKUP_REQUESTS"><![CDATA[Pickup Requests]]></define>
+	<define key="BOX_RENTAL_MEMBERSHIP_RENTAL_PICKUP_REQUESTS_REPORT"><![CDATA[Pickup Requests Report]]></define>
+	<define key="BOX_RENTAL_MEMBERSHIP_RENTAL_PICKUP_REQUESTS_TYPES"><![CDATA[Pickup Requests Types]]></define>
 	<define key="BOX_MODULES_SHIPPING"><![CDATA[Shipping]]></define>
 	<define key="BOX_MODULES_ORDER_TOTAL"><![CDATA[Order Total]]></define>
 	<define key="BOX_MODULES_INFOBOXES"><![CDATA[Infoboxes]]></define>
@@ -455,6 +459,9 @@
 	<define key="TABLE_HEADING_PRODUCTS_NAME"><![CDATA[Product Name]]></define>
 	<define key="TABLE_HEADING_PRODUCTS_BARCODE"><![CDATA[Barcode]]></define>
 	<define key="PAYMENT_MODULE_MO_AWAITING_PAYMENT"><![CDATA[Awaiting Payment]]></define>
-		<define key="TEXT_BEFORE_QUOTES"><![CDATA[First, please enter your zip code so we can calculate shipping and availability :<br/>]]></define>
+	<define key="TEXT_BEFORE_QUOTES"><![CDATA[First, please enter your zip code so we can calculate shipping and availability :<br/>]]></define>
+	<define javascript="true" php="false" key="TEXT_VALIDATING_OVERRIDE"><![CDATA[Validating Override]]></define>
+	<define javascript="true" php="false" key="TEXT_OVERRIDE_VALIDATED"><![CDATA[Override Validated]]></define>
+	<define javascript="true" php="false" key="TEXT_OVERRIDE_NOT_VALIDATED"><![CDATA[Override not validated]]></define>
 
 </definitions>

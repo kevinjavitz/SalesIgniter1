@@ -52,6 +52,9 @@ EventManager::notify('ProductInfoProductsImageShow', &$image, &$product);
 	}else{
 		$productsImage .= '<a class="fancyBox ui-state-active" style="display:none" index="0" rel="gallery" href="' . $image . '"><img class="additionalImage" imgSrc="' . $image . '&width=250&height=250" src="' . $image . '&width=50&height=50"></a>';
 	}
+
+	EventManager::notify('ProductInfoAfterShowImages', $product, &$productsImage);
+
 	$productsImage .= '</div>';
 	
 	echo $productsImage;

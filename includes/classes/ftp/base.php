@@ -153,6 +153,9 @@ class SystemFTP
 	public function deleteFile($filePath) {
 		ftp_delete($this->ftpConn, $this->cleanPath($filePath));
 	}
+	public function createDir($filePath){
+		ftp_mkdir($this->ftpConn, $this->cleanPath($filePath));
+	}
 
 	public function copyFile($from, $to) {
 		$success = true;

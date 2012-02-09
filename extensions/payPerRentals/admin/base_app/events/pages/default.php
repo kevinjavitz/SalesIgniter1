@@ -57,8 +57,8 @@
 			if (isset($cInfo) && is_object($cInfo)) {
 				$infoBox->setHeader('<b>' . $cInfo->events_name . '</b>');
 
-				$deleteButton = htmlBase::newElement('button')->setType('submit')->usePreset('delete')->setHref(itw_app_link(tep_get_all_get_params(array('action', 'eID')) . 'action=deleteConfirm&eID=' . $cInfo->events_id));
-				$editButton = htmlBase::newElement('button')->setType('submit')->usePreset('edit')
+				$deleteButton = htmlBase::newElement('button')->usePreset('delete')->setHref(itw_app_link(tep_get_all_get_params(array('action', 'eID')) . 'action=deleteConfirm&eID=' . $cInfo->events_id));
+				$editButton = htmlBase::newElement('button')->usePreset('edit')
 				->setHref(itw_app_link(tep_get_all_get_params(array('action', 'eID')) . 'eID=' . $cInfo->events_id,null,'new'));
 
 				$infoBox->addButton($editButton)->addButton($deleteButton);

@@ -59,14 +59,26 @@ class multiStore_admin_products_new_product extends Extension_multiStore {
 			}
 		}
 		$Result = $Qstores->execute(array(), Doctrine::HYDRATE_ARRAY);
+		//Admin stores
+		$Admin = Doctrine_Core::getTable('Admin')->find(Session::get('login_id'));
+		$adminStores =explode(',',$Admin->admins_stores);
 		foreach($Result as $sInfo){
+			if(!in_array($sInfo['stores_id'], $adminStores)) continue;
+			$isChecked = (isset($curStores) && in_array($sInfo['stores_id'], $curStores));
+
+			/*if($isChecked == false){
+				if(count($adminStores) == 1){
+					$isChecked = true;
+				}
+			}*/
+
 			$checkbox = htmlBase::newElement('checkbox')
 			->setId('store_' . $sInfo['stores_id'])
 			->setName('store[]')
 			->setValue($sInfo['stores_id'])
 			->setLabel($sInfo['stores_name'])
 			->setLabelPosition('after')
-			->setChecked((isset($curStores) && in_array($sInfo['stores_id'], $curStores)));
+			->setChecked($isChecked);
 			
 			$contents .= $checkbox->draw() . '<br />';
 		}

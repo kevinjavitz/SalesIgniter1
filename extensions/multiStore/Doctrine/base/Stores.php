@@ -105,7 +105,31 @@ class Stores extends Doctrine_Record {
 			'primary'       => false,
 			'notnull'       => true,
 			'autoincrement' => false,
-		));			
+		));
+
+		$this->hasColumn('stores_countries', 'string', null, array(
+				'type'          => 'string',
+				'length'        => null,
+				'primary'       => false,
+				'autoincrement' => false,
+		));
+		$this->hasColumn('is_default', 'integer', 1, array(
+				'type' => 'integer',
+				'length' => 1,
+				'unsigned' => 0,
+				'default' => 0,
+				'primary' => false,
+				'autoincrement' => false
+		));
+
+		$this->hasColumn('default_currency', 'string', 3, array(
+				'type' => 'integer',
+				'length' => 3,
+				'default' => 'USD',
+				'primary' => false,
+				'autoincrement' => false
+		));
+
 	}
 	
 }

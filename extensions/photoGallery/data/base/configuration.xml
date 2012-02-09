@@ -1,0 +1,64 @@
+<ConfigurationGroup>
+	<title>photoGallery</title>
+	<description>Configuration Settings For The Photo Gallery Extension</description>
+	<key>photoGallery</key>
+	<Configuration>
+		<EXTENSION_PHOTO_GALLERY_ENABLED>
+			<title>Enable Photo Gallery</title>
+			<value>True</value>
+			<description>Enable Or Disable The Photo Gallery Extension</description>
+			<sort_order>1</sort_order>
+			<set_function>tep_cfg_select_option(array('True','False'),</set_function>
+		</EXTENSION_PHOTO_GALLERY_ENABLED>
+		<EXTENSION_PHOTO_GALLERY_IMAGES_PER_PAGE>
+			<title>Images per Page</title>
+			<value>10</value>
+			<description>Number of images per page</description>
+			<sort_order>2</sort_order>
+		</EXTENSION_PHOTO_GALLERY_IMAGES_PER_PAGE>
+		<EXTENSION_PHOTO_GALLERY_CATEGORY_THUMBNAIL_IMAGE_WIDTH>
+			<title>Width of category thumbnail</title>
+			<value>150</value>
+			<description>Width of thumbnail</description>
+			<sort_order>2</sort_order>
+		</EXTENSION_PHOTO_GALLERY_CATEGORY_THUMBNAIL_IMAGE_WIDTH>
+		<EXTENSION_PHOTO_GALLERY_CATEGORY_THUMBNAIL_IMAGE_HEIGHT>
+			<title>Height of category thumbnail</title>
+			<value>150</value>
+			<description>Height of thumbnail</description>
+			<sort_order>2</sort_order>
+		</EXTENSION_PHOTO_GALLERY_CATEGORY_THUMBNAIL_IMAGE_HEIGHT>
+		<EXTENSION_PHOTO_GALLERY_THUMBNAIL_IMAGE_WIDTH>
+			<title>Width of thumbnail in gallery</title>
+			<value>150</value>
+			<description>Width of thumbnail</description>
+			<sort_order>2</sort_order>
+		</EXTENSION_PHOTO_GALLERY_THUMBNAIL_IMAGE_WIDTH>
+		<EXTENSION_PHOTO_GALLERY_THUMBNAIL_IMAGE_HEIGHT>
+			<title>Height of thumbnail in gallery</title>
+			<value>150</value>
+			<description>Height of thumbnail</description>
+			<sort_order>2</sort_order>
+		</EXTENSION_PHOTO_GALLERY_THUMBNAIL_IMAGE_HEIGHT>
+		<EXTENSION_PHOTO_GALLERY_BIG_IMAGE_WIDTH>
+			<title>Width of big image in gallery</title>
+			<value>1024</value>
+			<description>Width of thumbnail</description>
+			<sort_order>2</sort_order>
+		</EXTENSION_PHOTO_GALLERY_BIG_IMAGE_WIDTH>
+		<EXTENSION_PHOTO_GALLERY_BIG_IMAGE_HEIGHT>
+			<title>Height of big image in gallery</title>
+			<value>768</value>
+			<description>Height of thumbnail</description>
+			<sort_order>2</sort_order>
+		</EXTENSION_PHOTO_GALLERY_BIG_IMAGE_HEIGHT>
+		<EXTENSION_PHOTO_GALLERY_DISPLAY_TYPE>
+			<title>How to Show pictures in gallery</title>
+			<value>Lightbox</value>
+			<description>Show pictures in gallery as slideshow or as lightbox</description>
+			<sort_order>1</sort_order>
+			<set_function>tep_cfg_select_option(array('Lightbox','Slideshow'),</set_function>
+		</EXTENSION_PHOTO_GALLERY_DISPLAY_TYPE>
+
+	</Configuration>
+</ConfigurationGroup> 

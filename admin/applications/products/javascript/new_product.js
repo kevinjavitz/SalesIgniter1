@@ -149,12 +149,8 @@ function uploadManagerField($el){
 	var isMulti = false;
 	var autoUpload = true;
 	var hasPreviewContainer = false;
-	var debug = false;
 	var $debugger = $('#' + $el.attr('id') + '_uploadDebugOutput').addClass('uploadDebugger');
-	if (debug === true){
-		$debugger.show();
-	}
-	
+
 	if ($el.attr('data-is_multi')){
 		isMulti = ($el.attr('data-is_multi') == 'true');
 	}
@@ -185,25 +181,37 @@ function uploadManagerField($el){
 		cancelImg: DIR_WS_CATALOG + 'ext/jQuery/external/uploadify/images/cancel.png',
 		auto: autoUpload,
 		onError: function (event, queueID, fileObj, errorObj){
-			var curVal = $debugger.val();
-			$debugger.val(curVal + "\nError Uploading: " + errorObj.type + " :: " + errorObj.info);
+			if ($('#turnOnDebugger').data('turnedOn') === true){
+				var curVal = $debugger.val();
+				$debugger.val(curVal + "\nError Uploading: " + errorObj.type + " :: " + errorObj.info);
+			}else{
+				alert("Error Uploading: " + errorObj.type + " :: " + errorObj.info);
+			}
 		},
 		onAllComplete: function (){
-			var curVal = $debugger.val();
-			$debugger.val(curVal + "\nAll Uploads Completed!");
+			if ($('#turnOnDebugger').data('turnedOn') === true){
+				var curVal = $debugger.val();
+				$debugger.val(curVal + "\nAll Uploads Completed!");
+			}
 		},
 		onOpen: function (event, queueID, fileObj){
-			var curVal = $debugger.val();
-			$debugger.val(curVal + "\nBeginning Upload: " + fileObj.name);
+			if ($('#turnOnDebugger').data('turnedOn') === true){
+				var curVal = $debugger.val();
+				$debugger.val(curVal + "\nBeginning Upload: " + fileObj.name);
+			}
 		},
 		onProgress: function (event, queueID, fileObj, data){
-			var curVal = $debugger.val();
-			$debugger.val(curVal + "\nUpload Speed: " + data.speed + ' KB/ps');
+			if ($('#turnOnDebugger').data('turnedOn') === true){
+				var curVal = $debugger.val();
+				$debugger.val(curVal + "\nUpload Speed: " + data.speed + ' KB/ps');
+			}
 		},
 		onComplete: function (event, queueID, fileObj, resp, data){
-			var curVal = $debugger.val();
-			$debugger.val(curVal + "\nUpload Completed\nJson Response: " + resp);
-			
+			if ($('#turnOnDebugger').data('turnedOn') === true){
+				var curVal = $debugger.val();
+				$debugger.val(curVal + "\nUpload Completed\nJson Response: " + resp);
+			}
+
 			var theResp = eval('(' + resp + ')');			
 
 			if (theResp.success == true){
@@ -253,6 +261,8 @@ function uploadManagerField($el){
 					}
 					$('.fancyBox', $theBox).trigger('loadBox');
 				}
+			}else{
+				alert("Error Uploading: " + theResp.errorMsg);
 			}
 		}
 	});
@@ -331,16 +341,16 @@ var popup = $('.events ul', this).css('opacity', 0);
 
 $(document).ready(function (){
 	$('#turnOnDebugger').each(function (){
-		this.turnedOn = false;
+		$(this).data('turnedOn', false);
 		$(this).click(function (){
-			if (this.turnedOn == false){
+			if ($(this).data('turnedOn') === false){
 				$('.uploadDebugger').show();
 				$(this).val('Turn Off Upload Debugger');
-				this.turnedOn = true;
+				$(this).data('turnedOn', true);
 			}else{
 				$('.uploadDebugger').hide();
 				$(this).val('Turn On Upload Debugger');
-				this.turnedOn = false;
+				$(this).data('turnedOn', false);
 			}
 		});
 	});

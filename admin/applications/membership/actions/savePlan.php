@@ -11,7 +11,7 @@
 		$appendMsg .= 'Membership months or days must be more than 0';
 	}
 
-	if ($_POST['no_of_titles'] <= 0) {
+	if ($_POST['no_of_titles'] <= -1) {
 		$error = true;
 		$appendMsg .= 'Number of titles must be more than 0';
 	}
@@ -42,6 +42,7 @@
 		$Plan->no_of_titles = $_POST['no_of_titles'];
 		$Plan->price = $_POST['price'];
 		$Plan->rent_tax_class_id = $_POST['rent_tax_class_id'];
+		$Plan->reccurring = (isset($_POST['not_reccurring'])?0:1);
 		$Plan->save();
 		
 		if (isset($_POST['default_plan'])){

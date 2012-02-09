@@ -21,7 +21,7 @@ if($valid){
 	$Commentt->comment_email = $_POST['comment_email'];
 	$Comment->save();
 	$emailEvent = new emailEvent('blog_comment', Session::get('languages_id'));
-	$link = itw_admin_app_link('appExt=blog&pID='.$_POST['post_seo'],'blog_posts','new_post');
+	$link = itw_admin_app_link('appExt=blog&pID='.$_POST['post_seo'].'&cID='.$Commentt->comment_id,'blog_posts','new_post').'#page-comments';
 	$emailEvent->setVars(array(
 			'link' => $link,
 		));

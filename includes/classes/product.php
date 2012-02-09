@@ -141,6 +141,7 @@ class Product {
 	function getManufacturerName(){ return stripslashes($this->productInfo['Manufacturers']['manufacturers_name']); }
 	function getURL(){ return $this->productInfo['ProductsDescription'][Session::get('languages_id')]['products_url']; }
 	function getPreview(){ return $this->productInfo['movie_preview']; }
+	function getKeepPrice(){ return $this->productInfo['products_keepit_price']; }
 	function getAvailableDate(){ return $this->productInfo['products_date_available']; }
 	function getLastModified(){ return $this->productInfo['products_last_modified']; }
 	function getDateAdded(){ return $this->productInfo['products_date_added']; }

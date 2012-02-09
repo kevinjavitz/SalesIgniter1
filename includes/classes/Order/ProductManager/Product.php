@@ -86,7 +86,14 @@ class OrderProduct {
 				return false;
 			}
 		}
-		return (isset($this->pInfo['barcode_id'])?$this->pInfo['barcode_id']:false);
+		if(isset($this->pInfo['barcode_id'])){
+			$ProductsInventoryBarcodes = Doctrine_Core::getTable('ProductsInventoryBarcodes')->find($this->pInfo['barcode_id']);
+			if ($ProductsInventoryBarcodes){
+				return $ProductsInventoryBarcodes->barcode;
+			}
+		}
+		return false;
+
 	}
 
 	public function getFinalPrice($wQty = false, $wTax = false){

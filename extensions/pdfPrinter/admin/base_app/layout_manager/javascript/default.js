@@ -30,6 +30,22 @@ $(document).ready(function () {
 		js_redirect(js_app_link('appExt=pdfPrinter&app=layout_manager&appPage=editLayout&lID=' + $('.gridBodyRow.state-active').data('layout_id')));
 	});
 
+	$('.exportButton').click(function () {
+		var getVars = getLinkParams([
+			'rType=ajax',
+			'action=exportLayouts'
+		]);
+
+		$.ajax({
+			cache: false,
+			url: js_app_link(getVars),
+			dataType: 'json',
+			success: function (data) {
+				alert('Layout exported successfully, you can download it from the templates directory.');
+			}
+		});
+	});
+
 	$('.newButton, .configureButton').click(function () {
 		if ($(this).hasClass('newButton')){
 			$('.gridBodyRow.state-active').removeClass('state-active');

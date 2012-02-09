@@ -1,5 +1,5 @@
 <?php
-	require(DIR_WS_CLASSES . 'rental_queue.php');
+	require(sysConfig::get('DIR_WS_CLASSES') . 'rental_queue.php');
 	require('../includes/classes/product.php');
 	$processed = array(
 		'noneInQueue' => array(),
@@ -16,16 +16,40 @@
 		$Customers = Doctrine_Query::create()
 		->select('customers_id')
 		->from('CustomersMembership')
-		->where('ismember', 'M')
-		->andWhere('activate', 'Y')
-		->execute();
-		foreach($Customers->toArray() as $customer){
+		->where('ismember = ?', 'M')
+		->andWhere('activate = ?', 'Y')
+		->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+
+		foreach($Customers as $customer){
 			if (in_array($customer['customers_id'], $processed['noneInQueue'])) continue;
 
 			$userAccount = new rentalStoreUser($customer['customers_id']);
 			$userAccount->loadPlugins();
 			$membership =& $userAccount->plugins['membership'];
-			if ($membership->isRentalMember()){
+			$error = false;
+			if($usePickupRequest){
+				if(isset($_GET['pickupRequestDate'])){
+					$QCustomersToPickupRequest = Doctrine_Query::create()
+					->from('PickupRequests pr')
+					->leftJoin('pr.CustomersToPickupRequests rptpr')
+					->andWhere('pr.start_date = ?', $_GET['pickupRequestDate'])
+					->andWhere('rptpr.customers_id = ?', $customer['customers_id'])
+					->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+				}
+				if(isset($QCustomersToPickupRequest[0])){
+					$shipmentDate = $QCustomersToPickupRequest[0]['start_date'];
+					$pShip = date_parse($shipmentDate);
+					$arrivalDate = date('Y-m-d', mktime($pShip['hour'],$pShip['minute'],$pShip['second'],$pShip['month'],$pShip['day']+sysConfig::get('RENTAL_QUEUE_DAYS_INTERVAL'), $pShip['year']));
+				}else{
+					$error = true;
+					$messageStack->addSession('pageStack', 'No Pickup Request for client id: '.$customer['customers_id'], 'error');
+				}
+			}else{
+				$shipmentDate = date('Y-m-d');
+				$arrivalDate = date('Y-m-d', mktime(0,0,0,date('m'),date('d')+sysConfig::get('RENTAL_QUEUE_DAYS_INTERVAL'),date('Y')));
+			}
+			if ($membership->isRentalMember() && $error == false){
+
 				$addressBook =& $userAccount->plugins['addressBook'];
 
 				$rentalQueue = new rentalQueue_admin($customer['customers_id']);
@@ -95,9 +119,6 @@
 
 								$rentalQueue->incrementTopRentals($products[$i]['id']);
 
-								$shipmentDate = date('Y-m-d');
-								$arrivalDate = date('Y-m-d', mktime(0,0,0,date('m'),date('d')+RENTAL_QUEUE_DAYS_INTERVAL,date('Y')));
-
 								$NewRentedQueue = new RentedQueue();
 								$NewRentedQueue->customers_id = $QproductsQueue['customers_id'];
 								$NewRentedQueue->products_id = $QproductsQueue['products_id'];
@@ -141,7 +162,7 @@
 								));
 
 								$emailEvent->sendEmail(array(
-									'name'  => $full_name,
+									'name'  => $userAccount->getFirstName(),
 									'email' => $userAccount->getEmailAddress()
 								));
 

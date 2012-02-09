@@ -104,12 +104,6 @@ class osC_onePageCheckout {
 		if (!isset($_GET['payment_error'])){
 			//$this->reset();
 		}
-		
-		if ($this->isNormalCheckout() === true){
-			if (sysConfig::get('STOCK_ALLOW_CHECKOUT') != 'true') {
-				$this->checkStock();
-			}
-		}
 
 		$userAccount = &$this->getUserAccount();
 		if ($userAccount->isLoggedIn() === true){
@@ -408,16 +402,6 @@ class osC_onePageCheckout {
 		// if there is nothing in the customers cart, redirect them to the shopping cart page
 		if ($ShoppingCart->countContents() < 1) {
 			tep_redirect(itw_app_link(null, 'shoppingCart', 'default'));
-		}
-	}
-
-	public function checkStock(){
-		global $ShoppingCart;
-		foreach($ShoppingCart->getProducts() as $cartProduct) {
-			if (tep_check_stock($cartProduct->getIdString(), $cartProduct->getQuantity())) {
-				//tep_redirect(itw_app_link(null, 'shoppingCart', 'default'));
-				break;
-			}
 		}
 	}
 

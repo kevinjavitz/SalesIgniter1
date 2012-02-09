@@ -53,7 +53,7 @@ if (sysConfig::get('RENTAL_UPGRADE_CYCLE') == 'true'){
           $userAccount = new rentalStoreUser($cInfo['customers_id']);
           $userAccount->loadPlugins();
           $membershipUpdate->setCurrentCustomer($userAccount);
-          if ($membershipUpdate->isCanceled() === true){
+          if ($membershipUpdate->isCanceled() === true || $membershipUpdate->isRecurring() == false){
               $membershipUpdate->cancelMembership();
           }elseif($membershipUpdate->isMember() && ($membershipUpdate->isActivated() || $membershipUpdate->isRetry())){
 
@@ -64,6 +64,7 @@ if (sysConfig::get('RENTAL_UPGRADE_CYCLE') == 'true'){
               $orderId = $membershipUpdate->insertOrder();
               if (is_numeric($orderId) === true){
                   if ($membershipUpdate->processPayment($orderId) === true){
+	                  EventManager::notify('CronPaymentSuccess', $membershipUpdate);
                       $membershipUpdate->updateCustomersNextBillDate();
                       $membershipUpdate->updateStreamingAccess();
                       if ($membershipUpdate->isFromTrial() === true){

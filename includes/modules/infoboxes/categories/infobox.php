@@ -24,7 +24,7 @@ class infoBoxCategories extends InfoBoxAbstract {
 
 		$boxWidgetProperties = $this->getWidgetProperties();		
 		$Qcategories = Doctrine_Query::create()
-		->select('c.categories_id, cd.categories_name, c.parent_id')
+		->select('c.categories_id, cd.categories_name, cd.categories_seo_url, c.parent_id')
 		->from('Categories c')
 		->leftJoin('c.CategoriesDescription cd')
 		->where('c.parent_id = ?', ((int)$boxWidgetProperties->selected_category > 0) ? $boxWidgetProperties->selected_category : 0)
@@ -41,21 +41,22 @@ class infoBoxCategories extends InfoBoxAbstract {
 
 		if ($Result){
 			foreach($Result as $idx => $cInfo){
-				$categoryId = $cInfo['categories_id'];
+				$categoryId = $cInfo['CategoriesDescription'][0]['categories_seo_url'];
+				$catId = $cInfo['categories_id'];
 				$parentId = $cInfo['parent_id'];
 				$categoryName = $cInfo['CategoriesDescription'][0]['categories_name'];
 
 				$headerEl = htmlBase::newElement('h3');
-				if (isset($cPath_array) && $cPath_array[0] == $categoryId){
+				if ($current_category_id == $catId){
 					$headerEl->addClass('currentCategory');
 				}
 				$headerEl->html($categoryName);
 
 				$Qchildren = Doctrine_Query::create()
-				->select('c.categories_id, cd.categories_name, c.parent_id')
+				->select('c.categories_id, cd.categories_name, cd.categories_seo_url, c.parent_id')
 				->from('Categories c')
 				->leftJoin('c.CategoriesDescription cd')
-				->where('c.parent_id = ?', $categoryId)
+				->where('c.parent_id = ?', $catId)
 				->andWhere('cd.language_id = ?', (int)Session::get('languages_id'))
 				->orderBy('c.sort_order, cd.categories_name');
 
@@ -73,7 +74,7 @@ class infoBoxCategories extends InfoBoxAbstract {
 					->addClass('ui-widget ui-widget-content ui-corner-all')
 					->css('border-color', 'transparent')
 					->html('<span class="ui-icon ui-icon-triangle-1-e ui-icon-categories-bullet" style="vertical-align:middle;"></span><span class="ui-categories-text" style="vertical-align:middle;">'.sysLanguage::get('INFOBOX_CATEGORIES_VIEW_PRODUCTS').'</span>')
-					->setHref(itw_app_link('cPath=' . $categoryId, 'index', 'default'));
+					->setHref(itw_app_link(null, 'index', $categoryId));
 
 					$liElement = htmlBase::newElement('li')
 					->append($childLinkEl);

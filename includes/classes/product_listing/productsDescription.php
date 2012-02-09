@@ -11,7 +11,7 @@ class productListing_productsDescription {
         return $selectSortKeys;
     }
 
-	public function show(&$productClass){
+	public function show(&$productClass, &$purchaseTypesCol){
 		//return implode(' ', array_slice(str_word_count(strip_tags($productClass->getDescription()), 1), 0, 50)) . ' <a class="readMore" href="' . itw_app_link('products_id=' . $productClass->getID(), 'product', 'info') . '">Read More</a>';
 		$description = strip_tags($productClass->getDescription());
 		$explode = explode(' ',$description);

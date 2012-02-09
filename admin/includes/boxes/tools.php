@@ -65,13 +65,20 @@
 		);
 	}
 
+	if (sysPermissions::adminAccessAllowed('index', 'manageFavorites') === true){
+		$contents['children'][] = array(
+			'link' => itw_app_link(null, 'index', 'manageFavorites'),
+			'text' => 'Manage Favorites'
+		);
+	}
+
 	if (sysPermissions::adminAccessAllowed('tools', 'cleardb') === true){
 		$contents['children'][] = array(
 			'link' => itw_app_link(null, 'tools', 'cleardb'),
 			'text' => 'Clear Database'
 		);
 	}
-
+	
 	if (sysPermissions::adminAccessAllowed('tools', 'fill_model') === true){
 		$contents['children'][] = array(
 			'link' => itw_app_link(null, 'tools', 'fill_model'),
@@ -79,13 +86,8 @@
 		);
 	}
 
-	if (sysPermissions::adminAccessAllowed('tools', 'update_configs') === true){
-		$contents['children'][] = array(
-			'link' => itw_app_link(null, 'tools', 'update_configs'),
-			'text' => 'Update Configurations'
-		);
-	}
-
-
 	EventManager::notify('BoxToolsAddLink', &$contents);
+if(count($contents['children']) == 0){
+	$contents = array();
+}
 ?>

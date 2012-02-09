@@ -1,0 +1,121 @@
+<ConfigurationGroup>
+	<title>Social Sharing</title>
+	<key>socialSharing</key>
+	<description>Configuration Settings For The Social Sharing Extension</description>
+	<Configuration>
+		<EXTENSION_SOCIAL_SHARING_ENABLED>
+			<title>Enable Social Sharing</title>
+			<value>True</value>
+			<description>Enable Or Disable The Social Sharing Extension</description>
+			<sort_order>1</sort_order>
+			<set_function>tep_cfg_select_option(array('True','False'),</set_function>
+		</EXTENSION_SOCIAL_SHARING_ENABLED>
+
+		<EXTENSION_SOCIAL_SHARING_SHOW_PRODUCT_INFO>
+			<title>Show on product Info</title>
+			<value>True</value>
+			<description>Show icons on product info</description>
+			<sort_order>1</sort_order>
+			<set_function>tep_cfg_select_option(array('True','False'),</set_function>
+		</EXTENSION_SOCIAL_SHARING_SHOW_PRODUCT_INFO>
+
+		<EXTENSION_SOCIAL_SHARING_SHOW_TWITTER>
+			<title>Show twitter</title>
+			<value>True</value>
+			<description>Show twitter</description>
+			<sort_order>1</sort_order>
+			<set_function>tep_cfg_select_option(array('True','False'),</set_function>
+		</EXTENSION_SOCIAL_SHARING_SHOW_TWITTER>
+
+		<EXTENSION_SOCIAL_SHARING_SHOW_FACEBOOK>
+			<title>Show facebook like</title>
+			<value>True</value>
+			<description>Show facebook like</description>
+			<sort_order>1</sort_order>
+			<set_function>tep_cfg_select_option(array('True','False'),</set_function>
+		</EXTENSION_SOCIAL_SHARING_SHOW_FACEBOOK>
+
+		<EXTENSION_SOCIAL_SHARING_SHOW_DIGG>
+			<title>Show digg</title>
+			<value>True</value>
+			<description>Show digg</description>
+			<sort_order>1</sort_order>
+			<set_function>tep_cfg_select_option(array('True','False'),</set_function>
+		</EXTENSION_SOCIAL_SHARING_SHOW_DIGG>
+
+		<EXTENSION_SOCIAL_SHARING_SHOW_LINKEDIN>
+			<title>Show linkedin</title>
+			<value>True</value>
+			<description>Show linkedin</description>
+			<sort_order>1</sort_order>
+			<set_function>tep_cfg_select_option(array('True','False'),</set_function>
+		</EXTENSION_SOCIAL_SHARING_SHOW_LINKEDIN>
+
+		<EXTENSION_SOCIAL_SHARING_SHOW_GPLUS>
+			<title>Show google plus</title>
+			<value>True</value>
+			<description>Show google plus</description>
+			<sort_order>1</sort_order>
+			<set_function>tep_cfg_select_option(array('True','False'),</set_function>
+		</EXTENSION_SOCIAL_SHARING_SHOW_GPLUS>
+
+		<EXTENSION_SOCIAL_SHARING_FORMAT>
+			<title>What format the icons should be</title>
+			<value>Horizontal</value>
+			<description>Format of sharing icons</description>
+			<sort_order>1</sort_order>
+			<set_function>tep_cfg_select_option(array('Horizontal','Vertical'),</set_function>
+		</EXTENSION_SOCIAL_SHARING_FORMAT>
+
+		<EXTENSION_SOCIAL_SHARING_TYPE>
+			<title>What type the icons should be</title>
+			<value>Standard</value>
+			<description>Type of sharing icons</description>
+			<sort_order>1</sort_order>
+			<set_function>tep_cfg_select_option(array('Standard','Count'),</set_function>
+		</EXTENSION_SOCIAL_SHARING_TYPE>
+
+		<EXTENSION_SOCIAL_SHARING_SIZE>
+			<title>What size the icons should be</title>
+			<value>Medium</value>
+			<description>Size of sharing icons</description>
+			<sort_order>1</sort_order>
+			<set_function>tep_cfg_select_option(array('Medium','Large'),</set_function>
+		</EXTENSION_SOCIAL_SHARING_SIZE>
+
+		<EXTENSION_SOCIAL_SHARING_SHORT_URL>
+			<title>Enable Short URL</title>
+			<value>True</value>
+			<description>Enable short URL</description>
+			<sort_order>1</sort_order>
+			<set_function>tep_cfg_select_option(array('True','False'),</set_function>
+		</EXTENSION_SOCIAL_SHARING_SHORT_URL>
+
+		<EXTENSION_SOCIAL_SHARING_BITLY_API>
+			<title>Bitly API key</title>
+			<description>Bitly API key</description>
+			<sort_order>1</sort_order>
+		</EXTENSION_SOCIAL_SHARING_BITLY_API>
+
+		<EXTENSION_SOCIAL_SHARING_BITLY_USERNAME>
+			<title>Bitly Username</title>
+			<description>Bitly Username</description>
+			<sort_order>1</sort_order>
+		</EXTENSION_SOCIAL_SHARING_BITLY_USERNAME>
+
+		<EXTENSION_SOCIAL_SHARING_FACEBOOK_API>
+			<title>Facebook API key</title>
+			<description>Facebook API key</description>
+			<sort_order>1</sort_order>
+		</EXTENSION_SOCIAL_SHARING_FACEBOOK_API>
+
+		<EXTENSION_SOCIAL_SHARING_ENABLE_COMMENTS_PRODUCT_INFO>
+			<title>Enable facebook comments on product info</title>
+			<value>True</value>
+			<description>Enable facebook comments on product info</description>
+			<sort_order>1</sort_order>
+			<set_function>tep_cfg_select_option(array('True','False'),</set_function>
+		</EXTENSION_SOCIAL_SHARING_ENABLE_COMMENTS_PRODUCT_INFO>
+
+	</Configuration>
+</ConfigurationGroup>

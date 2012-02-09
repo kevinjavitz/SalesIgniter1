@@ -1,6 +1,7 @@
 <?php
 class Modules extends Doctrine_Record {
 	public function setUp(){
+		parent::setUp();
 		$this->hasMany('ModulesConfiguration', array(
 			'local'   => 'modules_id',
 			'foreign' => 'modules_id',

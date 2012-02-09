@@ -75,24 +75,20 @@
 				$labelContent[] = '<b>' . $labelInfo['products_name'] . '</b>';
 			}
 
-			$Qcheck = dataAccess::setQuery('select * from {fields_to_products} where product_id = {product_id}')
-			->setTable('{fields_to_products}', TABLE_PRODUCTS_CUSTOM_FIELDS_TO_PRODUCTS)
-			->setValue('{product_id}', $labelInfo['products_id'])
-			->runQuery();
-			if ($Qcheck->numberOfRows() > 0){
-				while($Qcheck->next() !== false){
-					$Qfield = dataAccess::setQuery('select * from {fields} f left join {fields_description} fd using(field_id) where fd.language_id = {language_id} and f.field_id = {field_id}')
-					->setTable('{fields}', TABLE_PRODUCTS_CUSTOM_FIELDS)
-					->setTable('{fields_description}', TABLE_PRODUCTS_CUSTOM_FIELDS_DESCRIPTION)
-					->setValue('{field_id}', $Qcheck->getVal('field_id'))
-					->setValue('{language_id}', Session::get('languages_id'))
-					->runQuery();
-					if ($Qfield->getVal('show_on_labels') == '1'){
-						$maxChars = ($Qfield->getVal('labels_max_chars') > 0 ? $Qfield->getVal('labels_max_chars') : 150);
-						if (strlen($Qcheck->getVal('value')) > $maxChars){
-							$labelContent[] = '<b>' . $Qfield->getVal('field_name') . ':</b> ' . substr($Qcheck->getVal('value'), 0, $maxChars) . '...';
+			$Check = Doctrine_Manager::getInstance()
+				->getCurrentConnection()
+				->fetchAssoc('select * from ' . TABLE_PRODUCTS_CUSTOM_FIELDS_TO_PRODUCTS . ' where product_id = "' . $labelInfo['products_id'] . '"');
+			if (sizeof($Check) > 0){
+				foreach($Check as $cInfo){
+					$Field = Doctrine_Manager::getInstance()
+						->getCurrentConnection()
+						->fetchAssoc('select * from ' . TABLE_PRODUCTS_CUSTOM_FIELDS . ' f left join ' . TABLE_PRODUCTS_CUSTOM_FIELDS_DESCRIPTION . ' fd using(field_id) where fd.language_id = "' . Session::get('languages_id') . '" and f.field_id = "' . $cInfo['field_id'] . '"');
+					if ($Field[0]['show_on_labels'] == '1'){
+						$maxChars = ($field[0]['labels_max_chars'] > 0 ? $Field[0]['labels_max_chars'] : 150);
+						if (strlen($cInfo['value']) > $maxChars){
+							$labelContent[] = '<b>' . $Field[0]['field_name'] . ':</b> ' . substr($cInfo['value'], 0, $maxChars) . '...';
 						}else{
-							$labelContent[] = '<b>' . $Qfield->getVal('field_name') . ':</b> ' . $Qcheck->getVal('value');
+							$labelContent[] = '<b>' . $Field[0]['field_name'] . ':</b> ' . $cInfo['value'];
 						}
 					}
 				}

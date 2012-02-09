@@ -1,36 +1,41 @@
 <configurations>
 	<configuration>
+		<tab><![CDATA[General]]></tab>
+		<title><![CDATA[Installed Status]]></title>
+		<key><![CDATA[INSTALLED]]></key>
+		<value><![CDATA[False]]></value>
+		<description><![CDATA[Tells if the module is installed or not]]></description>
+		<set_function><![CDATA[tep_cfg_show_installed_status(]]></set_function>
+	</configuration>
+	<configuration>
+		<tab><![CDATA[General]]></tab>
 		<title><![CDATA[Display Payment Fee]]></title>
-		<key><![CDATA[MODULE_ORDER_TOTAL_PAYMENTFEE_STATUS]]></key>
-		<value><![CDATA[True]]></value>
+		<key><![CDATA[STATUS]]></key>
+		<value><![CDATA[False]]></value>
 		<description><![CDATA[Do you want to display the payment fee?]]></description>
-		<sort_order>1</sort_order>
 		<set_function><![CDATA[tep_cfg_select_option(array('True', 'False'),]]></set_function>
 	</configuration>
 	<configuration>
-		<title><![CDATA[Sort order of display]]></title>
-		<key><![CDATA[MODULE_ORDER_TOTAL_PAYMENTFEE_SORT_ORDER]]></key>
+		<tab><![CDATA[General]]></tab>
+		<title><![CDATA[Display Order]]></title>
+		<key><![CDATA[DISPLAY_ORDER]]></key>
 		<value><![CDATA[0]]></value>
-		<description><![CDATA[Sort order of display. Lowest is displayed first.]]></description>
-		<sort_order>2</sort_order>
+		<description><![CDATA[Display Order. Lowest is displayed first.]]></description>
 	</configuration>
 	<configuration>
+		<tab><![CDATA[General]]></tab>
 		<title><![CDATA[Allow Payment Fee]]></title>
 		<key><![CDATA[MODULE_ORDER_TOTAL_PAYMENTFEE_ENABLE]]></key>
 		<value><![CDATA[False]]></value>
 		<description><![CDATA[Do you want to allow payment fee?]]></description>
-		<sort_order>3</sort_order>
 		<set_function><![CDATA[tep_cfg_select_option(array('True', 'False'),]]></set_function>
 	</configuration>
 	<configuration>
+		<tab><![CDATA[General]]></tab>
 		<title><![CDATA[Choose Fee Per Method]]></title>
 		<key><![CDATA[MODULE_ORDER_TOTAL_PAYMENTFEE_VALUE]]></key>
 		<value><![CDATA[0]]></value>
 		<description><![CDATA[Format for payment fee is payment module code-value where value can be a percent from the toal value or a fixed value]]></description>
-		<sort_order>7</sort_order>
 		<set_function><![CDATA[tep_cfg_payment_fee(]]></set_function>
 	</configuration>
-
-
-
 </configurations>

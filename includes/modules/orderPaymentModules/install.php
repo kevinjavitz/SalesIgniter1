@@ -26,7 +26,7 @@
 				$moduleConfig = new Modules();
 				$moduleConfig->modules_code = $this->moduleCls->getCode();
 				$moduleConfig->modules_status = '1';
-				$moduleConfig->modules_type = 'order_payment';
+				$moduleConfig->modules_type = 'orderPayment';
 			
 				$moduleConfiguration =& $moduleConfig->ModulesConfiguration;
 				$k = 0;

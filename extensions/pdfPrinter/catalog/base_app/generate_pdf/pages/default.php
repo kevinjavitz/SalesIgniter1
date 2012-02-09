@@ -1,6 +1,6 @@
 <?php
 
-require(sysConfig::getDirFsCatalog() . 'includes/modules/pdfinfoboxes/PDFInfoBoxAbstract.php');
+
 require(sysConfig::getDirFsCatalog() . 'includes/classes/Order/Base.php');
 
 require_once(sysConfig::getDirFsCatalog(). 'dompdf/dompdf_config.inc.php');
@@ -320,10 +320,10 @@ $myPdf = ob_get_contents();
 ob_end_clean();
 $dompdf = new DOMPDF();
 $dompdf->set_base_path(sysConfig::get('DIR_FS_DOCUMENT_ROOT'));
-$dompdf->load_html($myPdf);
+$dompdf->load_html(utf8_decode($myPdf));
 $dompdf->render();
 //$dompdf->stream('saved_pdf.pdf', array("Attachment" => 0));
 $pdf = $dompdf->output();
-file_put_contents(sysConfig::getDirFsCatalog(). 'temp/pdf/saved_'.(isset($_GET['type'])?$_GET['type']:'').'pdf'.(isset($_GET['suffix'])?$_GET['suffix']:'').'.pdf', $pdf);
-header("Location: " .sysConfig::getDirWsCatalog(). 'temp/pdf/saved_'.(isset($_GET['type'])?$_GET['type']:'').'pdf'.(isset($_GET['suffix'])?$_GET['suffix']:'').'.pdf');
+file_put_contents(sysConfig::getDirFsCatalog(). 'temp/pdf/invoice_'.(isset($_GET['oID'])?$_GET['oID']:'').'.pdf', $pdf);
+header("Location: " .sysConfig::getDirWsCatalog(). 'temp/pdf/invoice_'.(isset($_GET['oID'])?$_GET['oID']:'').'.pdf');
 itwExit();

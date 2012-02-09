@@ -1,0 +1,44 @@
+<definitions>
+	<define key="HEADING_TITLE"><![CDATA[Categories]]></define>
+	<define key="HEADING_TITLE_SEARCH"><![CDATA[Search:]]></define>
+	<define key="HEADING_TITLE_GOTO"><![CDATA[Go To:]]></define>
+	<define key="TABLE_HEADING_CATEGORIES"><![CDATA[Categories]]></define>
+	<define key="TABLE_HEADING_ACTION"><![CDATA[Action]]></define>
+	<define key="TAB_GENERAL"><![CDATA[General]]></define>
+	<define key="TAB_DESCRIPTION"><![CDATA[Description]]></define>
+	<define key="TEXT_SUBCATEGORIES"><![CDATA[Subcategories:]]></define>
+	<define key="TEXT_PRODUCTS"><![CDATA[Products:]]></define>
+	<define key="TEXT_DATE_ADDED"><![CDATA[Date Added:]]></define>
+	<define key="TEXT_LAST_MODIFIED"><![CDATA[Last Modified:]]></define>
+	<define key="TEXT_IMAGE_NONEXISTENT"><![CDATA[IMAGE DOES NOT EXIST]]></define>
+	<define key="TEXT_NO_CHILD_CATEGORIES"><![CDATA[Please insert a new category in this level.]]></define>
+	<define key="TEXT_EDIT_INTRO"><![CDATA[Please make any necessary changes]]></define>
+	<define key="TEXT_EDIT_CATEGORIES_ID"><![CDATA[Category ID:]]></define>
+	<define key="TEXT_EDIT_CATEGORIES_NAME"><![CDATA[Category Name:]]></define>
+	<define key="TEXT_EDIT_CATEGORIES_IMAGE"><![CDATA[Category Image:]]></define>
+	<define key="TEXT_EDIT_SORT_ORDER"><![CDATA[Sort Order:]]></define>
+	<define key="TEXT_EDIT_CATEGORIES_SEO_URL"><![CDATA[Categories SEO Url:]]></define>
+	<define key="TEXT_INFO_HEADING_NEW_CATEGORY"><![CDATA[New Category]]></define>
+	<define key="TEXT_INFO_HEADING_EDIT_CATEGORY"><![CDATA[Edit Category]]></define>
+	<define key="TEXT_INFO_HEADING_DELETE_CATEGORY"><![CDATA[Delete Category]]></define>
+	<define key="TEXT_INFO_HEADING_MOVE_CATEGORY"><![CDATA[Move Category]]></define>
+	<define key="TEXT_DELETE_CATEGORY_INTRO"><![CDATA[Are you sure you want to delete this category?]]></define>
+	<define key="TEXT_DELETE_WARNING_CHILDS"><![CDATA[<b>WARNING:</b> There are %s (child-)categories still linked to this category!]]></define>
+	<define key="TEXT_DELETE_WARNING_PRODUCTS"><![CDATA[<b>WARNING:</b> There are %s products still linked to this category!]]></define>
+	<define key="TEXT_MOVE_CATEGORIES_INTRO"><![CDATA[Please select which category you wish <b>%s</b> to reside in]]></define>
+	<define key="TEXT_MOVE"><![CDATA[Move <b>%s</b> to:]]></define>
+	<define key="TEXT_NEW_CATEGORY_INTRO"><![CDATA[Please fill out the following information for the new category]]></define>
+	<define key="TEXT_CATEGORIES_NAME"><![CDATA[Category Name:]]></define>
+	<define key="TEXT_CATEGORIES_IMAGE"><![CDATA[Category Image:]]></define>
+	<define key="TEXT_SORT_ORDER"><![CDATA[Sort Order:]]></define>
+	<define key="ERROR_CATALOG_IMAGE_DIRECTORY_NOT_WRITEABLE"><![CDATA[Error: Catalog images directory is not writeable: %s.]]></define>
+	<define key="ERROR_CATALOG_IMAGE_DIRECTORY_DOES_NOT_EXIST"><![CDATA[Error: Catalog images directory does not exist: %s.]]></define>
+	<define key="ERROR_CANNOT_MOVE_CATEGORY_TO_PARENT"><![CDATA[Error: Category cannot be moved into child category.]]></define>
+  	<define key="TEXT_CATEGORIES_SEO_URL"><![CDATA[Category SEO URL:]]></define>
+	<define key="TEXT_PARENT_CATEGORY"><![CDATA[Parent Category:]]></define>
+
+	<define key="TEXT_CATEGORIES_DESCRIPTION"><![CDATA[Categories Description:]]></define>
+	<define key="EMPTY_CATEGORY"><![CDATA[Empty Category]]></define>
+	<define key="TEXT_ADDITIONAL_IMAGES"><![CDATA[Additional Images]]></define>
+
+</definitions>

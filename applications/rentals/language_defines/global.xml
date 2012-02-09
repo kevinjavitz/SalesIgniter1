@@ -63,5 +63,8 @@
 	<define key="TEXT_RARE"><![CDATA[ <span style="color:red">(rare/out of print)</span>]]></define>
 	<define key="TEXT_MEMBER_SINCE"><![CDATA[<br>Member Since: %s<br>]]></define>
 	<define key="TEXT_BUTTON_CONTINUE_CART"><![CDATA[Continue Searching]]></define>
+	<define key="TABLE_HEADING_KEEP_IT"><![CDATA[Price to keep ]]></define>
+	<define key="TABLE_HEADING_PICKUP_REQUEST"><![CDATA[Pickup requests]]></define>
+	<define key="TEXT_BUTTON_UPDATE_PICKUP_REQUESTS"><![CDATA[Update Pickup Request]]></define>
 
 </definitions>

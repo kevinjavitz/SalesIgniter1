@@ -147,5 +147,6 @@ $(document).ready(function (){
 	
 	$AttributesTable.hide();
 	$newTable.insertAfter($AttributesTable);
+
 	//$AttributesTable.replaceWith($newTable);
 });

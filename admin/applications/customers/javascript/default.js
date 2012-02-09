@@ -43,7 +43,11 @@ $(document).ready(function (){
 		var customerId = $('.gridBodyRow.state-active').attr('data-customer_id');
 		js_redirect(js_app_link('app=customers&appPage=edit&cID=' + customerId));
 	});
-	
+
+	$('.gridButtonBar').find('.newButton').click(function (){
+		js_redirect(js_app_link('app=customers&appPage=edit'));
+	});
+
 	$('.gridButtonBar').find('.deleteButton').click(function (){
 		var customerId = $('.gridBodyRow.state-active').attr('data-customer_id');
 		

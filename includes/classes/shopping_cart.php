@@ -141,7 +141,7 @@
 		}
 		
 		function updateProduct($pID_string, $pInfo){
-			$cartProduct = $this->contents->find($pID_string, $pInfo['purchase_type']);
+			$cartProduct = $this->contents->findProduct($pID_string, $pInfo['purchase_type']);
 			EventManager::notify('ShoppingCart\UpdateProductPrepare', $cartProduct->getIdString(), $pInfo['purchase_type']);
 			
 

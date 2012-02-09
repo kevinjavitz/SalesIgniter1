@@ -264,10 +264,10 @@
 	->leftJoin('p.ProductsDescription pd')	
 	->leftJoin('p.ProductsInventory pi')
 	->leftJoin('pi.ProductsInventoryBarcodes pib')
-	->leftJoin('pi.ProductsInventoryQuantity piq')
 	->leftJoin('pib.OrdersProductsReservation opr')
 	->leftJoin('pib.RentedProducts rp')
-	->where('pd.language_id = ?', $lID);
+	->where('pd.language_id = ?', $lID)
+	->andWhere('pib.barcode_id is not null');
 
 	if ($purchaseType == 'both'){
 		$Qproducts->andWhere('pi.type = "rental" or pi.type = "reservation"');
@@ -614,10 +614,11 @@ var startSec = 0;
 var startCal = 0;
 var viewType = 'day';
 var startArray =[<?php echo implode(',', $timeBooked);?>];
-		$(document).ready(function (){
+		$(window).load(function (){
 			//$('#calendarTime').height($('#prodTable').height()-50);
 			startCal = $('#calendarTime').css('width');
 			startSec = $('#secWindow').css('width');
+			startHeight = -$('.adminHeader').height()-88;
 			$('.ui-grid-row').each(function(){
 				if( $(this).attr('class').indexOf('ui-grid-heading-row') >0){
 
@@ -694,7 +695,7 @@ var startArray =[<?php echo implode(',', $timeBooked);?>];
 							$('.'+barcodesArr[i]).each(function(){
 								if($(this).parent().get(0).tagName == 'TR'){
 									var pos = $(this).offset();
-									$('.'+barcodesArr[i]).css('top', (pos.top-157)+'px');
+									$('.'+barcodesArr[i]).css('top', (pos.top+startHeight)+'px');
 									$('.'+barcodesArr[i]).css('height', '16px');
 								}
 							});
@@ -707,7 +708,7 @@ var startArray =[<?php echo implode(',', $timeBooked);?>];
 						posy = 40;
 
 						pos = element.position();
-						element.css('top', (barcodePos[element.attr('barcode_name')]-173)+'px');
+						element.css('top', (barcodePos[element.attr('barcode_name')]+startHeight)+'px');
 						element.css('width', (element.height()*posy/posx)+'px');
 						element.css('left', (pos.top*posy/posx)+'px');
 						element.css('height', '16px');
@@ -804,10 +805,10 @@ var startArray =[<?php echo implode(',', $timeBooked);?>];
 					}
 					$('#calendarTime').fullCalendar( 'changeView','agendaDay');
 					$('.fc-agenda-body table').tableTranspose();
-					$('.fc-agenda-body').height($('#prodTable').height()-50);
+					$('.fc-agenda-body').height($('#prodTable').height()-50+startHeight);
 					$('.fc-agenda-body table th:first').css('width','40px');
 					$('.fc-agenda-body table tr:nth-child(2)').each(function(){
-						$(this).height($('#prodTable').height()-83);
+						$(this).height($('#prodTable').height()-83+startHeight);
 
 					});
 					$('.fc-content table td').css('cursor','pointer');

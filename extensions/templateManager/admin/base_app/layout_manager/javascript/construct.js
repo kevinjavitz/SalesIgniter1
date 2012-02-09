@@ -191,6 +191,8 @@ function containerAdd() {
 	var sortOrder = 1;
 	$('#construct > div').each(function (){
 		$(this).attr('data-sort_order', sortOrder);
+		$(this).attr('data-anchor_id', '0');
+		$(this).attr('data-is_anchor', '0');
 		sortOrder++;
 	});
 
@@ -218,6 +220,8 @@ function columnAdd() {
 	var sortOrder = 1;
 	$parentContainer.find('.column').each(function (){
 		$(this).attr('data-sort_order', sortOrder);
+		$(this).attr('data-anchor_id', '0');
+		$(this).attr('data-is_anchor', '0');
 		sortOrder++;
 	});
 
@@ -875,6 +879,18 @@ $(document).ready(function() {
 			Container.attr('data-sort_order', newContainerSort);
 			showSaveLayout();
 		}
+	});
+
+	$('.isAnchor').live('change', function(){
+			var Container = $('.adjustPopup').data('targetElement');//$(this);
+			Container.attr('data-is_anchor', $('.isAnchor option:selected').val());
+
+	});
+
+	$('.anchorID').live('change', function(){
+		var Container = $('.adjustPopup').data('targetElement');//$(this);
+		Container.attr('data-anchor_id', $('.anchorID option:selected').val());
+
 	});
 
 	$('.moveContainerDown').live('click', function (e) {

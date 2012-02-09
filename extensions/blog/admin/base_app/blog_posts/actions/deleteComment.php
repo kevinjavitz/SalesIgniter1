@@ -7,5 +7,5 @@
 		}
 	}
 
-	EventManager::attachActionResponse(itw_app_link(tep_get_all_get_params(array('action', 'cID'))), 'redirect');
+	EventManager::attachActionResponse(itw_app_link(tep_get_all_get_params(array('action', 'cID'))).'#page-comments', 'redirect');
 ?>

@@ -40,7 +40,13 @@ class SystemModulesLoader {
 	}
 	
 	public static function countEnabled(){
-		return sizeof(self::getClassModules());
+		$enabled = 0;
+		foreach(self::getClassModules() as $ModuleName => $Module){
+			if ($Module->isEnabled() === true){
+				$enabled++;
+			}
+		}
+		return $enabled;
 	}
 
 	public static function hasModules(){

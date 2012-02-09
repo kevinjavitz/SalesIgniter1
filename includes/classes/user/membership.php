@@ -132,6 +132,7 @@ class rentalStoreUser_membership extends StandardClass {
 				'free_trial'                  => $Qmembership[0]['free_trial'],
 				'free_trial_flag'             => $Qmembership[0]['free_trial'] > 0 ? 'Y' : 'N',
 				'free_trial_amount'           => $Qmembership[0]['free_trial_amount'],
+				'reccurring'                  => $Qmembership[0]['reccurring'],
 				'payment_term'                => $Qmembership[0]['payment_term']
 			);
 		
@@ -559,6 +560,10 @@ class rentalStoreUser_membership extends StandardClass {
 
 	public function getPlanPrice(){
 		return $this->planInfo['price'];
+	}
+
+	public function isRecurringPlan(){
+		return (($this->planInfo['reccurring'] == '1')?true:false);
 	}
 
 	public function getMembershipPrice(){

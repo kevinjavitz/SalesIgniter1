@@ -1,0 +1,8 @@
+<definitions>
+	<define key="TEXT_LOGIN_PAP4"><![CDATA[Login to affiliate panel]]></define>
+	<define key="TEXT_GO_AFFILIATE"><![CDATA[<h3>Send this Website<BR/><BR/> <a href="%s" target="_blank">%s</a> <BR/><BR/>to your friends and Get Paid To Play!</h3>]]></define>
+
+	<define key="TEXT_PAP4"><![CDATA[Affiliate Manager]]></define>
+	<define key="TEXT_CHANGE_USERNAME"><![CDATA[Change Username]]></define>
+
+</definitions>

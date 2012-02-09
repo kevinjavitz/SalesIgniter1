@@ -1,4 +1,8 @@
 <?php
+require(sysConfig::getDirFsCatalog() . 'includes/classes/eventManager/Event.php');
+require(sysConfig::getDirFsCatalog() . 'includes/classes/eventManager/EventClosure.php');
+require(sysConfig::getDirFsCatalog() . 'includes/classes/eventManager/EventActionResponse.php');
+
 /**
  * Holder for all registered events
  * @package EventManager
@@ -65,7 +69,17 @@ class EventManager {
 			$Event = new EventTest($eventInfo['name'], $eventInfo['function'], $eventInfo['class']);
 		}
 		else{
-			$Event = new EventTest($eventInfo, $eventInfo, $fromClass);
+			if (is_object($toClassName)){
+				$EventClass = 'Event' . get_class($toClassName);
+				if (class_exists($EventClass)){
+					$Event = new $EventClass($eventInfo, $toClassName);
+					$toClassName = null;
+				}else{
+					die('Event Class Does Not Exist: ' . $EventClass);
+				}
+			}else{
+				$Event = new EventTest($eventInfo, $eventInfo, $fromClass);
+			}
 		}
 		self::attach($Event, $toClassName);
 	}

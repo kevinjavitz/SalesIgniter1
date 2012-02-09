@@ -9,9 +9,10 @@
 		$PDF_Labels->setInventoryCenter($_GET['invCenter']);
 	}
 	$PDF_Labels->runListingQuery();
+	$pData = $PDF_Labels->parseListingData('json');
 
 	EventManager::attachActionResponse(array(
 		'success'     => true,
-		'listingData' => $PDF_Labels->parseListingData('json')
+		'listingData' => $pData
 	), 'json');
 ?>

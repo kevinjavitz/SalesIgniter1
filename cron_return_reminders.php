@@ -16,8 +16,7 @@ $pprExt = $appExtension->getExtension('payPerRentals');
 			->andWhere('opr.end_date >= ?', date('Y-m-d H:i:s'))
 			->andWhere('opr.rental_state = ?', 'out')
 			->andWhere('oa.address_type = ?', 'customer')
-			->orderBy('c.customers_id')
-			->andWhere('parent_id IS NULL');
+			->orderBy('c.customers_id');
 			//todo email for late not returned items--auto_send_return_rentals does that
 
 			EventManager::notify('OrdersListingBeforeExecute', &$ReservationQuery);

@@ -46,9 +46,15 @@ class Extension_metaTags extends ExtensionBase {
 		global $appExtension;
 		if ($this->enabled === FALSE) return;
 		if ($appExtension->isCatalog()){
-			if (isset($_GET['appExt']) && $_GET['appExt'] == 'infoPages'){
-
-			} else {
+			if (!isset($this->checkMultiStore)){
+				$multiStore = $appExtension->getExtension('multiStore');
+				if ($multiStore !== false && $multiStore->isEnabled() === true){
+					$this->checkMultiStore = true;
+				}else{
+					$this->checkMultiStore = false;
+				}
+			}
+			if(!$this->checkMultiStore){
 				EventManager::attachEvents(array(
 					'PageLayoutHeaderTitle',
 					'PageLayoutHeaderMetaDescription',
@@ -160,7 +166,7 @@ class Extension_metaTags extends ExtensionBase {
 		global $App;
 		if($App->getAppName() !== 'infoPages'){
 			$tmp = $this->processHeaderTag(1);
-			if ($tmp !== '') {
+			if ($tmp != '') {
 				$param = $tmp;
 			}
 		}

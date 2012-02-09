@@ -304,8 +304,8 @@ class htmlWidget_grid implements htmlWidgetPlugin {
 		}
 		
 		if ($this->usePages === false){
-			$result = $this->dataQuery->execute()->toArray(true);
-			return $result;
+			$result = $this->dataQuery->execute();
+			return ($result ? $result->toArray(true) : array());
 		}
 		
 		$listingPager = new Doctrine_Pager($this->dataQuery, $this->currentPage, $this->pageLimit);

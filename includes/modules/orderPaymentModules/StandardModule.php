@@ -10,6 +10,9 @@
 	This script and it's source is not redistributable
 */
 
-	abstract class StandardPaymentModule extends PaymentModuleBase {
-	}
+class StandardPaymentModule extends PaymentModuleBase
+{
+
+}
+
 ?>

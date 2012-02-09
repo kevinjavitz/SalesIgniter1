@@ -1,5 +1,5 @@
 <?php
-class OrderTotalReservationshipping extends orderTotalModule {
+class OrderTotalReservationshipping extends OrderTotalModuleBase {
 
 	public function __construct() {
 		/*

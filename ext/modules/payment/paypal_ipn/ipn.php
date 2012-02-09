@@ -24,6 +24,10 @@
 	if(isset($textArr[2])){
 		$customerIp = $textArr[2];
 	}
+	$nonrecurring = false;
+	if(isset($textArr[3]) && $textArr[3] == 'nonrecurring'){
+		$nonrecurring = true;
+	}
 	chdir('../../../../');
 	require('includes/application_top.php');
 	require('includes/classes/order.php');
@@ -58,9 +62,9 @@
 	if(isset($_POST['payment_status'])){
 		$paymentStatus = $_POST['payment_status'];
 	}
-	if(isset($_POST['payment_status'])){
-    	$customerID = (int)$customerTextId;
-	}
+
+    $customerID = (int)$customerTextId;
+
 
 	if (isset($_POST['txn_type'])){
 		switch($_POST['txn_type']){
@@ -77,7 +81,7 @@
 				$account_action = 'cancel';
 				break;
 			case 'subscr_signup':
-				if (isset($_POST['amount1'])){
+				if (isset($_POST['period1'])){
 					$account_action = 'free_trial';
 					$paymentStatus = 'FreeTrial';
 				}else{
@@ -85,6 +89,9 @@
 				}
 				break;
 		}
+	}
+	if($nonrecurring){
+		$account_action = 'payment';
 	}
 
 	$planID = false;
@@ -416,6 +423,9 @@
 			}
 		}
 	}
+	$membership =& $userAccount->plugins['membership'];
+	$membership->loadMembershipInfo();
+	$membership->loadPlanInfo();
     
 	require('includes/application_bottom.php');
 	?>

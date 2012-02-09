@@ -86,7 +86,7 @@
 					'data-language_dir' => $lInfo['directory'],
 					'data-language_code' => $lInfo['code'],
 					'data-is_installed' => ($lInfo['installed'] === true ? 'true' : 'false'),
-					'data-is_default' => (DEFAULT_LANGUAGE == $lInfo['code'] ? 'true' : 'false')
+					'data-is_default' => (sysConfig::get('DEFAULT_LANGUAGE') == $lInfo['code'] ? 'true' : 'false')
 				),
 				'columns' => array(
 					array('text' => $gridShowName),

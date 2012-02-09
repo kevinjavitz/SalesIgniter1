@@ -112,6 +112,7 @@ class Extension_ordersCustomFields extends ExtensionBase {
 				$fieldRequired = ($fInfo['input_required'] == 1);
 			
 				$input = '';
+				$otherInput = null;
 				switch($fieldType){
 					case 'select':
 					case 'select_other':
@@ -156,7 +157,7 @@ class Extension_ordersCustomFields extends ExtensionBase {
 				
 				$rows[] = '<tr>
 							 <td class="main" valign="top">' . $fieldName . ':</td>
-							 <td class="main">' . $input->draw() . (isset($otherInput) ? $otherInput : '') . ($fieldRequired === true ? '<div class="ui-icon ui-icon-gear required_icon" style="margin-left: 3px; margin-top: 1px; float: left;"></div>' : '') . '</td>
+							 <td class="main">' . $input->draw() . ($fieldRequired === true ? '<div class="ui-icon ui-icon-gear required_icon" style="margin-left: 3px; margin-top: 1px; float: left;"></div>' : '').(isset($otherInput) ? $otherInput : '')  . '</td>
 							</tr>';
 			}
 			return '<div class="main"><b>Extra Info</b></div>' . 

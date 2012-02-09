@@ -22,7 +22,7 @@ class productListing_productsPricePayPerRentalPeriods {
 		return $selectSortKeys;
 	}
 
-	public function show(&$productClass){
+	public function show(&$productClass, &$purchaseTypesCol){
 		global $currencies;
 		$tableRow = array();
 		$purchaseTypeClass = $productClass->getPurchaseType('reservation');
