@@ -15,8 +15,8 @@ $events = Doctrine_Query::create()
 	$pageContents = stripslashes($contentHtml);
 	
 	$pageButtons = htmlBase::newElement('button')
-	->usePreset('continue')
-	->setHref(itw_app_link(null, 'index', 'default'))
+	->setText('Back to Event List')
+	->setHref(itw_app_link('appExt=eventManager', 'show_event', 'list'))
 	->draw();
 	
 	$pageContent->set('pageTitle', $pageTitle);

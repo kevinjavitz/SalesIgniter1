@@ -110,8 +110,8 @@ $pageTitle = $categoryTitle;
 $pageContents = $categoryHtml. $pagerBar;
 
 $pageButtons = htmlBase::newElement('button')
-	->usePreset('continue')
-	->setHref(itw_app_link(null, 'index', 'default'))
+	->setText('Back To Photo Gallery Homepage ')
+	->setHref(itw_app_link('appExt=photoGallery', 'show_category', 'default'))
 	->draw();
 
 $pageContent->set('pageTitle', $pageTitle);

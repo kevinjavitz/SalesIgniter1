@@ -73,6 +73,21 @@ class InfoBoxCufonFonts extends InfoBoxAbstract {
 		<?php } ?>
 		}
 		});
+		var i=0;
+		var url1 = '';
+		$.ajaxPrefilter(function(options, originalOptions, jqXHR) {
+			if(jqXHR != url1){
+
+				url1 = jqXHR;
+			jqXHR.complete(function() {
+			if(i <= 8){
+			Cufon.refresh();
+			i = i+1;
+			}
+			});
+		}
+
+		});
 		<?php
 		$javascript = ob_get_contents();
 		ob_end_clean();

@@ -121,11 +121,11 @@ ob_start();
 	$pageTitle = 'Photo Gallery';
 	$pageContents = $contentHtml . $contentCss. $contentJs . '<br/><br/>'.$pagerBar;
 
-	$pageButtons = htmlBase::newElement('button')
+	/*$pageButtons = htmlBase::newElement('button')
 	->usePreset('continue')
 	->setHref(itw_app_link(null, 'index', 'default'))
-	->draw();
+	->draw();*/
 
 	$pageContent->set('pageTitle', $pageTitle);
 	$pageContent->set('pageContent', $pageContents);
-	$pageContent->set('pageButtons', $pageButtons);
+	//$pageContent->set('pageButtons', $pageButtons);
