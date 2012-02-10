@@ -58,8 +58,8 @@
 			
 			$listTable->addBodyRow(array(
 				'columns' => array(
-					array('text' => $zInfo->Countries->countries_name . $hiddenCountry),
-					array('text' => $zInfo->Zones->zone_name . $hiddenZone),
+					array('text' => (!empty($zInfo->Countries->countries_name)?$zInfo->Countries->countries_name:'All Countries') . $hiddenCountry),
+					array('text' => (!empty($zInfo->Zones->zone_name)?$zInfo->Zones->zone_name:'All Zones') . $hiddenZone),
 					array('align' => 'right', 'text' => htmlBase::newElement('icon')->setType('delete')->addClass('deleteIcon')->draw())
 				)
 			));

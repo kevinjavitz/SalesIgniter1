@@ -82,7 +82,7 @@
 
 			if (array_key_exists('cc_number', $_POST)){
 				$membership->setCreditCardNumber($_POST['cc_number']);
-				$membership->setCreditCardExpirationDate(substr($_POST['cc_expires_month'], 0, 2) . substr($_POST['cc_expires_year'], 2));
+				$membership->setCreditCardExpirationDate($_POST['cc_expires_month'] . $_POST['cc_expires_year']);
 				$membership->setCreditCardCvvNumber($_POST['cc_cvv']);
 			}
 

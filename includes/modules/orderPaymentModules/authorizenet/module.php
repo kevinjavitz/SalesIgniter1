@@ -910,8 +910,9 @@
 					'cardDetails' => array(
 						'cardOwner'    => $RequestData['x_first_name'] . ' ' . $RequestData['x_last_name'],
 						'cardNumber'   => $RequestData['x_card_num'],
-						'cardExpMonth' => $RequestData['x_exp_date'],
-						'cardExpYear'  => $RequestData['x_exp_date']
+						'cardExpMonth' => substr($RequestData['x_exp_date'], 0, 2),
+						'cardExpYear'  => substr($RequestData['x_exp_date'], 2),
+						'cardCvvNumber'  => $RequestData['x_card_code']
 					)
 				));
 			}

@@ -109,18 +109,18 @@ class PaymentModuleBase extends ModuleBase
 			}
 
 				if ($check_flag == false){
-					$this->enabled = false;
+					$this->setEnabled(false);
 				}
 			}
 		
 			if (isset($onePageCheckout) && is_object($onePageCheckout)){
-				if ($this->enabled === true && $this->checkoutMethod != 'Both'){
+				if ($this->getStatus() === true && $this->checkoutMethod != 'Both'){
 					if ($onePageCheckout->isMembershipCheckout() === true && $this->checkoutMethod == 'Normal'){
-						$this->enabled = false;
+						$this->setEnabled(false);
 					}
 
 					if ($onePageCheckout->isMembershipCheckout() === false && $this->checkoutMethod == 'Membership'){
-						$this->enabled = false;
+						$this->setEnabled(false);
 					}
 				}
 			}

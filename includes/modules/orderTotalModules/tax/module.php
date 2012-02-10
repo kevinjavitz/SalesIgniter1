@@ -17,6 +17,7 @@ class OrderTotalTax extends OrderTotalModuleBase
 		reset($order->info['tax_groups']);
 		foreach($order->info['tax_groups'] as $key => $value){
 			if ($value > 0){
+				$order->info['total'] +=$value;
 				$this->addOutput(array(
 						'title' => $key . ':',
 						'text' => $this->formatAmount($value),
