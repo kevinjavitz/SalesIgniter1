@@ -48,6 +48,7 @@
 	
 	$telephoneInput = htmlBase::newElement('input')
 	->setName('customers_telephone')
+	->setRequired(true)
 	->val($Customer->customers_telephone);
 
 	$notesInput = htmlBase::newElement('textarea')
@@ -61,7 +62,7 @@
 	$countryInput = htmlBase::newElement('selectbox')->setName('country')
 	->setRequired(true)
 	->selectOptionByValue($Customer->AddressBook[0]->entry_country_id);
-	$countryInput->addOption('', sysLanguage::get('PULL_DOWN_DEFAULT'));
+	//$countryInput->addOption('', sysLanguage::get('PULL_DOWN_DEFAULT'));
 	$countries = tep_get_countries();
 	for($i = 0, $n = sizeof($countries); $i < $n; $i++){
 		$countryInput->addOption($countries[$i]['id'], $countries[$i]['text']);
@@ -90,6 +91,7 @@
 	if (sysConfig::get('ACCOUNT_STATE') == 'true'){
 		$stateInput = htmlBase::newElement('input')
 		->setName('entry_state')
+		->attr('id', 'state')
 		->val($Customer->AddressBook[0]->entry_state);
 	}
 	

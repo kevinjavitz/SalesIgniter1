@@ -307,9 +307,10 @@ class rentalStoreUser_membership extends StandardClass {
 	}
 
 	public function getBillingAttempts($oID){
-		$Qcheck = Doctrine_Manager::getInstance()
-			->getCurrentConnection()
-			->fetchAssoc('select bill_attempts from orders where orders_id = "' . $oID .'"');
+		$Qcheck = Doctrine_Query::create()
+		->from('Orders')
+		->where('orders_id = ?', $oID)
+		->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 		return $Qcheck[0]['bill_attempts'];
 	}
 

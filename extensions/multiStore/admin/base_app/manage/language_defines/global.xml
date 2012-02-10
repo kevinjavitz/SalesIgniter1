@@ -19,4 +19,6 @@
 
 	<define key="TEXT_STORES_DEFAULT_CURRENCY"><![CDATA[<b>Default Currency</b>]]></define>
 	<define key="TEXT_INFO_DELETE_INTRO"><![CDATA[Are you sure you want to delete this store?]]></define>
+	<define key="TEXT_STORES_DESCRIPTION"><![CDATA[<b>Store Description:</b>]]></define>
+
 </definitions>

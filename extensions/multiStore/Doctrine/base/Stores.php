@@ -113,6 +113,12 @@ class Stores extends Doctrine_Record {
 				'primary'       => false,
 				'autoincrement' => false,
 		));
+		$this->hasColumn('stores_info', 'string', null, array(
+				'type'          => 'string',
+				'length'        => null,
+				'primary'       => false,
+				'autoincrement' => false,
+		));
 		$this->hasColumn('is_default', 'integer', 1, array(
 				'type' => 'integer',
 				'length' => 1,

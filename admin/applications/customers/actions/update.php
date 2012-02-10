@@ -38,8 +38,9 @@
 	
 	$hasError = $userAccount->validate($accountValidation);
 	if ($hasError === false){
-		$addressBook->updateAddress((int)$_POST['default_address_id'], $accountValidation);
-
+		if (isset($_GET['cID'])){
+			$addressBook->updateAddress((int)$_POST['default_address_id'], $accountValidation);
+		}
 		$userAccount->setFirstName($accountValidation['entry_firstname']);
 		$userAccount->setLastName($accountValidation['entry_lastname']);
 		$userAccount->setEmailAddress($accountValidation['email_address']);
@@ -81,7 +82,7 @@
 
 			if (array_key_exists('cc_number', $_POST)){
 				$membership->setCreditCardNumber($_POST['cc_number']);
-				$membership->setCreditCardExpirationDate($_POST['cc_expires_month'] . $_POST['cc_expires_year']);
+				$membership->setCreditCardExpirationDate(substr($_POST['cc_expires_month'], 0, 2) . substr($_POST['cc_expires_year'], 2));
 				$membership->setCreditCardCvvNumber($_POST['cc_cvv']);
 			}
 

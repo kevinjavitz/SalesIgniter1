@@ -68,8 +68,8 @@
 				$info_box_contents[] = array('params' => 'class="productListing-odd"');
 			}
 
-			$productsName = '<a target="_blank" href="'.itw_app_link('products_id='.$sInfo['products_id'],'product','info').'">'.tep_get_products_name($sInfo['products_id']).'</a>';
 			$Product = new product($sInfo['products_id']);
+			$productsName = '<a target="_blank" href="'.itw_app_link('products_id='.$sInfo['products_id'],'product','info').'">'.$Product->getName().'</a>';
 			if($p == 1 && $Product->getKeepPrice() > 0){
 				$info_box_contents[0][] = array(
 					'align' => 'left',

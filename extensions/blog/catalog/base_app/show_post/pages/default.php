@@ -16,7 +16,7 @@
 	$contentHeading = $pageBlog['BlogPostsDescription'][$langId]['blog_post_title'];
 	$contentHtml = $pageBlog['BlogPostsDescription'][$langId]['blog_post_text'];
 
-	$theComments = '';
+	$theComments = '<a name="comments"></a>';
 	if(sysConfig::get('EXTENSION_BLOG_ENABLE_COMMENTS') == 'True'){
 
 		foreach ($pageBlog['BlogCommentToPost'] as $comments){

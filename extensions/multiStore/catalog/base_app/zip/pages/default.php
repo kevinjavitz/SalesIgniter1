@@ -32,4 +32,6 @@ if (empty($store)) {
 
 $url .= '/products/all.php';
 
-EventManager::attachActionResponse($url, 'redirect');
+tep_redirect($url);
+
+//EventManager::attachActionResponse($url, 'redirect');

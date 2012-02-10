@@ -200,7 +200,7 @@
 	<define key="NAV_ORDER_INFO"><![CDATA[Order Info]]></define>
 	<define key="TEXT_INDEX_NOT_RENTAL_CUSTOMER"><![CDATA[You are not a Registered Member! Please <a href="%s" style="color:#95201b;"><u>REGISTER</u></a> for a membership plan or <a href="%s" style="color:#95201b;"><u>LOGIN</u></a> to your account.]]></define>
 	<define key="TEXT_NOT_RENTAL_CUSTOMER"><![CDATA[You are not a Registered Member! Please <a href="%s" style="color:#95201b;"><u>REGISTER</u></a> for a membership plan or <a href="%s" style="color:#95201b;"><u>LOGIN</u></a> to your account.]]></define>
-	<define key="TEXT_NOT_ACTIVE_CUSTOMER"><![CDATA[Your membership is inactive! Please <a style="color:red;" href="%s">Click here</a> to renew your membership.]]></define>
+	<define key="TEXT_NOT_ACTIVE_CUSTOMER"><![CDATA[Your membership shows as inactive! Please try logging out and then log back in. If your membership still shows as inactive, please <a style="color:red;" href="%s">Click here</a> to renew your membership.]]></define>
 	<define key="TEXT_DISPLAY_NUMBER_OF_ARTICLES"><![CDATA[Displaying <b>%d</b> to <b>%d</b> (of <b>%d</b> articles)]]></define>
 	<define key="TEXT_DISPLAY_NUMBER_OF_ARTICLES_NEW"><![CDATA[Displaying <b>%d</b> to <b>%d</b> (of <b>%d</b> new articles)]]></define>
 	<define key="TABLE_HEADING_AUTHOR"><![CDATA[Author]]></define>

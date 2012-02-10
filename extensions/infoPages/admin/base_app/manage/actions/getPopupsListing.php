@@ -26,7 +26,7 @@
 	$pages = $tableGrid->getResults();
 	if ($pages){
 		$editButton = htmlBase::newElement('button')
-		->usePreset('edit')
+		->setText('Edit')
 		->css(array(
 			'font-size' => '.8em'
 		));

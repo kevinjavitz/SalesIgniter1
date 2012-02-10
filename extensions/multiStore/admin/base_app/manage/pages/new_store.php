@@ -67,6 +67,7 @@ $GEOIP_COUNTRY_NAMES = array(
 	$storeOwner = htmlBase::newElement('input')->setName('stores_owner');
 	$isDefault = htmlBase::newElement('checkbox')->setName('is_default');
 	$defaultCurrency = htmlBase::newElement('selectbox')->setName('default_currency');
+	$storeInfo = htmlBase::newElement('ck_editor')->setName('stores_info')->attr('rows','20')->attr('cols','90');
 
 $table = htmlBase::newElement('table')
 	->setCellPadding(3)
@@ -128,6 +129,7 @@ $table->addBodyRow(array(
 		$storeEmail->setValue($Qstore['stores_email']);
 		$storeZip->setValue($Qstore['stores_zip']);
 		$storeLocation->setValue($Qstore['stores_location']);
+		$storeInfo->html($Qstore['stores_info']);
 		$storeOwner->setValue($Qstore['stores_owner']);
 		$isDefault->setChecked($Qstore['is_default'] == '1'?true:false);
 		$defaultCurrency->selectOptionByValue($Qstore['default_currency']);
@@ -232,6 +234,12 @@ $table->addBodyRow(array(
 		'columns' => array(
 			array('addCls' => 'main','text' => sysLanguage::get('TEXT_STORES_LOCATION')),
 			array('addCls' => 'main','text' => $storeLocation->draw())
+		)
+	));
+	$storeInfoTable->addBodyRow(array(
+		'columns' => array(
+			array('addCls' => 'main','text' => sysLanguage::get('TEXT_STORES_DESCRIPTION')),
+			array('addCls' => 'main','text' => $storeInfo->draw())
 		)
 	));
 	$storeInfoTable->addBodyRow(array(
