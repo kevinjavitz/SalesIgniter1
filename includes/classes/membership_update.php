@@ -25,10 +25,9 @@ class membershipUpdate_cron {
 	}
 
 	public function getBillingAttempts($oID){
-		$Qcheck = Doctrine_Query::create()
-		->from('Orders')
-		->where('orders_id = ?', $oID)
-		->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+		$Qcheck = Doctrine_Manager::getInstance()
+		->getCurrentConnection()
+		->fetchAssoc('select bill_attempts from orders where orders_id = "' . $oID .'"');
 		return $Qcheck[0]['bill_attempts'];
 	}
 
@@ -41,12 +40,9 @@ class membershipUpdate_cron {
 	}
 
 	public function needsRetry($cID){
-
-		$Qcheck = Doctrine_Query::create()
-		->from('MembershipBillingReport')
-		->where('customers_id = ?',$cID)
-		->orderBy('billing_report_id')
-		->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+		$Qcheck = Doctrine_Manager::getInstance()
+		->getCurrentConnection()
+		->fetchAssoc('select * from membership_billing_report where customers_id = "' . $cID .'" order by billing_report_id desc limit 1');
 
 		if (count($Qcheck) > 0){
 			$LastReport = $Qcheck[0];
