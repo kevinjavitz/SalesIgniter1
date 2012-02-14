@@ -236,7 +236,7 @@ class sysLanguage
 				->getCurrentConnection()
 				->fetchAssoc('select directory from languages where code = "' . $lang . '" or languages_id = "' . $lang . '"');
 			if (sizeof($ResultSet) > 0){
-				$dir = $ResultSet['directory'];
+				$dir = $ResultSet[0]['directory'];
 			}
 		}
 		else {
@@ -548,7 +548,7 @@ class sysLanguage
 			$langData->name->setCData($langName);
 			$langData->code->setCData($toLangCode);
 		}
-		else {
+		elseif (sysConfig::exists('GOOGLE_API_SERVER_KEY') && sysConfig::get('GOOGLE_API_SERVER_KEY') != ''){
 			/*
 			 * Builds an array to help throttle the translations per request and an array of the keys per request
 			 * It was timing out at 25 so 10 seems to be a safe max per request
@@ -681,7 +681,7 @@ class sysLanguage
 		$Request = new CurlRequest();
 		$Request->setSendMethod('get');
 		$Request->setUrl('https://www.googleapis.com/language/translate/v2');
-		$Request->setData('key=' . sysConfig::get('GOOGLE_TRANSLATE_API_SERVER_KEY') . '&' . implode('&', $reqQueries) . '&source=' . urlencode($fromLangCode) . '&target=' . urlencode($toLangCode));
+		$Request->setData('key=' . sysConfig::get('GOOGLE_API_SERVER_KEY') . '&' . implode('&', $reqQueries) . '&source=' . urlencode($fromLangCode) . '&target=' . urlencode($toLangCode));
 		$Response = $Request->execute();
 
 		$json = json_decode($Response->getResponse());
@@ -734,7 +734,7 @@ class sysLanguage
 		$Request = new CurlRequest();
 		$Request->setSendMethod('get');
 		$Request->setUrl('https://www.googleapis.com/language/translate/v2/languages');
-		$Request->setData('target=' . sysLanguage::getCode() . '&key=' . sysConfig::get('GOOGLE_TRANSLATE_API_SERVER_KEY'));
+		$Request->setData('target=' . sysLanguage::getCode() . '&key=' . sysConfig::get('GOOGLE_API_SERVER_KEY'));
 		$Response = $Request->execute();
 
 		$json = json_decode($Response->getResponse());

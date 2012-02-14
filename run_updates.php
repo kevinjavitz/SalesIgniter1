@@ -585,6 +585,8 @@ function updateToolsConfiguration(){
 	addConfiguration('REQUEST_PICKUP_BEFORE_DAYS', 16, 'How many days to not show on the request pickup or delivery', 'How many days to not show on the request pickup or delivery', '2', '');
 	addConfiguration('SHOW_STANDARD_CREATE_ACCOUNT', 1, 'Show standard create account tab on account login', 'Show standard create account tab on account login', 'true', "tep_cfg_select_option(array('true', 'false'),");
 
+	addConfiguration('GOOGLE_API_SERVER_KEY', 1, 'Google API Server Key', 'The server key created through googles apis page', '', '');
+	addConfiguration('GOOGLE_API_BROWSER_KEY', 1, 'Google API Browser Key', 'The browser key created through googles apis page', '', '');
 
 
 

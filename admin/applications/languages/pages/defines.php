@@ -120,6 +120,7 @@ function iterateLanguageDirectory($dir, $exclude = null) {
 	return $return;
 }
 
+if (sysConfig::exists('GOOGLE_API_SERVER_KEY') && sysConfig::get('GOOGLE_API_SERVER_KEY') != ''){
 ?>
 <script type="text/javascript" src="http://www.google.com/jsapi"></script>
 <script>
@@ -134,6 +135,7 @@ $toLangDrop = htmlBase::newElement('selectbox')->setName('toLanguage');
 foreach(sysLanguage::getGoogleLanguages() as $code => $lang){
 	$fromLangDrop->addOption($code, $lang);
 	$toLangDrop->addOption($code, $lang);
+}
 }
 ?>
 <table cellpadding="0" cellspacing="0" border="0" width="100%">
@@ -167,6 +169,7 @@ foreach(sysLanguage::getGoogleLanguages() as $code => $lang){
 							</tr>
 						</table>
 					</td>
+					<?php if (sysConfig::exists('GOOGLE_API_SERVER_KEY') && sysConfig::get('GOOGLE_API_SERVER_KEY') != ''){ ?>
 					<td class="main" width="250" align="right"><?php
 						echo 'From: ' . $fromLangDrop->draw() . '<br>' .
 							'To: ' . $toLangDrop->draw() . '<br>' .
@@ -174,6 +177,7 @@ foreach(sysLanguage::getGoogleLanguages() as $code => $lang){
 								->draw() . '<br>' .
 							'<div id="googleBrand"></div>';
 						?></td>
+					<?php } ?>
 				</tr>
 			</table>
 		</td>

@@ -87,7 +87,9 @@ function processSearch(){
 }
 	
 $(document).ready(function (){
-	google.language.getBranding('googleBrand');
+	if (typeof google != 'undefined'){
+		google.language.getBranding('googleBrand');
+	}
 	
 	$('.ui-icon-plusthick').click(function (){
 		if ($(this).hasClass('ui-icon-minusthick')){
@@ -121,20 +123,22 @@ $(document).ready(function (){
 		}
 	});
 	
-	$('#googleTranslate').click(function (){
-		if (checkModifications()){
-			confirmDialog({
-				title: 'Abandon Modifications',
-				content: 'There are unsaved modifications, are you sure you want to abandon them?',
-				onConfirm: function (){
-					translateText();
-					$(this).dialog('close').remove();
-				}
-			});
-		}else{
-			translateText();
-		}
-	});
+	if (typeof google != 'undefined'){
+		$('#googleTranslate').click(function (){
+			if (checkModifications()){
+				confirmDialog({
+					title: 'Abandon Modifications',
+					content: 'There are unsaved modifications, are you sure you want to abandon them?',
+					onConfirm: function (){
+						translateText();
+						$(this).dialog('close').remove();
+					}
+				});
+			}else{
+				translateText();
+			}
+		});
+	}
 	
 	$('.ui-icon-newwin').live('click', function (){
 		if ($(this).parent().parent().hasClass('ui-state-disabled')) return false;

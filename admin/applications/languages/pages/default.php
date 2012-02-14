@@ -55,10 +55,10 @@
 	->usePagination(false);
 
 	$tableGrid->addButtons(array(
-		htmlBase::newElement('button')->setText('Edit')->addClass('editButton')->disable(),
-		htmlBase::newElement('button')->setText('Delete')->addClass('deleteButton')->disable(),
-		htmlBase::newElement('button')->setText('Definitions')->addClass('defineButton')->disable(),
-		htmlBase::newElement('button')->setText('Create New')->addClass('newLanguageButton')/*,
+		htmlBase::newElement('button')->usePreset('edit')->addClass('editButton')->disable(),
+		htmlBase::newElement('button')->usePreset('delete')->addClass('deleteButton')->disable(),
+		htmlBase::newElement('button')->usePreset('edit')->setText('Definitions')->addClass('defineButton')->disable(),
+		htmlBase::newElement('button')->usePreset('new')->setText('Create New')->addClass('newLanguageButton')/*,
 		htmlBase::newElement('button')->setText('Clean')->addClass('cleanButton')*/
 	));
 	
@@ -74,7 +74,7 @@
 	if ($langArr){
 		foreach($langArr as $lInfo){
 			$languageId = $lInfo['id'];
-			if (DEFAULT_LANGUAGE == $lInfo['code']){
+			if (sysConfig::get('DEFAULT_LANGUAGE') == $lInfo['code']){
 				$gridShowName = '<b>' . $lInfo['name'] . '</b> (' . sysLanguage::get('TEXT_DEFAULT') . ')';
 			}else{
 				$gridShowName = $lInfo['name'];
@@ -122,60 +122,70 @@
   </div>
  </div>
  <div class="dialogToLangCode" title="Choose Language" style="display:none;"><?php
- 	$dbConn = $manager->getCurrentConnection();
- 	$importer = $dbConn->import;
- 	$Tables = $importer->listTables();
- 	$langTables = array();
- 	foreach($Tables as $tableName){
- 		if ($tableName == 'languages') continue;
+
+	if (sysConfig::exists('GOOGLE_API_SERVER_KEY') && sysConfig::get('GOOGLE_API_SERVER_KEY') != ''){
+  		$dbConn = $manager->getCurrentConnection();
+ 		$importer = $dbConn->import;
+ 		$Tables = $importer->listTables();
+ 		$langTables = array();
+ 		foreach($Tables as $tableName){
+ 			if ($tableName == 'languages') continue;
  		
- 		$TableColumns = $importer->listTableColumns($tableName);
- 		foreach($TableColumns as $columnName => $cInfo){
- 			if ($columnName == 'language_id' || $columnName == 'languages_id'){
- 				$langTables[] = $tableName;
+ 			$TableColumns = $importer->listTableColumns($tableName);
+ 			foreach($TableColumns as $columnName => $cInfo){
+ 				if ($columnName == 'language_id' || $columnName == 'languages_id'){
+ 					$langTables[] = $tableName;
+ 				}
  			}
  		}
- 	}
  	
- 	$loadedModels = Doctrine_Core::getLoadedModelFiles();
- 	foreach($loadedModels as $modelName => $modelPath){
- 		$Model = Doctrine_Core::getTable($modelName);
- 		$RecordInst = $Model->getRecordInstance();
- 		if (method_exists($RecordInst, 'newLanguageProcess')){
- 			$modelPath = str_replace(sysConfig::getDirFsCatalog(), '', $modelPath);
- 			$extName = null;
- 			if (substr($modelPath, 0, 10) == 'extensions'){
- 				$pathArr = explode('/', $modelPath);
-  				$ext = $appExtension->getExtension($pathArr[1]);
-  				if ($ext){
-					$extName = $ext->getExtensionName();
-  				}else{
-  					$extName = $pathArr[1];
-  				}
+ 		$loadedModels = Doctrine_Core::getLoadedModelFiles();
+ 		foreach($loadedModels as $modelName => $modelPath){
+ 			$Model = Doctrine_Core::getTable($modelName);
+ 			$RecordInst = $Model->getRecordInstance();
+ 			if (method_exists($RecordInst, 'newLanguageProcess')){
+ 				$modelPath = str_replace(sysConfig::getDirFsCatalog(), '', $modelPath);
+ 				$extName = null;
+ 				if (substr($modelPath, 0, 10) == 'extensions'){
+ 					$pathArr = explode('/', $modelPath);
+ 	 				$ext = $appExtension->getExtension($pathArr[1]);
+ 	 				if ($ext){
+						$extName = $ext->getExtensionName();
+	  				}else{
+	  					$extName = $pathArr[1];
+	  				}
+	 			}
+	 			$langModels[] = array(
+	 				'modelPath' => str_replace(sysConfig::getDirFsCatalog(), '', $modelPath),
+	 				'modelName' => $modelName,
+	 				'extName' => $extName,
+	 				'tableName' => $Model->getTableName()
+	 			);
+	 		}
+	 	}
+	
+		$translateList = '<br><br><input type="checkbox" class="selectAll"><b><u>Select Extra Tanslations</u></b><br>';
+ 		foreach($langModels as $mInfo){
+ 			$showName = $mInfo['modelName'];
+ 			if (is_null($mInfo['extName']) === false){
+ 				$showName = $mInfo['extName'];
  			}
- 			$langModels[] = array(
- 				'modelPath' => str_replace(sysConfig::getDirFsCatalog(), '', $modelPath),
- 				'modelName' => $modelName,
- 				'extName' => $extName,
- 				'tableName' => $Model->getTableName()
- 			);
+ 			$translateList .= '<input type="checkbox" name="translate_model[]" value="' . $mInfo['modelName'] . '"> ' . $showName . ' ( ' . $mInfo['tableName'] . ' )<br>';
  		}
- 	}
+ 		$translateList .= '<br>';
  	
- 	$translateList = '<br><br><input type="checkbox" class="selectAll"><b><u>Select Extra Tanslations</u></b><br>';
- 	foreach($langModels as $mInfo){
- 		$showName = $mInfo['modelName'];
- 		if (is_null($mInfo['extName']) === false){
- 			$showName = $mInfo['extName'];
+ 		$dropMenu = htmlBase::newElement('selectbox')->setName('toLanguage');
+ 		foreach($googleLanguages as $langCode => $langName){
+ 			$dropMenu->addOption($langCode, $langName);
  		}
- 		$translateList .= '<input type="checkbox" name="translate_model[]" value="' . $mInfo['modelName'] . '"> ' . $showName . ' ( ' . $mInfo['tableName'] . ' )<br>';
- 	}
- 	$translateList .= '<br>';
- 	
- 	$dropMenu = htmlBase::newElement('selectbox')->setName('toLanguage');
- 	foreach($googleLanguages as $langCode => $langName){
- 		$dropMenu->addOption($langCode, $langName);
- 	}
- 	echo $dropMenu->draw() . '<br><small>* This may take a few minutes.</small>';
- 	echo $translateList;
- ?></div>
+ 		echo $dropMenu->draw() . '<br><small>* This may take a few minutes.</small>';
+		echo $translateList;
+	}else{
+		$Input = htmlBase::newElement('input')
+			->setName('toLangCode');
+		$Input2 = htmlBase::newElement('input')
+			->setName('toLanguage');
+		echo 'Language Code: ' . $Input->draw() . '<br>';
+		echo 'Language Name: ' . $Input2->draw();
+	}
+  ?></div>

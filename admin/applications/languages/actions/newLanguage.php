@@ -31,13 +31,14 @@ $progressBarName = 'newLanguage';
 $Ftp = new SystemFTP();
 $Ftp->connect();
 
-$languages = sysLanguage::getGoogleLanguages();
-
-$langCode = $_POST['toLangCode'];
-$langName = $languages[$langCode];
+if (sysConfig::exists('GOOGLE_API_SERVER_KEY') && sysConfig::get('GOOGLE_API_SERVER_KEY') != ''){
+	$languages = sysLanguage::getGoogleLanguages();
+}
+$langCode = (isset($languages) ? $_POST['toLanguage'] : $_POST['toLangCode']);
+$langName = (isset($languages) ? $languages[$langCode] : $_POST['toLanguage']);
 
 $catalogAbsPath = sysConfig::getDirFsCatalog();
-$newLangPath = $catalogAbsPath . 'includes/languages/' . strtolower($langName) . '/';
+$newLangPath = $catalogAbsPath . 'includes/languages/' . strtolower($langCode) . '/';
 $globalLangPath = $catalogAbsPath . 'includes/languages/english/';
 
 $exclude = array($catalogAbsPath . 'includes/languages');
@@ -111,12 +112,16 @@ if (is_dir($newLangPath)){
 	$newLang = new Languages();
 	$newLang->code = $langCode;
 	$newLang->name = $langName;
-	$newLang->directory = strtolower($langName);
+	$newLang->directory = strtolower($langCode);
 
 	$newLang->save();
 
-	$Translated = sysLanguage::translateText($langName, $newLang->languages_id);
-	$newLang->name_real = $Translated[0];
+	if (sysConfig::exists('GOOGLE_API_SERVER_KEY') && sysConfig::get('GOOGLE_API_SERVER_KEY') != ''){
+		$Translated = sysLanguage::translateText($langName, $newLang->languages_id);
+		$newLang->name_real = $Translated[0];
+	}else{
+		$newLang->name_real = $langName;
+	}
 	$newLang->save();
 
 	if (isset($_POST['translate_model'])){

@@ -18,5 +18,7 @@ if ($App->getPageName() == 'defines'){
 	$App->addJavascriptFile('admin/rental_wysiwyg/ckeditor.js');
 }
 
-$googleLanguages = sysLanguage::getGoogleLanguages();
+if (sysConfig::exists('GOOGLE_API_SERVER_KEY') && sysConfig::get('GOOGLE_API_SERVER_KEY') != ''){
+	$googleLanguages = sysLanguage::getGoogleLanguages();
+}
 ?>
