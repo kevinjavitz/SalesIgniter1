@@ -31,11 +31,8 @@
 	Session::set('payment_rental', 'true');
 
 	$onePageCheckout->loadMembershipPlan();
-	
-	OrderTotalModules::process();
 
 	EventManager::attachActionResponse(array(
-		'success' => true,
-		'orderTotalRows' => OrderTotalModules::output()
+		'success' => true
 	), 'json');
 ?>

@@ -1,37 +1,38 @@
+var isInUpdate = false;
+var currentUpdateCall;
 function updateTotals(){
-	$('input[name=shipping_method]:checked').each(function(){
-		$(this).click();
-	});
+	    if(isInUpdate){
+		    currentUpdateCall.abort();
+		    isInUpdate = false;
+	    }
+		if(!isInUpdate){
+			isInUpdate = true;
+			$('.orderTotalsList').each(function (){
+				showAjaxLoader($(this), 'large');
+			});
 
-	if($('input[name=shipping_method]').length == 1){
-		updateShipping($('input[name=shipping_method]').val());
-	}
-         $('.orderTotalsList').each(function (){
-                    showAjaxLoader($(this), 'large');
-         });
-         
-         var linkParams = js_get_all_get_params(['app', 'appPage', 'action']);
-         $.ajax({
-                url: js_app_link(linkParams + 'rType=ajax&app=checkout&appPage=default&action=updateTotals'),
-                type: 'post',
-                dataType: 'json',
-                success: function (data) {
-					if(data.redirectUrl != ''){
-						js_redirect(data.redirectUrl);
+			var linkParams = js_get_all_get_params(['app', 'appPage', 'action']);
+			 currentUpdateCall = $.ajax({
+					url: js_app_link(linkParams + 'rType=ajax&app=checkout&appPage=default&action=updateTotals'),
+					 cache: false,
+					 dataType: 'json',
+					 type: 'post',
+					success: function (data) {
+						if(data.redirectUrl != ''){
+							js_redirect(data.redirectUrl);
+						}
+					   $('.orderTotalsList').each(function () {
+							removeAjaxLoader($(this), 'large', 'append');
+						});
+						$('.orderTotalsList').html(data.orderTotalRows);
+						isInUpdate = false;
 					}
-                   $('.orderTotalsList').each(function () {
-                        removeAjaxLoader($(this), 'large', 'append');
-                    });
-                    $('.orderTotalsList').html(data.orderTotalRows);
-                }
-         });
+			 });
+		}
 
 }
 
 function updateShipping(val){
-	$('.orderTotalsList').each(function (){
-		showAjaxLoader($(this).parent(), 'large');
-	});
 	var linkParams = js_get_all_get_params(['app', 'appPage', 'action']);
 	$.ajax({
 		url: js_app_link(linkParams + 'rType=ajax&app=checkout&appPage=default&action=setShippingMethod'),
@@ -40,10 +41,7 @@ function updateShipping(val){
 		type: 'post',
 		data: 'shipping_method=' + val,
 		success: function (data){
-			$('.orderTotalsList').each(function (){
-				removeAjaxLoader($(this).parent(), 'large', 'append');
-			});
-			$('.orderTotalsList').html(data.orderTotalRows);
+			updateTotals();
 		}
 	});
 }
@@ -123,9 +121,6 @@ $(document).ready(function (){
         return false;
     });
     $('#voucherRedeem').live('click', function () {
-            $('.orderTotalsList').each(function (){
-                showAjaxLoader($(this), 'large');
-            });
             var linkParams = js_get_all_get_params(['app', 'appPage', 'action']);
        $.ajax({
             url: js_app_link(linkParams + 'rType=ajax&app=checkout&appPage=default&action=redeemVoucher'),
@@ -133,13 +128,9 @@ $(document).ready(function (){
             type: 'post',
             dataType: 'json',
             success: function (data) {
-               $('.orderTotalsList').each(function () {
-                    removeAjaxLoader($(this), 'large', 'append');
-                });
 				if (data.errorMsg != ''){
 					alert(data.errorMsg);
 				}
-	            //$('.orderTotalsList').html(data.orderTotalRows);
 	            updateTotals();
             }
         });
@@ -193,6 +184,7 @@ $(document).ready(function (){
 							   $.ajax({
                                 url: js_app_link(linkParams + 'rType=ajax&app=checkout&appPage=default&action=process&type=addressBook'),
 								dataType: 'json',
+								cache:false,
 								data: $(':input, :radio', this).serialize(),
 								type: 'post',
 								success: function (data){
@@ -319,6 +311,10 @@ $(document).ready(function (){
                         	 $(this).trigger('click');
                      	 });
 					 }
+
+	                if($('input[name=shipping_method]').length == 1){
+		                updateShipping($('input[name=shipping_method]').val());
+	                }
 	                $('.shipInfo').css('cursor','pointer');
 	                 $('.shipInfo').click(function(){
 		                 link = js_app_link('appExt=payPerRentals&app=show_shipping&appPage=default_all&dialog=true');
@@ -391,9 +387,6 @@ $(document).ready(function (){
 		$(this).parent().parent().find('.paymentFields').show();
 		$(this).parent().parent().find('.paymentFields *').removeAttr('disabled');
 
-		$('.orderTotalsList').each(function (){
-			showAjaxLoader($(this).parent(), 'large');
-		});
 		var linkParams = js_get_all_get_params(['app', 'appPage', 'action']);
 		$.ajax({
 			url: js_app_link(linkParams + 'rType=ajax&app=checkout&appPage=default&action=setPaymentMethod'),
@@ -402,19 +395,12 @@ $(document).ready(function (){
 			type: 'post',
 			data: 'payment_method=' + $(this).val(),
 			success: function (data){
-				$('.orderTotalsList').each(function (){
-					removeAjaxLoader($(this).parent(), 'large', 'append');
-				});
-				$('.orderTotalsList').html(data.orderTotalRows);
-				//updateTotals();
+				updateTotals();
 			}
 		});
 	});
 
     $('.rentalPlans').live('click', function () {
-       $('.orderTotalsList').each(function (){
-			showAjaxLoader($(this), 'large');
-		});
 		var linkParams = js_get_all_get_params(['app', 'appPage', 'action']);
         $.ajax({
             url: js_app_link(linkParams + 'rType=ajax&app=checkout&appPage=default&action=setMembershipPlan'),
@@ -423,10 +409,7 @@ $(document).ready(function (){
             type: 'post',
             data: 'planID=' + $(this).val(),
             success: function (data) {
-                $('.orderTotalsList').each(function () {
-                    removeAjaxLoader($(this), 'large', 'append');
-                });
-                $('.orderTotalsList').html(data.orderTotalRows);
+	            updateTotals();
             }
         });
 

@@ -67,10 +67,8 @@
 		}
 	}
     EventManager::notify('UpdateTotalsCheckout');
-	OrderTotalModules::process();
 
 	EventManager::attachActionResponse(array(
-		'success' => true,
-		'orderTotalRows' => OrderTotalModules::output()
+		'success' => true
 	), 'json');
 ?>

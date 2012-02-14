@@ -95,11 +95,8 @@
 		}
 	}
 
-	OrderTotalModules::process();
-
 	EventManager::attachActionResponse(array(
 		'success' => true,
-		'errorMsg' => $errMsg,
-		'orderTotalRows' => OrderTotalModules::output()
+		'errorMsg' => $errMsg
 	), 'json');
 ?>

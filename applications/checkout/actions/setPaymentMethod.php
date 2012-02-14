@@ -6,10 +6,8 @@
 		'id'    => $Module->getCode(),
 		'title' => $Module->getTitle()
 	);
-	OrderTotalModules::process();
 
 	EventManager::attachActionResponse(array(
-		'success' => true,
-		'orderTotalRows' => OrderTotalModules::output()
+		'success' => true	
 	), 'json');
 ?>
