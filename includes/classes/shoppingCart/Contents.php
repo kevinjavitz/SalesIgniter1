@@ -153,6 +153,25 @@
 				}
 			}
 			return false;
+		}
+
+
+		public function findProductByUniqID($pid, $purchaseType = false){
+
+			foreach($this->contents as $key => $iProduct){
+				if ($iProduct->getUniqID() == $pid){
+					if (($purchaseType == false)){
+						return $iProduct;
+					}elseif ($iProduct->getPurchaseType() == $purchaseType){
+						$returnVal = true;
+						EventManager::notify('ShoppingCartFind', $iProduct, &$returnVal);
+						if($returnVal){
+							return $iProduct;
+						}
+					}
+				}
+			}
+			return false;
 
 		}
 		

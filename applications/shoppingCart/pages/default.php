@@ -182,18 +182,18 @@ if ($ShoppingCart->countContents() > 0) {
 					var instance = $(this).data("datepicker");
 					var date = $.datepicker.parseDate(instance.settings.dateFormat || $.datepicker._defaults.dateFormat, selectedDate, instance.settings);
 
-					var dateC = new Date('<?php echo Session::get('isppr_curDate');?>');
+					var dateC = new Date('<?php echo (Session::exists('isppr_curDate')?Session::get('isppr_curDate'):'01-01-2011');?>');
 					if(date.getTime() == dateC.getTime()){
 						if(myid == "dstart"){
-							$(this).closest('form').find('.hstart').html('<?php echo Session::get('isppr_selectOptionscurdays');?>');
+							$(this).closest('form').find('.hstart').html('<?php echo (Session::exists('isppr_selectOptionscurdays')?Session::get('isppr_selectOptionscurdays'):'');?>');
 						}else{
-							$(this).closest('form').find('.hend').html('<?php echo Session::get('isppr_selectOptionscurdaye');?>');
+							$(this).closest('form').find('.hend').html('<?php echo (Session::exists('isppr_selectOptionscurdaye')?Session::get('isppr_selectOptionscurdaye'):'');?>');
 						}
 					}else{
 						if(myid == "dstart"){
-							$(this).closest('form').find('.hstart').html('<?php echo Session::get('isppr_selectOptionsnormaldays');?>');
+							$(this).closest('form').find('.hstart').html('<?php echo (Session::exists('isppr_selectOptionsnormaldays')?Session::get('isppr_selectOptionsnormaldays'):'');?>');
 						}else{
-							$(this).closest('form').find('.hend').html('<?php echo Session::get('isppr_selectOptionsnormaldaye');?>');
+							$(this).closest('form').find('.hend').html('<?php echo (Session::exists('isppr_selectOptionsnormaldaye')?Session::get('isppr_selectOptionsnormaldaye'):'');?>');
 						}
 					}
 

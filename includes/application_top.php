@@ -336,7 +336,6 @@ require(sysConfig::getDirFsCatalog() . 'includes/classes/htmlBase.php');
 		Session::set('navigation', $navigation);
 	}
 	$navigation = &Session::getReference('navigation');
-	$navigation->add_current_page();
 
 	EventManager::notify('ApplicationTopBeforeCartAction');
 

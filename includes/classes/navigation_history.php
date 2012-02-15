@@ -28,45 +28,16 @@ Released under the GNU General Public License
 			global $request_type, $cPath;
 
             $thisGetParamsString = implode('|',$_GET);
-			$set = true;
 			for ($i=0; $i<count($this->path); $i++) {
                 $getParamsString = implode('|',$this->path[$i]['get']);
 				if ( $this->path[$i]['app'] == $_GET['app'] &&  $this->path[$i]['appPage'] == $_GET['appPage'] && $getParamsString == $thisGetParamsString) {
-					//array_splice($this->path, $i,1);
 					unset($this->path[$i]);
 					$this->path = array_values($this->path);
-					//$set = false;
 					break;
-					/*if (isset($cPath)) {
-						if (!isset($this->path[$i]['get']['cPath'])) {
-							continue;
-						} else {
-							if ($this->path[$i]['get']['cPath'] == $cPath) {
-								array_splice($this->path, ($i+1));
-								$set = 'false';
-								break;
-							} else {
-								$old_cPath = explode('_', $this->path[$i]['get']['cPath']);
-								$new_cPath = explode('_', $cPath);
-
-								for ($j=0, $n2=sizeof($old_cPath); $j<$n2; $j++) {
-									if ($old_cPath[$j] != $new_cPath[$j]) {
-										//array_splice($this->path, ($i));
-										$set = 'true';
-										break 2;
-									}
-								}
-							}
-						}
-					} else {
-						//array_splice($this->path, ($i));
-						$set = 'true';
-						break;
-					} */
 				}
 			}
 
-			if ($set == true) {
+			if (!empty($_GET['app'])&& !empty($_GET['appPage']) && !isset($_GET['get']['post'])) {
 				$this->path[] = array('app' => $_GET['app'],
                 'appPage' =>$_GET['appPage'],
 				'mode' => $request_type,

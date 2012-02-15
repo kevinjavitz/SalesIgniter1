@@ -178,4 +178,14 @@ function tep_set_banners_status($banner_id, $status) {
 		return tep_db_query("update banner_manager_banners set banners_status = " . $status . " where banners_id = '" . (int)$banner_id . "'");
 }
 }
+if(!function_exists('tep_friendly_seo_url')){
+	function tep_friendly_seo_url($string){
+		$string = preg_replace("`\[.*\]`U","",$string);
+		$string = preg_replace('`&(amp;)?#?[a-z0-9]+;`i','-',$string);
+		$string = htmlentities($string, ENT_COMPAT, 'utf-8');
+		$string = preg_replace( "`&([a-z])(acute|uml|circ|grave|ring|cedil|slash|tilde|caron|lig|quot|rsquo);`i","\\1", $string );
+		$string = preg_replace( array("`[^a-z0-9]`i","`[-]+`") , "-", $string);
+		return strtolower(trim($string, '-'));
+	}
+}
 ?>

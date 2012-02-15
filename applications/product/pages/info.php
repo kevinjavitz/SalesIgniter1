@@ -97,8 +97,8 @@
 		}
 	}
 	
-	$link = itw_app_link('cPath=' . tep_get_product_path($product->getID()), 'index', 'default');
-    $lastPath = $navigation->getPath(2);
+	$link = itw_app_link(null, 'products', 'all');
+    $lastPath = $navigation->getPath(0);
 	if ($lastPath){
 		$getVars = array();
 		if (is_array($lastPath['get'])){

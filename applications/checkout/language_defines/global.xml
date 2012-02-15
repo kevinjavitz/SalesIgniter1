@@ -130,8 +130,9 @@
     <define key="TEXT_PICKUP_ADDRESS"><![CDATA[Pickup Address]]></define>
     <define key="TEXT_DIFFERENT_FROM_BILLING"><![CDATA[Different From Billing Address]]></define>
     <define key="TEXT_CREATE_ACCOUNT_FOR_FUTURE_ACCESSS"><![CDATA[I Would Like To Create An Account For Future Access]]></define>
-    <define key="TEXT_BEGIN"><![CDATA[Begin]]></define>
-    <define key="TEXT_PAYMENT_SHIPPING"><![CDATA[Payment &amp; Shipping]]></define>
+    <define key="TEXT_BEGIN"><![CDATA[Delivery]]></define>
+    <define key="TEXT_PAYMENT_SHIPPING"><![CDATA[Payment]]></define>
+    <define key="CHECKOUT_BAR_FINISHED"><![CDATA[Summary]]></define>
     <define key="TEXT_PAYMENT_METHOD"><![CDATA[&nbsp;Payment Method]]></define>
     <define key="TEXT_COMMENTS"><![CDATA[&nbsp;Comments]]></define>
     <define key="TEXT_CONFIRM_ORDER"><![CDATA[Confirm Order]]></define>

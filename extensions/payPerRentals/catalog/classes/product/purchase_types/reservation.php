@@ -1495,18 +1495,18 @@ class PurchaseType_reservation extends PurchaseTypeAbstract {
 										var instance = $(this).data("datepicker");
 										var date = $.datepicker.parseDate(instance.settings.dateFormat || $.datepicker._defaults.dateFormat, selectedDate, instance.settings);
 
-										var dateC = new Date('<?php echo Session::get('isppr_curDate');?>');
+										var dateC = new Date('<?php echo (Session::exists('isppr_curDate')?Session::get('isppr_curDate'):'01-01-2011');?>');
 										if(date.getTime() == dateC.getTime()){
 											if(myid == "dstart"){
-												$(this).closest('form').find('.hstart').html('<?php echo Session::get('isppr_selectOptionscurdays');?>');
+												$(this).closest('form').find('.hstart').html('<?php echo (Session::exists('isppr_selectOptionscurdays')?Session::get('isppr_selectOptionscurdays'):'1');?>');
 											}else{
-												$(this).closest('form').find('.hend').html('<?php echo Session::get('isppr_selectOptionscurdaye');?>');
+												$(this).closest('form').find('.hend').html('<?php echo (Session::exists('isppr_selectOptionscurdaye')?Session::get('isppr_selectOptionscurdaye'):'1');?>');
 											}
 										}else{
 											if(myid == "dstart"){
-												$(this).closest('form').find('.hstart').html('<?php echo Session::get('isppr_selectOptionsnormaldays');?>');
+												$(this).closest('form').find('.hstart').html('<?php echo (Session::exists('isppr_selectOptionsnormaldays')?Session::get('isppr_selectOptionsnormaldays'):'1');?>');
 											}else{
-												$(this).closest('form').find('.hend').html('<?php echo Session::get('isppr_selectOptionsnormaldaye');?>');
+												$(this).closest('form').find('.hend').html('<?php echo (Session::exists('isppr_selectOptionsnormaldaye')?Session::get('isppr_selectOptionsnormaldaye'):'1');?>');
 											}
 										}
 
@@ -1655,18 +1655,18 @@ class PurchaseType_reservation extends PurchaseTypeAbstract {
 								var instance = $(this).data("datepicker");
 								var date = $.datepicker.parseDate(instance.settings.dateFormat || $.datepicker._defaults.dateFormat, selectedDate, instance.settings);
 
-								var dateC = new Date('<?php echo Session::get('isppr_curDate');?>');
+								var dateC = new Date('<?php echo (Session::exists('isppr_curDate')?Session::get('isppr_curDate'):'01-01-2011');?>');
 								if(date.getTime() == dateC.getTime()){
 									if(myid == "dstart"){
-										$(this).closest('form').find('.hstart').html('<?php echo Session::get('isppr_selectOptionscurdays');?>');
+										$(this).closest('form').find('.hstart').html('<?php echo (Session::exists('isppr_selectOptionscurdays')?Session::get('isppr_selectOptionscurdays'):'1');?>');
 									}else{
-										$(this).closest('form').find('.hend').html('<?php echo Session::get('isppr_selectOptionscurdaye');?>');
+										$(this).closest('form').find('.hend').html('<?php echo (Session::exists('isppr_selectOptionscurdaye')?Session::get('isppr_selectOptionscurdaye'):'1');?>');
 									}
 								}else{
 									if(myid == "dstart"){
-										$(this).closest('form').find('.hstart').html('<?php echo Session::get('isppr_selectOptionsnormaldays');?>');
+										$(this).closest('form').find('.hstart').html('<?php echo (Session::exists('isppr_selectOptionsnormaldays')?Session::get('isppr_selectOptionsnormaldays'):'1');?>');
 									}else{
-										$(this).closest('form').find('.hend').html('<?php echo Session::get('isppr_selectOptionsnormaldaye');?>');
+										$(this).closest('form').find('.hend').html('<?php echo (Session::exists('isppr_selectOptionsnormaldaye')?Session::get('isppr_selectOptionsnormaldaye'):'1');?>');
 									}
 								}
 
@@ -2712,6 +2712,7 @@ class PurchaseType_reservation extends PurchaseTypeAbstract {
 		}
 
         $return['price'] = round($price,2);
+        $return['totalPrice'] = round($price,2);
         if(sysconfig::get('EXTENSION_PAY_PER_RENTALS_SHORT_PRICE') == 'False'){
 			$return['message'] = $message;
         }else{
@@ -2803,6 +2804,7 @@ class PurchaseType_reservation extends PurchaseTypeAbstract {
 				$semName = $rInfo['semester_name'];
 			}
 			$returnPrice['price'] = $this->getPriceSemester($semName);
+			$returnPrice['totalPrice'] = $this->getPriceSemester($semName);
 			$returnPrice['message'] = sysLanguage::get('PPR_PRICE_BASED_ON_SEMESTER').$semName.' ';
 		}
 
@@ -2813,12 +2815,14 @@ class PurchaseType_reservation extends PurchaseTypeAbstract {
 				if($onlyShow){
 					$returnPrice['price'] += $productPricing['shipping'];
 				}
+				$returnPrice['totalPrice'] += $productPricing['shipping'];
 				$returnPrice['message'] .= ' + '. $currencies->format($productPricing['shipping']). ' '. sysLanguage::get('EXTENSION_PAY_PER_RENTALS_CALENDAR_SHIPPING');
 			}
 			if ($this->getDepositAmount() > 0){
 				if($onlyShow){
 					$returnPrice['price'] += $this->getDepositAmount();
 				}
+				$returnPrice['totalPrice'] += $this->getDepositAmount();
 				$returnPrice['message'] .= ' + '. $currencies->format($this->getDepositAmount()).' '. sysLanguage::get('EXTENSION_PAY_PER_RENTALS_CALENDAR_DEPOSIT') ;
 			}
 
@@ -2826,6 +2830,7 @@ class PurchaseType_reservation extends PurchaseTypeAbstract {
 				if($onlyShow){
 					$returnPrice['price'] += (float)$rInfo['insurance'];
 				}
+				$returnPrice['totalPrice'] += (float)$rInfo['insurance'];
 			}elseif($includeInsurance){
 				$payPerRentals = Doctrine_Query::create()
 				->select('insurance')
@@ -2834,6 +2839,7 @@ class PurchaseType_reservation extends PurchaseTypeAbstract {
 				->fetchOne();
 				$rInfo['insurance'] = $payPerRentals->insurance;
 				$returnPrice['price'] += (float)$rInfo['insurance'];
+				$returnPrice['totalPrice'] += (float)$rInfo['insurance'];
 				$returnPrice['message'] .= ' + '. $currencies->format($rInfo['insurance']).' '. sysLanguage::get('EXTENSION_PAY_PER_RENTALS_CALENDAR_INSURANCE') ;
 			}
 

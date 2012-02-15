@@ -820,7 +820,7 @@ class ReservationUtilities {
 							data: $selfID.parent().find('.reservationTable *, .ui-widget-footer-box *, .pprButttons *').serialize(),
 							success: function (data) {
 								if (data.success == true) {
-									$selfID.parent().find('.priceQuote').html(data.price + ' ' + data.message);
+									$selfID.parent().find('.priceQuote').html($('.rental_qty').val()+'X ('+data.price + ' ' + data.message+') ='+data.totalPrice);
 									$selfID.parent().find('.priceQuote').trigger('EventAfterPriceQuote');
 									if(isCatalog){
 										$selfID.parent().find('.inCart').show();
@@ -992,7 +992,7 @@ class ReservationUtilities {
 					data: $selfID.parent().find('.reservationTable *, .ui-widget-footer-box *, .pprButttons *').serialize(),//+'&price='+price,//isSemester=1&
 					success: function (data) {
 						if (data.success == true) {
-							$selfID.parent().find('.priceQuote').html(data.price + ' ' + data.message);
+							$selfID.parent().find('.priceQuote').html($('.rental_qty').val()+'X ('+data.price + ' ' + data.message+') ='+data.totalPrice);
 							if(isCatalog){
 								$selfID.parent().find('.inCart').show();
 								$selfID.parent().find('.inCart').button();
@@ -1149,7 +1149,7 @@ class ReservationUtilities {
 							success: function (data) {
 								if (data.success == true) {
 									removeAjaxLoader($this);
-									$selfID.parent().find('.priceQuote').html(data.price + ' ' + data.message);
+									$selfID.parent().find('.priceQuote').html($('.rental_qty').val()+'X ('+data.price + ' ' + data.message+') ='+data.totalPrice);
 									if(isCatalog){
 										$selfID.parent().find('.inCart').show();
 										$selfID.parent().find('.inCart').button();
@@ -1190,7 +1190,7 @@ class ReservationUtilities {
 					success: function (data) {
 						if (data.success == true) {
 							removeAjaxLoader($this);
-							$selfID.parent().find('.priceQuote').html(data.price + ' ' + data.message);
+							$selfID.parent().find('.priceQuote').html($('.rental_qty').val()+'X ('+data.price + ' ' + data.message+') ='+data.totalPrice);
 							if(isCatalog){
 								$selfID.parent().find('.inCart').show();
 								$selfID.parent().find('.inCart').button();
@@ -1226,7 +1226,7 @@ class ReservationUtilities {
 					success: function (data) {
 						if (data.success == true) {
 							removeAjaxLoader($this);
-							$selfID.parent().find('.priceQuote').html(data.price + ' ' + data.message);
+							$selfID.parent().find('.priceQuote').html($('.rental_qty').val()+'X ('+data.price + ' ' + data.message+') ='+data.totalPrice);
 							if(isCatalog){
 								$selfID.parent().find('.inCart').show();
 								$selfID.parent().find('.inCart').button();
@@ -1398,7 +1398,7 @@ class ReservationUtilities {
 		$dateText.insertBefore($('.dateQuotesWrap'));
 		$('.dateText, .dateQuotesWrap').wrapAll('<div class="wrapDates"></div>');
 		$('.shippingDiv').css('top','-'+($('.periodsInsurance').height()+12)+'px');
-		$('.dateRow').css('top','-'+($('.periodsInsurance').height()+12-30)+'px');
+		$('.dateRow').css('top','-'+($('.periodsInsurance').height()+12-30-$('.maxPeriod').height()-$('.minPeriod').height())+'px');
 		$('.pprButttons').css('top','-'+($('.periodsInsurance').height()+12-45)+'px');
 		$('.pprButttons_wrapper').css('height',($('.pprButttons').height() - $('.periodsInsurance').height()+24)+'px');
 		if(isCatalog){

@@ -6,7 +6,7 @@
 		$Group = $Groups->create();
 	}
 
-		$Group->banner_group_name = $_POST['banner_group_name'];
+		$Group->banner_group_name = tep_friendly_seo_url($_POST['banner_group_name']);
 		$Group->banner_group_show_arrows = $_POST['banner_group_show_arrows'];
 		$Group->banner_group_is_rotator = $_POST['banner_group_is_rotator'];
 		$Group->banner_group_is_expiring = $_POST['banner_group_is_expiring'];

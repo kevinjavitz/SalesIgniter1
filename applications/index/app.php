@@ -1,6 +1,6 @@
 <?php
-	$category_depth = 'top';
-	$navigation->clear_snapshot();
+
+$category_depth = 'top';
 	if(isset($_GET['appPage']) && !empty($_GET['appPage'])){
 		$catSeoUrl = $_GET['appPage'];
 		$ResultSet = Doctrine_Manager::getInstance()
@@ -18,7 +18,7 @@
 
 
 	if (!empty($catSeoUrl) && $catSeoUrl != 'default'){
-		$navigation->set_snapshot();
+		$navigation->add_current_page();
 		$ResultSet = Doctrine_Manager::getInstance()
 		->getCurrentConnection()
 		->fetchAssoc('select * from categories_description where categories_id = "' . $current_category_id .'" and language_id = "'.Session::get('languages_id').'"');

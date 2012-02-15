@@ -1,5 +1,6 @@
 <?php
-	$appContent = $App->getAppContentFile();
+$navigation->add_current_page();
+$appContent = $App->getAppContentFile();
 	if(sysConfig::get('TOOLTIP_DESCRIPTION_ENABLED') == 'true'){
 		$App->addStylesheetFile('ext/jQuery/external/mopTip/mopTip-2.2.css');
 		$App->addJavascriptFile('ext/jQuery/external/mopTip/mopTip-2.2.js');

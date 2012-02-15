@@ -1,14 +1,28 @@
 <?php
 	ob_start();
 ?>
-<noscript><?php
-echo tep_get_pages_content(13);
-?></noscript>
-<style>
-.pstrength-minchar {
-    font-size : 10px;
-}
-</style>
+<div class="bar_step1">
+	<div class="bar1">
+		<div class="text1"><?php echo sysLanguage::get('TEXT_BEGIN'); ?></div>
+		<div class="text2"><?php echo sysLanguage::get('TEXT_PAYMENT_SHIPPING'); ?></div>
+		<div class="text3"><?php echo sysLanguage::get('CHECKOUT_BAR_FINISHED'); ?></div>
+	</div>
+
+</div>
+<div class="bar_step2" style="display:none">
+	<div class="bar2">
+		<div class="text1"><?php echo sysLanguage::get('TEXT_BEGIN'); ?></div>
+		<div class="text2"><?php echo sysLanguage::get('TEXT_PAYMENT_SHIPPING'); ?></div>
+		<div class="text3"><?php echo sysLanguage::get('CHECKOUT_BAR_FINISHED'); ?></div>
+	</div>
+</div>
+<div class="bar_step3" style="display:none">
+	<div class="bar3">
+		<div class="text1"><?php echo sysLanguage::get('TEXT_BEGIN'); ?></div>
+		<div class="text2"><?php echo sysLanguage::get('TEXT_PAYMENT_SHIPPING'); ?></div>
+		<div class="text3"><?php echo sysLanguage::get('CHECKOUT_BAR_FINISHED'); ?></div>
+	</div>
+</div>
 <script type="text/javascript">
 	var CONTINUE_TO_HOMEPAGE = '<?php echo sysLanguage::get('TEXT_CONTINUE_TO_HOMEPAGE')?>';
 </script>
@@ -45,94 +59,90 @@ echo tep_get_pages_content(13);
 	</tr>
 </table></div>
 <br>
-<div id="bar_step1">
-	<table border="0" width="100%" cellspacing="0" cellpadding="0">
-		<tr>
-			<td width="25%" align="center"><table border="0" width="100%" cellspacing="0" cellpadding="0">
-				<tr>
-					<td width="50%" align="right"><span class="ui-icon ui-icon-green ui-icon-bullet" style="vertical-align:middle;"></span></td>
-					<td width="50%"><img src="<?php echo sysConfig::getDirWsCatalog();?>images/pixel_silver.gif" width="100%" height="1" style="vertical-align:middle;"></td>
-				</tr>
-			</table></td>
-			<td width="50%" align="center"><img src="<?php echo sysConfig::getDirWsCatalog();?>images/pixel_silver.gif" width="100%" height="1" style="vertical-align:middle;"></td>
-			<td width="25%" align="center"><table border="0" width="100%" cellspacing="0" cellpadding="0">
-				<tr>
-					<td width="50%"><img src="<?php echo sysConfig::getDirWsCatalog();?>images/pixel_silver.gif" width="100%" height="1" style="vertical-align:middle;"></td>
-					<td width="50%"><img src="<?php echo sysConfig::getDirWsCatalog();?>images/pixel_silver.gif" width="1" height="5" style="vertical-align:middle;"></td>
-				</tr>
-			</table></td>
-		</tr>
-		<tr>
-			<td align="center" width="25%" class="checkoutBarCurrent"><?php echo sysLanguage::get('TEXT_BEGIN'); ?></td>
-			<td align="center" width="50%" class="checkoutBarTo"><?php echo sysLanguage::get('TEXT_PAYMENT_SHIPPING');?></td>
-			<td align="center" width="25%" class="checkoutBarTo"><?php echo sysLanguage::get('CHECKOUT_BAR_FINISHED'); ?></td>
-		</tr>
-	</table>
+<div class="bar_step1">
+	<div class="bar1">
+		<div class="text1"><?php echo sysLanguage::get('TEXT_BEGIN'); ?></div>
+		<div class="text2"><?php echo sysLanguage::get('TEXT_PAYMENT_SHIPPING'); ?></div>
+		<div class="text3"><?php echo sysLanguage::get('CHECKOUT_BAR_FINISHED'); ?></div>
+	</div>
+
 </div>
-<div id="bar_step2" style="display:none">
-	<table border="0" width="100%" cellspacing="0" cellpadding="0">
-		<tr>
-			<td width="25%" align="center"><table border="0" width="100%" cellspacing="0" cellpadding="0">
-				<tr>
-					<td width="50%" align="right"><img src="<?php echo sysConfig::getDirWsCatalog();?>images/pixel_silver.gif" width="1" height="5" style="vertical-align:middle;"></td>
-					<td width="50%"><img src="<?php echo sysConfig::getDirWsCatalog();?>images/pixel_silver.gif" width="100%" height="1" style="vertical-align:middle;"></td>
-				</tr>
-			</table></td>
-			<td width="50%" align="center"><table border="0" width="100%" cellspacing="0" cellpadding="0">
-				<tr>
-					<td width="50%"><img src="<?php echo sysConfig::getDirWsCatalog();?>images/pixel_silver.gif" width="100%" height="1" style="vertical-align:middle;"></td>
-					<td align="center"><span class="ui-icon ui-icon-green ui-icon-bullet" style="vertical-align:middle;"></span></td>
-					<td width="50%"><img src="<?php echo sysConfig::getDirWsCatalog();?>images/pixel_silver.gif" width="100%" height="1" style="vertical-align:middle;"></td>
-				</tr>
-			</table></td>
-			<td width="25%" align="center"><table border="0" width="100%" cellspacing="0" cellpadding="0">
-				<tr>
-					<td width="50%"><img src="<?php echo sysConfig::getDirWsCatalog();?>images/pixel_silver.gif" width="100%" height="1" style="vertical-align:middle;"></td>
-					<td width="50%"><img src="<?php echo sysConfig::getDirWsCatalog();?>images/pixel_silver.gif" width="1" height="5" style="vertical-align:middle;"></td>
-				</tr>
-			</table></td>
-		</tr>
-		<tr>
-			<td align="center" width="25%" class="checkoutBarFrom"><?php echo sysLanguage::get('TEXT_BEGIN'); ?></td>
-			<td align="center" width="50%" class="checkoutBarCurrent"><?php echo sysLanguage::get('TEXT_PAYMENT_SHIPPING');?></td>
-			<td align="center" width="25%" class="checkoutBarTo"><?php echo sysLanguage::get('CHECKOUT_BAR_FINISHED'); ?></td>
-		</tr>
-	</table>
+<div class="bar_step2" style="display:none">
+	<div class="bar2">
+		<div class="text1"><?php echo sysLanguage::get('TEXT_BEGIN'); ?></div>
+		<div class="text2"><?php echo sysLanguage::get('TEXT_PAYMENT_SHIPPING'); ?></div>
+		<div class="text3"><?php echo sysLanguage::get('CHECKOUT_BAR_FINISHED'); ?></div>
+	</div>
 </div>
-<div id="bar_step3" style="display:none">
-	<table border="0" width="100%" cellspacing="0" cellpadding="0">
-		<tr>
-			<td width="25%" align="center"><table border="0" width="100%" cellspacing="0" cellpadding="0">
-				<tr>
-					<td align="right"><img src="<?php echo sysConfig::getDirWsCatalog();?>images/pixel_silver.gif" width="1" height="5" style="vertical-align:middle;"></td>
-					<td width="50%"><img src="<?php echo sysConfig::getDirWsCatalog();?>images/pixel_silver.gif" width="100%" height="1" style="vertical-align:middle;"></td>
-				</tr>
-			</table></td>
-			<td width="50%" align="center"><table border="0" width="100%" cellspacing="0" cellpadding="0">
-				<tr>
-					<td width="50%"><img src="<?php echo sysConfig::getDirWsCatalog();?>images/pixel_silver.gif" width="100%" height="1" style="vertical-align:middle;"></td>
-					<td width="50%"><img src="<?php echo sysConfig::getDirWsCatalog();?>images/pixel_silver.gif" width="100%" height="1" style="vertical-align:middle;"></td>
-				</tr>
-			</table></td>
-			<td width="25%" align="center"><table border="0" width="100%" cellspacing="0" cellpadding="0">
-				<tr>
-					<td width="50%"><img src="<?php echo sysConfig::getDirWsCatalog();?>images/pixel_silver.gif" width="100%" height="1" style="vertical-align:middle;"></td>
-					<td align="left"><span class="ui-icon ui-icon-green ui-icon-bullet" style="vertical-align:middle;"></span></td>
-				</tr>
-			</table></td>
-		</tr>
-		<tr>
-			<td align="center" width="25%" class="checkoutBarFrom"><?php echo sysLanguage::get('TEXT_BEGIN'); ?></td>
-			<td align="center" width="50%" class="checkoutBarFrom"><?php echo sysLanguage::get('TEXT_PAYMENT_SHIPPING');?></td>
-			<td align="center" width="25%" class="checkoutBarCurrent"><?php echo sysLanguage::get('CHECKOUT_BAR_FINISHED'); ?></td>
-		</tr>
-	</table>
+<div class="bar_step3" style="display:none">
+	<div class="bar3">
+		<div class="text1"><?php echo sysLanguage::get('TEXT_BEGIN'); ?></div>
+		<div class="text2"><?php echo sysLanguage::get('TEXT_PAYMENT_SHIPPING'); ?></div>
+		<div class="text3"><?php echo sysLanguage::get('CHECKOUT_BAR_FINISHED'); ?></div>
+	</div>
 </div>
 	<script type="text/javascript">
 
 			var TEXT_CONFIRM_ORDER = '<?php echo sysLanguage::get('TEXT_CONFIRM_ORDER');?>';
 
 	</script>
+	<style type="text/css">
+		.bar1{
+			background-image:url(<?php echo sysConfig::getDirWsCatalog();?>images/b1.png);
+			width:378px;
+			height:43px;
+		}
+
+		.bar2{
+			background-image:url(<?php echo sysConfig::getDirWsCatalog();?>images/b2.png);
+			width:378px;
+			height:43px;
+		}
+
+		.bar3{
+			background-image:url(<?php echo sysConfig::getDirWsCatalog();?>images/b3.png);
+			width:378px;
+			height:43px;
+		}
+
+		.text1{
+			font-weight: bold;
+			color:#7b7b7b;
+			display:inline-block;
+			margin-top:13px;
+			margin-left:30px;
+			margin-right:40px;
+		}
+		.text2{
+			margin-top:13px;
+			margin-left:30px;
+			margin-right:40px;
+			font-weight: bold;
+			color:#7b7b7b;
+			display:inline-block;
+		}
+		.text3{
+			margin-top:13px;
+			margin-left:20px;
+			margin-right:20px;
+			font-weight: bold;
+			color:#7b7b7b;
+			display:inline-block;
+		}
+
+		.bar_step1 .text1{
+			color:#ffffff;
+			font-weight: bold;
+		}
+		.bar_step2 .text2{
+			color:#ffffff;
+			font-weight: bold;
+		}
+		.bar_step3 .text3{
+			color:#ffffff;
+			font-weight: bold;
+		}
+	</style>
 <?php
 	$pageContents = ob_get_contents();
 	ob_end_clean();
