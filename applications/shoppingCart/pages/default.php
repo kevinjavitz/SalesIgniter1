@@ -110,7 +110,7 @@ if ($ShoppingCart->countContents() > 0) {
      ->setType('submit');
 
 	$link = itw_app_link(null,'products','all');
-	$lastPath = $navigation->getPath(3);
+	$lastPath = $navigation->getPath(0);
 	if ($lastPath){
 		$getVars = array();
 		if (is_array($lastPath['get'])){
