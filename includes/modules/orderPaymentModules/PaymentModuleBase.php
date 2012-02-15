@@ -215,33 +215,35 @@ class PaymentModuleBase extends ModuleBase
 	public function logPayment($info) {
 		global $order;
 
-			$Order = Doctrine_Core::getTable('Orders')->findOneByOrdersId((isset($info['orderID']) ? $info['orderID'] : $order->newOrder['orderID']));
+		$Order = Doctrine_Core::getTable('Orders')->findOneByOrdersId((isset($info['orderID']) ? $info['orderID'] : $order->newOrder['orderID']));
+		if(is_object($Order)){
 			$newHistory =& $Order->OrdersStatusHistory;
 			$idx = $newHistory->count();
 			$Order->OrdersStatusHistory[$idx]->orders_status_id = $this->orderStatus;
 			$Order->orders_status = $this->orderStatus;
 			$Order->save();
-		$newStatus = new OrdersPaymentsHistory();
-		$newStatus->orders_id = (isset($info['orderID']) ? $info['orderID'] : $order->newOrder['orderID']);
-		$newStatus->payment_module = $this->getCode();
-		$newStatus->payment_method = $this->getTitle();
-		$newStatus->payment_amount = $info['amount'];
-		$newStatus->success = (int)$info['success'];
-		$newStatus->can_reuse = (int)(isset($info['can_reuse']) ? $info['can_reuse'] : 0);
+			$newStatus = new OrdersPaymentsHistory();
+			$newStatus->orders_id = (isset($info['orderID']) ? $info['orderID'] : $order->newOrder['orderID']);
+			$newStatus->payment_module = $this->getCode();
+			$newStatus->payment_method = $this->getTitle();
+			$newStatus->payment_amount = $info['amount'];
+			$newStatus->success = (int)$info['success'];
+			$newStatus->can_reuse = (int)(isset($info['can_reuse']) ? $info['can_reuse'] : 0);
 
-		if (isset($info['message'])){
-			$newStatus->gateway_message = $info['message'];
-		}
+			if (isset($info['message'])){
+				$newStatus->gateway_message = $info['message'];
+			}
 
-		if (isset($info['cardDetails'])){
-			$newStatus->card_details = cc_encrypt(serialize($info['cardDetails']));
-		}
+			if (isset($info['cardDetails'])){
+				$newStatus->card_details = cc_encrypt(serialize($info['cardDetails']));
+			}
 
-		if (isset($this->logUseCollection) && $this->logUseCollection === true){
-			$this->Collection->OrdersPaymentsHistory->add($newStatus);
-		}
-		else {
-			$newStatus->save();
+			if (isset($this->logUseCollection) && $this->logUseCollection === true){
+				$this->Collection->OrdersPaymentsHistory->add($newStatus);
+			}
+			else {
+				$newStatus->save();
+			}
 		}
 	}
 }
