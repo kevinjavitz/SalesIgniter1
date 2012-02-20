@@ -86,11 +86,11 @@ class sysLanguage
 
 		self::loadLanguage();
 			
-			if (Session::exists('currency') === false || isset($_GET['currency']) || (sysConfig::get('USE_DEFAULT_LANGUAGE_CURRENCY') == 'true' &&sysConfig::get('LANGUAGE_CURRENCY') != Session::get('currency'))){
+			if (Session::exists('currency') === false || isset($_GET['currency']) || (sysConfig::get('USE_DEFAULT_LANGUAGE_CURRENCY') == 'true' &&self::getCurrency() != Session::get('currency'))){
 				if (isset($_GET['currency'])) {
-					if (!$currency = tep_currency_exists($_GET['currency'])) $currency = (sysConfig::get('USE_DEFAULT_LANGUAGE_CURRENCY') == 'true') ? sysConfig::get('LANGUAGE_CURRENCY') : sysConfig::get('DEFAULT_CURRENCY');
+					if (!$currency = tep_currency_exists($_GET['currency'])) $currency = (sysConfig::get('USE_DEFAULT_LANGUAGE_CURRENCY') == 'true') ? self::getCurrency() : sysConfig::get('DEFAULT_CURRENCY');
 				} else {
-					$currency = (sysConfig::get('USE_DEFAULT_LANGUAGE_CURRENCY') == 'true') ? sysConfig::get('LANGUAGE_CURRENCY') : sysConfig::get('DEFAULT_CURRENCY');
+					$currency = (sysConfig::get('USE_DEFAULT_LANGUAGE_CURRENCY') == 'true') ? self::getCurrency() : sysConfig::get('DEFAULT_CURRENCY');
 				}
 				$QcurrencyValue = mysql_query('select value from currencies where code = "' . $currency . '"');
 				$currencyValue = mysql_fetch_assoc($QcurrencyValue);
