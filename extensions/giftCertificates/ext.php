@@ -73,6 +73,7 @@ class Extension_giftCertificates extends ExtensionBase {
 				->leftJoin('gc.GiftCertificatesToPurchaseTypes gcpt')
 				->leftJoin('gc.TaxRates tt')
 				->where('gcd.language_id=?', (int)Session::get('languages_id'))
+				->andWhere('gc.gift_certificates_status = ? ', 'Y')
 				->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 			if ($giftCertificates){
 				foreach($giftCertificates as $gcInfo){
