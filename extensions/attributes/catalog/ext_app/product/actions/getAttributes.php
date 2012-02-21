@@ -107,7 +107,7 @@ foreach($Attributes as $optionId => $oInfo){
 				if ($optionsValues[$i]['options_values_price'] != '0') {
 					$price = ' (' .
 						$optionsValues[$i]['price_prefix'] .
-						$currencies->display_price($optionsValues[$i]['options_values_price'], $product->getTaxRate()) .
+						$currencies->display_price($optionsValues[$i]['options_values_price'], $productClass->getTaxRate()) .
 						') ';
 				}
 
