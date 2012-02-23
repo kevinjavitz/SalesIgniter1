@@ -479,6 +479,15 @@
 			<sort_order>31</sort_order>
 			<set_function>tep_cfg_select_option(array('True','False'),</set_function>
 		</EXTENSION_PAY_PER_RENTALS_SEND_EMAIL_SEND>
+
+		<EXTENSION_PAY_PER_RENTALS_SHOW_PRICE_TOTAL_ON_LISTING>
+			<value>True</value>
+			<title>Do you want to show price total on listing when ppr before is selected?</title>
+			<description>show price total on listing when ppr before is selected</description>
+			<sort_order>31</sort_order>
+			<set_function>tep_cfg_select_option(array('True','False'),</set_function>
+		</EXTENSION_PAY_PER_RENTALS_SHOW_PRICE_TOTAL_ON_LISTING>
+
 		<EXTENSION_PAY_PER_RENTALS_GOOGLE_MAPS_API_KEY>
 			<value>ABQIAAAAJfeNSDfdlXtgf6gjHMTzDBT0_i__oM-cAYP-svDeQzBBv_RytBShCDbtJySULQi-i9FDwsHX8pK4aQ</value>
 			<title>Google Maps API Key</title>

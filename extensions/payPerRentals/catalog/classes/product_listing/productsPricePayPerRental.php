@@ -352,11 +352,12 @@ class productListing_productsPricePayPerRental {
 							$i2++;
 						}
 					}
-
-					$tableRow[$i2] = '<tr>
-									<td class="main"><nobr>Price:</nobr></td>
-									<td class="main">' . $pricing . '</td>
-					</tr>';
+					if(sysConfig::get('EXTENSION_PAY_PER_RENTALS_SHOW_PRICE_TOTAL_ON_LISTING') == 'True'){
+						$tableRow[$i2] = '<tr>
+										<td class="main"><nobr>Price:</nobr></td>
+										<td class="main">' . $pricing . '</td>
+						</tr>';
+					}
 					if (sizeof($tableRow) > 0){
 						$tableRow[0] = '<tr>
 						   <td class="main" colspan="2" style="font-size:.8em;" align="center">' .  $pageForm->draw() . '</td>

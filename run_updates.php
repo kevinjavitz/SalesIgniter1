@@ -451,7 +451,9 @@ function updateCategoriesSEOUrls(){
 		for ($i=0, $n=sizeof($languages); $i<$n; $i++) {
 			$lID = $languages[$i]['id'];
 			if($CategoriesDescription[$lID]->categories_seo_url == ''){
-				$CategoriesDescription[$lID]->categories_seo_url = tep_friendly_seo_url($CategoriesDescription[$lID]->categories_name);
+				$CategoriesDescription[$lID]->categories_seo_url = makeUniqueCategory($Category->categories_id, tep_friendly_seo_url($CategoriesDescription[$lID]->categories_name), true);
+			}else{
+				$CategoriesDescription[$lID]->categories_seo_url = makeUniqueCategory($Category->categories_id, tep_friendly_seo_url($CategoriesDescription[$lID]->categories_seo_url), true);
 			}
 		}
 		$Category->save();
@@ -537,6 +539,7 @@ function updateModules(){
 function updateToolsConfiguration(){
 	addConfiguration('SHOW_MANUFACTURER_ON_PRODUCT_INFO', 1, 'Show manufacturer name on product Info', 'Show manufacturer name on product Info', 'false', "tep_cfg_select_option(array('true', 'false'),");
 	addConfiguration('PRODUCT_INFO_SHOW_MODEL', 1, 'Show model on product info', 'Show model on product Info', 'true', "tep_cfg_select_option(array('true', 'false'),");
+	addConfiguration('CUSTOMER_CHANGE_SEND_NOTIFICATION_EMAIL_DEFAULT', 1, 'Send customer email when a change is made to his account set as default', 'Send customer email set as default', 'true', "tep_cfg_select_option(array('true', 'false'),");
 	addConfiguration('ORDERS_STATUS_CANCELLED_ID', 1, 'Order Status cancel ID', 'Order Status cancel ID', '7', 'tep_cfg_pull_down_order_status_list(');
 	addConfiguration('ORDERS_STATUS_WAITING_ID', 1, 'Order Status Waiting for Confirmation ID', 'Order Status Waiting for Confirmation ID', '6', 'tep_cfg_pull_down_order_status_list(');
 	addConfiguration('ORDERS_STATUS_APPROVED_ID', 1, 'Order Status Order Approved ID', 'Order Status order Approved ID', '8', 'tep_cfg_pull_down_order_status_list(');
@@ -690,6 +693,16 @@ if (!$ftpCmd){
 }
 
 run_updates();
+
+$QhasCodeGeneration = Doctrine_Query::create()
+->from('TemplateManagerTemplatesConfiguration')
+->where('NAME = ?', 'codeGeneration')
+->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+
+
+if(file_exists(sysConfig::getDirFsCatalog() . 'templates/codeGeneration/installData.php') && !isset($QhasCodeGeneration[0])){
+	require(sysConfig::getDirFsCatalog() . 'templates/codeGeneration/installData.php');
+}
 
 ftp_close($ftpConn);
 ?>

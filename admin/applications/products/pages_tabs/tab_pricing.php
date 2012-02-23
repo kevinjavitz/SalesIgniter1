@@ -66,6 +66,7 @@
 				->setId('products_price_' . $pricingTypeName . '_gross')
 				->val((isset($Product) ? $Product['products_price_' . $pricingTypeName] : ''));
 			}
+
 			$inputTable->addBodyRow(array(
 			                             'columns' => array(
 				                             array('text' => sysLanguage::get('TEXT_PRODUCTS_PRICE_NET')),
@@ -78,6 +79,7 @@
 				                             array('text' => $inputGross->draw())
 			                             )
 			                        ));
+
 		}elseif($pricingTypeName == 'rental'){
 	        $inputNet = htmlBase::newElement('input')->addClass('netPricing');
 	        $inputNet->setName('products_keepit_price')
@@ -98,5 +100,12 @@
  		$pricingTabsObj->addTabHeader('productPricingTab_' . $pricingTypeName, array('text' => $pricingTypeText))
  		->addTabPage('productPricingTab_' . $pricingTypeName, array('text' => $inputTable));
  	}
+	 $multiStore = $appExtension->getExtension('multiStore');
+	 if ($multiStore !== false && $multiStore->isEnabled() === true){
+		 if (isset($multiStore->pagePlugin)){
+			 $multiStore->pagePlugin->loadTabsPricing($pricingTabsObj);
+		 }
+	 }
+
  	echo $pricingTabsObj->draw();
 ?>

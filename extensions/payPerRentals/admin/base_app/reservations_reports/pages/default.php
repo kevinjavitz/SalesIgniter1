@@ -280,6 +280,10 @@
 		$Qproducts->andWhere('p.products_id = ?', $_GET['productsID']);		
 	}
 
+	if(isset($_GET['limitinventory']) && $_GET['limitinventory'] == 2){
+		$Qproducts->andWhere('opr.orders_products_reservations_id is not null');
+	}
+
 	EventManager::notify('ProductInventoryReportsListingQueryBeforeExecute', &$Qproducts);
 
 	$tableGrid = htmlBase::newElement('grid');
@@ -483,6 +487,18 @@
 
     $purchaseTypeField->selectOptionByValue($purchaseType);
 
+   $limitByInventory = htmlBase::newElement('selectbox')
+	   ->setName('limitinventory')
+	   ->attr('id','limitInventory')
+	   ->setLabel('Limit by Inventory')
+	   ->setLabelPosition('before');
+
+   $limitByInventory->addOption('1','Show All');
+   $limitByInventory->addOption('2','Show only inventory with reservations');
+    if(isset($_GET['limitinventory'])){
+	    $limitByInventory->selectOptionByValue($_GET['limitinventory']);
+    }
+
     $submitButton = htmlBase::newElement('button')
 	->setType('submit')
     ->usePreset('save')
@@ -497,6 +513,7 @@
     }
     $searchForm
     ->append($limitField)
+    ->append($limitByInventory)
     ->append($prevArrow)
 	->append($startdateField)
     ->append($nextArrow)

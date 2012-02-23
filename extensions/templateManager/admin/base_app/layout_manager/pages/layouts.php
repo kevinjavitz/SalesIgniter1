@@ -7,45 +7,38 @@ $tableGrid = htmlBase::newElement('newGrid')
 
 
 $tableGrid->addHeaderRow(array(
-
 	'columns' => array(
-
 		array('text' => 'Layout Name'),
-
 		array('text' => 'Display Type')
-
 	)
-
 ));
 
-
-
-$tableGrid->addButtons(array(
-
+$buttArr = array(
 	htmlBase::newElement('button')->setText('Back To Templates')->addClass('backButton'),
-
 	htmlBase::newElement('button')->setText('New')->addClass('newButton'),
-
 	htmlBase::newElement('button')->setText('Duplicate')->addClass('duplicateButton')->disable(),
-
 	htmlBase::newElement('button')->setText('Configure')->addClass('configureButton')->disable(),
-
 	htmlBase::newElement('button')->setText('Edit Layout Template')->addClass('editButton')->disable(),
-
 	htmlBase::newElement('button')->setText('Delete')->addClass('deleteButton')->disable()
+);
 
-));
+$iTemplate = Doctrine_Query::create()
+	->from('TemplateManagerTemplates')
+	->where('template_id = ?', $_GET['tID'])
+	->fetchOne();
+
+if($iTemplate->Configuration['NAME']->configuration_value == 'codeGeneration'){
+	$buttArr[] = htmlBase::newElement('button')->setText('GenerateCode')->addClass('generateCode')->disable();
+
+}
 
 
+$tableGrid->addButtons($buttArr);
 
 $QLayouts = Doctrine_Query::create()
-
 ->select('layout_id, layout_name, layout_type')
-
 ->from('TemplateManagerLayouts')
-
 ->where('template_id = ?', $_GET['tID'])
-
 ->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 
 if ($QLayouts){

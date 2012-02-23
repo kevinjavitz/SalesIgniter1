@@ -33,6 +33,7 @@ class Extension_multiStore extends ExtensionBase {
 			'ProductInventoryBarcodeGetInventoryItemsArrayPopulate',
 			'OrdersProductsReservationListingBeforeExecuteUtilities',
 			'MetaTagsFetchDefaultsQueryBeforeExecute',
+			'BoxMarketingAddLink',
 			'OrderSingleLoad'
 		), null, $this);
 		
@@ -48,6 +49,7 @@ class Extension_multiStore extends ExtensionBase {
 				'CheckoutProcessPostProcess',
 				'SetTemplateName',
 				'SeoUrlsInit',
+				'ProductQueryAfterExecute',
 				'ReviewsQueryBeforeExecute'
 			), null, $this);
 		}
@@ -63,6 +65,7 @@ class Extension_multiStore extends ExtensionBase {
 				'NewCustomerAccountBeforeExecute',
 				'CustomerInfoAddTableContainer',
 				'AdminOrdersListingBeforeExecute',
+				'AdminProductListingTemplateQueryBeforeExecute',
 				'ProductInventoryReportsListingQueryBeforeExecute'
 			), null, $this);
 			$App->addJavascriptFile('ext/jQuery/ui/jquery.ui.dropdownchecklist.js');
@@ -200,7 +203,7 @@ class Extension_multiStore extends ExtensionBase {
 			sysConfig::set('HTTP_SERVER', 'http://' . $this->storeInfo['stores_domain']);
 			sysConfig::set('HTTPS_SERVER', 'https://' . $this->storeInfo['stores_ssl_domain']);
 			$defaultCurrency = $this->storeInfo['default_currency'];
-
+			Session::set('mainCurrencyStore'.$this->storeInfo['stores_id'], $defaultCurrency);
 			if (Session::exists('currencyStore'.$this->storeInfo['stores_id']) === false || isset($_GET['currency']) ) {
 				if (isset($_GET['currency'])) {
 					if (!$currency = tep_currency_exists($_GET['currency'])) $currency = $defaultCurrency;
@@ -258,6 +261,17 @@ class Extension_multiStore extends ExtensionBase {
 			$Qproducts->leftJoin('p.ProductsToStores p2s')
 				->andWhereIn('p2s.stores_id', Session::get('admin_showing_stores'));
 		}
+	}
+
+	public function AdminProductListingTemplateQueryBeforeExecute(&$Qproducts){
+		$storesArr = array();
+		foreach($this->getStoresArray() as $arr){
+			$storesArr[] = $arr['stores_id'];
+		}
+
+		$Qproducts->leftJoin('p.ProductsToStores p2s')
+		->andWhereIn('p2s.stores_id', $storesArr);
+
 	}
 
 	public function AdminInventoryCentersListingQueryBeforeExecute(&$Qcenter) {
@@ -615,6 +629,20 @@ class Extension_multiStore extends ExtensionBase {
 	public function NewCustomerAccountBeforeExecute(&$newUser){
 		$newUser->CustomersToStores->stores_id = $_POST['customers_store_id'];
 	}
+
+	public function ProductQueryAfterExecute(&$productInfo){
+		$ResultSet = Doctrine_Manager::getInstance()
+			->getCurrentConnection()
+			->fetchAssoc('select * from stores_pricing where products_id = "' . $productInfo['products_id'] .'" and stores_id = "'.Session::get('current_store_id').'"');
+		if(isset($ResultSet[0])){
+			$productInfo['products_price'] = $ResultSet[0]['products_price'];
+			$productInfo['products_price_used']= $ResultSet[0]['products_price_used'];
+			$productInfo['products_price_stream']= $ResultSet[0]['products_price_stream'];
+			$productInfo['products_price_download']= $ResultSet[0]['products_price_download'];
+			$productInfo['typeArr'] = explode(',', $ResultSet[0]['products_type']);
+		}
+	}
+
 	public function MetaTagsFetchDefaultsQueryBeforeExecute(&$MetatagsQuery){
 		global $appExtension;
 		if($appExtension->isAdmin()){
@@ -623,15 +651,17 @@ class Extension_multiStore extends ExtensionBase {
 			$MetatagsQuery->andWhere('stores_id = ?', ((Session::get('current_store_id') == 'all') ? 0 : intVal(Session::get('current_store_id'))));
 		}
 	}
-	
-	/**
-	 * Calculates distance between two points on Earth
-	 * 
-	 * @param array From point (array containing 'lat' and 'long' parameters describing a point)
-	 * @param array To point (array containing 'lat' and 'long' parameters describing a point)
-	 * 
-	 * return distance between points (in miles)
-	 */
+
+	public function BoxMarketingAddLink(&$contents){
+		if (sysPermissions::adminAccessAllowed('statistics', 'salesReport') === true){
+			$contents['children'][] = array(
+				'link' => itw_app_link(null, 'statistics', 'salesReport', 'SSL'),
+				'text' => 'Sales Report'
+			);
+		}
+
+	}
+
 	protected function _calculateDistance($point1, $point2) {
 	    $radius      = 3958;      // Earth's radius (miles)
 	    $pi          = 3.1415926;

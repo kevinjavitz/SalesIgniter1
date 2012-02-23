@@ -168,6 +168,11 @@
 					}
 
 				});
+				$('input[name="rental_qty"]').change(function(){
+					if($(this).val() != ''){
+						$(this).closest('table').parent().parent().find('.selectProductsID').attr('checked', true);
+					}
+				});
 
 				$('.buyp').click(function(){
 					var data = { 'selectProduct[]' : [],'pType':$(this).attr('pType'),'selectQty[]' : [],'selectStartDate[]' : [],'selectEndDate[]' : [],'selectDaysBefore[]' : [],'selectDaysAfter[]' : [],'selectPickup[]' : [],'selectDropoff[]' : []};

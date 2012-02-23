@@ -34,7 +34,7 @@ $(document).ready(function (){
 		$(this).parent().parent().parent().parent().parent().attr('data-next_id', parseInt(nextId) + 1);
 
 
-		var $td2 = $('<div style="float:left;width:80px;"></div>').attr('align', 'center').append('<input class="ui-widget-content prod_model" size="15" type="text" name="event_products[' + nextId + '][products_model]">');
+		var $td2 = $('<div style="float:left;width:380px;"></div>').attr('align', 'center').append('<input class="ui-widget-content prod_model" size="45" type="text" name="event_products[' + nextId + '][products_model]">');
 		var $td5 = $('<div style="float:left;width:80px;"></div>').attr('align', 'center').append('<input class="ui-widget-content" size="15" type="text" name="event_products[' + nextId + '][qty]">');
 		var $td9 = $('<div style="float:left;width:40px;"></div>').attr('align', 'center').append('<a class="ui-icon ui-icon-closethick deleteIconHidden"></a>');
 		var $newTr = $('<li style="list-style:none"></li>').append($td2).append($td5).append($td9).append('<br style="clear:both;"/>');//<input type="hidden" name="sortvprice[]">
@@ -58,16 +58,11 @@ $(document).ready(function (){
 				minLength: 0,
 				select: function(event, ui) {
 					$barInput.val(ui.item.label);
-					return false;
+					return true;
 				}
 			});
 		});
 
-		$('.prod_model').focus(function(){
-			if($(this).val() == ''){
-				$(this).keyup().autocomplete("search", "");
-			}
-		});
 	});
 
 	$('.prod_model').keyup(function() {
@@ -86,19 +81,14 @@ $(document).ready(function (){
 					}
 				});
 			},
-			minLength: 0,
+			minLength: 1,
 			select: function(event, ui) {
 				$barInput.val(ui.item.label);
-				return false;
+				return true;
 			}
 		});
 	});
 
-	$('.prod_model').focus(function(){
-		if($(this).val() == ''){
-			$(this).keyup().autocomplete("search", "");
-		}
-	});
 
 
 });

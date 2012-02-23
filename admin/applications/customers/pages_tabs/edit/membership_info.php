@@ -70,6 +70,7 @@
 					<td class="main"><?php
 						$htmlCheckbox = htmlBase::newElement('checkbox')
 							->setName('sendEmail')
+							->setChecked((sysConfig::get('CUSTOMER_CHANGE_SEND_NOTIFICATION_EMAIL_DEFAULT') == 'true'?true:false))
 							->setValue('1');
 							echo $htmlCheckbox->draw();
 						?></td>

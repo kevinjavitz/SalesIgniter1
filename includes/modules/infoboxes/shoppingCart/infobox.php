@@ -47,7 +47,7 @@ class InfoBoxShoppingCart extends InfoBoxAbstract {
 				->setType('circleClose')
 				->addClass('iconDeleteFromCart');
 
-				$deleteIcon->setHref(itw_app_link(tep_get_all_get_params(array('action', 'pID')) . 'action=removeCartProduct&pID=' . $pID_string));
+				$deleteIcon->setHref(itw_app_link(tep_get_all_get_params(array('action', 'pID')) . 'action=removeCartProduct&pID=' . $cartProduct->getUniqID().'&purchaseTypeVal='.$cartProduct->getPurchaseType()));
 
 				if ($productAdded === true && $newProductId == $pID_string){
 					$quantity->addClass('newItemInCart');

@@ -29,6 +29,9 @@
 	if (isset($_GET['products_id'])){
 		$product = new Product((int)$_GET['products_id']);
 	}
+	if($_GET['tplDir'] == 'codeGenerator'){
+		Session::set('current_app_page', $_GET['products_id']);
+	}
 	
 	switch($App->getPageName()){
 		case 'info':

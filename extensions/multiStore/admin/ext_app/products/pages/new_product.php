@@ -84,5 +84,155 @@ class multiStore_admin_products_new_product extends Extension_multiStore {
 		}
 		return '<div id="tab_' . $this->getExtensionKey() . '">' . $contents . '</div>';
 	}
+
+	public function loadTabsPricing(&$tabsObj, $pricingTabsInfo){
+		$multiStoreTabs = htmlBase::newElement('tabs')->setId('storeTabs');
+		$multiStoreTabs->addTabHeader('tab_global', array(
+				'text' => 'Global'
+			))->addTabPage('tab_global', array(
+				'text' => $tabsObj->draw()
+			));
+
+		$stores = $this->getStoresArray();
+
+		if (isset($_GET['pID'])){
+			$Qproduct = Doctrine_Query::create()
+				->from('StoresPricing')
+				->where('products_id = ?', (int)$_GET['pID'])
+				->execute();
+			if ($Qproduct->count() > 0){
+				$productInfo = $Qproduct->toArray(true);
+			}
+		}
+		$pricingTabsInfo = array(
+			'new' => 'New',
+			'used' => 'Used',
+			'stream' => 'Streaming',
+			'member_stream' => sysLanguage::get('TEXT_STREAMING_MEMBERSHIP'),
+			'download' => 'Download',
+			'rental' => 'Member Rental'
+		);
+		foreach($stores as $sInfo){
+
+			if (isset($productInfo)){
+				$pInfo = $productInfo[$sInfo['stores_id']];
+			}
+
+
+			if (isset($pInfo)){
+				$currentTypes = explode(',', $pInfo['products_type']);
+			}
+
+
+			$pricingTabsObj = htmlBase::newElement('tabs')
+			->addClass('pricingTabs')
+			->setId('pricingTabs_'.$sInfo['stores_id']);
+
+			$radioSet = htmlBase::newElement('radio');
+			$radioSet->addGroup(array(
+					'name' => 'store_show_method[' . $sInfo['stores_id'] . ']',
+					'addCls' => 'showMethod',
+					'data' => array(
+						array(
+							'label' => 'Use Global',
+							'value' => 'use_global',
+						),
+						array(
+							'label' => 'Use Custom',
+							'value' => 'use_custom'
+						)
+					)
+				));
+
+			if (isset($pInfo)){
+				$radioSet->setChecked($pInfo['show_method']);
+			}else{
+				$radioSet->setChecked('use_global');
+			}
+
+			foreach($pricingTabsInfo as $pricingTypeName => $pricingTypeText){
+				$productTypeEnabled = htmlBase::newElement('checkbox')
+					->setName('products_type_store_'.$sInfo['stores_id'].'[]')
+					->setValue($pricingTypeName);
+
+				if (isset($currentTypes) && in_array($pricingTypeName, $currentTypes)){
+					$productTypeEnabled->setChecked(true);
+				}
+				$inputTable = htmlBase::newElement('table')
+					->setCellPadding(2)
+					->setCellSpacing(0);
+
+				$inputTable->addBodyRow(array(
+						'columns' => array(
+							array('text' => sysLanguage::get('TEXT_PRODUCTS_ENABLED')),
+							array('text' => $productTypeEnabled->draw())
+						)
+					));
+				if($pricingTypeName !== 'rental' && $pricingTypeName !== 'member_stream'){
+					$inputNet = htmlBase::newElement('input')->addClass('netPricing');
+					$inputGross = htmlBase::newElement('input')->addClass('grossPricing');
+					if ($pricingTypeName == 'new'){
+						$inputNet->setName('products_price_'.$sInfo['stores_id'])
+							->setId('products_price_'.$sInfo['stores_id']);
+
+						$inputGross->setName('products_price_gross_'.$sInfo['stores_id'])
+							->setId('products_price_'.$sInfo['stores_id'].'_gross');
+						if (isset($pInfo) && $pInfo['show_method'] == 'use_custom'){
+							$inputNet->val($pInfo['products_price']);
+							$inputGross->html($pInfo['products_price']);
+						}
+					}else{
+						$inputNet->setName('products_price_' . $pricingTypeName.'_'.$sInfo['stores_id'])
+						->setId('products_price_' . $pricingTypeName.$sInfo['stores_id'])							;
+
+						$inputGross->setName('products_price_' . $pricingTypeName . '_gross')
+						->setId('products_price_' . $pricingTypeName .$sInfo['stores_id'].'_gross');
+						if (isset($pInfo) && $pInfo['show_method'] == 'use_custom'){
+							$inputNet->val($pInfo['products_price_' . $pricingTypeName]);
+							$inputGross->html($pInfo['products_price_' . $pricingTypeName]);
+						}
+					}
+
+					$inputTable->addBodyRow(array(
+							'columns' => array(
+								array('text' => sysLanguage::get('TEXT_PRODUCTS_PRICE_NET')),
+								array('text' => $inputNet->draw())
+							)
+						));
+					$inputTable->addBodyRow(array(
+							'columns' => array(
+								array('text' => sysLanguage::get('TEXT_PRODUCTS_PRICE_GROSS')),
+								array('text' => $inputGross->draw())
+							)
+						));
+
+				}elseif($pricingTypeName == 'rental'){
+					$inputNet = htmlBase::newElement('input')->addClass('netPricing');
+					$inputNet->setName('products_keepit_price'.'_'.$sInfo['stores_id'])
+						->setId('products_keepit_price_'.$sInfo['stores_id']);
+
+					$inputTable->addBodyRow(array(
+							'columns' => array(
+								array('text' => sysLanguage::get('TEXT_PRODUCTS_PRICE_NET')),
+								array('text' => $inputNet->draw())
+							)
+						));
+
+				}
+
+				EventManager::notify('NewProductPricingTabBottom', (isset($pInfo) ? $pInfo : false), &$inputTable, &$pricingTypeName);
+
+				$pricingTabsObj->addTabHeader('productPricingTab_' . $pricingTypeName, array('text' => $pricingTypeText))
+					->addTabPage('productPricingTab_' . $pricingTypeName, array('text' => $inputTable));
+			}
+
+			$multiStoreTabs->addTabHeader('storeTabs_store_' . $sInfo['stores_id'], array(
+					'text' => $sInfo['stores_name']
+				))->addTabPage('storeTabs_store_' . $sInfo['stores_id'], array(
+					'text' => 'Display Method: ' . $radioSet->draw() . '<br /><br />' . $pricingTabsObj->draw()
+				));
+		}
+		$tabsObj = $multiStoreTabs;
+	}
 }
 ?>

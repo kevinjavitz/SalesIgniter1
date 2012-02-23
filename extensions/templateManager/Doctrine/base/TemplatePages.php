@@ -55,5 +55,11 @@ class TemplatePages extends Doctrine_Record {
 		   'primary' => false,
 		   'notnull' => true,
 	    ));
+		$this->hasColumn('associative_url', 'string', null, array(
+				'type' => 'string',
+				'length' => null,
+				'primary' => false,
+				'notnull' => true,
+		));
 	}
 }

@@ -4,11 +4,12 @@
 <br />
 <?php
 	$Qcustomers = Doctrine_Query::create()
-	->select('c.customers_firstname, c.customers_lastname, sum(op.final_price) as ordersum')
+	->select('c.customers_id, c.customers_firstname, c.customers_lastname, sum(ot.value) as ordersum')
 	->from('Customers c')
 	->leftJoin('c.Orders o')
-	->leftJoin('o.OrdersProducts op')
-	->groupBy('c.customers_firstname, c.customers_lastname')
+	->leftJoin('o.OrdersTotal ot')
+	->andWhereIn('ot.module_type', array('total', 'ot_total'))
+	->groupBy('c.customers_id')
 	->orderBy('ordersum DESC');
 
 	$tableGrid = htmlBase::newElement('grid')

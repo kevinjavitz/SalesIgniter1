@@ -11,9 +11,8 @@
 class osC_onePageCheckout {
 	public $onePage;
 	
-	public function __construct(){
-		$this->buildSession((isset($_GET['rType']) === false));
-		//$this->setMode('default');
+	public function __construct($notRebuild = false){
+		$this->buildSession(((isset($_GET['rType']) || $notRebuild) === false));
 	}
 
 	public function reset(){

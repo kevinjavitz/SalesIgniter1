@@ -48,7 +48,7 @@ class infoBoxCategories extends InfoBoxAbstract {
 
 				$headerEl = htmlBase::newElement('h3');
 				if ($current_category_id == $catId){
-					$headerEl->addClass('currentCategory');
+					$headerEl->addClass('selected');
 				}
 				$headerEl->html($categoryName);
 
@@ -153,7 +153,7 @@ class infoBoxCategories extends InfoBoxAbstract {
 			'margin-right: .3em;' . 
 		' }' . "\n" . 
 		'#categoriesBoxMenu .ui-accordion-content li a:hover, ' .
-		'#categoriesBoxMenu .ui-accordion .ui-accordion-content li a.selected { ' .
+		'#categoriesBoxMenu .ui-accordion-content li a.selected { ' .
 			'background: #e6e6e6;' . 
 		' }' . "\n" . 
 		'#categoriesBoxMenu .ui-accordion-content li .ui-icon { ' .

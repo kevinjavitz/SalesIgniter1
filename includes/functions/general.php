@@ -21,8 +21,62 @@
    Session::stop();
    exit();
   }
-  
-  function tep_redirect($url) {
+
+function unparse_url($parsed_url) {
+	$scheme   = isset($parsed_url['scheme']) ? $parsed_url['scheme'] . '://' : '';
+	$host     = isset($parsed_url['host']) ? $parsed_url['host'] : '';
+	$port     = isset($parsed_url['port']) ? ':' . $parsed_url['port'] : '';
+	$user     = isset($parsed_url['user']) ? $parsed_url['user'] : '';
+	$pass     = isset($parsed_url['pass']) ? ':' . $parsed_url['pass']  : '';
+	$pass     = ($user || $pass) ? "$pass@" : '';
+	$path     = isset($parsed_url['path']) ? $parsed_url['path'] : '';
+	$query    = isset($parsed_url['query']) ? '?' . $parsed_url['query'] : '';
+	$fragment = isset($parsed_url['fragment']) ? '#' . $parsed_url['fragment'] : '';
+	return $scheme . $user . $pass . $host . $port . $path . $query . $fragment;
+}
+
+function getLayout($app, $page, $ext){
+	$thisApp = $app;
+	$thisTemplate = 'codeGeneration';
+	$thisExtension = $ext;
+	$thisAppPage = $page;
+
+	$Qpages = mysql_query('select layout_id from template_pages where extension = "' . $thisExtension . '" and application = "' . $thisApp . '" and page = "' . $thisAppPage . '"');
+	$Page = mysql_fetch_assoc($Qpages);
+	//$pageLayouts = $Page['layout_id'];
+
+	$QtemplateId = mysql_query('select template_id from template_manager_templates_configuration where configuration_key = "DIRECTORY" and configuration_value = "' . $thisTemplate . '"');
+	$TemplateId = mysql_fetch_assoc($QtemplateId);
+
+	$Page['layout_id'] = implode(',',array_filter(explode(',',$Page['layout_id'])));
+	$QpageLayout = mysql_query('select layout_id from template_manager_layouts where template_id = "' . $TemplateId['template_id'] . '" and layout_id IN(' . $Page['layout_id'] . ')');
+	$PageLayoutId = mysql_fetch_assoc($QpageLayout);
+
+	$layout_id = $PageLayoutId['layout_id'];
+	return $layout_id;
+
+}
+
+function getAssoc($app, $page, $ext){
+	$thisApp = $app;
+	$thisExtension = $ext;
+	$thisAppPage = $page;
+
+	//echo $app.'-'.$page;
+	$Qpages = mysql_query('select associative_url from template_pages where extension = "' . $thisExtension . '" and application = "' . $thisApp . '" and page = "' . $thisAppPage . '"');
+	$Page = mysql_fetch_assoc($Qpages);
+	$pageAssocUrl = explode(',',$Page['associative_url']);
+	$i = count($pageAssocUrl) - 1;
+	while($pageAssocUrl[$i] == '' && $i >=0){
+		$i--;
+	}
+	return $pageAssocUrl[$i];
+
+
+}
+
+function tep_redirect($url) {
+
     if ( (strstr($url, "\n") != false) || (strstr($url, "\r") != false) ) { 
       tep_redirect(itw_app_link(null, 'index', 'default', 'NONSSL', false));
     }
@@ -32,8 +86,20 @@
         $url = HTTPS_SERVER . substr($url, strlen(HTTP_SERVER)); // Change it to SSL
       }
     }
-    
-    header('Location: ' . $url);
+	$parsedUrl = parse_url($url);
+	if(isset($_GET['tplDir']) && $_GET['tplDir'] == 'codeGeneration'){
+		$urlElements = explode('/', $parsedUrl['path']);
+		if(count($urlElements) == 3){
+			$encUrl = getAssoc($urlElements[1],$urlElements[2], $urlElements[0]);
+		}else{
+			$encUrl = getAssoc($urlElements[0],$urlElements[1], '');
+		}
+		if($encUrl != ''){
+			$parsedUrl['query'] .= '&redirectUrl='.urlencode($encUrl);
+		}
+	}
+
+    header('Location: ' . unparse_url($parsedUrl));
 
     tep_exit();
   }
@@ -1525,5 +1591,62 @@ function tep_get_prid($uprid) {
 			return substr_replace($subject, $replace, $pos, strlen($search));
 		}
 	}
+function makeCategoriesArrayForParrent($categoryId = 0, &$catArr){
+	$Qcategories = Doctrine_Query::create()
+		->from('Categories c')
+		->leftJoin('c.CategoriesDescription cd')
+		->where('categories_id = ?', $categoryId)
+		->andWhere('language_id = ?', Session::get('languages_id'))
+		->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+
+	$catArr[$Qcategories[0]['parent_id']] = tep_friendly_seo_url($Qcategories[0]['CategoriesDescription'][0]['categories_name']);
+	if($Qcategories[0]['parent_id'] > 0){
+		makeCategoriesArrayForParrent($Qcategories[0]['parent_id'], $catArr);
+	}
+}
+
+function makeUniqueCategory($categoryId, $category_seo, $removeLast){
+	/*$QCategories = Doctrine_Query::create()
+			->from('Categories c')
+			->leftJoin('c.CategoriesDescription cd')
+			->where('categories_seo_url = ?', $category_seo)
+			->andWhere('cd.language_id = ?', Session::get('languages_id'))
+			->execute(array(), Doctrine_Core::HYDRATE_ARRAY);*/
+	$catArr = array();
+	makeCategoriesArrayForParrent($categoryId, $catArr);
+
+	foreach($catArr as $key => $value){
+		if($value == $category_seo || $removeLast){
+			unset($catArr[$key]);
+		}
+		break;
+	}
+	$catArr = array_reverse($catArr, true);
+	$categorySeoUrl = createSeoUrl($catArr);
+	if(strpos($categorySeoUrl, $category_seo) == 0){
+		if(strlen($category_seo) <= strlen($categorySeoUrl)){
+			$categorySeoUrl = str_replace($category_seo, '', $categorySeoUrl);
+		}
+		if(substr($categorySeoUrl,0,1) == '-'){
+			$categorySeoUrl = substr($categorySeoUrl,1);
+		}
+	}
+	if(strpos($category_seo, $categorySeoUrl) == 0){
+		if(strlen($categorySeoUrl) <= strlen($category_seo)){
+			$category_seo = str_replace($categorySeoUrl, '', $category_seo);
+		}
+	}
+
+	return $categorySeoUrl.$category_seo;
+}
+function createSeoUrl($catArr){
+	//print_r($catArr);
+	$catName = '';
+	foreach($catArr as $cat){
+		$catName .= $cat.'-';
+	}
+
+	return $catName;
+}
 
 ?>

@@ -39,7 +39,25 @@ class currencies {
 	}
 
 	public function format($number, $calculate_currency_value = true, $currency_type = '', $currency_value = ''){
-		if (empty($currency_type)) $currency_type = Session::get('currency');
+		if (empty($currency_type)){
+			if(Session::exists('current_store_id') == true){
+				if(Session::exists('currencyStore'.Session::get('current_store_id')) == false){
+					$currency_type = Session::get('currency');
+				}else{
+					$currency_type = Session::get('currencyStore'.Session::get('current_store_id'));
+					if(Session::exists('mainCurrencyStore'.Session::get('current_store_id'))&& Session::get('mainCurrencyStore'.Session::get('current_store_id')) == Session::get('currency')){
+						$currency_value = 1;
+					}else{
+						if(Session::exists('mainCurrencyStore'.Session::get('current_store_id'))){
+							$currency_value = $this->currencies[$currency_type]['value']/$this->currencies[Session::get('mainCurrencyStore'.Session::get('current_store_id'))]['value'];
+						}
+					}
+				}
+			}else{
+				$currency_type = Session::get('currency');
+			}
+		}
+
 
 		$symbolLeft = $this->currencies[$currency_type]['symbol_left'];
 		$symbolRight = $this->currencies[$currency_type]['symbol_right'];

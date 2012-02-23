@@ -66,12 +66,6 @@
 				'text' => 'Products Views'
 			);
 		}
-		if (sysPermissions::adminAccessAllowed('statistics', 'salesReport') === true){
-			$contents['children'][] = array(
-				'link' => itw_app_link(null, 'statistics', 'salesReport', 'SSL'),
-				'text' => 'Sales Report'
-			);
-		}
 	}
 
 	EventManager::notify('BoxMarketingAddLink', &$contents);

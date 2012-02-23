@@ -343,18 +343,12 @@ function popupWindowEditReservation(type, rID, barcode_id, selectedBarcodes, pro
 			//$('#searchFormReports').submit();
 			return false;
 		});
-        $('#numCols').change(function(){
+
+        $('#limitProd, #purchType, #numCols, #limitInventory').change(function(){
             $('#searchFormReports').submit();
 		    return false;
         });
-        $('#limitProd').change(function(){
-            $('#searchFormReports').submit();
-		    return false;
-        });
-        $('#purchType').change(function(){
-            $('#searchFormReports').submit();
-		    return false;
-        });
+
 		$('#nextArrow').click(function(){
             prevDate = new Date($('#start_date').val());
 			$('#start_date').val($(this).attr('nextData'));

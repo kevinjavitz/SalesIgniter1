@@ -35,6 +35,7 @@ class payPerRentals_admin_products_new_product extends Extension_payPerRentals {
 	}
 	
 	public function NewProductTabBody(&$Product){
+		//todo separate price by store
 		if ($Product['products_id'] > 0){
 			$payPerRental = $Product['ProductsPayPerRental'];
 		}

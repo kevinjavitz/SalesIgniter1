@@ -38,7 +38,9 @@
 	}
 
 	require('includes/classes/onepage_checkout.php');
-	$onePageCheckout = new osC_onePageCheckout();
+
+	$onePageCheckout = new osC_onePageCheckout(true);
+
 
     if (isset($_GET['checkoutType'])){
         switch($_GET['checkoutType']){
@@ -104,7 +106,8 @@
 
 
 	require(sysConfig::getDirFsCatalog() . 'includes/classes/order.php');
-	$order = new OrderProcessor;
+
+	$order = new OrderProcessor();
 	OrderShippingModules::loadModules();
 	OrderPaymentModules::loadModules();
 	OrderTotalModules::loadModules();

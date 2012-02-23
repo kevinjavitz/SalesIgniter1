@@ -94,6 +94,23 @@ $conn->setCollate(sysConfig::get('SYSTEM_CHARACTER_SET_COLLATION'));
 	// set the application parameters
 	sysConfig::load();
 
+	if(isset($_GET['lID'])){
+
+		$QApps = mysql_query('select * from template_pages where FIND_IN_SET("'.$_GET['lID'].'",layout_id)');
+		if(mysql_num_rows($QApps) == 1){
+			$myApps = mysql_fetch_assoc($QApps);
+			$_GET['app'] = $myApps['application'];
+			if($_GET['app'] == 'product'){
+				$_GET['appPage'] = $myApps['page'];
+			}else{
+				$_GET['appPage'] = str_replace('.php','',$myApps['page']);
+			}
+			if(!empty($myApps['extension'])){
+				$_GET['appExt'] = $myApps['extension'];
+			}
+		}
+	}
+
 require(sysConfig::getDirFsCatalog() . 'includes/classes/MultipleInheritance.php');
 require(sysConfig::getDirFsCatalog() . 'includes/classes/Importable/Installable.php');
 require(sysConfig::getDirFsCatalog() . 'includes/classes/Importable/SortedDisplay.php');
@@ -422,7 +439,7 @@ require(sysConfig::getDirFsCatalog() . 'includes/classes/htmlBase.php');
 				tep_redirect($goto);
 				break;
 			case 'removeCartProduct':
-				$ShoppingCart->removeProduct($_GET['pID']);
+				$ShoppingCart->removeProduct($_GET['pID'], $_GET['purchaseTypeVal']);
 				if (isset($_GET['app'])){
 					tep_redirect(itw_app_link(tep_get_all_get_params(array('action', 'pID'))));
 				}else{

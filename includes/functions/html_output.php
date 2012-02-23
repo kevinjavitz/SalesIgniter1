@@ -34,7 +34,29 @@ function seoUrlClean($val){
 function buildAppLink($o){
 	static $productNameResults;
 	$envDir = ($o['env'] == 'catalog' ? sysConfig::getDirWsCatalog() : sysConfig::getDirWsAdmin());
-	
+	$appExt = '';
+	$getVars = tep_get_all_get_params();
+	$getVarsArr = explode('&', $getVars);
+	$parseVars = array();
+	if (!is_null($o['params'])){
+		parse_str($o['params'], $parseVars);
+	}
+	foreach($getVarsArr as $varArr){
+		$myVars = explode('=', $varArr);
+		if(isset($myVars[0]) && $myVars[0] == 'tplDir'){
+			$_GET['tplDir'] = $myVars[1];
+			unset($parseVars['tplDir']);
+			if(isset($parseVars['lID'])){
+				unset($parseVars['lID']);
+			}
+		}elseif(isset($myVars[0]) && $myVars[0] == 'genTemplate'){
+			$_GET['genTemplate'] = $myVars[1];
+			unset($parseVars['genTemplate']);
+		}elseif(isset($myVars[0]) && $myVars[0] == 'isjs'){
+			$_GET['isjs'] = $myVars[1];
+			unset($parseVars['isjs']);
+		}
+	}
 	if ($o['connection'] == 'NONSSL') {
 		$link = sysConfig::get('HTTP_SERVER') . $envDir;
 	} elseif ($o['connection'] == 'SSL') {
@@ -55,9 +77,10 @@ function buildAppLink($o){
 	
 	$paramsParsed = false;
 	if (!is_null($o['params'])){
-		parse_str($o['params'], $vars);
+		$vars = $parseVars;
 		$paramsParsed = true;
 		if ($o['app'] == 'product' && isset($vars['products_id'])){
+			$products_id = $vars['products_id'];
 			if (!isset($productNameResults[(int)$vars['products_id']])){
 				$ResultSet = Doctrine_Manager::getInstance()
 					->getCurrentConnection()
@@ -78,15 +101,17 @@ function buildAppLink($o){
 					$paramsParsed = false;
 				}
 			}
+
 		}else{
 			if (isset($vars['appExt'])){
 				$link .= $vars['appExt'] . '/';
+				$appExt = $vars['appExt'];
 			}
 		}
 	}
 	
 	$link .= $o['app'] . '/' . $o['page'] . '.php';
-	
+
 	if ($paramsParsed === true){
 		if (isset($vars['app'])) unset($vars['app']);
 		if (isset($vars['appPage'])) unset($vars['appPage']);
@@ -102,6 +127,38 @@ function buildAppLink($o){
 		if ($o['connection'] == 'SSL'){
 			$link .= '?' . Session::getSessionName() . '=' . Session::getSessionId();
 		}
+	}
+	if(!isset($products_id)){
+		$layout = getLayout($o['app'],$o['page']. '.php', $appExt);
+	}else{
+		$layout = getLayout('product',$products_id,'');
+	}
+	while ( (substr($link, -1) == '&') || (substr($link, -1) == '?') ) $link = substr($link, 0, -1);
+	if(isset($_GET['tplDir']) && $_GET['tplDir'] == 'codeGeneration' && $layout != '' && strpos($link, 'tplDir=codeGeneration') === false){
+		if ((isset($vars) && sizeof($vars) > 0)|| ($o['connection'] == 'SSL')){
+			$link .= '&';
+		}else{
+			$link .= '?';
+		}
+		$link .= 'tplDir=codeGeneration';
+		if(isset($_GET['genTemplate'])){
+			$link .= '&genTemplate='.$_GET['genTemplate'];
+		}
+		if(isset($_GET['isjs'])){
+			$link .= '&isjs='.$_GET['isjs'];
+		}
+
+		$link .= '&lID='.$layout;
+		if(!isset($products_id)){
+			$encUrl = getAssoc($o['app'], $o['page'] . '.php', $appExt);
+		}else{
+			$encUrl = getAssoc('product', $products_id, '');
+
+		}
+		if($encUrl != ''){
+			$link .= '&redirectUrl='.urlencode($encUrl);
+		}
+
 	}
 
 	while ( (substr($link, -1) == '&') || (substr($link, -1) == '?') ) $link = substr($link, 0, -1);

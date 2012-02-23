@@ -235,6 +235,7 @@ class OrderCreatorAddressManager extends OrderAddressManager implements Serializ
 		->from('Countries')
 		->orderBy('countries_name')
 		->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+
 		foreach($Qcountries as $cInfo){
 			$countryInput->addOption($cInfo['countries_name'], $cInfo['countries_name']);
 		}
@@ -288,8 +289,11 @@ class OrderCreatorAddressManager extends OrderAddressManager implements Serializ
 			}else{
 				$stateInput->val($Address->getState());
 			}
-
-			$countryInput->selectOptionByValue($Address->getCountry());
+			if($Address->getCountry() != ''){
+				$countryInput->selectOptionByValue($Address->getCountry());
+			}else{
+				$countryInput->selectOptionByValue(tep_get_country_name(sysConfig::get('ONEPAGE_DEFAULT_COUNTRY')));
+			}
 		}
 
 		$htmlTable->addBodyRow(array(

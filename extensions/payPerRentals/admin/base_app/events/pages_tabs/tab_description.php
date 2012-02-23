@@ -198,7 +198,7 @@ if(sysConfig::get('EXTENSION_PAY_PER_RENTALS_USE_GATES') == 'True'){
 					  $htmlProductsModel = htmlBase::newElement('input')
 						 ->addClass('ui-widget-content prod_model')
 						 ->setName('event_products[' . $prodevid . '][products_model]')
-						 ->attr('size', '15')
+						 ->attr('size', '45')
 						 ->val($iprodev['products_model']);
 
 					 $htmlQty = htmlBase::newElement('input')
@@ -207,7 +207,7 @@ if(sysConfig::get('EXTENSION_PAY_PER_RENTALS_USE_GATES') == 'True'){
 						 ->attr('size', '15')
 						 ->val($iprodev['qty']);
 
-					 $divLi1 = '<div style="float:left;width:80px;">'.$htmlProductsModel->draw().'</div>';
+					 $divLi1 = '<div style="float:left;width:380px;">'.$htmlProductsModel->draw().'</div>';
 					 $divLi2 = '<div style="float:left;width:80px;">'.$htmlQty->draw().'</div>';
 					 $divLi5 = '<div style="float:left;width:40px;">'.$deleteIcon.'</div>';
 

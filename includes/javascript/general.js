@@ -799,7 +799,12 @@ $(document).ready(function (){
 			headerSelected: 'ui-icon-circle-triangle-n'
 		}
 	});
-	
+
+	$('.mydm').live('click', function(){
+		popupWindow(js_app_link("appExt=infoPages&app=show_page&appPage=insurance_info&dialog=true"),"400","300");
+		return false;
+	});
+
 	$('a', $('#categoriesBoxMenu')).each(function (){
 		var $link = $(this);
 		$($link.parent()).hover(function (){
@@ -826,6 +831,16 @@ $(document).ready(function (){
 		}).click(function (){
 			document.location = $('a:first', this).attr('href');
 		});
+	});
+
+	$('#categoriesBoxMenu li a.selected').each(function() {
+		var li = $(this);
+		$('#categoriesBoxMenu').accordion("activate",li.parent().parent().parent().prev());
+	});
+
+	$('#categoriesBoxMenu h3.selected').each(function() {
+		var h3 = $(this);
+		$('#categoriesBoxMenu').accordion("activate", h3);
 	});
 	
 	$('a[type=button], button').each(function (){

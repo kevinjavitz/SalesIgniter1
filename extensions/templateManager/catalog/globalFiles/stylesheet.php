@@ -24,7 +24,9 @@ if ($StylesheetCache->loadData() === true && !isset($_GET['noCache'])){
 }
 else {
 	include('includes/application_top.php');
-
+	if(isset($_GET['tplDir'])){
+		Session::set('tplDir', $_GET['tplDir']);
+	}
 	$sources = array();
 	if ($env == 'catalog'){
 		$sources[] = sysConfig::getDirFsCatalog() . 'templates/' . Session::get('tplDir') . '/blueprint/screen.css';

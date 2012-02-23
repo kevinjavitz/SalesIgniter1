@@ -2064,4 +2064,62 @@ function tep_draw_products_pull_down($name, $parameters = '', $exclude = '') {
 		}
 	}
 
+function makeCategoriesArrayForParrent($categoryId = 0, &$catArr){
+	$Qcategories = Doctrine_Query::create()
+		->from('Categories c')
+		->leftJoin('c.CategoriesDescription cd')
+		->where('categories_id = ?', $categoryId)
+		->andWhere('language_id = ?', Session::get('languages_id'))
+		->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+
+		$catArr[$Qcategories[0]['parent_id']] = tep_friendly_seo_url($Qcategories[0]['CategoriesDescription'][0]['categories_name']);
+		if($Qcategories[0]['parent_id'] > 0){
+			makeCategoriesArrayForParrent($Qcategories[0]['parent_id'], $catArr);
+		}
+}
+
+	function makeUniqueCategory($categoryId, $category_seo, $removeLast){
+		/*$QCategories = Doctrine_Query::create()
+		->from('Categories c')
+		->leftJoin('c.CategoriesDescription cd')
+		->where('categories_seo_url = ?', $category_seo)
+		->andWhere('cd.language_id = ?', Session::get('languages_id'))
+		->execute(array(), Doctrine_Core::HYDRATE_ARRAY);*/
+		$catArr = array();
+		makeCategoriesArrayForParrent($categoryId, $catArr);
+
+		foreach($catArr as $key => $value){
+			if($value == $category_seo || $removeLast){
+				unset($catArr[$key]);
+			}
+			break;
+		}
+		$catArr = array_reverse($catArr, true);
+		$categorySeoUrl = createSeoUrl($catArr);
+		if(strpos($categorySeoUrl, $category_seo) == 0){
+			if(strlen($category_seo) <= strlen($categorySeoUrl)){
+				$categorySeoUrl = str_replace($category_seo, '', $categorySeoUrl);
+			}
+			if(substr($categorySeoUrl,0,1) == '-'){
+				$categorySeoUrl = substr($categorySeoUrl,1);
+			}
+		}
+		if(strpos($category_seo, $categorySeoUrl) == 0){
+			if(strlen($categorySeoUrl) <= strlen($category_seo)){
+				$category_seo = str_replace($categorySeoUrl, '', $category_seo);
+			}
+		}
+
+		return $categorySeoUrl.$category_seo;
+	}
+function createSeoUrl($catArr){
+		//print_r($catArr);
+		$catName = '';
+		foreach($catArr as $cat){
+			$catName .= $cat.'-';
+		}
+
+	return $catName;
+}
+
 ?>
