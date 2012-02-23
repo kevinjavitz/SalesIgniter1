@@ -5,13 +5,13 @@
 	$paymentTerm = 'M';
 
 	$Qmembeshipplan = Doctrine_Query::create()
-					->from('Membership m')
-					->leftJoin('m.MembershipPlanDescription md')
-					->leftJoin('m.TaxRates tt')
-					->where('m.plan_id=?', $planId)
-					->andWhere('md.language_id=?', Session::get('languages_id'))
-					->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
-	//print_r($Qmembeshipplan);
+	->from('Membership m')
+	->leftJoin('m.MembershipPlanDescription md')
+	->leftJoin('m.TaxRates tt')
+	->where('m.plan_id=?', $planId)
+	->andWhere('md.language_id=?', Session::get('languages_id'))
+	->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+
 	$onePageCheckout->onePage['rentalPlan'] = array(
 		'id'                => $planId,
 		'pay_term'          => $paymentTerm,

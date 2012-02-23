@@ -393,7 +393,7 @@ function addEmailTemplateVariables($variableName,$event, $is_conditional = 0, $c
 }
 
 
-function installInfobox($boxPath, $className, $extName = null){
+function installPDFInfobox($boxPath, $className, $extName = null){
 	$moduleDir = sysConfig::getDirFsCatalog() . $boxPath;
 	if (is_dir($moduleDir . 'Doctrine/base/')){
 		Doctrine_Core::createTablesFromModels($moduleDir . 'Doctrine/base/');
@@ -413,6 +413,51 @@ function installInfobox($boxPath, $className, $extName = null){
 	}
 	$Infobox->save();
 }
+
+function installInfobox($boxPath, $className, $extName = null){
+	$moduleDir = sysConfig::getDirFsCatalog() . $boxPath;
+	if (is_dir($moduleDir . 'Doctrine/base/')){
+		Doctrine_Core::createTablesFromModels($moduleDir . 'Doctrine/base/');
+	}
+
+	$className = 'InfoBox' . ucfirst($className);
+	if (!class_exists($className)){
+		require($moduleDir . 'infobox.php');
+	}
+	$class = new $className;
+
+	$Infobox = new TemplatesInfoboxes();
+	$Infobox->box_code = $class->getBoxCode();
+	$Infobox->box_path = $boxPath;
+	if (!is_null($extName)){
+		$Infobox->ext_name = $extName;
+	}
+	$Infobox->save();
+}
+
+function addLayoutToPage($app, $appPage, $extName, $layoutId){
+	$TemplatePages = Doctrine_Core::getTable('TemplatePages');
+
+	if (!is_null($extName)){
+		$Page = $TemplatePages->findOneByApplicationAndPageAndExtension($app, $appPage, $extName);
+	}else{
+		$Page = $TemplatePages->findOneByApplicationAndPage($app, $appPage);
+	}
+
+	if (!$Page){
+		$Page = $TemplatePages->create();
+		$Page->layout_id = $layoutId;
+		$Page->application = $app;
+		$Page->page = $appPage;
+		if (!is_null($extName)){
+			$Page->extension = $extName;
+		}
+	}elseif ($Page->count() > 0){
+		$Page->layout_id .= ',' . $layoutId;
+	}
+	$Page->save();
+}
+
 
 function importPDFLayouts(){
 	$PDFTemplateLayouts = Doctrine_Core::getTable('PDFTemplateLayouts');
@@ -665,11 +710,29 @@ function updateToolsConfiguration(){
 
 }
 
+function updateTemplates(){
+	$TemplateLayouts = Doctrine_Core::getTable('TemplateLayouts');
+	$TemplatePages = Doctrine_Core::getTable('TemplatePages');
+	$TemplatesInfoboxes = Doctrine_Core::getTable('TemplatesInfoboxes');
+	$TemplatesInfoboxesToTemplates = Doctrine_Core::getTable('TemplatesInfoboxesToTemplates');
+	$QhasCodeGeneration = Doctrine_Query::create()
+		->from('TemplateManagerTemplatesConfiguration')
+		->where('configuration_key = ?', 'NAME')
+		->andWhere('configuration_value = ?','codeGeneration')
+		->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+
+
+	if(file_exists(sysConfig::getDirFsCatalog() . 'templates/codeGeneration/installData.php') && !isset($QhasCodeGeneration[0])){
+		require(sysConfig::getDirFsCatalog() . 'templates/codeGeneration/installData.php');
+	}
+}
+
 function run_updates(){
 	updateAllDbFields();
 	update_configs();
 	addMissingConfigs();
 	updateModules();
+	updateTemplates();
 	updateToolsConfiguration();
 }
 
@@ -693,16 +756,6 @@ if (!$ftpCmd){
 }
 
 run_updates();
-
-$QhasCodeGeneration = Doctrine_Query::create()
-->from('TemplateManagerTemplatesConfiguration')
-->where('NAME = ?', 'codeGeneration')
-->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
-
-
-if(file_exists(sysConfig::getDirFsCatalog() . 'templates/codeGeneration/installData.php') && !isset($QhasCodeGeneration[0])){
-	require(sysConfig::getDirFsCatalog() . 'templates/codeGeneration/installData.php');
-}
 
 ftp_close($ftpConn);
 ?>

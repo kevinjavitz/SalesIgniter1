@@ -7,7 +7,7 @@ require_once(sysConfig::getDirFsCatalog(). 'dompdf/dompdf_config.inc.php');
 
 require(sysConfig::getDirFsCatalog() . 'includes/classes/pdftemplate.php');
 
-
+$iName = 'invoice';
 if(isset($_GET['oID']) && !isset($_GET['type'])){
 	$multiStore = $appExtension->getExtension('multiStore');
 	if ($multiStore !== false && $multiStore->isEnabled() === true){
@@ -27,6 +27,7 @@ if(isset($_GET['oID']) && !isset($_GET['type'])){
 	}
 }else{
 	$invLayout = sysConfig::get('EXTENSION_PDF_PRINTER_AGREEMENT_LAYOUT');
+	$iName = 'agreement';
 }
 
 $layout_id = $invLayout;
@@ -324,6 +325,6 @@ $dompdf->load_html(utf8_decode($myPdf));
 $dompdf->render();
 //$dompdf->stream('saved_pdf.pdf', array("Attachment" => 0));
 $pdf = $dompdf->output();
-file_put_contents(sysConfig::getDirFsCatalog(). 'temp/pdf/invoice_'.(isset($_GET['oID'])?$_GET['oID']:'').'.pdf', $pdf);
-header("Location: " .sysConfig::getDirWsCatalog(). 'temp/pdf/invoice_'.(isset($_GET['oID'])?$_GET['oID']:'').'.pdf');
+file_put_contents(sysConfig::getDirFsCatalog(). 'temp/pdf/'.$iName.'_'.(isset($_GET['oID'])?$_GET['oID']:'').'.pdf', $pdf);
+header("Location: " .sysConfig::getDirWsCatalog(). 'temp/pdf/'.$iName.'_'.(isset($_GET['oID'])?$_GET['oID']:'').'.pdf');
 itwExit();

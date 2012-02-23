@@ -49,6 +49,7 @@ class Extension_multiStore extends ExtensionBase {
 				'CheckoutProcessPostProcess',
 				'SetTemplateName',
 				'SeoUrlsInit',
+				'CheckoutAddNewCustomer',
 				'ProductQueryAfterExecute',
 				'ReviewsQueryBeforeExecute'
 			), null, $this);
@@ -659,7 +660,13 @@ class Extension_multiStore extends ExtensionBase {
 				'text' => 'Sales Report'
 			);
 		}
+	}
 
+	public function CheckoutAddNewCustomer($customerId){
+		$CustomerToStore = new CustomersToStores();
+		$CustomerToStore->customers_id = $customerId;
+		$CustomerToStore->stores_id = Session::get('current_store_id');
+		$CustomerToStore->save();
 	}
 
 	protected function _calculateDistance($point1, $point2) {

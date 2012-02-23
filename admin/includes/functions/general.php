@@ -2096,7 +2096,7 @@ function makeCategoriesArrayForParrent($categoryId = 0, &$catArr){
 		}
 		$catArr = array_reverse($catArr, true);
 		$categorySeoUrl = createSeoUrl($catArr);
-		if(strpos($categorySeoUrl, $category_seo) == 0){
+		if(strpos($categorySeoUrl, $category_seo) === 0){
 			if(strlen($category_seo) <= strlen($categorySeoUrl)){
 				$categorySeoUrl = str_replace($category_seo, '', $categorySeoUrl);
 			}
@@ -2104,7 +2104,7 @@ function makeCategoriesArrayForParrent($categoryId = 0, &$catArr){
 				$categorySeoUrl = substr($categorySeoUrl,1);
 			}
 		}
-		if(strpos($category_seo, $categorySeoUrl) == 0){
+		if(strpos($category_seo, $categorySeoUrl) === 0){
 			if(strlen($categorySeoUrl) <= strlen($category_seo)){
 				$category_seo = str_replace($categorySeoUrl, '', $category_seo);
 			}

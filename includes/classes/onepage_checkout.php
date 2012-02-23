@@ -12,7 +12,7 @@ class osC_onePageCheckout {
 	public $onePage;
 	
 	public function __construct($notRebuild = false){
-		$this->buildSession(((isset($_GET['rType']) || $notRebuild) === false));
+		$this->buildSession(((isset($_GET['rType'])) === false));
 	}
 
 	public function reset(){

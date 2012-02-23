@@ -35,7 +35,7 @@ $Column[1]->Configuration['isfooter']->configuration_value = 'false';
 if (!isset($Box['customImage'])){
  $Box['customImage'] = $PDFTemplatesInfoboxes->findOneByBoxCode('customImage');
     if (!is_object($Box['customImage']) || $Box['customImage']->count() <= 0){
-       installInfobox('includes/modules/pdfinfoboxes/customImage/', 'customImage', 'null');
+       installPDFInfobox('includes/modules/pdfinfoboxes/customImage/', 'customImage', 'null');
        $Box['customImage'] = $PDFTemplatesInfoboxes->findOneByBoxCode('customImage');
    }
 }
@@ -59,7 +59,7 @@ $Column[2]->Configuration['isheader']->configuration_value = 'false';
 if (!isset($Box['invoiceNumber'])){
  $Box['invoiceNumber'] = $PDFTemplatesInfoboxes->findOneByBoxCode('invoiceNumber');
     if (!is_object($Box['invoiceNumber']) || $Box['invoiceNumber']->count() <= 0){
-       installInfobox('includes/modules/pdfinfoboxes/invoiceNumber/', 'invoiceNumber', 'null');
+       installPDFInfobox('includes/modules/pdfinfoboxes/invoiceNumber/', 'invoiceNumber', 'null');
        $Box['invoiceNumber'] = $PDFTemplatesInfoboxes->findOneByBoxCode('invoiceNumber');
    }
 }
@@ -83,7 +83,7 @@ $Column[8]->Configuration['isheader']->configuration_value = 'false';
 if (!isset($Box['invoiceDate'])){
  $Box['invoiceDate'] = $PDFTemplatesInfoboxes->findOneByBoxCode('invoiceDate');
     if (!is_object($Box['invoiceDate']) || $Box['invoiceDate']->count() <= 0){
-       installInfobox('includes/modules/pdfinfoboxes/invoiceDate/', 'invoiceDate', 'null');
+       installPDFInfobox('includes/modules/pdfinfoboxes/invoiceDate/', 'invoiceDate', 'null');
        $Box['invoiceDate'] = $PDFTemplatesInfoboxes->findOneByBoxCode('invoiceDate');
    }
 }
@@ -121,7 +121,7 @@ $Column[3]->Configuration['width_unit']->configuration_value = 'mm';
 if (!isset($Box['billingInformation'])){
  $Box['billingInformation'] = $PDFTemplatesInfoboxes->findOneByBoxCode('billingInformation');
     if (!is_object($Box['billingInformation']) || $Box['billingInformation']->count() <= 0){
-       installInfobox('includes/modules/pdfinfoboxes/billingInformation/', 'billingInformation', 'null');
+       installPDFInfobox('includes/modules/pdfinfoboxes/billingInformation/', 'billingInformation', 'null');
        $Box['billingInformation'] = $PDFTemplatesInfoboxes->findOneByBoxCode('billingInformation');
    }
 }
@@ -145,7 +145,7 @@ $Column[4]->Configuration['isheader']->configuration_value = 'false';
 if (!isset($Box['deliveryInformation'])){
  $Box['deliveryInformation'] = $PDFTemplatesInfoboxes->findOneByBoxCode('deliveryInformation');
     if (!is_object($Box['deliveryInformation']) || $Box['deliveryInformation']->count() <= 0){
-       installInfobox('includes/modules/pdfinfoboxes/deliveryInformation/', 'deliveryInformation', 'null');
+       installPDFInfobox('includes/modules/pdfinfoboxes/deliveryInformation/', 'deliveryInformation', 'null');
        $Box['deliveryInformation'] = $PDFTemplatesInfoboxes->findOneByBoxCode('deliveryInformation');
    }
 }
@@ -183,7 +183,7 @@ $Column[5]->Configuration['isheader']->configuration_value = 'false';
 if (!isset($Box['invoiceListing'])){
  $Box['invoiceListing'] = $PDFTemplatesInfoboxes->findOneByBoxCode('invoiceListing');
     if (!is_object($Box['invoiceListing']) || $Box['invoiceListing']->count() <= 0){
-       installInfobox('includes/modules/pdfinfoboxes/invoiceListing/', 'invoiceListing', 'null');
+       installPDFInfobox('includes/modules/pdfinfoboxes/invoiceListing/', 'invoiceListing', 'null');
        $Box['invoiceListing'] = $PDFTemplatesInfoboxes->findOneByBoxCode('invoiceListing');
    }
 }
@@ -227,7 +227,7 @@ $Column[7]->Configuration['isheader']->configuration_value = 'false';
 if (!isset($Box['subtotalValue'])){
  $Box['subtotalValue'] = $PDFTemplatesInfoboxes->findOneByBoxCode('subtotalValue');
     if (!is_object($Box['subtotalValue']) || $Box['subtotalValue']->count() <= 0){
-       installInfobox('includes/modules/pdfinfoboxes/subtotalValue/', 'subtotalValue', 'null');
+       installPDFInfobox('includes/modules/pdfinfoboxes/subtotalValue/', 'subtotalValue', 'null');
        $Box['subtotalValue'] = $PDFTemplatesInfoboxes->findOneByBoxCode('subtotalValue');
    }
 }
@@ -241,7 +241,7 @@ $Widget[9]->Configuration['widget_settings']->configuration_value = '{"id":"","t
 if (!isset($Box['taxValue'])){
  $Box['taxValue'] = $PDFTemplatesInfoboxes->findOneByBoxCode('taxValue');
     if (!is_object($Box['taxValue']) || $Box['taxValue']->count() <= 0){
-       installInfobox('includes/modules/pdfinfoboxes/taxValue/', 'taxValue', 'null');
+       installPDFInfobox('includes/modules/pdfinfoboxes/taxValue/', 'taxValue', 'null');
        $Box['taxValue'] = $PDFTemplatesInfoboxes->findOneByBoxCode('taxValue');
    }
 }
@@ -255,7 +255,7 @@ $Widget[10]->Configuration['widget_settings']->configuration_value = '{"id":"","
 if (!isset($Box['shippingValue'])){
  $Box['shippingValue'] = $PDFTemplatesInfoboxes->findOneByBoxCode('shippingValue');
     if (!is_object($Box['shippingValue']) || $Box['shippingValue']->count() <= 0){
-       installInfobox('includes/modules/pdfinfoboxes/shippingValue/', 'shippingValue', 'null');
+       installPDFInfobox('includes/modules/pdfinfoboxes/shippingValue/', 'shippingValue', 'null');
        $Box['shippingValue'] = $PDFTemplatesInfoboxes->findOneByBoxCode('shippingValue');
    }
 }
@@ -269,7 +269,7 @@ $Widget[11]->Configuration['widget_settings']->configuration_value = '{"id":"","
 if (!isset($Box['totalValue'])){
  $Box['totalValue'] = $PDFTemplatesInfoboxes->findOneByBoxCode('totalValue');
     if (!is_object($Box['totalValue']) || $Box['totalValue']->count() <= 0){
-       installInfobox('includes/modules/pdfinfoboxes/totalValue/', 'totalValue', 'null');
+       installPDFInfobox('includes/modules/pdfinfoboxes/totalValue/', 'totalValue', 'null');
        $Box['totalValue'] = $PDFTemplatesInfoboxes->findOneByBoxCode('totalValue');
    }
 }
@@ -307,7 +307,7 @@ $Column[9]->Configuration['isheader']->configuration_value = 'false';
 if (!isset($Box['customText'])){
  $Box['customText'] = $PDFTemplatesInfoboxes->findOneByBoxCode('customText');
     if (!is_object($Box['customText']) || $Box['customText']->count() <= 0){
-       installInfobox('extensions/infoPages/catalog/pdfinfoboxes/customText/', 'customText', 'infoPages');
+       installPDFInfobox('extensions/infoPages/catalog/pdfinfoboxes/customText/', 'customText', 'infoPages');
        $Box['customText'] = $PDFTemplatesInfoboxes->findOneByBoxCode('customText');
    }
 }
@@ -345,7 +345,7 @@ $Column[10]->Configuration['isheader']->configuration_value = 'false';
 if (!isset($Box['customLine'])){
  $Box['customLine'] = $PDFTemplatesInfoboxes->findOneByBoxCode('customLine');
     if (!is_object($Box['customLine']) || $Box['customLine']->count() <= 0){
-       installInfobox('includes/modules/pdfinfoboxes/customLine/', 'customLine', 'null');
+       installPDFInfobox('includes/modules/pdfinfoboxes/customLine/', 'customLine', 'null');
        $Box['customLine'] = $PDFTemplatesInfoboxes->findOneByBoxCode('customLine');
    }
 }
@@ -369,7 +369,7 @@ $Column[11]->Configuration['isheader']->configuration_value = 'false';
 if (!isset($Box['currentDate'])){
  $Box['currentDate'] = $PDFTemplatesInfoboxes->findOneByBoxCode('currentDate');
     if (!is_object($Box['currentDate']) || $Box['currentDate']->count() <= 0){
-       installInfobox('includes/modules/pdfinfoboxes/currentDate/', 'currentDate', 'null');
+       installPDFInfobox('includes/modules/pdfinfoboxes/currentDate/', 'currentDate', 'null');
        $Box['currentDate'] = $PDFTemplatesInfoboxes->findOneByBoxCode('currentDate');
    }
 }

@@ -22,7 +22,7 @@ class OrderProcessor {
 			$this->totals = array();
 			$this->products = array();
 			$this->products_ordered = '';
-			if (tep_not_null($order_id)) {
+			if ($order_id != '') {
 				$this->orderId = $order_id;
 				$this->query($this->orderId);
 				$this->posMode = 'edit';

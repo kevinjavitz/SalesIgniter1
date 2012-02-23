@@ -1,18 +1,11 @@
-var isInUpdate = false;
-var currentUpdateCall;
 function updateTotals(){
-	    if(isInUpdate){
-		    currentUpdateCall.abort();
-		    isInUpdate = false;
-	    }
-		if(!isInUpdate){
-			isInUpdate = true;
+
 			$('.orderTotalsList').each(function (){
 				showAjaxLoader($(this), 'large');
 			});
 
 			var linkParams = js_get_all_get_params(['app', 'appPage', 'action']);
-			 currentUpdateCall = $.ajax({
+			$.ajax({
 					url: js_app_link(linkParams + 'rType=ajax&app=checkout&appPage=default&action=updateTotals'),
 					 cache: false,
 					 dataType: 'json',
@@ -25,10 +18,8 @@ function updateTotals(){
 							removeAjaxLoader($(this), 'large', 'append');
 						});
 						$('.orderTotalsList').html(data.orderTotalRows);
-						isInUpdate = false;
 					}
 			 });
-		}
 
 }
 
@@ -39,6 +30,7 @@ function updateShipping(val){
 		cache: false,
 		dataType: 'json',
 		type: 'post',
+		async:false,
 		data: 'shipping_method=' + val,
 		success: function (data){
 			updateTotals();
@@ -285,9 +277,9 @@ $(document).ready(function (){
                 }                
                 if ($('#currentPage').val() == 'success'){
                     $('#checkoutMessage').hide();
-                    $('#bar_step1').hide();
-                    $('#bar_step2').hide();
-                    $('#bar_step3').show();
+                    $('.bar_step1').hide();
+                    $('.bar_step2').hide();
+                    $('.bar_step3').show();
                     $('#continueButton').find('.ui-button-text').html(CONTINUE_TO_HOMEPAGE);
 					$('#printOrder').button();
                     $('.breadCrumb').html('<a class="headerNavigation" href="'+js_app_link('app=index&appPage=default')+'">You Are Here: Home</a> &raquo; Checkout &raquo; Order Processed');
@@ -297,9 +289,9 @@ $(document).ready(function (){
                      $('#voucherRedeem').button();
                      $('#gcRedeem').button();
                      $('#agreeMessage').hide();
-                     $('#bar_step1').hide();
-                     $('#bar_step2').show();
-                     $('#bar_step3').hide();
+                     $('.bar_step1').hide();
+                     $('.bar_step2').show();
+                     $('.bar_step3').hide();
                      $('#continueButton').find('.ui-button-text').html(TEXT_CONFIRM_ORDER);
 
 					 if($(':radio[name="shipping_method"]:checked').size() == 0){
@@ -337,18 +329,18 @@ $(document).ready(function (){
 
                      $('.breadCrumb').html('<a class="headerNavigation" href="'+js_app_link('app=index&appPage=default')+'">You Are Here: Home</a> &raquo; Checkout &raquo; Payment & Shipping');
 					 $('#insure_button').button();
-                      try{
-						if($(':radio[name="plan_id"]:checked').size() == 0){
-							$(':radio[name="plan_id"]').each(function(){
+	                if ($('.rentalPlans').length > 0){
+						if($('.rentalPlans:checked').size() == 0){
+							$('.rentalPlans').each(function(){
 								$(this).trigger('click');
 							});
 						} else{
-							$(':radio[name="plan_id"]:checked').each(function(){
+							$('.rentalPlans:checked').each(function(){
 								$(this).trigger('click');
 							});
 						}
-	                }catch(err){
 	                }
+
                 	if ($('.rentalPlans').length <= 0){
                         updateTotals();
                 	}
@@ -393,6 +385,7 @@ $(document).ready(function (){
 			cache: false,
 			dataType: 'json',
 			type: 'post',
+			async:false,
 			data: 'payment_method=' + $(this).val(),
 			success: function (data){
 				updateTotals();
@@ -407,6 +400,7 @@ $(document).ready(function (){
             cache: false,
             dataType: 'json',
             type: 'post',
+	        async:false,
             data: 'planID=' + $(this).val(),
             success: function (data) {
 	            updateTotals();
