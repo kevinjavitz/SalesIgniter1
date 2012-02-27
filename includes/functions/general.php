@@ -50,9 +50,12 @@ function getLayout($app, $page, $ext){
 
 	$Page['layout_id'] = implode(',',array_filter(explode(',',$Page['layout_id'])));
 	$QpageLayout = mysql_query('select layout_id from template_manager_layouts where template_id = "' . $TemplateId['template_id'] . '" and layout_id IN(' . $Page['layout_id'] . ')');
-	$PageLayoutId = mysql_fetch_assoc($QpageLayout);
-
-	$layout_id = $PageLayoutId['layout_id'];
+	if(mysql_num_rows($QpageLayout) > 0){
+		$PageLayoutId = mysql_fetch_assoc($QpageLayout);
+		$layout_id = $PageLayoutId['layout_id'];
+	}else{
+		$layout_id = '';
+	}
 	return $layout_id;
 
 }

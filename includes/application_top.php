@@ -333,10 +333,6 @@ require(sysConfig::getDirFsCatalog() . 'includes/classes/htmlBase.php');
 	require(sysConfig::getDirFsCatalog() . 'includes/classes/mime.php');
 	require(sysConfig::getDirFsCatalog() . 'includes/classes/email.php');
 
-	// Ultimate SEO URLs v2.1
-	//include_once(sysConfig::getDirFsCatalog() . 'includes/classes/seo.class.php');
-	//$seo_urls = new SEO_URL(Session::get('languages_id'));
-
 	// currency
 	if (Session::exists('currency') === false || isset($_GET['currency']) || ( (sysConfig::get('USE_DEFAULT_LANGUAGE_CURRENCY') == 'true') && (sysConfig::get('LANGUAGE_CURRENCY') != Session::get('currency')) ) ) {
 		if (isset($_GET['currency'])) {
