@@ -577,8 +577,72 @@ function update_configs(){
 
 }
 function updateModules(){
-	//if module system is the old one.
-	//install all modules from the old one
+	//Add Installed Key For Modules That Are Enabled
+	//--BEGIN--
+	$ResultSet = Doctrine_Manager::getInstance()
+		->getCurrentConnection()
+		->fetchAssoc('select modules_id from modules_configuration where configuration_key LIKE "MODULE_%_STATUS"');
+	foreach($ResultSet as $kInfo){
+		Doctrine_Manager::getInstance()
+			->getCurrentConnection()
+			->exec('insert into modules_configuration (configuration_key, configuration_value, modules_id) values ("INSTALLED", "True", "' . $kInfo['modules_id'] . '")');
+	}
+	//Add Installed Key For Modules That Are Enabled
+	//--END--
+
+	//Update Configuration Keys That Are Known To Be Common
+	//--BEGIN--
+	Doctrine_Manager::getInstance()
+		->getCurrentConnection()
+		->exec('update modules_configuration set configuration_key = "CHECKOUT_METHOD" where configuration_key LIKE "%_CHECKOUT_METHOD"');
+	Doctrine_Manager::getInstance()
+		->getCurrentConnection()
+		->exec('update modules_configuration set configuration_key = "ORDER_STATUS_ID" where configuration_key LIKE "%_ORDER_STATUS_ID"');
+	Doctrine_Manager::getInstance()
+		->getCurrentConnection()
+		->exec('update modules_configuration set configuration_key = "ZONE" where configuration_key LIKE "%_ZONE"');
+	Doctrine_Manager::getInstance()
+		->getCurrentConnection()
+		->exec('update modules_configuration set configuration_key = "DISPLAY_ORDER" where configuration_key LIKE "%_SORT_ORDER"');
+	Doctrine_Manager::getInstance()
+		->getCurrentConnection()
+		->exec('update modules_configuration set configuration_key = "STATUS" where configuration_key LIKE "%_STATUS"');
+	Doctrine_Manager::getInstance()
+		->getCurrentConnection()
+		->exec('update modules_configuration set configuration_key = "TAX_CLASS" where configuration_key LIKE "%_TAX_CLASS"');
+	//Update Configuration Keys That Are Known To Be Common
+	//--END--
+
+	//Update Module Types From Old
+	//--BEGIN--
+	Doctrine_Manager::getInstance()
+		->getCurrentConnection()
+		->exec('update modules set modules_type = "orderPayment" where modules_type = "order_payment"');
+	Doctrine_Manager::getInstance()
+		->getCurrentConnection()
+		->exec('update modules set modules_type = "orderShipping" where modules_type = "order_shipping"');
+	Doctrine_Manager::getInstance()
+		->getCurrentConnection()
+		->exec('update modules set modules_type = "orderTotal" where modules_type = "order_total"');
+	//Update Module Types From Old
+	//--END--
+}
+
+function updateAddressFormat(){
+	//Update address formats for new formatting
+	//--BEGIN--
+	$ResultSet = Doctrine_Manager::getInstance()
+		->getCurrentConnection()
+		->fetchAssoc('select * from address_format');
+	foreach($ResultSet as $aInfo){
+		$newFormat = str_replace('$cr', "\n", $aInfo['address_format']);
+		$newFormat = str_replace('$streets', '$street_address', $newFormat);
+		Doctrine_Manager::getInstance()
+			->getCurrentConnection()
+			->exec('update address_format set address_format = "' . $newFormat . '" where address_format_id = "' . $aInfo['address_format_id'] . '"');
+	}
+	//Update address formats for new formatting
+	//--END--
 }
 
 function updateToolsConfiguration(){
@@ -695,6 +759,7 @@ function updateToolsConfiguration(){
 
 	updatePagesDescription();
 	updateCategoriesSEOUrls();
+	updateAddressFormat();
 	importPDFLayouts();
 
 	Doctrine_Query::create()
