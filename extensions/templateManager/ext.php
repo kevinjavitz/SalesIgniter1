@@ -227,7 +227,7 @@ class Extension_templateManager extends ExtensionBase {
 					if (($cfgInfo = $this->getConfigInfo('widget', $wInfo['widget_id'])) !== false){
 						foreach($cfgInfo as $cfInfo){
 							if ($cfInfo['configuration_key'] == 'widget_settings'){
-								$WidgetSettings = json_decode($cfInfo['configuration_value']);
+								$WidgetSettings = json_decode(utf8_encode($cfInfo['configuration_value']));
 							}
 						}
 					}
