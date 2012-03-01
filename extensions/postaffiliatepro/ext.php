@@ -54,8 +54,8 @@ class Extension_postaffiliatepro extends ExtensionBase {
 	}
 
 	public function CronPaymentSuccess($membershipUpdate){
-		include_once(sysConfig::getDirFsCatalog(). 'affiliate/api/PapApi.class.php');
-		$session = new Gpf_Api_Session(sysConfig::get('HTTP_SERVER'). '/affiliate/scripts/server.php');
+		include_once(sysConfig::getDirFsCatalog(). 'ext/pap/api/PapApi.class.php');
+		$session = new Gpf_Api_Session(sysConfig::get('EXTENSION_PAP_URL'));// - /affiliate/scripts/server.php
 		if(!$session->login(sysConfig::get('EXTENSION_PAP_MERCH'), sysConfig::get('EXTENSION_PAP_PASS'))) {
 		}
 
@@ -96,9 +96,9 @@ class Extension_postaffiliatepro extends ExtensionBase {
 		if(Session::exists('refid')){
 			$referralid = Session::get('refid');
 		}
-		include_once(sysConfig::getDirFsCatalog().'affiliate/api/PapApi.class.php');
+		include_once(sysConfig::getDirFsCatalog().'ext/pap/api/PapApi.class.php');
 		if(isset($QMembershipPlan[0]) && $QMembershipPlan[0]['is_affiliate'] == 1){
-			$session = new Gpf_Api_Session(sysConfig::get('HTTP_SERVER').'/affiliate/scripts/server.php');
+			$session = new Gpf_Api_Session(sysConfig::get('EXTENSION_PAP_URL').'scripts/server.php');
 			if(!$session->login(sysConfig::get('EXTENSION_PAP_MERCH'), sysConfig::get('EXTENSION_PAP_PASS'))) {
 			  //die("Cannot login. Message: ".$session->getMessage());
 			}
@@ -134,7 +134,7 @@ class Extension_postaffiliatepro extends ExtensionBase {
 				}
 				$affiliate->save();
 			} catch(Exception $e){
-
+				echo 'Cannot set parent:'.$e->getMessage();
 			}
 
 		}
@@ -168,16 +168,86 @@ class Extension_postaffiliatepro extends ExtensionBase {
 
 	}
 	
-	public function CheckoutSuccessRemoteFinish($orderId, $amount, $ip){
-		include_once(sysConfig::getDirFsCatalog().'affiliate/api/PapApi.class.php');
-		$saleTracker = new Pap_Api_SaleTracker(sysConfig::get('EXTENSION_PAP_URL').'scripts/sale.php');
-		$saleTracker->setAccountId('default1');
-		$sale = $saleTracker->createSale();
-		$sale->setTotalCost($amount);
-		$sale->setOrderID($orderId);
-		$sale->setLastClickIp($ip);
-		$sale->setFirstClickIp($ip);
-		$saleTracker->register();
+	public function CheckoutSuccessRemoteFinish($orderId, $amount, $ip, $refid, $customers_id, $planId){
+		if(is_numeric($planId)){
+			$QMembershipPlan = Doctrine_Query::create()
+				->from('Membership m')
+				->leftJoin('m.MembershipPlanDescription mp')
+				->where('m.plan_id = ?', $planId)
+				->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+			if($refid != 'n'){
+				$referralid = '';
+			}
+			include_once(sysConfig::getDirFsCatalog().'ext/pap/api/PapApi.class.php');
+			if(isset($QMembershipPlan[0]) && $QMembershipPlan[0]['is_affiliate'] == 1){
+				$session = new Gpf_Api_Session(sysConfig::get('EXTENSION_PAP_URL').'scripts/server.php');
+				if(!$session->login(sysConfig::get('EXTENSION_PAP_MERCH'), sysConfig::get('EXTENSION_PAP_PASS'))) {
+					//die("Cannot login. Message: ".$session->getMessage());
+				}
+
+				$Customer = Doctrine::getTable('Customers')->find((int)$customers_id);
+
+				// create new affiliate
+				$affiliate = new Pap_Api_Affiliate($session);
+				$affiliate->setUsername($Customer->customers_email_address);
+				$affiliate->setFirstname($Customer->customers_firstname);
+				$affiliate->setLastname($Customer->customers_lastname);
+
+				try {
+					if ($affiliate->add()) {
+						//echo "Affiliate saved successfully";
+						$QUsernamesToIds = new UsernamesToIds();
+						$QUsernamesToIds->ids = $affiliate->getRefid();
+						$QUsernamesToIds->username = $Customer->customers_email_address;
+						$QUsernamesToIds->customers_email_address = $Customer->customers_email_address;
+						$QUsernamesToIds->save();
+						$affiliate->sendConfirmationEmail();
+						$affiliate->setStatus('A');
+					}
+					else {
+						//echo ("Cannot save affiliate: ".$affiliate->getMessage().'__'.$Customer->customers_firstname.'---'.$Customer->customers_lastname);
+					}
+				}	catch (Exception $e) {
+
+				}
+				try{
+					if(isset($referralid)){
+						$affiliate->setParentUserId($referralid); //setting the parent affiliate
+					}
+					$affiliate->save();
+				} catch(Exception $e){
+					//echo 'Cannot set parent:'.$e->getMessage();
+				}
+
+			}
+
+			if(isset($referralid) && isset($QMembershipPlan[0]) && $QMembershipPlan[0]['no_of_titles'] > 0){
+				try{
+					$QCustToOrders = Doctrine::getTable('CustomersToOrders')->findOneByCustomersId((int)$customers_id);
+					if(!$QCustToOrders){
+						$QCustToOrders = new CustomersToOrders();
+					}
+					$planId = $QMembershipPlan[0]['plan_id'];
+					$QCustToOrders->customers_id = $customers_id;
+					$QCustToOrders->orders_id = $orderId;
+					$QCustToOrders->cost = $amount;
+					$QCustToOrders->affiliate = $referralid;
+					$QCustToOrders->product = $planId;
+					$QCustToOrders->save();
+					$saleTracker = new Pap_Api_SaleTracker(sysConfig::get('EXTENSION_PAP_URL').'scripts/sale.php');
+					$saleTracker->setAccountId('default1');
+					$sale = $saleTracker->createSale();
+					$sale->setTotalCost($amount);
+					$sale->setOrderID($orderId);
+					$sale->setProductID($planId);
+					$sale->setAffiliateID($referralid);
+					$sale->setStatus('A');//is automatically approved
+					$saleTracker->register();
+				} catch(Exception $e){
+					//echo 'cannot save commision';
+				}
+			}
+		}
 	}
 }
 
