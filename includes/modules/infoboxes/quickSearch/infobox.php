@@ -23,29 +23,32 @@ class infoBoxQuickSearch extends InfoBoxAbstract {
 				->setText(' Go ')
 				->draw();
 		$searchField = htmlBase::newElement('input')
+				->setLabel(sysLanguage::get('INFOBOX_QUICK_SEARCH_LABEL'))
+				->setLabelPosition('before')
 				->setName('keywords')
 				->addClass('quickSearchInput')
 				->setType('text')
 				->setSize('20')
 				->draw();
 
-		$boxContent = htmlBase::newElement('form')
+		$boxForm = htmlBase::newElement('form')
 					->attr('name', 'quick_find')
 					->attr('action', itw_app_link(null, 'products', 'search_result'))
-					->attr('method','get')
-					->draw();
+					->attr('method','get');
 
-		$boxContent .= tep_hide_session_id() ;
+		$boxContent = tep_hide_session_id() ;
 		$boxContent .=  htmlBase::newElement('span')
 				              ->addClass('quickSearchLabel')
 				              ->text(sysLanguage::get('INFOBOX_QUICK_SEARCH_TEXT')  .
                                      '<br><a href="' . itw_app_link(null, 'products', 'search') . '"><b>' . sysLanguage::get('INFOBOX_SEARCH_ADVANCED_SEARCH') . '</b></a>' .
-                                     '</form><br />')
+                                     '<br />')
 				              ->draw();
 		$boxContent .=  $searchField ;
 		$boxContent .=  $buttonGo ;
 
-		$this->setBoxContent($boxContent);
+		$boxForm->html($boxContent);
+		
+		$this->setBoxContent($boxForm->draw());
 		return $this->draw();
 	}
 }

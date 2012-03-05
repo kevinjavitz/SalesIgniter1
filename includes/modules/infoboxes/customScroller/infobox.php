@@ -98,6 +98,20 @@ abstract class InfoBoxCustomScrollerAbstract
 		return $ListContainer;
 	}
 
+    public function getAllSubCategories($categoriesId, &$categoriesArray){
+        $Categories = Doctrine_Query::create()
+            ->select('categories_id')
+            ->from('Categories')
+            ->where('parent_id = ?', $categoriesId)
+            ->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+        if (!empty($Categories)) {
+            foreach($Categories as $catInfo){
+                $categoriesArray[] = $catInfo['categories_id'];
+                $this->getAllSubCategories($catInfo['categories_id'],$categoriesArray);
+            }
+        }
+    }
+
 	public function getQueryResults($queryType, $queryLimit, $selectedCategory = 0) {
 		$Query = Doctrine_Query::create()
 			->select('p.products_id, p.products_image, pd.products_name')
@@ -122,10 +136,13 @@ abstract class InfoBoxCustomScrollerAbstract
 				EventManager::notify('ScrollerFeaturedQueryBeforeExecute', &$Query);
 				break;
             case 'category_featured':
+                $catsArray = array($selectedCategory);
+                $this->getAllSubCategories($selectedCategory, $catsArray);
+
                 $Query->andWhere('p.products_featured = ?', '1')
                         ->leftJoin('p.ProductsToCategories p2c')
-                        ->leftJoin('p2c.Categories c')
-                        ->andWhere('c.parent_id = ? OR p2c.categories_id= ?', array($selectedCategory, $selectedCategory));
+                        //->leftJoin('p2c.Categories c')
+                        ->andWhere('p2c.categories_id in (' . implode(',',$catsArray) . ')');//, '"' . array(implode(',',$catsArray) . '"'));
 
 
                 EventManager::notify('ScrollerFeaturedQueryBeforeExecute', &$Query);

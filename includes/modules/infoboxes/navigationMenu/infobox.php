@@ -151,7 +151,7 @@ class InfoBoxNavigationMenu extends InfoBoxAbstract
 		$css = '/* Navigation Menu --BEGIN-- */' . "\n" .
 			'.ui-navigation-menu { position:relative;background-color:transparent;border: none;line-height:inherit;font-size:inherit; }' . "\n" .
 			'.ui-navigation-menu ol { background-color:transparent;list-style:none;padding:0;margin:0;border:none;line-height:inherit;z-index: 100; }' . "\n" .
-			'.ui-navigation-menu li { float:left;position:relative;display:block;border:none;background:none;line-height:inherit;text-align:left; }' . "\n" .
+			'.ui-navigation-menu li { position:relative;display:block;border:none;background:none;line-height:inherit;text-align:left; }' . "\n" .
 			'.ui-navigation-menu li a { width:100%;background-color:transparent;display:inline-block;text-decoration:none;white-space:nowrap; }' . "\n" .
 			'.ui-navigation-menu li a span { line-height:1em;background-color:transparent;display:inline-block;vertical-align:baseline; }' . "\n" .
 			'.ui-navigation-menu li ol { display:none;position:absolute; }' . "\n" .

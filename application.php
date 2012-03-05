@@ -31,9 +31,13 @@
 	if (isset($_GET['dialog']) && $_GET['dialog'] == 'true'){
 		$tplFile = 'popup';
 	}
-
-	require(sysConfig::getDirFsCatalog() . 'extensions/templateManager/mainFiles/' . $tplFile . '.tpl.php');
-
+	
+	if (file_exists(sysConfig::getDirFsCatalog() . 'templates/' . Session::get('tplDir') . '/' . $tplFile . '.tpl.php')){
+		require(sysConfig::getDirFsCatalog() . 'templates/' . Session::get('tplDir') . '/' . $tplFile . '.tpl.php');
+	}else{
+		require(sysConfig::getDirFsCatalog() . 'extensions/templateManager/mainFiles/' . $tplFile . '.tpl.php');
+	}
+	
 	EventManager::notify('ApplicationTemplateAfterInclude');
 
 	require(sysConfig::getDirFsCatalog() . 'includes/application_bottom.php');

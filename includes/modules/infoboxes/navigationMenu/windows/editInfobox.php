@@ -231,17 +231,9 @@ if (!isset($WidgetSettings->linked_to)){
 
 		$('#navMenuTable').find('.addMainBlock').click(function () {
 			var inputKey = 0;
-			var max = -1;
-			$('#navMenuTable li[id^="menu_item_"]').each(function() {
-				var vidArr = $(this).attr('id').split('_');
-				var vid = vidArr[2];
-				if(parseInt(vid) > max ){
-					max = parseInt(vid);
-				}
-			});
-
-			inputKey = max + 1;
-
+			while($('#navMenuTable').find('ol.sortable > li[data-input_key=' + inputKey + ']').size() > 0){
+				inputKey++;
+			}
 
 			var menuIconOptions = '';
 			$.each(menuIcons, function (k, v) {
@@ -499,10 +491,9 @@ $editTable->addBodyRow(array(
 
 $editTable->addBodyRow(array(
 	'columns' => array(
-		array('text' => '<input type="checkbox" name="force_fit" value="true"' . (isset($WidgetSettings->forceFit) && $WidgetSettings->forceFit == 'true' ? ' checked=checked' : '') . '> Expand To Fit Container'),
+		array('text' => '<input type="checkbox" name="force_fit" value="true"' . (isset($WidgetSettings->forceFit) && $WidgetSettings->forceFit == 'true' ? ' checked=checked' : '') . '> Expand To Fit Container')
 	)
 ));
-
 
 if (!isset($WidgetSettings->linked_to)){
 	$editTable->addBodyRow(array(

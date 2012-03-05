@@ -195,7 +195,7 @@
 			if ($.parsecss.mediumApplies(split.join(' '))){
 				$.parsecss(css, callback);
 			}
-		}else if (type='import'){
+		}else if (type=='import'){
 			var url = restore(split.shift());
 			if ($.parsecss.mediumApplies(split.join(' '))){
 				url = url.replace(/^url\(|\)$/gi, '').replace(/^["']|["']$/g, ''); // remove the url('...') wrapper
