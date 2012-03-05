@@ -1,4 +1,6 @@
 <?php
+$isAjax = (isset($_GET['rType']) && $_GET['rType'] == 'ajax');
+
 	$QlastOrder = Doctrine_Query::create()
 			->from('Orders o')
 			->leftJoin('o.OrdersProducts op')
@@ -31,6 +33,9 @@
 		//$htmlViewTerms = '<a href="' . itw_app_link('action=viewTerms&oID='.$QlastOrder[0]['orders_id'], 'account', 'default') . '" onclick="popupWindowTerms(\'' . itw_app_link('action=viewTerms&oID='.$QlastOrder[0]['orders_id'], 'account', 'default', 'SSL') . '\',400,300);return false;">' . 'View Terms and Conditions You Agreed' . '</a>';
 		$htmlTermsDetails = $QlastOrder[0]['terms'];
 	}
+if ($isAjax === false){
+	ob_start();
+}
 ?>
 <div class="ui-widget">
 	<div class="ui-widget-content ui-corner-all">
@@ -343,6 +348,15 @@ for($i=0, $n=sizeof($trackings); $i<$n; $i++){
 			echo $content;
 		}
 	}
+
+if ($isAjax === false){
+	$pageContents = ob_get_contents();
+	ob_end_clean();
+
+	$pageContent->set('pageContent', $pageContents);
+}
+
+$ShoppingCart->emptyCart(true);
 
  	Session::remove('sendto');
 	Session::remove('billto');

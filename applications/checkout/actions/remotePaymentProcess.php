@@ -1,21 +1,18 @@
 <?php
-	// load the after_process function from the payment modules
+$foundModule = false;
+foreach(OrderPaymentModules::getModules() as $PaymentModule){
+	if ($PaymentModule->ownsProcessPage() === true){
+		$foundModule = true;
+		break;
+	}
+}
+if ($foundModule === true){
 	$PaymentModule->processPayment();
 	$PaymentModule->afterOrderProcess();
+}
 
-	$ShoppingCart->emptyCart(true);
-	Session::remove('sendto');
-	Session::remove('billto');
-	Session::remove('shipping');
-	Session::remove('payment');
-	Session::remove('comments');
-
-	// #################### Added CCGV ######################
-	if (Session::exists('credit_covers') === true){
-		Session::remove('credit_covers');
-	}
-	//$orderTotalModules->clear_posts();//ICW ADDED FOR CREDIT CLASS SYSTEM
-	// #################### End Added CCGV ######################
-
-	EventManager::attachActionResponse(itw_app_link(null, 'checkout', 'success', 'SSL'), 'redirect');
+EventManager::attachActionResponse(
+	itw_app_link((isset($_GET['checkoutType']) ? 'checkoutType=' . $_GET['checkoutType'] : null), 'checkout', 'success', 'SSL'),
+	'redirect'
+);
 ?>

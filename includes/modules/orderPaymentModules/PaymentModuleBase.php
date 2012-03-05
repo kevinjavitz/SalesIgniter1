@@ -246,6 +246,10 @@ class PaymentModuleBase extends ModuleBase
 			}
 		}
 	}
+
+	public function ownsProcessPage(){
+		return (isset($_GET['paymentModule']) && $_GET['paymentModule'] == $this->getCode() ? true : false);
+	}
 }
 
 ?>
