@@ -16,7 +16,7 @@ if(Session::exists('current_app_page')){
 }
 
 $layoutPath = sysConfig::getDirFsCatalog() . 'extensions/templateManager/mainFiles';
-if($_GET['tplDir'] != 'codeGeneration'){
+if(!isset($_GET['tplDir']) || $_GET['tplDir'] != 'codeGeneration'){
 	if (file_exists(sysConfig::getDirFsCatalog() . 'templates/' . Session::get('tplDir') . '/layout.tpl')){
 		$layoutPath = sysConfig::getDirFsCatalog() . 'templates/' . Session::get('tplDir');
 	}

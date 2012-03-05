@@ -4,6 +4,9 @@
 
 	$appContent = $App->getAppContentFile();
 	$App->addJavascriptFile('ext/jQuery/ui/jquery.ui.tabs.js');
+	$App->addJavascriptFile('ext/jQuery/external/uploadify/swfobject.js');
+	$App->addJavascriptFile('ext/jQuery/external/uploadify/jquery.uploadify.js');
+	$App->addStylesheetFile('ext/jQuery/external/uploadify/jquery.uploadify.css');
 
 	$gID = (isset($_GET['gID'])) ? $_GET['gID'] : ($App->getAppPage() == 'product_listing' || $App->getAppPage() == 'product_sort_listing' ? 8 : 1);
 	

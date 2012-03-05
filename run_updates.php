@@ -393,7 +393,7 @@ function addEmailTemplateVariables($variableName,$event, $is_conditional = 0, $c
 }
 
 
-function installInfobox($boxPath, $className, $extName = null){
+function installPDFInfobox($boxPath, $className, $extName = null){
 	$moduleDir = sysConfig::getDirFsCatalog() . $boxPath;
 	if (is_dir($moduleDir . 'Doctrine/base/')){
 		Doctrine_Core::createTablesFromModels($moduleDir . 'Doctrine/base/');
@@ -413,6 +413,51 @@ function installInfobox($boxPath, $className, $extName = null){
 	}
 	$Infobox->save();
 }
+
+function installInfobox($boxPath, $className, $extName = null){
+	$moduleDir = sysConfig::getDirFsCatalog() . $boxPath;
+	if (is_dir($moduleDir . 'Doctrine/base/')){
+		Doctrine_Core::createTablesFromModels($moduleDir . 'Doctrine/base/');
+	}
+
+	$className = 'InfoBox' . ucfirst($className);
+	if (!class_exists($className)){
+		require($moduleDir . 'infobox.php');
+	}
+	$class = new $className;
+
+	$Infobox = new TemplatesInfoboxes();
+	$Infobox->box_code = $class->getBoxCode();
+	$Infobox->box_path = $boxPath;
+	if (!is_null($extName)){
+		$Infobox->ext_name = $extName;
+	}
+	$Infobox->save();
+}
+
+function addLayoutToPage($app, $appPage, $extName, $layoutId){
+	$TemplatePages = Doctrine_Core::getTable('TemplatePages');
+
+	if (!is_null($extName)){
+		$Page = $TemplatePages->findOneByApplicationAndPageAndExtension($app, $appPage, $extName);
+	}else{
+		$Page = $TemplatePages->findOneByApplicationAndPage($app, $appPage);
+	}
+
+	if (!$Page){
+		$Page = $TemplatePages->create();
+		$Page->layout_id = $layoutId;
+		$Page->application = $app;
+		$Page->page = $appPage;
+		if (!is_null($extName)){
+			$Page->extension = $extName;
+		}
+	}elseif ($Page->count() > 0){
+		$Page->layout_id .= ',' . $layoutId;
+	}
+	$Page->save();
+}
+
 
 function importPDFLayouts(){
 	$PDFTemplateLayouts = Doctrine_Core::getTable('PDFTemplateLayouts');
@@ -532,8 +577,72 @@ function update_configs(){
 
 }
 function updateModules(){
-	//if module system is the old one.
-	//install all modules from the old one
+	//Add Installed Key For Modules That Are Enabled
+	//--BEGIN--
+	$ResultSet = Doctrine_Manager::getInstance()
+		->getCurrentConnection()
+		->fetchAssoc('select modules_id from modules_configuration where configuration_key LIKE "MODULE_%_STATUS"');
+	foreach($ResultSet as $kInfo){
+		Doctrine_Manager::getInstance()
+			->getCurrentConnection()
+			->exec('insert into modules_configuration (configuration_key, configuration_value, modules_id) values ("INSTALLED", "True", "' . $kInfo['modules_id'] . '")');
+	}
+	//Add Installed Key For Modules That Are Enabled
+	//--END--
+
+	//Update Configuration Keys That Are Known To Be Common
+	//--BEGIN--
+	Doctrine_Manager::getInstance()
+		->getCurrentConnection()
+		->exec('update modules_configuration set configuration_key = "CHECKOUT_METHOD" where configuration_key LIKE "%_CHECKOUT_METHOD"');
+	Doctrine_Manager::getInstance()
+		->getCurrentConnection()
+		->exec('update modules_configuration set configuration_key = "ORDER_STATUS_ID" where configuration_key LIKE "%_ORDER_STATUS_ID"');
+	Doctrine_Manager::getInstance()
+		->getCurrentConnection()
+		->exec('update modules_configuration set configuration_key = "ZONE" where configuration_key LIKE "%_ZONE"');
+	Doctrine_Manager::getInstance()
+		->getCurrentConnection()
+		->exec('update modules_configuration set configuration_key = "DISPLAY_ORDER" where configuration_key LIKE "%_SORT_ORDER"');
+	Doctrine_Manager::getInstance()
+		->getCurrentConnection()
+		->exec('update modules_configuration set configuration_key = "STATUS" where configuration_key LIKE "%_STATUS"');
+	Doctrine_Manager::getInstance()
+		->getCurrentConnection()
+		->exec('update modules_configuration set configuration_key = "TAX_CLASS" where configuration_key LIKE "%_TAX_CLASS"');
+	//Update Configuration Keys That Are Known To Be Common
+	//--END--
+
+	//Update Module Types From Old
+	//--BEGIN--
+	Doctrine_Manager::getInstance()
+		->getCurrentConnection()
+		->exec('update modules set modules_type = "orderPayment" where modules_type = "order_payment"');
+	Doctrine_Manager::getInstance()
+		->getCurrentConnection()
+		->exec('update modules set modules_type = "orderShipping" where modules_type = "order_shipping"');
+	Doctrine_Manager::getInstance()
+		->getCurrentConnection()
+		->exec('update modules set modules_type = "orderTotal" where modules_type = "order_total"');
+	//Update Module Types From Old
+	//--END--
+}
+
+function updateAddressFormat(){
+	//Update address formats for new formatting
+	//--BEGIN--
+	$ResultSet = Doctrine_Manager::getInstance()
+		->getCurrentConnection()
+		->fetchAssoc('select * from address_format');
+	foreach($ResultSet as $aInfo){
+		$newFormat = str_replace('$cr', "\n", $aInfo['address_format']);
+		$newFormat = str_replace('$streets', '$street_address', $newFormat);
+		Doctrine_Manager::getInstance()
+			->getCurrentConnection()
+			->exec('update address_format set address_format = "' . $newFormat . '" where address_format_id = "' . $aInfo['address_format_id'] . '"');
+	}
+	//Update address formats for new formatting
+	//--END--
 }
 
 function updateToolsConfiguration(){
@@ -650,6 +759,7 @@ function updateToolsConfiguration(){
 
 	updatePagesDescription();
 	updateCategoriesSEOUrls();
+	updateAddressFormat();
 	importPDFLayouts();
 
 	Doctrine_Query::create()
@@ -665,11 +775,29 @@ function updateToolsConfiguration(){
 
 }
 
+function updateTemplates(){
+	$TemplateLayouts = Doctrine_Core::getTable('TemplateLayouts');
+	$TemplatePages = Doctrine_Core::getTable('TemplatePages');
+	$TemplatesInfoboxes = Doctrine_Core::getTable('TemplatesInfoboxes');
+	$TemplatesInfoboxesToTemplates = Doctrine_Core::getTable('TemplatesInfoboxesToTemplates');
+	$QhasCodeGeneration = Doctrine_Query::create()
+		->from('TemplateManagerTemplatesConfiguration')
+		->where('configuration_key = ?', 'NAME')
+		->andWhere('configuration_value = ?','codeGeneration')
+		->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+
+
+	if(file_exists(sysConfig::getDirFsCatalog() . 'templates/codeGeneration/installData.php') && !isset($QhasCodeGeneration[0])){
+		require(sysConfig::getDirFsCatalog() . 'templates/codeGeneration/installData.php');
+	}
+}
+
 function run_updates(){
 	updateAllDbFields();
 	update_configs();
 	addMissingConfigs();
 	updateModules();
+	updateTemplates();
 	updateToolsConfiguration();
 }
 
@@ -693,16 +821,6 @@ if (!$ftpCmd){
 }
 
 run_updates();
-
-$QhasCodeGeneration = Doctrine_Query::create()
-->from('TemplateManagerTemplatesConfiguration')
-->where('NAME = ?', 'codeGeneration')
-->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
-
-
-if(file_exists(sysConfig::getDirFsCatalog() . 'templates/codeGeneration/installData.php') && !isset($QhasCodeGeneration[0])){
-	require(sysConfig::getDirFsCatalog() . 'templates/codeGeneration/installData.php');
-}
 
 ftp_close($ftpConn);
 ?>

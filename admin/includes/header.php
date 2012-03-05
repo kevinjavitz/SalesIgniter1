@@ -15,7 +15,7 @@ if ($messageStack->size('headerStack') > 0) {
 }
 if (Session::exists('login_id') === true){
 ?>
-<div style="float:left;" class="adminLogo"><span><a href="<?php echo itw_app_link(null, 'index', 'default');?>" class="ui-corner-all" style="text-decoration:none;padding:.75em;"><img src="<?php echo sysConfig::getDirWsCatalog();?>imagick_thumb.php?path=rel&height=150&width=150&imgSrc=<?php echo sysConfig::getDirWsCatalog().'images/'.sysConfig::get('STORE_LOGO');?>"/></a></span></div>
+<div style="float:left;" class="adminLogo"><span><a href="<?php echo itw_app_link(null, 'index', 'default');?>" class="ui-corner-all" style="text-decoration:none;padding:.75em;"><img src="<?php echo sysConfig::getDirWsCatalog(). 'images/'.sysConfig::get('STORE_LOGO');?>"/></a></span></div>
 <div style="float:left;height:36px;padding-right:10px;padding-top:5px;">
 <?php
 $contents = EventManager::notifyWithReturn('AdminHeaderLeftAddContent');

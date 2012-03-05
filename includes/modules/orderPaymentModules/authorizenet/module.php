@@ -861,6 +861,9 @@
 						'paymentProfile'     => $info['paymentProfile']
 					)
 				));
+				if(isset($messageStack)){
+					$messageStack->addSession('pageStack', $info['message'], 'error');
+				}
 			}
 
 			return false;
@@ -915,6 +918,9 @@
 						'cardCvvNumber'  => $RequestData['x_card_code']
 					)
 				));
+				if(isset($messageStack)){
+					$messageStack->addSession('pageStack', $info['message'], 'error');
+				}
 			}
 		}
 	private function processCIM(){

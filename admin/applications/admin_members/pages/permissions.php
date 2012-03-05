@@ -128,6 +128,11 @@
 	->setCellPadding(3)
 	->setCellSpacing(0)
 	->css(array('width' => '100%'));
+$BoxesTable->addBodyRow(array(
+		'columns' => array(
+			array('colspan' => 2, 'text' => '<input type="checkbox" id="checkAll"/> <span id="checkAllText">Check All Pages</span>')
+		)
+	));
 	$col = 0;
 	foreach($AppArray as $appName => $aInfo){
 		if ($appName == 'ext') continue;

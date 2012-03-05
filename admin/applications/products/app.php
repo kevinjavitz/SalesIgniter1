@@ -37,13 +37,5 @@
 			array('id' => 'barcode', 'text' => 'Use Barcode Tracking')
 		);
 
-		$dir = sysConfig::getDirFsCatalog().'images';
-		if (is_dir($dir)){
-			if (!is_writeable($dir)){
-				$messageStack->add('footerStack', sysLanguage::get('ERROR_CATALOG_IMAGE_DIRECTORY_NOT_WRITEABLE'), 'error');
-			}
-		}else{
-			$messageStack->add('footerStack', sysLanguage::get('ERROR_CATALOG_IMAGE_DIRECTORY_DOES_NOT_EXIST'), 'error');
-		}
 	}
 ?>

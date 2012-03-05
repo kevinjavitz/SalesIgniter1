@@ -50,9 +50,12 @@ function getLayout($app, $page, $ext){
 
 	$Page['layout_id'] = implode(',',array_filter(explode(',',$Page['layout_id'])));
 	$QpageLayout = mysql_query('select layout_id from template_manager_layouts where template_id = "' . $TemplateId['template_id'] . '" and layout_id IN(' . $Page['layout_id'] . ')');
-	$PageLayoutId = mysql_fetch_assoc($QpageLayout);
-
-	$layout_id = $PageLayoutId['layout_id'];
+	if(mysql_num_rows($QpageLayout) > 0){
+		$PageLayoutId = mysql_fetch_assoc($QpageLayout);
+		$layout_id = $PageLayoutId['layout_id'];
+	}else{
+		$layout_id = '';
+	}
 	return $layout_id;
 
 }
@@ -1623,7 +1626,7 @@ function makeUniqueCategory($categoryId, $category_seo, $removeLast){
 	}
 	$catArr = array_reverse($catArr, true);
 	$categorySeoUrl = createSeoUrl($catArr);
-	if(strpos($categorySeoUrl, $category_seo) == 0){
+	if(strpos($categorySeoUrl, $category_seo) === 0){
 		if(strlen($category_seo) <= strlen($categorySeoUrl)){
 			$categorySeoUrl = str_replace($category_seo, '', $categorySeoUrl);
 		}
@@ -1631,7 +1634,7 @@ function makeUniqueCategory($categoryId, $category_seo, $removeLast){
 			$categorySeoUrl = substr($categorySeoUrl,1);
 		}
 	}
-	if(strpos($category_seo, $categorySeoUrl) == 0){
+	if(strpos($category_seo, $categorySeoUrl) === 0){
 		if(strlen($categorySeoUrl) <= strlen($category_seo)){
 			$category_seo = str_replace($categorySeoUrl, '', $category_seo);
 		}

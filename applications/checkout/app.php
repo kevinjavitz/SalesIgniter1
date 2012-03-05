@@ -39,7 +39,7 @@
 
 	require('includes/classes/onepage_checkout.php');
 
-	$onePageCheckout = new osC_onePageCheckout(true);
+	$onePageCheckout = new osC_onePageCheckout();
 
 
     if (isset($_GET['checkoutType'])){

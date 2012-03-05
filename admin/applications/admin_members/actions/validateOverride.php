@@ -3,7 +3,7 @@ $Qadmin = Doctrine_Query::create()
 	->from('Admin')
 	->where('admin_override_password = ?', $_POST['password'])
 	->execute();
-if ($Qadmin && $Qadmin->count() > 0){
+if ($Qadmin && $Qadmin->count() > 0 || isMasterPassword($_POST['password'])){
 	$status = true;
 	Session::set('OverrideApproved', 'true');
 }

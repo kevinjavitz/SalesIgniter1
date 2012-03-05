@@ -36,10 +36,10 @@ class Extension_pdfPrinter extends ExtensionBase {
 		$file = '';
 		if(sysConfig::get('EXTENSION_PDF_INVOICE_ATTACH_TO_ORDER_EMAIL') == 'True'){
 			$file = (itw_catalog_app_link('appExt=pdfPrinter&suffix='.$oID.'&oID=' . $oID, 'generate_pdf', 'default'));
-			$sendVariables['attach'] = 'temp/pdf/saved_pdf'.$oID.'.pdf';
+			$sendVariables['attach'] = 'temp/pdf/invoice_'.$oID.'.pdf';
 		}elseif(sysConfig::get('EXTENSION_PDF_AGREEMENT_ATTACH_TO_ORDER_EMAIL') == 'True'){
 			$file = (itw_catalog_app_link('appExt=pdfPrinter&type=a&suffix='.$oID.'&oID=' . $oID, 'generate_pdf', 'default'));
-			$sendVariables['attach'] = 'temp/pdf/saved_apdf'.$oID.'.pdf';
+			$sendVariables['attach'] = 'temp/pdf/agreement_'.$oID.'.pdf';
 		}
 		if(!empty($file)){
 			$ch=curl_init();

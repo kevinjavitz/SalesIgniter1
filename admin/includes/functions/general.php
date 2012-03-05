@@ -1508,8 +1508,17 @@ function tep_translate_order_statuses($value) {
 
 /* cfg functions -- BEGIN -- */
 function itw_cfg_upload_field($value, $key = ''){
-	$string = '<br><input type="file" name="configuration_value"><br>Local File:<input type="text" name="configuration_value_local" value="' . $value . '">';
-	return $string;
+	//$string = '<br><input type="file" name="configuration_value"><br>Local File:<input type="text" name="configuration_value_local" value="' . $value . '">';
+	$config_image = htmlBase::newElement('uploadManagerInput')
+		->setName('configuration_value')
+		->setFileType('image')
+		->autoUpload(true)
+		->showPreview(true)
+		->showMaxUploadSize(true)
+		->allowMultipleUploads(false);
+
+	$config_image->setPreviewFile($value);
+	return '<br/>Local File'.$config_image->draw();
 }
 ////
 // Alias function for Store configuration values in the Administration Tool
@@ -2096,7 +2105,7 @@ function makeCategoriesArrayForParrent($categoryId = 0, &$catArr){
 		}
 		$catArr = array_reverse($catArr, true);
 		$categorySeoUrl = createSeoUrl($catArr);
-		if(strpos($categorySeoUrl, $category_seo) == 0){
+		if(strpos($categorySeoUrl, $category_seo) === 0){
 			if(strlen($category_seo) <= strlen($categorySeoUrl)){
 				$categorySeoUrl = str_replace($category_seo, '', $categorySeoUrl);
 			}
@@ -2104,7 +2113,7 @@ function makeCategoriesArrayForParrent($categoryId = 0, &$catArr){
 				$categorySeoUrl = substr($categorySeoUrl,1);
 			}
 		}
-		if(strpos($category_seo, $categorySeoUrl) == 0){
+		if(strpos($category_seo, $categorySeoUrl) === 0){
 			if(strlen($categorySeoUrl) <= strlen($category_seo)){
 				$category_seo = str_replace($categorySeoUrl, '', $category_seo);
 			}

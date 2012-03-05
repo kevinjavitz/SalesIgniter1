@@ -128,10 +128,12 @@ function buildAppLink($o){
 			$link .= '?' . Session::getSessionName() . '=' . Session::getSessionId();
 		}
 	}
-	if(!isset($products_id)){
-		$layout = getLayout($o['app'],$o['page']. '.php', $appExt);
-	}else{
-		$layout = getLayout('product',$products_id,'');
+	if(isset($_GET['tplDir']) && $_GET['tplDir'] == 'codeGeneration'){
+		if(!isset($products_id)){
+			$layout = getLayout($o['app'],$o['page']. '.php', $appExt);
+		}else{
+			$layout = getLayout('product',$products_id,'');
+		}
 	}
 	while ( (substr($link, -1) == '&') || (substr($link, -1) == '?') ) $link = substr($link, 0, -1);
 	if(isset($_GET['tplDir']) && $_GET['tplDir'] == 'codeGeneration' && $layout != '' && strpos($link, 'tplDir=codeGeneration') === false){
