@@ -15,5 +15,5 @@
 	<define key="TABLE_HEADING_EVENT"><![CDATA[Event]]></define>
 	<define key="TABLE_HEADING_GATE"><![CDATA[Gate]]></define>
 
-
+	<define key="TEXT_BUTTON_EXPORT_RESULTS"><![CDATA[Export Results]]></define>
 </definitions>

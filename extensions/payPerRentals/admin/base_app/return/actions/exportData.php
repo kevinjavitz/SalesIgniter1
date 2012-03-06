@@ -1,8 +1,64 @@
 <?php
-	$html = '';
-	$resultsMode = 'html';
-	if (isset($_GET['export']) && $_GET['export'] == 'csv'){
-		$resultsMode = 'csv';
+$centersEnabled = false;
+if ($appExtension->isInstalled('inventoryCenters') && $appExtension->isEnabled('inventoryCenters')){
+	$extInventoryCenters = $appExtension->getExtension('inventoryCenters');
+	$centersEnabled = true;
+	$centersStockMethod = $extInventoryCenters->stockMethod;
+	if ($centersStockMethod == 'Store'){
+		$extStores = $appExtension->getExtension('multiStore');
+		$invCenterArray = $extStores->getStoresArray();
+	}else{
+		$invCenterArray = $extInventoryCenters->getCentersArray();
+	}
+}
+
+$Qreservations = Doctrine_Query::create()
+->from('Orders o')
+->leftJoin('o.OrdersAddresses oa')
+->leftJoin('o.OrdersProducts op')
+->leftJoin('op.OrdersProductsReservation opr')
+->leftJoin('opr.ProductsInventoryBarcodes ib')
+->leftJoin('ib.ProductsInventory i')
+->leftJoin('opr.ProductsInventoryQuantity iq')
+->leftJoin('iq.ProductsInventory i2')
+->where('oa.address_type = ?', 'delivery')
+->andWhere('opr.parent_id IS NULL')
+->orderBy('opr.end_date');
+	if (isset($_GET['include_returned'])){
+		$Qreservations->andWhereIn('opr.rental_state', array('returned', 'out'));
+	}else{
+		$Qreservations->andWhere('opr.rental_state = ?', 'out');
+	}
+
+if (isset($_GET['start_date']) || isset($_GET['end_date'])){
+	$Qreservations->andWhere('opr.start_date between "' . $_GET['start_date'] . '" and "' . $_GET['end_date'] . '"');
+}
+	if (isset($_GET['filter_shipping']) && !empty($_GET['filter_shipping'])){
+		$Qreservations->andWhere('o.shipping_module LIKE ?', '%' . $_GET['filter_shipping'] . '%');
+	}
+	if (isset($_GET['filter_category']) && !empty($_GET['filter_category'])){
+		$Qreservations->leftJoin('op.Products p')
+			->leftJoin('p.ProductsToCategories ptc')
+			->andWhere('ptc.categories_id = ?', $_GET['filter_category']);
+	}
+	
+
+if ($centersEnabled === true){
+	if ($centersStockMethod == 'Store'){
+		$Qreservations->leftJoin('ib.ProductsInventoryBarcodesToStores b2s')
+		->leftJoin('b2s.Stores s');
+	}else{
+		$Qreservations->leftJoin('ib.ProductsInventoryBarcodesToInventoryCenters b2c')
+		->leftJoin('b2c.ProductsInventoryCenters ic');
+	}
+}
+
+EventManager::notify('OrdersListingBeforeExecute', &$Qreservations);
+
+$Qreservations->orderBy('oa.entry_name, o.orders_id');
+
+$Result = $Qreservations->execute();
+
 		$html = 'Client Name,' . 
 			'Invoice Number,' . 
 			'Delivery Address,' . 
@@ -17,77 +73,10 @@
 			'Delivery Method,' . 
 			'Comments';
 		$html .= "\n";
-	}
-	$Qreservations = Doctrine_Query::create()
-	->from('Orders o')
-	->leftJoin('o.OrdersAddresses oa')
-	->leftJoin('o.OrdersProducts op')
-	->leftJoin('op.OrdersProductsReservation opr')
-	->leftJoin('opr.ProductsInventoryBarcodes ib')
-	->leftJoin('ib.ProductsInventory i')
-	->leftJoin('opr.ProductsInventoryQuantity iq')
-	->leftJoin('iq.ProductsInventory i2')
-	/*			->leftJoin('rb.RentalBookings rb_child')
-	->leftJoin('rb_child.Orders o_child')
-	->leftJoin('o_child.OrdersAddresses oa_child')
-	->leftJoin('rb_child.OrdersProducts op_child')
-	->leftJoin('rb_child.ProductsInventoryBarcodes ib_child')
-	->leftJoin('ib_child.ProductsInventory i_child')
-	->leftJoin('rb_child.ProductsInventoryQuantity iq_child')
-	->leftJoin('iq_child.ProductsInventory i2_child')*/
-	->where('opr.start_date BETWEEN "' . $_GET['start_date'] . '" AND "' . $_GET['end_date'] . '"')
-	->andWhere('oa.address_type = ?', 'delivery')
-	->andWhere('opr.parent_id is null');
-	
-	if (isset($_GET['include_sent'])){
-		$Qreservations->andWhereIn('opr.rental_state', array('reserved', 'out'));
-	}else{
-		$Qreservations->andWhere('opr.rental_state = ?', 'reserved');
-	}
-
-	if(isset($_GET['eventSort'])){
-		$Qreservations->orderBy('opr.event_name ' . $_GET['eventSort']);
-	}
-	if(isset($_GET['gateSort'])){
-		$Qreservations->orderBy('opr.event_gate ' . $_GET['gateSort']);
-	}
-
-	if ($_GET['filter_pay'] == 'pay'){
-		$Qreservations->andWhere('opr.amount_payed >= op.final_price');
-	}else
-	if ($_GET['filter_pay'] == 'notpay'){
-		$Qreservations->andWhere('opr.amount_payed < op.final_price');
-	}
-	if ((int)$_GET['filter_status'] > 0){
-		if($_GET['filter_status'] == 2){
-			$Qreservations->andWhere('opr.rental_status_id = '. $_GET['filter_status'].' OR opr.rental_status_id is null');
-		}else{
-			$Qreservations->andWhere('opr.rental_status_id = ?', $_GET['filter_status']);
-		}
-	}
-	if (isset($_GET['filter_shipping']) && !empty($_GET['filter_shipping'])){
-		$Qreservations->andWhere('o.shipping_module LIKE ?', '%' . $_GET['filter_shipping'] . '%');
-	}
-	if (isset($_GET['filter_category']) && !empty($_GET['filter_category'])){
-		$Qreservations->leftJoin('op.Products p')
-			->leftJoin('p.ProductsToCategories ptc')
-			->andWhere('ptc.categories_id = ?', $_GET['filter_category']);
-	}
-	
-	if ($resultsMode == 'csv'){
-		$Qreservations->orderBy('oa.entry_name, o.orders_id');
-	}
-
-
-    EventManager::notify('OrdersListingBeforeExecute', &$Qreservations);
-
-	$Qreservations = $Qreservations->execute();
-	if ($Qreservations !== false){
-		$Orders = $Qreservations->toArray(true);
+		
+	if ($Result !== false){
+		$Orders = $Result->toArray(true);
 		foreach($Orders as $oInfo){
-			if ($resultsMode != 'csv'){
-				$html .= '<tr class="dataTableRow"><td colspan="11" style="border-bottom:1px solid #000000;">Order id:'.$oInfo['orders_id'].' </td></tr>';
-			}
 			foreach($oInfo['OrdersProducts'] as $opInfo){
 				foreach($opInfo['OrdersProductsReservation'] as $rInfo){
 					$orderAddress = $oInfo['OrdersAddresses']['delivery'];
@@ -244,52 +233,28 @@
 					if(!empty($oInfo['dhl_track_num2'])){
 						$trackNumber = $oInfo['dhl_track_num2'];
 					}
-					$payedAmount =
+					$payedAmount = '';
 
-					$shippingTrackingNumber = htmlBase::newElement('input')
-					->setName('shipping_number['.$rInfo['orders_products_reservations_id'].']')
-					->setValue($trackNumber);
 					$statusSelectedText = '';
-					$statusSelect = '<select name="rental_status['.$rInfo['orders_products_reservations_id'].']">';
 					$QrentalStatus = Doctrine_Query::create()
 						->from('RentalStatus')
 						->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 					foreach($QrentalStatus as $iStatus){
 						if(is_null($rInfo['rental_status_id']) && $iStatus['rental_status_id'] == '2'){
 							$statusSelectedText = $iStatus['rental_status_text'];
-							$statusSelect.= '<option selected="selected" value="'.$iStatus['rental_status_id'].'">'.$iStatus['rental_status_text'].'</option>';
 						}elseif ($rInfo['rental_status_id'] == $iStatus['rental_status_id']){
 							$statusSelectedText = $iStatus['rental_status_text'];
-							$statusSelect.= '<option selected="selected" value="'.$iStatus['rental_status_id'].'">'.$iStatus['rental_status_text'].'</option>';
-						}else{
-							$statusSelect.= '<option value="'.$iStatus['rental_status_id'].'">'.$iStatus['rental_status_text'].'</option>';
 						}
 					}
-
-					$statusSelect .= '</select>';
 
 					if(sysConfig::get('EXTENSION_PAY_PER_RENTALS_PROCESS_SEND') == 'True'){
 						$payedAmount = $opInfo['final_price'];
 
-						$payAmount = htmlBase::newElement('input')
-						->setName('amount_payed['.$rInfo['orders_products_reservations_id'].']');
-
 						if($rInfo['amount_payed'] > 0){
-							$payAmount->setLabel('Payed('.$currencies->format($rInfo['amount_payed']).')')
-							->setLabelPosition('after');
 							$payedAmount -= $rInfo['amount_payed'];
 						}
-
-						$payAmount->setValue($payedAmount);
 					}
 
-					$barcodeReplacement = htmlBase::newElement('input')
-					->setName('barcode_replacement['.$rInfo['orders_products_reservations_id'].']')
-					->attr('resid', $rInfo['orders_products_reservations_id'])
-					//->attr('readonly','readonly')
-					->addClass('barcodeReplacement');
-
-					if ($resultsMode == 'csv'){
 						if (!isset($currentName) || $currentName != $customersName){
 							$currentName = $customersName;
 							$showName = $currentName;
@@ -319,53 +284,11 @@
 							'""';
 							
 						$html .= "\n";
-					}else{
-						$html .= '<tr class="dataTableRow">' .
-							'<td class="dataTableContent">' . ($rInfo['rental_state'] == 'out' ? 'Sent' : '<input type="checkbox" name="sendRes[]" class="reservations" value="' . $rInfo['orders_products_reservations_id'] . '">') . '</td>' .
-							'<td class="dataTableContent">' . $customersName . '</td>' .
-							'<td class="dataTableContent">' . $productName . '</td>' .
-							'<td class="dataTableContent">' . $barcodeNum . '</td>' .
-							'<td class="dataTableContent">' . ($rInfo['rental_state'] == 'out' ? '' : $barcodeReplacement->draw()) . '</td>';
-						if (sysConfig::get('EXTENSION_PAY_PER_RENTALS_USE_EVENTS') == 'True'){
-							$html .=  '<td class="dataTableContent">' . $rInfo['event_name'] . '</td>';
-							if (sysConfig::get('EXTENSION_PAY_PER_RENTALS_USE_GATES') == 'True'){
-								$html .=  '<td class="dataTableContent">' . $rInfo['event_gate'] . '</td>';
-							}
-						}
-						$html .= '<td class="dataTableContent" align="center"><table cellpadding="2" cellspacing="0" border="0">' .
-								'<tr>' .
-									'<td class="dataTableContent">Ship On: </td>' .
-									'<td class="dataTableContent">' . $shipOn . '</td>' .
-								'</tr>' .
-								'<tr>' .
-									'<td class="dataTableContent">Res Start: </td>' .
-									'<td class="dataTableContent">' . $resStart . '</td>' .
-								'</tr>' .
-								'<tr>' .
-									'<td class="dataTableContent">Res End: </td>' .
-									'<td class="dataTableContent">' . $resEnd . '</td>' .
-								'</tr>' .
-								'<tr>' .
-									'<td class="dataTableContent">Due Back: </td>' .
-									'<td class="dataTableContent">' . $dueBack . '</td>' .
-								'</tr>' .
-							'</table></td>' .
-							'<td class="dataTableContent">' . $inventoryCenterName . '</td>' .
-							'<td class="dataTableContent">' . $shippingMethod . '</td>'.
-							'<td class="dataTableContent">' . ($rInfo['rental_state'] == 'out' ? $trackNumber : $shippingTrackingNumber->draw()) . '</td>'.
-							'<td class="dataTableContent">' . ($rInfo['rental_state'] == 'out' ? $statusSelectedText : $statusSelect) . '</td>';
-							if(sysConfig::get('EXTENSION_PAY_PER_RENTALS_PROCESS_SEND') == 'True'){
-								$html .= '<td class="dataTableContent">' . $payAmount->draw() . '</td>' ;
-							}
-							$html .='<td class="dataTableContent" align="center"><a href="' . itw_app_link('oID=' . $orderId, 'orders', 'details') . '">View Order</a></td>' .
-						'</tr>';
-					}
 				}
 			}
 		}
 	}
 	
-	if ($resultsMode == 'csv'){
 		header("Content-type: text/csv");
 		header("Content-disposition: attachment; filename=Reservations.csv");
 		// Changed if using SSL, helps prevent program delay/timeout (add to backup.php also)
@@ -378,7 +301,3 @@
 		header("Expires: 0");
 		echo $html;
 		itwExit();
-	}else{
-		EventManager::attachActionResponse($html, 'html');
-	}
-?>

@@ -33,6 +33,51 @@ if ($appExtension->isInstalled('inventoryCenters') && $appExtension->isEnabled('
        </fieldset></td>
      </tr>
      <tr>
+     <td colspan="2" style="text-align:right">	    <select name="filter_shipping" id="filterShipping">
+		    <option value="">All Shipping</option>
+		    <?php
+		    OrderShippingModules::loadModules();
+			foreach(OrderShippingModules::getModules() as $Module){
+				echo '<option value="'.$Module->getTitle().'">'.$Module->getTitle().'</option>';
+			}
+		    ?>
+	    </select>
+<?php
+    $categorySelect = htmlBase::newElement('selectbox')
+    ->setId('filterCategory')
+	->setName('filter_category');
+
+   	function addCategoryTreeToGrid($parentId, &$categorySelect, $namePrefix = ''){
+		global $allGetParams, $cInfo;
+		$Qcategories = Doctrine_Query::create()
+		->select('c.*, cd.categories_name')
+		->from('Categories c')
+		->leftJoin('c.CategoriesDescription cd')
+		->where('cd.language_id = ?', Session::get('languages_id'))
+		->andWhere('c.parent_id = ?', $parentId)
+		->orderBy('c.sort_order, cd.categories_name');
+
+		EventManager::notify('CategoryListingQueryBeforeExecute', &$Qcategories);
+
+		$ResultC = $Qcategories->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+		if (count($ResultC) > 0){
+			foreach($ResultC as $Category){
+
+				$categorySelect->addOption($Category['categories_id'], $namePrefix. $Category['CategoriesDescription'][0]['categories_name']);
+				addCategoryTreeToGrid($Category['categories_id'], &$categorySelect, '&nbsp;&nbsp;&nbsp;' . $namePrefix);
+			}
+		}
+	}
+    $categorySelect->addOption('', 'All Categories');
+	addCategoryTreeToGrid(0, $categorySelect,'');
+    if(isset($_GET['filter_category']) && $_GET['filter_category'] != ''){
+	    $categorySelect->selectOptionByValue($_GET['filter_category']);
+    }
+    echo $categorySelect->draw();
+?><br><input type="checkbox" name="include_returned" value="1"> Include Returned Reservations
+</td>
+     </tr>
+     <tr>
       <td colspan="2" align="right"><?php
       echo htmlBase::newElement('button')
       ->setType('submit')
@@ -48,9 +93,17 @@ if ($appExtension->isInstalled('inventoryCenters') && $appExtension->isEnabled('
   	    ->setHref(itw_app_link())
   	    ->draw();
       }
+      echo htmlBase::newElement('button')
+      ->setType('submit')
+      ->setName('action')
+      ->val('exportData')
+      ->usePreset('continue')
+      ->setText('Export')
+      ->draw();
       ?></td>
      </tr>
-    </table><?php
+    </table>
+<?php
     echo tep_draw_hidden_field(session_name(), session_id());
 
     $startDefault = (date('d') - 7);
@@ -122,7 +175,7 @@ if ($appExtension->isInstalled('inventoryCenters') && $appExtension->isEnabled('
      <tr>
       <td valign="top"><table border="0" width="100%" cellspacing="0" cellpadding="3">
        <tr class="dataTableHeadingRow">
-        <td valign="top" class="dataTableHeadingContent" align="center"><?php echo sysLanguage::get('TABLE_HEADING_RETURN');?></td>
+        <td valign="top" class="dataTableHeadingContent" align="center"><?php echo sysLanguage::get('TABLE_HEADING_RETURN');?><br><input type="checkbox" id="selectAll" onclick="$('.dataTableRow input[type=checkbox]').each(function (){ this.checked = document.getElementById('selectAll').checked;});"></td>
         <td valign="top" class="dataTableHeadingContent"><?php echo sysLanguage::get('TABLE_HEADING_CUSTOMERS_NAME');?></td>
         <td valign="top" class="dataTableHeadingContent"><?php echo sysLanguage::get('TABLE_HEADING_PRODUCTS_NAME');?></td>
         <td valign="top" class="dataTableHeadingContent"><?php echo sysLanguage::get('TABLE_HEADING_INV_NUM');?></td>
@@ -138,6 +191,7 @@ if ($appExtension->isInstalled('inventoryCenters') && $appExtension->isEnabled('
         <td valign="top" class="dataTableHeadingContent"><?php echo 'Dates';?></td>
         <td valign="top" class="dataTableHeadingContent"><?php echo sysLanguage::get('TABLE_HEADING_DAYS_LATE');?></td>
         <!--<td valign="top" class="dataTableHeadingContent"><?php echo sysLanguage::get('TABLE_HEADING_ADD_LATE_FEE');?></td>-->
+	   <td class="dataTableHeadingContent"><?php echo 'Shipping Method';?></td>
         <td valign="top" class="dataTableHeadingContent"><?php echo sysLanguage::get('TABLE_HEADING_COMMENTS');?></td>
         <td valign="top" class="dataTableHeadingContent" align="center"><?php echo sysLanguage::get('TABLE_HEADING_ITEM_DMG');?></td>
         <td valign="top" class="dataTableHeadingContent" align="center"><?php echo sysLanguage::get('TABLE_HEADING_ITEM_LOST');?></td>
@@ -152,13 +206,27 @@ $Qreservations = Doctrine_Query::create()
 ->leftJoin('ib.ProductsInventory i')
 ->leftJoin('opr.ProductsInventoryQuantity iq')
 ->leftJoin('iq.ProductsInventory i2')
-->where('opr.rental_state = ?', 'out')
-->andWhere('oa.address_type = ?', 'delivery')
+->where('oa.address_type = ?', 'delivery')
 ->andWhere('opr.parent_id IS NULL')
 ->orderBy('opr.end_date');
+	if (isset($_GET['include_returned'])){
+		$Qreservations->andWhereIn('opr.rental_state', array('returned', 'out'));
+	}else{
+		$Qreservations->andWhere('opr.rental_state = ?', 'out');
+	}
+
 if (isset($_GET['start_date']) || isset($_GET['end_date'])){
 	$Qreservations->andWhere('opr.start_date between "' . $_GET['start_date'] . '" and "' . $_GET['end_date'] . '"');
 }
+	if (isset($_GET['filter_shipping']) && !empty($_GET['filter_shipping'])){
+		$Qreservations->andWhere('o.shipping_module LIKE ?', '%' . $_GET['filter_shipping'] . '%');
+	}
+	if (isset($_GET['filter_category']) && !empty($_GET['filter_category'])){
+		$Qreservations->leftJoin('op.Products p')
+			->leftJoin('p.ProductsToCategories ptc')
+			->andWhere('ptc.categories_id = ?', $_GET['filter_category']);
+	}
+	
 
 if ($centersEnabled === true){
 	if ($centersStockMethod == 'Store'){
@@ -181,6 +249,8 @@ if ($Result->count() > 0){
 		foreach($oInfo['OrdersProducts'] as $opInfo){
 			$productName = $opInfo['products_name'];
 			foreach($opInfo['OrdersProductsReservation'] as $oprInfo){
+				$shippingMethod = $oInfo['shipping_module'];
+				$rentalState = $oprInfo['rental_state'];
 				$trackMethod = $oprInfo['track_method'];
 				$reservationId = $oprInfo['orders_products_reservations_id'];
 				$useCenter = 0;
@@ -242,7 +312,12 @@ if ($Result->count() > 0){
 				}
 ?>
        <tr class="dataTableRow">
-        <td class="main" align="center"><?php echo tep_draw_checkbox_field('rental[' . $reservationId . ']', $reservationId);?></td>
+        <td class="main" align="center"><?php
+        if ($rentalState == 'returned'){
+        	echo 'Returned';
+        }else{
+        	echo tep_draw_checkbox_field('rental[' . $reservationId . ']', $reservationId);
+        }?></td>
         <td class="main"><?php echo $customersName;?></td>
         <td class="main"><?php echo $productName;?></td>
         <td class="main"><?php echo $invDescription;?></td>
@@ -284,6 +359,8 @@ if ($Result->count() > 0){
          </tr>
         </table></td>
         <td class="main"><?php
+        if ($rentalState == 'returned'){
+        }else{
         $days = (mktime(0,0,0,$endArr['month'],$endArr['day'],$endArr['year']) - mktime(0,0,0)) / (60 * 60 * 24);
         if ($days > 0){
         	echo 'Not Due';
@@ -292,10 +369,30 @@ if ($Result->count() > 0){
         }else{
         	echo abs($days);
         }
+        }
         ?></td>
-        <td class="main" align="center"><?php echo tep_draw_textarea_field('comment[' . $reservationId . ']', true, 30, 2);?></td>
-        <td class="main" align="center"><?php echo tep_draw_checkbox_field('damaged[' . $reservationId . ']', $reservationId);?></td>
-        <td class="main" align="center"><?php echo tep_draw_checkbox_field('lost[' . $reservationId . ']', $reservationId);?></td>
+       <td class="main"><?php echo $shippingMethod;?></td>
+        <td class="main" align="center"><?php
+         if ($rentalState == 'returned'){
+        	echo '';
+        }else{
+			 echo tep_draw_textarea_field('comment[' . $reservationId . ']', true, 30, 2);
+        }
+        ?></td>
+        <td class="main" align="center"><?php
+         if ($rentalState == 'returned'){
+        	echo '';
+        }else{
+         echo tep_draw_checkbox_field('damaged[' . $reservationId . ']', $reservationId);
+        }
+         ?></td>
+        <td class="main" align="center"><?php
+         if ($rentalState == 'returned'){
+        	echo '';
+        }else{
+         echo tep_draw_checkbox_field('lost[' . $reservationId . ']', $reservationId);
+        }
+         ?></td>
        </tr>
 <?php
 if (isset($invCenterId)) unset($invCenterId);

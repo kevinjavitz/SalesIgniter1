@@ -47,8 +47,51 @@
 			}
 		    ?>
 	    </select>
-	    <input type="button" value="<?php echo sysLanguage::get('TEXT_BUTTON_GET_RES');?>" name="get_res" id="get_res">
+	    <select name="filter_shipping" id="filterShipping">
+		    <option value="">All Shipping</option>
+		    <?php
+		    OrderShippingModules::loadModules();
+			foreach(OrderShippingModules::getModules() as $Module){
+				echo '<option value="'.$Module->getTitle().'">'.$Module->getTitle().'</option>';
+			}
+		    ?>
+	    </select>
+<?php
+    $categorySelect = htmlBase::newElement('selectbox')
+    ->setId('filterCategory')
+	->setName('filter_category');
 
+   	function addCategoryTreeToGrid($parentId, &$categorySelect, $namePrefix = ''){
+		global $allGetParams, $cInfo;
+		$Qcategories = Doctrine_Query::create()
+		->select('c.*, cd.categories_name')
+		->from('Categories c')
+		->leftJoin('c.CategoriesDescription cd')
+		->where('cd.language_id = ?', Session::get('languages_id'))
+		->andWhere('c.parent_id = ?', $parentId)
+		->orderBy('c.sort_order, cd.categories_name');
+
+		EventManager::notify('CategoryListingQueryBeforeExecute', &$Qcategories);
+
+		$ResultC = $Qcategories->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+		if (count($ResultC) > 0){
+			foreach($ResultC as $Category){
+
+				$categorySelect->addOption($Category['categories_id'], $namePrefix. $Category['CategoriesDescription'][0]['categories_name']);
+				addCategoryTreeToGrid($Category['categories_id'], &$categorySelect, '&nbsp;&nbsp;&nbsp;' . $namePrefix);
+			}
+		}
+	}
+    $categorySelect->addOption('', 'All Categories');
+	addCategoryTreeToGrid(0, $categorySelect,'');
+    if(isset($_GET['filter_category']) && $_GET['filter_category'] != ''){
+	    $categorySelect->selectOptionByValue($_GET['filter_category']);
+    }
+    echo $categorySelect->draw();
+?>
+	    <input type="button" value="<?php echo sysLanguage::get('TEXT_BUTTON_GET_RES');?>" name="get_res" id="get_res">
+<br>
+<input type="checkbox" name="include_sent" id="includeSent" value="1"> Include Sent Reservations
     </td>
    </tr>
 	  <tr>
@@ -65,7 +108,7 @@
     <td><table cellpadding="2" cellspacing="0" border="0" width="100%" id="reservationsTable">
      <thead>
       <tr class="dataTableHeadingRow">
-       <td class="dataTableHeadingContent" style="text-align:left;"><?php echo sysLanguage::get('TABLE_HEADING_SEND');?></td>
+       <td class="dataTableHeadingContent" style="text-align:left;"><?php echo sysLanguage::get('TABLE_HEADING_SEND');?><br><input type="checkbox" id="selectAll" onclick="$('#reservationsTable tbody input[type=checkbox]').each(function (){ this.checked = document.getElementById('selectAll').checked;});"></td>
        <td class="dataTableHeadingContent" style="text-align:left;"><?php echo sysLanguage::get('TABLE_HEADING_CUSTOMERS_NAME');?></td>
        <td class="dataTableHeadingContent" style="text-align:left;"><?php echo sysLanguage::get('TABLE_HEADING_PRODUCTS_NAME');?></td>
        <td class="dataTableHeadingContent" style="text-align:left;"><?php echo sysLanguage::get('TABLE_HEADING_BARCODE');?></td>
@@ -85,6 +128,7 @@
 	      ?>
 	   <td class="dataTableHeadingContent"><?php echo 'Dates';?></td>
 	   <td class="dataTableHeadingContent" style="text-align:left;"><?php echo "Location";?></td>
+	   <td class="dataTableHeadingContent"><?php echo 'Shipping Method';?></td>
 	   <td class="dataTableHeadingContent"><?php echo 'Tracking Number';?></td>
 	   <td class="dataTableHeadingContent"><?php echo 'Reservation Status';?></td>
 	      <?php
@@ -99,10 +143,11 @@
      </thead>
      <tfoot>
       <tr>
-       <td colspan="6" align="right">
+       <td colspan="14" align="right">
 	       <input type="button" value="<?php echo sysLanguage::get('TEXT_BUTTON_SEND');?>" name="send" id="send">
 	       <input type="button" value="<?php echo sysLanguage::get('TEXT_BUTTON_PAY_RES');?>" name="pay_res" id="pay_res">
 	       <input type="button" value="<?php echo sysLanguage::get('TEXT_BUTTON_STATUS_RES');?>" name="pay_res" id="status_res">
+	       <input type="button" value="<?php echo sysLanguage::get('TEXT_BUTTON_EXPORT_RESULTS');?>" name="export_data" id="export_data">
 	       </td>
       </tr>
      </tfoot>

@@ -16,6 +16,11 @@ function updateRes(valType){
 	dataArr.end_date = $('#end_date').val();
 	dataArr.filter_status = $('#filterStatus').val();
 	dataArr.filter_pay = $('#filterPay').val();
+	dataArr.filter_shipping = $('#filterShipping').val();
+	dataArr.filter_category = $('#filterCategory').val();
+	if ($('#includeSent:checked').size() > 0){
+		dataArr.include_sent = 1;
+	}
 	if(valType == 'e'){
 		if($('#eventSort').length){
 			dataArr.eventSort = $('#eventSort').attr('type');
@@ -67,6 +72,35 @@ function updateRes(valType){
 			});
 		}
 	});
+}
+
+function exportData(valType){
+	var dataArr = [];
+	dataArr.push('appExt=payPerRentals');
+	dataArr.push('app=send');
+	dataArr.push('appPage=default');
+	dataArr.push('action=getReservations');
+	dataArr.push('export=csv');
+	dataArr.push('start_date=' + $('#start_date').val());
+	dataArr.push('end_date=' + $('#end_date').val());
+	dataArr.push('filter_status=' + $('#filterStatus').val());
+	dataArr.push('filter_pay=' + $('#filterPay').val());
+	dataArr.push('filter_shipping=' + $('#filterShipping').val());
+	dataArr.push('filter_category=' + $('#filterCategory').val());
+	if ($('#includeSent:checked').size() > 0){
+		dataArr.include_sent = 1;
+	}
+	if(valType == 'e'){
+		if($('#eventSort').length){
+			dataArr.push('eventSort=' + $('#eventSort').attr('type'));
+		}
+	}
+	if(valType == 'g'){
+		if($('#gateSort').length){
+			dataArr.push('gateSort=' + $('#gateSort').attr('type'));
+		}
+	}
+	window.open(js_app_link(dataArr.join('&')));
 }
 
 function submitRes(){
@@ -132,6 +166,7 @@ $(document).ready(function (){
 	$('#pay_res').click(payRes);
 	$('#status_res').click(statusRes);
 	$('#send').click(submitRes);
+	$('#export_data').click(exportData);
 
 	$('#DP_startDate').datepicker({
 		dateFormat: 'yy-mm-dd',
