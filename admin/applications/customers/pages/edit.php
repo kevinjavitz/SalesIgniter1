@@ -120,6 +120,11 @@ ob_end_clean();
 	include(sysConfig::getDirFsAdmin() . 'applications/customers/pages_tabs/edit/rental_issue_history.php');
 	$rentalTab4 = ob_get_contents();
 	ob_end_clean();
+	
+	ob_start();
+	include(sysConfig::getDirFsAdmin() . 'applications/customers/pages_tabs/edit/billing_report.php');
+	$rentalTab5 = ob_get_contents();
+	ob_end_clean();
 	}
 
 	$tabsObj = htmlBase::newElement('tabs')
@@ -139,7 +144,9 @@ ob_end_clean();
 	->addTabHeader('rentalTab3', array('text' => sysLanguage::get('HEADING_RENTAL_HISTORY')))
 	->addTabPage('rentalTab3', array('text' => $rentalTab3))
 	->addTabHeader('rentalTab4', array('text' => sysLanguage::get('HEADING_ISSUE_HISTORY')))
-	->addTabPage('rentalTab4', array('text' => $rentalTab4));
+	->addTabPage('rentalTab4', array('text' => $rentalTab4))
+	->addTabHeader('rentalTab5', array('text' => sysLanguage::get('HEADING_TITLE_REPORTS')))
+	->addTabPage('rentalTab5', array('text' => $rentalTab5));
 	}
 
 if (isset($_GET['cID'])){

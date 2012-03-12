@@ -157,4 +157,9 @@
 	<define key="TEXT_SEND_EMAIL"><![CDATA[Email customer membership info:]]></define>
 	<define key="ENTRY_NOTES_INPUT"><![CDATA[Notes:]]></define>
 
+	<define key="HEADING_TITLE_REPORTS"><![CDATA[Membership Billing Report]]></define>
+	<define key="TABLE_HEADING_TRANS_DATE"><![CDATA[Date]]></define>
+	<define key="TABLE_HEADING_PAYMENT_METHOD"><![CDATA[Payment Method]]></define>
+	<define key="TABLE_HEADING_TRANS_STATUS"><![CDATA[Status]]></define>
+	<define key="TABLE_HEADING_TRANS_ERROR"><![CDATA[Result]]></define>
 </definitions>
