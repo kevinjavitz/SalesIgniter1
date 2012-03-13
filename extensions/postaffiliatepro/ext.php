@@ -57,6 +57,7 @@ class Extension_postaffiliatepro extends ExtensionBase {
 		include_once(sysConfig::getDirFsCatalog(). 'ext/pap/api/PapApi.class.php');
 		$session = new Gpf_Api_Session(sysConfig::get('EXTENSION_PAP_URL'));// - /affiliate/scripts/server.php
 		if(!$session->login(sysConfig::get('EXTENSION_PAP_MERCH'), sysConfig::get('EXTENSION_PAP_PASS'))) {
+			return;
 		}
 
 		$QCustToOrders = Doctrine::getTable('CustomersToOrders')->findOneByCustomersId($membershipUpdate->getUserAccount()->getCustomerId());
@@ -100,7 +101,7 @@ class Extension_postaffiliatepro extends ExtensionBase {
 		if(isset($QMembershipPlan[0]) && $QMembershipPlan[0]['is_affiliate'] == 1){
 			$session = new Gpf_Api_Session(sysConfig::get('EXTENSION_PAP_URL').'scripts/server.php');
 			if(!$session->login(sysConfig::get('EXTENSION_PAP_MERCH'), sysConfig::get('EXTENSION_PAP_PASS'))) {
-			  //die("Cannot login. Message: ".$session->getMessage());
+			  return;
 			}
 
 			$Customer = Doctrine::getTable('Customers')->find((int)$Order['customers_id']);
@@ -182,7 +183,7 @@ class Extension_postaffiliatepro extends ExtensionBase {
 			if(isset($QMembershipPlan[0]) && $QMembershipPlan[0]['is_affiliate'] == 1){
 				$session = new Gpf_Api_Session(sysConfig::get('EXTENSION_PAP_URL').'scripts/server.php');
 				if(!$session->login(sysConfig::get('EXTENSION_PAP_MERCH'), sysConfig::get('EXTENSION_PAP_PASS'))) {
-					//die("Cannot login. Message: ".$session->getMessage());
+					return;
 				}
 
 				$Customer = Doctrine::getTable('Customers')->find((int)$customers_id);

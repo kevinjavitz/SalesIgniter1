@@ -26,7 +26,7 @@
 				include_once(sysConfig::getDirFsCatalog().'ext/pap/api/PapApi.class.php');
 				$session = new Gpf_Api_Session(sysConfig::get('EXTENSION_PAP_URL').'scripts/server.php');
 				if(!$session->login(sysConfig::get('EXTENSION_PAP_MERCH'), sysConfig::get('EXTENSION_PAP_PASS'))) {
-					//die("Cannot login. Message: ".$session->getMessage());
+					return;
 				}
 				$affiliate = new Pap_Api_Affiliate($session);
 				$affiliate->setUsername($userAccount->getEmailAddress());
