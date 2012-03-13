@@ -502,13 +502,6 @@
 			<sort_order>31</sort_order>
 			<set_function>tep_cfg_select_option(array('True','False'),</set_function>
 		</EXTENSION_PAY_PER_RENTALS_USE_ZIPCODES_SHIPPING>
-		<EXTENSION_PAY_PER_RENTALS_USE_ZIPCODES_SHIPPING>
-			<value>False</value>
-			<title>Do you want to use zip codes for shipping identification?</title>
-			<description>Use zip codes for shipping identification</description>
-			<sort_order>31</sort_order>
-			<set_function>tep_cfg_select_option(array('True','False'),</set_function>
-		</EXTENSION_PAY_PER_RENTALS_USE_ZIPCODES_SHIPPING>
 
 
 		<EXTENSION_PAY_PER_RENTALS_SHOW_PRICE_SELECTED_PERIOD_PRODUCT_INFO>
