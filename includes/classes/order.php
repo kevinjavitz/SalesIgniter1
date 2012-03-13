@@ -601,7 +601,9 @@ class OrderProcessor {
 		$emailEvent->setVar('date_ordered', strftime(sysLanguage::getDateFormat('long')));
 		$emailEvent->setVar('ordered_products', (isset($this->newOrder['productsOrdered']) ? $this->newOrder['productsOrdered'] : ((isset($products_ordered)&&(!empty($products_ordered)))?$products_ordered:$this->products_ordered) ));
 		$emailEvent->setVar('billing_address', $billToFormatted);
-		$emailEvent->setVar('shipping_address', $sendToFormatted);
+		if(sysConfig::get('ONEPAGE_CHECKOUT_SHIPPING_ADDRESS') == 'true'){
+			$emailEvent->setVar('shipping_address', $sendToFormatted);
+		}
 		if($order_has_streaming_or_download){
 			$emailEvent->setVar('order_has_streaming_or_download', sysLanguage::get('TEXT_ORDER_SUCCESS_EMAIL_STREAM_OR_DOWNLOAD'));
 		}

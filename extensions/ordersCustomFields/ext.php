@@ -128,6 +128,7 @@ class Extension_ordersCustomFields extends ExtensionBase {
 						->where('o2f.field_id = ?', $fieldId)
 						->orderBy('sort_order')
 						->execute();
+						$input->addOption('NoneSelected','Please Select');
 						if ($Qoptions->count()){
 							foreach($Qoptions->toArray(true) as $option){
 								$input->addOption(
@@ -191,7 +192,7 @@ class Extension_ordersCustomFields extends ExtensionBase {
 		global $messageStack, $onePageCheckout;
 		if (isset($_POST['orders_custom_field'])){			
 			foreach($_POST['orders_custom_field'] as $fieldId => $val){
-				if (!is_array($val) && $val == ''){
+				if (!is_array($val) && $val == '' || $val == 'NoneSelected'){
 					$Qcheck = Doctrine_Query::create()
 					->select('input_required, input_type')
 					->from('OrdersCustomFields')

@@ -23,19 +23,7 @@
 	->setName('products_date_available')
 	->addClass('useDatepicker');
 	
-	$ManufacturerMenu = htmlBase::newElement('selectbox')
-	->setName('manufacturers_id');
-	
-	$Qmanufacturers = Doctrine_Query::create()
-	->select('manufacturers_id, manufacturers_name')
-	->from('Manufacturers')
-	->orderBy('manufacturers_name')
-	->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
-	if ($Qmanufacturers){
-		foreach($Qmanufacturers as $manufacturer){
-			$ManufacturerMenu->addOption($manufacturer['manufacturers_id'], $manufacturer['manufacturers_name']);
-		}
-	}
+
 	
 	$ProductOnOrder = htmlBase::newElement('checkbox')
 	->setId('productOnOrder')
@@ -85,7 +73,6 @@
 		}
 		
 		$ProductDateAvailable->setValue($Product['products_date_available']);
-		$ManufacturerMenu->selectOptionByValue($Product['manufacturers_id']);
 		$ProductDateOrdered->setValue($Product['products_date_ordered']);
 		$ProductModel->setValue($Product['products_model']);
 		$ProductPreview->setValue($Product['movie_preview']);
@@ -104,13 +91,6 @@
   <tr>
    <td class="main"><?php echo sysLanguage::get('TEXT_PRODUCTS_DATE_AVAILABLE'); ?><br><small>(YYYY-MM-DD)</small></td>
    <td class="main"><?php echo $ProductDateAvailable->draw(); ?></td>
-  </tr>
-  <tr>
-   <td colspan="2"><?php echo tep_draw_separator('pixel_trans.gif', '1', '10'); ?></td>
-  </tr>
-  <tr>
-   <td class="main"><?php echo sysLanguage::get('TEXT_PRODUCTS_MANUFACTURER'); ?></td>
-   <td class="main"><?php echo $ManufacturerMenu->draw(); ?></td>
   </tr>
   <tr>
    <td colspan="2"><?php echo tep_draw_separator('pixel_trans.gif', '1', '10'); ?></td>

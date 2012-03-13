@@ -243,6 +243,11 @@ class Extension_multiStore extends ExtensionBase {
 		}
 		sysConfig::set('HTTP_COOKIE_DOMAIN', $this->storeInfo['stores_domain']);
 		sysConfig::set('HTTPS_COOKIE_DOMAIN', $this->storeInfo['stores_ssl_domain']);
+		if($App->getAppPage() == 'default' && $App->getAppName() == 'index'){
+			if($this->storeInfo['home_redirect_store_info'] == '1'){
+				tep_redirect(itw_app_link('appExt=multiStore&store_id='.$this->storeInfo['stores_id'],'show_store','default'));
+			}
+		}
 	}
 
 	public function EmailEventSetAllowedVars(&$allowedVars){
@@ -641,6 +646,7 @@ class Extension_multiStore extends ExtensionBase {
 			$productInfo['products_price_stream']= $ResultSet[0]['products_price_stream'];
 			$productInfo['products_price_download']= $ResultSet[0]['products_price_download'];
 			$productInfo['typeArr'] = explode(',', $ResultSet[0]['products_type']);
+			$productInfo['allow_overbooking'] = explode(',', $ResultSet[0]['allow_overbooking']);
 		}
 	}
 

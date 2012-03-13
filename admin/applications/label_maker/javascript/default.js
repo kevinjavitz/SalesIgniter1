@@ -1,6 +1,7 @@
 $(document).ready(function (){
 	$('#genList').click(function (){
 		var getVars = $('#start_date, #end_date, #filter, #invCenter').serialize();
+		showAjaxLoader($('.middleTable'), 'large');
 		$.ajax({
 			cache: false,
 			dataType: 'json',
@@ -8,6 +9,7 @@ $(document).ready(function (){
 			url: js_app_link('app=label_maker&appPage=default&action=getListing', 'SSL'),
 			success: function (data){
 				if (data){
+					removeAjaxLoader($('.middleTable'));
 					var listingData = data.listingData;
 					$('#reservations > tbody').empty();
 					var countCols = $('#reservations th').size();

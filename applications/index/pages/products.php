@@ -17,57 +17,68 @@
 	}
 
 	EventManager::notify('IndexNestedListingBeforeListing');
+	$categoryImageWidth = '170';
+	$categoryImageHeight = '170';
+	if(sysConfig::exists('CATEGORIES_MAX_WIDTH')){
+		$categoryImageWidth = sysConfig::get('CATEGORIES_MAX_WIDTH');
+	}
 
-	$Qchildren = Doctrine_Query::create()
-		->from('Categories c')
-		->leftJoin('c.CategoriesDescription cd')
-		->where('c.parent_id = ?', (int)$current_category_id)
-		->andWhere('cd.language_id=?', Session::get('languages_id'))
-		->orderBy('cd.categories_name')
-		->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+	if(sysConfig::exists('CATEGORIES_MAX_HEIGHT')){
+		$categoryImageHeight = sysConfig::get('CATEGORIES_MAX_HEIGHT');
+	}
+    if(sysConfig::get('SHOW_SUBCATEGORIES') == 'true'){
+		$Qchildren = Doctrine_Query::create()
+			->from('Categories c')
+			->leftJoin('c.CategoriesDescription cd')
+			->where('c.parent_id = ?', (int)$current_category_id)
+			->andWhere('cd.language_id=?', Session::get('languages_id'))
+			->orderBy('cd.categories_name')
+			->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 
-	if ($Qchildren){
-		$categoryTable = htmlBase::newElement('table')
-			->setCellPadding(2)
-			->setCellSpacing(0)
-			->css(array(
-				'width' => '100%'
-			));
+		if ($Qchildren){
+			$categoryTable = htmlBase::newElement('table')
+				->setCellPadding(2)
+				->setCellSpacing(0)
+				->css(array(
+					'width' => '100%'
+				));
 
-		$col = 0;
-		$tableColumns = array();
-		foreach($Qchildren as $cInfo){
-			$categoryId = $cInfo['CategoriesDescription'][0]['categories_seo_url'];
-			$categoryImage = $cInfo['categories_image'];
-			$categoryName = $cInfo['CategoriesDescription'][0]['categories_name'];
-			$img = '';
-			if(!empty($categoryImage)) {
-				$img = '<img src="imagick_thumb.php?path=rel&imgSrc=' . 'images/'. $categoryImage . '&width=180&height=180" alt="' . $categoryName . '" />' ;
+			$col = 0;
+			$tableColumns = array();
+			foreach($Qchildren as $cInfo){
+				$categoryId = $cInfo['CategoriesDescription'][0]['categories_seo_url'];
+				$categoryImage = $cInfo['categories_image'];
+				$categoryName = $cInfo['CategoriesDescription'][0]['categories_name'];
+				$img = '';
+				if(!empty($categoryImage)) {
+				$img = '<img src="imagick_thumb.php?path=rel&imgSrc=' . 'images/'. $categoryImage . '&width='.$categoryImageWidth.'&height='.$categoryImageHeight.'" alt="' . $categoryName . '" />' ;
+				}
+				$tableColumns[] = array(
+						'addCls' => 'main catName',
+						'align' => 'center',
+						'text' => '<a href="' .  itw_app_link(null, 'index', $categoryId) . '">' .
+							$img .
+							'<br />' . $categoryName . '</a>'
+				);
+
+				$col++;
+				if ($col > sysConfig::get('MAX_DISPLAY_CATEGORIES_PER_ROW')){
+					$categoryTable->addBodyRow(array(
+							'columns' => $tableColumns
+					));
+					$tableColumns = array();
+					$col = 0;
+				}
 			}
-			$tableColumns[] = array(
-					'addCls' => 'main catName',
-					'align' => 'center',
-					'text' => '<a href="' .  itw_app_link(null, 'index', $categoryId) . '">' .
-						$img .
-						'<br />' . $categoryName . '</a>'
-			);
-
-			$col++;
-			if ($col > sysConfig::get('MAX_DISPLAY_CATEGORIES_PER_ROW')){
+			if (sizeof($tableColumns) > 0){
 				$categoryTable->addBodyRow(array(
 						'columns' => $tableColumns
 					));
-				$tableColumns = array();
-				$col = 0;
 			}
+			echo $categoryTable->draw() . '<br />';
+
 		}
-		if (sizeof($tableColumns) > 0){
-			$categoryTable->addBodyRow(array(
-					'columns' => $tableColumns
-				));
-		}
-		echo $categoryTable->draw() . '<br />';
-	}
+    }
 	EventManager::notify('IndexNestedListingAfterListing');
 
 	echo '<div>';
@@ -84,20 +95,12 @@
 	->andWhere('p2b.products_id is null')
 	->andWhere('pd.language_id = ?', (int)Session::get('languages_id'));
 
-	if (isset($_GET['manufacturers_id'])){
-		$Qproducts->addFrom('p.Manufacturers m')->andWhere('m.manufacturers_id = ?', (int)$_GET['manufacturers_id']);
-
-		if (isset($_GET['filter_id']) && tep_not_null($_GET['filter_id'])){
-			$Qproducts->leftJoin('p.ProductsToCategories p2c')->andWhere('p2c.categories_id = ?', (int)$_GET['filter_id']);
-		}
+	if(sysConfig::get('SHOW_PRODUCTS_FROM_SUBCATEGORIES') == 'true'){
+		$subCatArr = array();
+		tep_get_subcategories($subCatArr, $current_category_id);
+		$Qproducts->leftJoin('p.ProductsToCategories p2c')->andWhereIn('p2c.categories_id', $subCatArr);
 	}else{
 		$Qproducts->leftJoin('p.ProductsToCategories p2c')->andWhere('p2c.categories_id = ?', (int)$current_category_id);
-
-		if (isset($_GET['filter_id']) && tep_not_null($_GET['filter_id'])){
-			$Qproducts->addFrom('Manufacturers m')->andWhere('m.manufacturers_id = ?', (int)$_GET['filter_id']);;
-		}else{
-			$Qproducts->leftJoin('p.Manufacturers m');
-		}
 	}
 
 	if (isset($ids)){

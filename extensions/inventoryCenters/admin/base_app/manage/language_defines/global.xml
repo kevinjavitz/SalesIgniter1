@@ -15,5 +15,7 @@
 	<define key="TEXT_INVENTORY_MAP"><![CDATA[Inventory Map: ]]></define>
 	<define key="ENTRY_CONTINENT"><![CDATA[Continent: ]]></define>
 	<define key="TEXT_INVENTORY_SORT_ORDER"><![CDATA[Sort Order: ]]></define>
+	<define key="TEXT_INVENTORY_SHORT_DETAILS"><![CDATA[Short Details: ]]></define>
+	<define key="TEXT_INVENTORY_IMAGE"><![CDATA[Image: ]]></define>
 
 </definitions>

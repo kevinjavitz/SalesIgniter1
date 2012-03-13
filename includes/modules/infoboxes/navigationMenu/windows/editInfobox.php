@@ -45,6 +45,37 @@ if (!isset($WidgetSettings->linked_to)){
 
 				$AppArray['ext'][$extName][$appName] = array();
 
+				if ($Extension->getBasename() == 'photoGallery'){
+					$Qpages = Doctrine_Query::create()
+						->from('PhotoGalleryCategories pgc')
+						->leftJoin('pgc.PhotoGalleryCategoriesDescription pgcd')
+						->where('pgcd.language_id = ?', Session::get('languages_id'))
+						->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+					if ($Qpages){
+						foreach($Qpages as $pInfo){
+							$pageName = $pInfo['categories_id'];
+
+							$AppArray['ext'][$extName][$appName][$pageName] = (isset($selApps['ext'][$extName][$appName][$pageName]) ? $selApps['ext'][$extName][$appName][$pageName] : false);
+						}
+					}
+				}
+
+				if ($Extension->getBasename() == 'blog' && $appName == 'show_category'){
+					$Qpages = Doctrine_Query::create()
+						->from('BlogCategories c')
+						->leftJoin('c.BlogCategoriesDescription cd')
+						->where('cd.language_id = ?', Session::get('languages_id'))
+						->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+
+					if ($Qpages){
+						foreach($Qpages as $pInfo){
+							$pageName = $pInfo['BlogCategoriesDescription'][0]['blog_categories_seo_url'];
+
+							$AppArray['ext'][$extName][$appName][$pageName] = (isset($selApps['ext'][$extName][$appName][$pageName]) ? $selApps['ext'][$extName][$appName][$pageName] : false);
+						}
+					}
+				}
+
 				if ($Extension->getBasename() == 'infoPages'){
 					$Qpages = Doctrine_Query::create()
 						->select('page_key')
@@ -231,9 +262,17 @@ if (!isset($WidgetSettings->linked_to)){
 
 		$('#navMenuTable').find('.addMainBlock').click(function () {
 			var inputKey = 0;
-			while($('#navMenuTable').find('ol.sortable > li[data-input_key=' + inputKey + ']').size() > 0){
-				inputKey++;
-			}
+			var max = -1;
+			$('#navMenuTable li[id^="menu_item_"]').each(function() {
+				var vidArr = $(this).attr('id').split('_');
+				var vid = vidArr[2];
+				if(parseInt(vid) > max ){
+					max = parseInt(vid);
+				}
+			});
+
+			inputKey = max + 1;
+
 
 			var menuIconOptions = '';
 			$.each(menuIcons, function (k, v) {
@@ -491,9 +530,17 @@ $editTable->addBodyRow(array(
 
 $editTable->addBodyRow(array(
 	'columns' => array(
-		array('text' => '<input type="checkbox" name="force_fit" value="true"' . (isset($WidgetSettings->forceFit) && $WidgetSettings->forceFit == 'true' ? ' checked=checked' : '') . '> Expand To Fit Container')
+		array('text' => '<input type="checkbox" name="force_fit" value="true"' . (isset($WidgetSettings->forceFit) && $WidgetSettings->forceFit == 'true' ? ' checked=checked' : '') . '> Expand To Fit Container'),
 	)
 ));
+
+$editTable->addBodyRow(array(
+		'columns' => array(
+			array('text' => '<input type="checkbox" name="always_show" value="true"' . (isset($WidgetSettings->alwaysShow) && $WidgetSettings->alwaysShow == 'true' ? ' checked=checked' : '') . '> Always Show'),
+		)
+	));
+
+
 
 if (!isset($WidgetSettings->linked_to)){
 	$editTable->addBodyRow(array(

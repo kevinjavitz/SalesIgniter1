@@ -50,6 +50,34 @@ class BlogCategories extends Doctrine_Record {
 			'notnull'       => false,
 			'autoincrement' => false
 		));
+		$this->hasColumn('categories_image', 'string', 255, array(
+				'type'          => 'string',
+				'length'        => 255,
+				'fixed'         => false,
+				'primary'       => false,
+				'default'       => '',
+				'notnull'       => true,
+				'autoincrement' => false
+		));
+		$this->hasColumn('extra_fields', 'string', null, array(
+				'type'          => 'string',
+				'length'        => null,
+				'fixed'         => false,
+				'primary'       => false,
+				'default'       => '',
+				'notnull'       => true,
+				'autoincrement' => false
+			));
+
+		$this->hasColumn('extra_key', 'string', 200, array(
+				'type'          => 'string',
+				'length'        => 200,
+				'fixed'         => false,
+				'primary'       => false,
+				'default'       => '',
+				'notnull'       => true,
+				'autoincrement' => false
+			));
 
 	}
 }

@@ -100,7 +100,7 @@ class upload {
         	  </table></td>
         	 </tr>
         	</table>';
-				$messageStack->addSession('footerStack', $errorMsg, 'warning');
+				//$messageStack->addSession('footerStack', $errorMsg, 'warning');
 			}
 
 			return false;

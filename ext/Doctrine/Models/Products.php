@@ -201,6 +201,15 @@ class Products extends Doctrine_Record {
 			'notnull'       => true,
 			'autoincrement' => false
 		));
+		$this->hasColumn('allow_overbooking', 'string', 255, array(
+				'type'          => 'string',
+				'length'        => 255,
+				'fixed'         => false,
+				'primary'       => false,
+				'default'       => '',
+				'notnull'       => true,
+				'autoincrement' => false
+			));
 		$this->hasColumn('products_in_box', 'integer', 1, array(
 			'type'          => 'integer',
 			'length'        => 1,

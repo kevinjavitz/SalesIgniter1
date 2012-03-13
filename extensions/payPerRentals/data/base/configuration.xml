@@ -456,6 +456,14 @@
 			<set_function>tep_cfg_select_option(array('True','False'),</set_function>
 		</EXTENSION_PAY_PER_RENTALS_SHOW_TRACKING_NUMBER_COLUMN>
 
+		<EXTENSION_PAY_PER_RENTALS_SHOW_SHIPPING_ON_CALENDAR_IF_ORDER>
+			<value>True</value>
+			<title>Do you want to show shipping method on calendar if reservation shipping is per order?</title>
+			<description>Show shipping method on calendar if reservation shipping is per order</description>
+			<sort_order>31</sort_order>
+			<set_function>tep_cfg_select_option(array('True','False'),</set_function>
+		</EXTENSION_PAY_PER_RENTALS_SHOW_SHIPPING_ON_CALENDAR_IF_ORDER>
+
 		<EXTENSION_PAY_PER_RENTALS_SHOW_RESERVATION_STATUS_COLUMN>
 			<value>True</value>
 			<title>Do you want to show the reservation status column?</title>
@@ -487,6 +495,29 @@
 			<sort_order>31</sort_order>
 			<set_function>tep_cfg_select_option(array('True','False'),</set_function>
 		</EXTENSION_PAY_PER_RENTALS_SHOW_PRICE_TOTAL_ON_LISTING>
+		<EXTENSION_PAY_PER_RENTALS_USE_ZIPCODES_SHIPPING>
+			<value>False</value>
+			<title>Do you want to use zip codes for shipping identification?</title>
+			<description>Use zip codes for shipping identification</description>
+			<sort_order>31</sort_order>
+			<set_function>tep_cfg_select_option(array('True','False'),</set_function>
+		</EXTENSION_PAY_PER_RENTALS_USE_ZIPCODES_SHIPPING>
+		<EXTENSION_PAY_PER_RENTALS_USE_ZIPCODES_SHIPPING>
+			<value>False</value>
+			<title>Do you want to use zip codes for shipping identification?</title>
+			<description>Use zip codes for shipping identification</description>
+			<sort_order>31</sort_order>
+			<set_function>tep_cfg_select_option(array('True','False'),</set_function>
+		</EXTENSION_PAY_PER_RENTALS_USE_ZIPCODES_SHIPPING>
+
+
+		<EXTENSION_PAY_PER_RENTALS_SHOW_PRICE_SELECTED_PERIOD_PRODUCT_INFO>
+			<value>True</value>
+			<title>Do you want to show price per selected period on product listing?</title>
+			<description>show price per serlected period on product listing</description>
+			<sort_order>31</sort_order>
+			<set_function>tep_cfg_select_option(array('True','False'),</set_function>
+		</EXTENSION_PAY_PER_RENTALS_SHOW_PRICE_SELECTED_PERIOD_PRODUCT_INFO>
 
 		<EXTENSION_PAY_PER_RENTALS_GOOGLE_MAPS_API_KEY>
 			<value>ABQIAAAAJfeNSDfdlXtgf6gjHMTzDBT0_i__oM-cAYP-svDeQzBBv_RytBShCDbtJySULQi-i9FDwsHX8pK4aQ</value>
@@ -494,6 +525,12 @@
 			<description>This is the key that google maps gives you for your domain.</description>
 			<sort_order>7</sort_order>
 		</EXTENSION_PAY_PER_RENTALS_GOOGLE_MAPS_API_KEY>
+		<EXTENSION_PAY_PER_RENTALS_INFOBOX_CONTENT>
+			<value></value>
+			<title>Content to add to ppr infobox</title>
+			<description>This content will be appended to the end of ppr infobox</description>
+			<sort_order>32</sort_order>
+		</EXTENSION_PAY_PER_RENTALS_INFOBOX_CONTENT>
 		<EXTENSION_PAY_PER_RENTALS_GMT>
 			<value>GMT +0</value>
 			<title>Store Timezone</title>

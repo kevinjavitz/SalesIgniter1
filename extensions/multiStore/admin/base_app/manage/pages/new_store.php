@@ -64,8 +64,11 @@ $GEOIP_COUNTRY_NAMES = array(
 	$storeEmail = htmlBase::newElement('input')->setName('stores_email');
 	$storeZip = htmlBase::newElement('input')->setName('stores_zip');
 	$storeLocation = htmlBase::newElement('input')->setName('stores_location');
+	$storeTelephone = htmlBase::newElement('input')->setName('stores_telephone');
+	$storeGroup = htmlBase::newElement('input')->setName('stores_group');
 	$storeOwner = htmlBase::newElement('input')->setName('stores_owner');
 	$isDefault = htmlBase::newElement('checkbox')->setName('is_default');
+	$homeRedirect = htmlBase::newElement('checkbox')->setName('home_redirect_store_info');
 	$defaultCurrency = htmlBase::newElement('selectbox')->setName('default_currency');
 	$storeInfo = htmlBase::newElement('ck_editor')->setName('stores_info')->attr('rows','20')->attr('cols','90');
 
@@ -129,9 +132,13 @@ $table->addBodyRow(array(
 		$storeEmail->setValue($Qstore['stores_email']);
 		$storeZip->setValue($Qstore['stores_zip']);
 		$storeLocation->setValue($Qstore['stores_location']);
+		$storeTelephone->setValue($Qstore['stores_telephone']);
+		$storeGroup->setValue($Qstore['stores_group']);
 		$storeInfo->html($Qstore['stores_info']);
 		$storeOwner->setValue($Qstore['stores_owner']);
 		$isDefault->setChecked($Qstore['is_default'] == '1'?true:false);
+		$homeRedirect->setChecked($Qstore['home_redirect_store_info'] == '1'?true:false);
+
 		$defaultCurrency->selectOptionByValue($Qstore['default_currency']);
 	}
 
@@ -237,6 +244,18 @@ $table->addBodyRow(array(
 		)
 	));
 	$storeInfoTable->addBodyRow(array(
+			'columns' => array(
+				array('addCls' => 'main','text' => sysLanguage::get('TEXT_STORES_TELEPHONE')),
+				array('addCls' => 'main','text' => $storeTelephone->draw())
+			)
+		));
+	$storeInfoTable->addBodyRow(array(
+			'columns' => array(
+				array('addCls' => 'main','text' => sysLanguage::get('TEXT_STORES_GROUP')),
+				array('addCls' => 'main','text' => $storeGroup->draw())
+			)
+		));
+	$storeInfoTable->addBodyRow(array(
 		'columns' => array(
 			array('addCls' => 'main','text' => sysLanguage::get('TEXT_STORES_DESCRIPTION')),
 			array('addCls' => 'main','text' => $storeInfo->draw())
@@ -252,6 +271,12 @@ $table->addBodyRow(array(
 		'columns' => array(
 			array('addCls' => 'main','text' => sysLanguage::get('TEXT_STORES_IS_DEFAULT')),
 			array('addCls' => 'main','text' => $isDefault->draw())
+		)
+	));
+	$storeInfoTable->addBodyRow(array(
+		'columns' => array(
+			array('addCls' => 'main','text' => sysLanguage::get('TEXT_STORES_HOME_REDIRECT_STORE_INFO')),
+			array('addCls' => 'main','text' => $homeRedirect->draw())
 		)
 	));
 	$storeInfoTable->addBodyRow(array(

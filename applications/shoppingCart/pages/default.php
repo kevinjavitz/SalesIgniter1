@@ -235,7 +235,7 @@ if ($ShoppingCart->countContents() > 0) {
 		$(document).ready(function (){
 			$('.changeDatesButton').click(function(){
 
-				$( '<div id="dialog-mesage" title="Choose Dates"><input class="tField" name="tField" ><div class="destBD"><span class="start_text">Start: </span><input class="picker dstart" name="dstart" ></div><div class="destBD"><span class="end_text">End: </span><input class="picker dend" name="dend" ></div></div>' ).dialog({
+				$( '<div id="dialog-mesage" title="Choose Dates"><input class="tField" name="tField" ><div class="destBD"><span class="start_text">Start: </span><input class="picker dstart" name="dstart" ></div><div class="destBD"><span class="end_text">End: </span><input class="picker dend" name="dend" ></div><?php sysConfig::get('EXTENSION_PAY_PER_RENTALS_INFOBOX_CONTENT');?></div>' ).dialog({
 					modal: false,
 					autoOpen: true,
 					open: function (e, ui){
@@ -320,7 +320,7 @@ if (sysConfig::exists('MODULE_SHIPPING_FREE_SHOW_TEXT')){
 <?php
 	}
 	$div2 = htmlBase::newElement('div')
-	->addClass('ui-widget-header ui-infobox-header ui-corner-all')
+	->addClass('shopButtons ui-widget-header ui-infobox-header ui-corner-all')
 	->css(array(
 		'margin-top' => '15px'
     ));
@@ -333,7 +333,7 @@ if (sysConfig::exists('MODULE_SHIPPING_FREE_SHOW_TEXT')){
 		'margin-bottom' => '10px'
     ));
 	$PageForm->append($div)->append($div3)->append($div2)->append($div4);
-	echo $PageForm->draw();
+	echo '<style type="text/css">.shopButtons a.ui-button-text-only .ui-button-text{ padding: .4em 1em;}</style>'.$PageForm->draw();
 	
 	$pageButtons = '';
 } else {

@@ -224,59 +224,69 @@ class attributes_admin_data_manager_default extends Extension_attributes {
 	public function DataImportBeforeSave(&$items, &$Product){
 		$ProductsAttributes =& $Product->ProductsAttributes;
 		$ProductsAttributes->delete();
-		if (isset($items['v_attribute_1']) && !empty($items['v_attribute_1'])){
-			$end = false;
+		$countOpt = 1;
+		if (isset($items['v_attribute_group']) && !empty($items['v_attribute_group'])){
+			$groupName = $items['v_attribute_group'];
+		}
+		$isAttribute = false;
+		while(true){
+			if (!isset($items['v_option_' . $countOpt])){
+				break;
+			}
+
+			if (empty($items['v_option_' . $countOpt])){
+				$countOpt++;
+				continue;
+			}
+
+			$optionName = $items['v_option_' . $countOpt];
+
 			$count = 1;
-			while($end === false){
-				if (!isset($items['v_attribute_' . $count])){
-					$end = true;
-					continue;
+			$optCount = '_option_' . $countOpt;
+			while(true){
+
+				if (!isset($items['v_attribute_' . $count . $optCount])){
+					break;
 				}
-				
-				if (empty($items['v_attribute_' . $count])){
+
+				if (empty($items['v_attribute_' . $count . $optCount])){
 					$count++;
 					continue;
 				}
-				
-				$crumb = explode('>', $items['v_attribute_' . $count]);
-				$image = $items['v_attribute_' . $count . '_image'];
-				$views = $items['v_attribute_' . $count . '_views'];
-				$price = $items['v_attribute_' . $count . '_price'];
-				$purchase_types = $items['v_attribute_' . $count . '_purchasetypes'];
-				$use_inventory = $items['v_attribute_' . $count . '_useinventory'];
-				$sort = $items['v_attribute_' . $count . '_sort'];
-				
-				$optionName = $crumb[0];
-				$valueName = $crumb[1];
-				if (sizeof($crumb) > 2){
-					$groupName = $crumb[0];
-					$optionName = $crumb[1];
-					$valueName = $crumb[2];
-				}
-				
+				$image = $items['v_attribute_' . $count . $optCount . '_image'];
+				$views = $items['v_attribute_' . $count . $optCount . '_views'];
+				$price = $items['v_attribute_' . $count . $optCount . '_price'];
+				$purchase_types = $items['v_attribute_' . $count . $optCount . '_purchasetypes'];
+				$use_inventory = $items['v_attribute_' . $count . $optCount . '_useinventory'];
+				$sort = $items['v_attribute_' . $count . $optCount . '_sort'];
+				$valueName = $items['v_attribute_' . $count . $optCount];
+
 				$Query = Doctrine_Query::create()
-				->select('o.products_options_id, v2o.products_options_values_id')
-				->from('ProductsOptions o')
-				->leftJoin('o.ProductsOptionsDescription od')
-				->leftJoin('o.ProductsOptionsValuesToProductsOptions v2o')
-				->leftJoin('v2o.ProductsOptionsValues ov')
-				->leftJoin('ov.ProductsOptionsValuesDescription ovd')
-				->where('od.products_options_name = ?', $optionName)
-				->andWhere('ovd.products_options_values_name = ?', $valueName);
+					->select('o.products_options_id, v2o.products_options_values_id')
+					->from('ProductsOptions o')
+					->leftJoin('o.ProductsOptionsDescription od')
+					->leftJoin('o.ProductsOptionsValuesToProductsOptions v2o')
+					->leftJoin('v2o.ProductsOptionsValues ov')
+					->leftJoin('ov.ProductsOptionsValuesDescription ovd')
+					->where('od.products_options_name = ?', $optionName)
+					->andWhere('ovd.products_options_values_name = ?', $valueName);
 				if (isset($groupName)){
 					$Query->addSelect('o2g.products_options_groups_id')
-					->leftJoin('o.ProductsOptionsToProductsOptionsGroups o2g')
-					->leftJoin('o2g.ProductsOptionsGroups og')
-					->andWhere('og.products_options_groups_name = ?', $groupName);
+						->leftJoin('o.ProductsOptionsToProductsOptionsGroups o2g')
+						->leftJoin('o2g.ProductsOptionsGroups og')
+						->andWhere('og.products_options_groups_name = ?', $groupName);
 				}
-				
+
 				$Result = $Query->fetchOne();
 				if ($Result){
 					$attribute = $Result->toArray();
 					//print_r($attribute);exit;
-					if (!isset($attributeCount)) $attributeCount = 0;
-					
-					$ProductsAttributes[$attributeCount]->groups_id = (isset($groupName) ? $attribute['ProductsOptionsToProductsOptionsGroups'][0]['products_options_groups_id'] : null);
+					if (!isset($attributeCount)) {
+						$attributeCount = 0;
+					}
+
+					$ProductsAttributes[$attributeCount]->groups_id = (isset($groupName)
+						? $attribute['ProductsOptionsToProductsOptionsGroups'][0]['products_options_groups_id'] : null);
 					$ProductsAttributes[$attributeCount]->options_id = $attribute['products_options_id'];
 					$ProductsAttributes[$attributeCount]->options_values_id = $attribute['ProductsOptionsValuesToProductsOptions'][0]['products_options_values_id'];
 					$ProductsAttributes[$attributeCount]->options_values_image = $image;
@@ -285,18 +295,20 @@ class attributes_admin_data_manager_default extends Extension_attributes {
 					$ProductsAttributes[$attributeCount]->use_inventory = $use_inventory;
 					$ProductsAttributes[$attributeCount]->price_prefix = ($price >= 0 ? '+' : '-');
 					$ProductsAttributes[$attributeCount]->sort_order = $sort;
-					
+					$isAttribute = true;
 					if (!empty($views)){
 						$parts = explode(';', $views);
 						$ProductsAttributesViews =& $ProductsAttributes[$attributeCount]->ProductsAttributesViews;
 						$ProductsAttributesViews->delete();
 						foreach($parts as $i => $viewInfo){
-							if (empty($viewInfo)) continue;
-							
+							if (empty($viewInfo)) {
+								continue;
+							}
+
 							$infoArr = explode(':', $viewInfo);
 							$viewName = $infoArr[0];
 							$viewImage = $infoArr[1];
-							
+
 							$ProductsAttributesViews[$i]->view_name = $viewName;
 							$ProductsAttributesViews[$i]->view_image = $viewImage;
 						}
@@ -305,7 +317,12 @@ class attributes_admin_data_manager_default extends Extension_attributes {
 				}
 				$count++;
 			}
+			$countOpt++;
+		}
+		if ($isAttribute){
+			$Product->products_inventory_controller = 'attribute';
 		}
 	}
+
 }
 ?>

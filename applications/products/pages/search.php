@@ -25,13 +25,7 @@
 			array('text' => tep_draw_checkbox_field('inc_subcat', '1', true) . ' ' . sysLanguage::get('ENTRY_INCLUDE_SUBCATEGORIES'))
 		)
 	));
-	
-	$AdvancedTable->addBodyRow(array(
-		'columns' => array(
-			array('text' => sysLanguage::get('ENTRY_MANUFACTURERS')),
-			array('text' => tep_draw_pull_down_menu('manufacturers_id', tep_get_manufacturers(array(array('id' => '', 'text' => sysLanguage::get('TEXT_ALL_MANUFACTURERS'))))))
-		)
-	));
+
 	
 	EventManager::notify('AdvancedSearchAddSearchFields', &$AdvancedTable);
 	

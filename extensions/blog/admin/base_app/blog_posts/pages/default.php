@@ -56,8 +56,8 @@
 	->where('pd.language_id = ?', $lID)
 	->orderBy('pd.blog_post_title asc, p.post_id desc');
 
-if (isset($_GET['search'])) {
-		$search = tep_db_prepare_input($_GET['search']);
+	if (isset($_GET['search'])) {
+		$search = $_GET['search'];
 		$Qposts->andWhere('pd.blog_post_title LIKE ?', '%' . $search . '%');
 	}
 
@@ -99,11 +99,11 @@ if (isset($_GET['search'])) {
    ->attr('action', itw_app_link(null, null, null, 'SSL'))
    ->attr('method', 'get');
    
-   $searchField = htmlBase::newElement('input')->setName('search')
-   ->setLabel(sysLanguage::get('HEADING_TITLE_SEARCH'))->setLabelPosition('before');
-   if (isset($_GET['search'])){
-   	$searchField->setValue($_GET['search']);
-   }
+    $searchField = htmlBase::newElement('input')->setName('search')
+    ->setLabel(sysLanguage::get('HEADING_TITLE_SEARCH'))->setLabelPosition('before');
+	if (isset($_GET['search'])){
+		$searchField->setValue($_GET['search']);
+	}
    
    $searchForm->append($searchField);
    echo $searchForm->draw();

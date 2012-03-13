@@ -59,5 +59,9 @@
 	<define key="TEXT_BOTTOM_LEFT"><![CDATA[Bottom Left]]></define>
 	<define key="TEXT_BOTTOM_RIGHT"><![CDATA[Bottom Right]]></define>
     <define key="TEXT_PRODUCT_META_INFO"><![CDATA[Meta Info:]]></define>
+	<define key="TEXT_POSTS_FULL_FEATURED_IMAGE"><![CDATA[Full Featured Image:]]></define>
+	<define key="TEXT_POSTS_FEATURED_IMAGE"><![CDATA[Featured Image:]]></define>
+	<define key="TEXT_POSTS_FEATURED_VIDEO"><![CDATA[Featured Video:]]></define>
+	<define key="TEXT_POSTS_REDIRECT_URL"><![CDATA[Redirect URL:]]></define>
 
 </definitions>

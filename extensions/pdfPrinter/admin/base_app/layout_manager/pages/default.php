@@ -14,6 +14,7 @@ $tableGrid->addButtons(array(
 	htmlBase::newElement('button')->setText('New')->addClass('newButton'),
 	htmlBase::newElement('button')->setText('Duplicate')->addClass('duplicateButton')->disable(),
 	htmlBase::newElement('button')->setText('Export')->addClass('exportButton')->disable(),
+	htmlBase::newElement('button')->setText('Configure')->addClass('configureButton')->disable(),
 	htmlBase::newElement('button')->setText('Edit Layout Template')->addClass('editButton')->disable(),
 	htmlBase::newElement('button')->setText('Delete')->addClass('deleteButton')->disable()
 ));

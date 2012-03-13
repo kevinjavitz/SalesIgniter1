@@ -978,6 +978,7 @@ class barcodePopulate{
 							$qi->broken = $qty_broken;
 							$qi->purchased = $qty_purchased;
 							$qi->reserved = $qty_reserved;
+							//store for existing ones
 							if($controller == 'attribute'){
 								$attrArray = attributesUtil::splitStringToArray($qi->attributes);
 								$attributesArr = array();
@@ -1077,6 +1078,13 @@ class barcodePopulate{
 											$myInvq->reserved = $qty_reserved;
 											$myInvq->available = $v;
 											$myInvq->attributes = '{'.$optValues[0].'}'. $valuesNames[$oValues[$k-1]];
+
+											if($isStore == 1){
+												$myInvq->inventory_store_id = $inventory_store_center_id;
+											}else if($isStore == 2){
+												$myInvq->inventory_center_id = $inventory_store_center_id;
+											}
+
 											$myInvq->save();
 										}
 									}
@@ -1102,6 +1110,11 @@ class barcodePopulate{
 													$myInvq->reserved = $qty_reserved;
 													$myInvq->available = $v;
 													$myInvq->attributes = $myCreatedAttr;
+													if($isStore == 1){
+														$myInvq->inventory_store_id = $inventory_store_center_id;
+													}else if($isStore == 2){
+														$myInvq->inventory_center_id = $inventory_store_center_id;
+													}
 													$myInvq->save();
 												}
 											}
@@ -1118,6 +1131,11 @@ class barcodePopulate{
 							$myInvq->purchased = $qty_purchased;
 							$myInvq->inventory_id = $inventory_id;
 							$myInvq->reserved = $qty_reserved;
+							if($isStore == 1){
+								$myInvq->inventory_store_id = $inventory_store_center_id;
+							}else if($isStore == 2){
+								$myInvq->inventory_center_id = $inventory_store_center_id;
+							}
 							$myInvq->save();
 						}
 
@@ -1170,6 +1188,11 @@ class barcodePopulate{
 										$myInvq->reserved = $qty_reserved;
 										$myInvq->available = $v;
 										$myInvq->attributes = '{'.$optValues[0].'}'. $valuesNames[$oValues[$k-1]];
+										if($isStore == 1){
+											$myInvq->inventory_store_id = $inventory_store_center_id;
+										}else if($isStore == 2){
+											$myInvq->inventory_center_id = $inventory_store_center_id;
+										}
 										$myInvq->save();
 									}
 								}
@@ -1194,6 +1217,11 @@ class barcodePopulate{
 												$myInvq->reserved = $qty_reserved;
 												$myInvq->available = $v;
 												$myInvq->attributes = $myCreatedAttr;
+												if($isStore == 1){
+													$myInvq->inventory_store_id = $inventory_store_center_id;
+												}else if($isStore == 2){
+													$myInvq->inventory_center_id = $inventory_store_center_id;
+												}
 												$myInvq->save();
 											}
 										}

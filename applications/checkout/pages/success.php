@@ -190,9 +190,25 @@ $contents = EventManager::notifyWithReturn('OrderInfoAddBlock',$QlastOrder[0]['o
               </tr>
               <tr>
                 <td class="main"><?php
-	                echo $Order->getFormattedAddress('billing');
+	                $billingAddress = $Order->getFormattedAddress('billing');
+                    echo $billingAddress;
+                    $shippingAddress = $Order->getFormattedAddress('shipping');
                 ?></td>
               </tr>
+				<?php
+				if($billingAddress != $shippingAddress){
+	            ?>
+	            <tr>
+		            <td class="main"><b><?php echo sysLanguage::get('HEADING_SHIPPING_ADDRESS'); ?></b></td>
+	            </tr>
+	            <tr>
+		            <td class="main"><?php
+	                echo $shippingAddress
+			            ?></td>
+	            </tr>
+				<?php
+                }
+	            ?>
               <tr>
                 <td class="main"><b><?php echo sysLanguage::get('HEADING_PAYMENT_METHOD'); ?></b></td>
               </tr>
@@ -321,7 +337,10 @@ for($i=0, $n=sizeof($trackings); $i<$n; $i++){
     </table>
     		<?php
 				echo '<input type="hidden" name="currentPage" id="currentPage" value="success">';
-				echo htmlBase::newElement('a')->html(sysLanguage::get('TEXT_PRINT_ORDER'))->attr('id','printOrder')->draw();
+				echo htmlBase::newElement('a')->html(sysLanguage::get('TEXT_PRINT_ORDER'))->attr('id','printOrder')
+					->attr('target','_blank')
+					->setHref(itw_app_link('appExt=pdfPrinter&oID=' . $QlastOrder[0]['orders_id'], 'generate_pdf', 'default'))
+					->draw();
 
 				if (isset($htmlEventGates) && !empty($htmlEventGates)){
 					echo '<br/>' . $htmlEventGates . '<br>';

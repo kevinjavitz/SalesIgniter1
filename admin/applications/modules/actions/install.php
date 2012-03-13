@@ -34,6 +34,6 @@ if (isset($_GET['rType']) && $_GET['rType'] == 'ajax'){
 		), 'json');
 }
 else {
-	EventManager::attachActionResponse(itw_app_link(tep_get_all_get_params(array('action', 'module', 'moduleType', 'modulePath'))), 'redirect');
+	EventManager::attachActionResponse(itw_app_link(tep_get_all_get_params(array('action', 'module', 'modulePath'))), 'redirect');
 }
 ?>

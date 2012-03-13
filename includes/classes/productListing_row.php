@@ -125,40 +125,85 @@ class productListing_row extends productListing {
 		if (isset($this->loadedData)){
 			$Products = $this->loadedData;
 		}else{
-			$pagerInfo = $this->buildPagerBar();
-			$Products = $pagerInfo['Products']->toArray(true);
+			$this->listedProducts = array();
+			$this->listedProductsIDS = array();
+			if (sysConfig::get('PRODUCT_LISTING_HIDE_NO_INVENTORY') == 'True'){
+				$currentPage = (isset($_GET['page']) ? (int)$_GET['page'] : 1);
+				$limitsArray = explode(',',sysConfig::get('PRODUCT_LISTING_PRODUCTS_LIMIT_ARRAY'));
+				$limitResults = sysConfig::get('PRODUCT_LISTING_PRODUCTS_LIMIT');
+				if((isset($_GET['limit']) && (int)$_GET['limit'] > 0 && (int)$_GET['limit'] <= 25) || ((int)$_GET['limit'] >= 25 && in_array((int)$_GET['limit'],$limitsArray)) ){
+					$limitResults = (int)$_GET['limit'];
+				}
+
+			//while(true){
+				$query = clone $this->query;
+				//$query->limit($limitResults);
+				//$query->offset($limitResults*($currentPage-1));
+
+				EventManager::notify('ProductListingQueryAfterExecute', &$query);
+
+				$Products = $query->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+				//if(count($Products) == 0){
+				//	break;
+				//}
+
+				//$currentPage++;
+				//if(count($this->listedProducts) > $limitResults){
+				//	break;
+				//}
+			//}
+			}else{
+				$pagerInfo = $this->buildPagerBar();
+				$Products = $pagerInfo['Products']->toArray(true);
+				EventManager::notify('ProductListingQueryAfterExecute', &$Products);
+			}
 		}
+		if(isset($Products)){
+			foreach($Products as $pInfo){
+				$product = new product($pInfo['products_id']);
+				if ($product->isValid() === false) continue;
 
-		EventManager::notify('ProductListingQueryAfterExecute', &$Products);
-
-		if (isset($pagerInfo['pagerLayout'])){
-			$PagerLayout = $pagerInfo['pagerLayout'];
-			$Pager = $PagerLayout->getPager();
-		}
-
-		if ((isset($Pager) && $Pager->getNumResults() > 0) || (!isset($Pager) && sizeof($Products) > 0)){
-			$list_box_contents = array();
-			if (sizeof($Products) > 0){
-				foreach($Products as $pInfo){
-					$product = new product($pInfo['products_id']);
-					if ($product->isValid() === false) continue;
-
-					if (sysConfig::get('PRODUCT_LISTING_HIDE_NO_INVENTORY') == 'True'){
-						$hasSomeInv = false;
-						$PurchaseTypes = $product->productInfo['typeArr'];
-						foreach($PurchaseTypes as $typeName){
-							$purchaseTypeCls = $product->getPurchaseType($typeName);
-							if ($purchaseTypeCls && $purchaseTypeCls->hasInventory() === true){
-								$hasSomeInv = true;
-							}
-						}
-
-						if ($hasSomeInv === false){
-							continue;
+				if (sysConfig::get('PRODUCT_LISTING_HIDE_NO_INVENTORY') == 'True'){
+					$hasSomeInv = false;
+					$PurchaseTypes = $product->productInfo['typeArr'];
+					foreach($PurchaseTypes as $typeName){
+						$purchaseTypeCls = $product->getPurchaseType($typeName);
+						if ($purchaseTypeCls && $purchaseTypeCls->hasInventory() === true){
+							$hasSomeInv = true;
 						}
 					}
-					$this->listedProductsIDS[] = $pInfo['products_id'];
 
+					if ($hasSomeInv === false){
+						continue;
+					}
+				}
+				$this->listedProductsIDS[] = $pInfo['products_id'];
+				$this->listedProducts[] = $product;
+			}
+		}
+
+		if (sysConfig::get('PRODUCT_LISTING_HIDE_NO_INVENTORY') == 'True'){
+			if (sizeof($this->listedProductsIDS) > 0){
+				$PagerLayout = $this->getDoctrinePager('SELECT count(products_id) FROM Products WHERE products_id IN(' . implode(',', $this->listedProductsIDS) . ')');
+				$Pager = $PagerLayout->getPager();
+				$Pager->execute();
+				$this->templateData['pagerLinks'] = ($Pager->haveToPaginate() ? $PagerLayout->display(array(), true) : '1 of 1');
+			}
+		}
+
+		if (sizeof($this->listedProducts) > 0){
+			    $limitp = -1;
+				foreach($this->listedProducts as $product){
+					if (sysConfig::get('PRODUCT_LISTING_HIDE_NO_INVENTORY') == 'True'){
+						$limitp++;
+						if($limitp >= $currentPage*$limitResults){
+							break;
+						}
+						if($limitp < ($currentPage-1)*$limitResults){
+							continue;
+						}
+
+					}
 					if (($rows/2) == floor($rows/2)) {
 						$class = 'even';
 					} else {
@@ -189,17 +234,7 @@ class productListing_row extends productListing {
 					}
 					$rows++;
 				}
-
-				if (sysConfig::get('PRODUCT_LISTING_HIDE_NO_INVENTORY') == 'True'){
-					if (sizeof($this->listedProductsIDS) > 0){
-						$PagerLayout = $this->getDoctrinePager('SELECT count(products_id) FROM Products WHERE products_id IN(' . implode(',', $this->listedProductsIDS) . ')');
-						$Pager = $PagerLayout->getPager();
-						$Pager->execute();
-
-						$this->templateData['pagerLinks'] = ($Pager->haveToPaginate() ? $PagerLayout->display(array(), true) : '1 of 1');
-					}
-				}
-			}
+			//}
 		}else{
 			if ($this->showNoProducts === false) return false;
 

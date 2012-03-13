@@ -19,12 +19,8 @@
 
 	$Category->sort_order = (int)$_POST['sort_order'];
 	$Category->categories_menu = (isset($_POST['categories_menu']) ? $_POST['categories_menu'] : 'infobox');
+	$Category->categories_image = $_POST['categories_image'];
 
-	if ( ($categories_image = new upload('categories_image', sysConfig::getDirFsCatalog() . 'images'))) {
-		if(!empty($categories_image->filename)){
-			$Category->categories_image = $categories_image->filename;
-		}
-	}
 
 	$languages = tep_get_languages();
 	$Category->save();

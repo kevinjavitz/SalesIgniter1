@@ -10,7 +10,7 @@
   Released under the GNU General Public License
 */
 
-  class navigationHistory {
+  class navigationHistory implements Serializable{
     var $path, $snapshot;
 
     function navigationHistory() {
@@ -121,13 +121,26 @@
         echo $this->snapshot['mode'] . ' ' . $this->snapshot['page'] . '?' . tep_array_to_string($this->snapshot['get'], array(tep_session_name())) . '<br>';
       }
     }
+	  public function serialize(){
+		  $serialize = array();
+		  foreach(get_object_vars($this) as $varName => $varVal){
+			  if ($varVal instanceof Closure){
+				  unset($this->$varName);
+			  }else{
+				  $serialize[$varName] = $varVal;
+			  }
+		  }
+		  return serialize($serialize);
+	  }
 
     function unserialize($broken) {
-      for(reset($broken);$kv=each($broken);) {
-        $key=$kv['key'];
-        if (gettype($this->$key)!="user function")
-        $this->$key=$kv['value'];
-      }
+	  if(is_array($broken)){
+		  for(reset($broken);$kv=each($broken);) {
+			$key=$kv['key'];
+			if (gettype($this->$key)!="user function")
+			$this->$key=$kv['value'];
+		  }
+	  }
     }
   }
 ?>

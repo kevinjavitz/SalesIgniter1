@@ -43,7 +43,8 @@ class PurchaseType_new extends PurchaseTypeAbstract {
 			$this->inventoryCls = new ProductInventory(
 				$this->productInfo['id'],
 				$this->typeLong,
-				$productInfo['products_inventory_controller']
+				$productInfo['products_inventory_controller'],
+				in_array('new', $productInfo['allow_overbooking'])
 			);
 		}
 	}

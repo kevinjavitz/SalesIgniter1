@@ -4,8 +4,8 @@ $appContent = $App->getAppContentFile();
 	if(sysConfig::get('TOOLTIP_DESCRIPTION_ENABLED') == 'true'){
 		$App->addStylesheetFile('ext/jQuery/external/mopTip/mopTip-2.2.css');
 		$App->addJavascriptFile('ext/jQuery/external/mopTip/mopTip-2.2.js');
-		$App->addJavascriptFile('applications/products/javascript/common.js');
 	}
+	$App->addJavascriptFile('applications/products/javascript/common.js');
 
 	$breadcrumb->add(sysLanguage::get('NAVBAR_TITLE_PRODUCTS'));
 	switch($App->getPageName()){

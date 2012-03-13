@@ -53,15 +53,17 @@ $templateName = $Layout->Template->Configuration['DIRECTORY']->configuration_val
 			if ($Qinfoboxes){
 				foreach($Qinfoboxes as $box){
 					$className = 'InfoBox' . ucfirst($box['box_code']);
-					if (!class_exists($className)){
+					if (!class_exists($className) && file_exists(sysConfig::getDirFsCatalog() . $box['box_path'] . 'infobox.php')){
 						require(sysConfig::getDirFsCatalog() . $box['box_path'] . 'infobox.php');
 					}
-					$infoBox = new $className;
-					echo '<div class="ui-widget ui-widget-content ui-corner-all draggableField installed" id="' . $infoBox->getBoxCode() . '" style="margin:.2em;float:left;width:175px;padding:.3em;">' .
+					if (class_exists($className)){
+						$infoBox = new $className;
+						echo '<div class="ui-widget ui-widget-content ui-corner-all draggableField installed" id="' . $infoBox->getBoxCode() . '" style="margin:.2em;float:left;width:175px;padding:.3em;">' .
 						'<div class="ui-widget-header ui-corner-all" style="padding:.2em;padding-left:.5em;">' .
 						$infoBox->getBoxCode() .
 						'</div>' .
 						'</div>';
+					}
 				}
 			}
 			echo '<div class="ui-helper-clearfix"></div>';
@@ -79,16 +81,18 @@ $templateName = $Layout->Template->Configuration['DIRECTORY']->configuration_val
 				}
 
 				$className = 'InfoBox' . ucfirst($fileObj->getBaseName());
-				if (!class_exists($className)){
+				if (!class_exists($className) && file_exists($fileObj->getPathName() . '/infobox.php')){
 					require($fileObj->getPathName() . '/infobox.php');
 				}
-				$classObj = new $className;
-				if ($classObj->isInstalled() === false){
-					echo '<div class="ui-widget ui-widget-content ui-corner-all draggableField notInstalled" id="' . $classObj->getBoxCode() . '" style="margin:.2em;float:left;width:175px;padding:.3em;">' .
-						'<div class="ui-widget-header ui-corner-all" style="padding:.2em;padding-left:.5em;">' .
-						$classObj->getBoxCode() .
-						'</div>' .
-						'</div>';
+				if(class_exists($className)){
+					$classObj = new $className;
+					if ($classObj->isInstalled() === false){
+						echo '<div class="ui-widget ui-widget-content ui-corner-all draggableField notInstalled" id="' . $classObj->getBoxCode() . '" style="margin:.2em;float:left;width:175px;padding:.3em;">' .
+							'<div class="ui-widget-header ui-corner-all" style="padding:.2em;padding-left:.5em;">' .
+							$classObj->getBoxCode() .
+							'</div>' .
+							'</div>';
+					}
 				}
 			}
 
@@ -106,16 +110,18 @@ $templateName = $Layout->Template->Configuration['DIRECTORY']->configuration_val
 						}
 
 						$className = 'InfoBox' . ucfirst($boxDirObj->getBaseName());
-						if (!class_exists($className)){
+						if (!class_exists($className) && file_exists($boxDirObj->getPathName() . '/infobox.php')){
 							require($boxDirObj->getPathName() . '/infobox.php');
 						}
-						$classObj = new $className;
-						if ($classObj->isInstalled() === false){
-							echo '<div class="ui-widget ui-widget-content ui-corner-all draggableField notInstalled" id="' . $classObj->getBoxCode() . '" extName="' . $fileObj->getBaseName() . '" style="margin:.2em;float:left;width:175px;padding:.3em;">' .
-								'<div class="ui-widget-header ui-corner-all" style="padding:.2em;padding-left:.5em;">' .
-								$classObj->getBoxCode() .
-								'</div>' .
-								'</div>';
+						if(class_exists($className)){
+							$classObj = new $className;
+							if ($classObj->isInstalled() === false){
+								echo '<div class="ui-widget ui-widget-content ui-corner-all draggableField notInstalled" id="' . $classObj->getBoxCode() . '" extName="' . $fileObj->getBaseName() . '" style="margin:.2em;float:left;width:175px;padding:.3em;">' .
+									'<div class="ui-widget-header ui-corner-all" style="padding:.2em;padding-left:.5em;">' .
+									$classObj->getBoxCode() .
+									'</div>' .
+									'</div>';
+							}
 						}
 					}
 				}

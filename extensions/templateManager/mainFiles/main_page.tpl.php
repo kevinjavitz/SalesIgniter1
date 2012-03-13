@@ -6,14 +6,14 @@ if(isset($_GET['genTemplate'])){
 require(sysConfig::getDirFsCatalog() . 'includes/classes/template.php');
 
 $thisApp = $App->getAppName();
-$thisAppPage = $App->getAppPage() . '.php';
+if(!isset($_GET['actualPage'])){
+	$thisAppPage = $App->getAppPage() . '.php';
+}else{
+	$thisAppPage = $_GET['actualPage'];
+}
+
 $thisExtension = (isset($_GET['appExt']) ? $_GET['appExt'] : '');
 $thisTemplate = Session::get('tplDir');
-if(Session::exists('current_app_page')){
-	$thisAppPage = Session::get('current_app_page');
-}else{
-	$thisAppPage = $App->getAppPage() . '.php';
-}
 
 $layoutPath = sysConfig::getDirFsCatalog() . 'extensions/templateManager/mainFiles';
 if(!isset($_GET['tplDir']) || $_GET['tplDir'] != 'codeGeneration'){

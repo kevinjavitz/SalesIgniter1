@@ -29,8 +29,14 @@ if (empty($store)) {
 	$messageStack->addSession('pageStack', 'Thank you the closest store to you is '.$store->stores_name.', we have redirected you to this store\'s homepage', 'success');
 }
 
+if(!empty($store) && Session::get('current_store_id') == $store->stores_id){
+	Session::set('zipClient', ltrim(rtrim(urldecode($zip))));
+	$url .= '/products/all.php';
+}else{
+	$url .= '/multiStore/zip/default.php?zip='.$zip;
+}
 
-$url .= '/products/all.php';
+
 
 tep_redirect($url);
 

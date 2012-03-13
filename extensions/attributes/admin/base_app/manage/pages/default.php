@@ -4,23 +4,17 @@
 	$valuesListing = htmlBase::newElement('div')->attr('id', 'valuesListing')->css(array(
 		'display'  => 'block',
 		'width'    => '100%',
-		'height'   => '12em',
-		'overflow' => 'auto',
 		'vertical-align' => 'top'
 	));
 
 	$optionsListing = htmlBase::newElement('div')->attr('id', 'optionsListing')->css(array(
 		'display'  => 'block',
-		'width'    => '100%',
-		'height'   => '215px',
-		'overflow' => 'auto'
+		'width'    => '100%'
 	));
 
 	$groupsListing = htmlBase::newElement('div')->attr('id', 'groupsListing')->css(array(
 		'display'  => 'block',
-		'width'    => '100%',
-		'height'   => '182px',
-		'overflow' => 'auto'
+		'width'    => '100%'
 	));
 
 	$iconCss = array(
@@ -181,21 +175,21 @@
 	}
 ?>
  
- <div class="pageHeading"><?php echo sysLanguage::get('HEADING_TITLE');?></div>
+ <div class="pageHeading"><?php echo sysLanguage::get('HEADING_TITLE_ATTRIBUTES');?></div>
  <br />
  <?php
   $newOptionButton = htmlBase::newElement('div')->append(htmlBase::newElement('button')->setText(sysLanguage::get('TEXT_BUTTON_NEW_OPTION'))->setId('newOption'));
   $newValueButton = htmlBase::newElement('div')->append(htmlBase::newElement('button')->setText(sysLanguage::get('TEXT_BUTTON_NEW_VALUE'))->setId('newValue'));
   $newGroupButton = htmlBase::newElement('div')->append(htmlBase::newElement('button')->setText(sysLanguage::get('TEXT_BUTTON_NEW_GROUP'))->setId('newGroup'));
   
-  echo $newValueButton->draw();
-  echo $valuesListing->draw();
+  echo $newValueButton->draw().'Examples: small, medium, large';
+  echo $valuesListing->draw().'<br style="clear:both"/>';
   
-  echo $newOptionButton->draw();
-  echo $optionsListing->draw();
+  echo $newOptionButton->draw().'Example: size<br/>After adding an option, drag the value down to the option';
+  echo $optionsListing->draw().'<br style="clear:both"/>';
   
-  echo $newGroupButton->draw();
-  echo $groupsListing->draw();
+  echo $newGroupButton->draw().'Example: shirt<br/>Drag one or more options to a Group.<br/> You MUST put your option to a group to add attributes to a product, even if there is only one option in a group';
+  echo $groupsListing->draw().'<br style="clear:both"/>';
  ?>
  
  <div id="newOptionDialog" title="<?php echo sysLanguage::get('WINDOW_TITLE_NEW_OPTION');?>"></div>

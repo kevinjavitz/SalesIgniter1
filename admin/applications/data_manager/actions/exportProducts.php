@@ -28,7 +28,6 @@
 		'v_products_weight',
 		'v_date_avail',
 		'v_memberships_not_enabled',
-		'v_manufacturers_name',
 		'v_products_categories'
 	));
 
@@ -63,8 +62,7 @@
 		'p.products_price_download as v_products_price_download, ' . 
 		'p.products_weight as v_products_weight, ' . 
 		'p.products_date_available as v_date_avail, ' . 
-		'p.products_tax_class_id as v_tax_class_id, ' . 
-		'p.manufacturers_id as v_manufacturers_id, ' . 
+		'p.products_tax_class_id as v_tax_class_id, ' .
 		'p.products_type as v_products_type, ' . 
 		'p.products_in_box as v_products_in_box, ' . 
 		'p.products_featured as v_products_featured, ' . 
@@ -143,18 +141,6 @@
 		}
 		$pInfo['v_products_categories'] = implode(';', $catPaths);
 
-		if (isset($filelayout['v_manufacturers_name'])){
-			if ($pInfo['v_manufacturers_id'] != ''){
-				$Qmanufacturer = Doctrine_Query::create()
-				->select('manufacturers_name')
-				->from('Manufacturers m')
-				->where('manufacturers_id = ?', $pInfo['v_manufacturers_id'])
-				->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
-				if ($Qmanufacturer){
-					$pInfo['v_manufacturers_name'] = $Qmanufacturer[0]['manufacturers_name'];
-				}
-			}
-		}
 		$nmembershipsString = '';
 		if($pInfo['v_memberships_not_enabled'] != ''){
 			$notEnabledMemberships = explode(';',$pInfo['v_memberships_not_enabled']);

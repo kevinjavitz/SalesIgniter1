@@ -90,8 +90,8 @@ class InfoBoxProductImages extends InfoBoxAbstract {
 		global $appExtension;
 		$productsImage = '';
 
-		$imgWidth = '440';
-		$imgHeight = '440';
+		$imgWidth = '370';
+		$imgHeight = '370';
 		if (isset($_GET['products_id'])){
 			$Product = new product((int)$_GET['products_id']);
 			$productImage = $Product->getImage();
@@ -108,13 +108,13 @@ class InfoBoxProductImages extends InfoBoxAbstract {
 				->where('products_id = ?', $_GET['products_id'])
 				->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 			$productsImage .=
-				'<div style="margin-left:90px;text-align:center;display:inline-block;"><a id="productsImageFeatured" class="fancyBox" href="'.$image.'">' .
+				'<div style="text-align:center;display:inline-block;width:280px;margin:0 auto;"><a id="productsImageFeatured" class="fancyBox" href="'.$image.'">' .
 					'<img class="" src="' . $image . '&width='.$imgWidth.'&height='.$imgHeight.'" alt="' . $image . '" /><br />' .
 					'' .
 					'</a>' .
 					'</div>';
 			if (sizeof($AdditionalImages) > 0){
-				$productsImage .= '<div style="margin-left:40px;margin-top:30px;vertical-align:top;display:inline-block;" class="productImageGalleryFeatured">' .
+				$productsImage .= '<div style="margin-top:30px;vertical-align:top;display:inline-block;" class="productImageGalleryFeatured">' .
 
 					'<a class="fancyBox addSelected" style="display:block" index="0" rel="gallery" href="' . $image . '"><img class="additionalImage" imgSrc="' . $image . '&width='.$imgWidth.'&height='.$imgHeight.'" src="' . $image . '&width=50&height=50"></a>';
 

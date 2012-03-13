@@ -709,8 +709,8 @@ class InfoBoxPayPerRental extends InfoBoxAbstract {
 	public function show(){
 		$WidgetProperties = $this->getWidgetProperties();
 		if ($this->enabled === false) return;
-		
-		$this->setBoxContent('<div id="'.$WidgetProperties->boxID.'">'.$this->getPprForm($WidgetProperties->hasButton, $WidgetProperties->hasHeader, $WidgetProperties->hasGeographic, $WidgetProperties->showCategories, $WidgetProperties->showSubmit, $WidgetProperties->showShipping, $WidgetProperties->showTimes, $WidgetProperties->showQty, $WidgetProperties->showPickup, $WidgetProperties->showDropoff). '</div>');
+		$extraContent = sysConfig::get('EXTENSION_PAY_PER_RENTALS_INFOBOX_CONTENT');
+		$this->setBoxContent('<div id="'.$WidgetProperties->boxID.'">'.$this->getPprForm($WidgetProperties->hasButton, $WidgetProperties->hasHeader, $WidgetProperties->hasGeographic, $WidgetProperties->showCategories, $WidgetProperties->showSubmit, $WidgetProperties->showShipping, $WidgetProperties->showTimes, $WidgetProperties->showQty, $WidgetProperties->showPickup, $WidgetProperties->showDropoff). $extraContent. '</div>');
 
 		return $this->draw();
 	}
@@ -1069,16 +1069,7 @@ class InfoBoxPayPerRental extends InfoBoxAbstract {
 
 
 	$('button[name="no_dates_selected"]').each(function(){$(this).click(function(){
-		/*$( '<div id="dialog-mesage" title="No Inventory"><span style="color:red;font-size:18px;"><?php echo sysLanguage::get('EXTENSION_PAY_PER_RENTALS_ERROR_RESERVE');?></span></div>' ).dialog({
-			modal: true,
-			buttons: {
-				Ok: function() {
-					$( this ).dialog( "close" );
-				}
-			}
-		});*/
-
-	    $( '<div id="dialog-mesage" title="Choose Dates"><input class="tField" name="tField" ><div class="destBD"><span class="start_text">Start: </span><input class="picker dstart" name="dstart" ></div><div class="destBD"><span class="end_text">End: </span><input class="picker dend" name="dend" ></div></div>' ).dialog({
+	    $( '<div id="dialog-mesage" title="Choose Dates"><input class="tField" name="tField" ><div class="destBD"><span class="start_text">Start: </span><input class="picker dstart" name="dstart" ></div><div class="destBD"><span class="end_text">End: </span><input class="picker dend" name="dend" ></div><?php echo sysConfig::get('EXTENSION_PAY_PER_RENTALS_INFOBOX_CONTENT');?></div>' ).dialog({
 			modal: false,
 			autoOpen: true,
 			open: function (e, ui){
@@ -1381,11 +1372,18 @@ class InfoBoxPayPerRental extends InfoBoxAbstract {
 				}else{
 					pick = false;
 				}
-
+		        continent = 0;
 				if($(this).hasClass('continent')){
-					continent = true;
-				}else{
-					continent = false;
+					continent = 1;
+				}
+				if($(this).hasClass('country')){
+					continent = 2;
+				}
+				if($(this).hasClass('state')){
+					continent = 3;
+				}
+				if($(this).hasClass('city')){
+					continent = 4;
 				}
 
 					$ellem = $(this).closest('form');

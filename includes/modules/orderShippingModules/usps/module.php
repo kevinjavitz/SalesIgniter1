@@ -16,6 +16,26 @@ class OrderShippingUsps extends OrderShippingModuleBase
 
 	private $quotes;
 
+	private $pounds;
+
+	private $ounces;
+
+	private $container;
+
+	private $machinable;
+
+	private $size;
+
+	private $fctype;
+
+	private $countries;
+
+	private $selectedTypes;
+
+	private $selectedIntlTypes;
+
+
+
 	public function __construct() {
 		/*
 		 * Default title and description for modules that are not yet installed

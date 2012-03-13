@@ -33,8 +33,7 @@
     $listing_sql2 = "select distinct p.products_id, coalesce(rt.top, 0) as top from " . TABLE_PRODUCTS . " p         
         INNER JOIN " . TABLE_PRODUCTS_DESCRIPTION . " pd ON pd.products_id = p.products_id
         INNER JOIN " . TABLE_PRODUCTS_TO_CATEGORIES . " p2c ON p2c.products_id = p.products_id
-        LEFT JOIN " . TABLE_PRODUCTS_TO_BOX . " ptb on p.products_id=ptb.products_id 
-        LEFT JOIN " . TABLE_MANUFACTURERS . " m ON p.manufacturers_id = m.manufacturers_id
+        LEFT JOIN " . TABLE_PRODUCTS_TO_BOX . " ptb on p.products_id=ptb.products_id
         LEFT JOIN " . TABLE_SPECIALS . " s ON p.products_id = s.products_id
         LEFT JOIN ".TABLE_RENTAL_TOP." rt ON rt.products_id = p.products_id 
        where p.products_id not in (".$ids.") and ptb.products_id IS NULL and p.products_status = '1' and p.products_featured = 1 and pd.language_id = '" . (int)Session::get('languages_id') . "' and p2c.categories_id in ('" . (int)$current_category_id . "') order by rt.top desc";

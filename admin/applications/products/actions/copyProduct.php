@@ -3,7 +3,6 @@
 	if (isset($_GET['products_id'])){
 			$aProduct = $aProducts->findOneByProductsId((int)$_GET['products_id']);
 			$aProduct->ProductsDescription;
-			$aProduct->Manufacturers;
 			$aProduct->ProductsToBox;
 			$aProduct->ProductsToCategories;
 			$aProduct->ProductsAdditionalImages;

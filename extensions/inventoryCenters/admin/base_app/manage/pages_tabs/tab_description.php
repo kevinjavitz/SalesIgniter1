@@ -20,6 +20,8 @@
 		$address = $Inventory->inventory_center_address;
 		$saddress = $Inventory->inventory_center_specific_address;
 		$details = $Inventory->inventory_center_details;
+		$shortdetails = $Inventory->inventory_center_short_details;
+		$centerImage = $Inventory->inventory_center_image;
 		$comission = $Inventory->inventory_center_comission;
 		$minRentalDays = $Inventory->inventory_center_min_rental_days;
 		$provider = $Inventory->inventory_center_customer;
@@ -30,7 +32,7 @@
 		$city = $Inventory->inventory_center_city;
 		$content_selectbox->selectOptionByValue($provider);
 		$sortOrder = $Inventory->inventory_center_sort_order;
-		if (tep_not_null($Inventory->gmaps_polygon)){
+		if (($Inventory->gmaps_polygon != '')){
 			$polygon = unserialize($Inventory->gmaps_polygon);
 			$script = '<script>$(document).ready(function (){';
 			for($i=0, $n=sizeof($polygon); $i<$n; $i++){
@@ -47,6 +49,8 @@
 		$continent = '';
 		$country = sysConfig::get('STORE_COUNTRY');
 		$state = '';
+		$shortdetails = '';
+		$centerImage = '';
 		$city = '';
 		$sortOrder = '0';
 		$saddress = '';
@@ -138,7 +142,7 @@
 
   <tr>
    <td class="main"><?php echo sysLanguage::get('TEXT_INVENTORY_SPECIFIC_ADDRESS'); ?></td>
-   <td class="main"><?php echo tep_draw_textarea_field('inventory_center_specific_address','hard',40,3, $saddress); ?></td>
+   <td class="main"><?php echo tep_draw_textarea_field('inventory_center_specific_address','hard',40,3, $saddress, 'class="makeFCK"'); ?></td>
   </tr>
   <tr>
    <td colspan="2"><?php echo tep_draw_separator('pixel_trans.gif', '1', '10'); ?></td>
@@ -172,6 +176,23 @@
   <tr>
    <td colspan="2"><?php echo tep_draw_separator('pixel_trans.gif', '1', '10'); ?></td>
   </tr>
+ <tr>
+	<td class="main" valign="top"><?php echo sysLanguage::get('TEXT_INVENTORY_SHORT_DETAILS'); ?></td>
+	<td class="main"><?php echo tep_draw_textarea_field('inventory_center_short_details', 'hard', 30, 5, $shortdetails, 'class="makeFCK"'); ?></td>
+ </tr>
+	 <tr>
+		 <td class="main" valign="top"><?php echo sysLanguage::get('TEXT_INVENTORY_IMAGE'); ?></td>
+		 <td class="main"><?php
+			 $InventoryImage = htmlBase::newElement('uploadManagerInput')
+				 ->setName('inventory_center_image')
+				 ->setFileType('image')
+				 ->autoUpload(true)
+				 ->showPreview(true)
+				 ->showMaxUploadSize(true);
+			$InventoryImage->setPreviewFile($centerImage);
+		echo $InventoryImage->draw();
+		?></td>
+	 </tr>
   <tr>
    <td class="main" valign="top"><?php echo sysLanguage::get('TEXT_INVENTORY_DETAILS'); ?></td>
    <td class="main"><?php echo tep_draw_textarea_field('inventory_center_details', 'hard', 30, 5, $details, 'class="makeFCK"'); ?></td>

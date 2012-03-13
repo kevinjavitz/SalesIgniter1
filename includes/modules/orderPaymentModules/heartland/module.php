@@ -12,7 +12,9 @@ class OrderPaymentHeartland extends StandardPaymentModule {
 		if ($this->isEnabled() === true){
 			$this->identifier = 'heartland';
 			$this->username = $this->getConfigData('MODULE_PAYMENT_HEARTLAND_USERNAME');
-			$this->setFormUrl('https://hps.webportal.test.secureexchange.net:443/PaymentMain.aspx');
+			$this->setFormUrl('https://webportal.trans.secureexchange.net/PaymentMain.aspx');
+			//testing
+			//$this->setFormUrl('https://hps.webportal.test.secureexchange.net:443/PaymentMain.aspx');
 		}
 	}
 

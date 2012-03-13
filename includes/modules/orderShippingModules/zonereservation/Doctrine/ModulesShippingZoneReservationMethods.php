@@ -30,6 +30,16 @@ class ModulesShippingZoneReservationMethods extends Doctrine_Record {
 			'autoincrement' => false
 		));
 		
+		$this->hasColumn('method_zipcode', 'string', null, array(
+			'type'          => 'string',
+			'length'        => null,
+			'fixed'         => false,
+			'primary'       => false,
+			'default'       => '',
+			'notnull'       => true,
+			'autoincrement' => false
+		));
+		
 		$this->hasColumn('method_cost', 'float', 15, array(
 			'type'          => 'float',
 			'length'        => 15,
@@ -39,6 +49,16 @@ class ModulesShippingZoneReservationMethods extends Doctrine_Record {
 			'notnull'       => true,
 			'autoincrement' => false
 		));
+
+		$this->hasColumn('free_delivery_over', 'float', 15, array(
+				'type'          => 'float',
+				'length'        => 15,
+				'fixed'         => false,
+				'primary'       => false,
+				'default'       => '',
+				'notnull'       => true,
+				'autoincrement' => false
+			));
 		
 		$this->hasColumn('method_default', 'integer', 2, array(
 			'type'          => 'integer',

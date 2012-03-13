@@ -134,7 +134,7 @@ class OrderShippingUpsReservation extends OrderShippingModuleBase
 		}
 	}
 	
-	public function quote($method = '', $shipping_weight = -1){
+	public function quote($method = '', $shipping_weight = -1, $totalPrice = -1){
 		global $order,  $userAccount, $App;
 		$shipping_num_boxes = 1;
 

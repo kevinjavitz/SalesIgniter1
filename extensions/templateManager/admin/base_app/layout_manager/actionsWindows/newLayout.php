@@ -112,10 +112,59 @@ function buildCategorisPages($CatArr, &$AppArray, $appName){
 		$pageName = $cat['name'];
 		$AppArray[$appName][$pageName] = (isset($selApps[$appName][$pageName]) ? $selApps[$appName][$pageName] : false);
 		if (isset($cat['children']) && sizeof($cat['children']) > 0){
-			buildCategorisPages($cat['children'], $AppArray, $appName, $pageName);
+			buildCategorisPages($cat['children'], $AppArray, $appName);
 		}
 	}
 }
+
+
+function makeBlogCategoriesArray($parentId = 0){
+	$catArr = array();
+	$Qcategories = Doctrine_Query::create()
+		->from('BlogCategories c')
+		->leftJoin('c.BlogCategoriesDescription cd')
+		->where('parent_id = ?', $parentId)
+		->andWhere('language_id = ?', Session::get('languages_id'))
+		->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+	foreach($Qcategories as $category){
+		$catArr[$category['blog_categories_id']] = array(
+			'name' => $category['BlogCategoriesDescription'][0]['blog_categories_seo_url']
+		);
+
+		$Children = makeBlogCategoriesArray($category['blog_categories_id']);
+		if (!empty($Children)){
+			$catArr[$category['blog_categories_id']]['children'] = $Children;
+		}
+	}
+
+	return $catArr;
+}
+$BlogCatArr = makeBlogCategoriesArray(0);
+
+function buildBlogCategorisPages($BlogCatArr, &$AppArray, $appName, $extName){
+	global $selApps;
+	foreach($BlogCatArr as $cat){
+		$pageName = $cat['name'];
+		$AppArray['ext'][$extName][$appName][$pageName] = (isset($selApps['ext'][$extName][$appName][$pageName]) ? $selApps['ext'][$extName][$appName][$pageName] : false);
+		if (isset($cat['children']) && sizeof($cat['children']) > 0){
+			buildBlogCategorisPages($cat['children'], $AppArray, $appName, $extName);
+		}
+	}
+}
+
+function buildBlogCategorisPagesPosts($BlogCatArr, &$AppArray, $appName, $extName){
+	global $selApps;
+	foreach($BlogCatArr as $cat){
+		$pageName = 'posts-'.$cat['name'];
+		$AppArray['ext'][$extName][$appName][$pageName] = (isset($selApps['ext'][$extName][$appName][$pageName]) ? $selApps['ext'][$extName][$appName][$pageName] : false);
+		if (isset($cat['children']) && sizeof($cat['children']) > 0){
+			buildBlogCategorisPagesPosts($cat['children'], $AppArray, $appName, $extName);
+		}
+	}
+}
+
+
+
 
 function buildProductPages(&$AppArray, $appName){
 	global $selApps;
@@ -146,6 +195,7 @@ foreach($Applications as $AppDir){
 	if($appName == 'index'){
 		buildCategorisPages($CatArr, $AppArray, $appName);
 	}
+
 	if($appName == 'product' && isset($associativeUrl)){
 		buildProductPages($AppArray, $appName);
 	}
@@ -220,6 +270,21 @@ foreach($Extensions as $Extension){
 					$AppArray['ext'][$extName][$appName][$pageName] = (isset($selApps['ext'][$extName][$appName][$pageName]) ? $selApps['ext'][$extName][$appName][$pageName] : false);
 				}
 			}
+
+			if ($Extension->getBasename() == 'blog' && $appExtension->isInstalled('blog') && $appExtension->isEnabled('blog') && $appName == 'show_category'){
+
+				buildBlogCategorisPages($BlogCatArr, $AppArray, $appName, $extName);
+
+			}
+
+			if ($Extension->getBasename() == 'blog' && $appExtension->isInstalled('blog') && $appExtension->isEnabled('blog') && $appName == 'show_post'){
+
+				buildBlogCategorisPagesPosts($BlogCatArr, $AppArray, $appName, $extName);
+
+			}
+
+			//add here post-categoryname...then check in template
+
 			ksort($AppArray['ext'][$extName][$appName]);
 		}
 		ksort($AppArray['ext']);
@@ -291,6 +356,8 @@ $BoxesContainer = htmlBase::newElement('div');
 
 $rentalMemberCheckbox = htmlBase::newElement('checkbox')->setLabel('R')->setValue('R');
 $nonRentalMemberCheckbox = htmlBase::newElement('checkbox')->setLabel('N')->setValue('N');
+
+
 
 $col = 0;
 foreach($AppArray as $appName => $aInfo){
@@ -498,6 +565,7 @@ ob_start();
 				this.checked = self.checked;
 			});
 		});
+
 	}
 </script>
 <?php

@@ -21,6 +21,9 @@ if (tep_not_null($cPath)) {
 	if ($App->getAppPage() == 'new_category'){
 		$App->addJavascriptFile('admin/rental_wysiwyg/ckeditor.js');
 		$App->addJavascriptFile('ext/jQuery/ui/jquery.ui.tabs.js');
+		$App->addJavascriptFile('ext/jQuery/external/uploadify/swfobject.js');
+		$App->addJavascriptFile('ext/jQuery/external/uploadify/jquery.uploadify.js');
+		$App->addStylesheetFile('ext/jQuery/external/uploadify/jquery.uploadify.css');
 	}else{
 	}
 

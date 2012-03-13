@@ -21,6 +21,10 @@
 
 	$Post->post_date = $post_date;
 	$Post->post_status = $_POST['post_status'];
+	$Post->post_featured_media = $_POST['post_featured_media'];
+	$Post->post_featured_image = $_POST['post_featured_image'];
+	$Post->post_full_featured_image = $_POST['post_full_featured_image'];
+	$Post->post_redirect_url = $_POST['post_redirect_url'];
 
 	$languages = tep_get_languages();
 	$PostsDescription = $Post->BlogPostsDescription;
@@ -30,15 +34,17 @@
 		$PostsDescription[$lang_id]->language_id = $lang_id;
 		$PostsDescription[$lang_id]->blog_post_title = isset($_POST['blog_post_title'][$lang_id])?$_POST['blog_post_title'][$lang_id]:'No Title';
 		$PostsDescription[$lang_id]->blog_post_text = isset($_POST['blog_post_text'][$lang_id])?$_POST['blog_post_text'][$lang_id]:'';
-		$PostsDescription[$lang_id]->blog_post_seo_url = tep_friendly_seo_url($PostsDescription[$lang_id]->blog_post_title);
+		//$PostsDescription[$lang_id]->blog_post_seo_url = tep_friendly_seo_url($PostsDescription[$lang_id]->blog_post_title);
 
 		$PostsDescription[$lang_id]->blog_post_head_title = isset($_POST['blog_post_head_title'][$lang_id])?$_POST['blog_post_head_title'][$lang_id]:$_POST['blog_post_title'][$lang_id];
 		$PostsDescription[$lang_id]->blog_post_head_desc =  isset($_POST['blog_post_head_desc'][$lang_id])? $_POST['blog_post_head_desc'][$lang_id]:$_POST['blog_post_title'][$lang_id];
 		$PostsDescription[$lang_id]->blog_post_head_keywords = isset($_POST['blog_post_head_keywords'][$lang_id])? $_POST['blog_post_head_desc'][$lang_id]:$_POST['blog_post_title'][$lang_id];
 
-        if (!empty($_POST['blog_post_seo_url'][$lang_id])){
-			$PostsDescription[$lang_id]->blog_post_seo_url = tep_friendly_seo_url($_POST['blog_post_head_title'][$lang_id]);
-		}
+        if (empty($_POST['blog_post_seo_url'][$lang_id])){
+			$PostsDescription[$lang_id]->blog_post_seo_url = tep_friendly_seo_url($PostsDescription[$lang_id]->blog_post_title);
+		}else{
+	        $PostsDescription[$lang_id]->blog_post_seo_url = $_POST['blog_post_seo_url'][$lang_id];
+        }
         
 		if (!empty($_POST['blog_post_head_title'][$lang_id])){
 			$PostsDescription[$lang_id]->blog_post_head_title = $_POST['blog_post_head_title'][$lang_id];
@@ -64,10 +70,8 @@
 	}
 	$Post->save();
 
-	if (isset($_POST['blog_categories_save_redirect'])){
-		$link = $_POST['blog_categories_save_redirect'];
-	}else{
-		$link = itw_app_link(tep_get_all_get_params(array('action', 'pID')) . 'pID=' . $Post->post_id, null, 'default');
-	}
+
+	$link = itw_app_link(tep_get_all_get_params(array('action', 'pID')) . 'pID=' . $Post->post_id, null, 'default');
+
 	EventManager::attachActionResponse($link, 'redirect');
 ?>

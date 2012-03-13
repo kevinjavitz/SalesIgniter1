@@ -45,6 +45,20 @@ class OrderPaymentMoneyorder extends StandardPaymentModule {
 		}
 	}
 
+	public function onSelect(){
+		global $onePageCheckout;
+ 	    $fieldsArray = array();
+		$return = parent::onSelect();
+		$fieldsArray[] = array(
+			'title' => 'Please send check/money order to:<br/>'.	$this->getConfigData('MODULE_PAYMENT_MONEYORDER_PAYTO'),
+			'field' => ''
+		);
+		$return['fields'] = $fieldsArray;
+		//$return['fields'] = $fieldsArray;
+
+		return $return;
+	}
+
 	public function processPaymentCron($orderID){
 		global $order;
 		$order->info['payment_method'] = $this->getTitle();

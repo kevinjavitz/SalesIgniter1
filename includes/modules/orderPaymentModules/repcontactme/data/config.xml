@@ -1,0 +1,60 @@
+<configurations>
+	<configuration>
+		<tab><![CDATA[General]]></tab>
+		<title><![CDATA[Installed Status]]></title>
+		<key><![CDATA[INSTALLED]]></key>
+		<value><![CDATA[False]]></value>
+		<description><![CDATA[Tells if the module is installed or not]]></description>
+		<set_function><![CDATA[tep_cfg_show_installed_status(]]></set_function>
+	</configuration>
+	<configuration>
+		<tab><![CDATA[General]]></tab>
+		<title><![CDATA[Enable Representative contact me Module]]></title>
+		<key><![CDATA[STATUS]]></key>
+		<value><![CDATA[False]]></value>
+		<description><![CDATA[Do you want to accept Representative contact me payments?]]></description>
+		<set_function><![CDATA[tep_cfg_select_option(array('True', 'False'),]]></set_function>
+	</configuration>
+	<configuration>
+		<tab><![CDATA[General]]></tab>
+		<title><![CDATA[Display Order]]></title>
+		<key><![CDATA[DISPLAY_ORDER]]></key>
+		<value><![CDATA[0]]></value>
+		<description><![CDATA[Display Order. Lowest is displayed first.]]></description>
+	</configuration>
+	<configuration>
+	<tab><![CDATA[General]]></tab>
+		<title><![CDATA[Payment method visible]]></title>
+		<key><![CDATA[VISIBLE]]></key>
+		<value><![CDATA[Both]]></value>
+		<description><![CDATA[Where is this payment method visible: Admin, Catalog or Both )]]></description>
+		<sort_order>5</sort_order>
+		<set_function><![CDATA[tep_cfg_select_option(array('Admin','Catalog','Both'),]]></set_function>
+	</configuration>
+	<configuration>
+		<tab><![CDATA[General]]></tab>
+		<title><![CDATA[Payment Zone]]></title>
+		<key><![CDATA[ZONE]]></key>
+		<value><![CDATA[0]]></value>
+		<description><![CDATA[If a zone is selected, only enable this payment method for that zone.]]></description>
+		<use_function><![CDATA[tep_get_zone_class_title]]></use_function>
+		<set_function><![CDATA[tep_cfg_pull_down_zone_classes(]]></set_function>
+	</configuration>
+	<configuration>
+		<tab><![CDATA[General]]></tab>
+		<title><![CDATA[Set Order Status]]></title>
+		<key><![CDATA[ORDER_STATUS_ID]]></key>
+		<value><![CDATA[0]]></value>
+		<description><![CDATA[Set the status of orders made with this payment module to this value]]></description>
+		<use_function><![CDATA[tep_get_order_status_name]]></use_function>
+		<set_function><![CDATA[tep_cfg_pull_down_order_statuses(]]></set_function>
+	</configuration>
+	<configuration>
+		<tab><![CDATA[General]]></tab>
+		<title><![CDATA[Accepted Checkout Method]]></title>
+		<key><![CDATA[CHECKOUT_METHOD]]></key>
+		<value><![CDATA[Normal]]></value>
+		<description><![CDATA[Allow this payment module to be used for (Rental membership signup, Normal checkout or Both )]]></description>
+		<set_function><![CDATA[tep_cfg_select_option(array('Membership','Normal','Both'),]]></set_function>
+	</configuration>
+</configurations>

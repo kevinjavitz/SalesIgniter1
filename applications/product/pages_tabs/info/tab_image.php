@@ -67,9 +67,6 @@ EventManager::notify('ProductInfoProductsImageShow', &$image, &$product);
 			echo $content;
 		}
 	}
-	if(sysConfig::get('SHOW_MANUFACTURER_ON_PRODUCT_INFO') == 'true'){
-		echo sysLanguage::get('TEXT_MANUFACTURER'). $product->getManufacturerName().'<br />';
-	}
 	
 	echo $product->getDescription() . '<br />';
 

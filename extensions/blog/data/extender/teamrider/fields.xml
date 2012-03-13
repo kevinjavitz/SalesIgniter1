@@ -1,0 +1,57 @@
+<data>
+	<info>
+		<key>teamrider</key>
+		<title>Team Rider</title>
+	</info>
+	<fields>
+		<field>
+			<name>name</name>
+			<type>text</type>
+			<table>BlogPostsDescription</table>
+			<realtype>string</realtype>
+			<default></default>
+			<showName>Name</showName>
+		</field>
+		<field>
+			<name>surname</name>
+			<type>text</type>
+			<table>BlogPostsDescription</table>
+			<realtype>string</realtype>
+			<default></default>
+			<showName>Surname</showName>
+			<showFunction></showFunction>
+			<searchFunction></searchFunction>
+		</field>
+
+		<field>
+			<name>dob</name>
+			<type>text</type>
+			<table>BlogPostsDescription</table>
+			<realtype>string</realtype>
+			<default></default>
+			<showName>Date of Birth</showName>
+			<showFunction></showFunction>
+			<searchFunction></searchFunction>
+		</field>
+		<field>
+			<name>nationality</name>
+			<type>text</type>
+			<table>BlogPostsDescription</table>
+			<realtype>string</realtype>
+			<default></default>
+			<showName>Nationality</showName>
+			<showFunction></showFunction>
+			<searchFunction></searchFunction>
+		</field>
+		<field>
+			<name>sponsors</name>
+			<type>text</type>
+			<table>BlogPostsDescription</table>
+			<realtype>string</realtype>
+			<default></default>
+			<showName>Sponsors</showName>
+			<showFunction></showFunction>
+			<searchFunction></searchFunction>
+		</field>
+	</fields>
+</data>

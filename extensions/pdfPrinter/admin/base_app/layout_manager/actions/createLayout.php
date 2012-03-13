@@ -114,6 +114,7 @@ if (isset($_POST['layout_template'])){
 $Layout->save();
 $layoutId = $Layout->layout_id;
 $layoutName = $Layout->layout_name;
+$layoutType = $Layout->layout_type;
 
 $Reset = $TemplatePages->findAll();
 foreach($Reset as $rInfo){

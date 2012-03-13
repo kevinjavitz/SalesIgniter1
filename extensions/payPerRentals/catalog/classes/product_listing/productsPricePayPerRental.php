@@ -39,8 +39,8 @@ class productListing_productsPricePayPerRental {
 					),
 					true
 				);
-
-				EventManager::notify('ProductListingModuleShowBeforeShow', 'reservation', $productClass, &$payPerRentalButton);
+				$extraContent = '';
+				EventManager::notify('ProductListingModuleShowBeforeShow', 'reservation', $productClass, &$payPerRentalButton, &$extraContent);
 
 				$QPricePerRentalProducts = Doctrine_Query::create()
 				->from('PricePerRentalPerProducts pprp')
@@ -60,7 +60,7 @@ class productListing_productsPricePayPerRental {
 
 				if (sizeof($tableRow) > 0){
 					$tableRow[0] = '<tr>
-					   <td class="main" colspan="2" style="font-size:.8em;" align="center">' .  $payPerRentalButton->draw() . '</td>
+					   <td class="main" colspan="2" style="font-size:.8em;" align="center">' . $extraContent . $payPerRentalButton->draw() . '</td>
 					  </tr>';
 					ksort($tableRow);
 				}
@@ -358,13 +358,16 @@ class productListing_productsPricePayPerRental {
 										<td class="main">' . $pricing . '</td>
 						</tr>';
 					}
+					$extraContent = '';
+					EventManager::notify('ProductListingModuleShowBeforeShow', 'reservation', $productClass, &$payPerRentalButton, &$extraContent);
 					if (sizeof($tableRow) > 0){
 						$tableRow[0] = '<tr>
-						   <td class="main" colspan="2" style="font-size:.8em;" align="center">' .  $pageForm->draw() . '</td>
+						   <td class="main" colspan="2" style="font-size:.8em;" align="center">' . $extraContent .  $pageForm->draw() . '</td>
 						  </tr>';
 						ksort($tableRow);
 					}
 				}
+
 				if($isdouble){
 					unset($tableRow);
 					$isav = true;
@@ -438,15 +441,16 @@ class productListing_productsPricePayPerRental {
 					->setText(sysLanguage::get('TEXT_BUTTON_RESERVE'))
 					->setId('doubleDatesSelected')
 					->setName('double_dates_selected');
-
+					$extraContent = '';
+					EventManager::notify('ProductListingModuleShowBeforeShow', 'reservation', $productClass, &$payPerRentalButton, &$extraContent);
 					$tableRow[0] = '<tr>
-					   <td class="main" colspan="2" style="font-size:.8em;" align="center">' .  $payPerRentalButton->draw() . '</td>
+					   <td class="main" colspan="2" style="font-size:.8em;" align="center">' . $extraContent . $payPerRentalButton->draw() . '</td>
 					  </tr>';
 					ksort($tableRow);
 				}
 				if($deleteS){
 					//Session::remove('isppr_selected');
-					Session::remove('isppr_inventory_pickup');
+					//Session::remove('isppr_inventory_pickup');   //can have a bug if double
 				}
 				if(!$isav){
 					$payPerRentalButton = htmlBase::newElement('button')
@@ -461,11 +465,11 @@ class productListing_productsPricePayPerRental {
 						->setName('no_inventory');
 						$payPerRentalButton->setText(sysLanguage::get('TEXT_BUTTON_RESERVE_OUT_OF_STOCK'));
 					}
-
-					EventManager::notify('ProductListingModuleShowBeforeShow', 'reservation', $productClass, &$payPerRentalButton);
+					$extraContent = '';
+					EventManager::notify('ProductListingModuleShowBeforeShow', 'reservation', $productClass, &$payPerRentalButton, &$extraContent);
 
 					$tableRow[0] = '<tr>
-					   <td class="main" colspan="2" style="font-size:.8em;" align="center">' .  $payPerRentalButton->draw() . '</td>
+					   <td class="main" colspan="2" style="font-size:.8em;" align="center">' . $extraContent .  $payPerRentalButton->draw() . '</td>
 					  </tr>';
 					ksort($tableRow);
 				}

@@ -80,9 +80,9 @@
 		$customer_notified = '0';
 		if (isset($_POST['notify'])){
 			$adminComments = false;
-			if (isset($_POST['notify_comments']) && !empty($_POST['notify_comments'])) {
+			//if (isset($_POST['notify_comments']) && !empty($_POST['notify_comments'])) {
 				$adminComments = sprintf(sysLanguage::get('EMAIL_TEXT_COMMENTS_UPDATE'), $comments) . "\n\n";
-			}
+			//}
 
 			if (tep_not_null($Order->usps_track_num) || tep_not_null($Order->usps_track_num2) || tep_not_null($Order->ups_track_num) || tep_not_null($Order->ups_track_num2) || tep_not_null($Order->fedex_track_num) || tep_not_null($Order->fedex_track_num2) || tep_not_null($Order->dhl_track_num) || tep_not_null($Order->dhl_track_num2)){
 				$trackingLinks = "\n" . sysLanguage::get('EMAIL_TEXT_TRACKING_NUMBER') . "\n";

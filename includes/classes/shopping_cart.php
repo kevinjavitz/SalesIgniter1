@@ -142,24 +142,24 @@
 		
 		function updateProduct($pID_string, $pInfo){
 			$cartProduct = $this->contents->findProductByUniqID($pID_string, $pInfo['purchase_type']);
-			EventManager::notify('ShoppingCart\UpdateProductPrepare', $cartProduct->getIdString(), $pInfo['purchase_type']);
-			
+			if(is_object($cartProduct)){
+				EventManager::notify('ShoppingCart\UpdateProductPrepare', $cartProduct->getIdString(), $pInfo['purchase_type']);
 
-			$new_pInfo = $cartProduct->getInfo();
-			foreach($pInfo as $key => $val){
-				$new_pInfo[$key] = $val;
+				$new_pInfo = $cartProduct->getInfo();
+				foreach($pInfo as $key => $val){
+					$new_pInfo[$key] = $val;
+				}
+				$pID_string = array(
+					'id' => $cartProduct->getIdString(),
+					'purchaseType' => $pInfo['purchase_type']
+				);
+
+				EventManager::notify('ShoppingCart\UpdateProductBeforeAction', $pID_string, &$new_pInfo);
+				$cartProduct->updateInfo($new_pInfo);
+				$this->contents->add($cartProduct);
+
+				EventManager::notify('ShoppingCart\UpdateProductAfterAction', $pID_string, &$new_pInfo);
 			}
-			$pID_string = array(
-				'id' => $cartProduct->getIdString(),
-				'purchaseType' => $pInfo['purchase_type']
-			);
-
-			EventManager::notify('ShoppingCart\UpdateProductBeforeAction', $pID_string, &$new_pInfo);
-
-			$cartProduct->updateInfo($new_pInfo);
-			$this->contents->add($cartProduct);
-		
-			EventManager::notify('ShoppingCart\UpdateProductAfterAction', $pID_string, &$new_pInfo);
 		}
 		
 		function removeProduct($pID_string, $purchaseType = false){

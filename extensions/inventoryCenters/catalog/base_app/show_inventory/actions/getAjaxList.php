@@ -5,7 +5,6 @@
 	//$langId = Session::get('languages_id');
 
 	$invcent = Doctrine_Query::create()
-				->select('inventory_center_name, inventory_center_address, inventory_center_id, inventory_center_stores')
 				->from('ProductsInventoryCenters')
 				->orderBy('inventory_center_name');
 
@@ -28,8 +27,17 @@
 	$invcent = $invcent->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 	$contentHtml = '<div class="main_list">';
 	foreach($invcent as $invInfo){
-		$store = explode(';',$invInfo['inventory_center_stores']);
-		if(in_array(Session::get('current_store_id'), $store)){
+		$f = true;
+		$multiStore = $appExtension->getExtension('multiStore');
+		if ($multiStore !== false && $multiStore->isEnabled() === true){
+			$store = explode(';',$invInfo['inventory_center_stores']);
+			if(in_array(Session::get('current_store_id'), $store)){
+				$f = true;
+			}else{
+				$f = false;
+			}
+		}
+		if($f){
 			$contentHtml .= "<div class='list_inv'><b>Spot:</b> ".$invInfo['inventory_center_name']."<br/>";
 			//$contentHtml .= '<b>Address:</b> '. $invInfo['inventory_center_address']."<br/>";
 			$contentHtml .= "<a class='moreinfo' href='".itw_app_link('appExt=inventoryCenters&inv_id='.$invInfo['inventory_center_id'],'show_inventory','default')."'><b>More info</b></a>"."</div>";

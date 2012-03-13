@@ -15,7 +15,8 @@ class InfoBoxNavigationMenu extends InfoBoxAbstract
 		global $App;
 		$this->init('navigationMenu');
 		$this->firstAdded = false;
-		$this->buildStylesheetMultiple = false;
+		$this->firstAddedol = false;
+		$this->buildStylesheetMultiple = true;
 		$this->buildJavascriptMultiple = true;
 	}
 
@@ -132,7 +133,12 @@ class InfoBoxNavigationMenu extends InfoBoxAbstract
 		$itemTemplate = '<li class="' . $addCls . '">';
 		if (isset($item->children) && !empty($item->children)){
 			$itemTemplate .= $itemLink->draw() . '<span class="ui-icon ui-icon-triangle-1-e"></span>';
-			$itemTemplate .= '<ol>';
+			$addClsol = '';
+			if ($this->firstAddedol === false){
+				$addClsol = 'firstol';
+				$this->firstAddedol = true;
+			}
+			$itemTemplate .= '<ol class="' . $addClsol . '">';
 			foreach($item->children as $k => $childItem){
 				$itemTemplate .= $this->parseMenuItem($childItem, false, (!isset($item->children->{$k + 1}) || empty($item->children->{$k + 1})));
 			}
@@ -148,10 +154,12 @@ class InfoBoxNavigationMenu extends InfoBoxAbstract
 	}
 
 	public function buildStylesheet() {
+		$WidgetProperties = $this->loadLinkedSettings($this->getWidgetProperties());
+		if ($WidgetProperties->alwaysShow == 'false'){
 		$css = '/* Navigation Menu --BEGIN-- */' . "\n" .
 			'.ui-navigation-menu { position:relative;background-color:transparent;border: none;line-height:inherit;font-size:inherit; }' . "\n" .
 			'.ui-navigation-menu ol { background-color:transparent;list-style:none;padding:0;margin:0;border:none;line-height:inherit;z-index: 100; }' . "\n" .
-			'.ui-navigation-menu li { position:relative;display:block;border:none;background:none;line-height:inherit;text-align:left; }' . "\n" .
+			'.ui-navigation-menu li { float:left;position:relative;display:block;border:none;background:none;line-height:inherit;text-align:left; }' . "\n" .
 			'.ui-navigation-menu li a { width:100%;background-color:transparent;display:inline-block;text-decoration:none;white-space:nowrap; }' . "\n" .
 			'.ui-navigation-menu li a span { line-height:1em;background-color:transparent;display:inline-block;vertical-align:baseline; }' . "\n" .
 			'.ui-navigation-menu li ol { display:none;position:absolute; }' . "\n" .
@@ -171,7 +179,136 @@ class InfoBoxNavigationMenu extends InfoBoxAbstract
 			'.ui-navigation-menu .ui-icon, .ui-navigation-menu img { vertical-align:baseline;display:inline-block; }' . "\n" .
 			'.ui-navigation-menu img { margin-right:.3em; }' . "\n" .
 			'/* Navigation Menu --END-- */' . "\n";
+		}else{
+				ob_start();
+			?>
+		.showAlwaysMenu ol, .showAlwaysMenu ol li {list-style: none;}
+		.showAlwaysMenu ol {position: relative; padding: 0; margin: 0;}
+		.showAlwaysMenu ol li ol {display: none;}
+		.showAlwaysMenu .sub {display: none;}
+		.showAlwaysMenu .sub ol {display: block;}
 
+		#<?php echo $WidgetProperties->menuId; ?> {
+		list-style: none;
+		position: relative;
+		padding: 0;
+		margin: 0;
+		}
+		#<?php echo $WidgetProperties->menuId; ?> .sub ol {
+		display: block;
+		}
+		#<?php echo $WidgetProperties->menuId; ?> {
+		width: 100%;
+		height: 20px;
+		position: relative;
+		}
+		#<?php echo $WidgetProperties->menuId; ?> li {
+		float: left;
+		margin: 0;
+		padding: 0;
+		font-weight: bold;
+		}
+		#<?php echo $WidgetProperties->menuId; ?> li a {
+		float: left;
+		display: block;
+		color: #fff;
+		padding-left:18px;
+		padding-right:18px;
+		padding-top:2px;
+		padding-bottom:2px;
+		text-decoration: none;
+		}
+		#<?php echo $WidgetProperties->menuId; ?> li ol li a {
+			padding-top:2px;
+			padding-bottom:2px;
+		}
+		#<?php echo $WidgetProperties->menuId; ?> li.mega-hover a, #<?php echo $WidgetProperties->menuId; ?> li.mega-hover a:hover {
+		background: #ff0000;
+		color: #ffffff;
+		}
+		#<?php echo $WidgetProperties->menuId; ?> li a:hover {
+		background: #ff0000;
+		color: #ffffff;
+		}
+		#<?php echo $WidgetProperties->menuId; ?> li .sub-container {
+		position: absolute;
+		}
+
+		#<?php echo $WidgetProperties->menuId; ?> li .sub .row {
+		width: 100%;
+		overflow: hidden;
+		clear: both;
+		}
+		#<?php echo $WidgetProperties->menuId; ?> li .sub li {
+		list-style: none;
+		float: none;
+		width: 170px;
+		font-size: 1em;
+		font-weight: normal;
+		text-align:left;
+		}
+		#<?php echo $WidgetProperties->menuId; ?> li .sub li.mega-hdr {
+		margin: 0 10px 10px 0;
+		float: left;
+		}
+		#<?php echo $WidgetProperties->menuId; ?> li .sub li.mega-hdr.last {
+		margin-right: 0;
+		}
+		#<?php echo $WidgetProperties->menuId; ?> li .sub a {
+		background: none;
+		color: #111;
+		display: block;
+		float: none;
+		font-size: 0.9em;
+		}
+		#<?php echo $WidgetProperties->menuId; ?> li .sub li.mega-hdr a.mega-hdr-a {
+		margin-bottom: 5px;
+		text-transform: uppercase;
+		font-weight: bold;
+		color: #fff;
+		}
+		#<?php echo $WidgetProperties->menuId; ?> li .sub li.mega-hdr a.mega-hdr-a:hover {
+		color: #ffffff;
+		background:none;
+		}
+		#<?php echo $WidgetProperties->menuId; ?> .sub li.mega-hdr li a {
+		font-weight: normal;
+		}
+		#<?php echo $WidgetProperties->menuId; ?> .sub li.mega-hdr li a:hover {
+		color: #3e3e3e;
+		background: none;
+		}
+		#<?php echo $WidgetProperties->menuId; ?> li .sub li.mega-hdr ol li a:hover {
+			background:#3e3e3e;
+		}
+		#<?php echo $WidgetProperties->menuId; ?> .sub ol li {
+		padding-right: 0;
+		}
+		#<?php echo $WidgetProperties->menuId; ?> li .sub-container.non-mega .sub {
+		padding: 10px;
+		}
+		#<?php echo $WidgetProperties->menuId; ?> li .sub-container.non-mega li {
+		padding: 0;
+		width: 190px;
+		margin: 0;
+		}
+		#<?php echo $WidgetProperties->menuId; ?> li .sub-container.non-mega li a {
+		padding: 7px 5px 7px 22px;
+		}
+		#<?php echo $WidgetProperties->menuId; ?> li .sub-container.non-mega li a:hover {
+		color: #3e3e3e;
+		background: #ffffff;
+		}
+		#<?php echo $WidgetProperties->menuId; ?> .ui-state-active, #<?php echo $WidgetProperties->menuId; ?> .ui-state-hover, #<?php echo $WidgetProperties->menuId; ?> .ui-state-default{
+			border:0;
+			background:none;
+		}
+			<?php
+				$cssSource = ob_get_contents();
+				ob_end_clean();
+
+				$css = '/* Navigation Menu --BEGIN-- */' . "\n" . $cssSource.	'/* Navigation Menu --END-- */' . "\n";
+		}
 		return $css;
 	}
 
@@ -179,6 +316,17 @@ class InfoBoxNavigationMenu extends InfoBoxAbstract
 		$WidgetProperties = $this->loadLinkedSettings($this->getWidgetProperties());
 
 		ob_start();
+		if ($WidgetProperties->alwaysShow == 'true'){
+			readfile(sysConfig::getDirFsCatalog().'ext/jQuery/external/megamenu/jquery.hoverIntent.minified.js');
+			readfile(sysConfig::getDirFsCatalog().'ext/jQuery/external/megamenu/jquery.dcmegamenu.1.3.3.js');
+			?>
+		$('#<?php echo $WidgetProperties->menuId;?>').dcMegaMenu({
+		rowItems: '3',
+		speed: 'fast',
+		effect: 'slide'
+		});
+			<?php
+		}else{
 		?>
 	$('#<?php echo $WidgetProperties->menuId; ?>.ui-navigation-menu').each(function (){
 	<?php if ($WidgetProperties->forceFit == 'true'){ ?>
@@ -191,7 +339,6 @@ class InfoBoxNavigationMenu extends InfoBoxAbstract
 
 				if ($(this).children('ol').size() > 0){
 					var self = $(this);
-
 					$(this).find('ol:first').each(function (i, el){
 						var cssSettings = {
 							top: 0,
@@ -218,12 +365,10 @@ class InfoBoxNavigationMenu extends InfoBoxAbstract
 				}
 			}).mouseout(function (){
 				$(this).removeClass('ui-state-hover');
-
 				if ($(this).children('ol').size() > 0){
 					$(this).children('ol').hide();
 				}
 			});
-
 			if ($(this).find('.ui-icon:first').size() > 0){
 				$(this).find('.ui-icon:first').each(function (){
 					$(this).css({
@@ -258,7 +403,8 @@ class InfoBoxNavigationMenu extends InfoBoxAbstract
 		});
 		<?php } ?>
 	});
-	<?php
+
+		<?php }
  		$javascript = '/* Navigation Menu --BEGIN-- */' . "\n" .
 			ob_get_contents();
 		'/* Navigation Menu --END-- */' . "\n";
@@ -286,6 +432,7 @@ class InfoBoxNavigationMenu extends InfoBoxAbstract
 
 		$menuItems = '';
 		$this->firstAdded = false;
+		$this->firstAddedol = false;
 		if (isset($WidgetProperties->menuSettings)){
 			//echo '<pre>';print_r($boxWidgetProperties['menuSettings']);
 			$MenuSettings = array();
@@ -299,8 +446,11 @@ class InfoBoxNavigationMenu extends InfoBoxAbstract
 				$menuItems .= $this->parseMenuItem($mInfo, true, (!isset($MenuSettings[$k + 1])));
 			}
 		}
-
-		$this->setBoxContent('<div id="' . $WidgetProperties->menuId . '" class="ui-navigation-menu ui-widget ui-corner-all"><ol>' . $menuItems . '</ol></div>');
+		if($WidgetProperties->alwaysShow == 'false'){
+			$this->setBoxContent('<div id="' . $WidgetProperties->menuId . '" class="ui-navigation-menu ui-widget ui-corner-all"><ol>' . $menuItems . '</ol></div>');
+		}else{
+			$this->setBoxContent('<div class="ui-widget ui-corner-all"><ol id="'.$WidgetProperties->menuId.'" class="showAlwaysMenu">' . $menuItems . '</ol></div>');
+		}
 		return $this->draw();
 	}
 }

@@ -820,6 +820,12 @@ class ReservationUtilities {
 							data: $selfID.parent().find('.reservationTable *, .ui-widget-footer-box *, .pprButttons *').serialize(),
 							success: function (data) {
 								if (data.success == true) {
+									$selfID.find('.shippingTable').html(data.htmlShipping);
+									if ($selfID.find('input[name=rental_shipping]').size() > 0 && $selfID.find('input[name=rental_shipping]:checked').size() == 0) {
+										$selfID.find('input[name=rental_shipping]').each(function () {
+											$(this).trigger('click');
+										});
+									}
 									$selfID.parent().find('.priceQuote').html($('.rental_qty').val()+'X ('+data.price + ' ' + data.message+') ='+data.totalPrice);
 									$selfID.parent().find('.priceQuote').trigger('EventAfterPriceQuote');
 									if(isCatalog){
@@ -992,6 +998,12 @@ class ReservationUtilities {
 					data: $selfID.parent().find('.reservationTable *, .ui-widget-footer-box *, .pprButttons *').serialize(),//+'&price='+price,//isSemester=1&
 					success: function (data) {
 						if (data.success == true) {
+							$selfID.find('.shippingTable').html(data.htmlShipping);
+							if ($selfID.find('input[name=rental_shipping]').size() > 0 && $selfID.find('input[name=rental_shipping]:checked').size() == 0) {
+								$selfID.find('input[name=rental_shipping]').each(function () {
+									$(this).trigger('click');
+								});
+							}
 							$selfID.parent().find('.priceQuote').html($('.rental_qty').val()+'X ('+data.price + ' ' + data.message+') ='+data.totalPrice);
 							if(isCatalog){
 								$selfID.parent().find('.inCart').show();
@@ -1149,6 +1161,12 @@ class ReservationUtilities {
 							success: function (data) {
 								if (data.success == true) {
 									removeAjaxLoader($this);
+									$selfID.find('.shippingTable').html(data.htmlShipping);
+									if ($selfID.find('input[name=rental_shipping]').size() > 0 && $selfID.find('input[name=rental_shipping]:checked').size() == 0) {
+										$selfID.find('input[name=rental_shipping]').each(function () {
+											$(this).trigger('click');
+										});
+									}
 									$selfID.parent().find('.priceQuote').html($('.rental_qty').val()+'X ('+data.price + ' ' + data.message+') ='+data.totalPrice);
 									if(isCatalog){
 										$selfID.parent().find('.inCart').show();
@@ -1190,6 +1208,12 @@ class ReservationUtilities {
 					success: function (data) {
 						if (data.success == true) {
 							removeAjaxLoader($this);
+							$selfID.find('.shippingTable').html(data.htmlShipping);
+							if ($selfID.find('input[name=rental_shipping]').size() > 0 && $selfID.find('input[name=rental_shipping]:checked').size() == 0) {
+								$selfID.find('input[name=rental_shipping]').each(function () {
+									$(this).trigger('click');
+								});
+							}
 							$selfID.parent().find('.priceQuote').html($('.rental_qty').val()+'X ('+data.price + ' ' + data.message+') ='+data.totalPrice);
 							if(isCatalog){
 								$selfID.parent().find('.inCart').show();
@@ -1226,6 +1250,12 @@ class ReservationUtilities {
 					success: function (data) {
 						if (data.success == true) {
 							removeAjaxLoader($this);
+							$selfID.find('.shippingTable').html(data.htmlShipping);
+							if ($selfID.find('input[name=rental_shipping]').size() > 0 && $selfID.find('input[name=rental_shipping]:checked').size() == 0) {
+								$selfID.find('input[name=rental_shipping]').each(function () {
+									$(this).trigger('click');
+								});
+							}
 							$selfID.parent().find('.priceQuote').html($('.rental_qty').val()+'X ('+data.price + ' ' + data.message+') ='+data.totalPrice);
 							if(isCatalog){
 								$selfID.parent().find('.inCart').show();

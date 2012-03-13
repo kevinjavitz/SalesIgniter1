@@ -25,6 +25,10 @@
 		 $currentTypes = explode(',', $Product['products_type']);
 	 }
 
+	 if (isset($Product)){
+		 $currentAllowOverbooking = explode(',', $Product['allow_overbooking']);
+	 }
+
 
  	$pricingTabsObj = htmlBase::newElement('tabs')
  	->setId('pricingTabs');
@@ -37,15 +41,32 @@
 			$productTypeEnabled->setChecked(true);
 		}
 		$inputTable = htmlBase::newElement('table')
-				->setCellPadding(2)
-				->setCellSpacing(0);
+			->setCellPadding(2)
+			->setCellSpacing(0);
 
 		$inputTable->addBodyRow(array(
-		                             'columns' => array(
-			                             array('text' => sysLanguage::get('TEXT_PRODUCTS_ENABLED')),
-			                             array('text' => $productTypeEnabled->draw())
-		                             )
-		                        ));
+				'columns' => array(
+					array('text' => sysLanguage::get('TEXT_PRODUCTS_ENABLED')),
+					array('text' => $productTypeEnabled->draw())
+				)
+			));
+
+		if($pricingTypeName == 'new' || $pricingTypeName == 'used'){
+			$allowOverbookingeEnabled = htmlBase::newElement('checkbox')
+				->setName('allow_overbooking[]')
+				->setValue($pricingTypeName);
+
+			if (isset($currentAllowOverbooking) && in_array($pricingTypeName, $currentAllowOverbooking)){
+				$allowOverbookingeEnabled->setChecked(true);
+			}
+			$inputTable->addBodyRow(array(
+					'columns' => array(
+						array('text' => sysLanguage::get('TEXT_PRODUCTS_ALLOW_OVERBOOKING')),
+						array('text' => $allowOverbookingeEnabled->draw())
+					)
+			));
+		}
+
         if($pricingTypeName !== 'rental' && $pricingTypeName !== 'member_stream'){
 			$inputNet = htmlBase::newElement('input')->addClass('netPricing');
 			$inputGross = htmlBase::newElement('input')->addClass('grossPricing');

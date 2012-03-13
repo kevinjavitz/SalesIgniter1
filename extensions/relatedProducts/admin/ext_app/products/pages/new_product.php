@@ -94,7 +94,7 @@ class relatedProducts_admin_products_new_product extends Extension_relatedProduc
 			->from('ProductsRelatedGlobal ')
 			->where('type = "P"')
 			->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
-	
+	    $relatedProductsGlobal = '';
 		if (!empty($QrelatedGlobal)){  
             $relatedG = explode(',', $QrelatedGlobal[0]['related_global']);
 			//if($relatedG == '') 

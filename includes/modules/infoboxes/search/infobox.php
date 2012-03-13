@@ -91,10 +91,6 @@ class InfoBoxSearch extends InfoBoxAbstract {
 								'price_stop' => $sInfo['price_stop']
 							);
 							break;
-						case 'manufacturer':
-							$boxContents[$sInfo['option_type']]['heading'] = $heading;
-							$this->guidedSearchManufacturer(&$boxContents['manufacturer']['content'], isset($boxWidgetProperties->dropdown->manufacturer));
-							break;
 					}
 				}
 			}
@@ -267,43 +263,6 @@ class InfoBoxSearch extends InfoBoxAbstract {
 		}
 		if ($count > $this->searchItemDisplay){
 			$boxContent .= '<li class="searchShowMoreLink"><a href="#"><b>More</b></a></li>';
-		}
-	}
-	
-	private function guidedSearchManufacturer(&$boxContent){
-		$Qmanufacturers = Doctrine_Query::create()
-			->from('Manufacturers')
-			->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
-		if ($Qmanufacturers){
-			$count = 0;
-			foreach($Qmanufacturers as $mInfo){
-				$QproductCount = Doctrine_Query::create()
-					->select('count(*) as total')
-					->from('Products')
-					->where('manufacturers_id = ?', $mInfo['manufacturers_id'])
-					->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
-
-				$checkIcon = '<span class="ui-icon ui-icon-check" style="display:inline-block;height:14px;background:none;"></span>';
-				$link = itw_app_link(tep_get_all_get_params(array('manufacturers_id[' . $count . ']')) . 'manufacturers_id[' . $count . ']=' . $mInfo['manufacturers_id'], 'products', 'search_result');
-				if (isset($_GET['manufacturers_id'][$count])){
-					$checkIcon = '<span class="ui-icon ui-icon-check" style="display:inline-block;height:14px;"></span>';
-					$link = itw_app_link(tep_get_all_get_params(array('manufacturers_id[' . $count . ']')), 'products', 'search_result');
-				}
-				$icon = '<span class="ui-widget ui-widget-content ui-corner-all" style="margin-right:5px;">' .
-				        $checkIcon .
-				        '</span>';
-
-				$boxContent .= '<li style="padding-bottom:.3em;' . ($count > $this->searchItemDisplay ? 'display:none;' : '') . '">' .
-				               ' <a href="' . $link . '" data-url_param="manufacturers_id[' . $count . ']=' . $mInfo['manufacturers_id'] . '">' .
-				               $icon .
-				               $mInfo['manufacturers_name'] .
-				               '</a> (' . $QproductCount[0]['total'] . ')' .
-				               '</li>';
-				$count++;
-			}
-			if ($count > $this->searchItemDisplay){
-				$boxContent .= '<li class="searchShowMoreLink"><a href="#"><b>More</b></a></li>';
-			}
 		}
 	}
 

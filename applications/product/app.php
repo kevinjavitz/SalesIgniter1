@@ -32,6 +32,10 @@
 	if($_GET['tplDir'] == 'codeGenerator'){
 		Session::set('current_app_page', $_GET['products_id']);
 	}
+
+	if(!isset($_GET['products_id'])){
+		tep_redirect(itw_app_link(null,'index','default'));
+	}
 	
 	switch($App->getPageName()){
 		case 'info':

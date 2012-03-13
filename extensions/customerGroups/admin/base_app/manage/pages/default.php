@@ -57,8 +57,8 @@
 			if (isset($cInfo) && is_object($cInfo)) {
 				$infoBox->setHeader('<b>' . $cInfo->customer_groups_name . '</b>');
 				
-				$deleteButton = htmlBase::newElement('button')->setType('submit')->usePreset('delete')->setHref(itw_app_link(tep_get_all_get_params(array('action', 'cID')) . 'action=deleteConfirm&cID=' . $cInfo->customer_groups_id));
-				$editButton = htmlBase::newElement('button')->setType('submit')->usePreset('edit')
+				$deleteButton = htmlBase::newElement('button')->usePreset('delete')->setHref(itw_app_link(tep_get_all_get_params(array('action', 'cID')) . 'action=deleteConfirm&cID=' . $cInfo->customer_groups_id));
+				$editButton = htmlBase::newElement('button')->usePreset('edit')
 				->setHref(itw_app_link(tep_get_all_get_params(array('action', 'cID')) . 'cID=' . $cInfo->customer_groups_id, 'manage', 'new'));
 				
 				$infoBox->addButton($editButton)->addButton($deleteButton);

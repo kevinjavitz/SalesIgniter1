@@ -69,4 +69,60 @@
 		<value><![CDATA[0]]></value>
 		<description><![CDATA[Handling fee for this shipping method.]]></description>
 	</configuration>
+	<configuration>
+		<tab><![CDATA[General]]></tab>
+		<title><![CDATA[Fallback error national description]]></title>
+		<key><![CDATA[MODULE_ORDER_SHIPPING_USPS_NATIONAL_ERROR_DESC]]></key>
+		<value><![CDATA[National Cost]]></value>
+		<description><![CDATA[Fallback error national description]]></description>
+		<sort_order>8</sort_order>
+	</configuration>
+
+	<configuration>
+		<tab><![CDATA[General]]></tab>
+		<title><![CDATA[Fallback error national cost]]></title>
+		<key><![CDATA[MODULE_ORDER_SHIPPING_USPS_NATIONAL_ERROR_COST]]></key>
+		<value><![CDATA[0]]></value>
+		<description><![CDATA[Fallback error national cost]]></description>
+		<sort_order>8</sort_order>
+	</configuration>
+
+	<configuration>
+		<tab><![CDATA[General]]></tab>
+		<title><![CDATA[Fallback error international description]]></title>
+		<key><![CDATA[MODULE_ORDER_SHIPPING_USPS_INTNATIONAL_ERROR_DESC]]></key>
+		<value><![CDATA[National Cost]]></value>
+		<description><![CDATA[Fallback error international description]]></description>
+		<sort_order>8</sort_order>
+	</configuration>
+
+	<configuration>
+		<tab><![CDATA[General]]></tab>
+		<title><![CDATA[Fallback error international cost]]></title>
+		<key><![CDATA[MODULE_ORDER_SHIPPING_USPS_INTNATIONAL_ERROR_COST]]></key>
+		<value><![CDATA[0]]></value>
+		<description><![CDATA[Fallback error international cost]]></description>
+		<sort_order>8</sort_order>
+	</configuration>
+
+	<configuration>
+		<tab><![CDATA[General]]></tab>
+		<title><![CDATA[Select Allowable Shipping Types]]></title>
+		<key><![CDATA[MODULE_ORDER_SHIPPING_USPS_TYPES]]></key>
+		<value><![CDATA[0]]></value>
+		<description><![CDATA[Select Allowable ShippingTypes]]></description>
+		<sort_order>8</sort_order>
+		<set_function>tep_cfg_select_multioption(array('EXPRESS','FIRST CLASS','PRIORITY','PARCEL','MEDIA','BPM','LIBRARY'),</set_function>
+	</configuration>
+
+	<configuration>
+		<tab><![CDATA[General]]></tab>
+		<title><![CDATA[Select Allowable International Shipping Types]]></title>
+		<key><![CDATA[MODULE_ORDER_SHIPPING_USPS_INTL_TYPES]]></key>
+		<value><![CDATA[0]]></value>
+		<description><![CDATA[Select Allowable International Shipping Types]]></description>
+		<sort_order>8</sort_order>
+		<set_function>tep_cfg_select_multioption(array('Global Express','Global Express Non-Doc Rect','Global Express Non-Doc Non-Rect','Global Express Envelopes','Express Mail Int','Express Mail Int Flat Rate Env','Priority Mail International','Priority Mail Int Flat Rate Env','Priority Mail Int Flat Rate Box','Priority Mail Int Flat Rate Small Box','Priority Mail Int Flat Rate Med Box','Priority Mail Int Flat Rate Lrg Box','First Class Mail Int Lrg Env','First Class Mail Int Package','First Class Mail Int Letter'),</set_function>
+	</configuration>
+
 </configurations>

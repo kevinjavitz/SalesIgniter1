@@ -57,8 +57,36 @@
 			<value>Lightbox</value>
 			<description>Show pictures in gallery as slideshow or as lightbox</description>
 			<sort_order>1</sort_order>
-			<set_function>tep_cfg_select_option(array('Lightbox','Slideshow'),</set_function>
+			<set_function>tep_cfg_select_option(array('Lightbox','Slideshow','SlideshowNivo'),</set_function>
 		</EXTENSION_PHOTO_GALLERY_DISPLAY_TYPE>
+		<EXTENSION_PHOTO_GALLERY_SHOW_SUBCATEGORY_IMAGES>
+			<title>Show Subcategory Images</title>
+			<value>True</value>
+			<description>Show subcategory Images</description>
+			<sort_order>1</sort_order>
+			<set_function>tep_cfg_select_option(array('True','False'),</set_function>
+		</EXTENSION_PHOTO_GALLERY_SHOW_SUBCATEGORY_IMAGES>
+		<EXTENSION_PHOTO_GALLERY_NUMBER_ROWS_SUBCATEGORY>
+			<title>How many rows per subcategories</title>
+			<value>2</value>
+			<description>How many rows per subcategories</description>
+			<sort_order>1</sort_order>
+			<set_function>tep_cfg_select_option(array('2','3','4','6'),</set_function>
+		</EXTENSION_PHOTO_GALLERY_NUMBER_ROWS_SUBCATEGORY>
+		<EXTENSION_PHOTO_GALLERY_SHOW_PAGING>
+			<title>Show Paging</title>
+			<value>True</value>
+			<description>Show Paging</description>
+			<sort_order>1</sort_order>
+			<set_function>tep_cfg_select_option(array('True','False'),</set_function>
+		</EXTENSION_PHOTO_GALLERY_SHOW_PAGING>
+		<EXTENSION_PHOTO_GALLERY_SHOW_BUTTON>
+			<title>Show Button</title>
+			<value>True</value>
+			<description>Show Button</description>
+			<sort_order>1</sort_order>
+			<set_function>tep_cfg_select_option(array('True','False'),</set_function>
+		</EXTENSION_PHOTO_GALLERY_SHOW_BUTTON>
 
 	</Configuration>
 </ConfigurationGroup> 

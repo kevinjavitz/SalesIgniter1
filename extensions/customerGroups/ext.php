@@ -22,8 +22,36 @@ class Extension_customerGroups extends ExtensionBase {
 		EventManager::attachEvents(array(
 			'PurchaseTypeAfterSetup',
 			'ProductQueryAfterExecute',
-			'ReservationPriceBeforeSetup'
+			'ReservationPriceBeforeSetup',
+			'ProductListingQueryBeforeExecute'
 		), null, $this);
+	}
+
+	public function ProductListingQueryBeforeExecute(&$productQuery){
+		global $userAccount;
+		$cID = '-1';
+		if ($userAccount->isLoggedIn() === false){
+			$cID = '-1';
+		}else{
+
+			$custID = $userAccount->getCustomerId();
+
+
+			if(isset($cID)){
+				$QCustomers = Doctrine_Query::create()
+					->from('CustomerGroups c')
+					->leftJoin('c.CustomersToCustomerGroups cg')
+					->where('cg.customers_id=?',(int)$custID)
+					->execute(array(),Doctrine_Core::HYDRATE_ARRAY);
+
+				if(count($QCustomers) > 0){
+					$cID = $QCustomers[0]['customer_groups_id'];
+				}
+			}
+		}
+
+		$productQuery->leftJoin('p.ProductsToCustomerGroups p2cg')
+		->andWhere('p2cg.customer_groups_id != '.$cID.' or p2cg.customer_groups_id is null');
 	}
 
 	public function PurchaseTypeAfterSetup(&$productInfo){

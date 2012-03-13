@@ -113,6 +113,15 @@ class StoresPricing extends Doctrine_Record {
 				'notnull'       => true,
 				'autoincrement' => false
 			));
+		$this->hasColumn('allow_overbooking', 'string', 255, array(
+				'type'          => 'string',
+				'length'        => 255,
+				'fixed'         => false,
+				'primary'       => false,
+				'default'       => '',
+				'notnull'       => true,
+				'autoincrement' => false
+			));
 		
 		$this->hasColumn('stores_id', 'integer', 4, array(
 			'type'          => 'integer',

@@ -116,7 +116,6 @@ RewriteCond %{REQUEST_FILENAME} !-l
 # Ultimate SEO URLs BEGIN
 RewriteRule ^(.*)-p-([0-9]+).html$ product_info.php?products_id=$2&%{QUERY_STRING}
 RewriteRule ^(.*)-c-([0-9_]+).html$ index.php?cPath=$2&%{QUERY_STRING}
-RewriteRule ^(.*)-m-([0-9]+).html$ index.php?manufacturers_id=$2&%{QUERY_STRING}
 RewriteRule ^(.*)-pi-([0-9]+).html$ popup_image.php?pID=$2&%{QUERY_STRING}
 RewriteRule ^(.*)-t-([0-9_]+).html$ articles.php?tPath=$2&%{QUERY_STRING}
 RewriteRule ^(.*)-a-([0-9]+).html$ article_info.php?articles_id=$2&%{QUERY_STRING}
