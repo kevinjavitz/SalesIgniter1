@@ -155,7 +155,7 @@ class InfoBoxNavigationMenu extends InfoBoxAbstract
 
 	public function buildStylesheet() {
 		$WidgetProperties = $this->loadLinkedSettings($this->getWidgetProperties());
-		if ($WidgetProperties->alwaysShow == 'false'){
+		if ($WidgetProperties->alwaysShow == 'false' || !isset($WidgetProperties->alwaysShow)){
 		$css = '/* Navigation Menu --BEGIN-- */' . "\n" .
 			'.ui-navigation-menu { position:relative;background-color:transparent;border: none;line-height:inherit;font-size:inherit; }' . "\n" .
 			'.ui-navigation-menu ol { background-color:transparent;list-style:none;padding:0;margin:0;border:none;line-height:inherit;z-index: 100; }' . "\n" .
@@ -316,7 +316,7 @@ class InfoBoxNavigationMenu extends InfoBoxAbstract
 		$WidgetProperties = $this->loadLinkedSettings($this->getWidgetProperties());
 
 		ob_start();
-		if ($WidgetProperties->alwaysShow == 'true'){
+		if (isset($WidgetProperties->alwaysShow) && $WidgetProperties->alwaysShow == 'true'){
 			readfile(sysConfig::getDirFsCatalog().'ext/jQuery/external/megamenu/jquery.hoverIntent.minified.js');
 			readfile(sysConfig::getDirFsCatalog().'ext/jQuery/external/megamenu/jquery.dcmegamenu.1.3.3.js');
 			?>
@@ -446,7 +446,7 @@ class InfoBoxNavigationMenu extends InfoBoxAbstract
 				$menuItems .= $this->parseMenuItem($mInfo, true, (!isset($MenuSettings[$k + 1])));
 			}
 		}
-		if($WidgetProperties->alwaysShow == 'false'){
+		if($WidgetProperties->alwaysShow == 'false' || !isset($WidgetProperties->alwaysShow)){
 			$this->setBoxContent('<div id="' . $WidgetProperties->menuId . '" class="ui-navigation-menu ui-widget ui-corner-all"><ol>' . $menuItems . '</ol></div>');
 		}else{
 			$this->setBoxContent('<div class="ui-widget ui-corner-all"><ol id="'.$WidgetProperties->menuId.'" class="showAlwaysMenu">' . $menuItems . '</ol></div>');
