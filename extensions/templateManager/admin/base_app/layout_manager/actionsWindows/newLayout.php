@@ -30,7 +30,7 @@ if (isset($_GET['lID'])){
 		$layouts = explode(',', $sInfo['layout_id']);
 		$pageType = explode(',', $sInfo['page_type']);
 		$assocurls = explode(',', $sInfo['associative_url']);
-		if (in_array($layoutId, $layouts)){
+		if (in_array($layoutId, $layouts) && !empty($pageType) && !empty($assocurls)){
 			if (!empty($sInfo['extension'])){
 				$selApps['ext'][$sInfo['extension']][$sInfo['application']][$sInfo['page']] = true;
 				$pageTypes['ext'][$sInfo['extension']][$sInfo['application']][$sInfo['page']] = $pageType[array_search($layoutId,$layouts)];

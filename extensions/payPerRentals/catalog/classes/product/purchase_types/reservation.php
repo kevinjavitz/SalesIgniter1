@@ -924,7 +924,7 @@ class PurchaseType_reservation extends PurchaseTypeAbstract {
 		if (sysConfig::get('EXTENSION_PAY_PER_RENTALS_SAVE_TERMS') == 'True'){
 			$infoPages = $appExtension->getExtension('infoPages');
 			$termInfoPage = $infoPages->getInfoPage('conditions');
-			$terms .= $termInfoPage['PagesDescription'][Session::get('languages_id')]['pages_html_text'];
+			$terms .= str_replace("\r",'',str_replace("\n",'',str_replace("\r\n",'',$termInfoPage['PagesDescription'][Session::get('languages_id')]['pages_html_text'])));
 			 if(sysConfig::get('TERMS_INITIALS') == 'true' && Session::exists('agreed_terms')){
 				 $terms .= '<br/>Initials: '. Session::get('agreed_terms');
 			 }
