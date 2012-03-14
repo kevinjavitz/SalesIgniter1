@@ -100,11 +100,14 @@ class infoBoxCategories extends InfoBoxAbstract {
 					$childLinkEl = htmlBase::newElement('a')
 					->addClass('ui-widget ui-widget-content ui-corner-all')
 					->css('border-color', 'transparent')
-					->html('<span class="ui-icon ui-icon-triangle-1-e ui-icon-categories-bullet" style="vertical-align:middle;"></span><span class="ui-categories-text" style="vertical-align:middle;">'.sysLanguage::get('INFOBOX_CATEGORIES_VIEW_PRODUCTS').'</span>')
+					->html('<span class="ui-icon ui-icon-triangle-1-e ui-icon-categories-bullet issingle" style="vertical-align:middle;"></span><span class="ui-categories-text" style="vertical-align:middle;">'.sysLanguage::get('INFOBOX_CATEGORIES_VIEW_PRODUCTS').'</span>')
 					->setHref(itw_app_link(null, 'index', $categoryId));
 
 					$liElement = htmlBase::newElement('li')
-					->append($childLinkEl);
+					->append($childLinkEl)
+					->css(array(
+						'display' => 'none'
+						));
 					$ulElement->addItemObj($liElement);
 				}
 				$flyoutContainer->append($ulElement);
@@ -127,7 +130,8 @@ class infoBoxCategories extends InfoBoxAbstract {
 			header: 'h3',
 		collapsible: true,
 		autoHeight: false,
-		active: $('.currentCategory', $('.categoriesBoxMenu')),
+		active:$('.categoriesBoxMenu h3.selected'),
+		collapsible: true,
 		icons: {
 				header: 'ui-icon-circle-triangle-s',
 				headerSelected: 'ui-icon-circle-triangle-n'
@@ -165,12 +169,16 @@ class infoBoxCategories extends InfoBoxAbstract {
 	$('.categoriesBoxMenu li a.selected').each(function() {
 			var li = $(this);
 			$('.categoriesBoxMenu').accordion("activate",li.parent().parent().parent().prev());
+	});
+
+	$('.categoriesBoxMenu .issingle').each(function() {
+		var h3 = $(this).parent().parent().parent().parent().prev();
+		var self = $(this);
+		h3.click(function (){
+			document.location = self.parent().attr('href');
 		});
 
-	$('.categoriesBoxMenu h3.selected').each(function() {
-			var h3 = $(this);
-			$('.categoriesBoxMenu').accordion("activate", h3);
-		});
+	});
 		<?php
 		$javascript = ob_get_contents();
 		ob_end_clean();

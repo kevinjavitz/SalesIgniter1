@@ -10,6 +10,7 @@
 $layoutName = '';
 $layoutType = 'desktop';
 $selApps = array();
+$pageTypes = array();
 if (isset($_GET['lID'])){
 	$QLayout = Doctrine_Query::create()
 	->select('layout_id, layout_name, layout_type')
@@ -391,11 +392,11 @@ foreach($AppArray as $appName => $aInfo){
 			}
 			$rentalMemberCheckbox
 					->setName('pagetype[' . $appName . '][' . $pageName . ']')
-					->setChecked(($pageTypes[$appName][$pageName] == 'R') ? true : false);
+					->setChecked((isset($pageTypes[$appName][$pageName]) && $pageTypes[$appName][$pageName] == 'R') ? true : false);
 
 			$nonRentalMemberCheckbox
 					->setName('pagetype[' . $appName . '][' . $pageName . ']')
-					->setChecked(($pageTypes[$appName][$pageName] == 'N') ? true : false);
+					->setChecked((isset($pageTypes[$appName][$pageName]) && $pageTypes[$appName][$pageName] == 'N') ? true : false);
 
 			$checkboxes .= '<div style="margin: 0 0 0 1em;"><input class="pageBox" type="checkbox" name="applications[' . $appName . '][]" value="' . $pageName . '"' . ($pageChecked === true ? ' checked="checked"' : '') . '> ' . $pageName1;
 			$checkboxes .= '&nbsp;&nbsp;&nbsp;'.$nonRentalMemberCheckbox->draw();
@@ -432,11 +433,11 @@ foreach($AppArray['ext'] as $ExtName => $eInfo){
 			foreach($aInfo as $pageName => $pageChecked){
 				$rentalMemberCheckbox
 						->setName('pagetype[ext][' . $ExtName . '][' . $appName . '][' . $pageName . ']')
-						->setChecked(($pageTypes['ext'][$ExtName][$appName][$pageName] == 'R') ? true : false);
+						->setChecked((isset($pageTypes['ext'][$ExtName][$appName][$pageName]) && $pageTypes['ext'][$ExtName][$appName][$pageName] == 'R') ? true : false);
 
 				$nonRentalMemberCheckbox
 						->setName('pagetype[ext][' . $ExtName . '][' . $appName . '][' . $pageName . ']')
-						->setChecked(($pageTypes['ext'][$ExtName][$appName][$pageName] == 'N') ? true : false);
+						->setChecked((isset($pageTypes['ext'][$ExtName][$appName][$pageName]) && $pageTypes['ext'][$ExtName][$appName][$pageName] == 'N') ? true : false);
 
 				$checkboxes .= '<div style="margin: 0 0 0 1em;"><input type="checkbox" class="pageBox" name="applications[ext][' . $ExtName . '][' . $appName . '][]" value="' . $pageName . '"' . ($pageChecked === true ? ' checked="checked"' : '') . '> ' . $pageName;
 				$checkboxes .= '&nbsp;&nbsp;&nbsp;'.$nonRentalMemberCheckbox->draw();
