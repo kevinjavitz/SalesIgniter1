@@ -168,6 +168,7 @@ $(document).ready(function (){
    	foreach($inventoryControllers as $k => $v){
    		echo htmlBase::newElement('radio')
    		->setName('products_inventory_controller')
+		->addClass('invController')
    		->setChecked($Product['products_inventory_controller'] == $k)
    		->val($k)
    		->setLabel('Use ' . $v['text'] . ' Based Inventory')
@@ -222,14 +223,14 @@ $(document).ready(function (){
 			));
 
 			$inventoryTypeTabs->addTabHeader('inventory_tab_' . $controllerName . '_tabs_' . $purchaseType, array(
-				'text' => $typeName
+				'text' => $typeName,'addCls' =>'cls'.$typeName
 			))->addTabPage('inventory_tab_' . $controllerName . '_tabs_' . $purchaseType, array(
 				'text' => $purchaseTypeTabPageContent
 			));
 		}
 
 		$inventoryControllerTabs->addTabHeader('inventory_tab_' . $controllerName, array(
-			'text' => $controllerSettings['text'] . ' Based'
+			'text' => $controllerSettings['text'] . ' Based','addCls' => 'clst'. $controllerName
 		))->addTabPage('inventory_tab_' . $controllerName, array(
 			'text' => $baseTabPageContent . $inventoryTypeTabs->draw()
 		));
