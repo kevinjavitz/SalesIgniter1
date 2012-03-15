@@ -2,6 +2,7 @@
 	$QwhosOnline = Doctrine_Query::create()
 	->select('customer_id, full_name, ip_address, time_entry, time_last_click, last_page_url, http_referer, user_agent, session_id')
 	->from('WhosOnline')
+	->groupBy('ip_address')
 	->orderBy('time_last_click DESC');
 
 	$tableGrid = htmlBase::newElement('newGrid')

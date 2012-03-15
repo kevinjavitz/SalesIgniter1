@@ -34,7 +34,7 @@
 	<define key="TEXT_OSCID"><![CDATA[osCsid]]></define>
 	<define key="TEXT_PROFILE_DISPLAY"><![CDATA[Profile Display]]></define>
 	<define key="TEXT_USER_AGENT"><![CDATA[User Agent]]></define>
-	<define key="TEXT_ERROR"><![CDATA[Error!]]></define>
+	<define key="TEXT_ERROR"><![CDATA[Not Logged In]]></define>
 	<define key="TEXT_ADMIN"><![CDATA[Admin]]></define>
 	<define key="TEXT_DUPLICATE_IP"><![CDATA[Duplicate(s) IP(s)]]></define>
 	<define key="TEXT_BOTS"><![CDATA[Bot(s)]]></define>
