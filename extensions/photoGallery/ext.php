@@ -13,7 +13,14 @@
 	class Extension_photoGallery extends ExtensionBase {
 
 		public function __construct() {
+			global $App;
 			parent::__construct('photoGallery');
+
+			if($App->getEnv() == 'catalog' && isset($_GET['appExt']) && $_GET['appExt'] == 'photoGallery' && is_numeric($_GET['appPage'])){
+				$_GET['catId'] = $_GET['appPage'];
+				$App->setAppPage('show_category');
+			}
+
 		}
 
 		public function init() {

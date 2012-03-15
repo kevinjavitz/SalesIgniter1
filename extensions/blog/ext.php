@@ -17,23 +17,50 @@
 		}
 
 		public function init() {
-			global $App, $appExtension, $Template, $blog_cPath, $blog_cPath_array, $current_blog_category_id;
+			global $App;
 			if ($this->enabled === false) return;
 
-			//blog_category_path
-			if (isset($_GET['blog_cPath'])) {
-				$blog_cPath = $_GET['blog_cPath'];
-			} else {
-				$blog_cPath = '';
+			//load extenders
+			$this->extenders = array();
+			$dirIterate = new DirectoryIterator(sysConfig::getDirFsCatalog()  . 'extensions/blog/data/extender/');
+			$directories = array();
+			foreach($dirIterate as $fileObj){
+				if ($fileObj->isDot() || $fileObj->isFile()){
+					continue;
+				}
+
+				$directories[] = array(
+					'path' => $fileObj->getPath(),
+					'basename' => $fileObj->getBasename()
+				);
 			}
 
-			if (tep_not_null($blog_cPath)) {
-				$blog_cPath_array = tep_parse_blog_category_path($blog_cPath);
-				$blog_cPath = implode('_', $blog_cPath_array);
-				$current_blog_category_id = $blog_cPath_array[(sizeof($blog_cPath_array)-1)];
-			} else {
-				$current_blog_category_id = 0;
+			foreach($directories as $dirInfo){
+
+				if(file_exists(sysConfig::getDirFsCatalog()  . 'extensions/blog/data/extender/'.$dirInfo['basename'].'/fields.xml')){
+					$extenderXml = simplexml_load_file(sysConfig::getDirFsCatalog()  .'extensions/blog/data/extender/'.$dirInfo['basename'].'/fields.xml');
+
+					$this->extenders[(string)$extenderXml->info->key]['title'] = (string)$extenderXml->info->title;
+					$fields = array();
+					foreach($extenderXml->fields->field as $field){
+						$fields[(string)$field->name]['type'] = (string)$field->type;
+						$fields[(string)$field->name]['table'] = (string)$field->table;
+						$fields[(string)$field->name]['realtype'] = (string)$field->realtype;
+						$fields[(string)$field->name]['showName'] = (string)$field->showName;
+						$fields[(string)$field->name]['default'] = (string)$field->default;
+						$fields[(string)$field->name]['showFunction'] = (string)$field->showFunction;
+						$fields[(string)$field->name]['searchFunction'] = (string)$field->searchFunction;
+					}
+					$this->extenders[(string)$extenderXml->info->key]['fields'] = $fields;
+
+				}
+
 			}
+
+			//in the menu add for every key a menu for categories and posts
+			//filter by key the posts
+			//in the new category show new fields for fields in the key array and get the default data from the extra_field
+			//the same in new posts
 
 			if (isset($_GET['appExt']) && $_GET['appExt'] == 'blog'){
 				if ($App->getAppName() == 'show_category'){
@@ -47,13 +74,38 @@
 					'name'     => 'HeaderTagsBeforeOutput',
 					'function' => $eventFunction
 				), null, $this);
+				if ($App->getEnv() == 'catalog' && isset($_GET['appExt']) && $_GET['appExt'] == 'blog' && $_GET['app'] == 'show_category' ){
+					$App->setAppPage('default');
+					$_GET['actualPage'] = $_GET['appPage'];
+				}
 			}
 
 			EventManager::attachEvents(array(
 				'PageLeftColumnBeforeInfobox',
 				'PageRightColumnBeforeInfobox',
+				'BoxModulesAddLink',
 				'PageLayoutHeaderCustomMeta'
 			), null, $this);
+		}
+
+		public function BoxModulesAddLink(&$contents){
+			$subChildren = array();
+
+			foreach($this->extenders as $key => $fields){
+				$subChildren[] = array('link' => false,
+									'text' => $fields['title'],
+									'children' => array(array('link' => itw_app_link('appExt=blog&key='.$key,'blog_categories','default','SSL'), 'text' => 'Categories'),
+														array('link' => itw_app_link('appExt=blog&key='.$key,'blog_posts','default','SSL'), 'text' => 'Posts'))
+				);
+
+			}
+			if(count($subChildren) > 0){
+				$contents['children'][] = array(
+					'link' => false,
+					'text' => 'Blog Extenders',
+					'children' => $subChildren
+				);
+			}
 		}
 
 		public function getCategoryHeaderTitle($seo_title){
@@ -196,7 +248,7 @@
 			}
 		}
 
-		public function getCategories($languageId = null) {
+		public function getCategories($languageId = null, $parent = -1) {
 			global $appExtension;
 
 			if (!isset($this->checkMultiStore)){
@@ -226,12 +278,16 @@
 				->andWhere('pc.stores_id = ?', (int) Session::get('current_store_id'));
 			}
 
+			if($parent > -1){
+				$Query->where('c.parent_id = ?', (int) $parent);
+			}
+
 			$Result = $Query->execute();
 
 			return $Result;
 		}
 
-		public function getCategoriesPosts($languageId = null, $seo_cat = null, $pg_limit, $pg, &$pagerBar) {
+		public function getCategoriesPosts($languageId = null, $seo_cat = null, $pg_limit, $pg, &$pagerBar, $categ = -1) {
 			global $appExtension;
 
 			if (!isset($this->checkMultiStore)){
@@ -265,6 +321,10 @@
 			} else{
 				$Query->andWhere('pd.language_id = ?', (int) Session::get('languages_id'));
 				$Query->andWhere('cd.language_id = ?', (int) Session::get('languages_id'));
+			}
+
+			if($categ > -1){
+				$Query->andWhere('cc.blog_categories_id = ?', $categ);
 			}
 
 			if ($this->checkMultiStore === true){
@@ -307,7 +367,6 @@
 			}
 
 			$Query = Doctrine_Query::create()
-				->select('p.*, pd.*')
 				->from('BlogPosts p')
 				->leftJoin('p.BlogPostsDescription pd')
 				->leftJoin('p.BlogPostToCategories c')
@@ -328,8 +387,7 @@
 			}
 
 			if ($this->checkMultiStore === true){
-				$Query->addSelect('ps.*')
-					->leftJoin('cc.BlogCategoriesToStores ps')
+				$Query->leftJoin('cc.BlogCategoriesToStores ps')
 					->andWhere('ps.stores_id = ?', (int) Session::get('current_store_id'));
 			}
 
@@ -638,43 +696,6 @@
 		}
 	}
 
-	function tep_get_blog_path($current_category_id = '') {
-		global $blog_cPath_array;
-
-		if (tep_not_null($current_category_id)) {
-			$cp_size = sizeof($blog_cPath_array);
-			if ($cp_size == 0) {
-				$blog_cPath_new = $current_category_id;
-			} else {
-				$blog_cPath_new = '';
-				$last_category_query = tep_db_query("select parent_id from blog_categories where blog_categories_id = '" . (int)$blog_cPath_array[($cp_size-1)] . "'");
-				$last_category = tep_db_fetch_array($last_category_query);
-
-				$current_category_query = tep_db_query("select parent_id from blog_categories where blog_categories_id = '" . (int)$current_category_id . "'");
-				$current_category = tep_db_fetch_array($current_category_query);
-
-				if ($last_category['parent_id'] == $current_category['parent_id']) {
-					for ($i=0; $i<($cp_size-1); $i++) {
-						$blog_cPath_new .= '_' . $blog_cPath_array[$i];
-					}
-				} else {
-					for ($i=0; $i<$cp_size; $i++) {
-						$blog_cPath_new .= '_' . $blog_cPath_array[$i];
-					}
-				}
-				$blog_cPath_new .= '_' . $current_category_id;
-
-				if (substr($blog_cPath_new, 0, 1) == '_') {
-					$blog_cPath_new = substr($blog_cPath_new, 1);
-				}
-			}
-		} else {
-			$blog_cPath_new = implode('_', $blog_cPath_array);
-		}
-
-		return 'blog_cPath=' . $blog_cPath_new;
-	}
-
 	function tep_get_blog_category_tree($parent_id = '0', $spacing = '', $exclude = '', $category_tree_array = '', $include_itself = false) {
 		if (!is_array($category_tree_array)) $category_tree_array = array();
 		if ( (sizeof($category_tree_array) < 1) && ($exclude != '0') ) $category_tree_array[] = array('id' => '0', 'text' => sysLanguage::get('TEXT_TOP'));
@@ -692,22 +713,6 @@
 		}
 
 		return $category_tree_array;
-	}
-
-	function tep_parse_blog_category_path($cPath) {
-		// make sure the category IDs are integers
-		$blog_cPath_array = array_map('tep_string_to_int', explode('_', $cPath));
-
-		// make sure no duplicate category IDs exist which could lock the server in a loop
-		$tmp_array = array();
-		$n = sizeof($blog_cPath_array);
-		for ($i=0; $i<$n; $i++) {
-			if (!in_array($blog_cPath_array[$i], $tmp_array)) {
-				$tmp_array[] = $blog_cPath_array[$i];
-			}
-		}
-
-		return $tmp_array;
 	}
 
 

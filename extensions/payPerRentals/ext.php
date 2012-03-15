@@ -89,18 +89,24 @@ class Extension_payPerRentals extends ExtensionBase {
 		$selectedMethod = '';
 		$Module = OrderShippingModules::getModule('zonereservation', true);
 		if($Module->getType() == 'Order' && sysConfig::get('EXTENSION_PAY_PER_RENTALS_USE_ONE_SHIPPING_METHOD') == 'False'){
+			$totalPrice = 0;
 			foreach($ShoppingCart->getProducts() as $cartProduct) {
 						if ($cartProduct->hasInfo('reservationInfo') === true){
 							$reservationInfo1 = $cartProduct->getInfo('reservationInfo');
 							if(isset($reservationInfo1['shipping']) && isset($reservationInfo1['shipping']['module']) && $reservationInfo1['shipping']['module'] == 'zonereservation'){
 								$selectedMethod = $reservationInfo1['shipping']['id'];
 								$weight += $cartProduct->getWeight();
+								$cost = 0;
+								if(isset($reservationInfo1['shipping']['cost'])){
+									$cost = $reservationInfo1['shipping']['cost'];
+								}
+								$totalPrice += $cartProduct->getFinalPrice(true) * $cartProduct->getQuantity() - $cost * $cartProduct->getQuantity();
 							}
 						}
 			}
 
 
-			$quotes = array($Module->quote($selectedMethod, $weight));
+			$quotes = array($Module->quote($selectedMethod, $weight, $totalPrice));
 
 
 			$onePageCheckout->onePage['info']['reservationshipping'] = array(
@@ -300,29 +306,36 @@ class Extension_payPerRentals extends ExtensionBase {
 	}
 
 	public function ShoppingCartFind(&$cartProduct, &$returnVal){
-
-		if($cartProduct->hasInfo('reservationInfo') && isset($_POST['start_date']) && isset($_POST['end_date'])){
-			    $pInfo = $cartProduct->getInfo('reservationInfo');
-				if(($pInfo['start_date'] == $_POST['start_date']) && ($pInfo['end_date'] == $_POST['end_date'])){
-					$returnVal = true;
-				}else{
-					$returnVal = false;
-				}
+		if(sysConfig::get('EXTENSION_PAY_PER_RENTALS_USE_ONE_SHIPPING_METHOD') == 'True'){
+			$returnVal = true;
+		}else{
+			if($cartProduct->hasInfo('reservationInfo') && isset($_POST['start_date']) && isset($_POST['end_date'])){
+					$pInfo = $cartProduct->getInfo('reservationInfo');
+					if(($pInfo['start_date'] == $_POST['start_date']) && ($pInfo['end_date'] == $_POST['end_date'])){
+						$returnVal = true;
+					}else{
+						$returnVal = false;
+					}
+			}
 		}
 
 	}
 
 	public function ShoppingCartFindKey($iProduct, &$cartProduct, &$returnVal){
-		if($cartProduct->hasInfo('reservationInfo')){
-			$returnVal = false;
-				if($iProduct->hasInfo('reservationInfo')){
-					$pInfo = $cartProduct->getInfo('reservationInfo');
-					$qInfo = $iProduct->getInfo('reservationInfo');
-					if(($pInfo['start_date'] == $qInfo['start_date']) && ($pInfo['end_date'] == $qInfo['end_date'])){
-						$returnVal = true;
+		if(sysConfig::get('EXTENSION_PAY_PER_RENTALS_USE_ONE_SHIPPING_METHOD') == 'True'){
+			$returnVal = true;
+		}else{
+			if($cartProduct->hasInfo('reservationInfo')){
+				$returnVal = false;
+					if($iProduct->hasInfo('reservationInfo')){
+						$pInfo = $cartProduct->getInfo('reservationInfo');
+						$qInfo = $iProduct->getInfo('reservationInfo');
+						if(($pInfo['start_date'] == $qInfo['start_date']) && ($pInfo['end_date'] == $qInfo['end_date'])){
+							$returnVal = true;
+						}
 					}
-				}
 
+			}
 		}
 
 	}

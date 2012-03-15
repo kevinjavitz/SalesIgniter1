@@ -64,7 +64,7 @@ $(document).ready(function (){
 	});
 
 	 $('#printOrder').live('click', function(){
-		window.print();
+		//window.print();
 	 });
 
      $('input[name="qty"]').live('change',function () {

@@ -19,6 +19,10 @@ class ProductsInventoryBarcodesToInventoryCenters extends Doctrine_Record {
 			'local'   => 'inventory_center_id',
 			'foreign' => 'inventory_center_id'
 		));
+		$this->hasOne('ProductsInventoryBarcodes', array(
+				'local'   => 'barcode_id',
+				'foreign' => 'barcode_id'
+		));
 	}
 	
 	public function setUpParent(){

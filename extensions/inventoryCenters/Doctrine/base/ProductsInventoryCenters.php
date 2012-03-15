@@ -118,6 +118,30 @@ class ProductsInventoryCenters extends Doctrine_Record {
 			'autoincrement' => false,
 		));
 
+		$this->hasColumn('inventory_center_details', 'string', null, array(
+				'type'          => 'string',
+				'fixed'         => false,
+				'primary'       => false,
+				'notnull'       => true,
+				'autoincrement' => false,
+			));
+
+		$this->hasColumn('inventory_center_short_details', 'string', null, array(
+				'type'          => 'string',
+				'fixed'         => false,
+				'primary'       => false,
+				'notnull'       => true,
+				'autoincrement' => false,
+		));
+
+		$this->hasColumn('inventory_center_image', 'string', null, array(
+				'type'          => 'string',
+				'fixed'         => false,
+				'primary'       => false,
+				'notnull'       => true,
+				'autoincrement' => false,
+			));
+
 		$this->hasColumn('inventory_center_continent', 'string', 64, array(
 			'type'          => 'string',
 			'length'        => 64,

@@ -28,6 +28,13 @@
 	if(isset($textArr[3]) && $textArr[3] == 'nonrecurring'){
 		$nonrecurring = true;
 	}
+
+	if(isset($textArr[4])){
+		$refid = $textArr[4];
+	}else{
+		$refid = 'n';
+	}
+
 	chdir('../../../../');
 	require('includes/application_top.php');
 	require('includes/classes/order.php');
@@ -241,7 +248,7 @@
 
 						}
 						
-						EventManager::notify('CheckoutSuccessRemoteFinish',$orderID, $_POST['mc_gross'], $customerIp);
+						EventManager::notify('CheckoutSuccessRemoteFinish',$orderID, $_POST['mc_gross'], $customerIp, $refid, $customerID, $planID);
 						$order_status_id = OrderPaymentModules::getModule('paypalipn')->getConfigData('MODULE_PAYMENT_PAYPALIPN_COMP_ORDER_STATUS_ID');
 						$newStatus = new OrdersPaymentsHistory();
 						$newStatus->orders_id = $orderID;

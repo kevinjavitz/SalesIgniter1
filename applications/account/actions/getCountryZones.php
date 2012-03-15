@@ -5,6 +5,10 @@
 		$country = sysConfig::get('ONEPAGE_DEFAULT_COUNTRY');
 	}
 
+	$addressEntry = $addressBook->getAddress($_GET['edit']);
+    if(isset($addressEntry['entry_state'])){
+	    $state = htmlentities($addressEntry['entry_state'], ENT_IGNORE, 'utf-8');
+    }
 	$html = '';
 	$Qcheck = Doctrine_Query::create()
 	->select('zone_id, zone_code, zone_name')
@@ -20,7 +24,7 @@
 			$htmlField->addOption($zInfo['zone_name'], $zInfo['zone_name']);
 		}
 
-		$htmlField->selectOptionByValue((isset($_GET['state'])?$_GET['state']:1));
+		$htmlField->selectOptionByValue((isset($state)?$state:1));
 
 	} else {
 		$addressEntry = $addressBook->getAddress($_GET['edit']);

@@ -647,8 +647,12 @@ function updateAddressFormat(){
 
 function updateToolsConfiguration(){
 	addConfiguration('SHOW_MANUFACTURER_ON_PRODUCT_INFO', 1, 'Show manufacturer name on product Info', 'Show manufacturer name on product Info', 'false', "tep_cfg_select_option(array('true', 'false'),");
+	addConfiguration('SHOW_PRODUCTS_FROM_SUBCATEGORIES', 1, 'Show all the products from all the subcategories of the current category', 'Show all the products from all the subcategories of the current category', 'false', "tep_cfg_select_option(array('true', 'false'),");
+	addConfiguration('SHOW_SUBCATEGORIES', 1, 'Show subcategories of the current category', 'Show subcategories of the current category', 'true', "tep_cfg_select_option(array('true', 'false'),");
+	addConfiguration('ONEPAGE_CHECKOUT_SHIPPING_ADDRESS', 7575, 'Show shipping address on checkout', 'Show shipping address on checkout', 'true', "tep_cfg_select_option(array('true', 'false'),");
 	addConfiguration('PRODUCT_INFO_SHOW_MODEL', 1, 'Show model on product info', 'Show model on product Info', 'true', "tep_cfg_select_option(array('true', 'false'),");
 	addConfiguration('CUSTOMER_CHANGE_SEND_NOTIFICATION_EMAIL_DEFAULT', 1, 'Send customer email when a change is made to his account set as default', 'Send customer email set as default', 'true', "tep_cfg_select_option(array('true', 'false'),");
+	addConfiguration('CHECK_STOCK_NEW_USED', 1, 'Check Stock for new and used purchase types', 'Check Stock for new and used purchase types', 'true', "tep_cfg_select_option(array('true', 'false'),");
 	addConfiguration('ORDERS_STATUS_CANCELLED_ID', 1, 'Order Status cancel ID', 'Order Status cancel ID', '7', 'tep_cfg_pull_down_order_status_list(');
 	addConfiguration('ORDERS_STATUS_WAITING_ID', 1, 'Order Status Waiting for Confirmation ID', 'Order Status Waiting for Confirmation ID', '6', 'tep_cfg_pull_down_order_status_list(');
 	addConfiguration('ORDERS_STATUS_APPROVED_ID', 1, 'Order Status Order Approved ID', 'Order Status order Approved ID', '8', 'tep_cfg_pull_down_order_status_list(');
@@ -663,8 +667,12 @@ function updateToolsConfiguration(){
 	addConfiguration('ENABLE_HTML_EDITOR', 1, 'Use wysiwyg editor for product description', 'Use wysiwyg editor to edit product description', 'true', "tep_cfg_select_option(array('true', 'false'),");
 	addConfiguration('SHOW_ENLAGE_IMAGE_TEXT', 1, 'Show enlarge image text on product info page', 'Show enlarge image text on product info page', 'true', "tep_cfg_select_option(array('true', 'false'),");
 	addConfiguration('PRODUCT_LISTING_TYPE', 8, 'Use rows or columns for product listing', 'Use rows or columns for product listing', 'row', "tep_cfg_select_option(array('row', 'column'),");
+	addConfiguration('PRODUCT_LISTING_ALLOW_PRODUCT_SORTER', 8, 'Allow sort products', 'Allow sort products', 'True', "tep_cfg_select_option(array('True', 'False'),");
+
 	addConfiguration('PRODUCT_LISTING_TOTAL_WIDTH', 8, 'When using columns for product listing content area width to use when calculating image width', 'When using columns for product listing content area width to use when calculating image width', '600', "");
 	addConfiguration('PRODUCT_LISTING_PRODUCTS_COLUMNS', 8, 'When using columns for product listing number of products to display in a row', 'When using columns for product listing number of products to display in a row', '4', "");
+	addConfiguration('CATEGORIES_MAX_WIDTH', 8, 'Max width for the subcategories images', 'Max width for the subcategories images', '170', "");
+	addConfiguration('CATEGORIES_MAX_HEIGHT', 8, 'Max height for the subcategories images', 'Max height for the subcategories images', '170', "");
 	addConfiguration('PRODUCT_LISTING_PRODUCTS_LIMIT', 8, 'Number of products to list per page', 'Number of products to list per page (max 25)', '12', "");
 	addConfiguration('PRODUCT_LISTING_SELECT_MULTIPLES', 8, 'Can add to cart multiple items', 'Can add to cart multiple items?', 'false', "tep_cfg_select_option(array('true', 'false'),");
 	addConfiguration('PRODUCT_LISTING_PRODUCTS_LIMIT_ARRAY', 8, 'Results Per Page drop down values', 'Results Per Page drop down values (comma seperated example:<br>12,24,48,96)', '12,24,48,96', "");

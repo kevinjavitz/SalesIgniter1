@@ -93,6 +93,13 @@
 				$pInfo['reservationInfo']['semester_name'] = $pInfo['postVal']['semester_name'];
 			}
 
+			if (isset($pInfo['postVal']['pickup'])) {
+				$pInfo['reservationInfo']['pickup'] = $pInfo['postVal']['pickup'];
+			}
+			if (isset($pInfo['postVal']['dropoff'])) {
+				$pInfo['reservationInfo']['dropoff'] = $pInfo['postVal']['dropoff'];
+			}
+
 			if (isset($pInfo['postVal']['end_date'])) {
 				$pInfo['reservationInfo']['end_date'] = $pInfo['postVal']['end_date'];
 				if(Session::exists('isppr_date_end')){
@@ -188,6 +195,14 @@
 					$pInfo['reservationInfo']['end_date'] = $_POST['end_date'];
 				}
 
+				if (isset($_POST['pickup'])) {
+					$pInfo['reservationInfo']['inventory_center_pickup'] = $_POST['pickup'];
+				}
+
+				if (isset($_POST['dropoff'])) {
+					$pInfo['reservationInfo']['inventory_center_dropoff'] = $_POST['dropoff'];
+				}
+
 				if (isset($_POST['rental_qty'])) {
 					$pInfo['reservationInfo']['quantity'] = $_POST['rental_qty'];
 				}
@@ -218,10 +233,12 @@
 			$isRemoved = false;
 			$shoppingProducts = $ShoppingCart->getProducts()->getContents();
 			for ($i=0;$i<count($shoppingProducts)-1;$i++){
-				$shoppingInfo = $shoppingProducts[$i]->getInfo();
-				if($shoppingInfo['products_id'] == $pID){
-					$cartInfo = $shoppingProducts[$i]->getInfo();
-					break;
+				if(is_object($shoppingProducts[$i])){
+					$shoppingInfo = $shoppingProducts[$i]->getInfo();
+					if($shoppingInfo['products_id'] == $pID){
+						$cartInfo = $shoppingProducts[$i]->getInfo();
+						break;
+					}
 				}
 			}
 			//

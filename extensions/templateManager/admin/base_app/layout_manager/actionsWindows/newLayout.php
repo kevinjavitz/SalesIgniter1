@@ -10,6 +10,7 @@
 $layoutName = '';
 $layoutType = 'desktop';
 $selApps = array();
+$pageTypes = array();
 if (isset($_GET['lID'])){
 	$QLayout = Doctrine_Query::create()
 	->select('layout_id, layout_name, layout_type')
@@ -29,7 +30,7 @@ if (isset($_GET['lID'])){
 		$layouts = explode(',', $sInfo['layout_id']);
 		$pageType = explode(',', $sInfo['page_type']);
 		$assocurls = explode(',', $sInfo['associative_url']);
-		if (in_array($layoutId, $layouts)){
+		if (in_array($layoutId, $layouts) && !empty($pageType) && !empty($assocurls)){
 			if (!empty($sInfo['extension'])){
 				$selApps['ext'][$sInfo['extension']][$sInfo['application']][$sInfo['page']] = true;
 				$pageTypes['ext'][$sInfo['extension']][$sInfo['application']][$sInfo['page']] = $pageType[array_search($layoutId,$layouts)];
@@ -112,10 +113,59 @@ function buildCategorisPages($CatArr, &$AppArray, $appName){
 		$pageName = $cat['name'];
 		$AppArray[$appName][$pageName] = (isset($selApps[$appName][$pageName]) ? $selApps[$appName][$pageName] : false);
 		if (isset($cat['children']) && sizeof($cat['children']) > 0){
-			buildCategorisPages($cat['children'], $AppArray, $appName, $pageName);
+			buildCategorisPages($cat['children'], $AppArray, $appName);
 		}
 	}
 }
+
+
+function makeBlogCategoriesArray($parentId = 0){
+	$catArr = array();
+	$Qcategories = Doctrine_Query::create()
+		->from('BlogCategories c')
+		->leftJoin('c.BlogCategoriesDescription cd')
+		->where('parent_id = ?', $parentId)
+		->andWhere('language_id = ?', Session::get('languages_id'))
+		->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+	foreach($Qcategories as $category){
+		$catArr[$category['blog_categories_id']] = array(
+			'name' => $category['BlogCategoriesDescription'][0]['blog_categories_seo_url']
+		);
+
+		$Children = makeBlogCategoriesArray($category['blog_categories_id']);
+		if (!empty($Children)){
+			$catArr[$category['blog_categories_id']]['children'] = $Children;
+		}
+	}
+
+	return $catArr;
+}
+$BlogCatArr = makeBlogCategoriesArray(0);
+
+function buildBlogCategorisPages($BlogCatArr, &$AppArray, $appName, $extName){
+	global $selApps;
+	foreach($BlogCatArr as $cat){
+		$pageName = $cat['name'];
+		$AppArray['ext'][$extName][$appName][$pageName] = (isset($selApps['ext'][$extName][$appName][$pageName]) ? $selApps['ext'][$extName][$appName][$pageName] : false);
+		if (isset($cat['children']) && sizeof($cat['children']) > 0){
+			buildBlogCategorisPages($cat['children'], $AppArray, $appName, $extName);
+		}
+	}
+}
+
+function buildBlogCategorisPagesPosts($BlogCatArr, &$AppArray, $appName, $extName){
+	global $selApps;
+	foreach($BlogCatArr as $cat){
+		$pageName = 'posts-'.$cat['name'];
+		$AppArray['ext'][$extName][$appName][$pageName] = (isset($selApps['ext'][$extName][$appName][$pageName]) ? $selApps['ext'][$extName][$appName][$pageName] : false);
+		if (isset($cat['children']) && sizeof($cat['children']) > 0){
+			buildBlogCategorisPagesPosts($cat['children'], $AppArray, $appName, $extName);
+		}
+	}
+}
+
+
+
 
 function buildProductPages(&$AppArray, $appName){
 	global $selApps;
@@ -146,6 +196,7 @@ foreach($Applications as $AppDir){
 	if($appName == 'index'){
 		buildCategorisPages($CatArr, $AppArray, $appName);
 	}
+
 	if($appName == 'product' && isset($associativeUrl)){
 		buildProductPages($AppArray, $appName);
 	}
@@ -220,6 +271,21 @@ foreach($Extensions as $Extension){
 					$AppArray['ext'][$extName][$appName][$pageName] = (isset($selApps['ext'][$extName][$appName][$pageName]) ? $selApps['ext'][$extName][$appName][$pageName] : false);
 				}
 			}
+
+			if ($Extension->getBasename() == 'blog' && $appExtension->isInstalled('blog') && $appExtension->isEnabled('blog') && $appName == 'show_category'){
+
+				buildBlogCategorisPages($BlogCatArr, $AppArray, $appName, $extName);
+
+			}
+
+			if ($Extension->getBasename() == 'blog' && $appExtension->isInstalled('blog') && $appExtension->isEnabled('blog') && $appName == 'show_post'){
+
+				buildBlogCategorisPagesPosts($BlogCatArr, $AppArray, $appName, $extName);
+
+			}
+
+			//add here post-categoryname...then check in template
+
 			ksort($AppArray['ext'][$extName][$appName]);
 		}
 		ksort($AppArray['ext']);
@@ -292,6 +358,8 @@ $BoxesContainer = htmlBase::newElement('div');
 $rentalMemberCheckbox = htmlBase::newElement('checkbox')->setLabel('R')->setValue('R');
 $nonRentalMemberCheckbox = htmlBase::newElement('checkbox')->setLabel('N')->setValue('N');
 
+
+
 $col = 0;
 foreach($AppArray as $appName => $aInfo){
 	if ($appName == 'ext'){
@@ -324,11 +392,11 @@ foreach($AppArray as $appName => $aInfo){
 			}
 			$rentalMemberCheckbox
 					->setName('pagetype[' . $appName . '][' . $pageName . ']')
-					->setChecked(($pageTypes[$appName][$pageName] == 'R') ? true : false);
+					->setChecked((isset($pageTypes[$appName][$pageName]) && $pageTypes[$appName][$pageName] == 'R') ? true : false);
 
 			$nonRentalMemberCheckbox
 					->setName('pagetype[' . $appName . '][' . $pageName . ']')
-					->setChecked(($pageTypes[$appName][$pageName] == 'N') ? true : false);
+					->setChecked((isset($pageTypes[$appName][$pageName]) && $pageTypes[$appName][$pageName] == 'N') ? true : false);
 
 			$checkboxes .= '<div style="margin: 0 0 0 1em;"><input class="pageBox" type="checkbox" name="applications[' . $appName . '][]" value="' . $pageName . '"' . ($pageChecked === true ? ' checked="checked"' : '') . '> ' . $pageName1;
 			$checkboxes .= '&nbsp;&nbsp;&nbsp;'.$nonRentalMemberCheckbox->draw();
@@ -365,11 +433,11 @@ foreach($AppArray['ext'] as $ExtName => $eInfo){
 			foreach($aInfo as $pageName => $pageChecked){
 				$rentalMemberCheckbox
 						->setName('pagetype[ext][' . $ExtName . '][' . $appName . '][' . $pageName . ']')
-						->setChecked(($pageTypes['ext'][$ExtName][$appName][$pageName] == 'R') ? true : false);
+						->setChecked((isset($pageTypes['ext'][$ExtName][$appName][$pageName]) && $pageTypes['ext'][$ExtName][$appName][$pageName] == 'R') ? true : false);
 
 				$nonRentalMemberCheckbox
 						->setName('pagetype[ext][' . $ExtName . '][' . $appName . '][' . $pageName . ']')
-						->setChecked(($pageTypes['ext'][$ExtName][$appName][$pageName] == 'N') ? true : false);
+						->setChecked((isset($pageTypes['ext'][$ExtName][$appName][$pageName]) && $pageTypes['ext'][$ExtName][$appName][$pageName] == 'N') ? true : false);
 
 				$checkboxes .= '<div style="margin: 0 0 0 1em;"><input type="checkbox" class="pageBox" name="applications[ext][' . $ExtName . '][' . $appName . '][]" value="' . $pageName . '"' . ($pageChecked === true ? ' checked="checked"' : '') . '> ' . $pageName;
 				$checkboxes .= '&nbsp;&nbsp;&nbsp;'.$nonRentalMemberCheckbox->draw();
@@ -498,6 +566,7 @@ ob_start();
 				this.checked = self.checked;
 			});
 		});
+
 	}
 </script>
 <?php

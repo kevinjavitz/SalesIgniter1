@@ -149,4 +149,6 @@
 	<define key="TABLE_HEADING_MEMBERSHIP"><![CDATA[Packages]]></define>
 	<define key="TEXT_SELECT_CATEGORY"><![CDATA[Select Category:]]></define>
 	<define key="TEXT_PACKAGES"><![CDATA[Create Package]]></define>
+	<define key="TEXT_PRODUCTS_ALLOW_OVERBOOKING"><![CDATA[Allow Overbooking]]></define>
+
 </definitions>

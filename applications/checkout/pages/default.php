@@ -89,20 +89,23 @@
 	<style type="text/css">
 		.bar1{
 			background-image:url(<?php echo sysConfig::getDirWsCatalog();?>images/b1.png);
-			width:378px;
+			width:388px;
 			height:43px;
+			background-repeat: no-repeat;
 		}
 
 		.bar2{
 			background-image:url(<?php echo sysConfig::getDirWsCatalog();?>images/b2.png);
-			width:378px;
+			width:388px;
 			height:43px;
+			background-repeat: no-repeat;
 		}
 
 		.bar3{
 			background-image:url(<?php echo sysConfig::getDirWsCatalog();?>images/b3.png);
-			width:378px;
+			width:388px;
 			height:43px;
+			background-repeat: no-repeat;
 		}
 
 		.text1{

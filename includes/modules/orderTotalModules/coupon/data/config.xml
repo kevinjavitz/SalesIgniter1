@@ -11,7 +11,7 @@
 		<tab><![CDATA[General]]></tab>
 		<title><![CDATA[Display Coupon Value]]></title>
 		<key><![CDATA[STATUS]]></key>
-		<value><![CDATA[False]]></value>
+		<value><![CDATA[True]]></value>
 		<description><![CDATA[Do you want to display the Discount Coupon value?]]></description>
 		<set_function><![CDATA[tep_cfg_select_option(array('True', 'False'),]]></set_function>
 	</configuration>
@@ -28,7 +28,7 @@
 		<tab><![CDATA[General]]></tab>
 		<title><![CDATA[Display Order]]></title>
 		<key><![CDATA[DISPLAY_ORDER]]></key>
-		<value><![CDATA[0]]></value>
+		<value><![CDATA[22]]></value>
 		<description><![CDATA[Display Order. Lowest is displayed first.]]></description>
 	</configuration>
 	<configuration>

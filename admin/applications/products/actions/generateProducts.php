@@ -82,7 +82,6 @@
 			$newProduct->products_status = 1;
 			//$newProduct->products_featured = $Product->products_featured;
 			$newProduct->products_tax_class_id = $Product->products_tax_class_id;
-			$newProduct->manufacturers_id = $Product->manufacturers_id;
 			$newProduct->products_type = $Product->products_type;
 			$newProduct->products_in_box = 1;
 

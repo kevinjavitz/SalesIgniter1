@@ -1,5 +1,20 @@
 <?php
 $lID = (int)Session::get('languages_id');
+
+$widgetIdHtml = htmlBase::newElement('input')
+->setName('widgetId')
+->setValue(isset($WidgetSettings->widgetId)?$WidgetSettings->widgetId:'');
+
+$checkedshowSubcategory = '';
+if (isset($WidgetSettings->showSubcategory) && $WidgetSettings->showSubcategory == 'showSubcategory'){
+	$checkedshowSubcategory = 'checked="checked"';
+}
+
+$checkedshowAlways = '';
+if (isset($WidgetSettings->showAlways) && $WidgetSettings->showAlways == 'showAlways'){
+	$checkedshowAlways = 'checked="checked"';
+}
+
 function getCategoryTree($parentId, $namePrefix = '', &$categoriesTree){
 	global $lID, $allGetParams, $cInfo;
 	$Qcategories = Doctrine_Query::create()
@@ -40,7 +55,7 @@ $selectedCategory = isset($WidgetSettings->selected_category)?$WidgetSettings->s
 $categoryTree = htmlBase::newElement('selectbox')
 		->setName('selected_category')
 		->setId('selectedCategory')
-		->setLabel(sysLanguage::get('TEXT_SELECT_PARENT_CATEGORY'))
+		->setLabel('Parent Category')//sysLanguage::get('TEXT_SELECT_PARENT_CATEGORY')
 		->setLabelPosition('before');
 $categoryTree->addOption('', sysLanguage::get('--select--'));
 foreach($categoryTreeList as $category){
@@ -51,9 +66,43 @@ if(isset($selectedCategory)){
 }
 
 $WidgetSettingsTable->addBodyRow(array(
+		'columns' => array(
+			array('text' => 'Widget ID'),
+			array('text' => $widgetIdHtml->draw())
+		)
+	));
+
+/*$WidgetSettingsTable->addBodyRow(array(
+		'columns' => array(
+			array('text' => 'Show only subcategories'),
+			array('text' => '<input type="checkbox" name="showSubcategory" value="showSubcategory" '.$checkedshowSubcategory.'>')
+		)
+	));
+
+$WidgetSettingsTable->addBodyRow(array(
+		'columns' => array(
+			array('text' => 'Show always'),
+			array('text' => '<input type="checkbox" name="checkedshowAlways" value="checkedshowAlways" '.$checkedshowAlways.'>')
+		)
+	));
+*/
+$WidgetSettingsTable->addBodyRow(array(
                                       'columns' => array(
 	                                      array('colspan' => 2, 'text' => $categoryTree->draw())
                                       )
                                  ));
+$checkedCats = array();
+if(isset($WidgetSettings->excludedCategories)){
+	$checkedCats = explode(';',$WidgetSettings->excludedCategories);
+}
+
+$categoriesList = tep_get_category_tree_list('0', $checkedCats);
+
+$WidgetSettingsTable->addBodyRow(array(
+		'columns' => array(
+			array('text' => 'Exclude from infobox'),
+			array('text' => $categoriesList)
+		)
+	));
 
 ?>

@@ -62,6 +62,26 @@ class BlogPostsDescription extends Doctrine_Record {
 			'autoincrement' => false
 		));
 
+          $this->hasColumn('extra_fields', 'string', null, array(
+		          'type'          => 'string',
+		          'length'        => null,
+		          'fixed'         => false,
+		          'primary'       => false,
+		          'default'       => '',
+		          'notnull'       => true,
+		          'autoincrement' => false
+	      ));
+
+          $this->hasColumn('extra_key', 'string', 200, array(
+		          'type'          => 'string',
+		          'length'        => 200,
+		          'fixed'         => false,
+		          'primary'       => false,
+		          'default'       => '',
+		          'notnull'       => true,
+		          'autoincrement' => false
+	          ));
+
         $this->hasColumn('blog_post_head_title', 'string', 150, array(
 			'type'          => 'string',
 			'length'        => 150,

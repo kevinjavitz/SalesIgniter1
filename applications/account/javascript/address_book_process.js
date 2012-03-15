@@ -6,7 +6,7 @@ $(document).ready(function (){
             if($stateColumn.size() > 0){
                 showAjaxLoader($stateColumn, 'large');
                 $.ajax({
-                    url: js_app_link('app=account&appPage=create&action=getCountryZones'),
+                    url: js_app_link('app=account&appPage=address_book_process&action=getCountryZones'),
                     cache: false,
                     dataType: 'html',
                     data: 'cID=' + $(this).val()+'&state_type='+stateType+'&edit='+$('#editVal').val(),

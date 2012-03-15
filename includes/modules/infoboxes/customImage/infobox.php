@@ -26,7 +26,7 @@ class InfoBoxCustomImage extends InfoBoxAbstract {
 			$htmlLink = '';
 			if (!empty($boxWidgetProperties->image_link)){
 				ob_start();
-				eval("?>".'<?php echo '.$boxWidgetProperties->image_link.';?>');
+				eval("?>".'<?php echo "'.$boxWidgetProperties->image_link.'";?>');
 				$htmlLink = ob_get_contents();
 				ob_end_clean();
 			}

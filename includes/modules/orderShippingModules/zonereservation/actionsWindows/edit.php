@@ -165,6 +165,8 @@ $infoBox->addContentRow($tabPanel->draw());
 			array('text' => sysLanguage::get('TABLE_HEADING_DAYS_BEFORE')),
 			array('text' => sysLanguage::get('TABLE_HEADING_DAYS_AFTER')),
 			array('text' => sysLanguage::get('TABLE_HEADING_ZONE')),
+			array('text' => sysLanguage::get('TABLE_HEADING_ZIPCODES')),
+			array('text' => sysLanguage::get('TABLE_HEADING_FREEDELIVERY')),
 			array('text' => sysLanguage::get('TABLE_HEADING_SORT_ORDER')),
 			array('text' => sysLanguage::get('TABLE_HEADING_WEIGHT_RATES')),
 			array('text' => sysLanguage::get('TABLE_HEADING_MIN_RENTAL_NUMBER')),
@@ -248,6 +250,12 @@ $infoBox->addContentRow($tabPanel->draw());
 		->attr('size', '3')
 		->val($mInfo['days_before']);
 
+		$FreeDeliveryOver = htmlBase::newElement('input')
+			->addClass('ui-widget-content')
+			->setName('method[' . $methodId . '][free_delivery_over]')
+			->attr('size', '3')
+			->val($mInfo['free_delivery_over']);
+
 		$DaysAfter = htmlBase::newElement('input')
 		->addClass('ui-widget-content')
 		->setName('method[' . $methodId . '][days_after]')
@@ -258,10 +266,10 @@ $infoBox->addContentRow($tabPanel->draw());
 		foreach(sysLanguage::getLanguages() as $lInfo){
 			$Detailsl = htmlBase::NewElement('textarea')
 			->setRows('3')
-			->setCols('50')
+			->setCols('30')
 			->addClass('ui-widget-content')
 			->setName('method[' . $methodId . '][details]['.$lInfo['id'].']')
-			->setLabel($lInfo['showName']().'<br/>')
+			->setLabel($lInfo['showName']().' ')
 			->setLabelPosition('before')
 			->val($mInfo[$lInfo['id']]['details']);
 			$Details->append($Detailsl)->append($br);
@@ -270,6 +278,13 @@ $infoBox->addContentRow($tabPanel->draw());
 		->addClass('ui-widget-content')
 		->setName('method_default')
 		->val($methodId);
+		
+		$ZipCodes = htmlBase::NewElement('textarea')
+		->setRows('3')
+		->setCols('30')
+		->addClass('ui-widget-content')
+		->setName('method[' . $methodId . '][zipcode]')
+		->val($mInfo['zipcode']);
 		
 		if ($mInfo['default'] == '1'){
 			$Default->setChecked(true);
@@ -284,6 +299,8 @@ $infoBox->addContentRow($tabPanel->draw());
 				array('align' => 'center', 'text' => $DaysBefore->draw()),
 				array('align' => 'center', 'text' => $DaysAfter->draw()),
 				array('align' => 'center', 'text' => $Module->getZonesMenu('method[' . $methodId . '][zone]', $mInfo['zone'])),
+				array('align' => 'center', 'text' => $ZipCodes->draw()),
+				array('align' => 'center', 'text' => $FreeDeliveryOver->draw()),
 				array('align' => 'center', 'text' => $SortOrder->draw()),
 				array('align' => 'center', 'text' => $WeightRates->draw()),
 				array('align' => 'center', 'text' => $MinRentalNumber->draw()),
@@ -328,13 +345,15 @@ $infoBox->addContentRow($tabPanel->draw());
 			var $td5 = $('<td></td>').attr('align', 'center').append('<input size="3" class="ui-widget-content" type="text" name="method[' + nextId + '][days_before]">');
 			var $td51 = $('<td></td>').attr('align', 'center').append('<input size="3" class="ui-widget-content" type="text" name="method[' + nextId + '][days_after]">');
 			var $td6 = $('<td></td>').attr('align', 'center').append('<?php echo $Module->getZonesMenu('method[\' + nextId + \'][zone]');?>');
+			var $td61 = $('<td></td>').attr('align', 'center').append('<textarea rows="3" cols="50" name="method[' + nextId + '][zipcode]"></textarea>');
+			var $td62 = $('<td></td>').attr('align', 'center').append('<input size="3" class="ui-widget-content" type="text" name="method[' + nextId + '][free_delivery_over]">');
 			var $td7 = $('<td></td>').attr('align', 'center').append('<input size="3" class="ui-widget-content" type="text" name="method[' + nextId + '][sort_order]">');
 			var $td71 = $('<td></td>').attr('align', 'center').append('<input size="10" class="ui-widget-content" type="text" name="method[' + nextId + '][weight_rates]">');
 			var $td72 = $('<td></td>').attr('align', 'center').append('<input size="10" class="ui-widget-content" type="text" name="method[' + nextId + '][min_rental_number]">');
 			var $td73 = $('<td></td>').attr('align', 'center').append('<?php echo getMyTypes('method[\' + nextId + \'][min_rental_type]');?>');
 			var $td8 = $('<td></td>').attr('align', 'center').append('<input class="ui-widget-content" type="radio" name="method_default" value="' + nextId + '">');
 			var $td9 = $('<td></td>').attr('align', 'center').append('<a class="ui-icon ui-icon-closethick deleteIcon"></a>');
-			var $newTr = $('<tr></tr>').append($td1).append($td2).append($td3).append($td4).append($td5).append($td51).append($td6).append($td7).append($td71).append($td72).append($td73).append($td8).append($td9);
+			var $newTr = $('<tr></tr>').append($td1).append($td2).append($td3).append($td4).append($td5).append($td51).append($td6).append($td61).append($td62).append($td7).append($td71).append($td72).append($td73).append($td8).append($td9);
 			$(this).parent().parent().parent().parent().find('tbody').append($newTr);
 		});
 	});

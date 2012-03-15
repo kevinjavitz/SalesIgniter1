@@ -1,7 +1,7 @@
 <definitions>
 	<define key="INFOBOX_HEADING_PAYPERRENTAL"><![CDATA[Start Here]]></define>
-    <define key="INFOBOX_CATEGORIES_ALL_PRODUCTS"><![CDATA[View All Surfboards]]></define>
-    <define key="TEXT_ENTRY_PICKUP_DATE"><![CDATA[Start: ]]></define>
+	<define key="INFOBOX_CATEGORIES_ALL_PRODUCTS"><![CDATA[View All]]></define>
+	<define key="TEXT_ENTRY_PICKUP_DATE"><![CDATA[Start: ]]></define>
 	<define key="TEXT_ENTRY_RETURN_DATE"><![CDATA[End: ]]></define>
 	<define key="TEXT_INFOBOX_PAY_PER_RENTAL_BUTTON_UPDATE"><![CDATA[Update]]></define>
 	<define key="TEXT_BUTTON_SUBMIT"><![CDATA[Submit]]></define>

@@ -340,7 +340,7 @@ class OrderPaymentPaypalipn extends StandardPaymentModule
 
 				if($planInfo['reccurring'] == 1){
 					$parameters['cmd'] = '_xclick-subscriptions';
-					$parameters['custom'] = Session::getSessionId() . ';' . $userAccount->getCustomerId() . ';' . $_SERVER['REMOTE_ADDR'];
+					$parameters['custom'] = Session::getSessionId() . ';' . $userAccount->getCustomerId() . ';' . $_SERVER['REMOTE_ADDR']. ';'.'f'.';'.(Session::exists('refid')?Session::get('refid'):'n');
 					if (isset($p3Val)){
 						$parameters['p3'] = $p3Val;
 						$parameters['t3'] = $t3Val;
@@ -362,7 +362,7 @@ class OrderPaymentPaypalipn extends StandardPaymentModule
 					$parameters['amount'] = $packagePrice;
 					$parameters['item_name'] = $planInfo['MembershipPlanDescription'][0]['name'];
 					$parameters['redirect_cmd'] = '_xclick';
-					$parameters['custom'] = Session::getSessionId() . ';' . $userAccount->getCustomerId() . ';' . $_SERVER['REMOTE_ADDR'] .';nonrecurring';
+					$parameters['custom'] = Session::getSessionId() . ';' . $userAccount->getCustomerId() . ';' . $_SERVER['REMOTE_ADDR'] .';nonrecurring'.';'.(Session::exists('refid')?Session::get('refid'):'n');
 				}
 			}
 		}

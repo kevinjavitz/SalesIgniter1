@@ -76,6 +76,7 @@ else {
 }
 
 EventManager::attachActionResponse(array(
-		'success' => true
+		'success' => true,
+		'moduleType' => $moduleType
 	), 'json');
 ?>

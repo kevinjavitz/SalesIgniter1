@@ -13,8 +13,20 @@
 	$langId = Session::get('languages_id');
 
 	$pageBlog = $blog->getPosts($langId, $_GET['appPage']);
+	if(!empty($pageBlog['post_redirect_url'])){
+		tep_redirect($pageBlog['post_redirect_url']);
+	}
 	$contentHeading = $pageBlog['BlogPostsDescription'][$langId]['blog_post_title'];
-	$contentHtml = $pageBlog['BlogPostsDescription'][$langId]['blog_post_text'];
+    $contentHtml = '';
+
+	if(!empty($pageBlog['post_full_featured_image'])){
+		$thumbUrl = 'imagick_thumb.php?path=rel&imgSrc=images/'.$pageBlog['post_full_featured_image'];
+		$contentHtml .= '<div class="blogpostimage"><img src="'.$thumbUrl.'"/></div>';
+	}
+
+	$contentHtml .= '<div class="blogpostdescription">'.$pageBlog['BlogPostsDescription'][$langId]['blog_post_text'].'<div>';
+
+	$contentHtml .= '<br style="clear:both;"/>';
 
 	$theComments = '<a name="comments"></a>';
 	if(sysConfig::get('EXTENSION_BLOG_ENABLE_COMMENTS') == 'True'){

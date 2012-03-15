@@ -20,7 +20,7 @@
 			$htmlField->addOption($zInfo['zone_name'], $zInfo['zone_name']);
 		}
 
-		$htmlField->selectOptionByValue((isset($_GET['state'])?$_GET['state']:1));
+		$htmlField->selectOptionByValue((isset($_GET['state'])?htmlentities($_GET['state'], ENT_IGNORE, 'utf-8'):1));
 
 	} else {
 		$addressEntry = $addressBook->getAddress($_GET['edit']);

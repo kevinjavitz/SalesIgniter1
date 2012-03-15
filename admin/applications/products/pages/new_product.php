@@ -6,14 +6,6 @@
 		$Product = $Products->getRecord();
 	}
 
-	$manufacturers_array = array(array('id' => '', 'text' => sysLanguage::get('TEXT_NONE')));
-	$Qmanufacturers = Doctrine_Manager::getInstance()
-	->getCurrentConnection()
-	->fetchAssoc("select manufacturers_id, manufacturers_name from manufacturers order by manufacturers_name");
-	foreach($Qmanufacturers as $manufacturers){
-		$manufacturers_array[] = array('id' => $manufacturers['manufacturers_id'],
-		'text' => $manufacturers['manufacturers_name']);
-	}
 
 	$tax_class_array = array(array('id' => '0', 'text' => sysLanguage::get('TEXT_NONE')));
 	$QtaxClass = Doctrine_Manager::getInstance()

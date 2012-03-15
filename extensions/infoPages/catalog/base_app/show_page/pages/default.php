@@ -14,7 +14,7 @@
 	$langId = Session::get('languages_id');
 
 	$pageInfo = $infoPages->getInfoPage((isset($infoPages->pageId) ? (int)$infoPages->pageId : $infoPages->pageKey));
-	Session::set('current_app_page', $infoPages->pageKey);
+	$App->setAppPage($infoPages->pageKey);
 	if ($pageInfo['page_type'] == 'field'){
 		$contentHeading = $infoPages->getFieldPageTitle($pageInfo);
 		$contentHtml = $infoPages->getFieldPageContent($pageInfo);

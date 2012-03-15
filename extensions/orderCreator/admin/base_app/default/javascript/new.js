@@ -448,7 +448,7 @@ $(document).ready(function (){
 		});
 	});
 
-	$('select[name="payment_method"]').change(function(){
+	$('select[name="payment_method"]').live('change',function(){
 		var $self = $(this);
 		showAjaxLoader($self, 'small');
 

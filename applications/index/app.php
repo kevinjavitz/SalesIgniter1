@@ -23,12 +23,14 @@ $category_depth = 'top';
 		->getCurrentConnection()
 		->fetchAssoc('select * from categories_description where categories_id = "' . $current_category_id .'" and language_id = "'.Session::get('languages_id').'"');
 		$breadcrumb->add($ResultSet[0]['categories_name'], itw_app_link(null, 'index', $ResultSet[0]['categories_seo_url']));
-		Session::set('current_app_page',$ResultSet[0]['categories_seo_url']);
+		//Session::set('current_app_page',$ResultSet[0]['categories_seo_url']);
+		$_GET['actualPage'] = $ResultSet[0]['categories_seo_url'];
+		//$App->setAppPage($ResultSet[0]['categories_seo_url']);
 		if(sysConfig::get('TOOLTIP_DESCRIPTION_ENABLED') == 'true'){
             $App->addStylesheetFile('ext/jQuery/external/mopTip/mopTip-2.2.css');
             $App->addJavascriptFile('ext/jQuery/external/mopTip/mopTip-2.2.js');
-            $App->addJavascriptFile('applications/products/javascript/common.js');
 		}
+		$App->addJavascriptFile('applications/products/javascript/common.js');
 
 		$App->setAppPage('products');
 

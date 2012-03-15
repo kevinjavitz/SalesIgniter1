@@ -24,6 +24,7 @@ class Extension_infoPages extends ExtensionBase {
 			}
 
 			$App->setAppPage('default');
+			$_GET['actualPage'] = $this->pageKey;
 		}
 	}
 

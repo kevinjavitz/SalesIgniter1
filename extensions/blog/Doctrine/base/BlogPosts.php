@@ -66,6 +66,67 @@ class BlogPosts extends Doctrine_Record {
 			'notnull'       => true,
 			'autoincrement' => false
 		));
+
+        $this->hasColumn('post_featured_image', 'string', null, array(
+		        'type'          => 'string',
+		        'length'        => null,
+		        'fixed'         => false,
+		        'primary'       => false,
+		        'default'       => '',
+		        'notnull'       => true,
+		        'autoincrement' => false
+	    ));
+
+        $this->hasColumn('post_featured_media', 'string', null, array(
+		        'type'          => 'string',
+		        'length'        => null,
+		        'fixed'         => false,
+		        'primary'       => false,
+		        'default'       => '',
+		        'notnull'       => true,
+		        'autoincrement' => false
+	    ));
+
+        $this->hasColumn('post_full_featured_image', 'string', null, array(
+		        'type'          => 'string',
+		        'length'        => null,
+		        'fixed'         => false,
+		        'primary'       => false,
+		        'default'       => '',
+		        'notnull'       => true,
+		        'autoincrement' => false
+	        ));
+
+        $this->hasColumn('extra_fields', 'string', null, array(
+		        'type'          => 'string',
+		        'length'        => null,
+		        'fixed'         => false,
+		        'primary'       => false,
+		        'default'       => '',
+		        'notnull'       => true,
+		        'autoincrement' => false
+	        ));
+
+        $this->hasColumn('extra_key', 'string', 200, array(
+		        'type'          => 'string',
+		        'length'        => 200,
+		        'fixed'         => false,
+		        'primary'       => false,
+		        'default'       => '',
+		        'notnull'       => true,
+		        'autoincrement' => false
+	        ));
+
+        $this->hasColumn('post_redirect_url', 'string', null, array(
+		        'type'          => 'string',
+		        'length'        => null,
+		        'fixed'         => false,
+		        'primary'       => false,
+		        'default'       => '',
+		        'notnull'       => true,
+		        'autoincrement' => false
+	    ));
+
 	}
 }
 ?>

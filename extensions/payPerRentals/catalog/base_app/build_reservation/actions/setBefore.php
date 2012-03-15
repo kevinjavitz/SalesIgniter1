@@ -199,14 +199,27 @@ else {
 
 	if(!isset($_POST['rType']) && !isset($_POST['fromInfobox'])){
 			if(isset($_POST['cPath']) && ($_POST['cPath'] != '-1')){
-				EventManager::attachActionResponse(itw_app_link('cPath=' . $_POST['cPath'], 'index', 'default'), 'redirect');
+				$redirectLink = itw_app_link(null, 'index', $_POST['cPath']);
+				$redirectCat = $_POST['cPath'];
 			}else if(isset($_GET['cPath']) && ($_POST['cPath'] != '-1')){
-				EventManager::attachActionResponse(itw_app_link('cPath=' . $_GET['cPath'], 'index', 'default'), 'redirect');
+				$redirectLink = itw_app_link(null, 'index', $_GET['cPath']);
+				$redirectCat = $_GET['cPath'];
 			}else{
 				if (isset($_POST['url']) && (strpos($_POST['url'],'index/default') < 0) && $_POST['cPath'] != '-1' && $_GET['cPath'] != '-1'){
-					EventManager::attachActionResponse($_POST['url'], 'redirect');
+					$redirectLink = $_POST['url'];
 				}else{ 
-					EventManager::attachActionResponse(itw_app_link(null,'products','all'), 'redirect');
+					$redirectLink = itw_app_link(null,'products','all');
+				}
+		    }
+			if(isset($redirectLink)){
+				if(sysConfig::get('EXTENSION_INVENTORY_CENTERS_INTERMEDIARY_PAGE') == 'True'){
+					Session::set('redirectLinkBefore', $redirectLink);
+					if(isset($redirectCat)){
+						Session::set('redirectCategoryBefore', $redirectCat);
+					}
+					EventManager::attachActionResponse(itw_app_link('appExt=inventoryCenters','show_inventory','list_select'), 'redirect');
+				}else{
+					EventManager::attachActionResponse($redirectLink, 'redirect');
 				}
 		    }
 	}else{
@@ -411,13 +424,40 @@ else {
 			}
 			//here I return the filtered contry-state-etc..the same has to be done in infoboxutil
 			if(!isset($_POST['isInv'])){
-				if(isset($_POST['continent']) && $_POST['continent'] != 'select' && isset($_POST['isContinent']) && $_POST['isContinent'] == 'true'){
-					Session::set('isppr_continent', $_POST['continent']);
-					Session::set('isppr_country', '');
-					Session::set('isppr_state', '');
-					Session::set('isppr_city', '');
-					Session::remove('isppr_inventory_pickup');
-				}else
+				if(isset($_POST['isContinent']) && $_POST['isContinent'] > 0){
+					switch($_POST['isContinent']){
+						case '1':
+							Session::set('isppr_continent', isset($_POST['continent']) && $_POST['continent'] != 'select'?$_POST['continent']:'');
+							Session::set('isppr_country', '');
+							Session::set('isppr_state', '');
+							Session::set('isppr_city', '');
+							break;
+						case '2':
+							Session::set('isppr_continent', isset($_POST['continent']) && $_POST['continent'] != 'select'?$_POST['continent']:'');
+							Session::set('isppr_country', isset($_POST['country']) && $_POST['country'] != 'select'?$_POST['country']:'');
+							Session::set('isppr_state', '');
+							Session::set('isppr_city', '');
+							break;
+						case '3':
+							Session::set('isppr_continent', isset($_POST['continent']) && $_POST['continent'] != 'select'?$_POST['continent']:'');
+							Session::set('isppr_country', isset($_POST['country']) && $_POST['country'] != 'select'?$_POST['country']:'');
+							Session::set('isppr_state', isset($_POST['state']) && $_POST['state'] != 'select'?$_POST['state']:'');
+							Session::set('isppr_city', '');
+							break;
+						case '4':
+							Session::set('isppr_continent', isset($_POST['continent']) && $_POST['continent'] != 'select'?$_POST['continent']:'');
+							Session::set('isppr_country', isset($_POST['country']) && $_POST['country'] != 'select'?$_POST['country']:'');
+							Session::set('isppr_state', isset($_POST['state']) && $_POST['state'] != 'select'?$_POST['state']:'');
+							Session::set('isppr_city', isset($_POST['city']) && $_POST['city'] != 'select'?$_POST['city']:'');
+							break;
+					}
+					if(isset($_POST['city']) && $_POST['city'] != 'select' && isset($_POST['state']) && $_POST['state'] != 'select' && isset($_POST['country']) && $_POST['country'] != 'select' && isset($_POST['continent']) && $_POST['continent'] != 'select'){
+						Session::set('isppr_selected', true);
+					}else{
+						Session::remove('isppr_inventory_pickup');
+					}
+
+				}/*else
 				if(isset($_POST['continent']) && $_POST['continent'] != 'select'){
 					Session::set('isppr_continent', $_POST['continent']);
 
@@ -445,7 +485,7 @@ else {
 						Session::remove('isppr_inventory_pickup');
 					}
 
-				}else{
+				}*/else{
 					Session::set('isppr_continent', '');
 					Session::set('isppr_country', '');
 					Session::set('isppr_state', '');
@@ -472,14 +512,27 @@ else {
 				), 'json');
 			}else{
 				if(isset($_POST['cPath']) && ($_POST['cPath'] != '-1')){
-					EventManager::attachActionResponse(itw_app_link('cPath=' . $_POST['cPath'], 'index', 'default'), 'redirect');
+					$redirectLink = itw_app_link(null, 'index', $_POST['cPath']);
+					$redirectCat = $_POST['cPath'];
 				}else if(isset($_GET['cPath']) && ($_POST['cPath'] != '-1')){
-					EventManager::attachActionResponse(itw_app_link('cPath=' . $_GET['cPath'], 'index', 'default'), 'redirect');
+					$redirectLink = itw_app_link(null, 'index', $_GET['cPath']);
+					$redirectCat = $_GET['cPath'];
 				}else{
 					if (isset($_POST['url']) && (strpos($_POST['url'],'index/default') < 0) && $_POST['cPath'] != '-1' && $_GET['cPath'] != '-1'){
-						EventManager::attachActionResponse($_POST['url'], 'redirect');
+						$redirectLink = $_POST['url'];
 					}else{
-						EventManager::attachActionResponse(itw_app_link(null,'products','all'), 'redirect');
+						$redirectLink = itw_app_link(null,'products','all');
+					}
+				}
+				if(isset($redirectLink)){
+					if(sysConfig::get('EXTENSION_INVENTORY_CENTERS_INTERMEDIARY_PAGE') == 'True'){
+						Session::set('redirectLinkBefore', $redirectLink);
+						if(isset($redirectCat)){
+							Session::set('redirectCategoryBefore', $redirectCat);
+						}
+						EventManager::attachActionResponse(itw_app_link('appExt=inventoryCenters','show_inventory','list_select'), 'redirect');
+					}else{
+						EventManager::attachActionResponse($redirectLink, 'redirect');
 					}
 				}
 			}

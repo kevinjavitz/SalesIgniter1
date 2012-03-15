@@ -74,7 +74,8 @@
 					}
 				}
 			}
-            return  "<a href='#' onclick='popupWindow("."js_app_link(\"appExt=inventoryCenters&app=show_inventory&appPage=delivery&delv=".$deliveryInstructions."\"),\"400\",\"300\");return false;'> (click for details) </a>";
+            return  //'<a onclick="popupWindow(\''.urlencode(itw_app_link('appExt=inventoryCenters&dialog=true&delv='.$deliveryInstructions,'show_inventory','delivery','SSL')).'\',\'400\',\'300\');return false;\'> (click for details) </a>';
+			'<a href="' . itw_app_link('appExt=inventoryCenters', 'show_inventory', 'delivery', 'SSL') . '" onclick="popupWindow(\'' . itw_app_link('appExt=inventoryCenters&dialog=true&delv='.$deliveryInstructions, 'show_inventory', 'delivery', 'SSL') . '\',\'400\',\'300\');return false;">'. '(click for details) </a>';
 		}
 		return '';
 	}

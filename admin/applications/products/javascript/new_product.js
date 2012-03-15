@@ -866,6 +866,40 @@ $(document).ready(function (){
    			barcodeId: $(this).attr('barcode_id')
    		});
    	});
+	$('.trackMethodButton').change(function(){
+		if($(this).val() == 'quantity'){
+			$('.quantityTable').show();
+			$('.quantityTable').next().show();
+			$('.barcodeTable').hide();
+		}else{
+			$('.quantityTable').hide();
+			$('.quantityTable').next().hide();
+			$('.barcodeTable').show();
+		}
+	});
+	$('.invController').click(function(){
+		if($(this).val() == 'attribute'){
+			$('.clstattribute').show();
+			$('.clstattribute a').click();
+			$('.clstnormal').hide();
+		}else{
+			$('.clstattribute').hide();
+			$('.clstnormal').show();
+			$('.clstnormal a').click();
+		}
+	});
+	$('.invController:checked').each(function(){
+		if($(this).val() == 'attribute'){
+			$('.clstattribute').show();
+			$('.clstattribute a').click();
+			$('.clstnormal').hide();
+		}else{
+			$('.clstattribute').hide();
+			$('.clstnormal').show();
+			$('.clstnormal a').click();
+		}
+	});
+
 });
 
 function changeCalDate(o){

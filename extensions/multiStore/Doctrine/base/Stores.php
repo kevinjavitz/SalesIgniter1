@@ -107,6 +107,24 @@ class Stores extends Doctrine_Record {
 			'autoincrement' => false,
 		));
 
+		$this->hasColumn('stores_telephone', 'string', 100, array(
+				'type'          => 'string',
+				'length'        => 100,
+				'fixed'         => false,
+				'primary'       => false,
+				'notnull'       => true,
+				'autoincrement' => false,
+		));
+
+		$this->hasColumn('stores_group', 'string', 200, array(
+				'type'          => 'string',
+				'length'        => 200,
+				'fixed'         => false,
+				'primary'       => false,
+				'notnull'       => true,
+				'autoincrement' => false,
+		));
+
 		$this->hasColumn('stores_countries', 'string', null, array(
 				'type'          => 'string',
 				'length'        => null,
@@ -120,6 +138,15 @@ class Stores extends Doctrine_Record {
 				'autoincrement' => false,
 		));
 		$this->hasColumn('is_default', 'integer', 1, array(
+				'type' => 'integer',
+				'length' => 1,
+				'unsigned' => 0,
+				'default' => 0,
+				'primary' => false,
+				'autoincrement' => false
+		));
+
+		$this->hasColumn('home_redirect_store_info', 'integer', 1, array(
 				'type' => 'integer',
 				'length' => 1,
 				'unsigned' => 0,

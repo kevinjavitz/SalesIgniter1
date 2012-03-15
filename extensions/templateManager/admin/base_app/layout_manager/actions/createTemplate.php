@@ -34,7 +34,8 @@ $Template->Configuration['DIRECTORY']->configuration_value = $TemplateDirectory;
 $Template->save();
 
 $json = array(
-	'success' => true
+	'success' => true,
+	'layoutName'=> ucfirst($TemplateName)
 );
 
 EventManager::attachActionResponse($json, 'json');

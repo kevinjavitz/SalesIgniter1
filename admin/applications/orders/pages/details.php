@@ -192,7 +192,7 @@
 	
 	$tabContent = '<div class="main"><b>' . sysLanguage::get('TABLE_HEADING_COMMENTS') . '</b></div>' . 
 	'<form name="status" action="' . itw_app_link(tep_get_all_get_params(array('action')) . 'action=updateOrder') . '" method="post">' . 
-	tep_draw_textarea_field('comments', 'soft', '60', '5') . 
+	tep_draw_textarea_field('comments', 'hard', '60', '5') .
 	'<br />';
 	EventManager::notify('OrderDetailsTabPaneInsideComments', &$orderInfo, &$tabContent);
 	$tabContent .= $trackingTable->draw() .

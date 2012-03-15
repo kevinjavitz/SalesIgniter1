@@ -32,13 +32,6 @@
 			);
 		}
 		
-		if (sysPermissions::adminAccessAllowed('products', 'manufacturers') === true){
-			$contents['children'][] = array(
-				'link' => itw_app_link(null, 'products', 'manufacturers', 'SSL'),
-				'text' => sysLanguage::get('BOX_CATALOG_MANUFACTURERS')
-			);
-		}
-		
 		if (sysPermissions::adminAccessAllowed('products', 'expected') === true){
 			$contents['children'][] = array(
 				'link' => itw_app_link(null, 'products', 'expected', 'SSL'),
@@ -46,15 +39,7 @@
 			);
 		}
 	}
-	
-	if (sysPermissions::adminAccessAllowed('funways') === true){
-		if (sysPermissions::adminAccessAllowed('funways', 'default') === true){
-			$contents['children'][] = array(
-				'link' => itw_app_link(null, 'funways', 'default', 'SSL'),
-				'text' => sysLanguage::get('BOX_FUNWAYS')
-			);
-		}
-	}
+
 
 	EventManager::notify('BoxCatalogAddLink', &$contents);
 	if(count($contents['children']) == 0){

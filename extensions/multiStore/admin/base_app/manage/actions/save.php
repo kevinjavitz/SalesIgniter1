@@ -31,9 +31,12 @@
 	$Store->stores_template = $_POST['stores_template'];
 	$Store->stores_zip = $_POST['stores_zip'];
 	$Store->stores_location = $_POST['stores_location'];
+	$Store->stores_telephone = $_POST['stores_telephone'];
+	$Store->stores_group = $_POST['stores_group'];
 	$Store->stores_info = $_POST['stores_info'];
 	$Store->default_currency = $_POST['default_currency'];
 	$Store->is_default = $isDefault;
+	$Store->home_redirect_store_info = (isset($_POST['home_redirect_store_info'])?1:0);
 	if(isset($_POST['stores_countries'])){
 		$Store->stores_countries = implode(',',$_POST['stores_countries']);
 	}

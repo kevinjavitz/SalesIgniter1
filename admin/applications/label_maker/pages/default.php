@@ -63,7 +63,7 @@
 	echo htmlBase::newElement('button')->setName('genList')->setId('genList')->setText(sysLanguage::get('TEXT_BUTTON_GENERATE_LIST'))->draw();
 ?></div>
 
-<div class="ui-widget ui-widget-content ui-corner-all" style="margin:.5em;padding:.5em;">
+<div class="ui-widget ui-widget-content ui-corner-all middleTable" style="margin:.5em;padding:.5em;">
 <table cellpadding="2" cellspacing="0" border="0" id="reservations" width="100%">
  <thead>
   <tr>

@@ -70,7 +70,7 @@ $(document).ready(function () {
 						type: 'post',
 						success: function (data) {
 							if (data.success){
-								js_redirect(js_app_link('app=modules&appPage=default'));
+								js_redirect(js_app_link('app=modules&appPage=default&moduleType='+data.moduleType));
 							}
 						}
 					});
@@ -117,14 +117,14 @@ $(document).ready(function () {
 			'rType=ajax',
 			'action=remove'
 		]);
-
+	    var moduleType = $('.gridBodyRow.state-active').attr('data-module_type');
 		confirmDialog({
 			confirmUrl: js_app_link(getVars),
 			title: 'Confirm Module Uninstall',
 			content: 'Are you sure you want to uninstall this module?',
 			errorMessage: 'This module could not be uninstalled.',
-			success: function () {
-				js_redirect(js_app_link('app=' + thisApp + '&appPage=' + thisAppPage));
+			success: function (data) {
+				js_redirect(js_app_link('app=' + thisApp + '&appPage=' + thisAppPage + '&moduleType=' + moduleType));
 			}
 		});
 	});

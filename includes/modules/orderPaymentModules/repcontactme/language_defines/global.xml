@@ -1,0 +1,5 @@
+<definitions>
+	<define key="MODULE_PAYMENT_REPCONTACTME_TEXT_TITLE"><![CDATA[Have A Representative Contact Me]]></define>
+	<define key="MODULE_PAYMENT_REPCONTACTME_TEXT_DESCRIPTION"><![CDATA[Have A Representative Contact Me]]></define>
+	<define key="PAYMENT_MODULE_REP_AWAITING_PAYMENT"><![CDATA[Awaiting Payment]]></define>
+</definitions>

@@ -27,8 +27,10 @@
 <br />
 
 <div id="tab_container">
- <ul>  
+ <ul>
+<li class="ui-tabs-nav-item"><a href="#page-1"><span><?php echo sysLanguage::get('TAB_GENERAL');?></span></a></li>
   <li class="ui-tabs-nav-item"><a href="#page-2"><span><?php echo sysLanguage::get('TAB_DESCRIPTION');?></span></a></li>
+
 <?php
 	$contents = EventManager::notifyWithReturn('NewBlogCategoryTabHeader');
 	if (!empty($contents)){
@@ -39,6 +41,7 @@
 ?> 
  </ul>
 
+<div id="page-1"><?php include(sysConfig::getDirFsCatalog(). 'extensions/blog/admin/base_app/blog_categories/pages_tabs/tab_general.php');?></div>
  <div id="page-2"><?php include(sysConfig::getDirFsCatalog(). 'extensions/blog/admin/base_app/blog_categories/pages_tabs/tab_description.php');?></div>
 <?php
 	$contents = EventManager::notifyWithReturn('NewBlogCategoryTabBody', &$Category);

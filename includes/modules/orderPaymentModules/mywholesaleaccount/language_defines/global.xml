@@ -1,0 +1,5 @@
+<definitions>
+	<define key="MODULE_PAYMENT_MYWHOLESALEACCOUNT_TEXT_TITLE"><![CDATA[My Wholesale Account]]></define>
+	<define key="MODULE_PAYMENT_MYWHOLESALEACCOUNT_TEXT_DESCRIPTION"><![CDATA[My Wholesale Account]]></define>
+	<define key="PAYMENT_MODULE_MYWHOLESALEACCOUNT_AWAITING_PAYMENT"><![CDATA[Awaiting Payment]]></define>
+</definitions>

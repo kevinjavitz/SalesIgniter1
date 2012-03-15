@@ -69,7 +69,7 @@
 
 		<EXTENSION_SOCIAL_SHARING_TYPE>
 			<title>What type the icons should be</title>
-			<value>Standard</value>
+			<value>Count</value>
 			<description>Type of sharing icons</description>
 			<sort_order>1</sort_order>
 			<set_function>tep_cfg_select_option(array('Standard','Count'),</set_function>

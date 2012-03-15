@@ -679,7 +679,15 @@ $(document).ready(function() {
 		}
 	});
 
-	$('#saveLayoutT').click(function() { runLayoutAction('save'); });
+	$('#saveLayoutT').click(function() {
+		if($('#construct').html() == ''){
+			if (confirm("Do you really want to save the template. It has no data in it")) {
+				runLayoutAction('save');
+			}
+		}else{
+			runLayoutAction('save');
+		}
+	});
 	$('#noSaveLayout').click(function () { hideSaveLayout(); });
 
 	/* column and container properties */

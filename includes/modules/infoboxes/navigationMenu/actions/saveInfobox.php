@@ -21,7 +21,7 @@ function parseItemLink($itemId) {
 			'application' => 'index',
 			'page' => 'default',
 			'target' => $_POST['menu_item_link_category_target'][$itemId],
-			'get_vars' => 'cPath=' . ($catPath == 'none' ? 0 : $catPath)
+			'get_vars' => 'cPath=' . $catPath
 		);
 	}
 	elseif ($_POST['menu_item_link'][$itemId] == 'custom') {
@@ -61,13 +61,14 @@ function parseChildren($itemId, $itemArr, &$childArr) {
 	}
 }
 
-if (!isset($_POST['linked_to']) || $_POST['linked_to'] == 'none'){
+if (!isset($_POST['linked_to'])){
 	$menuConfig = array();
 	if (!empty($_POST['navMenuSortable'])){
 		parse_str($_POST['navMenuSortable'], $items);
+		$i = 0;
 		foreach($items['menu_item'] as $itemId => $parent){
 			if ($parent == 'root'){
-				$menuConfig[$itemId] = array(
+				$menuConfig[$i] = array(
 					'icon' => $_POST['menu_item_icon'][$itemId],
 					'icon_src' => (isset($_POST['menu_item_icon_src'][$itemId]) ? $_POST['menu_item_icon_src'][$itemId] : ''),
 					'link' => parseItemLink($itemId),
@@ -76,12 +77,13 @@ if (!isset($_POST['linked_to']) || $_POST['linked_to'] == 'none'){
 				);
 
 				foreach(sysLanguage::getLanguages() as $lInfo){
-					$menuConfig[$itemId][$lInfo['id']]['text'] = $_POST['menu_item_text'][$lInfo['id']][$itemId];
+					$menuConfig[$i][$lInfo['id']]['text'] = $_POST['menu_item_text'][$lInfo['id']][$itemId];
 				}
 
 				if (in_array($itemId, $items['menu_item'])){
-					parseChildren($itemId, $items['menu_item'], $menuConfig[$itemId]['children']);
+					parseChildren($itemId, $items['menu_item'], $menuConfig[$i]['children']);
 				}
+				$i++;
 			}
 		}
 	}
@@ -92,3 +94,4 @@ if (!isset($_POST['linked_to']) || $_POST['linked_to'] == 'none'){
 
 $WidgetProperties['menuId'] = $_POST['menu_id'];
 $WidgetProperties['forceFit'] = (isset($_POST['force_fit']) ? 'true' : 'false');
+$WidgetProperties['alwaysShow'] = (isset($_POST['always_show']) ? 'true' : 'false');

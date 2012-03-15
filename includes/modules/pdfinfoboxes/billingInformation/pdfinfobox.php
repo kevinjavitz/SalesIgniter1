@@ -24,8 +24,8 @@ class PDFInfoBoxBillingInformation extends PDFInfoBoxAbstract {
 				$Qorders = Doctrine_Query::create()
 				->from('Orders o')
 				->leftJoin('o.OrdersAddresses a')
-				->andWhere('a.address_type = ?', 'billing')
 				->where('orders_id=?', $oID)
+				->andWhere('a.address_type = ?', 'billing')
 				->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 
 				$Customers = Doctrine_Core::getTable('Customers');
@@ -66,7 +66,7 @@ class PDFInfoBoxBillingInformation extends PDFInfoBoxAbstract {
 
 				if($boxWidgetProperties->fulladdress){
 
-					$htmlText .= 'Address: '.$Customer->AddressBook[0]->entry_street_address.'<br/>'.$Customer->AddressBook[0]->entry_city.', '.$Customer->AddressBook[0]->entry_state.' '.$Customer->AddressBook[0]->entry_postcode.'<br/>';
+					$htmlText .= 'Address: '.$Qorders[0]['OrdersAddresses'][0]['entry_street_address'].'<br/>'.$Qorders[0]['OrdersAddresses'][0]['entry_city'].', '.$Qorders[0]['OrdersAddresses'][0]['entry_state'].' '.$Qorders[0]['OrdersAddresses'][0]['entry_postcode'].'<br/>';
 				}
 
 				if($boxWidgetProperties->street_address){

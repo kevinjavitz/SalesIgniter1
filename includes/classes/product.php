@@ -12,7 +12,6 @@ class Product {
 		->select('p.*, pd.*, m.*')
 		->from('Products p')
 		->leftJoin('p.ProductsDescription pd')
-		->leftJoin('p.Manufacturers m')
 		->where('p.products_id = ?', (int)$pID)
 		->andWhere('pd.language_id = ?', Session::get('languages_id'));
 		
@@ -28,6 +27,7 @@ class Product {
 			$this->productInfo = $productInfo->toArray(true);
 			$this->productInfo['taxRate'] = tep_get_tax_rate($this->productInfo['products_tax_class_id']);
 			$this->productInfo['typeArr'] = explode(',', $this->productInfo['products_type']);
+			$this->productInfo['allow_overbooking'] = explode(',', $this->productInfo['allow_overbooking']);
 			
 			foreach($this->plugins as $pluginName => $pluginClass){
 				$this->plugins[$pluginName]->loadProductInfo($this->productInfo);
@@ -124,7 +124,6 @@ class Product {
 
 	/* HAS Methods -- Begin -- */
 	function hasModel(){ return (tep_not_null($this->productInfo['products_model'])); }
-	function hasManufacturer(){ return ($this->productInfo['manufacturers_id'] > 0); }
 	function hasURL(){ return tep_not_null($this->productInfo['ProductsDescription'][Session::get('languages_id')]['products_url']); }
 	function hasImage(){ return tep_not_null($this->productInfo['products_image']); }
 	/* HAS Methods -- End -- */
@@ -137,8 +136,6 @@ class Product {
 	function getName(){ return stripslashes($this->productInfo['ProductsDescription'][Session::get('languages_id')]['products_name']); }
 	function getImage(){ return sysConfig::getDirWsCatalog() . sysConfig::get('DIR_WS_IMAGES') . $this->productInfo['products_image']; }
 	function getDescription(){ return stripslashes($this->productInfo['ProductsDescription'][Session::get('languages_id')]['products_description']); }
-	function getManufacturerID(){ return $this->productInfo['Manufacturers']['manufacturers_id']; }
-	function getManufacturerName(){ return stripslashes($this->productInfo['Manufacturers']['manufacturers_name']); }
 	function getURL(){ return $this->productInfo['ProductsDescription'][Session::get('languages_id')]['products_url']; }
 	function getPreview(){ return $this->productInfo['movie_preview']; }
 	function getKeepPrice(){ return $this->productInfo['products_keepit_price']; }

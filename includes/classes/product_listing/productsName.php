@@ -13,11 +13,8 @@ class productListing_productsName {
 
 	public function show(&$productClass, &$purchaseTypesCol){
 		global $cPath;
-		if (isset($_GET['manufacturers_id'])) {
-			$addedGetVar = '&manufacturers_id=' . $_GET['manufacturers_id'];
-		} else {
-			$addedGetVar = ($cPath ? '&cPath=' . $cPath : '');
-		}
+
+		$addedGetVar = ($cPath ? '&cPath=' . $cPath : '');
 
 //		if ($includeBoxInfo === true){
 			$products_series = '';

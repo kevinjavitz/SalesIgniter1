@@ -1,7 +1,7 @@
 <?php
 	class productInventory {
 		
-		function __construct($pId, $purchaseType, $controller){
+		function __construct($pId, $purchaseType, $controller, $allowOverbooking = false){
 			$Qcheck = Doctrine_Query::create()
 			->from('ProductsInventory')
 			->where('products_id = ?', $pId)
@@ -13,6 +13,8 @@
 			$Result = $Qcheck->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 			$this->invData = null;
 			$this->invMethod = null;
+			$this->allowOverbooking = $allowOverbooking || (sysConfig::get('CHECK_STOCK_NEW_USED') == 'false');
+
 			if (count($Result) > 0){
 				$this->invData = $Result[count($Result)-1];
 				$invController = $this->invData['controller'];
@@ -64,6 +66,9 @@
 		}
 
 		function hasInventory(){
+			if($this->allowOverbooking){
+				return true;
+			}
 			if (is_null($this->invMethod) === false){
 				return ($this->invMethod->hasInventory() > 0);
 			}

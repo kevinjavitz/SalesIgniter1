@@ -281,10 +281,9 @@ class htmlElement
 	 * @return htmlElement
 	 */
 	public function append($element) {
-		if (!is_object($element)){
-			trigger_error('Appended element must be an object.', E_USER_ERROR);
+		if (is_object($element)){
+			$this->appendElements[] = $element;
 		}
-		$this->appendElements[] = $element;
 		return $this;
 	}
 

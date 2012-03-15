@@ -1,0 +1,7 @@
+<definitions>
+	<define key="TAB_PAY_ADDON_PRODUCTS"><![CDATA[Addon Products]]></define>
+	<define key="TAB_PAY_ADDON_PRODUCTS_TEXT_PRODUCTS"><![CDATA[All Products]]></define>
+	<define key="TAB_PAY_ADDON_PRODUCTS_TEXT_ADDONS"><![CDATA[Mandatory Addon Products]]></define>
+	<define key="TAB_PAY_ADDON_PRODUCTS_TEXT_ADDONS_OPTIONAL"><![CDATA[Optional Addon Products]]></define>
+
+</definitions>

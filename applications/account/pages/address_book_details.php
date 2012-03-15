@@ -168,7 +168,7 @@
 			$stateInput->addOption($zInfo['zone_name'], $zInfo['zone_name']);
 		}
 		if (isset($addressEntry)) {
-			$stateInput->selectOptionByValue(tep_get_zone_name($addressEntry['entry_country_id'], $addressEntry['entry_zone_id'], $addressEntry['entry_state']));
+			$stateInput->selectOptionByValue(htmlentities($addressEntry['entry_state'], ENT_IGNORE, 'utf-8'));
 		}
 		if (count($Qzones) <= 0) {
 			$stateInput = htmlBase::newElement('input');

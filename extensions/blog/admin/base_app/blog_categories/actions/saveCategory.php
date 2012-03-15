@@ -2,18 +2,29 @@
 	$Categories = Doctrine_Core::getTable('BlogCategories');
 	if (isset($_GET['cID'])){
 		$Category = $Categories->findOneByBlogCategoriesId((int)$_GET['cID']);
+		$categoryId = $_GET['cID'];
 	}else{
 		$Category = $Categories->create();
-		if (isset($_GET['blog_cPath'])){
-			$path = explode('_', $_GET['blog_cPath']);
-			$Category->parent_id = $path[sizeof($path)-1];
+		if (isset($_GET['parent_id'])){
+			$Category->parent_id = $_GET['parent_id'];
+			$categoryId = $_GET['parent_id'];
 		}
 	}
-	
+
+	if (isset($_POST['parent_id']) && $_POST['parent_id'] > -1){
+		$Category->parent_id = $_POST['parent_id'];
+		$categoryId = $_POST['parent_id'];
+	}
+
 	$Category->sort_order = (int)$_POST['sort_order'];
+	$Category->categories_image = $_POST['categories_image'];
 
 
 	$languages = tep_get_languages();
+	$Category->save();
+	if(!isset($categoryId)){
+		$categoryId = $Category->categories_id;
+	}
 	$CategoriesDescription =& $Category->BlogCategoriesDescription;
 	for ($i=0, $n=sizeof($languages); $i<$n; $i++) {
 		$lID = $languages[$i]['id'];

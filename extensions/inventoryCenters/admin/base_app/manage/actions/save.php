@@ -4,6 +4,8 @@
 	$centerAddress = $_POST['inventory_center_address'];
 	$scenterAddress = $_POST['inventory_center_specific_address'];
    	$centerDetails = $_POST['inventory_center_details'];
+	$shortDetails = $_POST['inventory_center_short_details'];
+	$image = $_POST['inventory_center_image'];
 	$centerCom = $_POST['inventory_center_comission'];
 	$minRentalDays = $_POST['inventory_center_min_rental_days'];
 	$delivery_instructions = $_POST['inventory_center_delivery_instructions'];
@@ -50,6 +52,9 @@
 	$InventoryCenter->inventory_center_address_point = serialize($pointCoordinates);
 	$InventoryCenter->inventory_center_specific_address = $scenterAddress;
 	$InventoryCenter->inventory_center_details = $centerDetails;
+	$InventoryCenter->inventory_center_short_details = $shortDetails;
+	$InventoryCenter->inventory_center_image = $image;
+
 	$InventoryCenter->inventory_center_comission = $centerCom;
 	$InventoryCenter->inventory_center_min_rental_days = $minRentalDays;
 	$InventoryCenter->inventory_center_customer = $provider;

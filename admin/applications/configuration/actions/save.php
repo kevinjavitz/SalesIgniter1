@@ -26,8 +26,6 @@
                 $currentProductSave->save();
             }
         }
-	}else{
-		$messageStack->addSession('Configuration not found by id=' . $configurationId);
 	}
 
 	EventManager::attachActionResponse(itw_app_link(tep_get_all_get_params(array('action'))), 'redirect');

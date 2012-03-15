@@ -382,14 +382,14 @@
      	));
      	
 		$quantityTableHeader = htmlBase::newElement('div')
-		->addClass('ui-widget ui-widget-header ui-corner-top centerAlign')
+		->addClass('ui-widget ui-widget-header ui-corner-top centerAlign quantityTable')
 		->css(array(
 			'padding' => '.5em'
 		))
 		->html('Quantity');
 		
 		$barcodeTableContainer = htmlBase::newElement('div')
-		->addClass('ui-widget ui-widget-content ui-corner-all')
+		->addClass('ui-widget ui-widget-content ui-corner-all barcodeTable')
 		->attr('data-purchase_type', $purchaseType)
 		->css(array(
 			'width'     => '100%',

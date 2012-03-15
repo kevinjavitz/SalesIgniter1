@@ -29,7 +29,6 @@
 	$Product->products_status = $_POST['products_status'];
 	$Product->products_featured = $_POST['products_featured'];
 	$Product->products_tax_class_id = $_POST['products_tax_class_id'];
-	$Product->manufacturers_id = (isset($_POST['manufacturers_id']))?(int)$_POST['manufacturers_id']:0;
 	$Product->products_inventory_controller = $_POST['products_inventory_controller'];
 	if (isset($_POST['products_type'])){
 		if (is_array($_POST['products_type'])){

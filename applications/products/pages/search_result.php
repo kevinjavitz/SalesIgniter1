@@ -8,15 +8,7 @@
 			$conditions[] = $currencies->format($v) . ' - ' . $currencies->format($_GET['pto'][$k]) . ' <a href="' . itw_app_link(tep_get_all_get_params(array('pfrom[' . $k . ']', 'pto[' . $k . ']')), 'products', 'search_result') . '">(x)</a>';
 		}
 	}
-	if (isset($_GET['manufacturer'])){
-		$Qmanufacturer = Doctrine_Query::create()
-		->select('manufacturers_name')
-		->from('Manufacturers')
-		->where('manufacturers_id = ?', $_GET['manufacturer'])
-		->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
-		
-		$conditions[] = $Qmanufacturer[0]['manufacturers_name'] . ' <a href="' . itw_app_link(tep_get_all_get_params(array('manufacturer')), 'products', 'search_result') . '">(x)</a>';
-	}
+
 	if ($appExtension->isInstalled('attributes') && $appExtension->isEnabled('attributes')){
 		if (isset($_GET['options']) && isset($_GET['values'])){
 			$Attributes = $appExtension->getExtension('attributes');
@@ -52,7 +44,6 @@
 	->from('Products p')
 	->leftJoin('p.ProductsDescription pd')
 	->leftJoin('p.ProductsToBox p2b')
-	->leftJoin('p.Manufacturers m')
 	->where('p.products_status = ?', '1')
 	->andWhere('p2b.products_id is null')
 	->andWhere('pd.language_id = ?', (int)Session::get('languages_id'));
@@ -68,10 +59,7 @@
 			$Qproducts->andWhere('p2c.categories_id = ?', (int)$_GET['categories_id']);
 		}
 	}
-	
-	if (isset($_GET['manufacturers_id']) && tep_not_null($_GET['manufacturers_id'])){
-		$Qproducts->andWhere('m.manufacturers_id = ?', (int)$_GET['manufacturers_id']);
-	}
+
 	
 	if (isset($_GET['ptype']) && tep_not_null($_GET['ptype'])){
 		$Qproducts->andWhere('FIND_IN_SET(?, p.products_type) > 0', $_GET['ptype']);
@@ -89,7 +77,7 @@
 					break;
 				default:
 					$keyword = addslashes(strip_tags($search_keywords[$i]));
-					$where_str .= '(pd.products_name like "%' . $keyword . '%" or p.products_model like "%' . $keyword . '%" or m.manufacturers_name like "%' . $keyword . '%"';
+					$where_str .= '(pd.products_name like "%' . $keyword . '%" or p.products_model like "%' . $keyword . '%"';
 					
 					if (isset($_GET['search_in_description']) && ($_GET['search_in_description'] == '1')){
 						$where_str .= ' or pd.products_description like "%' . $keyword . '%"';

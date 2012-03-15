@@ -328,21 +328,6 @@
 				}
 			}
 			
-			if (isset($items['v_manufacturers_name']) && $items['v_manufacturers_name'] != ''){
-				$Manufacturer = Doctrine_Core::getTable('Manufacturers')
-				->findOneByManufacturersName($items['v_manufacturers_name']);
-				
-				if ($Manufacturer){
-					$Product->manufacturers_id = $Manufacturer['manufacturers_id'];
-				}else{
-					$Manufacturer =& $Product->Manufacturers;
-					$Manufacturer->manufacturers_name = $items['v_manufacturers_name'];
-					$Manufacturer->manufacturers_image = $default_image_manufacturer;
-					
-					$Product->manufacturers_id = $Manufacturer->manufacturers_id;
-				}
-			}
-			
 			if (!empty($items['v_products_categories'])){
 				$Product->ProductsToCategories->delete();
 				$ProductsToCategories = $Product->ProductsToCategories;
@@ -389,7 +374,7 @@
 					$Product->ProductsToCategories[$i]['categories_id'] = $categoryId;
 				}
 			}
-			
+
 			EventManager::notify('DataImportBeforeSave', &$items, &$Product);
 			
 			//echo '<pre>';print_r($Product->toArray(true));echo '</pre>';
@@ -417,8 +402,7 @@
 				'Weight:'          => $Product->products_weight,
 				'Type:'            => $Product->products_type,
 				'In Box:'          => $Product->products_in_box,
-				'Featured'         => $Product->products_featured,
-				'Manufacturer ID:' => $Product->manufacturers_id
+				'Featured'         => $Product->products_featured
 			);
 	
 			EventManager::notify('DataImportProductLogBeforeExecute', &$Product, &$productLogArr);

@@ -320,49 +320,6 @@ function tep_get_all_get_params($exclude_array = '') {
     return 'cPath=' . $cPath_new;
   }
 
-  function tep_get_fcpath($current_fcategory_id = '') {
-    global $fcPath_array;
-
-    if (tep_not_null($current_fcategory_id)) {
-      $cp_size = sizeof($fcPath_array);
-      if ($cp_size == 0) {
-        $fcPath_new = $current_fcategory_id;
-      } else {
-        $fcPath_new = '';
-        $Qlast = Doctrine_Query::create()
-        ->select('parent_id')
-        ->from('FunwaysCategories')
-        ->where('categories_id = ?', (int)$fcPath_array[($cp_size-1)])
-        ->fetchOne();
-
-        $Qcurrent = Doctrine_Query::create()
-        ->select('parent_id')
-        ->from('FunwaysCategories')
-        ->where('categories_id = ?', (int)$current_fcategory_id)
-        ->fetchOne();
-
-        if ($Qlast['parent_id'] == $Qcurrent['parent_id']) {
-          for ($i=0; $i<($cp_size-1); $i++) {
-            $fcPath_new .= '_' . $fcPath_array[$i];
-          }
-        } else {
-          for ($i=0; $i<$cp_size; $i++) {
-            $fcPath_new .= '_' . $fcPath_array[$i];
-          }
-        }
-        $fcPath_new .= '_' . $current_fcategory_id;
-
-        if (substr($fcPath_new, 0, 1) == '_') {
-          $fcPath_new = substr($fcPath_new, 1);
-        }
-      }
-    } else {
-      $fcPath_new = implode('_', $fcPath_array);
-    }
-
-    return 'fcPath=' . $fcPath_new;
-  }
-
 ////
 // Returns the clients browser
   function tep_browser_detect($component) {
@@ -660,17 +617,6 @@ function tep_get_all_get_params($exclude_array = '') {
     }
 
     return $categories_array;
-  }
-
-  function tep_get_manufacturers($manufacturers_array = '') {
-    if (!is_array($manufacturers_array)) $manufacturers_array = array();
-
-    $manufacturers_query = tep_db_query("select manufacturers_id, manufacturers_name from " . TABLE_MANUFACTURERS . " order by manufacturers_name");
-    while ($manufacturers = tep_db_fetch_array($manufacturers_query)) {
-      $manufacturers_array[] = array('id' => $manufacturers['manufacturers_id'], 'text' => $manufacturers['manufacturers_name']);
-    }
-
-    return $manufacturers_array;
   }
 
 ////
@@ -1466,44 +1412,13 @@ function tep_get_prid($uprid) {
     }
   }
 
-
-    /// ----------------------------------- FANWAYS -------------------------------------------- ///
-////
-// Return true if the category has subcategories
-// TABLES: funways_categories
-  function tep_has_funways_category_subcategories($category_id) {
-    $child_category_query = tep_db_query("select count(*) as count from " . TABLE_FUNWAYS_CATEGORIES . " where parent_id = '" . (int)$category_id . "'");
-    $child_category = tep_db_fetch_array($child_category_query);
-
-    if ($child_category['count'] > 0) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-
-////
-// Parse and secure the cPath parameter values
-  function tep_parse_funways_category_path($fcPath) {
-    $fcPath_array = array_map('tep_string_to_int', explode('_', $fcPath));
-    $tmp_array = array();
-    $n = sizeof($fcPath_array);
-    for ($i=0; $i<$n; $i++) {
-      if (!in_array($fcPath_array[$i], $tmp_array)) {
-        $tmp_array[] = $fcPath_array[$i];
-      }
-    }
-
-    return $tmp_array;
-  }
-
   function tep_get_pages_content($pageID){
       $QpageContent = tep_db_query('select pages_html_text from ' .TABLE_PAGES_DESCRIPTION . ' where language_id = "' . (int)$_SESSION['languages_id'] . '" and pages_id = "' . $pageID . '"');
       $pageContent = tep_db_fetch_array($QpageContent);
     return stripslashes($pageContent['pages_html_text']);
   }
   
-	function addChildren($child, $currentPath, &$ulElement) {
+	function addChildren($child, $currentPath, &$ulElement, $catArrExcl = array()) {
 		global $current_category_id;
 		//$currentPath .= '_' . $child['categories_id'];
 
@@ -1522,6 +1437,7 @@ function tep_get_prid($uprid) {
 		->from('Categories c')
 		->leftJoin('c.CategoriesDescription cd')
 		->where('c.parent_id = ?', $child['categories_id'])
+		->andWhereNotIn('c.categories_id', $catArrExcl)
 		->andWhere('cd.language_id = ?', (int)Session::get('languages_id'))
 		->orderBy('c.sort_order, cd.categories_name');
 							

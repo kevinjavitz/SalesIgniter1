@@ -123,6 +123,10 @@ class multiStore_admin_products_new_product extends Extension_multiStore {
 				$currentTypes = explode(',', $pInfo['products_type']);
 			}
 
+			if (isset($pInfo)){
+				$currentAllowOverbooking = explode(',', $pInfo['allow_overbooking']);
+			}
+
 
 			$pricingTabsObj = htmlBase::newElement('tabs')
 			->addClass('pricingTabs')
@@ -168,6 +172,24 @@ class multiStore_admin_products_new_product extends Extension_multiStore {
 							array('text' => $productTypeEnabled->draw())
 						)
 					));
+				if($pricingTypeName == 'new' || $pricingTypeName == 'used'){
+					$allowOverbookingEnabled = htmlBase::newElement('checkbox')
+						->setName('allow_overbooking_store_'.$sInfo['stores_id'].'[]')
+						->setValue($pricingTypeName);
+
+					if (isset($currentAllowOverbooking) && in_array($pricingTypeName, $currentAllowOverbooking)){
+						$allowOverbookingEnabled->setChecked(true);
+					}
+					$inputTable->addBodyRow(array(
+							'columns' => array(
+								array('text' => sysLanguage::get('TEXT_PRODUCTS_ALLOW_OVERBOOKING')),
+								array('text' => $allowOverbookingEnabled->draw())
+							)
+					));
+				}
+
+
+
 				if($pricingTypeName !== 'rental' && $pricingTypeName !== 'member_stream'){
 					$inputNet = htmlBase::newElement('input')->addClass('netPricing');
 					$inputGross = htmlBase::newElement('input')->addClass('grossPricing');

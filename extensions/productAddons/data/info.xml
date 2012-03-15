@@ -1,0 +1,8 @@
+<data>
+	<name>Addon Products</name>
+	<key>productAddons</key>
+	<version>1.0</version>
+	<author>Cristian Arcu ( http://www.itwebexperts.com )</author>
+	<tables></tables>
+	<status_key>EXTENSION_PRODUCT_ADDONS_ENABLED</status_key>
+</data>

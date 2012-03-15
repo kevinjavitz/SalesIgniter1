@@ -161,7 +161,6 @@
 
 			self::set('DOCTRINE_CONN_STRING', 'mysql://' . self::get('DB_SERVER_USERNAME') . ':' . self::get('DB_SERVER_PASSWORD') . '@' . self::get('DB_SERVER') . '/' . self::get('DB_DATABASE'));
 			self::set('REQUEST_TYPE', (getenv('HTTPS') == 'on' ? 'SSL' : 'NONSSL'));
-			self::set('PRODUCT_LISTING_HIDE_NO_INVENTORY', 'False');
 			
 			$request_type = (getenv('HTTPS') == 'on') ? 'SSL' : 'NONSSL';
 

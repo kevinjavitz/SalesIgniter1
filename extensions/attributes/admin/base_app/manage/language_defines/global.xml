@@ -1,5 +1,5 @@
 <definitions>
-	<define key="HEADING_TITLE"><![CDATA[Products Attributes]]></define>
+	<define key="HEADING_TITLE_ATTRIBUTES"><![CDATA[Products Attributes]]></define>
 	<define key="WINDOW_TITLE_NEW_OPTION"><![CDATA[Create New Option]]></define>
 	<define key="WINDOW_TITLE_EDIT_OPTION"><![CDATA[Edit Option]]></define>
 	<define key="WINDOW_TITLE_NEW_VALUE"><![CDATA[Create New Value]]></define>

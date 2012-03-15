@@ -39,7 +39,8 @@ elseif (in_array($_GET['moduleType'], array('orderTotal', 'orderPayment', 'order
 
 if (isset($_GET['rType']) && $_GET['rType'] == 'ajax'){
 	EventManager::attachActionResponse(array(
-			'success' => true
+			'success' => true,
+			'moduleType', $_GET['moduleType']
 		), 'json');
 }
 else {

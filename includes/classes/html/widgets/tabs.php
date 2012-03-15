@@ -74,6 +74,9 @@ class htmlWidget_tabs implements htmlWidgetPlugin {
 		
 		$liObj = new htmlElement('li');
 		$liObj->append($aObj);
+		if(isset($settings['addCls'])){
+			$liObj->addClass($settings['addCls']);
+		}
 		$this->tabHeaders[$id] = $liObj;
 		return $this;
 	}

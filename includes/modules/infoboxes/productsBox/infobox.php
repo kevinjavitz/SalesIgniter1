@@ -99,6 +99,8 @@ class InfoBoxProductsBox extends InfoBoxAbstract {
 		->leftJoin('p.ProductsDescription pd')
 		->where('p.products_status = ?', '1')
 		->andWhere('pd.language_id = ?', Session::get('languages_id'));
+
+		EventManager::notify('ProductListingQueryBeforeExecute', &$Query);
 		
 		if ($queryLimit > 0){
 			$Query->limit($queryLimit);

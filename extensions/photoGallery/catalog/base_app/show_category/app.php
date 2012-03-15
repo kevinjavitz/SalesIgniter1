@@ -12,6 +12,10 @@
 	$appContent = $App->getAppContentFile();
 
 if(sysConfig::get('EXTENSION_PHOTO_GALLERY_DISPLAY_TYPE') == 'Slideshow'){
+	$App->addJavascriptFile('ext/jQuery/external/jquery.bxSlider/jquery.bxSlider.min.js');
+	$App->addStylesheetFile('ext/jQuery/external/jquery.bxSlider/jquery.easing.1.3.js');
+
+}elseif(sysConfig::get('EXTENSION_PHOTO_GALLERY_DISPLAY_TYPE') == 'SlideshowNivo'){
 	$App->addJavascriptFile('ext/jQuery/external/nivoSlider/jquery.nivo.slider.js');
 	$App->addStylesheetFile('ext/jQuery/external/nivoSlider/themes/default/default.css');
 	$App->addStylesheetFile('ext/jQuery/external/nivoSlider/nivo-slider.css');

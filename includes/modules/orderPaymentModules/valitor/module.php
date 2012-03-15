@@ -12,6 +12,11 @@
 
 class OrderPaymentValitor extends CreditCardModule {
 
+	var $gatewayUrl;
+	var $terminalUsername;
+	var $terminalPassword;
+	var $terminalPOSTermID;
+
 	public function __construct(){
 		/*
 		 * Default title and description for modules that are not yet installed
@@ -36,11 +41,11 @@ class OrderPaymentValitor extends CreditCardModule {
 		$this->terminalPOSTermID = $this->getConfigData('MODULE_PAYMENT_VALITOR_POSTermID');
 		
 		//For testing:
-		/*
-		$this->gatewayUrl = 'https://testgreidslugatt.valitor.is/greidslugatt.asmx/FramkvaemaAdgerd';
+
+		/*$this->gatewayUrl = 'https://testgreidslugatt.valitor.is/greidslugatt.asmx/FramkvaemaAdgerd';
 		$this->terminalUsername = 'visatest'; //username
 		$this->terminalPassword = 'visatest123'; //password
-		$this->terminalPOSTermID = 5; //POSTermID		
+		$this->terminalPOSTermID = 5; //POSTermID
 		*/
 		
 		//Always require verification code
@@ -144,9 +149,8 @@ class OrderPaymentValitor extends CreditCardModule {
 
 		$paymentInfo = OrderPaymentModules::getPaymentInfo();
 		
-		$cardInfo = $paymentInfo['cardDetails']['cardNumber'].'-'.substr($paymentInfo['cardDetails']['cardExpYear'],2).$paymentInfo['cardDetails']['cardExpMonth'];		
+		$cardInfo = $paymentInfo['cardDetails']['cardNumber'].'-'.substr($paymentInfo['cardDetails']['cardExpYear'],0,2).$paymentInfo['cardDetails']['cardExpMonth'];
 		$cardLast4Digits = substr($paymentInfo['cardDetails']['cardNumber'], -4, 4);
-		
 
 		return $this->sendPaymentRequest(array(
 		    'orderID' => $order->newOrder['orderID'],
@@ -166,7 +170,6 @@ class OrderPaymentValitor extends CreditCardModule {
 	}
 
 	public function sendPaymentRequest($requestParams){
-	    
 	    $CurlRequest = new CurlRequest($this->gatewayUrl);
 	    $CurlRequest->setData($requestParams);
 	    $CurlResponse = $CurlRequest->execute();
@@ -176,8 +179,7 @@ class OrderPaymentValitor extends CreditCardModule {
 	
 	private function onResponse($CurlResponse, $isCron = false){
                 
-		$response = $CurlResponse->getResponse();               
-                
+		$response = $CurlResponse->getResponse();
 		$xml = @simplexml_load_string($response);
 
 		$error_number = (string)$xml->Villunumer;
@@ -216,13 +218,14 @@ class OrderPaymentValitor extends CreditCardModule {
             
 	    $orderId = $RequestData['orderID'];
 
-	    $card_info = explode('-', $RequestData['Kortaupplysingar']);
+	    $card_info = explode('-', $RequestData['Kortaupplysingar']);//9999999999999999-1411
 
 	    $cardDetails = array(
 		    'cardOwner'    => null,
 		    'cardNumber'   => $card_info[0], //card number
 		    'cardExpYear'  => substr($card_info[1], 0, 2),
-		    'cardExpMonth' => substr($card_info[1], 2, 2),			
+		    'cardExpMonth' => substr($card_info[1], 2, 2),
+		    'cardCvvNumber' => $RequestData['Oryggisnumer'],
 		    'transId'      => (isset($this->transactionId)?$this->transactionId:''),
                     'authId'      => (isset($this->authId)?$this->authId:''),                
                     'cardType'     => $this->resultCardType
@@ -242,7 +245,7 @@ class OrderPaymentValitor extends CreditCardModule {
 	    $details['success'] = 1;
 	    $this->logPayment($details);
             
-            return $details;
+        return $details;
 	}
 	
 	private function onFail($info){
@@ -250,8 +253,8 @@ class OrderPaymentValitor extends CreditCardModule {
 				
 		$this->setErrorMessage($this->getTitle() . ' : ' . $info['message']);
 		if ($this->removeOrderOnFail === true){
-                        $RequestData = $info['curlResponse']->getDataRaw();
-                        $orderId = $RequestData['orderID'];
+            $RequestData = $info['curlResponse']->getDataRaw();
+            $orderId = $RequestData['orderID'];
                 
 			$Order = Doctrine_Core::getTable('Orders')->find($orderId);
 			if ($Order){
@@ -263,8 +266,9 @@ class OrderPaymentValitor extends CreditCardModule {
 		    $details = $this->_getResponseDetails($info['curlResponse']);
 		    $details['success'] = 0;
 		    $this->logPayment($details);
+		    $messageStack->addSession('pageStack', $info['message'], 'error');
 		}
                 
-                return $details;
+         return $details;
 	}	
 }

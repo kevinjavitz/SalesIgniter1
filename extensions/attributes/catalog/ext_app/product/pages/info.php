@@ -27,7 +27,7 @@ class attributes_catalog_product_info extends Extension_attributes {
 		if (!isset($product->productInfo['ProductsAttributes']) || sizeof($product->productInfo['ProductsAttributes']) <= 0) return;
 
 		if (!isset($settings['purchase_type'])) return;
-		
+
 		$ProductsAttributes = attributesUtil::getAttributes($product->productInfo['products_id'], null, null, $settings['purchase_type']);
 		$Attributes = attributesUtil::organizeAttributeArray($ProductsAttributes);
 

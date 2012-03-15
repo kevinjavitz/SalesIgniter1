@@ -13,14 +13,17 @@
 	class ShoppingCartProduct implements Serializable {
 		private $pInfo = array();
 		public function __construct($pInfo){
-			$this->productClass = new Product((int) $pInfo['id_string']);
-			$this->uniqID = $pInfo['uniqID'];
-			$this->purchaseTypeClass = $this->productClass->getPurchaseType($pInfo['purchase_type']);
-			$this->purchaseTypeClass->processAddToCart(&$pInfo);
-			
-			EventManager::notify('ShoppingCartProduct\AddToCart', &$pInfo, &$this->productClass, &$this->purchaseTypeClass);
-			
-			$this->pInfo = $pInfo;
+			if(!empty($pInfo['id_string'])){
+				$this->productClass = new Product((int) $pInfo['id_string']);
+
+				$this->uniqID = $pInfo['uniqID'];
+				$this->purchaseTypeClass = $this->productClass->getPurchaseType($pInfo['purchase_type']);
+				$this->purchaseTypeClass->processAddToCart(&$pInfo);
+
+				EventManager::notify('ShoppingCartProduct\AddToCart', &$pInfo, &$this->productClass, &$this->purchaseTypeClass);
+
+				$this->pInfo = $pInfo;
+			}
 		}
 		
 		public function serialize(){
@@ -247,13 +250,17 @@
 			}
 		}
 		
-		public function updateInfo($newInfo){
+		public function updateInfo($newInfo, $purchaseUpdate = true){
 			$newProductInfo = $this->pInfo;
 			foreach($newInfo as $k => $v){
 				$newProductInfo[$k] = $v;
 			}
+
+			EventManager::notify('BeforeProcessUpdateCart', &$newProductInfo);
 			$this->pInfo = $newProductInfo;
-			$this->purchaseTypeClass->processUpdateCart(&$this->pInfo);
+			if($purchaseUpdate){
+				$this->purchaseTypeClass->processUpdateCart(&$this->pInfo);
+			}
 		}
 		
 		public function onInsertOrderedProduct($orderID, &$orderedProduct, &$products_ordered){

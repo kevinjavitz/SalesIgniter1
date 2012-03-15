@@ -10,7 +10,7 @@
 			$infoBoxId = 'new';
 		}
 		$App->setInfoBoxId($infoBoxId);
-	if (!$App->getPageName() != 'expected' && $App->getPageName() != 'manufacturers'){
+	if (!$App->getPageName() != 'expected'){
 
 
 		if ($App->getAppPage() == 'new_product'){

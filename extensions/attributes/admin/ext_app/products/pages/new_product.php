@@ -16,7 +16,7 @@ class attributes_admin_products_new_product extends Extension_attributes {
 		parent::__construct();
 
 		define('TEXT_BUTTON_NEW_OPTION', 'Add Option');
-		define('TEXT_BUTTON_LOAD_SET', 'Load Set');
+		define('TEXT_BUTTON_LOAD_SET', 'Load Group');
 		define('TEXT_BUTTON_SAVE_SET', 'Save As Set');
 		define('TEXT_BUTTON_UPDATE_SET', 'Update Set');
 	}

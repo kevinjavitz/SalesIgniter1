@@ -183,7 +183,7 @@
 <?php
 
 		foreach($Addresses as $key => $aInfo){
-			if ($key != 'pickup' || ($key == 'pickup' && sysConfig::get('ONEPAGE_CHECKOUT_PICKUP_ADDRESS') == 'true')){
+			if ($key == 'billing' || ($key == 'shipping' && sysConfig::get('ONEPAGE_CHECKOUT_SHIPPING_ADDRESS') == 'true') || ($key == 'pickup' && sysConfig::get('ONEPAGE_CHECKOUT_PICKUP_ADDRESS') == 'true')){
 				$Fields = $aInfo['Fields'];
 
 				$FormTable = htmlBase::newElement('formTable');
