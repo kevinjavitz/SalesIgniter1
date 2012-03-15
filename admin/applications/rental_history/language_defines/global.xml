@@ -1,0 +1,10 @@
+<definitions>
+	<define key="HEADING_TITLE"><![CDATA[Rental History]]></define>
+	
+	<define key="TABLE_HEADING_NAME"><![CDATA[Customer Name]]></define>
+	<define key="TABLE_HEADING_ADDRESS"><![CDATA[Customer Address]]></define>
+	<define key="TABLE_HEADING_PRODUCT"><![CDATA[Product Name]]></define>
+	<define key="TABLE_HEADING_BARCODE"><![CDATA[Barcode]]></define>
+	<define key="TABLE_HEADING_DATE"><![CDATA[Date]]></define>
+	<define key="TABLE_HEADING_STATUS"><![CDATA[Status]]></define>
+</definitions>

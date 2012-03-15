@@ -109,6 +109,13 @@
 		}
 	}
 	
+	if (sysPermissions::adminAccessAllowed('rental_history', 'default') === true){
+		$contents['children'][] = array(
+			'link' => itw_app_link(null, 'rental_history', 'default', 'SSL'),
+			'text' => sysLanguage::get('BOX_RENTAL_HISTORY')
+		);
+	}
+	
 	if (sysPermissions::adminAccessAllowed('label_maker', 'default') === true){
 		$contents['children'][] = array(
 			'link' => itw_app_link(null, 'label_maker', 'default', 'SSL'),
