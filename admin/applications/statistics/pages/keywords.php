@@ -73,7 +73,8 @@
 		}
 	}else{
 		$Qwords = Doctrine_Query::create()
-		->from('SearchQueriesSorted');
+		->from('SearchQueriesSorted')
+		->orderBy('search_count DESC');
 	
 		$tableGrid->setQuery($Qwords);
 
