@@ -19,7 +19,7 @@ class PaymentModuleBase extends ModuleBase
 
 	private $paymentError = null;
 
-	private $orderStatus = 0;
+	public $orderStatus = 0;
 
 	private $formUrl = null;
 

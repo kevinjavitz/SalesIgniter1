@@ -373,6 +373,7 @@ if ($isAjax === false){
 	ob_end_clean();
 
 	$pageContent->set('pageContent', $pageContents);
+	$pageContent->set('pageButtons', htmlBase::newElement('button')->setHref(itw_app_link(null, 'index', 'default'))->setText(sysLanguage::get('TEXT_CONTINUE_TO_HOMEPAGE'))->draw());
 }
 
 $ShoppingCart->emptyCart(true);
@@ -402,6 +403,3 @@ $ShoppingCart->emptyCart(true);
 		//tep_redirect( itw_app_link(null,'rentals','queue'));
 	}
 ?>
-<div class="" style="display:none;">
-	<iframe src="<?php echo itw_app_link(null,'account','success_outside');?>"></iframe>
-</div>
