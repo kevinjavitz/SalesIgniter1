@@ -106,7 +106,6 @@
 			$newOptionWrapper = htmlBase::newElement('div')->attr('option_id', $oInfo['products_options_id'])->css(array(
 				'float'   => 'left',
 				'width'   => '150px',
-				'height'  => '200px',
 				'padding' => '.3em',
 				'margin'  => '.2em'
 			))->addClass('ui-widget ui-widget-content ui-corner-all productOption droppableOption draggableOption')
