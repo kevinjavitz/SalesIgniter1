@@ -124,7 +124,6 @@ class Product {
 
 	/* HAS Methods -- Begin -- */
 	function hasModel(){ return (tep_not_null($this->productInfo['products_model'])); }
-	function hasURL(){ return tep_not_null($this->productInfo['ProductsDescription'][Session::get('languages_id')]['products_url']); }
 	function hasImage(){ return tep_not_null($this->productInfo['products_image']); }
 	/* HAS Methods -- End -- */
 
@@ -136,7 +135,6 @@ class Product {
 	function getName(){ return stripslashes($this->productInfo['ProductsDescription'][Session::get('languages_id')]['products_name']); }
 	function getImage(){ return sysConfig::getDirWsCatalog() . sysConfig::get('DIR_WS_IMAGES') . $this->productInfo['products_image']; }
 	function getDescription(){ return stripslashes($this->productInfo['ProductsDescription'][Session::get('languages_id')]['products_description']); }
-	function getURL(){ return $this->productInfo['ProductsDescription'][Session::get('languages_id')]['products_url']; }
 	function getPreview(){ return $this->productInfo['movie_preview']; }
 	function getKeepPrice(){ return $this->productInfo['products_keepit_price']; }
 	function getAvailableDate(){ return $this->productInfo['products_date_available']; }

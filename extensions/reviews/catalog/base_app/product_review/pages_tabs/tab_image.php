@@ -75,9 +75,6 @@ EventManager::notify('ProductInfoProductsImageShow', &$image, &$product);
   <div style="clear:both;"></div>
 
   <div style="text-align:center;"><?php
-  if ($product->hasURL()) {
-  	echo '<div>' . sprintf(sysLanguage::get('TEXT_MORE_INFORMATION'), itw_app_link('action=url&goto=' . urlencode($product->getURL()), 'redirect', 'default', 'NONSSL')) . '</div>';
-  }
 
   if ($product->isNotAvailable()) {
   	echo '<div>' . sprintf(sysLanguage::get('TEXT_DATE_AVAILABLE'), tep_date_long($product->getAvailableDate())) . '</div>';

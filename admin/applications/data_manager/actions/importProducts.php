@@ -303,9 +303,6 @@
 				$CurrentDesc =& $ProductsDescription[$lID];
 				
 				$CurrentDesc->language_id = $lID;
-				if (isset($items['v_products_url_' . $lID])){
-					$CurrentDesc->products_url = $items['v_products_url_' . $lID];
-				}
 				
 				if (isset($items['v_products_name_' . $lID])){
 					$CurrentDesc->products_name = $items['v_products_name_' . $lID];
@@ -419,7 +416,6 @@
 					'Language:'           => $Description['language_id'],
 					'Name:'               => $Description['products_name'],
 					'Description:'        => $Description['products_description'],
-					'URL:'                => $Description['products_url'],
 					'Header Title:'       => $Description['products_head_title_tag'],
 					'Header Description:' => $Description['products_head_desc_tag'],
 					'Header Keywords:'    => $Description['products_head_keywords_tag']

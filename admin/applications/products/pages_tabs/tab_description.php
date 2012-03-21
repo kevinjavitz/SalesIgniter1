@@ -9,9 +9,6 @@ foreach(sysLanguage::getLanguages() as $lInfo){
 	$ProductsName = htmlBase::newElement('input')
 		->setName('products_name[' . $lID . ']');
 
-	$ProductsUrl = htmlBase::newElement('input')
-		->setName('products_url[' . $lID . ']');
-
 	if (sysConfig::get('ENABLE_HTML_EDITOR') == 'false') {
 		$ProductsDescription = htmlBase::newElement('textarea')
 			->attr('rows', '8')
@@ -26,7 +23,7 @@ foreach(sysLanguage::getLanguages() as $lInfo){
 
 	$ProductsName->setValue(stripslashes($Product->ProductsDescription[$lID]['products_name']));
 	$ProductsDescription->html(stripslashes($Product->ProductsDescription[$lID]['products_description']));
-	$ProductsUrl->setValue($Product->ProductsDescription[$lID]['products_url']);
+
 	$ProductsSeoUrl->setValue($Product->ProductsDescription[$lID]['products_seo_url']);
 
 	$inputTable = htmlBase::newElement('table')
@@ -37,13 +34,6 @@ foreach(sysLanguage::getLanguages() as $lInfo){
 			'columns' => array(
 				array('text' => sysLanguage::get('TEXT_PRODUCTS_NAME')),
 				array('text' => $ProductsName->draw())
-			)
-		));
-
-	$inputTable->addBodyRow(array(
-			'columns' => array(
-				array('text' => sysLanguage::get('TEXT_PRODUCTS_URL') . '<br><small>' . sysLanguage::get('TEXT_PRODUCTS_URL_WITHOUT_HTTP') . '</small>'),
-				array('text' => $ProductsUrl->draw())
 			)
 		));
 

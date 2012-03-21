@@ -94,7 +94,6 @@
 				$newProduct->ProductsDescription[$lID]->products_head_title_tag = $description['products_head_title_tag'];
 				$newProduct->ProductsDescription[$lID]->products_head_desc_tag = $description['products_head_desc_tag'];
 				$newProduct->ProductsDescription[$lID]->products_head_keywords_tag = $description['products_head_keywords_tag'];
-				$newProduct->ProductsDescription[$lID]->products_url = $description['products_url'];
 				$newProduct->ProductsDescription[$lID]->products_viewed = '0';
 			}
 

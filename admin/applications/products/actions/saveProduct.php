@@ -54,7 +54,6 @@
 		$ProductsDescription[$lang_id]->products_name = $_POST['products_name'][$lang_id];
 		$ProductsDescription[$lang_id]->products_sname = trim(strtolower($_POST['products_name'][$lang_id]));
 		$ProductsDescription[$lang_id]->products_description = $_POST['products_description'][$lang_id];
-		$ProductsDescription[$lang_id]->products_url = $_POST['products_url'][$lang_id];
 		$ProductsDescription[$lang_id]->products_seo_url = $_POST['products_seo_url'][$lang_id];
 	}
 

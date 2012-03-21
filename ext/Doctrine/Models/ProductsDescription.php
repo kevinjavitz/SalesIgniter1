@@ -165,7 +165,6 @@ class ProductsDescription extends Doctrine_Record {
 			$newDesc->products_name = $translated['name'];
 			$newDesc->products_sname = $Record['products_sname'];
 			$newDesc->products_description = $translated['description'];
-			$newDesc->products_url = $Record['products_url'];
 			$newDesc->products_viewed = 0;
 			$newDesc->products_head_title_tag = $translated['htc_title'];
 			$newDesc->products_head_desc_tag = $translated['htc_desc'];

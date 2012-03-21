@@ -36,7 +36,6 @@
 		$dataExport->setHeaders(array(
 			'v_products_name_' . $lID,
 			'v_products_description_' . $lID,
-			'v_products_url_' . $lID,
 			'v_products_head_title_tag_' . $lID,
 			'v_products_head_desc_tag_' . $lID,
 			'v_products_head_keywords_tag_' . $lID
@@ -113,7 +112,6 @@
 				$pInfo = array_merge($pInfo, array(
 					'v_products_name_' . $lID              => $Qdescription[$lID]['products_name'],
 					'v_products_description_' . $lID       => $Qdescription[$lID]['products_description'],
-					'v_products_url_' . $lID               => $Qdescription[$lID]['products_url'],
 					'v_products_head_title_tag_' . $lID    => $Qdescription[$lID]['products_head_title_tag'],
 					'v_products_head_desc_tag_' . $lID     => $Qdescription[$lID]['products_head_desc_tag'],
 					'v_products_head_keywords_tag_' . $lID => $Qdescription[$lID]['products_head_keywords_tag']

@@ -1,4 +1,0 @@
-<?php
-	
-	$appContent = $App->getAppContentFile();
-?>

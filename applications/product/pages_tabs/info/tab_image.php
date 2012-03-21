@@ -248,15 +248,6 @@ EventManager::notify('ProductInfoProductsImageShow', &$image, &$product);
 	
 	echo '<div style="text-align:center;">';
 	
-	if ($product->hasURL()) {
-		echo '<div>' . 
-			sprintf(
-				sysLanguage::get('TEXT_MORE_INFORMATION'),
-				itw_app_link('action=url&goto=' . urlencode($product->getURL()), 'redirect', 'default', 'NONSSL')
-			) . 
-		'</div>';
-	}
-	
 	if ($product->isNotAvailable()) {
 		echo '<div>' . 
 			sprintf(
