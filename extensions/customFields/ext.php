@@ -310,7 +310,7 @@ class Extension_customFields extends ExtensionBase {
       */
     public function ProductSearchQueryBeforeExecute(&$Qproducts){
 
-
+	    /*
         $Qcheck = Doctrine_Query::create()
                 ->select('search_key')
                 ->from('ProductsCustomFields')
@@ -318,15 +318,56 @@ class Extension_customFields extends ExtensionBase {
                 ->andWhere('include_in_search = ?', '1')
                 ->andWhere('search_key is not NULL')
                 ->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
-        if ($Qcheck && sizeof($Qcheck) > 0){
-            foreach($Qcheck as $cInfo){
+		*/
+	    $Qcheck = tep_db_query('select search_key from products_custom_fields where search_key <> "" and include_in_search = 1 and search_key is not NULL');
+        if (tep_db_num_rows($Qcheck)){
+            while($cInfo = tep_db_fetch_array($Qcheck)){
                 if((isset($_GET['keywords']) && !empty($_GET['keywords'])) || (isset($_GET[$cInfo['search_key']]) && !empty($_GET[$cInfo['search_key']]))){
                     $this->validSearchKeys[$cInfo['search_key']] = (isset($_GET['keywords']) && !empty($_GET['keywords'])) ? $_GET['keywords'] : $_GET[$cInfo['search_key']];
                 }
             }
         }
 
+	    $productIds = false;
+	    if (isset($this->validSearchKeys) && count($this->validSearchKeys) > 0){
+		    foreach($this->validSearchKeys as $k => $v){
+			    if(empty($v))   continue;
+			    if ($k == 'field_val'){
+				    $query = tep_db_query('SELECT f2p.product_id FROM products_custom_fields_to_products f2p LEFT JOIN products_custom_fields f using(field_id) WHERE f.field_id = "' . $this->validSearchKeys['field_id'] . '" AND f2p.value LIKE "%' . str_replace('.', '%', $v) . '%"');
+				    if(tep_db_num_rows($query)){
+					    while($result = tep_db_fetch_array($query)){
+						    $productIds[$result['product_id']] = $result['products_id'];
+					    }
+				    }
+			    }elseif ($k == 'field_id'){
+				    continue;
+			    }elseif (is_array($v)){
+				    $addSearch = array();
+				    foreach($v as $count => $val){
+					    $addSearch[] = 'f2p.value like "%' . str_replace('.', '%', $val) . '%"';
+				    }
 
+				    $query = tep_db_query('SELECT f2p.product_id FROM products_custom_fields_to_products f2p LEFT JOIN products_custom_fields f using(field_id) WHERE f.search_key = "' . $k . '" AND (' . implode(' OR ', $addSearch) . ')');
+
+			    }else{
+				    $query =  tep_db_query('SELECT f2p.product_id FROM products_custom_fields_to_products f2p LEFT JOIN products_custom_fields f using(field_id) WHERE f.search_key = "' . $k . '" AND f2p.value LIKE "%' . str_replace('.', '%', $v) . '%")');
+			    }
+			    if(tep_db_num_rows($query)){
+				    while($result = tep_db_fetch_array($query)){
+					    $productIds[$result['product_id']] = $result['product_id'];
+				    }
+			    }
+		    }
+
+		    if(is_array($productIds) && count($productIds)){
+			    $Qproducts->leftJoin('p.ProductsCustomFieldsToProducts f2p')
+				    ->leftJoin('f2p.ProductsCustomFields f')
+				    ->andWhere('(f2p.product_id IN (' . implode(',', $productIds) . '))');
+		    }
+
+	    }
+
+	    /*
         if (isset($this->validSearchKeys) && sizeof($this->validSearchKeys) > 0){
             $fieldsSearch = array();
             $i = 1;
@@ -354,6 +395,7 @@ class Extension_customFields extends ExtensionBase {
                     ->leftJoin('f2p.ProductsCustomFields f')
                     ->orWhere('((' . implode(') OR (', $fieldsSearch) . '))');
         }
+	    */
     }
 
     public function BoxCatalogAddLink(&$contents){
