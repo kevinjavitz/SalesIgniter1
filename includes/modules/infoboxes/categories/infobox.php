@@ -27,16 +27,23 @@ class infoBoxCategories extends InfoBoxAbstract {
 		$boxWidgetProperties = $this->getWidgetProperties();
 		//$showSubcategory = (isset($boxWidgetProperties->showSubcategory)&& $boxWidgetProperties->showSubcategory == 'showSubcategory')?true:false;
 		//$showAlways = (isset($boxWidgetProperties->showAlways)&& $boxWidgetProperties->showAlways == 'showAlways')?true:false;
-		$excludedCategories = isset($boxWidgetProperties->excludedCategories)?explode(';',$boxWidgetProperties->excludedCategories):array();
-		$catArrExcl = array();
-		foreach($excludedCategories as $catExcl){
-			$catArr = tep_get_categories('', $catExcl);
-			$catArrExcl[] = $catExcl;
-			foreach($catArr as $catA){
-				$catArrExcl[] = $catA['id'];
+		$excludedCategories = (isset($boxWidgetProperties->excludedCategories) && !empty($boxWidgetProperties->excludedCategories))?explode(';',$boxWidgetProperties->excludedCategories):false;
+		$catArrExcl = false;
+		if(is_array($excludedCategories) && count($excludedCategories)){
+			foreach($excludedCategories as $catExcl){
+				$catArr = tep_get_categories('', $catExcl);
+				$catArrExcl[] = $catExcl;
+				foreach($catArr as $catA){
+					$catArrExcl[] = $catA['id'];
+				}
 			}
+			if(is_array($catArrExcl) && count($catArrExcl)){
+				$catArrExcl = array_unique($catArrExcl);
+			}
+
 		}
-		$catArrExcl = array_unique($catArrExcl);
+
+
 		$Qcategories = Doctrine_Query::create()
 		->select('c.categories_id, cd.categories_name, cd.categories_seo_url, c.parent_id')
 		->from('Categories c')
@@ -47,7 +54,10 @@ class infoBoxCategories extends InfoBoxAbstract {
 		}else{*/
 		$Qcategories->where('c.parent_id = ?', ((int)$boxWidgetProperties->selected_category > 0) ? $boxWidgetProperties->selected_category : 0);
 		//}
-		$Qcategories->andWhereNotIn('c.categories_id', $catArrExcl);
+		if(is_array($catArrExcl) && count($catArrExcl)){
+			$Qcategories->andWhereNotIn('c.categories_id', $catArrExcl);
+		}
+
 		$Qcategories->andWhere('(c.categories_menu = "infobox" or c.categories_menu = "both")')
 		->andWhere('cd.language_id = ?', (int)Session::get('languages_id'))
 		->orderBy('c.sort_order, cd.categories_name');
@@ -83,9 +93,11 @@ class infoBoxCategories extends InfoBoxAbstract {
 				->from('Categories c')
 				->leftJoin('c.CategoriesDescription cd')
 				->where('c.parent_id = ?', $catId)
-				->andWhereNotIn('c.categories_id', $catArrExcl)
 				->andWhere('cd.language_id = ?', (int)Session::get('languages_id'))
 				->orderBy('c.sort_order, cd.categories_name');
+				if(is_array($catArrExcl) && count($catArrExcl)){
+					$Qchildren->andWhereNotIn('c.categories_id', $catArrExcl);
+				}
 
 				EventManager::notify('CategoryQueryBeforeExecute', &$Qchildren);
 				$currentChildren = $Qchildren->execute();
