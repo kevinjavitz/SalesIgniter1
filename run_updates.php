@@ -421,18 +421,20 @@ function installInfobox($boxPath, $className, $extName = null){
 	}
 
 	$className = 'InfoBox' . ucfirst($className);
-	if (!class_exists($className)){
-		require($moduleDir . 'infobox.php');
-	}
-	$class = new $className;
+	if(file_exists($moduleDir . 'infobox.php')){
+		if (!class_exists($className)){
+			require($moduleDir . 'infobox.php');
+		}
+		$class = new $className;
 
-	$Infobox = new TemplatesInfoboxes();
-	$Infobox->box_code = $class->getBoxCode();
-	$Infobox->box_path = $boxPath;
-	if (!is_null($extName)){
-		$Infobox->ext_name = $extName;
+		$Infobox = new TemplatesInfoboxes();
+		$Infobox->box_code = $class->getBoxCode();
+		$Infobox->box_path = $boxPath;
+		if (!is_null($extName)){
+			$Infobox->ext_name = $extName;
+		}
+		$Infobox->save();
 	}
-	$Infobox->save();
 }
 
 function addLayoutToPage($app, $appPage, $extName, $layoutId){
