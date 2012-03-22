@@ -31,13 +31,71 @@ class infoBoxCategoriesMenu extends InfoBoxAbstract {
 		
 		return $Qcategories->execute(array(), Doctrine::HYDRATE_ARRAY);
 	}
-	
+
+	public function buildStylesheet(){
+		$boxWidgetProperties = $this->getWidgetProperties();
+		$idW = (isset($boxWidgetProperties->widgetId)?$boxWidgetProperties->widgetId:'menuCategories');
+		$css =
+
+			'#'.$idW.' .ui-icon { ' .
+			'margin-right: .3em;float:right;text-indent:0px;' .
+			' }' . "\n" .
+
+			'#'.$idW.' .ui-icon-triangle-1-n{'.
+			'display:inline;' .
+			' }' . "\n" .
+			'#'.$idW.' .ui-icon-triangle-1-s{'.
+				'display:inline;' .
+			' }' . "\n"
+			.'' . "\n";
+		ob_start();
+		?>
+	<?php
+		$cssSource = ob_get_contents();
+		ob_end_clean();
+		$css .= $cssSource;
+
+		return $css;
+	}
+
+	public function buildJavascript(){
+		$boxWidgetProperties = $this->getWidgetProperties();
+		ob_start();
+		?>
+	$('.isCollapsible').hide();
+	$('.isCollapsible').prev().click(function(){
+		if($(this).hasClass('isOpen')){
+			$(this).find('.ui-icon').addClass('ui-icon-circle-triangle-s');
+			$(this).find('.ui-icon').removeClass('ui-icon-circle-triangle-n');
+			$(this).removeClass('isOpen');
+			$(this).next().hide();
+		}else{
+			$(this).find('.ui-icon').removeClass('ui-icon-circle-triangle-s');
+			$(this).find('.ui-icon').addClass('ui-icon-circle-triangle-n');
+			$(this).addClass('isOpen');
+			$(this).next().show();
+		}
+		return false;
+	});
+
+	$('a.selected').closest('.isCollapsible').prev().trigger('click');
+
+	<?php
+ 		$javascript = ob_get_contents();
+		ob_end_clean();
+
+		return $javascript;
+	}
+
+
 	public function getChildCategories($parentCategoryId, $currentPath=''){
 		global $current_category_id;
 	    if ($parentCategoryId==='') {
 		return null;
 	    }
-	    
+	    $boxWidgetProperties = $this->getWidgetProperties();
+
+	    $excludedCategories = isset($boxWidgetProperties->excludedCategories)?explode(';',$boxWidgetProperties->excludedCategories):array();
 
 	    
 	    //get subcategories
@@ -54,16 +112,34 @@ class infoBoxCategoriesMenu extends InfoBoxAbstract {
 		$li_element = htmlBase::newElement('li');
 		if ($current_category_id == $current_subcategory['categories_id']){
 			$selected = 'selected';
-			$li_element->addClass('selectedli');
 		}
+		$extraIcon = '';
+		if(in_array($current_subcategory['categories_id'], $excludedCategories)){
+		    $extraIcon = '<span class="ui-icon ui-icon-circle-triangle-s"></span>';
+		}
+
 		$li_element->html(			
 			'<a class="'.$selected.'" href="'.itw_app_link(null, 'index', $current_subcategory['CategoriesDescription'][0]['categories_seo_url']).'">'.
-			    $subcategory_name.
+			    $subcategory_name. $extraIcon.
 			'</a>'
 		);
 		
 		$subsubcategories_element = $this->getChildCategories($current_subcategory['categories_id']);
+
 		if ($subsubcategories_element!==null) {
+			if(in_array($current_subcategory['categories_id'], $excludedCategories)){
+				$subsubcategories_element->addClass('isCollapsible');
+
+				$li_element1 = htmlBase::newElement('li');
+				$li_element1->html(
+					'<a href="'.itw_app_link(null, 'index', $current_subcategory['CategoriesDescription'][0]['categories_seo_url']).'">'.
+						'View All'.
+						'</a>'
+				);
+				if(is_object($subsubcategories_element)){
+					$subsubcategories_element->addItemObj($li_element1);
+				}
+			}
 		    $li_element->append($subsubcategories_element);
 		}
 		
@@ -80,6 +156,15 @@ class infoBoxCategoriesMenu extends InfoBoxAbstract {
 	{
 		$boxWidgetProperties = $this->getWidgetProperties();
 
+		$excludedCategories = isset($boxWidgetProperties->excludedCategories)?explode(';',$boxWidgetProperties->excludedCategories):array();
+		/*$catArrExcl = array();
+		foreach($excludedCategories as $catExcl){
+			$catArr = tep_get_categories('', $catExcl);
+			$catArrExcl[] = $catExcl;
+			foreach($catArr as $catA){
+				$catArrExcl[] = $catA['id'];
+			}
+		} */
 		$ulElement = $this->getChildCategories(((int)$boxWidgetProperties->selected_category > 0) ? $boxWidgetProperties->selected_category : 0);
 
 	    $this->setBoxContent('<div id="'.(isset($boxWidgetProperties->widgetId)?$boxWidgetProperties->widgetId:'').'">'.$ulElement->draw().'</div>');

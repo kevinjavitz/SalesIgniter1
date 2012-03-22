@@ -91,5 +91,18 @@ $WidgetSettingsTable->addBodyRow(array(
 	                                      array('colspan' => 2, 'text' => $categoryTree->draw())
                                       )
                                  ));
+$checkedCats = array();
+if(isset($WidgetSettings->excludedCategories)){
+	$checkedCats = explode(';',$WidgetSettings->excludedCategories);
+}
+
+$categoriesList = tep_get_category_tree_list('0', $checkedCats);
+
+$WidgetSettingsTable->addBodyRow(array(
+		'columns' => array(
+			array('text' => 'Open on click(starting from subcategories)'),
+			array('text' => $categoriesList)
+		)
+	));
 
 ?>

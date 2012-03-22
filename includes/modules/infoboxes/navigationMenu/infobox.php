@@ -58,7 +58,14 @@ class InfoBoxNavigationMenu extends InfoBoxAbstract
 			$icon = '<span class="ui-icon ' . $item->icon_src . '"></span>';
 		}
 		elseif ($item->icon == 'custom') {
-			$icon = '<img src="' . $item->icon_src . '">';
+			$htmlCode = $item->icon_src;
+			if(sysConfig::getDirWsCatalog() == '/' || (strpos($htmlCode, sysConfig::getDirWsCatalog()) === 0)){
+				$imgPath = $htmlCode;
+			}else{
+				$imgPath = sysConfig::getDirWsCatalog() .$htmlCode;
+			}
+			$imgPath = str_replace('//','/', $imgPath);
+			$icon = '<img src="' . $imgPath . '">';
 		}
 
             	$menuText = '<span class="menu_text">' . $item->{Session::get('languages_id')}->text . '</span>';

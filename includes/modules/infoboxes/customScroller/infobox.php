@@ -14,21 +14,32 @@ abstract class InfoBoxCustomScrollerAbstract
 	abstract function show();
 
 	public function buildPrevButton($image) {
-		$imgInfo = getimagesize(sysConfig::get('DIR_FS_DOCUMENT_ROOT') . $image);
+		if(sysConfig::getDirWsCatalog() == '/' || (strpos($image, sysConfig::getDirWsCatalog()) === 0)){
+			$imgPath = $image;
+		}else{
+			$imgPath = sysConfig::getDirWsCatalog() .$image;
+		}
+		$imgPath = str_replace('//','/', $imgPath);
+		$imgInfo = getimagesize(sysConfig::getDirFsCatalog() . $image);
 		return htmlBase::newElement('image')
 			->addClass('scrollerPrevImage')
 			->attr('data-width', $imgInfo[0])
 			->attr('data-height', $imgInfo[1])
-			->setSource($image);
+			->setSource($imgPath);
 	}
 
 	public function buildNextButton($image) {
-		$imgInfo = getimagesize(sysConfig::get('DIR_FS_DOCUMENT_ROOT') . $image);
+		if(sysConfig::getDirWsCatalog() == '/' || (strpos($image, sysConfig::getDirWsCatalog()) === 0)){
+			$imgPath = $image;
+		}else{
+			$imgPath = sysConfig::getDirWsCatalog() .$image;
+		}
+		$imgInfo = getimagesize(sysConfig::getDirFsCatalog() . $image);
 		return htmlBase::newElement('image')
 			->addClass('scrollerNextImage')
 			->attr('data-width', $imgInfo[0])
 			->attr('data-height', $imgInfo[1])
-			->setSource($image);
+			->setSource($imgPath);
 	}
 
 	public function buildList($products, $cInfo) {

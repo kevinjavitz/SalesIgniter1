@@ -1,8 +1,12 @@
 <?php
 
 $category_depth = 'top';
-	if(isset($_GET['appPage']) && !empty($_GET['appPage'])){
-		$catSeoUrl = $_GET['appPage'];
+	if(isset($_GET['appPage']) && !empty($_GET['appPage']) || isset($_GET['actualPage']) && !empty($_GET['actualPage'])){
+		if(isset($_GET['actualPage'])){
+			$catSeoUrl = $_GET['actualPage'];
+		}else{
+			$catSeoUrl = $_GET['appPage'];
+		}
 		$ResultSet = Doctrine_Manager::getInstance()
 		->getCurrentConnection()
 		->fetchAssoc('select categories_id from categories_description where categories_seo_url = "' . $catSeoUrl .'" ');
@@ -15,7 +19,6 @@ $category_depth = 'top';
 		$current_category_id = $_GET['cPath'];
 		Session::set('current_category_id', $current_category_id);
 	}
-
 
 	if (!empty($catSeoUrl) && $catSeoUrl != 'default'){
 		$navigation->add_current_page();

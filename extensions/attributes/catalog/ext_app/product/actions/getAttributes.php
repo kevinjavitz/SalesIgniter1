@@ -21,8 +21,12 @@ $table->addBodyRow(array(
 $ProductsAttributes = attributesUtil::getAttributes($pid, null, null, $purchase_type);
 $Attributes = attributesUtil::organizeAttributeArray($ProductsAttributes);
 
+$hide = false;
 if($purchaseTypeClass->hasInventory() == false){
 	$outofstock = '(Out of Stock)';
+	if(sysConfig::get('EXTENSION_ATTRIBUTES_HIDE_NO_INVENTORY') == 'True'){
+		$hide = true;
+	}
 	$hasButton = false;
 }else{
 	$outofstock = '';
@@ -112,9 +116,11 @@ foreach($Attributes as $optionId => $oInfo){
 				}
 
 				$valName = $optionsValues[$i]['options_values_name'];
-				foreach($_POST['id'][$purchase_type] as $k => $v){
-					if($optionId == $k && $v == $valueId){
-						$valName .= $outofstock;
+				if(isset($_POST['id'][$purchase_type])){
+					foreach($_POST['id'][$purchase_type] as $k => $v){
+						if($optionId == $k && $v == $valueId){
+							$valName .= $outofstock;
+						}
 					}
 				}
 
@@ -140,7 +146,9 @@ foreach($Attributes as $optionId => $oInfo){
 							->attr('imageSrc', sysConfig::get('DIR_WS_IMAGES') . $optionsValues[$i]['options_values_image']);
 					}
 				}
-				$input->addOptionObj($optionEl);
+				if($hide == false){
+					$input->addOptionObj($optionEl);
+				}
 			}
 
 			/*if ($ShoppingCart->inCart($_GET['products_id'], $settings['purchase_type'])){

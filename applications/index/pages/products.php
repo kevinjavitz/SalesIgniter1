@@ -96,9 +96,12 @@
 	->andWhere('pd.language_id = ?', (int)Session::get('languages_id'));
 
 	if(sysConfig::get('SHOW_PRODUCTS_FROM_SUBCATEGORIES') == 'true'){
-		$subCatArr = array();
+		$subCatArr = array($current_category_id);
 		tep_get_subcategories($subCatArr, $current_category_id);
-		$Qproducts->leftJoin('p.ProductsToCategories p2c')->andWhereIn('p2c.categories_id', $subCatArr);
+		$Qproducts->leftJoin('p.ProductsToCategories p2c')->andWhereIn('p2c.categories_id', $subCatArr)
+		->leftJoin('p2c.Categories c')
+		->leftJoin('c.CategoriesDescription cd')
+		->orderBy('c.sort_order, cd.categories_name');
 	}else{
 		$Qproducts->leftJoin('p.ProductsToCategories p2c')->andWhere('p2c.categories_id = ?', (int)$current_category_id);
 	}

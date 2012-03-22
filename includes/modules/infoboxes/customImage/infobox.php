@@ -16,7 +16,14 @@ class InfoBoxCustomImage extends InfoBoxAbstract {
 	}
 
 	public function showLayoutPreview($WidgetSettings){
-		return '<img src="' . $WidgetSettings->image_source . '" />';
+		$htmlCode = $WidgetSettings->image_source;
+		if(sysConfig::getDirWsCatalog() == '/' || (strpos($htmlCode, sysConfig::getDirWsCatalog()) === 0)){
+			$imgPath = $htmlCode;
+		}else{
+			$imgPath = sysConfig::getDirWsCatalog() .$htmlCode;
+		}
+		$imgPath = str_replace('//','/', $imgPath);
+		return '<img src="' . $imgPath . '" />';
 	}
 
 	public function show(){
@@ -30,11 +37,17 @@ class InfoBoxCustomImage extends InfoBoxAbstract {
 				$htmlLink = ob_get_contents();
 				ob_end_clean();
 			}
+		    if(sysConfig::getDirWsCatalog() == '/' || (strpos($htmlCode, sysConfig::getDirWsCatalog()) === 0)){
+				$imgPath = $htmlCode;
+		    }else{
+			    $imgPath = sysConfig::getDirWsCatalog() .$htmlCode;
+		    }
+			$imgPath = str_replace('//','/', $imgPath);
 			
 			if($htmlLink == ''){
-				$htmlText =  '<img src="'.$htmlCode.'"/>';
+				$htmlText =  '<img src="'.$imgPath.'"/>';
 			}else{
-				$htmlText = '<a href="'.$htmlLink.'">'. '<img src="'.$htmlCode.'"/></a>';
+				$htmlText = '<a href="'.$htmlLink.'">'. '<img src="'.$imgPath.'"/></a>';
 			}
 			$this->setBoxContent($htmlText);
 			return $this->draw();

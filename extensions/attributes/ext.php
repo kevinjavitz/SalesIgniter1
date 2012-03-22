@@ -570,7 +570,9 @@ class Extension_attributes extends ExtensionBase {
 		$attributesTemplate->setTemplateFile($templateFile, $templateDir);
 
 		$attributesTemplate->setVars(array(
-			'attributes' => $Attributes
+			'attributes' => $Attributes,
+			'productClass' => $product,
+			'purchase_type'=> (isset($settings['purchase_type'])?$settings['purchase_type']:'new')
 		));
 
 		return $attributesTemplate->parse();

@@ -390,6 +390,26 @@ foreach($categoryTreeList as $category){
             $categoryTree->selectOptionByValue($selectedCategory);
         }
 
+        $htmlCode = $cInfo->prev_image;
+        if(sysConfig::getDirWsCatalog() == '/' || (strpos($htmlCode, sysConfig::getDirWsCatalog()) === 0)){
+	        $imgPath = $htmlCode;
+        }else{
+	        $imgPath = sysConfig::getDirWsCatalog() .$htmlCode;
+        }
+        $imgPath = str_replace('//','/', $imgPath);
+
+		$imgPrev = $imgPath;
+
+		$htmlCode = $cInfo->next_image;
+		if(sysConfig::getDirWsCatalog() == '/' || (strpos($htmlCode, sysConfig::getDirWsCatalog()) === 0)){
+			$imgPath = $htmlCode;
+		}else{
+			$imgPath = sysConfig::getDirWsCatalog() .$htmlCode;
+		}
+		$imgPath = str_replace('//','/', $imgPath);
+
+		$imgNext = $imgPath;
+
 		echo '<li id="scroller_config_' . $i . '" data-input_key="' . $i . '">' .
 			'<div>' .
 			'<span class="ui-icon ui-icon-closethick scrollerDelete" tooltip="Delete Scroller"></span>' .
@@ -437,11 +457,11 @@ foreach($categoryTreeList as $category){
 			'</tr>' .
 			'<tr>' .
 			'<td>Previous Scroll Image: </td>' .
-			'<td><input type="text" name="scroller_prev_image[' . $i . ']" class="BrowseServerField" value="' . $cInfo->prev_image . '"></td>' .
+			'<td><input type="text" name="scroller_prev_image[' . $i . ']" class="BrowseServerField" value="' . $imgPrev . '"></td>' .
 			'</tr>' .
 			'<tr>' .
 			'<td>Next Scroll Image: </td>' .
-			'<td><input type="text" name="scroller_next_image[' . $i . ']" class="BrowseServerField" value="' . $cInfo->next_image . '"></td>' .
+			'<td><input type="text" name="scroller_next_image[' . $i . ']" class="BrowseServerField" value="' . $imgNext . '"></td>' .
 			'</tr>' .
 			'</table>' .
 			'</div>' .

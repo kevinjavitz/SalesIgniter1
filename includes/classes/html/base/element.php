@@ -301,10 +301,9 @@ class htmlElement
 	 * @return htmlElement
 	 */
 	public function prepend($element) {
-		if (!is_object($element)){
-			trigger_error('Appended element must be an object.', E_USER_ERROR);
+		if(is_object($element)){
+			$this->prependElements[] = $element;
 		}
-		$this->prependElements[] = $element;
 		return $this;
 	}
 
@@ -751,8 +750,16 @@ class StyleBuilder {
 						$this
 					);
 				}elseif ($backgroundType == 'image'){
+					$htmlCode = $Config->background_image;
+					if(sysConfig::getDirWsCatalog() == '/' || (strpos($htmlCode, sysConfig::getDirWsCatalog()) === 0)){
+						$imgPath = $htmlCode;
+					}else{
+						$imgPath = sysConfig::getDirWsCatalog() .$htmlCode;
+					}
+					$imgPath = str_replace('//','/', $imgPath);
+					$bgImage = $imgPath;
 					$this->addRule('background-color', $Config->background_color);
-					$this->addRule('background-image', 'url(' . $Config->background_image . ')');
+					$this->addRule('background-image', 'url(' . $bgImage . ')');
 					$this->addRule('background-position', $Config->background_position_x . '% ' . $Config->background_position_y . '%');
 					$this->addRule('background-repeat', $Config->background_position_repeat);
 				}elseif ($backgroundType == 'gradient'){
@@ -792,9 +799,18 @@ class StyleBuilder {
 					$images = false;
 					if (isset($Settings->imagesBefore)){
 						foreach($Settings->imagesBefore as $bimageInfo){
+							$htmlCode = $bimageInfo->image_source;
+							if(sysConfig::getDirWsCatalog() == '/' || (strpos($htmlCode, sysConfig::getDirWsCatalog()) === 0)){
+								$imgPath = $htmlCode;
+							}else{
+								$imgPath = sysConfig::getDirWsCatalog() .$htmlCode;
+							}
+							$imgPath = str_replace('//','/', $imgPath);
+							$bgImage = $imgPath;
+
 							$images[] = array(
 								'css_placement' => 'before',
-								'image' => $bimageInfo->image_source,
+								'image' => $bgImage,
 								'repeat' => $bimageInfo->image_repeat,
 								'pos_x' => $bimageInfo->image_pos_x . '%',
 								'pos_y' => $bimageInfo->image_pos_y . '%'
@@ -804,9 +820,17 @@ class StyleBuilder {
 
 					if (isset($Settings->imagesAfter)){
 						foreach($Settings->imagesAfter as $aimageInfo){
+							$htmlCode = $aimageInfo->image_source;
+							if(sysConfig::getDirWsCatalog() == '/' || (strpos($htmlCode, sysConfig::getDirWsCatalog()) === 0)){
+								$imgPath = $htmlCode;
+							}else{
+								$imgPath = sysConfig::getDirWsCatalog() .$htmlCode;
+							}
+							$imgPath = str_replace('//','/', $imgPath);
+							$bgImage = $imgPath;
 							$images[] = array(
 								'css_placement' => 'after',
-								'image' => $aimageInfo->image_source,
+								'image' => $bgImage,
 								'repeat' => $aimageInfo->image_repeat,
 								'pos_x' => $aimageInfo->image_pos_x . '%',
 								'pos_y' => $aimageInfo->image_pos_y . '%'
@@ -832,8 +856,16 @@ class StyleBuilder {
 				);
 				break;
 			case 'background_image':
+				$htmlCode = $val->background_image;
+				if(sysConfig::getDirWsCatalog() == '/' || (strpos($htmlCode, sysConfig::getDirWsCatalog()) === 0)){
+					$imgPath = $htmlCode;
+				}else{
+					$imgPath = sysConfig::getDirWsCatalog() .$htmlCode;
+				}
+				$imgPath = str_replace('//','/', $imgPath);
+				$bgImage = $imgPath;
 				$this->addRule('background-color', $val->background_color);
-				$this->addRule('background-image', 'url(' . $val->background_image . ')');
+				$this->addRule('background-image', 'url(' . $bgImage . ')');
 				$this->addRule('background-position', $val->background_position_x . '% ' . $val->background_position_y . '%');
 				$this->addRule('background-repeat', $val->background_position_repeat);
 				break;
@@ -859,9 +891,17 @@ class StyleBuilder {
 				if (isset($val->images)){
 					$images = array();
 					foreach($val->images as $iInfo){
+						$htmlCode = $iInfo->image;
+						if(sysConfig::getDirWsCatalog() == '/' || (strpos($htmlCode, sysConfig::getDirWsCatalog()) === 0)){
+							$imgPath = $htmlCode;
+						}else{
+							$imgPath = sysConfig::getDirWsCatalog() .$htmlCode;
+						}
+						$imgPath = str_replace('//','/', $imgPath);
+						$bgImage = $imgPath;
 						$images[] = array(
 							'css_placement' => $iInfo->css_placement,
-							'image' => $iInfo->image,
+							'image' => $bgImage,
 							'repeat' => $iInfo->repeat,
 							'pos_x' => $iInfo->pos_x . $iInfo->pos_x_unit,
 							'pos_y' => $iInfo->pos_y . $iInfo->pos_y_unit

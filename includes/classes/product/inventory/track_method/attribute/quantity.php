@@ -1,8 +1,11 @@
 <?php
 class productInventoryAttribute_quantity {
-	public function __construct($invData){
+	public function __construct($invData, $aID = false){
 		global $appExtension;
 		$this->aID_string = null;
+		if($aID !== false){
+			$this->aID_string = attributesUtil::getAttributeString($aID);
+		}
 		if (isset($_POST['id'][$invData['type']])){
 			$this->aID_string = attributesUtil::getAttributeString($_POST['id'][$invData['type']]);
 		}

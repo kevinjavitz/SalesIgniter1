@@ -23,5 +23,11 @@ else {
 	$WidgetProperties['showAlways'] = '';
 }
 
+if(isset($_POST['categories']) && !empty($_POST['categories'])){
+	$WidgetProperties['excludedCategories'] = implode(';',$_POST['categories']);
+} else{
+	$WidgetProperties['excludedCategories'] = '';
+}
+
 
 ?>

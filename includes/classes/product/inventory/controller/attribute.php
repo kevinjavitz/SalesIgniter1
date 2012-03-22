@@ -1,6 +1,6 @@
 <?php
 	class productInventory_attribute {
-		public function __construct($invData){
+		public function __construct($invData, $aID = false){
 			$trackerDir = sysConfig::getDirFsCatalog() . 'includes/classes/product/inventory/track_method/attribute/';
 
 			$trackMethod = 'quantity';
@@ -13,7 +13,7 @@
 				if (!class_exists($className)){
 					require($trackerDir . $trackMethod . '.php');
 				}
-				$this->trackMethod = new $className($invData);
+				$this->trackMethod = new $className($invData, $aID);
 			}
 		}
 

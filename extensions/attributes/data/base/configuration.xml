@@ -17,5 +17,12 @@
 			<sort_order>2</sort_order>
 			<set_function>tep_cfg_select_option(array('True','False'),</set_function>
 		</EXTENSION_ATTRIBUTES_CART_CHECK>
+		<EXTENSION_ATTRIBUTES_HIDE_NO_INVENTORY>
+			<title>Hide no inventory(use only with one attribute products)</title>
+			<value>False</value>
+			<description>Hide no inventory(use only with one attribute products)</description>
+			<sort_order>2</sort_order>
+			<set_function>tep_cfg_select_option(array('True','False'),</set_function>
+		</EXTENSION_ATTRIBUTES_HIDE_NO_INVENTORY>
 	</Configuration>
 </ConfigurationGroup>

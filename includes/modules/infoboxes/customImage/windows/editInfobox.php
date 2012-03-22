@@ -1,8 +1,16 @@
 <?php
+$htmlCode = (isset($WidgetSettings->image_source) ? $WidgetSettings->image_source : '');
+if(sysConfig::getDirWsCatalog() == '/' || (strpos($htmlCode, sysConfig::getDirWsCatalog()) === 0)){
+	$imgPath = $htmlCode;
+}else{
+	$imgPath = sysConfig::getDirWsCatalog() .$htmlCode;
+}
+$imgPath = str_replace('//','/', $imgPath);
+
 $imageSource = htmlBase::newElement('input')
 	->setName('image_source')
 	->addClass('BrowseServerField')
-	->setValue((isset($WidgetSettings->image_source) ? $WidgetSettings->image_source : ''));
+	->setValue($imgPath);
 
 $imageLink = htmlBase::newElement('input')
 	->setName('image_link')

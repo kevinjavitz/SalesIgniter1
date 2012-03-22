@@ -19,7 +19,7 @@ class PurchaseType_new extends PurchaseTypeAbstract {
 	public $typeName;
 	public $typeShow;
 
-	public function __construct($ProductCls, $forceEnable = false){
+	public function __construct($ProductCls, $forceEnable = false, $aID = false){
 
 		$this->typeName = sysLanguage::get('PURCHASE_TYPE_NEW_NAME');
 		$this->typeShow = sysLanguage::get('PURCHASE_TYPE_NEW_SHOW');
@@ -44,7 +44,8 @@ class PurchaseType_new extends PurchaseTypeAbstract {
 				$this->productInfo['id'],
 				$this->typeLong,
 				$productInfo['products_inventory_controller'],
-				in_array('new', $productInfo['allow_overbooking'])
+				in_array('new', $productInfo['allow_overbooking']),
+				$aID
 			);
 		}
 	}

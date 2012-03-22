@@ -40,7 +40,7 @@ class Product {
 		unset($productQuery);
 	}
 	
-	public function getPurchaseType($typeName, $forceEnable = false){
+	public function getPurchaseType($typeName, $forceEnable = false, $aID = false){
 		global $appExtension;
 		$className = 'PurchaseType_' . $typeName;
 
@@ -63,7 +63,7 @@ class Product {
 				
 		$purchaseType = null;
 		if (class_exists($className, false)){
-			$purchaseType = new $className($this, $forceEnable);
+			$purchaseType = new $className($this, $forceEnable, $aID);
 		}
 		return $purchaseType;
 	}

@@ -333,7 +333,7 @@ if (sysConfig::exists('MODULE_SHIPPING_FREE_SHOW_TEXT')){
 		'margin-bottom' => '10px'
     ));
 	$PageForm->append($div)->append($div3)->append($div2)->append($div4);
-	echo '<style type="text/css">.shopButtons a.ui-button-text-only .ui-button-text{ padding: .4em 1em;}</style>'.$PageForm->draw();
+	echo '<style type="text/css">.shopButtons a.ui-button-text-only .ui-button-text{ padding: .4em 1em;} .shopButtons .updateProductButton .ui-button-text{ padding: .4em 1em;}</style>'.$PageForm->draw();
 	
 	$pageButtons = '';
 } else {

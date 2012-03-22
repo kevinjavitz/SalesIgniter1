@@ -143,6 +143,35 @@ function addStyles($El, $Styles){
 		}
 		$El->css($sInfo->definition_key, $css[$sInfo->definition_key]);
 	}
+	if(isset($css['background_linear_gradient']->images)){
+		$colorStops = $css['background_linear_gradient']->images;
+
+		foreach($colorStops as $imgBefore){
+			if(!empty($imgBefore->image)){
+				$htmlCode = $imgBefore->image;
+				if(sysConfig::getDirWsCatalog() == '/' || (strpos($htmlCode, sysConfig::getDirWsCatalog()) === 0)){
+					$imgPath = $htmlCode;
+				}else{
+					$imgPath = sysConfig::getDirWsCatalog() .$htmlCode;
+				}
+				$imgPath = str_replace('//','/', $imgPath);
+				$imgBefore->image = $imgPath;
+			}
+		}
+	}
+	if(isset($css['background_image']->image)){
+		$imgBg = $css['background_image'];
+		if(isset($imgBg->image) && !empty($imgBg->image)){
+			$htmlCode = $imgBg->image;
+			if(sysConfig::getDirWsCatalog() == '/' || (strpos($htmlCode, sysConfig::getDirWsCatalog()) === 0)){
+				$imgPath = $htmlCode;
+			}else{
+				$imgPath = sysConfig::getDirWsCatalog() .$htmlCode;
+			}
+			$imgPath = str_replace('//','/', $imgPath);
+			$imgBg->image = $imgPath;
+		}
+	}
 	$El->attr('data-styles', htmlspecialchars(json_encode($css)));
 }
 
@@ -154,6 +183,48 @@ function addInputs($El, $Config){
 		}else{
 			$inputVals[$cInfo->configuration_key] = $cInfo->configuration_value;
 		}
+	}
+
+	if(isset($inputVals['background']->global->gradient)){
+			$colorStops = $inputVals['background']->global->gradient;
+			//print_r($colorStops);
+				foreach($colorStops->imagesBefore as $imgBefore){
+					if(!empty($imgBefore->image_source)){
+						$htmlCode = $imgBefore->image_source;
+						if(sysConfig::getDirWsCatalog() == '/' || (strpos($htmlCode, sysConfig::getDirWsCatalog()) === 0)){
+							$imgPath = $htmlCode;
+						}else{
+							$imgPath = sysConfig::getDirWsCatalog() .$htmlCode;
+						}
+						$imgPath = str_replace('//','/', $imgPath);
+						$imgBefore->image_source = $imgPath;
+					}
+				}
+				foreach($colorStops->imagesAfter as $imgAfter){
+					if(!empty($imgAfter->image_source)){
+						$htmlCode = $imgAfter->image_source;
+						if(sysConfig::getDirWsCatalog() == '/' || (strpos($htmlCode, sysConfig::getDirWsCatalog()) === 0)){
+							$imgPath = $htmlCode;
+						}else{
+							$imgPath = sysConfig::getDirWsCatalog() .$htmlCode;
+						}
+						$imgPath = str_replace('//','/', $imgPath);
+						$imgAfter->image_source = $imgPath;
+					}
+				}
+	}
+	if(isset($inputVals['background']->global->image)){
+			$imgBg = $inputVals['background']->global->image;
+			if(isset($imgBg->background_image) && !empty($imgBg->background_image)){
+				$htmlCode = $imgBg->background_image;
+				if(sysConfig::getDirWsCatalog() == '/' || (strpos($htmlCode, sysConfig::getDirWsCatalog()) === 0)){
+					$imgPath = $htmlCode;
+				}else{
+					$imgPath = sysConfig::getDirWsCatalog() .$htmlCode;
+				}
+				$imgPath = str_replace('//','/', $imgPath);
+				$imgBg->background_image = $imgPath;
+			}
 	}
 	$El->attr('data-inputs', htmlspecialchars(json_encode($inputVals)));
 }

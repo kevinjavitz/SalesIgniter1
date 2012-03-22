@@ -1,7 +1,7 @@
 <?php
 	class productInventory {
 		
-		function __construct($pId, $purchaseType, $controller, $allowOverbooking = false){
+		function __construct($pId, $purchaseType, $controller, $allowOverbooking = false, $aID = false){
 			$Qcheck = Doctrine_Query::create()
 			->from('ProductsInventory')
 			->where('products_id = ?', $pId)
@@ -25,7 +25,7 @@
 					if (!class_exists($className)){
 						require($controllerDir . $invController . '.php');
 					}
-					$this->invMethod = new $className($this->invData);
+					$this->invMethod = new $className($this->invData, $aID);
 
 					EventManager::notify(
 						'ProductInventorySetMethod',

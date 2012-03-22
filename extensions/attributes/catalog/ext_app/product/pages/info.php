@@ -104,8 +104,12 @@ class attributes_catalog_product_info extends Extension_attributes {
 					break;
 				default:
 					$input = htmlBase::newElement('selectbox')
-					->setName('id[' . $settings['purchase_type'] . '][' . $optionId . ']')
-					->addClass('attrSelect');
+					->setName('id[' . $settings['purchase_type'] . '][' . $optionId . ']');
+
+					if(sysConfig::get('EXTENSION_ATTRIBUTES_HIDE_NO_INVENTORY') == 'False'){
+						$input->addClass('attrSelect');
+					}
+
 					//->addOption('', 'Please Select');
 
 					if ($oInfo['use_image'] == '1'){
