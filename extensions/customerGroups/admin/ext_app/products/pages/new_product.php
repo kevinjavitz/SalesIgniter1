@@ -56,7 +56,7 @@ class customerGroups_admin_products_new_product extends Extension_customerGroups
 		$catList .= '</ul>';
 		unset($checkedCats);
 
-		return '<div id="tab_' . $this->getExtensionKey() . '">' . $catList . '</div>';
+		return '<div id="tab_' . $this->getExtensionKey() . '">' . '<b>Hide from these groups:</b><br/>'. $catList . '</div>';
 	}
 }
 ?>

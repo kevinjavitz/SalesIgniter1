@@ -12,12 +12,12 @@
 
 	function tep_href_link($page = '', $parameters = '', $connection = 'NONSSL') {
 		if ($connection == 'NONSSL') {
-			$link = HTTP_SERVER . DIR_WS_ADMIN;
+			$link = sysConfig::get('HTTP_SERVER') . sysConfig::get('DIR_WS_ADMIN');
 		} elseif ($connection == 'SSL') {
-			if (ENABLE_SSL_CATALOG == 'true') {
-				$link = HTTPS_SERVER . DIR_WS_ADMIN;
+			if (sysConfig::get('ENABLE_SSL_CATALOG') == 'true') {
+				$link = sysConfig::get('HTTPS_SERVER') . sysConfig::get('DIR_WS_ADMIN');
 			} else {
-				$link = HTTP_SERVER . DIR_WS_ADMIN;
+				$link = sysConfig::get('HTTP_SERVER') . sysConfig::get('DIR_WS_ADMIN');
 			}
 		}
 

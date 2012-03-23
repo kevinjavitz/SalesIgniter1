@@ -835,7 +835,7 @@ class ReservationUtilities {
 										$selfID.parent().find('.inCart').position({
 											my:        "left bottom",
 											at:        "left top",
-											offset:    "-20, -25",
+											offset:    "200, 26",
 											of:        $selfID.find('.refreshCal'), // or $("#otherdiv)
 											collision: "fit"
 										});
@@ -1012,7 +1012,7 @@ class ReservationUtilities {
 								$selfID.parent().find('.inCart').position({
 									my:        "left bottom",
 									at:        "left top",
-									offset:    "-20, -25",
+									offset:    "200, 26",
 									of:        $selfID.find('.refreshCal'), // or $("#otherdiv)
 									collision: "fit"
 								});
@@ -1174,7 +1174,7 @@ class ReservationUtilities {
 										$selfID.parent().find('.inCart').position({
 											my:        "left bottom",
 											at:        "left top",
-											offset:    "-20, -25",
+											offset:    "200, 26",
 											of:        $selfID.find('.refreshCal'), // or $("#otherdiv)
 											collision: "fit"
 										});
@@ -1221,7 +1221,7 @@ class ReservationUtilities {
 								$selfID.parent().find('.inCart').position({
 									my:        "left bottom",
 									at:        "left top",
-									offset:    "-20, -25",
+									offset:    "200, 26",
 									of:        $selfID.find('.refreshCal'), // or $("#otherdiv)
 									collision: "fit"
 								});
@@ -1263,7 +1263,7 @@ class ReservationUtilities {
 								$selfID.parent().find('.inCart').position({
 									my:        "left bottom",
 									at:        "left top",
-									offset:    "-20, -25",
+									offset:    "200, 26",
 									of:        $selfID.find('.refreshCal'), // or $("#otherdiv)
 									collision: "fit"
 								});
@@ -1431,16 +1431,16 @@ class ReservationUtilities {
 		$('.dateRow').css('top','-'+($('.periodsInsurance').height()+12-30-$('.maxPeriod').height()-$('.minPeriod').height())+'px');
 		$('.pprButttons').css('top','-'+($('.periodsInsurance').height()+12-45)+'px');
 		$('.pprButttons_wrapper').css('height',($('.pprButttons').height() - $('.periodsInsurance').height()+24)+'px');
-		if(isCatalog){
+		/*if(isCatalog){
 			$('.refreshCal').css('top',($('.pprButttons').position().top + 58)+'px');
-		}else{
+		}else{*/
 			$('.refreshCal').css('top',($('.pprButttons').position().top + 115)+'px');
-		}
-		var firstColumnWidth = $('.calendarTable').width()*5/100;
+		//}
+		var firstColumnWidth = $('.calendarTable').width()*12/100;
 		var secColumnWidth = $('.calendarTable').width()*80/100;
 
 		$('.pprButttons').css('left',firstColumnWidth+'px');
-		$('.refreshCal').css('left',secColumnWidth+'px');
+		$('.refreshCal').css('left','90px');
 		//$('.calendarTable').css('height', ($('.calendarTable').height()-50) + 'px');
 	});
 	</script>

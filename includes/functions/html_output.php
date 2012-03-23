@@ -10,21 +10,40 @@ Copyright (c) 2003 osCommerce
 Released under the GNU General Public License
 */
 
-////
-// Ultimate SEO URLs v2.1
-// The HTML href link wrapper function
 function tep_href_link($page = '', $parameters = '', $connection = 'NONSSL', $add_session_id = true, $search_engine_safe = true) {
-	global $seo_urls;
-	if ($page == 'checkout.php'){
-		return itw_app_link($parameters, 'checkout', 'default', $connection);
-	}
-	if ( !is_object($seo_urls) ){
-		if ( !class_exists('SEO_URL') ){
-			include_once(sysConfig::get('DIR_WS_CLASSES') . 'seo.class.php');
+	if ($connection == 'NONSSL') {
+		$link = sysConfig::get('HTTP_SERVER') . sysConfig::get('DIR_WS_CATALOG');
+	} elseif ($connection == 'SSL') {
+		if (sysConfig::get('ENABLE_SSL_CATALOG') == 'true') {
+			$link = sysConfig::get('HTTPS_SERVER') . sysConfig::get('DIR_WS_CATALOG');
+		} else {
+			$link = sysConfig::get('HTTP_SERVER') . sysConfig::get('DIR_WS_CATALOG');
 		}
-		$seo_urls = new SEO_URL(Session::get('languages_id'));
 	}
-	return $seo_urls->href_link($page, $parameters, $connection, $add_session_id);
+
+	if ($page == 'application.php' || $page == null){
+		parse_str($parameters, $params);
+		if (array_key_exists('appExt', $params)){
+			$link .= $params['appExt'] . '/';
+			unset($params['appExt']);
+		}
+		$link = $link . $params['app'] . '/' . $params['appPage'] . '.php';
+		unset($params['app']);unset($params['appPage']);
+		if (sizeof($params) > 0){
+			$link .= '?' . http_build_query($params) . '&' . SID;
+		}else{
+			$link .= '?' . SID;
+		}
+	}else{
+		if ($parameters == '') {
+			$link = $link . $page . '?' . SID;
+		} else {
+			$link = $link . $page . '?' . $parameters . '&' . SID;
+		}
+	}
+
+	while ( (substr($link, -1) == '&') || (substr($link, -1) == '?') ) $link = substr($link, 0, -1);
+	return $link;
 }
 
 function seoUrlClean($val){
