@@ -517,42 +517,6 @@ class InfoBoxCustomScroller extends InfoBoxAbstract
 					$NextButton.click(function (){
 						scrollNext();
 					});					
-					
-					//Autoscroll
-					var autoScrollNext = true;									
-					
-					function scroll(){
-						if (autoScrollNext===true) {
-							if (!scrollNext()) {
-								autoScrollNext = false;
-							}
-						} 
-						
-						
-						if (!autoScrollNext) {
-							if (!scrollPrev()) {
-								autoScrollNext = true;
-								scrollNext();
-							}
-						}
-						
-					}
-					
-					var autoscroll_interval = 10000;
-					
-					if (autoscroll_interval>0) {
-						var itervalId = setInterval(scroll, autoscroll_interval);
-						$Scroller.hover(
-							function(){
-								clearInterval(itervalId);
-							}, 
-
-							function() {
-								itervalId = setInterval(scroll, autoscroll_interval);
-							}
-						);
-					}										
-					
 				});
 				$Container.trigger('containerReady');
 			});
