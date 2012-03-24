@@ -1,3 +1,5 @@
 <definitions>
 	<define key="INFOBOX_HEADING_LANGUAGES"><![CDATA[Languages]]></define>
+	<define key="QUICK_SEARCH"><![CDATA[Search]]></define>
+	<define key="SEARCH_VALUE"><![CDATA[Search Here...]]></define>
 </definitions>
