@@ -454,6 +454,8 @@ if (isset($_GET['type']) && $_GET['type'] == 'addressBook'){
 
 								if ($freeTrialEnds > time() && $rentalPlan['free_trial_amount'] > 0){
 									$billPrice = tep_add_tax($rentalPlan['free_trial_amount'], $rentalPlan['tax_rate']);
+								}else{
+									$billPrice = 0;
 								}
 							}
 

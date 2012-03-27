@@ -324,9 +324,8 @@ class membershipUpdate_cron {
 
 		$TotalModule = $OrderTotalModules->getModule('total');
 		$SubTotalModule = $OrderTotalModules->getModule('subtotal');
-		
-		$order->newOrder['orderTotals'] = array(
-			array(
+		if(is_object($SubTotalModule)){
+			$order->newOrder['orderTotals'][] = array(
 				'module'     => $SubTotalModule->getCode(),
 				'method'     => null,
 				'title'      => $SubTotalModule->getTitle() . ':',
@@ -334,8 +333,10 @@ class membershipUpdate_cron {
 				'value'      => tep_add_tax($planPrice, $taxRate),
 				'code'       => $SubTotalModule->getCode(),
 				'sort_order' => 1
-			),
-			array(
+			);
+		}
+
+		$order->newOrder['orderTotals'][] = array(
 				'module'     => $TotalModule->getCode(),
 				'method'     => null,
 				'title'      => $TotalModule->getTitle() . ':',
@@ -343,7 +344,6 @@ class membershipUpdate_cron {
 				'value'      => tep_add_tax($planPrice, $taxRate),
 				'code'       => $TotalModule->getCode(),
 				'sort_order' => 2
-			)
 		);
 		$order->insertOrderTotals();
 

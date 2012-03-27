@@ -21,6 +21,7 @@ $requirements = array(
 	'php_settings' => array(
 		'register_globals' => 0,
 		//'register_long_arrays' => 0,
+		'magic_quotes_gpc' => 0,
 		'magic_quotes' => 0,
 		'file_uploads' => 1,
 		'memory_limit' => 64,
