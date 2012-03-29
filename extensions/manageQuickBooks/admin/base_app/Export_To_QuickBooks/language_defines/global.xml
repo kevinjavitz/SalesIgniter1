@@ -1,0 +1,23 @@
+<!--
+	Manage QuickBooks Extension Version 1
+	
+	I.T. Web Experts, Rental Store v2
+	http://www.itwebexperts.com
+
+	Copyright (c) 2012 I.T. Web Experts
+
+	This script and it's source is not redistributable
+-->
+<definitions>
+	<define key="HEADING_TITLE"><![CDATA[Export Customers To QuickBooks<br />]]></define>
+       <define key="QB_COMPLETE"><![CDATA[Done exporting to QuickBooks.]]></define>
+	<define key="QB_CUSTOMER_ADDED"><![CDATA[Customer added - ]]></define>
+       <define key="QB_CUSTOMER_ERROR"><![CDATA[An error occurred on customer ]]></define>
+       <define key="QB_SALE_ADDED"><![CDATA[ - Added a SalesReceipt ]]></define>
+       <define key="QB_SALE_ERROR"><![CDATA[There was an error adding a SalesReceipt.]]></define>
+       <define key="QB_WARNING"><![CDATA[NOTE: It is a good idea to make sure that you have a backup of your QuickBooks data before Connecting To Quickbooks.]]></define>
+       <define key="TEXT_BUTTON_DO_EXPORT_NOW"><![CDATA[Do Export]]></define>
+
+       
+
+</definitions>

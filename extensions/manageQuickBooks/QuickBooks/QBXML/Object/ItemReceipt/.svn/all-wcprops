@@ -1,0 +1,23 @@
+K 25
+svn:wc:ra_dav:version-url
+V 76
+/svn/repos/php_devkit/!svn/ver/191/trunk/QuickBooks/QBXML/Object/ItemReceipt
+END
+ExpenseLine.php
+K 25
+svn:wc:ra_dav:version-url
+V 92
+/svn/repos/php_devkit/!svn/ver/191/trunk/QuickBooks/QBXML/Object/ItemReceipt/ExpenseLine.php
+END
+ItemGroupLine.php
+K 25
+svn:wc:ra_dav:version-url
+V 94
+/svn/repos/php_devkit/!svn/ver/191/trunk/QuickBooks/QBXML/Object/ItemReceipt/ItemGroupLine.php
+END
+ItemLine.php
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/svn/repos/php_devkit/!svn/ver/191/trunk/QuickBooks/QBXML/Object/ItemReceipt/ItemLine.php
+END

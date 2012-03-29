@@ -1,0 +1,29 @@
+K 25
+svn:wc:ra_dav:version-url
+V 62
+/svn/repos/php_devkit/!svn/ver/195/trunk/QuickBooks/Encryption
+END
+Blowfish.php
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/svn/repos/php_devkit/!svn/ver/64/trunk/QuickBooks/Encryption/Blowfish.php
+END
+Factory.php
+K 25
+svn:wc:ra_dav:version-url
+V 73
+/svn/repos/php_devkit/!svn/ver/64/trunk/QuickBooks/Encryption/Factory.php
+END
+Aes.php
+K 25
+svn:wc:ra_dav:version-url
+V 70
+/svn/repos/php_devkit/!svn/ver/195/trunk/QuickBooks/Encryption/Aes.php
+END
+Rc4.php
+K 25
+svn:wc:ra_dav:version-url
+V 70
+/svn/repos/php_devkit/!svn/ver/195/trunk/QuickBooks/Encryption/Rc4.php
+END

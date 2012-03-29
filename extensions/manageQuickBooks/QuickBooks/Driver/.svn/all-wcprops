@@ -1,0 +1,23 @@
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/svn/repos/php_devkit/!svn/ver/196/trunk/QuickBooks/Driver
+END
+Sql.php
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/svn/repos/php_devkit/!svn/ver/196/trunk/QuickBooks/Driver/Sql.php
+END
+Singleton.php
+K 25
+svn:wc:ra_dav:version-url
+V 71
+/svn/repos/php_devkit/!svn/ver/64/trunk/QuickBooks/Driver/Singleton.php
+END
+Factory.php
+K 25
+svn:wc:ra_dav:version-url
+V 69
+/svn/repos/php_devkit/!svn/ver/64/trunk/QuickBooks/Driver/Factory.php
+END

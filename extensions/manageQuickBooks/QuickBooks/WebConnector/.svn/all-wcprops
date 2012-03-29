@@ -1,0 +1,41 @@
+K 25
+svn:wc:ra_dav:version-url
+V 64
+/svn/repos/php_devkit/!svn/ver/210/trunk/QuickBooks/WebConnector
+END
+QWC.php
+K 25
+svn:wc:ra_dav:version-url
+V 72
+/svn/repos/php_devkit/!svn/ver/191/trunk/QuickBooks/WebConnector/QWC.php
+END
+Result.php
+K 25
+svn:wc:ra_dav:version-url
+V 75
+/svn/repos/php_devkit/!svn/ver/191/trunk/QuickBooks/WebConnector/Result.php
+END
+Handlers.php
+K 25
+svn:wc:ra_dav:version-url
+V 77
+/svn/repos/php_devkit/!svn/ver/210/trunk/QuickBooks/WebConnector/Handlers.php
+END
+Queue.php
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/svn/repos/php_devkit/!svn/ver/200/trunk/QuickBooks/WebConnector/Queue.php
+END
+Server.php
+K 25
+svn:wc:ra_dav:version-url
+V 75
+/svn/repos/php_devkit/!svn/ver/200/trunk/QuickBooks/WebConnector/Server.php
+END
+Request.php
+K 25
+svn:wc:ra_dav:version-url
+V 76
+/svn/repos/php_devkit/!svn/ver/191/trunk/QuickBooks/WebConnector/Request.php
+END

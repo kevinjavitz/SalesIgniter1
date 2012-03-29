@@ -1,0 +1,209 @@
+K 25
+svn:wc:ra_dav:version-url
+V 63
+/svn/repos/php_devkit/!svn/ver/209/trunk/QuickBooks/IPP/Service
+END
+JournalEntry.php
+K 25
+svn:wc:ra_dav:version-url
+V 79
+/svn/repos/php_devkit/!svn/ver/64/trunk/QuickBooks/IPP/Service/JournalEntry.php
+END
+Account.php
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/svn/repos/php_devkit/!svn/ver/95/trunk/QuickBooks/IPP/Service/Account.php
+END
+Invoice.php
+K 25
+svn:wc:ra_dav:version-url
+V 75
+/svn/repos/php_devkit/!svn/ver/205/trunk/QuickBooks/IPP/Service/Invoice.php
+END
+Vendor.php
+K 25
+svn:wc:ra_dav:version-url
+V 73
+/svn/repos/php_devkit/!svn/ver/64/trunk/QuickBooks/IPP/Service/Vendor.php
+END
+Item.php
+K 25
+svn:wc:ra_dav:version-url
+V 72
+/svn/repos/php_devkit/!svn/ver/209/trunk/QuickBooks/IPP/Service/Item.php
+END
+SalesTerm.php
+K 25
+svn:wc:ra_dav:version-url
+V 77
+/svn/repos/php_devkit/!svn/ver/205/trunk/QuickBooks/IPP/Service/SalesTerm.php
+END
+UOM.php
+K 25
+svn:wc:ra_dav:version-url
+V 70
+/svn/repos/php_devkit/!svn/ver/64/trunk/QuickBooks/IPP/Service/UOM.php
+END
+Customer.php
+K 25
+svn:wc:ra_dav:version-url
+V 76
+/svn/repos/php_devkit/!svn/ver/205/trunk/QuickBooks/IPP/Service/Customer.php
+END
+BillPaymentCreditCard.php
+K 25
+svn:wc:ra_dav:version-url
+V 88
+/svn/repos/php_devkit/!svn/ver/64/trunk/QuickBooks/IPP/Service/BillPaymentCreditCard.php
+END
+Class.php
+K 25
+svn:wc:ra_dav:version-url
+V 72
+/svn/repos/php_devkit/!svn/ver/64/trunk/QuickBooks/IPP/Service/Class.php
+END
+PurchaseOrder.php
+K 25
+svn:wc:ra_dav:version-url
+V 80
+/svn/repos/php_devkit/!svn/ver/64/trunk/QuickBooks/IPP/Service/PurchaseOrder.php
+END
+Term.php
+K 25
+svn:wc:ra_dav:version-url
+V 72
+/svn/repos/php_devkit/!svn/ver/205/trunk/QuickBooks/IPP/Service/Term.php
+END
+CompanyMetaData.php
+K 25
+svn:wc:ra_dav:version-url
+V 83
+/svn/repos/php_devkit/!svn/ver/185/trunk/QuickBooks/IPP/Service/CompanyMetaData.php
+END
+Payment.php
+K 25
+svn:wc:ra_dav:version-url
+V 75
+/svn/repos/php_devkit/!svn/ver/205/trunk/QuickBooks/IPP/Service/Payment.php
+END
+SalesTaxCode.php
+K 25
+svn:wc:ra_dav:version-url
+V 80
+/svn/repos/php_devkit/!svn/ver/205/trunk/QuickBooks/IPP/Service/SalesTaxCode.php
+END
+Employee.php
+K 25
+svn:wc:ra_dav:version-url
+V 75
+/svn/repos/php_devkit/!svn/ver/99/trunk/QuickBooks/IPP/Service/Employee.php
+END
+ShipMethod.php
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/svn/repos/php_devkit/!svn/ver/101/trunk/QuickBooks/IPP/Service/ShipMethod.php
+END
+Company.php
+K 25
+svn:wc:ra_dav:version-url
+V 75
+/svn/repos/php_devkit/!svn/ver/185/trunk/QuickBooks/IPP/Service/Company.php
+END
+Factory.php
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/svn/repos/php_devkit/!svn/ver/64/trunk/QuickBooks/IPP/Service/Factory.php
+END
+Job.php
+K 25
+svn:wc:ra_dav:version-url
+V 70
+/svn/repos/php_devkit/!svn/ver/64/trunk/QuickBooks/IPP/Service/Job.php
+END
+ItemReceipt.php
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/svn/repos/php_devkit/!svn/ver/64/trunk/QuickBooks/IPP/Service/ItemReceipt.php
+END
+Report.php
+K 25
+svn:wc:ra_dav:version-url
+V 73
+/svn/repos/php_devkit/!svn/ver/64/trunk/QuickBooks/IPP/Service/Report.php
+END
+Estimate.php
+K 25
+svn:wc:ra_dav:version-url
+V 75
+/svn/repos/php_devkit/!svn/ver/64/trunk/QuickBooks/IPP/Service/Estimate.php
+END
+Check.php
+K 25
+svn:wc:ra_dav:version-url
+V 72
+/svn/repos/php_devkit/!svn/ver/64/trunk/QuickBooks/IPP/Service/Check.php
+END
+SalesRep.php
+K 25
+svn:wc:ra_dav:version-url
+V 75
+/svn/repos/php_devkit/!svn/ver/64/trunk/QuickBooks/IPP/Service/SalesRep.php
+END
+PaymentMethod.php
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/svn/repos/php_devkit/!svn/ver/209/trunk/QuickBooks/IPP/Service/PaymentMethod.php
+END
+BillPayment.php
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/svn/repos/php_devkit/!svn/ver/64/trunk/QuickBooks/IPP/Service/BillPayment.php
+END
+Bill.php
+K 25
+svn:wc:ra_dav:version-url
+V 71
+/svn/repos/php_devkit/!svn/ver/64/trunk/QuickBooks/IPP/Service/Bill.php
+END
+SalesReceipt.php
+K 25
+svn:wc:ra_dav:version-url
+V 79
+/svn/repos/php_devkit/!svn/ver/64/trunk/QuickBooks/IPP/Service/SalesReceipt.php
+END
+SalesTax.php
+K 25
+svn:wc:ra_dav:version-url
+V 75
+/svn/repos/php_devkit/!svn/ver/64/trunk/QuickBooks/IPP/Service/SalesTax.php
+END
+ItemConsolidated.php
+K 25
+svn:wc:ra_dav:version-url
+V 84
+/svn/repos/php_devkit/!svn/ver/205/trunk/QuickBooks/IPP/Service/ItemConsolidated.php
+END
+CreditMemo.php
+K 25
+svn:wc:ra_dav:version-url
+V 77
+/svn/repos/php_devkit/!svn/ver/64/trunk/QuickBooks/IPP/Service/CreditMemo.php
+END
+Discount.php
+K 25
+svn:wc:ra_dav:version-url
+V 76
+/svn/repos/php_devkit/!svn/ver/205/trunk/QuickBooks/IPP/Service/Discount.php
+END
+VendorCredit.php
+K 25
+svn:wc:ra_dav:version-url
+V 79
+/svn/repos/php_devkit/!svn/ver/64/trunk/QuickBooks/IPP/Service/VendorCredit.php
+END

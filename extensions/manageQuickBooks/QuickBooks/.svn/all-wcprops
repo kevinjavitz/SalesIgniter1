@@ -1,0 +1,125 @@
+K 25
+svn:wc:ra_dav:version-url
+V 51
+/svn/repos/php_devkit/!svn/ver/210/trunk/QuickBooks
+END
+Encryption.php
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/svn/repos/php_devkit/!svn/ver/195/trunk/QuickBooks/Encryption.php
+END
+Cast.php
+K 25
+svn:wc:ra_dav:version-url
+V 59
+/svn/repos/php_devkit/!svn/ver/91/trunk/QuickBooks/Cast.php
+END
+Driver.php
+K 25
+svn:wc:ra_dav:version-url
+V 62
+/svn/repos/php_devkit/!svn/ver/196/trunk/QuickBooks/Driver.php
+END
+SQL.php
+K 25
+svn:wc:ra_dav:version-url
+V 59
+/svn/repos/php_devkit/!svn/ver/166/trunk/QuickBooks/SQL.php
+END
+XML.php
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/svn/repos/php_devkit/!svn/ver/72/trunk/QuickBooks/XML.php
+END
+SSL.php
+K 25
+svn:wc:ra_dav:version-url
+V 57
+/svn/repos/php_devkit/!svn/ver/2/trunk/QuickBooks/SSL.php
+END
+Loader.php
+K 25
+svn:wc:ra_dav:version-url
+V 62
+/svn/repos/php_devkit/!svn/ver/194/trunk/QuickBooks/Loader.php
+END
+QBWebConnectorSvc.wsdl
+K 25
+svn:wc:ra_dav:version-url
+V 72
+/svn/repos/php_devkit/!svn/ver/2/trunk/QuickBooks/QBWebConnectorSvc.wsdl
+END
+Utilities.php
+K 25
+svn:wc:ra_dav:version-url
+V 65
+/svn/repos/php_devkit/!svn/ver/206/trunk/QuickBooks/Utilities.php
+END
+Map.php
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/svn/repos/php_devkit/!svn/ver/64/trunk/QuickBooks/Map.php
+END
+User.php
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/svn/repos/php_devkit/!svn/ver/2/trunk/QuickBooks/User.php
+END
+Callbacks.php
+K 25
+svn:wc:ra_dav:version-url
+V 65
+/svn/repos/php_devkit/!svn/ver/206/trunk/QuickBooks/Callbacks.php
+END
+UnitTest.php
+K 25
+svn:wc:ra_dav:version-url
+V 64
+/svn/repos/php_devkit/!svn/ver/107/trunk/QuickBooks/UnitTest.php
+END
+HTTP.php
+K 25
+svn:wc:ra_dav:version-url
+V 60
+/svn/repos/php_devkit/!svn/ver/141/trunk/QuickBooks/HTTP.php
+END
+Frameworks.php
+K 25
+svn:wc:ra_dav:version-url
+V 65
+/svn/repos/php_devkit/!svn/ver/65/trunk/QuickBooks/Frameworks.php
+END
+MerchantService.php
+K 25
+svn:wc:ra_dav:version-url
+V 70
+/svn/repos/php_devkit/!svn/ver/72/trunk/QuickBooks/MerchantService.php
+END
+QBXML.php
+K 25
+svn:wc:ra_dav:version-url
+V 61
+/svn/repos/php_devkit/!svn/ver/191/trunk/QuickBooks/QBXML.php
+END
+Compat.php
+K 25
+svn:wc:ra_dav:version-url
+V 61
+/svn/repos/php_devkit/!svn/ver/64/trunk/QuickBooks/Compat.php
+END
+ErrorHandler.php
+K 25
+svn:wc:ra_dav:version-url
+V 67
+/svn/repos/php_devkit/!svn/ver/64/trunk/QuickBooks/ErrorHandler.php
+END
+IPP.php
+K 25
+svn:wc:ra_dav:version-url
+V 59
+/svn/repos/php_devkit/!svn/ver/209/trunk/QuickBooks/IPP.php
+END

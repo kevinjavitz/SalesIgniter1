@@ -1,0 +1,14 @@
+<ConfigurationGroup>
+	<title>Manage QuickBooks</title>
+	<key>manageQuickBooks</key>
+	<description>Configuration Settings For The Manage QuickBooks Extension</description>
+	<Configuration>
+		<EXTENSION_MANAGE_QUICKBOOKS_ENABLED>
+			<title>Enable Manage QuickBooks</title>
+			<value>True</value>
+			<description>Enable Or Disable The Manage QuickBooks Extension</description>
+			<sort_order>1</sort_order>
+			<set_function>tep_cfg_select_option(array('True','False'),</set_function>
+		</EXTENSION_MANAGE_QUICKBOOKS_ENABLED>
+	</Configuration>
+</ConfigurationGroup>

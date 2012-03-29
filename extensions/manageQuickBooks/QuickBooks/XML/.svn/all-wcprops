@@ -1,0 +1,29 @@
+K 25
+svn:wc:ra_dav:version-url
+V 54
+/svn/repos/php_devkit/!svn/ver/80/trunk/QuickBooks/XML
+END
+Parser.php
+K 25
+svn:wc:ra_dav:version-url
+V 65
+/svn/repos/php_devkit/!svn/ver/75/trunk/QuickBooks/XML/Parser.php
+END
+Document.php
+K 25
+svn:wc:ra_dav:version-url
+V 67
+/svn/repos/php_devkit/!svn/ver/72/trunk/QuickBooks/XML/Document.php
+END
+Node.php
+K 25
+svn:wc:ra_dav:version-url
+V 63
+/svn/repos/php_devkit/!svn/ver/64/trunk/QuickBooks/XML/Node.php
+END
+Backend.php
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/svn/repos/php_devkit/!svn/ver/80/trunk/QuickBooks/XML/Backend.php
+END

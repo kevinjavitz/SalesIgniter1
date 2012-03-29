@@ -1,0 +1,53 @@
+K 25
+svn:wc:ra_dav:version-url
+V 70
+/svn/repos/php_devkit/!svn/ver/138/trunk/QuickBooks/IPP/Service/Report
+END
+BalanceSheetStd.php
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/svn/repos/php_devkit/!svn/ver/138/trunk/QuickBooks/IPP/Service/Report/BalanceSheetStd.php
+END
+TopCustomersBySales.php
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/svn/repos/php_devkit/!svn/ver/64/trunk/QuickBooks/IPP/Service/Report/TopCustomersBySales.php
+END
+BalanceSheet.php
+K 25
+svn:wc:ra_dav:version-url
+V 86
+/svn/repos/php_devkit/!svn/ver/64/trunk/QuickBooks/IPP/Service/Report/BalanceSheet.php
+END
+CustomersWhoOweMe.php
+K 25
+svn:wc:ra_dav:version-url
+V 91
+/svn/repos/php_devkit/!svn/ver/64/trunk/QuickBooks/IPP/Service/Report/CustomersWhoOweMe.php
+END
+AccountBalances.php
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/svn/repos/php_devkit/!svn/ver/64/trunk/QuickBooks/IPP/Service/Report/AccountBalances.php
+END
+SalesSummary.php
+K 25
+svn:wc:ra_dav:version-url
+V 86
+/svn/repos/php_devkit/!svn/ver/64/trunk/QuickBooks/IPP/Service/Report/SalesSummary.php
+END
+IncomeBreakdown.php
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/svn/repos/php_devkit/!svn/ver/64/trunk/QuickBooks/IPP/Service/Report/IncomeBreakdown.php
+END
+ProfitAndLoss.php
+K 25
+svn:wc:ra_dav:version-url
+V 87
+/svn/repos/php_devkit/!svn/ver/64/trunk/QuickBooks/IPP/Service/Report/ProfitAndLoss.php
+END

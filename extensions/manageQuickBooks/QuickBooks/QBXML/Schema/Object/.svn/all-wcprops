@@ -1,0 +1,971 @@
+K 25
+svn:wc:ra_dav:version-url
+V 71
+/svn/repos/php_devkit/!svn/ver/177/trunk/QuickBooks/QBXML/Schema/Object
+END
+PriceLevelModRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/svn/repos/php_devkit/!svn/ver/2/trunk/QuickBooks/QBXML/Schema/Object/PriceLevelModRq.php
+END
+VendorModRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 85
+/svn/repos/php_devkit/!svn/ver/2/trunk/QuickBooks/QBXML/Schema/Object/VendorModRq.php
+END
+ItemOtherChargeQueryRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 96
+/svn/repos/php_devkit/!svn/ver/2/trunk/QuickBooks/QBXML/Schema/Object/ItemOtherChargeQueryRq.php
+END
+DataExtAddRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 86
+/svn/repos/php_devkit/!svn/ver/2/trunk/QuickBooks/QBXML/Schema/Object/DataExtAddRq.php
+END
+PaymentMethodQueryRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 94
+/svn/repos/php_devkit/!svn/ver/2/trunk/QuickBooks/QBXML/Schema/Object/PaymentMethodQueryRq.php
+END
+SalesRepQueryRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/svn/repos/php_devkit/!svn/ver/2/trunk/QuickBooks/QBXML/Schema/Object/SalesRepQueryRq.php
+END
+ItemOtherChargeModRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 94
+/svn/repos/php_devkit/!svn/ver/2/trunk/QuickBooks/QBXML/Schema/Object/ItemOtherChargeModRq.php
+END
+CustomerAddRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 88
+/svn/repos/php_devkit/!svn/ver/52/trunk/QuickBooks/QBXML/Schema/Object/CustomerAddRq.php
+END
+ClassAddRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 84
+/svn/repos/php_devkit/!svn/ver/2/trunk/QuickBooks/QBXML/Schema/Object/ClassAddRq.php
+END
+BillPaymentCreditCardAddRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 100
+/svn/repos/php_devkit/!svn/ver/2/trunk/QuickBooks/QBXML/Schema/Object/BillPaymentCreditCardAddRq.php
+END
+CreditMemoQueryRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 91
+/svn/repos/php_devkit/!svn/ver/2/trunk/QuickBooks/QBXML/Schema/Object/CreditMemoQueryRq.php
+END
+SalesRepModRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 87
+/svn/repos/php_devkit/!svn/ver/2/trunk/QuickBooks/QBXML/Schema/Object/SalesRepModRq.php
+END
+ItemSalesTaxGroupModRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 96
+/svn/repos/php_devkit/!svn/ver/2/trunk/QuickBooks/QBXML/Schema/Object/ItemSalesTaxGroupModRq.php
+END
+ARRefundCreditCardQueryRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 99
+/svn/repos/php_devkit/!svn/ver/2/trunk/QuickBooks/QBXML/Schema/Object/ARRefundCreditCardQueryRq.php
+END
+ItemPaymentQueryRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 92
+/svn/repos/php_devkit/!svn/ver/2/trunk/QuickBooks/QBXML/Schema/Object/ItemPaymentQueryRq.php
+END
+JournalEntryQueryRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/svn/repos/php_devkit/!svn/ver/2/trunk/QuickBooks/QBXML/Schema/Object/JournalEntryQueryRq.php
+END
+AccountQueryRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 88
+/svn/repos/php_devkit/!svn/ver/2/trunk/QuickBooks/QBXML/Schema/Object/AccountQueryRq.php
+END
+InvoiceQueryRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 88
+/svn/repos/php_devkit/!svn/ver/2/trunk/QuickBooks/QBXML/Schema/Object/InvoiceQueryRq.php
+END
+CreditCardChargeAddRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 95
+/svn/repos/php_devkit/!svn/ver/2/trunk/QuickBooks/QBXML/Schema/Object/CreditCardChargeAddRq.php
+END
+ReceivePaymentAddRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/svn/repos/php_devkit/!svn/ver/2/trunk/QuickBooks/QBXML/Schema/Object/ReceivePaymentAddRq.php
+END
+BillAddRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 83
+/svn/repos/php_devkit/!svn/ver/2/trunk/QuickBooks/QBXML/Schema/Object/BillAddRq.php
+END
+TxnVoidRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 83
+/svn/repos/php_devkit/!svn/ver/2/trunk/QuickBooks/QBXML/Schema/Object/TxnVoidRq.php
+END
+DepositQueryRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 88
+/svn/repos/php_devkit/!svn/ver/2/trunk/QuickBooks/QBXML/Schema/Object/DepositQueryRq.php
+END
+TxnDelRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/svn/repos/php_devkit/!svn/ver/2/trunk/QuickBooks/QBXML/Schema/Object/TxnDelRq.php
+END
+DataExtDefQueryRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 91
+/svn/repos/php_devkit/!svn/ver/2/trunk/QuickBooks/QBXML/Schema/Object/DataExtDefQueryRq.php
+END
+ItemInventoryQueryRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 94
+/svn/repos/php_devkit/!svn/ver/2/trunk/QuickBooks/QBXML/Schema/Object/ItemInventoryQueryRq.php
+END
+ARRefundCreditCardAddRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 97
+/svn/repos/php_devkit/!svn/ver/2/trunk/QuickBooks/QBXML/Schema/Object/ARRefundCreditCardAddRq.php
+END
+CustomSummaryReportQueryRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 100
+/svn/repos/php_devkit/!svn/ver/2/trunk/QuickBooks/QBXML/Schema/Object/CustomSummaryReportQueryRq.php
+END
+UnitOfMeasureSetAddRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 95
+/svn/repos/php_devkit/!svn/ver/2/trunk/QuickBooks/QBXML/Schema/Object/UnitOfMeasureSetAddRq.php
+END
+CheckModRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 84
+/svn/repos/php_devkit/!svn/ver/2/trunk/QuickBooks/QBXML/Schema/Object/CheckModRq.php
+END
+ItemServiceModRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/svn/repos/php_devkit/!svn/ver/2/trunk/QuickBooks/QBXML/Schema/Object/ItemServiceModRq.php
+END
+WorkersCompCodeAddRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 94
+/svn/repos/php_devkit/!svn/ver/2/trunk/QuickBooks/QBXML/Schema/Object/WorkersCompCodeAddRq.php
+END
+DepositAddRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 86
+/svn/repos/php_devkit/!svn/ver/2/trunk/QuickBooks/QBXML/Schema/Object/DepositAddRq.php
+END
+BillToPayQueryRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/svn/repos/php_devkit/!svn/ver/2/trunk/QuickBooks/QBXML/Schema/Object/BillToPayQueryRq.php
+END
+VehicleMileageQueryRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 95
+/svn/repos/php_devkit/!svn/ver/2/trunk/QuickBooks/QBXML/Schema/Object/VehicleMileageQueryRq.php
+END
+CompanyQueryRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 88
+/svn/repos/php_devkit/!svn/ver/2/trunk/QuickBooks/QBXML/Schema/Object/CompanyQueryRq.php
+END
+CreditCardCreditModRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 95
+/svn/repos/php_devkit/!svn/ver/2/trunk/QuickBooks/QBXML/Schema/Object/CreditCardCreditModRq.php
+END
+StandardTermsQueryRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 94
+/svn/repos/php_devkit/!svn/ver/2/trunk/QuickBooks/QBXML/Schema/Object/StandardTermsQueryRq.php
+END
+SalesOrderModRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 91
+/svn/repos/php_devkit/!svn/ver/177/trunk/QuickBooks/QBXML/Schema/Object/SalesOrderModRq.php
+END
+PriceLevelAddRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/svn/repos/php_devkit/!svn/ver/2/trunk/QuickBooks/QBXML/Schema/Object/PriceLevelAddRq.php
+END
+ItemSalesTaxModRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 91
+/svn/repos/php_devkit/!svn/ver/2/trunk/QuickBooks/QBXML/Schema/Object/ItemSalesTaxModRq.php
+END
+BillingRateAddRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/svn/repos/php_devkit/!svn/ver/2/trunk/QuickBooks/QBXML/Schema/Object/BillingRateAddRq.php
+END
+ReceivePaymentQueryRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 95
+/svn/repos/php_devkit/!svn/ver/2/trunk/QuickBooks/QBXML/Schema/Object/ReceivePaymentQueryRq.php
+END
+VendorAddRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 85
+/svn/repos/php_devkit/!svn/ver/2/trunk/QuickBooks/QBXML/Schema/Object/VendorAddRq.php
+END
+BudgetSummaryReportQueryRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 100
+/svn/repos/php_devkit/!svn/ver/2/trunk/QuickBooks/QBXML/Schema/Object/BudgetSummaryReportQueryRq.php
+END
+ItemSubtotalModRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 91
+/svn/repos/php_devkit/!svn/ver/2/trunk/QuickBooks/QBXML/Schema/Object/ItemSubtotalModRq.php
+END
+VehicleMileageAddRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/svn/repos/php_devkit/!svn/ver/2/trunk/QuickBooks/QBXML/Schema/Object/VehicleMileageAddRq.php
+END
+ChargeQueryRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 87
+/svn/repos/php_devkit/!svn/ver/2/trunk/QuickBooks/QBXML/Schema/Object/ChargeQueryRq.php
+END
+EmployeeModRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 87
+/svn/repos/php_devkit/!svn/ver/2/trunk/QuickBooks/QBXML/Schema/Object/EmployeeModRq.php
+END
+ItemOtherChargeAddRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 94
+/svn/repos/php_devkit/!svn/ver/2/trunk/QuickBooks/QBXML/Schema/Object/ItemOtherChargeAddRq.php
+END
+StandardTermsAddRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 92
+/svn/repos/php_devkit/!svn/ver/2/trunk/QuickBooks/QBXML/Schema/Object/StandardTermsAddRq.php
+END
+PaymentMethodAddRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 94
+/svn/repos/php_devkit/!svn/ver/146/trunk/QuickBooks/QBXML/Schema/Object/PaymentMethodAddRq.php
+END
+SalesRepAddRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 87
+/svn/repos/php_devkit/!svn/ver/2/trunk/QuickBooks/QBXML/Schema/Object/SalesRepAddRq.php
+END
+ItemSalesTaxGroupAddRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 96
+/svn/repos/php_devkit/!svn/ver/2/trunk/QuickBooks/QBXML/Schema/Object/ItemSalesTaxGroupAddRq.php
+END
+PurchaseOrderQueryRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 94
+/svn/repos/php_devkit/!svn/ver/2/trunk/QuickBooks/QBXML/Schema/Object/PurchaseOrderQueryRq.php
+END
+VendorCreditAddRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 91
+/svn/repos/php_devkit/!svn/ver/2/trunk/QuickBooks/QBXML/Schema/Object/VendorCreditAddRq.php
+END
+BillPaymentCheckQueryRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 97
+/svn/repos/php_devkit/!svn/ver/2/trunk/QuickBooks/QBXML/Schema/Object/BillPaymentCheckQueryRq.php
+END
+ItemServiceQueryRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 92
+/svn/repos/php_devkit/!svn/ver/2/trunk/QuickBooks/QBXML/Schema/Object/ItemServiceQueryRq.php
+END
+PurchaseOrderModRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 92
+/svn/repos/php_devkit/!svn/ver/2/trunk/QuickBooks/QBXML/Schema/Object/PurchaseOrderModRq.php
+END
+DataExtDefModRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/svn/repos/php_devkit/!svn/ver/2/trunk/QuickBooks/QBXML/Schema/Object/DataExtDefModRq.php
+END
+EstimateModRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/svn/repos/php_devkit/!svn/ver/177/trunk/QuickBooks/QBXML/Schema/Object/EstimateModRq.php
+END
+BillPaymentCheckModRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 95
+/svn/repos/php_devkit/!svn/ver/2/trunk/QuickBooks/QBXML/Schema/Object/BillPaymentCheckModRq.php
+END
+CustomDetailReportQueryRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 99
+/svn/repos/php_devkit/!svn/ver/2/trunk/QuickBooks/QBXML/Schema/Object/CustomDetailReportQueryRq.php
+END
+VehicleModRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 86
+/svn/repos/php_devkit/!svn/ver/2/trunk/QuickBooks/QBXML/Schema/Object/VehicleModRq.php
+END
+CustomerMsgAddRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 91
+/svn/repos/php_devkit/!svn/ver/55/trunk/QuickBooks/QBXML/Schema/Object/CustomerMsgAddRq.php
+END
+BillingRateQueryRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 92
+/svn/repos/php_devkit/!svn/ver/2/trunk/QuickBooks/QBXML/Schema/Object/BillingRateQueryRq.php
+END
+SalesReceiptModRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/svn/repos/php_devkit/!svn/ver/177/trunk/QuickBooks/QBXML/Schema/Object/SalesReceiptModRq.php
+END
+CreditCardCreditQueryRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 97
+/svn/repos/php_devkit/!svn/ver/2/trunk/QuickBooks/QBXML/Schema/Object/CreditCardCreditQueryRq.php
+END
+CheckAddRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 84
+/svn/repos/php_devkit/!svn/ver/2/trunk/QuickBooks/QBXML/Schema/Object/CheckAddRq.php
+END
+PreferencesQueryRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 94
+/svn/repos/php_devkit/!svn/ver/149/trunk/QuickBooks/QBXML/Schema/Object/PreferencesQueryRq.php
+END
+CustomerQueryRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/svn/repos/php_devkit/!svn/ver/2/trunk/QuickBooks/QBXML/Schema/Object/CustomerQueryRq.php
+END
+ItemServiceAddRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/svn/repos/php_devkit/!svn/ver/2/trunk/QuickBooks/QBXML/Schema/Object/ItemServiceAddRq.php
+END
+SalesOrderQueryRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 91
+/svn/repos/php_devkit/!svn/ver/2/trunk/QuickBooks/QBXML/Schema/Object/SalesOrderQueryRq.php
+END
+ItemSalesTaxQueryRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/svn/repos/php_devkit/!svn/ver/2/trunk/QuickBooks/QBXML/Schema/Object/ItemSalesTaxQueryRq.php
+END
+ClassQueryRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 86
+/svn/repos/php_devkit/!svn/ver/2/trunk/QuickBooks/QBXML/Schema/Object/ClassQueryRq.php
+END
+BillPaymentCreditCardQueryRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 102
+/svn/repos/php_devkit/!svn/ver/2/trunk/QuickBooks/QBXML/Schema/Object/BillPaymentCreditCardQueryRq.php
+END
+ItemReceiptQueryRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 92
+/svn/repos/php_devkit/!svn/ver/2/trunk/QuickBooks/QBXML/Schema/Object/ItemReceiptQueryRq.php
+END
+ItemFixedAssetQueryRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 95
+/svn/repos/php_devkit/!svn/ver/2/trunk/QuickBooks/QBXML/Schema/Object/ItemFixedAssetQueryRq.php
+END
+InventoryAdjustmentAddRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 100
+/svn/repos/php_devkit/!svn/ver/150/trunk/QuickBooks/QBXML/Schema/Object/InventoryAdjustmentAddRq.php
+END
+EmployeeQueryRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/svn/repos/php_devkit/!svn/ver/2/trunk/QuickBooks/QBXML/Schema/Object/EmployeeQueryRq.php
+END
+ItemSalesTaxGroupQueryRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 98
+/svn/repos/php_devkit/!svn/ver/2/trunk/QuickBooks/QBXML/Schema/Object/ItemSalesTaxGroupQueryRq.php
+END
+ItemDiscountModRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 91
+/svn/repos/php_devkit/!svn/ver/2/trunk/QuickBooks/QBXML/Schema/Object/ItemDiscountModRq.php
+END
+CreditCardCreditAddRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 95
+/svn/repos/php_devkit/!svn/ver/2/trunk/QuickBooks/QBXML/Schema/Object/CreditCardCreditAddRq.php
+END
+Template.php
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/svn/repos/php_devkit/!svn/ver/2/trunk/QuickBooks/QBXML/Schema/Object/Template.php
+END
+CompanyActivityQueryRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 96
+/svn/repos/php_devkit/!svn/ver/2/trunk/QuickBooks/QBXML/Schema/Object/CompanyActivityQueryRq.php
+END
+ItemReceiptModRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/svn/repos/php_devkit/!svn/ver/2/trunk/QuickBooks/QBXML/Schema/Object/ItemReceiptModRq.php
+END
+ItemGroupModRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 88
+/svn/repos/php_devkit/!svn/ver/2/trunk/QuickBooks/QBXML/Schema/Object/ItemGroupModRq.php
+END
+SalesOrderAddRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 91
+/svn/repos/php_devkit/!svn/ver/177/trunk/QuickBooks/QBXML/Schema/Object/SalesOrderAddRq.php
+END
+ItemSalesTaxAddRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 91
+/svn/repos/php_devkit/!svn/ver/2/trunk/QuickBooks/QBXML/Schema/Object/ItemSalesTaxAddRq.php
+END
+ShipMethodAddRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/svn/repos/php_devkit/!svn/ver/2/trunk/QuickBooks/QBXML/Schema/Object/ShipMethodAddRq.php
+END
+ItemFixedAssetModRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/svn/repos/php_devkit/!svn/ver/2/trunk/QuickBooks/QBXML/Schema/Object/ItemFixedAssetModRq.php
+END
+VendorCreditQueryRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/svn/repos/php_devkit/!svn/ver/2/trunk/QuickBooks/QBXML/Schema/Object/VendorCreditQueryRq.php
+END
+ItemSubtotalAddRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 91
+/svn/repos/php_devkit/!svn/ver/2/trunk/QuickBooks/QBXML/Schema/Object/ItemSubtotalAddRq.php
+END
+ItemNonInventoryModRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 95
+/svn/repos/php_devkit/!svn/ver/2/trunk/QuickBooks/QBXML/Schema/Object/ItemNonInventoryModRq.php
+END
+CreditMemoModRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/svn/repos/php_devkit/!svn/ver/2/trunk/QuickBooks/QBXML/Schema/Object/CreditMemoModRq.php
+END
+EmployeeAddRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 87
+/svn/repos/php_devkit/!svn/ver/2/trunk/QuickBooks/QBXML/Schema/Object/EmployeeAddRq.php
+END
+ChargeModRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 85
+/svn/repos/php_devkit/!svn/ver/2/trunk/QuickBooks/QBXML/Schema/Object/ChargeModRq.php
+END
+CustomerTypeQueryRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/svn/repos/php_devkit/!svn/ver/2/trunk/QuickBooks/QBXML/Schema/Object/CustomerTypeQueryRq.php
+END
+JournalEntryModRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 91
+/svn/repos/php_devkit/!svn/ver/2/trunk/QuickBooks/QBXML/Schema/Object/JournalEntryModRq.php
+END
+ItemPaymentModRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/svn/repos/php_devkit/!svn/ver/2/trunk/QuickBooks/QBXML/Schema/Object/ItemPaymentModRq.php
+END
+InvoiceModRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 88
+/svn/repos/php_devkit/!svn/ver/177/trunk/QuickBooks/QBXML/Schema/Object/InvoiceModRq.php
+END
+AccountModRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 86
+/svn/repos/php_devkit/!svn/ver/2/trunk/QuickBooks/QBXML/Schema/Object/AccountModRq.php
+END
+CustomerMsgQueryRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 92
+/svn/repos/php_devkit/!svn/ver/2/trunk/QuickBooks/QBXML/Schema/Object/CustomerMsgQueryRq.php
+END
+DataExtDefDelRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/svn/repos/php_devkit/!svn/ver/2/trunk/QuickBooks/QBXML/Schema/Object/DataExtDefDelRq.php
+END
+BuildAssemblyModRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 92
+/svn/repos/php_devkit/!svn/ver/2/trunk/QuickBooks/QBXML/Schema/Object/BuildAssemblyModRq.php
+END
+EstimateQueryRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/svn/repos/php_devkit/!svn/ver/2/trunk/QuickBooks/QBXML/Schema/Object/EstimateQueryRq.php
+END
+HostQueryRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 87
+/svn/repos/php_devkit/!svn/ver/149/trunk/QuickBooks/QBXML/Schema/Object/HostQueryRq.php
+END
+VehicleQueryRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 88
+/svn/repos/php_devkit/!svn/ver/2/trunk/QuickBooks/QBXML/Schema/Object/VehicleQueryRq.php
+END
+SalesReceiptQueryRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/svn/repos/php_devkit/!svn/ver/2/trunk/QuickBooks/QBXML/Schema/Object/SalesReceiptQueryRq.php
+END
+ItemInventoryModRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 92
+/svn/repos/php_devkit/!svn/ver/2/trunk/QuickBooks/QBXML/Schema/Object/ItemInventoryModRq.php
+END
+CustomerTypeAddRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 91
+/svn/repos/php_devkit/!svn/ver/2/trunk/QuickBooks/QBXML/Schema/Object/CustomerTypeAddRq.php
+END
+PurchaseOrderAddRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 92
+/svn/repos/php_devkit/!svn/ver/2/trunk/QuickBooks/QBXML/Schema/Object/PurchaseOrderAddRq.php
+END
+InventoryAdjustmentQueryRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 100
+/svn/repos/php_devkit/!svn/ver/2/trunk/QuickBooks/QBXML/Schema/Object/InventoryAdjustmentQueryRq.php
+END
+DataExtDefAddRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/svn/repos/php_devkit/!svn/ver/2/trunk/QuickBooks/QBXML/Schema/Object/DataExtDefAddRq.php
+END
+VendorQueryRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 87
+/svn/repos/php_devkit/!svn/ver/2/trunk/QuickBooks/QBXML/Schema/Object/VendorQueryRq.php
+END
+EstimateAddRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/svn/repos/php_devkit/!svn/ver/177/trunk/QuickBooks/QBXML/Schema/Object/EstimateAddRq.php
+END
+JobTypeAddRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 86
+/svn/repos/php_devkit/!svn/ver/2/trunk/QuickBooks/QBXML/Schema/Object/JobTypeAddRq.php
+END
+BillPaymentCheckAddRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 95
+/svn/repos/php_devkit/!svn/ver/2/trunk/QuickBooks/QBXML/Schema/Object/BillPaymentCheckAddRq.php
+END
+VehicleAddRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 86
+/svn/repos/php_devkit/!svn/ver/2/trunk/QuickBooks/QBXML/Schema/Object/VehicleAddRq.php
+END
+DataExtModRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 86
+/svn/repos/php_devkit/!svn/ver/2/trunk/QuickBooks/QBXML/Schema/Object/DataExtModRq.php
+END
+ShipMethodQueryRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 91
+/svn/repos/php_devkit/!svn/ver/2/trunk/QuickBooks/QBXML/Schema/Object/ShipMethodQueryRq.php
+END
+SalesReceiptAddRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/svn/repos/php_devkit/!svn/ver/177/trunk/QuickBooks/QBXML/Schema/Object/SalesReceiptAddRq.php
+END
+ItemDiscountQueryRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/svn/repos/php_devkit/!svn/ver/2/trunk/QuickBooks/QBXML/Schema/Object/ItemDiscountQueryRq.php
+END
+ItemGroupQueryRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/svn/repos/php_devkit/!svn/ver/2/trunk/QuickBooks/QBXML/Schema/Object/ItemGroupQueryRq.php
+END
+CustomerModRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 87
+/svn/repos/php_devkit/!svn/ver/2/trunk/QuickBooks/QBXML/Schema/Object/CustomerModRq.php
+END
+ItemSubtotalQueryRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/svn/repos/php_devkit/!svn/ver/2/trunk/QuickBooks/QBXML/Schema/Object/ItemSubtotalQueryRq.php
+END
+ClearedStatusModRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 92
+/svn/repos/php_devkit/!svn/ver/2/trunk/QuickBooks/QBXML/Schema/Object/ClearedStatusModRq.php
+END
+CreditCardChargeQueryRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 97
+/svn/repos/php_devkit/!svn/ver/2/trunk/QuickBooks/QBXML/Schema/Object/CreditCardChargeQueryRq.php
+END
+SalesTaxCodeQueryRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/svn/repos/php_devkit/!svn/ver/2/trunk/QuickBooks/QBXML/Schema/Object/SalesTaxCodeQueryRq.php
+END
+BillQueryRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 85
+/svn/repos/php_devkit/!svn/ver/2/trunk/QuickBooks/QBXML/Schema/Object/BillQueryRq.php
+END
+SpecialItemAddRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/svn/repos/php_devkit/!svn/ver/2/trunk/QuickBooks/QBXML/Schema/Object/SpecialItemAddRq.php
+END
+ItemNonInventoryQueryRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 97
+/svn/repos/php_devkit/!svn/ver/2/trunk/QuickBooks/QBXML/Schema/Object/ItemNonInventoryQueryRq.php
+END
+CreditCardChargeModRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 95
+/svn/repos/php_devkit/!svn/ver/2/trunk/QuickBooks/QBXML/Schema/Object/CreditCardChargeModRq.php
+END
+ReceivePaymentModRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/svn/repos/php_devkit/!svn/ver/2/trunk/QuickBooks/QBXML/Schema/Object/ReceivePaymentModRq.php
+END
+ItemDiscountAddRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 91
+/svn/repos/php_devkit/!svn/ver/2/trunk/QuickBooks/QBXML/Schema/Object/ItemDiscountAddRq.php
+END
+BillModRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 83
+/svn/repos/php_devkit/!svn/ver/2/trunk/QuickBooks/QBXML/Schema/Object/BillModRq.php
+END
+ItemReceiptAddRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/svn/repos/php_devkit/!svn/ver/2/trunk/QuickBooks/QBXML/Schema/Object/ItemReceiptAddRq.php
+END
+ItemQueryRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 85
+/svn/repos/php_devkit/!svn/ver/2/trunk/QuickBooks/QBXML/Schema/Object/ItemQueryRq.php
+END
+ItemGroupAddRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 88
+/svn/repos/php_devkit/!svn/ver/2/trunk/QuickBooks/QBXML/Schema/Object/ItemGroupAddRq.php
+END
+BuildAssemblyQueryRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 94
+/svn/repos/php_devkit/!svn/ver/2/trunk/QuickBooks/QBXML/Schema/Object/BuildAssemblyQueryRq.php
+END
+VendorTypeQueryRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 91
+/svn/repos/php_devkit/!svn/ver/2/trunk/QuickBooks/QBXML/Schema/Object/VendorTypeQueryRq.php
+END
+ItemFixedAssetAddRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/svn/repos/php_devkit/!svn/ver/2/trunk/QuickBooks/QBXML/Schema/Object/ItemFixedAssetAddRq.php
+END
+SalesTaxCodeAddRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 91
+/svn/repos/php_devkit/!svn/ver/2/trunk/QuickBooks/QBXML/Schema/Object/SalesTaxCodeAddRq.php
+END
+UnitOfMeasureSetQueryRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 97
+/svn/repos/php_devkit/!svn/ver/2/trunk/QuickBooks/QBXML/Schema/Object/UnitOfMeasureSetQueryRq.php
+END
+WorkersCompCodeQueryRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 96
+/svn/repos/php_devkit/!svn/ver/2/trunk/QuickBooks/QBXML/Schema/Object/WorkersCompCodeQueryRq.php
+END
+ItemNonInventoryAddRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 95
+/svn/repos/php_devkit/!svn/ver/2/trunk/QuickBooks/QBXML/Schema/Object/ItemNonInventoryAddRq.php
+END
+CreditMemoAddRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/svn/repos/php_devkit/!svn/ver/2/trunk/QuickBooks/QBXML/Schema/Object/CreditMemoAddRq.php
+END
+JobTypeQueryRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 88
+/svn/repos/php_devkit/!svn/ver/2/trunk/QuickBooks/QBXML/Schema/Object/JobTypeQueryRq.php
+END
+ChargeAddRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 85
+/svn/repos/php_devkit/!svn/ver/2/trunk/QuickBooks/QBXML/Schema/Object/ChargeAddRq.php
+END
+CheckQueryRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 86
+/svn/repos/php_devkit/!svn/ver/2/trunk/QuickBooks/QBXML/Schema/Object/CheckQueryRq.php
+END
+JournalEntryAddRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 91
+/svn/repos/php_devkit/!svn/ver/2/trunk/QuickBooks/QBXML/Schema/Object/JournalEntryAddRq.php
+END
+ItemPaymentAddRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/svn/repos/php_devkit/!svn/ver/2/trunk/QuickBooks/QBXML/Schema/Object/ItemPaymentAddRq.php
+END
+InvoiceAddRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 88
+/svn/repos/php_devkit/!svn/ver/177/trunk/QuickBooks/QBXML/Schema/Object/InvoiceAddRq.php
+END
+AccountAddRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 86
+/svn/repos/php_devkit/!svn/ver/2/trunk/QuickBooks/QBXML/Schema/Object/AccountAddRq.php
+END
+WorkersCompCodeModRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 94
+/svn/repos/php_devkit/!svn/ver/2/trunk/QuickBooks/QBXML/Schema/Object/WorkersCompCodeModRq.php
+END
+DepositModRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 86
+/svn/repos/php_devkit/!svn/ver/2/trunk/QuickBooks/QBXML/Schema/Object/DepositModRq.php
+END
+BuildAssemblyAddRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 92
+/svn/repos/php_devkit/!svn/ver/2/trunk/QuickBooks/QBXML/Schema/Object/BuildAssemblyAddRq.php
+END
+VendorTypeAddRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/svn/repos/php_devkit/!svn/ver/2/trunk/QuickBooks/QBXML/Schema/Object/VendorTypeAddRq.php
+END
+DataExtDelRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 86
+/svn/repos/php_devkit/!svn/ver/2/trunk/QuickBooks/QBXML/Schema/Object/DataExtDelRq.php
+END
+PriceLevelQueryRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 91
+/svn/repos/php_devkit/!svn/ver/2/trunk/QuickBooks/QBXML/Schema/Object/PriceLevelQueryRq.php
+END
+ItemInventoryAddRq.php
+K 25
+svn:wc:ra_dav:version-url
+V 92
+/svn/repos/php_devkit/!svn/ver/2/trunk/QuickBooks/QBXML/Schema/Object/ItemInventoryAddRq.php
+END
