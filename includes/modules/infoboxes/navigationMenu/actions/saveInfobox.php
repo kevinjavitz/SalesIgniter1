@@ -21,7 +21,7 @@ function parseItemLink($itemId) {
 			'application' => 'index',
 			'page' => 'default',
 			'target' => $_POST['menu_item_link_category_target'][$itemId],
-			'get_vars' => 'cPath=' . $catPath
+			'get_vars' => 'cPath=' . ($catPath == 'none' ? 0 : $catPath)
 		);
 	}
 	elseif ($_POST['menu_item_link'][$itemId] == 'custom') {

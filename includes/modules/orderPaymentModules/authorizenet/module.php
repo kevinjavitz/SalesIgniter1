@@ -332,6 +332,41 @@
 			/*For each product i calculate deposit amount and make the sum for auth type and then substract for auth and sale*/
 			/*if on editor i get all product from editor too*/
 			$totalDeposit = 0;
+			$billPrice = 0;
+			if(isset($onePageCheckout->onePage['rentalPlan'])){
+				$rentalPlan = $onePageCheckout->onePage['rentalPlan'];
+
+				$membershipMonths = $rentalPlan['months'];
+				$membershipDays = $rentalPlan['days'];
+				$numberOfRentals = $rentalPlan['no_of_titles'];
+				$paymentTerm = 'N'; //not used
+				//$billPrice = tep_add_tax($rentalPlan['price'], $rentalPlan['tax_rate']);
+				$nextBillDate = strtotime('+' . $membershipMonths . ' month +' . $membershipDays . ' day');
+				if (isset($paymentTerm)){
+					if ($paymentTerm == 'M'){
+						$nextBillDate = strtotime('+1 month');
+					}
+					elseif ($paymentTerm == 'Y') {
+						$nextBillDate = strtotime('+12 month');
+					}
+				}
+
+				if ($rentalPlan['free_trial'] > 0){
+					$freeTrialPeriod = $rentalPlan['free_trial'];
+					$freeTrialEnds = time();
+					if ($rentalPlan['free_trial'] > 0){
+						$nextBillDate = strtotime('+' . $freeTrialPeriod . ' day');
+						$freeTrialEnds = strtotime('+' . $freeTrialPeriod . ' day');
+					}
+
+					if ($freeTrialEnds > time() && $rentalPlan['free_trial_amount'] > 0){
+						$billPrice = tep_add_tax($rentalPlan['free_trial_amount'], $rentalPlan['tax_rate']);
+					}else{
+						$billPrice = 0;
+					}
+				}
+			}
+
 			if(isset($ShoppingCart) && !is_null($ShoppingCart) && is_object($ShoppingCart)){
 				foreach($ShoppingCart->getProducts() as $iProduct){
 					$resInfo = $iProduct->getInfo();
@@ -419,28 +454,35 @@
 				);
 
 			}
-
-			if($totalDeposit > 0){
+			if($billPrice > 0){
 				$xType = 'AUTH_ONLY';
-				$dataArray['amount'] = $totalDeposit;
+				$dataArray['amount'] = $billPrice;
 				$dataArray['xType'] = $xType;
-
-
 				$f = $this->sendPaymentRequest($dataArray);
-				if($f){
-					$restAmount = $total - $totalDeposit;
-
-					$xType = 'AUTH_CAPTURE';
-					$dataArray['amount'] = $restAmount;
-					$dataArray['xType'] = $xType;
-
-					$f = $this->sendPaymentRequest($dataArray);
-				}
 				return $f;
 			}else{
-				$dataArray['amount'] =  $total;
-				$dataArray['xType'] = $xType;
-				return $this->sendPaymentRequest($dataArray);
+				if($totalDeposit > 0){
+					$xType = 'AUTH_ONLY';
+					$dataArray['amount'] = $totalDeposit;
+					$dataArray['xType'] = $xType;
+
+
+					$f = $this->sendPaymentRequest($dataArray);
+					if($f){
+						$restAmount = $total - $totalDeposit;
+
+						$xType = 'AUTH_CAPTURE';
+						$dataArray['amount'] = $restAmount;
+						$dataArray['xType'] = $xType;
+
+						$f = $this->sendPaymentRequest($dataArray);
+					}
+					return $f;
+				}else{
+					$dataArray['amount'] =  $total;
+					$dataArray['xType'] = $xType;
+					return $this->sendPaymentRequest($dataArray);
+				}
 			}
 
 		}

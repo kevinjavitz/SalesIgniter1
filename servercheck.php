@@ -21,6 +21,7 @@ $requirements = array(
 	'php_settings' => array(
 		'register_globals' => 0,
 		//'register_long_arrays' => 0,
+		'magic_quotes_gpc' => 0,
 		'magic_quotes' => 0,
 		'file_uploads' => 1,
 		'memory_limit' => 64,
@@ -85,7 +86,7 @@ $infoIcon = '<span class="ui-icon-colored ui-icon-blue ui-icon-info" style="disp
 			$('.phpSettings').append('<tr>' +
 				'<td align="left"><?php echo $name;?></td>' +
 				'<td align="right"><?php echo ((int) ini_get($name) == 0 ? 'Off' : 'On');?></td>' +
-				'<td align="center" style="width:20px;"><?php echo ((int) ini_get($name) >= $req ? $successIcon : $errorIcon);?></td>' +
+				'<td align="center" style="width:20px;"><?php echo ((int) ini_get($name) == $req ? $successIcon : $errorIcon);?></td>' +
 				'</tr>');
 				<?php
 			}else{
