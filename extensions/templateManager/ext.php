@@ -43,6 +43,8 @@ class Extension_templateManager extends ExtensionBase {
 	}
 
 	public function buildLayout(&$Construct, $layoutId){
+		mysql_set_charset(sysConfig::get('SYSTEM_CHARACTER_SET'));
+		mysql_query("SET NAMES '".sysConfig::get('SYSTEM_CHARACTER_SET_COLLATION')."'");
 		$Qcontainers = mysql_query('select * from template_manager_layouts_containers where layout_id = "' . $layoutId . '" and parent_id = 0 order by sort_order');
 		if (mysql_num_rows($Qcontainers)){
 			while($cInfo = mysql_fetch_assoc($Qcontainers)){
@@ -84,6 +86,8 @@ class Extension_templateManager extends ExtensionBase {
 		}
 
 		$cfgInfo = false;
+		mysql_set_charset(sysConfig::get('SYSTEM_CHARACTER_SET'));
+		mysql_query("SET NAMES '".sysConfig::get('SYSTEM_CHARACTER_SET_COLLATION')."'");
 		$Query = mysql_query('select * from ' . $table . ' where ' . $idCol . ' = "' . $id . '"');
 		if (mysql_num_rows($Query)){
 			$cfgInfo = array();
@@ -109,6 +113,8 @@ class Extension_templateManager extends ExtensionBase {
 		}
 
 		$cssInfo = false;
+		mysql_set_charset(sysConfig::get('SYSTEM_CHARACTER_SET'));
+		mysql_query("SET NAMES '".sysConfig::get('SYSTEM_CHARACTER_SET_COLLATION')."'");
 		$Query = mysql_query('select * from ' . $table . ' where ' . $idCol . ' = "' . $id . '"');
 		if (mysql_num_rows($Query)){
 			$cssInfo = array();
@@ -121,6 +127,8 @@ class Extension_templateManager extends ExtensionBase {
 
 	private function getContainerColumns($id){
 		$Columns = false;
+		mysql_set_charset(sysConfig::get('SYSTEM_CHARACTER_SET'));
+		mysql_query("SET NAMES '".sysConfig::get('SYSTEM_CHARACTER_SET_COLLATION')."'");
 		$Query = mysql_query('select * from template_manager_layouts_columns where container_id = "' . $id . '" order by sort_order');
 		if (mysql_num_rows($Query)){
 			$Columns = array();
@@ -133,6 +141,8 @@ class Extension_templateManager extends ExtensionBase {
 
 	private function getContainerChildren($id){
 		$Children = false;
+		mysql_set_charset(sysConfig::get('SYSTEM_CHARACTER_SET'));
+		mysql_query("SET NAMES '".sysConfig::get('SYSTEM_CHARACTER_SET_COLLATION')."'");
 		$Query = mysql_query('select * from template_manager_layouts_containers where parent_id = "' . $id . '" order by sort_order');
 		if (mysql_num_rows($Query)){
 			$Children = array();
@@ -145,6 +155,8 @@ class Extension_templateManager extends ExtensionBase {
 
 	private function getColumnWidgets($id){
 		$Widgets = false;
+		mysql_set_charset(sysConfig::get('SYSTEM_CHARACTER_SET'));
+		mysql_query("SET NAMES '".sysConfig::get('SYSTEM_CHARACTER_SET_COLLATION')."'");
 		$Query = mysql_query('select * from template_manager_layouts_widgets where column_id = "' . $id . '" order by sort_order');
 		if (mysql_num_rows($Query)){
 			$Widgets = array();
@@ -207,6 +219,32 @@ class Extension_templateManager extends ExtensionBase {
 		}
 	}
 
+	protected static function is_utf8($str) {
+		$c=0; $b=0;
+		$bits=0;
+		$len=strlen($str);
+		for($i=0; $i<$len; $i++){
+			$c=ord($str[$i]);
+			if($c > 128){
+				if(($c >= 254)) return false;
+				elseif($c >= 252) $bits=6;
+				elseif($c >= 248) $bits=5;
+				elseif($c >= 240) $bits=4;
+				elseif($c >= 224) $bits=3;
+				elseif($c >= 192) $bits=2;
+				else return false;
+				if(($i+$bits) > $len) return false;
+				while($bits > 1){
+					$i++;
+					$b=ord($str[$i]);
+					if($b < 128 || $b > 191) return false;
+					$bits--;
+				}
+			}
+		}
+		return true;
+	}
+
 	private function processContainerColumns(&$Container, $ColArr) {
 		foreach($ColArr as $cInfo){
 			$ColEl = htmlBase::newElement('div')
@@ -227,7 +265,12 @@ class Extension_templateManager extends ExtensionBase {
 					if (($cfgInfo = $this->getConfigInfo('widget', $wInfo['widget_id'])) !== false){
 						foreach($cfgInfo as $cfInfo){
 							if ($cfInfo['configuration_key'] == 'widget_settings'){
-								$WidgetSettings = json_decode(utf8_encode($cfInfo['configuration_value']));
+								//$WidgetSettings = json_decode(utf8_encode($cfInfo['configuration_value']));
+								if(self::is_utf8($cfInfo['configuration_value'])){
+									$WidgetSettings = json_decode($cfInfo['configuration_value']);
+								} else {
+									$WidgetSettings = json_decode(utf8_encode($cfInfo['configuration_value']));
+								}
 							}
 						}
 					}
