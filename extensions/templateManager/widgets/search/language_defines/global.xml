@@ -1,0 +1,7 @@
+<definitions>
+	<define key="INFOBOX_HEADING_SEARCH"><![CDATA[Quick Find]]></define>
+	<define key="INFOBOX_SEARCH_TEXT"><![CDATA[Use keywords to find the product you are looking for.]]></define>
+	<define key="INFOBOX_SEARCH_ADVANCED_SEARCH"><![CDATA[Advanced Search]]></define>
+	<define key="INFOBOX_SEARCH_GUIDED_SEARCH"><![CDATA[Filter Search]]></define>
+
+</definitions>

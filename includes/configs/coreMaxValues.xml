@@ -1,0 +1,108 @@
+<ConfigurationGroup>
+	<title>Maximum Values</title>
+	<key>coreMaxValues</key>
+	<description>The maximum values for functions / data</description>
+	<tabs>
+		<general>
+			<title>General</title>
+			<description>General Settings</description>
+			<configurations>
+				<MAX_ADDRESS_BOOK_ENTRIES>
+					<title><![CDATA[Address Book Entries]]></title>
+					<value><![CDATA[100]]></value>
+					<description><![CDATA[Maximum address book entries a customer is allowed to have]]></description>
+				</MAX_ADDRESS_BOOK_ENTRIES>
+				<MAX_DISPLAY_SEARCH_RESULTS>
+					<title><![CDATA[Search Results]]></title>
+					<value><![CDATA[20]]></value>
+					<description><![CDATA[Amount of products to list]]></description>
+				</MAX_DISPLAY_SEARCH_RESULTS>
+				<MAX_DISPLAY_PAGE_LINKS>
+					<title><![CDATA[Page Links]]></title>
+					<value><![CDATA[5]]></value>
+					<description><![CDATA[Number of 'number' links use for page-sets]]></description>
+				</MAX_DISPLAY_PAGE_LINKS>
+				<MAX_DISPLAY_SPECIAL_PRODUCTS>
+					<title><![CDATA[Special Products]]></title>
+					<value><![CDATA[9]]></value>
+					<description><![CDATA[Maximum number of products on special to display]]></description>
+				</MAX_DISPLAY_SPECIAL_PRODUCTS>
+				<MAX_DISPLAY_NEW_PRODUCTS>
+					<title><![CDATA[New Products Module]]></title>
+					<value><![CDATA[9]]></value>
+					<description><![CDATA[Maximum number of new products to display in a category]]></description>
+				</MAX_DISPLAY_NEW_PRODUCTS>
+				<MAX_DISPLAY_UPCOMING_PRODUCTS>
+					<title><![CDATA[Products Expected]]></title>
+					<value><![CDATA[10]]></value>
+					<description><![CDATA[Maximum number of products expected to display]]></description>
+				</MAX_DISPLAY_UPCOMING_PRODUCTS>
+				<MAX_DISPLAY_MANUFACTURERS_IN_A_LIST>
+					<title><![CDATA[Manufacturers List]]></title>
+					<value><![CDATA[0]]></value>
+					<description><![CDATA[Used in manufacturers box; when the number of manufacturers exceeds this number, a drop-down list will be displayed instead of the default list]]></description>
+				</MAX_DISPLAY_MANUFACTURERS_IN_A_LIST>
+				<MAX_MANUFACTURERS_LIST>
+					<title><![CDATA[Manufacturers Select Size]]></title>
+					<value><![CDATA[1]]></value>
+					<description><![CDATA[Used in manufacturers box; when this value is '1' the classic drop-down list will be used for the manufacturers box. Otherwise, a list-box with the specified number of rows will be displayed.]]></description>
+				</MAX_MANUFACTURERS_LIST>
+				<MAX_DISPLAY_MANUFACTURER_NAME_LEN>
+					<title><![CDATA[Length of Manufacturers Name]]></title>
+					<value><![CDATA[15]]></value>
+					<description><![CDATA[Used in manufacturers box; maximum length of manufacturers name to display]]></description>
+				</MAX_DISPLAY_MANUFACTURER_NAME_LEN>
+				<MAX_DISPLAY_NEW_REVIEWS>
+					<title><![CDATA[New Reviews]]></title>
+					<value><![CDATA[6]]></value>
+					<description><![CDATA[Maximum number of new reviews to display]]></description>
+				</MAX_DISPLAY_NEW_REVIEWS>
+				<MAX_RANDOM_SELECT_REVIEWS>
+					<title><![CDATA[Selection of Random Reviews]]></title>
+					<value><![CDATA[10]]></value>
+					<description><![CDATA[How many records to select from to choose one random product review]]></description>
+				</MAX_RANDOM_SELECT_REVIEWS>
+				<MAX_RANDOM_SELECT_NEW>
+					<title><![CDATA[Selection of Random New Products]]></title>
+					<value><![CDATA[10]]></value>
+					<description><![CDATA[How many records to select from to choose one random new product to display]]></description>
+				</MAX_RANDOM_SELECT_NEW>
+				<MAX_RANDOM_SELECT_SPECIALS>
+					<title><![CDATA[Selection of Products on Special]]></title>
+					<value><![CDATA[10]]></value>
+					<description><![CDATA[How many records to select from to choose one random product special to display]]></description>
+				</MAX_RANDOM_SELECT_SPECIALS>
+				<MAX_DISPLAY_CATEGORIES_PER_ROW>
+					<title><![CDATA[Categories To List Per Row]]></title>
+					<value><![CDATA[3]]></value>
+					<description><![CDATA[How many categories to list per row]]></description>
+				</MAX_DISPLAY_CATEGORIES_PER_ROW>
+				<MAX_DISPLAY_PRODUCTS_NEW>
+					<title><![CDATA[New Products Listing]]></title>
+					<value><![CDATA[10]]></value>
+					<description><![CDATA[Maximum number of new products to display in new products page]]></description>
+				</MAX_DISPLAY_PRODUCTS_NEW>
+				<MAX_DISPLAY_BESTSELLERS>
+					<title><![CDATA[Best Sellers]]></title>
+					<value><![CDATA[10]]></value>
+					<description><![CDATA[Maximum number of best sellers to display]]></description>
+				</MAX_DISPLAY_BESTSELLERS>
+				<MAX_DISPLAY_ALSO_PURCHASED>
+					<title><![CDATA[Also Purchased]]></title>
+					<value><![CDATA[6]]></value>
+					<description><![CDATA[Maximum number of products to display in the 'This Customer Also Purchased' box]]></description>
+				</MAX_DISPLAY_ALSO_PURCHASED>
+				<MAX_DISPLAY_PRODUCTS_IN_ORDER_HISTORY_BOX>
+					<title><![CDATA[Customer Order History Box]]></title>
+					<value><![CDATA[6]]></value>
+					<description><![CDATA[Maximum number of products to display in the customer order history box]]></description>
+				</MAX_DISPLAY_PRODUCTS_IN_ORDER_HISTORY_BOX>
+				<MAX_DISPLAY_ORDER_HISTORY>
+					<title><![CDATA[Order History]]></title>
+					<value><![CDATA[10]]></value>
+					<description><![CDATA[Maximum number of orders to display in the order history page]]></description>
+				</MAX_DISPLAY_ORDER_HISTORY>
+			</configurations>
+		</general>
+	</tabs>
+</ConfigurationGroup>

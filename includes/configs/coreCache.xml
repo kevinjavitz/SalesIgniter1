@@ -1,0 +1,24 @@
+<ConfigurationGroup>
+	<title>Cache</title>
+	<key>coreCache</key>
+	<description>Caching configuration options</description>
+	<tabs>
+		<general>
+			<title>General</title>
+			<description>General Settings</description>
+			<configurations>
+				<USE_CACHE>
+					<title><![CDATA[Use Cache]]></title>
+					<value><![CDATA[false]]></value>
+					<description><![CDATA[Use caching features]]></description>
+					<set_function><![CDATA[tep_cfg_select_option(array('true', 'false'),]]></set_function>
+				</USE_CACHE>
+				<DIR_FS_CACHE>
+					<title><![CDATA[Cache Directory]]></title>
+					<value><![CDATA[/tmp/]]></value>
+					<description><![CDATA[The directory where the cached files are saved]]></description>
+				</DIR_FS_CACHE>
+			</configurations>
+		</general>
+	</tabs>
+</ConfigurationGroup>

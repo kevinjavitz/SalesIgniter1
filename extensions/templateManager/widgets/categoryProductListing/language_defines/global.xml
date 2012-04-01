@@ -1,0 +1,6 @@
+<definitions>
+	<define key="INFOBOX_HEADING_CATEGORYPRODUCTLISTING"><![CDATA[Category Products]]></define>
+
+	<define key="TEXT_CATEGORYPRODUCTLISTING_SELECT_CATEGORY"><![CDATA[Category: ]]></define>
+	<define key="TEXT_CATEGORYPRODUCTLISTING_INFO"><![CDATA[This infobox will take the category you select and list all categories and products within that category]]></define>
+</definitions>

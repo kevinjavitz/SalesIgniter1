@@ -1,0 +1,52 @@
+<!--
+	Sales Igniter E-Commerce System
+	Version: 2.0
+
+	I.T. Web Experts
+	http://www.itwebexperts.com
+
+	Copyright (c) 2011 I.T. Web Experts
+
+	This script and its source are not distributable without the written conscent of I.T. Web Experts
+-->
+
+<ConfigurationGroup>
+	<title>Shipping/Packaging</title>
+	<key>coreShipping</key>
+	<description>Shipping options available at my store</description>
+	<tabs>
+		<general>
+			<title>General</title>
+			<description>General Settings</description>
+			<configurations>
+				<SHIPPING_ORIGIN_COUNTRY>
+					<title><![CDATA[Country of Origin]]></title>
+					<value><![CDATA[223]]></value>
+					<description><![CDATA[Select the country of origin to be used in shipping quotes.]]></description>
+					<use_function><![CDATA[tep_get_country_name]]></use_function>
+					<set_function><![CDATA[tep_cfg_pull_down_country_list(]]></set_function>
+				</SHIPPING_ORIGIN_COUNTRY>
+				<SHIPPING_ORIGIN_ZIP>
+					<title><![CDATA[Postal Code]]></title>
+					<value><![CDATA[95648]]></value>
+					<description><![CDATA[Enter the Postal Code (ZIP) of the Store to be used in shipping quotes.]]></description>
+				</SHIPPING_ORIGIN_ZIP>
+				<SHIPPING_MAX_WEIGHT>
+					<title><![CDATA[Enter the Maximum Package Weight you will ship]]></title>
+					<value><![CDATA[50]]></value>
+					<description><![CDATA[Carriers have a max weight limit for a single package. This is a common one for all.]]></description>
+				</SHIPPING_MAX_WEIGHT>
+				<SHIPPING_BOX_WEIGHT>
+					<title><![CDATA[Package Tare weight.]]></title>
+					<value><![CDATA[0]]></value>
+					<description><![CDATA[What is the weight of typical packaging of small to medium packages?]]></description>
+				</SHIPPING_BOX_WEIGHT>
+				<SHIPPING_BOX_PADDING>
+					<title><![CDATA[Larger packages - percentage increase.]]></title>
+					<value><![CDATA[10]]></value>
+					<description><![CDATA[For 10% enter 10]]></description>
+				</SHIPPING_BOX_PADDING>
+			</configurations>
+		</general>
+	</tabs>
+</ConfigurationGroup>

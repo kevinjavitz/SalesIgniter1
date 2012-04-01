@@ -1,0 +1,55 @@
+<ConfigurationGroup>
+	<title>Images</title>
+	<key>coreImages</key>
+	<description>Image parameters</description>
+	<tabs>
+		<general>
+			<title>General</title>
+			<description>General Settings</description>
+			<configurations>
+				<SMALL_IMAGE_WIDTH>
+					<title><![CDATA[Small Image Width]]></title>
+					<value><![CDATA[100]]></value>
+					<description><![CDATA[The pixel width of small images]]></description>
+				</SMALL_IMAGE_WIDTH>
+				<SMALL_IMAGE_HEIGHT>
+					<title><![CDATA[Small Image Height]]></title>
+					<value><![CDATA[140]]></value>
+					<description><![CDATA[The pixel height of small images]]></description>
+				</SMALL_IMAGE_HEIGHT>
+				<HEADING_IMAGE_WIDTH>
+					<title><![CDATA[Heading Image Width]]></title>
+					<value><![CDATA[57]]></value>
+					<description><![CDATA[The pixel width of heading images]]></description>
+				</HEADING_IMAGE_WIDTH>
+				<HEADING_IMAGE_HEIGHT>
+					<title><![CDATA[Heading Image Height]]></title>
+					<value><![CDATA[40]]></value>
+					<description><![CDATA[The pixel height of heading images]]></description>
+				</HEADING_IMAGE_HEIGHT>
+				<SUBCATEGORY_IMAGE_WIDTH>
+					<title><![CDATA[Subcategory Image Width]]></title>
+					<value><![CDATA[100]]></value>
+					<description><![CDATA[The pixel width of subcategory images]]></description>
+				</SUBCATEGORY_IMAGE_WIDTH>
+				<SUBCATEGORY_IMAGE_HEIGHT>
+					<title><![CDATA[Subcategory Image Height]]></title>
+					<value><![CDATA[57]]></value>
+					<description><![CDATA[The pixel height of subcategory images]]></description>
+				</SUBCATEGORY_IMAGE_HEIGHT>
+				<CONFIG_CALCULATE_IMAGE_SIZE>
+					<title><![CDATA[Calculate Image Size]]></title>
+					<value><![CDATA[true]]></value>
+					<description><![CDATA[Calculate the size of images?]]></description>
+					<set_function><![CDATA[tep_cfg_select_option(array('true', 'false'),]]></set_function>
+				</CONFIG_CALCULATE_IMAGE_SIZE>
+				<IMAGE_REQUIRED>
+					<title><![CDATA[Image Required]]></title>
+					<value><![CDATA[false]]></value>
+					<description><![CDATA[Enable to display broken images. Good for development.]]></description>
+					<set_function><![CDATA[tep_cfg_select_option(array('true', 'false'),]]></set_function>
+				</IMAGE_REQUIRED>
+			</configurations>
+		</general>
+	</tabs>
+</ConfigurationGroup>

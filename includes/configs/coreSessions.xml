@@ -1,0 +1,54 @@
+<ConfigurationGroup>
+	<title>Sessions</title>
+	<key>coreSessions</key>
+	<description>Session options</description>
+	<tabs>
+		<general>
+			<title>General</title>
+			<description>General Settings</description>
+			<configurations>
+				<SESSION_WRITE_DIRECTORY>
+					<title><![CDATA[Session Directory]]></title>
+					<value><![CDATA[/tmp]]></value>
+					<description><![CDATA[If sessions are file based, store them in this directory.]]></description>
+				</SESSION_WRITE_DIRECTORY>
+				<SESSION_FORCE_COOKIE_USE>
+					<title><![CDATA[Force Cookie Use]]></title>
+					<value><![CDATA[False]]></value>
+					<description><![CDATA[Force the use of sessions when cookies are only enabled.]]></description>
+					<set_function><![CDATA[tep_cfg_select_option(array('True', 'False'),]]></set_function>
+				</SESSION_FORCE_COOKIE_USE>
+				<SESSION_CHECK_SSL_SESSION_ID>
+					<title><![CDATA[Check SSL Session ID]]></title>
+					<value><![CDATA[False]]></value>
+					<description><![CDATA[Validate the SSL_SESSION_ID on every secure HTTPS page request.]]></description>
+					<set_function><![CDATA[tep_cfg_select_option(array('True', 'False'),]]></set_function>
+				</SESSION_CHECK_SSL_SESSION_ID>
+				<SESSION_CHECK_USER_AGENT>
+					<title><![CDATA[Check User Agent]]></title>
+					<value><![CDATA[False]]></value>
+					<description><![CDATA[Validate the clients browser user agent on every page request.]]></description>
+					<set_function><![CDATA[tep_cfg_select_option(array('True', 'False'),]]></set_function>
+				</SESSION_CHECK_USER_AGENT>
+				<SESSION_CHECK_IP_ADDRESS>
+					<title><![CDATA[Check IP Address]]></title>
+					<value><![CDATA[False]]></value>
+					<description><![CDATA[Validate the clients IP address on every page request.]]></description>
+					<set_function><![CDATA[tep_cfg_select_option(array('True', 'False'),]]></set_function>
+				</SESSION_CHECK_IP_ADDRESS>
+				<SESSION_BLOCK_SPIDERS>
+					<title><![CDATA[Prevent Spider Sessions]]></title>
+					<value><![CDATA[True]]></value>
+					<description><![CDATA[Prevent known spiders from starting a session.]]></description>
+					<set_function><![CDATA[tep_cfg_select_option(array('True', 'False'),]]></set_function>
+				</SESSION_BLOCK_SPIDERS>
+				<SESSION_RECREATE>
+					<title><![CDATA[Recreate Session]]></title>
+					<value><![CDATA[False]]></value>
+					<description><![CDATA[Recreate the session to generate a new session ID when the customer logs on or creates an account (PHP >=4.1 needed).]]></description>
+					<set_function><![CDATA[tep_cfg_select_option(array('True', 'False'),]]></set_function>
+				</SESSION_RECREATE>
+			</configurations>
+		</general>
+	</tabs>
+</ConfigurationGroup>

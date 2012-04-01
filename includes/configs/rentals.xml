@@ -1,0 +1,93 @@
+<ConfigurationGroup>
+	<title>Rental</title>
+	<key>rentals</key>
+	<description>Rental</description>
+	<tabs>
+		<general>
+			<title>General</title>
+			<description>General Settings</description>
+			<configurations>
+				<RENTAL_AVAILABILITY_RENTAL_QUEUE>
+					<title><![CDATA[Show Availability on rental queue]]></title>
+					<value><![CDATA[true]]></value>
+					<description><![CDATA[Show Availability on rental queue]]></description>
+					<set_function><![CDATA[tep_cfg_select_option(array('true', 'false'),]]></set_function>
+				</RENTAL_AVAILABILITY_RENTAL_QUEUE>
+				<RENTAL_AVAILABILITY_PRODUCT_INFO>
+					<title><![CDATA[Show Availability on Product info page]]></title>
+					<value><![CDATA[true]]></value>
+					<description><![CDATA[Show Availability on Product info page]]></description>
+					<set_function><![CDATA[tep_cfg_select_option(array('true', 'false'),]]></set_function>
+				</RENTAL_AVAILABILITY_PRODUCT_INFO>
+				<RENTAL_UPGRADE_CYCLE>
+					<title><![CDATA[Automatically upgrade/downgrade users account on their next bill]]></title>
+					<value><![CDATA[true]]></value>
+					<description><![CDATA[Automatically upgrade/downgrade users account on their next billing cycle if they have requested it?]]></description>
+					<set_function><![CDATA[tep_cfg_select_option(array('true', 'false'),]]></set_function>
+				</RENTAL_UPGRADE_CYCLE>
+				<RENTAL_UPGRADE_BILL_DATE>
+					<title><![CDATA[Auto-update members next billing date?]]></title>
+					<value><![CDATA[true]]></value>
+					<description><![CDATA[Auto-update members next billing date]]></description>
+					<set_function><![CDATA[tep_cfg_select_option(array('true', 'false'),]]></set_function>
+				</RENTAL_UPGRADE_BILL_DATE>
+				<RENTAL_SHOW_TRIAL_COLUMN>
+					<title><![CDATA[Show free trial column on rental signup page]]></title>
+					<value><![CDATA[true]]></value>
+					<description><![CDATA[Show free trial column on rental signup page]]></description>
+					<set_function><![CDATA[tep_cfg_select_option(array('true', 'false'),]]></set_function>
+				</RENTAL_SHOW_TRIAL_COLUMN>
+				<RENTAL_SHOW_TAX_COLUMN>
+					<title><![CDATA[Show tax column on rental signup page]]></title>
+					<value><![CDATA[false]]></value>
+					<description><![CDATA[Show tax column on rental signup page]]></description>
+					<set_function><![CDATA[tep_cfg_select_option(array('true', 'false'),]]></set_function>
+				</RENTAL_SHOW_TAX_COLUMN>
+				<RENTAL_SHOW_TOTAL_PRICE_COLUMN>
+					<title><![CDATA[Show total price column on rental signup page]]></title>
+					<value><![CDATA[false]]></value>
+					<description><![CDATA[Show total price column on rental signup page]]></description>
+					<set_function><![CDATA[tep_cfg_select_option(array('true', 'false'),]]></set_function>
+				</RENTAL_SHOW_TOTAL_PRICE_COLUMN>
+				<RENTAL_QUEUE_DAYS_INTERVAL>
+					<title><![CDATA[How many days it takes for rental to arrive]]></title>
+					<value><![CDATA[3]]></value>
+					<description><![CDATA[How many days it takes for rental to arrive]]></description>
+				</RENTAL_QUEUE_DAYS_INTERVAL>
+				<ALLOW_RENTALS>
+					<title><![CDATA[Enable Rental Memberships]]></title>
+					<value><![CDATA[true]]></value>
+					<description><![CDATA[Enable rental Memberships]]></description>
+					<set_function><![CDATA[tep_cfg_select_option(array('true', 'false'),]]></set_function>
+				</ALLOW_RENTALS>
+				<RENTAL_DEFAULT_COUNTRY>
+					<title><![CDATA[Show only as unique Country]]></title>
+					<value><![CDATA[223]]></value>
+					<description><![CDATA[Only show this country as country available for rental membership signups and rental shipping address]]></description>
+					<set_function><![CDATA[tep_cfg_pull_down_country_list(]]></set_function>
+				</RENTAL_DEFAULT_COUNTRY>
+				<RENTAL_DEFAULT_COUNTRY_ENABLED>
+					<title><![CDATA[Is show only unique Country enabled]]></title>
+					<value><![CDATA[true]]></value>
+					<description><![CDATA[Is show only unique Country enabled?]]></description>
+					<set_function><![CDATA[tep_cfg_select_option(array('true','false'),]]></set_function>
+				</RENTAL_DEFAULT_COUNTRY_ENABLED>
+				<GOOGLE_MAPS_API_KEY>
+					<title><![CDATA[Google Maps Key]]></title>
+					<value><![CDATA[ABQIAAAAJfeNSDfdlXtgf6gjHMTzDBT0_i__oM-cAYP-svDeQzBBv_RytBShCDbtJySULQi-i9FDwsHX8pK4aQ]]></value>
+					<description><![CDATA[Api key for google maps?]]></description>
+				</GOOGLE_MAPS_API_KEY>
+				<RENTAL_DAYS_CUSTOMER_PAST_DUE>
+					<title><![CDATA[How many days past due the customer is allowed to rent and receive items]]></title>
+					<value><![CDATA[3]]></value>
+					<description><![CDATA[How many days past due the customer is allowed to rent and receive items]]></description>
+				</RENTAL_DAYS_CUSTOMER_PAST_DUE>
+				<REQUEST_PICKUP_BEFORE_DAYS>
+					<title><![CDATA[How many days to not show on the request pickup or delivery]]></title>
+					<value><![CDATA[2]]></value>
+					<description><![CDATA[How many days to not show on the request pickup or delivery]]></description>
+				</REQUEST_PICKUP_BEFORE_DAYS>
+			</configurations>
+		</general>
+	</tabs>
+</ConfigurationGroup>

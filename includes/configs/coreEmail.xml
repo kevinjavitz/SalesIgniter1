@@ -1,0 +1,43 @@
+<ConfigurationGroup>
+	<title>E-Mail Options</title>
+	<key>coreEmail</key>
+	<description>General setting for E-Mail transport and HTML E-Mails</description>
+	<tabs>
+		<general>
+			<title>General</title>
+			<description>General Settings</description>
+			<configurations>
+				<EMAIL_TRANSPORT>
+					<title><![CDATA[E-Mail Transport Method]]></title>
+					<value><![CDATA[sendmail]]></value>
+					<description><![CDATA[Defines if this server uses a local connection to sendmail or uses an SMTP connection via TCP/IP. Servers running on Windows and MacOS should change this setting to SMTP.]]></description>
+					<set_function><![CDATA[tep_cfg_select_option(array('sendmail', 'smtp'),]]></set_function>
+				</EMAIL_TRANSPORT>
+				<EMAIL_LINEFEED>
+					<title><![CDATA[E-Mail Linefeeds]]></title>
+					<value><![CDATA[LF]]></value>
+					<description><![CDATA[Defines the character sequence used to separate mail headers.]]></description>
+					<set_function><![CDATA[tep_cfg_select_option(array('LF', 'CRLF'),]]></set_function>
+				</EMAIL_LINEFEED>
+				<EMAIL_USE_HTML>
+					<title><![CDATA[Use MIME HTML When Sending Emails]]></title>
+					<value><![CDATA[true]]></value>
+					<description><![CDATA[Send e-mails in HTML format]]></description>
+					<set_function><![CDATA[tep_cfg_select_option(array('true', 'false'),]]></set_function>
+				</EMAIL_USE_HTML>
+				<ENTRY_EMAIL_ADDRESS_CHECK>
+					<title><![CDATA[Verify E-Mail Addresses Through DNS]]></title>
+					<value><![CDATA[false]]></value>
+					<description><![CDATA[Verify e-mail address through a DNS server]]></description>
+					<set_function><![CDATA[tep_cfg_select_option(array('true', 'false'),]]></set_function>
+				</ENTRY_EMAIL_ADDRESS_CHECK>
+				<SEND_EMAILS>
+					<title><![CDATA[Send E-Mails]]></title>
+					<value><![CDATA[true]]></value>
+					<description><![CDATA[Send out e-mails]]></description>
+					<set_function><![CDATA[tep_cfg_select_option(array('true', 'false'),]]></set_function>
+				</SEND_EMAILS>
+			</configurations>
+		</general>
+	</tabs>
+</ConfigurationGroup>

@@ -1,0 +1,56 @@
+<definitions>
+	<define key="HEADING_TITLE"><![CDATA[Checkout]]></define>
+	<define key="HEADING_TITLE_SUCCESS"><![CDATA[Order Successfully Processed!]]></define>
+
+	<define key="TABLE_HEADING_PRODUCTS_MODEL"><![CDATA[Products Model]]></define>
+	<define key="TABLE_HEADING_PRODUCTS_NAME"><![CDATA[Products Name]]></define>
+	<define key="TABLE_HEADING_PRODUCTS_QTY"><![CDATA[Quantity]]></define>
+	<define key="TABLE_HEADING_PRODUCTS_PRICE"><![CDATA[Price Each]]></define>
+	<define key="TABLE_HEADING_PRODUCTS_FINAL_PRICE"><![CDATA[Total Price]]></define>
+	<define key="TABLE_HEADING_PRODUCTS"><![CDATA[Products]]></define>
+	<define key="TABLE_HEADING_SHIPPING_METHOD"><![CDATA[Shipping Method]]></define>
+	<define key="TABLE_HEADING_PAYMENT_METHOD"><![CDATA[Payment Method]]></define>
+	<define key="TABLE_HEADING_COMMENTS"><![CDATA[Add Comments About Your Order]]></define>
+
+	<define key="TEXT_ALREADY_HAVE_ACCOUNT"><![CDATA[Already have an account?]]></define>
+	<define key="TEXT_BILLING_ADDRESS"><![CDATA[Billing Address]]></define>
+	<define key="TEXT_DELIVERY_ADDRESS"><![CDATA[Delivery Address]]></define>
+	<define key="TEXT_PICKUP_ADDRESS"><![CDATA[Pickup Address]]></define>
+	<define key="TEXT_DIFFERENT_FROM_BILLING"><![CDATA[Different From Billing Address]]></define>
+	<define key="TEXT_CREATE_ACCOUNT_FOR_FUTURE_ACCESSS"><![CDATA[I Would Like To Create An Account For Future Access]]></define>
+	<define key="TEXT_MAKE_ACCOUNT"><![CDATA[I Would Like To Create An Account For Future Access]]></define>
+
+	<define key="ENTRY_NEWSLETTER"><![CDATA[Subscribe to newsletter]]></define>
+
+	<define key="TITLE_CONTINUE_CHECKOUT_PROCEDURE"><![CDATA[Continue Checkout Procedure]]></define>
+	<define key="TEXT_CONTINUE_CHECKOUT_PROCEDURE"><![CDATA[to confirm this order.]]></define>
+	<define key="ENTRY_AGREE_TO_TERMS"><![CDATA[I have read and agree to the terms &amp; conditions]]></define>
+	<define key="TEXT_AGREE_TO_TERMS"><![CDATA[Read Terms And Conditions]]></define>
+	<define key="TEXT_BEGIN"><![CDATA[Begin]]></define>
+	<define key="TEXT_PAYMENT_SHIPPING"><![CDATA[Payment &amp; Shipping]]></define>
+	<define key="TEXT_EMAIL_ADDRESS_EXISTS"><![CDATA[Your email address already exists, please log into your account or use a different email address.]]></define>
+	<define key="HAVE_A_COUPON"><![CDATA[Have a coupon?]]></define>
+	<define key="REDEEM"><![CDATA[Redeem]]></define>
+	<define key="REDEEM_CODE"><![CDATA[redeem code]]></define>
+
+	<define key="TEXT_COMMENTS"><![CDATA[&nbsp;Comments]]></define>
+	<define key="TEXT_CHOOSE_SHIPPING_METHOD"><![CDATA[Please select the preferred shipping method to use on this order.]]></define>
+	<define key="TEXT_SELECT_PAYMENT_METHOD"><![CDATA[Please select the preferred payment method to use on this order.]]></define>
+	<define key="TEXT_ENTER_SHIPPING_INFORMATION"><![CDATA[This is currently the only shipping method available to use on this order.]]></define>
+	<define key="TEXT_ENTER_PAYMENT_INFORMATION"><![CDATA[This is currently the only payment method available to use on this order.]]></define>
+	<define key="TEXT_THANKS_FOR_SHOPPING_SUCCESS"><![CDATA[<span class="cline">Below is a summary of your order:<br/></span>]]></define>
+
+	<define key="HEADING_ORDER_NUMBER"><![CDATA[Order #%s]]></define>
+	<define key="HEADING_ORDER_DATE"><![CDATA[Order Date:]]></define>
+	<define key="HEADING_ORDER_TOTAL"><![CDATA[Order Total:]]></define>
+	<define key="HEADING_BILLING_ADDRESS"><![CDATA[Billing Address]]></define>
+	<define key="HEADING_DELIVERY_ADDRESS"><![CDATA[Delivery Address]]></define>
+	<define key="HEADING_PAYMENT_METHOD"><![CDATA[Payment Method]]></define>
+	<define key="HEADING_SHIPPING_METHOD"><![CDATA[Shipping Method]]></define>
+	<define key="HEADING_PRODUCTS"><![CDATA[Products]]></define>
+	<define key="HEADING_TAX"><![CDATA[Tax]]></define>
+	<define key="HEADING_TOTAL"><![CDATA[Total]]></define>
+	<define key="HEADING_BILLING_INFORMATION"><![CDATA[Billing Information]]></define>
+	<define key="HEADING_ORDER_HISTORY"><![CDATA[Order History]]></define>
+	<define key="HEADING_COMMENT"><![CDATA[Comments]]></define>
+</definitions>

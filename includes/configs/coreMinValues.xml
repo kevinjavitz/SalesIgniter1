@@ -1,0 +1,93 @@
+<ConfigurationGroup>
+	<title>Minimum Values</title>
+	<key>coreMinValues</key>
+	<description>The minimum values for functions / data</description>
+	<tabs>
+		<general>
+			<title>General</title>
+			<description>General Settings</description>
+			<configurations>
+				<ENTRY_FIRST_NAME_MIN_LENGTH>
+					<title><![CDATA[First Name]]></title>
+					<value><![CDATA[2]]></value>
+					<description><![CDATA[Minimum length of first name]]></description>
+				</ENTRY_FIRST_NAME_MIN_LENGTH>
+				<ENTRY_LAST_NAME_MIN_LENGTH>
+					<title><![CDATA[Last Name]]></title>
+					<value><![CDATA[2]]></value>
+					<description><![CDATA[Minimum length of last name]]></description>
+				</ENTRY_LAST_NAME_MIN_LENGTH>
+				<ENTRY_DOB_MIN_LENGTH>
+					<title><![CDATA[Date of Birth]]></title>
+					<value><![CDATA[10]]></value>
+					<description><![CDATA[Minimum length of date of birth]]></description>
+				</ENTRY_DOB_MIN_LENGTH>
+				<ENTRY_EMAIL_ADDRESS_MIN_LENGTH>
+					<title><![CDATA[E-Mail Address]]></title>
+					<value><![CDATA[6]]></value>
+					<description><![CDATA[Minimum length of e-mail address]]></description>
+				</ENTRY_EMAIL_ADDRESS_MIN_LENGTH>
+				<ENTRY_STREET_ADDRESS_MIN_LENGTH>
+					<title><![CDATA[Street Address]]></title>
+					<value><![CDATA[5]]></value>
+					<description><![CDATA[Minimum length of street address]]></description>
+				</ENTRY_STREET_ADDRESS_MIN_LENGTH>
+				<ENTRY_COMPANY_MIN_LENGTH>
+					<title><![CDATA[Company]]></title>
+					<value><![CDATA[2]]></value>
+					<description><![CDATA[Minimum length of company name]]></description>
+				</ENTRY_COMPANY_MIN_LENGTH>
+				<ENTRY_POSTCODE_MIN_LENGTH>
+					<title><![CDATA[Post Code]]></title>
+					<value><![CDATA[4]]></value>
+					<description><![CDATA[Minimum length of post code]]></description>
+				</ENTRY_POSTCODE_MIN_LENGTH>
+				<ENTRY_CITY_MIN_LENGTH>
+					<title><![CDATA[City]]></title>
+					<value><![CDATA[3]]></value>
+					<description><![CDATA[Minimum length of city]]></description>
+				</ENTRY_CITY_MIN_LENGTH>
+				<ENTRY_STATE_MIN_LENGTH>
+					<title><![CDATA[State]]></title>
+					<value><![CDATA[2]]></value>
+					<description><![CDATA[Minimum length of state]]></description>
+				</ENTRY_STATE_MIN_LENGTH>
+				<ENTRY_TELEPHONE_MIN_LENGTH>
+					<title><![CDATA[Telephone Number]]></title>
+					<value><![CDATA[3]]></value>
+					<description><![CDATA[Minimum length of telephone number]]></description>
+				</ENTRY_TELEPHONE_MIN_LENGTH>
+				<ENTRY_PASSWORD_MIN_LENGTH>
+					<title><![CDATA[Password]]></title>
+					<value><![CDATA[5]]></value>
+					<description><![CDATA[Minimum length of password]]></description>
+				</ENTRY_PASSWORD_MIN_LENGTH>
+				<CC_OWNER_MIN_LENGTH>
+					<title><![CDATA[Credit Card Owner Name]]></title>
+					<value><![CDATA[3]]></value>
+					<description><![CDATA[Minimum length of credit card owner name]]></description>
+				</CC_OWNER_MIN_LENGTH>
+				<CC_NUMBER_MIN_LENGTH>
+					<title><![CDATA[Credit Card Number]]></title>
+					<value><![CDATA[10]]></value>
+					<description><![CDATA[Minimum length of credit card number]]></description>
+				</CC_NUMBER_MIN_LENGTH>
+				<REVIEW_TEXT_MIN_LENGTH>
+					<title><![CDATA[Review Text]]></title>
+					<value><![CDATA[50]]></value>
+					<description><![CDATA[Minimum length of review text]]></description>
+				</REVIEW_TEXT_MIN_LENGTH>
+				<MIN_DISPLAY_BESTSELLERS>
+					<title><![CDATA[Best Sellers]]></title>
+					<value><![CDATA[1]]></value>
+					<description><![CDATA[Minimum number of best sellers to display]]></description>
+				</MIN_DISPLAY_BESTSELLERS>
+				<MIN_DISPLAY_ALSO_PURCHASED>
+					<title><![CDATA[Also Purchased]]></title>
+					<value><![CDATA[1]]></value>
+					<description><![CDATA[Minimum number of products to display in the 'This Customer Also Purchased' box]]></description>
+				</MIN_DISPLAY_ALSO_PURCHASED>
+			</configurations>
+		</general>
+	</tabs>
+</ConfigurationGroup>

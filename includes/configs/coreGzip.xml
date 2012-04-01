@@ -1,0 +1,36 @@
+<!--
+	Sales Igniter E-Commerce System
+	Version: 2.0
+
+	I.T. Web Experts
+	http://www.itwebexperts.com
+
+	Copyright (c) 2011 I.T. Web Experts
+
+	This script and its source are not distributable without the written conscent of I.T. Web Experts
+-->
+
+<ConfigurationGroup>
+	<title>GZip Compression</title>
+	<key>coreGzip</key>
+	<description>GZip compression options</description>
+	<tabs>
+		<general>
+			<title>General</title>
+			<description>General Settings</description>
+			<configurations>
+				<GZIP_COMPRESSION>
+					<title><![CDATA[Enable GZip Compression]]></title>
+					<value><![CDATA[false]]></value>
+					<description><![CDATA[Enable HTTP GZip compression.]]></description>
+					<set_function><![CDATA[tep_cfg_select_option(array('true', 'false'),]]></set_function>
+				</GZIP_COMPRESSION>
+				<GZIP_LEVEL>
+					<title><![CDATA[Compression Level]]></title>
+					<value><![CDATA[5]]></value>
+					<description><![CDATA[Use this compression level 0-9 (0 = minimum, 9 = maximum).]]></description>
+				</GZIP_LEVEL>
+			</configurations>
+		</general>
+	</tabs>
+</ConfigurationGroup>

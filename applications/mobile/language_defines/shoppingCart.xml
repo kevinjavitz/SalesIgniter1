@@ -1,0 +1,14 @@
+<definitions>
+	<define key="HEADING_TITLE"><![CDATA[My Shopping Cart]]></define>
+
+	<define key="TABLE_HEADING_PRODUCTS"><![CDATA[Products]]></define>
+	<define key="TABLE_HEADING_QUANTITY"><![CDATA[Quantity]]></define>
+	<define key="TABLE_HEADING_TOTAL"><![CDATA[Total]]></define>
+	<define key="TABLE_HEADING_REMOVE"><![CDATA[Remove]]></define>
+
+	<define key="SUB_TITLE_SUB_TOTAL"><![CDATA[Sub-Total:]]></define>
+	<define key="SUB_TITLE_TOTAL"><![CDATA[Total:]]></define>
+
+	<define key="TEXT_BUTTON_UPDATE_CART"><![CDATA[Update Cart]]></define>
+	<define key="TEXT_BUTTON_CONTINUE_CART"><![CDATA[Continue Shopping]]></define>
+</definitions>

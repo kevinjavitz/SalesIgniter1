@@ -1,0 +1,35 @@
+<!--
+	Sales Igniter E-Commerce System
+	Version: 2.0
+
+	I.T. Web Experts
+	http://www.itwebexperts.com
+
+	Copyright (c) 2011 I.T. Web Experts
+
+	This script and its source are not distributable without the written conscent of I.T. Web Experts
+-->
+
+<ConfigurationGroup>
+	<title>Google Api's</title>
+	<key>coreGoogleApis</key>
+	<description>Google Api's Configurations</description>
+	<tabs>
+		<access_keys>
+			<title>Api Access Keys</title>
+			<description>Google API Access Keys</description>
+			<configurations>
+				<GOOGLE_API_SERVER_KEY>
+					<title><![CDATA[Server Key]]></title>
+					<value><![CDATA[]]></value>
+					<description><![CDATA[The server key created through googles apis page]]></description>
+				</GOOGLE_API_SERVER_KEY>
+				<GOOGLE_API_BROWSER_KEY>
+					<title><![CDATA[Browser Key]]></title>
+					<value><![CDATA[]]></value>
+					<description><![CDATA[The browser key created through googles apis page]]></description>
+				</GOOGLE_API_BROWSER_KEY>
+			</configurations>
+		</access_keys>
+	</tabs>
+</ConfigurationGroup>

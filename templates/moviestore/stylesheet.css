@@ -1,0 +1,322 @@
+/* Global Styles --BEGIN-- */
+html {
+	margin: 0;
+	padding: 0;
+	border: 0;
+}
+
+a img {
+	border: none;
+}
+
+:focus {
+	outline: 0;
+}
+
+.container {
+}
+
+.column {
+	display: inline-block;
+	line-height: 1em;
+	vertical-align: top;
+}
+
+body {
+	margin: 0;
+	padding: 0;
+	font-size: 12px;
+	line-height: 1.3em;
+	font-family: Arial;
+	background: #f2f1f1;
+}
+
+.demo-notice {
+	background: #D75F07;
+	color: #FFFFFF;
+	line-height: 1.15;
+	margin: 0;
+	padding: 6px 10px;
+	text-align: center;
+}
+
+.ui-tabs .ui-tabs-nav { line-height: 1.5em; }
+
+.ui-button {
+	<?php echo buildBorderRadius('6px', '6px', '6px', '6px');?>
+}
+
+.ui-button .ui-icon {
+	background-image: url(<?php echo jqueryIconsPath('ffffff' );?>);
+}
+
+.ui-button.ui-state-default {
+	border-color: transparent;
+	color: #ffffff;
+	font-size: 1.1em;
+	<?php echo buildSimpleGradient('#afb5ba', '#2b3a47');?>
+}
+
+.ui-button.ui-state-active, .ui-button.ui-state-selected {
+	<?php echo buildSimpleGradient('#2b3a47', '#afb5ba');?>
+}
+
+.ui-button.ui-state-hover {
+	<?php echo buildSimpleGradient('#2b3a47', '#afb5ba');?>
+}
+
+.ui-widget-header {
+	color: #ffffff;
+	line-height: 3em;
+	border: none;
+	background: #283641;
+	margin: .3em;
+	<?php echo buildBorderRadius('4px', '4px', '4px', '4px');?>
+}
+
+.ui-widget-header-text {
+	vertical-align: baseline;
+	color: #ffffff;
+	font-size: 1.2em;
+	font-weight: bold;
+}
+
+.ui-widget-content {
+	background: #dcdcdc;
+	color: #1a1a1a;
+}
+
+.ui-infobox {
+	border-color: transparent;
+	<?php echo buildBorderRadius('4px', '4px', '4px', '4px');?>
+}
+
+.ui-infobox-header-text {
+	vertical-align: baseline;
+	color: #ffffff;
+	font-size: 1em;
+	font-weight: bold;
+}
+
+#headerMiniNav {
+	margin-bottom: 1em;
+}
+
+#headerMiniNav li {
+	margin-right: .5em;
+}
+
+#headerMiniNav a {
+	font-weight: bold;
+	font-size: 1.1em;
+	color: #000000;
+}
+
+#headerMiniNav a img, #headerMiniNav a .menu_text {
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+#headerMiniNav a img {
+	margin-bottom: .3em;
+	padding-right: .7em;
+}
+
+#headerMiniNav a .menu_text {
+	border: 1px solid transparent;
+	padding-right: .5em;
+}
+
+#headerMiniNav a .menu_text {
+	border-right-color: #000000;
+	border-right-width: 2px;
+	padding-right: .5em;
+}
+
+#headerMiniNav li.root.last a .menu_text {
+	border-right: none;
+}
+
+#searchBox {
+	font-size: 1.2em;
+}
+
+#searchBox input, #searchBox button {
+	line-height: 1.5em;
+	<?php echo buildBorderRadius('8px', '8px', '8px', '8px');?>
+}
+
+#searchBox button {
+	border: 1px solid black;
+}
+
+#searchBox button .ui-button-text {
+	font-size: 0.8em;
+	padding: .4em;
+	color: #ffffff;
+	font-weight: bold;
+}
+
+#searchBox button.ui-state-default {
+	<?php echo buildSimpleGradient('#e42929', '#9a0b0b');?>
+}
+
+#searchBox button.ui-state-active {
+	<?php echo buildSimpleGradient('#9a0b0b', '#e42929');?>
+}
+
+#searchBox button.ui-state-hover {
+	<?php echo buildSimpleGradient('#9a0b0b', '#e42929');?>
+}
+
+#mainNavigationMenu {
+	line-height: 3em;
+}
+
+#mainNavigationMenu a {
+	color: #ffffff;
+}
+
+#mainNavigationMenu li.root {
+	border: 1px solid transparent;
+	border-left-color: #31404d;
+	border-right-color: #030404;
+}
+
+#mainNavigationMenu li.root.first {
+	border-left-color: transparent;
+}
+
+#mainNavigationMenu li.root.last {
+	border-right-color: transparent;
+}
+
+#mainNavigationMenu li.root.ui-state-default {
+	background: none;
+}
+
+#mainNavigationMenu li.root.ui-state-active {
+	<?php echo buildSimpleGradient('#ba4747', '#b20303');?>
+}
+
+#mainNavigationMenu li.root.ui-state-hover {
+	<?php echo buildSimpleGradient('#ba4747', '#b20303');?>
+}
+
+#footerNavigationMenu {
+}
+
+#footerNavigationMenu li {
+	margin-right: .5em;
+}
+
+#footerNavigationMenu li.root a {
+	color: #ffffff;
+}
+
+#footerNavigationMenu li.root a .menu_text {
+	border: 1px solid transparent;
+	padding-right: .5em;
+}
+
+#footerNavigationMenu li.root.first a .menu_text {
+	border-right-color: #ffffff;
+}
+
+#footerNavigationMenu li.root.middle a .menu_text {
+	border-right-color: #ffffff;
+}
+
+#footerNavigationMenu li.root.last a .menu_text {
+}
+
+#categoriesInfoBox .ui-infobox-header {
+	border:1px solid transparent;border-bottom-color:#00236f;border-bottom-style:dotted;
+	<?php echo buildBorderRadius('4px', '4px', '0px', '0px');?>
+}
+
+#categoriesInfoBox .ui-accordion-header.ui-state-default {
+	background: #899199;
+	<?php echo buildBorderRadius('0px', '0px', '0px', '0px');?>
+}
+
+#categoriesInfoBox .ui-accordion-header.ui-state-hover {
+	background: #2c3b48;
+	<?php echo buildBorderRadius('0px', '0px', '0px', '0px');?>
+}
+
+#categoriesInfoBox .ui-accordion-header.ui-state-active {
+	background: #aab0b6;
+	color: #000000;
+	<?php echo buildBorderRadius('0px', '0px', '0px', '0px');?>
+}
+
+/* Global Styles --END-- */
+
+/* Index Page --BEGIN-- */
+#coin-slider-bannermiddlemovie {
+	margin-bottom: 1em;
+}
+
+#indexScrollerInfoBox {
+	background: none;
+}
+
+#indexScrollerInfoBox .ui-infobox-header {
+	background: none;
+	line-height: 2em;
+}
+
+#indexScrollerInfoBox .ui-infobox-header-text {
+	font-weight: normal;
+	font-size: 1.5em;
+	color: #aa0101;
+}
+
+#indexScrollerInfoBox .ui-infobox-content {
+	background: none;
+	border: 2px solid #8b0404;
+	<?php echo buildBorderRadius('6px', '6px', '6px', '6px');?>
+}
+
+#indexScrollerInfoBox .scrollBoxesButtonsContainer {
+	margin: 1em;
+}
+
+/* Index Page --END-- */
+
+/* All Pages --BEGIN-- */
+.ui-dialog-titlebar {
+	color: #ffffff;
+}
+
+tr.ui-widget-header td, tr.ui-widget-header th, tr th.ui-widget-header {
+	color: #ffffff;
+	<?php echo buildBorderRadius('0px', '0px', '0px', '0px');?>
+}
+
+.productListingRowContents .ui-widget-header {
+	color: #ffffff;
+	<?php echo buildBorderRadius('0px', '0px', '0px', '0px');?>
+}
+
+.moduleRow.ui-state-default {
+	color: #010101;
+	border: 1px solid transparent;
+	background: none;
+}
+
+.moduleRow.ui-state-hover {
+	color: #010101;
+	background: #b5bbc0;
+	border-color: #1f2429;
+}
+
+.moduleRow.ui-state-active {
+	color: #010101;
+	background: #b5bbc0;
+	border-color: #1f2429;
+}
+
+/* All Pages --END-- */

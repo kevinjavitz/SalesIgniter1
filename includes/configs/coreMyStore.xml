@@ -1,0 +1,454 @@
+<ConfigurationGroup>
+	<title>My Store</title>
+	<key>coreMyStore</key>
+	<description>General information about my store</description>
+	<tabs>
+		<general>
+			<title>General</title>
+			<description>General Settings</description>
+			<configurations>
+				<STORE_OWNER>
+					<title><![CDATA[Store Owner]]></title>
+					<value><![CDATA[Sales Igniter]]></value>
+					<description><![CDATA[The name of my store owner]]></description>
+				</STORE_OWNER>
+				<STORE_NAME>
+					<title><![CDATA[Store Name]]></title>
+					<value><![CDATA[Sales Igniter]]></value>
+					<description><![CDATA[The name of my store]]></description>
+				</STORE_NAME>
+				<STORE_NAME_ADDRESS>
+					<title><![CDATA[Store Address and Phone]]></title>
+					<value><![CDATA[Sales Igniter Software
+2820 N Pinal Ave STE 12-246
+Casa Grande, AZ  85122]]></value>
+					<description><![CDATA[This is the Store Name, Address and Phone used on printable documents and displayed online]]></description>
+					<set_function>
+						<type>textarea</type>
+						<attributes>
+							<rows>5</rows>
+							<cols>20</cols>
+						</attributes>
+					</set_function>
+				</STORE_NAME_ADDRESS>
+				<STORE_COUNTRY>
+					<title><![CDATA[Country]]></title>
+					<value><![CDATA[223]]></value>
+					<description><![CDATA[The country my store is located in <br><br><b>Note: Please remember to update the store zone.</b>]]></description>
+					<use_function><![CDATA[tep_get_country_name]]></use_function>
+					<set_function>
+						<type>selectbox</type>
+						<data_function>tep_get_countries</data_function>
+					</set_function>
+				</STORE_COUNTRY>
+				<STORE_ZONE>
+					<title><![CDATA[Zone]]></title>
+					<value><![CDATA[12]]></value>
+					<description><![CDATA[The zone my store is located in]]></description>
+					<use_function><![CDATA[tep_cfg_get_zone_name]]></use_function>
+					<set_function use_default_if_no_data="true">
+						<type>selectbox</type>
+						<data_function>
+							<name>tep_get_country_zones</name>
+							<args>
+								<arg>CONFIG:STORE_COUNTRY</arg>
+							</args>
+						</data_function>
+					</set_function>
+				</STORE_ZONE>
+				<STORE_OWNER_EMAIL_ADDRESS>
+					<title><![CDATA[E-Mail Address]]></title>
+					<value><![CDATA[info@salesigniter-software.com]]></value>
+					<description><![CDATA[The e-mail address of my store owner]]></description>
+				</STORE_OWNER_EMAIL_ADDRESS>
+				<EMAIL_FROM>
+					<title><![CDATA[E-Mail From]]></title>
+					<value><![CDATA[Sales Igniter <info@salesigniter-software.com>]]></value>
+					<description><![CDATA[The e-mail address used in (sent) e-mails]]></description>
+				</EMAIL_FROM>
+				<STORE_LOGO>
+					<title><![CDATA[Store Logo]]></title>
+					<value><![CDATA[logo.png]]></value>
+					<description><![CDATA[Logo for the store<br />should be 392 pixels wide and 121 pixels high maximum]]></description>
+					<set_function><![CDATA[itw_cfg_upload_field(]]></set_function>
+				</STORE_LOGO>
+			</configurations>
+		</general>
+		<taxes>
+			<title>Taxes</title>
+			<description>Tax Settings</description>
+			<configurations>
+				<TAX_DECIMAL_PLACES>
+					<title><![CDATA[Tax Decimal Places]]></title>
+					<value><![CDATA[2]]></value>
+					<description><![CDATA[Pad the tax value this amount of decimal places]]></description>
+				</TAX_DECIMAL_PLACES>
+				<BASE_TAX_RATE>
+					<title><![CDATA[Base Tax Rate]]></title>
+					<value><![CDATA[Billing]]></value>
+					<description><![CDATA[Added Value tax on what address should be based?]]></description>
+					<set_function><![CDATA[tep_cfg_select_option(array('Billing', 'Shipping'),]]></set_function>
+				</BASE_TAX_RATE>
+				<DISPLAY_PRICE_WITH_TAX>
+					<title><![CDATA[Display Prices with Tax]]></title>
+					<value><![CDATA[false]]></value>
+					<description><![CDATA[Display prices with tax included (true) or add the tax at the end (false)]]></description>
+					<set_function><![CDATA[tep_cfg_select_option(array('true', 'false'),]]></set_function>
+				</DISPLAY_PRICE_WITH_TAX>
+			</configurations>
+		</taxes>
+		<checkout>
+			<title>Checkout</title>
+			<description>Checkout Settings</description>
+			<configurations>
+				<STOCK_ALLOW_CHECKOUT deprecated="true">
+					<title><![CDATA[Allow Checkout]]></title>
+					<value><![CDATA[true]]></value>
+					<description><![CDATA[Allow customer to checkout even if there is insufficient stock]]></description>
+					<set_function><![CDATA[tep_cfg_select_option(array('true', 'false'),]]></set_function>
+				</STOCK_ALLOW_CHECKOUT>
+				<DISPLAY_REFERRAL_OTHER deprecated="true">
+					<title><![CDATA[Display "Other" Referral option]]></title>
+					<value><![CDATA[true]]></value>
+					<description><![CDATA[Display "Other - please specify" with text box in referral source in account creation]]></description>
+					<set_function><![CDATA[tep_cfg_select_option(array('true', 'false'),]]></set_function>
+				</DISPLAY_REFERRAL_OTHER>
+				<DISPLAY_REFERRAL_SOURCE deprecated="true">
+					<title><![CDATA[Display Referral options if "ref=###" is set]]></title>
+					<value><![CDATA[true]]></value>
+					<description><![CDATA[Display referral selection dropdown in referral source in account creation when "ref=###" is set]]></description>
+					<set_function><![CDATA[tep_cfg_select_option(array('true', 'false'),]]></set_function>
+				</DISPLAY_REFERRAL_SOURCE>
+				<SHOW_COMMENTS_CHECKOUT>
+					<title><![CDATA[Show comments on checkout]]></title>
+					<value><![CDATA[true]]></value>
+					<description><![CDATA[Show comments on checkout page]]></description>
+					<set_function><![CDATA[tep_cfg_select_option(array('true', 'false'),]]></set_function>
+				</SHOW_COMMENTS_CHECKOUT>
+			</configurations>
+		</checkout>
+		<products>
+			<title>Products</title>
+			<description>Product Settings</description>
+			<configurations>
+				<EXPECTED_PRODUCTS_SORT deprecated="true">
+					<title><![CDATA[Expected Sort Order]]></title>
+					<value><![CDATA[desc]]></value>
+					<description><![CDATA[This is the sort order used in the expected products box.]]></description>
+					<set_function><![CDATA[tep_cfg_select_option(array('asc', 'desc'),]]></set_function>
+				</EXPECTED_PRODUCTS_SORT>
+				<EXPECTED_PRODUCTS_FIELD deprecated="true">
+					<title><![CDATA[Expected Sort Field]]></title>
+					<value><![CDATA[date_expected]]></value>
+					<description><![CDATA[The column to sort by in the expected products box.]]></description>
+					<set_function><![CDATA[tep_cfg_select_option(array('products_name', 'date_expected'),]]></set_function>
+				</EXPECTED_PRODUCTS_FIELD>
+				<ALLOW_GUEST_TO_TELL_A_FRIEND deprecated="true">
+					<title><![CDATA[Allow Guest To Tell A Friend]]></title>
+					<value><![CDATA[false]]></value>
+					<description><![CDATA[Allow guests to tell a friend about a product]]></description>
+					<set_function><![CDATA[tep_cfg_select_option(array('true', 'false'),]]></set_function>
+				</ALLOW_GUEST_TO_TELL_A_FRIEND>
+				<ADVANCED_SEARCH_DEFAULT_OPERATOR deprecated="true">
+					<title><![CDATA[Default Search Operator]]></title>
+					<value><![CDATA[and]]></value>
+					<description><![CDATA[Default search operators]]></description>
+					<set_function><![CDATA[tep_cfg_select_option(array('and', 'or'),]]></set_function>
+				</ADVANCED_SEARCH_DEFAULT_OPERATOR>
+				<SHOW_COUNTS deprecated="true">
+					<title><![CDATA[Show Category Counts]]></title>
+					<value><![CDATA[false]]></value>
+					<description><![CDATA[Count recursively how many products are in each category]]></description>
+					<set_function><![CDATA[tep_cfg_select_option(array('true', 'false'),]]></set_function>
+				</SHOW_COUNTS>
+				<SHOW_PRODUCTS_FROM_SUBCATEGORIES>
+					<title><![CDATA[Show all the products from all the subcategories of the current category]]></title>
+					<value><![CDATA[false]]></value>
+					<description><![CDATA[Show all the products from all the subcategories of the current category]]></description>
+					<set_function><![CDATA[tep_cfg_select_option(array('true', 'false'),]]></set_function>
+				</SHOW_PRODUCTS_FROM_SUBCATEGORIES>
+				<SHOW_SUBCATEGORIES>
+					<title><![CDATA[Show subcategories of the current category]]></title>
+					<value><![CDATA[true]]></value>
+					<description><![CDATA[Show subcategories of the current category]]></description>
+					<set_function><![CDATA[tep_cfg_select_option(array('true', 'false'),]]></set_function>
+				</SHOW_SUBCATEGORIES>
+				<PRODUCT_INFO_SHOW_MODEL>
+					<title><![CDATA[Show model on product Info]]></title>
+					<value><![CDATA[true]]></value>
+					<description><![CDATA[Show model on product Info]]></description>
+					<set_function><![CDATA[tep_cfg_select_option(array('true', 'false'),]]></set_function>
+				</PRODUCT_INFO_SHOW_MODEL>
+				<CHECK_STOCK_NEW_USED>
+					<title><![CDATA[Check Stock for new and used purchase types]]></title>
+					<value><![CDATA[true]]></value>
+					<description><![CDATA[Check Stock for new and used purchase types]]></description>
+					<set_function><![CDATA[tep_cfg_select_option(array('true', 'false'),]]></set_function>
+				</CHECK_STOCK_NEW_USED>
+			</configurations>
+		</products>
+		<template>
+			<title>Template</title>
+			<description>Template Settings</description>
+			<configurations>
+				<TEMPLATE_SWITCHING_ALLOWED deprecated="true">
+					<title><![CDATA[Template Switching Allowed]]></title>
+					<value><![CDATA[true]]></value>
+					<description><![CDATA[Allow template switching through the url (for easy new template testing).]]></description>
+					<set_function><![CDATA[tep_cfg_select_option(array('true', 'false'),]]></set_function>
+				</TEMPLATE_SWITCHING_ALLOWED>
+				<TEMPLATE_SWITCHING_MENU deprecated="true">
+					<title><![CDATA[Show Templates Menu]]></title>
+					<value><![CDATA[true]]></value>
+					<description><![CDATA[Show the templates menu (mainly for easy template testing, needs Template Switching Allowed to be true).]]></description>
+					<set_function><![CDATA[tep_cfg_select_option(array('true', 'false'),]]></set_function>
+				</TEMPLATE_SWITCHING_MENU>
+				<DIR_WS_TEMPLATES_DEFAULT>
+					<title><![CDATA[Default Template Directory]]></title>
+					<value><![CDATA[fallback]]></value>
+					<description><![CDATA[Subdirectory (in templates/) where the template files are stored which should be loaded by default.]]></description>
+					<set_function>
+						<type>selectbox</type>
+						<data_function>itw_get_templates_array</data_function>
+					</set_function>
+				</DIR_WS_TEMPLATES_DEFAULT>
+			</configurations>
+		</template>
+		<gift_voucher>
+			<title>Gift Voucher</title>
+			<description>Gift Voucher And Coupon Settings</description>
+			<configurations>
+				<NEW_SIGNUP_GIFT_VOUCHER_AMOUNT>
+					<title><![CDATA[To offer a gift voucher]]></title>
+					<value><![CDATA[0]]></value>
+					<description><![CDATA[Please indicate the amount of the gift voucher which you want to offer a new customer.<br><br>Put 0 if you do not want to offer gift voucher.<br>]]></description>
+				</NEW_SIGNUP_GIFT_VOUCHER_AMOUNT>
+				<NEW_SIGNUP_DISCOUNT_COUPON>
+					<title><![CDATA[To offer a discount coupon]]></title>
+					<value><![CDATA[]]></value>
+					<description><![CDATA[To offer a discount coupon to a new customer, enter the code of the coupon.<br><br>Leave empty if you do not want to offer discount coupon.<BR>]]></description>
+				</NEW_SIGNUP_DISCOUNT_COUPON>
+			</configurations>
+		</gift_voucher>
+		<terms>
+			<title>Terms</title>
+			<description>Terms Settings</description>
+			<configurations>
+				<TERMS_CONDITIONS_CREATE_ACCOUNT>
+					<title><![CDATA[Accepts Terms and Conditions on create account page]]></title>
+					<value><![CDATA[true]]></value>
+					<description><![CDATA[Accept Terms and Conditiuons on create account page instead of checkout page]]></description>
+					<set_function><![CDATA[tep_cfg_select_option(array('true', 'false'),]]></set_function>
+				</TERMS_CONDITIONS_CREATE_ACCOUNT>
+				<TERMS_CONDITIONS_SHOPPING_CART>
+					<title><![CDATA[Accepts Terms and Conditions on shopping cart page]]></title>
+					<value><![CDATA[false]]></value>
+					<description><![CDATA[Accept Terms and Conditiuons on shopping cart page instead of checkout page]]></description>
+					<set_function><![CDATA[tep_cfg_select_option(array('true', 'false'),]]></set_function>
+				</TERMS_CONDITIONS_SHOPPING_CART>
+				<TERMS_CONDITIONS_CHECKOUT>
+					<title><![CDATA[Accepts Terms and Conditions on checkout page]]></title>
+					<value><![CDATA[true]]></value>
+					<description><![CDATA[Accept Terms and Conditiuons on checkout page instead of checkout page]]></description>
+					<set_function><![CDATA[tep_cfg_select_option(array('true', 'false'),]]></set_function>
+				</TERMS_CONDITIONS_CHECKOUT>
+				<TERMS_INITIALS>
+					<title><![CDATA[Initials with the terms and conditions]]></title>
+					<value><![CDATA[true]]></value>
+					<description><![CDATA[Initials with terms and conditions]]></description>
+					<set_function><![CDATA[tep_cfg_select_option(array('true', 'false'),]]></set_function>
+				</TERMS_INITIALS>
+				<CHECKOUT_TERMS_FORCE_AGREE>
+					<title><![CDATA[Must agree to terms/conditions to checkout]]></title>
+					<value><![CDATA[true]]></value>
+					<description><![CDATA[Require the customer to agree to the store's terms and conditions to proceed with the checkout]]></description>
+					<set_function><![CDATA[tep_cfg_select_option(array('true','false'),]]></set_function>
+				</CHECKOUT_TERMS_FORCE_AGREE>
+			</configurations>
+		</terms>
+		<advanced>
+			<title>Advanced</title>
+			<description>Advanced Settings</description>
+			<configurations>
+				<DEMO_STORE>
+					<title><![CDATA[Demo Store]]></title>
+					<value><![CDATA[off]]></value>
+					<description><![CDATA[A message will appear if this is a demo store]]></description>
+					<set_function><![CDATA[tep_cfg_select_option(array('on', 'off'),]]></set_function>
+				</DEMO_STORE>
+				<DEFAULT_LANGUAGE>
+					<title><![CDATA[Default Language]]></title>
+					<value><![CDATA[en]]></value>
+					<description><![CDATA[System default language if the browsers language isn't available]]></description>
+				</DEFAULT_LANGUAGE>
+				<USE_DEFAULT_LANGUAGE_CURRENCY>
+					<title><![CDATA[Switch To Default Language Currency]]></title>
+					<value><![CDATA[false]]></value>
+					<description><![CDATA[Automatically switch to the language's currency when it is changed]]></description>
+					<set_function><![CDATA[tep_cfg_select_option(array('true', 'false'),]]></set_function>
+				</USE_DEFAULT_LANGUAGE_CURRENCY>
+				<DEFAULT_CURRENCY>
+					<title><![CDATA[Default Currency]]></title>
+					<value><![CDATA[USD]]></value>
+					<description><![CDATA[Default currency to use if not using the language default currency]]></description>
+				</DEFAULT_CURRENCY>
+				<SEND_EXTRA_ORDER_EMAILS_TO>
+					<title><![CDATA[Send Extra Order Emails To]]></title>
+					<value><![CDATA[]]></value>
+					<description><![CDATA[Send extra order emails to the following email addresses, in this format: Name 1 &lt;email@address1&gt;, Name 2 &lt;email@address2&gt;]]></description>
+				</SEND_EXTRA_ORDER_EMAILS_TO>
+				<DISPLAY_CART>
+					<title><![CDATA[Display Cart After Adding Product]]></title>
+					<value><![CDATA[true]]></value>
+					<description><![CDATA[Display the shopping cart after adding a product (or return back to their origin)]]></description>
+					<set_function><![CDATA[tep_cfg_select_option(array('true', 'false'),]]></set_function>
+				</DISPLAY_CART>
+				<CFG_SORT_IGNORE_WORDS>
+					<title><![CDATA[Ignore Words In Product Listing Alphabetical List]]></title>
+					<value><![CDATA[the]]></value>
+					<description><![CDATA[Put here the words that you want to be ignored by the alphabetical product listings. Useful so that products with "the" in the title or words like that don't get alphabetized under "t"<br><br>Ignored Words: (seperate multiple words with a comma)]]></description>
+				</CFG_SORT_IGNORE_WORDS>
+				<CATPCHA_ENABLED>
+					<title><![CDATA[Enable Captcha On Email Forms]]></title>
+					<value><![CDATA[True]]></value>
+					<description><![CDATA[Captcha security on email forms]]></description>
+					<set_function><![CDATA[tep_cfg_select_option(array('True','False'),]]></set_function>
+				</CATPCHA_ENABLED>
+				<NEW_PRODUCTS_ON_NESTED_CATEGORIES deprecated="true">
+					<title><![CDATA[Show new products module on nested categories?]]></title>
+					<value><![CDATA[false]]></value>
+					<description><![CDATA[If true id will show new products module on nested categories]]></description>
+					<set_function><![CDATA[tep_cfg_select_option(array('true', 'false'),]]></set_function>
+				</NEW_PRODUCTS_ON_NESTED_CATEGORIES>
+				<SHOW_MANUFACTURER_ON_PRODUCT_INFO>
+					<title><![CDATA[Show manufacturer name on product Info]]></title>
+					<value><![CDATA[false]]></value>
+					<description><![CDATA[Show manufacturer name on product Info]]></description>
+					<set_function><![CDATA[tep_cfg_select_option(array('true', 'false'),]]></set_function>
+				</SHOW_MANUFACTURER_ON_PRODUCT_INFO>
+				<SYSTEM_BARCODE_FORMAT>
+					<title><![CDATA[Choose barcode type to use in the store]]></title>
+					<value><![CDATA[Code 39]]></value>
+					<description><![CDATA[Choose barcode type to use in the store]]></description>
+					<set_function>
+						<type>radio</type>
+						<values>
+							<value>Code128Auto</value>
+							<value>QR</value>
+							<value>Code 39 Extended</value>
+							<value>Code 25</value>
+							<value>Code 39</value>
+							<value>Code 25 Interleaved</value>
+						</values>
+					</set_function>
+				</SYSTEM_BARCODE_FORMAT>
+				<CUSTOMER_CHANGE_SEND_NOTIFICATION_EMAIL_DEFAULT>
+					<title><![CDATA[Send customer email when a change is made to his account set as default]]></title>
+					<value><![CDATA[false]]></value>
+					<description><![CDATA[Send customer email when a change is made to his account set as default]]></description>
+					<set_function><![CDATA[tep_cfg_select_option(array('true', 'false'),]]></set_function>
+				</CUSTOMER_CHANGE_SEND_NOTIFICATION_EMAIL_DEFAULT>
+				<SHOW_IP_ADDRESS_ORDERS_DETAILS>
+					<title><![CDATA[Show IP address on orders details page]]></title>
+					<value><![CDATA[true]]></value>
+					<description><![CDATA[Show IP address on orders details page]]></description>
+					<set_function><![CDATA[tep_cfg_select_option(array('true', 'false'),]]></set_function>
+				</SHOW_IP_ADDRESS_ORDERS_DETAILS>
+				<SITE_MAINTENANCE_MODE>
+					<title><![CDATA[Site In maintenance mode]]></title>
+					<value><![CDATA[false]]></value>
+					<description><![CDATA[Site In maintenance mode]]></description>
+					<set_function><![CDATA[tep_cfg_select_option(array('true', 'false'),]]></set_function>
+				</SITE_MAINTENANCE_MODE>
+				<IP_LIST_MAINTENANCE_ENABLED>
+					<title><![CDATA[List of IP enabled in maintenance mode]]></title>
+					<value><![CDATA[]]></value>
+					<description><![CDATA[List of IP enabled in maintenance mode separated by ;]]></description>
+				</IP_LIST_MAINTENANCE_ENABLED>
+				<SHOW_STANDARD_CREATE_ACCOUNT>
+					<title><![CDATA[Show standard create account tab on account login]]></title>
+					<value><![CDATA[true]]></value>
+					<description><![CDATA[Show standard create account tab on account login]]></description>
+					<set_function><![CDATA[tep_cfg_select_option(array('true', 'false'),]]></set_function>
+				</SHOW_STANDARD_CREATE_ACCOUNT>
+				<SHOW_PACKING_SLIP_BUTTONS>
+					<title><![CDATA[Show packing slip buttons]]></title>
+					<value><![CDATA[true]]></value>
+					<description><![CDATA[Show packing slip buttons]]></description>
+					<set_function><![CDATA[tep_cfg_select_option(array('true', 'false'),]]></set_function>
+				</SHOW_PACKING_SLIP_BUTTONS>
+				<BARCODES_INVENTORY_TYPES>
+					<title><![CDATA[List of barcodes inventory types]]></title>
+					<value><![CDATA[]]></value>
+					<description><![CDATA[List of barcodes inventory types separated by ;]]></description>
+				</BARCODES_INVENTORY_TYPES>
+			</configurations>
+		</advanced>
+		<order_status>
+			<title>Order Status</title>
+			<description>Order Status Settings</description>
+			<configurations>
+				<DEFAULT_ORDERS_STATUS_ID>
+					<title><![CDATA[Initial Order Status]]></title>
+					<value><![CDATA[1]]></value>
+					<description><![CDATA[Initial status to assign to an order before the payment method can set it's status]]></description>
+					<set_function><![CDATA[tep_cfg_pull_down_order_status_list(]]></set_function>
+				</DEFAULT_ORDERS_STATUS_ID>
+				<ORDERS_STATUS_CANCELLED_ID>
+					<title><![CDATA[Order Status cancel ID]]></title>
+					<value><![CDATA[0]]></value>
+					<description><![CDATA[Order Status cancel ID]]></description>
+					<set_function><![CDATA[tep_cfg_pull_down_order_status_list(]]></set_function>
+				</ORDERS_STATUS_CANCELLED_ID>
+				<ORDERS_STATUS_WAITING_ID>
+					<title><![CDATA[Order Status Waiting for Confirmation ID]]></title>
+					<value><![CDATA[0]]></value>
+					<description><![CDATA[Order Status Waiting for Confirmation ID]]></description>
+					<set_function><![CDATA[tep_cfg_pull_down_order_status_list(]]></set_function>
+				</ORDERS_STATUS_WAITING_ID>
+				<ORDERS_STATUS_APPROVED_ID>
+					<title><![CDATA[Order Status Order Approved ID]]></title>
+					<value><![CDATA[0]]></value>
+					<description><![CDATA[Order Status order Approved ID]]></description>
+					<set_function><![CDATA[tep_cfg_pull_down_order_status_list(]]></set_function>
+				</ORDERS_STATUS_APPROVED_ID>
+				<ORDERS_STATUS_PROCESSING_ID>
+					<title><![CDATA[Order Status order Processing ID]]></title>
+					<value><![CDATA[0]]></value>
+					<description><![CDATA[Order Status order Processing ID]]></description>
+					<set_function><![CDATA[tep_cfg_pull_down_order_status_list(]]></set_function>
+				</ORDERS_STATUS_PROCESSING_ID>
+				<ORDERS_STATUS_DELIVERED_ID>
+					<title><![CDATA[Order Status order Delivered ID]]></title>
+					<value><![CDATA[0]]></value>
+					<description><![CDATA[Order Status order Delivered ID]]></description>
+					<set_function><![CDATA[tep_cfg_pull_down_order_status_list(]]></set_function>
+				</ORDERS_STATUS_DELIVERED_ID>
+				<ORDERS_STATUS_ESTIMATE_ID>
+					<title><![CDATA[Order Status order Estimate ID]]></title>
+					<value><![CDATA[9]]></value>
+					<description><![CDATA[Order Status order estimate ID]]></description>
+					<set_function><![CDATA[tep_cfg_pull_down_order_status_list(]]></set_function>
+				</ORDERS_STATUS_ESTIMATE_ID>
+				<ORDERS_STATUS_SHIPPED_ID>
+					<title><![CDATA[Order Status Order Shipped ID]]></title>
+					<value><![CDATA[10]]></value>
+					<description><![CDATA[Order Status order Shipped ID]]></description>
+					<set_function><![CDATA[tep_cfg_pull_down_order_status_list(]]></set_function>
+				</ORDERS_STATUS_SHIPPED_ID>
+				<ENABLE_HTML_EDITOR>
+					<title><![CDATA[Use wysiwyg editor for product description]]></title>
+					<value><![CDATA[true]]></value>
+					<description><![CDATA[Use wysiwyg editor to edit product description]]></description>
+					<set_function><![CDATA[tep_cfg_select_option(array('true', 'false'),]]></set_function>
+				</ENABLE_HTML_EDITOR>
+				<SHOW_ENLAGE_IMAGE_TEXT>
+					<title><![CDATA[Show enlarge image text on product info page]]></title>
+					<value><![CDATA[true]]></value>
+					<description><![CDATA[Show enlarge image text on product info page]]></description>
+					<set_function><![CDATA[tep_cfg_select_option(array('true', 'false'),]]></set_function>
+				</SHOW_ENLAGE_IMAGE_TEXT>
+			</configurations>
+		</order_status>
+	</tabs>
+</ConfigurationGroup>

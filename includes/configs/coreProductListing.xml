@@ -1,0 +1,113 @@
+<ConfigurationGroup>
+	<title>Product Listing</title>
+	<key>coreProductListing</key>
+	<description>Product Listing configuration options</description>
+	<tabs>
+		<general>
+			<title>General</title>
+			<description>General Settings</description>
+			<configurations>
+				<PRODUCT_LIST_FILTER>
+					<title><![CDATA[Display Category/Manufacturer Filter (0=disable; 1=enable)]]></title>
+					<value><![CDATA[1]]></value>
+					<description><![CDATA[Do you want to display the Category/Manufacturer Filter?]]></description>
+				</PRODUCT_LIST_FILTER>
+				<PREV_NEXT_BAR_LOCATION>
+					<title><![CDATA[Location of Prev/Next Navigation Bar (1-top, 2-bottom, 3-both)]]></title>
+					<value><![CDATA[2]]></value>
+					<description><![CDATA[Sets the location of the Prev/Next Navigation Bar (1-top, 2-bottom, 3-both)]]></description>
+				</PREV_NEXT_BAR_LOCATION>
+				<RENTAL_SHOW_FEATURED_TITLE_X>
+					<title><![CDATA[Show X number of featured titles per category]]></title>
+					<value><![CDATA[6]]></value>
+					<description><![CDATA[Show X number of featured titles per category]]></description>
+				</RENTAL_SHOW_FEATURED_TITLE_X>
+				<RENTAL_SELECT_FEATURED_TITLE>
+					<title><![CDATA[Select from X number of featured titles per product category]]></title>
+					<value><![CDATA[2]]></value>
+					<description><![CDATA[Select from X number of featured titles per product category]]></description>
+				</RENTAL_SELECT_FEATURED_TITLE>
+				<RENTAL_SHOW_FEATURED_TITLE>
+					<title><![CDATA[Show featured products per category]]></title>
+					<value><![CDATA[false]]></value>
+					<description><![CDATA[Show featured products per category]]></description>
+					<set_function><![CDATA[tep_cfg_select_option(array('true', 'false'),]]></set_function>
+				</RENTAL_SHOW_FEATURED_TITLE>
+				<PRODUCT_LISTING_ALLOW_RESULT_LIMIT>
+					<title><![CDATA[Allow Result Limiting]]></title>
+					<value><![CDATA[True]]></value>
+					<description><![CDATA[Allow the customer to select how many products are shown per page?]]></description>
+					<set_function><![CDATA[tep_cfg_select_option(array('True', 'False'),]]></set_function>
+				</PRODUCT_LISTING_ALLOW_RESULT_LIMIT>
+				<PRODUCT_LISTING_SHOW_PRODUCT_NAME_FILTER>
+					<title><![CDATA[Show Product Name Filter]]></title>
+					<value><![CDATA[True]]></value>
+					<description><![CDATA[Show product name filter?]]></description>
+					<set_function><![CDATA[tep_cfg_select_option(array('True', 'False'),]]></set_function>
+				</PRODUCT_LISTING_SHOW_PRODUCT_NAME_FILTER>
+				<PRODUCT_LISTING_TYPE>
+					<title><![CDATA[Use rows or columns for product listing]]></title>
+					<value><![CDATA[row]]></value>
+					<description><![CDATA[Use rows or columns for product listing]]></description>
+					<set_function><![CDATA[tep_cfg_select_option(array('row', 'column'),]]></set_function>
+				</PRODUCT_LISTING_TYPE>
+				<PRODUCT_LISTING_TOTAL_WIDTH>
+					<title><![CDATA[When using columns for product listing content area width to use when calculating image width]]></title>
+					<value><![CDATA[600]]></value>
+					<description><![CDATA[When using columns for product listing content area width to use when calculating image width]]></description>
+				</PRODUCT_LISTING_TOTAL_WIDTH>
+				<PRODUCT_LISTING_PRODUCTS_COLUMNS>
+					<title><![CDATA[When using columns for product listing number of products to display in a row]]></title>
+					<value><![CDATA[4]]></value>
+					<description><![CDATA[When using columns for product listing number of products to display in a row]]></description>
+				</PRODUCT_LISTING_PRODUCTS_COLUMNS>
+				<TOOLTIP_DESCRIPTION_ENABLED>
+					<title><![CDATA[Enable product image tooltip description for products listing?]]></title>
+					<value><![CDATA[true]]></value>
+					<description><![CDATA[Enable product image tooltip description for products listing?]]></description>
+					<set_function><![CDATA[tep_cfg_select_option(array('true', 'false'),]]></set_function>
+				</TOOLTIP_DESCRIPTION_ENABLED>
+				<TOOLTIP_DESCRIPTION_BUTTONS>
+					<title><![CDATA[Show buttons in product image tooltip description for products listing?]]></title>
+					<value><![CDATA[true]]></value>
+					<description><![CDATA[Show buttons in product image tooltip description for products listing?]]></description>
+					<set_function><![CDATA[tep_cfg_select_option(array('true', 'false'),]]></set_function>
+				</TOOLTIP_DESCRIPTION_BUTTONS>
+				<PRODUCT_LISTING_ALLOW_PRODUCT_SORTER>
+					<title><![CDATA[Allow sort products]]></title>
+					<value><![CDATA[True]]></value>
+					<description><![CDATA[Allow sort products]]></description>
+					<set_function><![CDATA[tep_cfg_select_option(array('True', 'False'),]]></set_function>
+				</PRODUCT_LISTING_ALLOW_PRODUCT_SORTER>
+				<CATEGORIES_MAX_WIDTH>
+					<title><![CDATA[Max width for the subcategories images]]></title>
+					<value><![CDATA[170]]></value>
+					<description><![CDATA[Max width for the subcategories images]]></description>
+				</CATEGORIES_MAX_WIDTH>
+				<CATEGORIES_MAX_HEIGHT>
+					<title><![CDATA[Max height for the subcategories images]]></title>
+					<value><![CDATA[170]]></value>
+					<description><![CDATA[Max height for the subcategories images]]></description>
+				</CATEGORIES_MAX_HEIGHT>
+				<PRODUCT_LISTING_PRODUCTS_LIMIT>
+					<title><![CDATA[Number of products to list per page]]></title>
+					<value><![CDATA[12]]></value>
+					<description><![CDATA[Number of products to list per page (max 25)]]></description>
+
+				</PRODUCT_LISTING_PRODUCTS_LIMIT>
+				<PRODUCT_LISTING_SELECT_MULTIPLES>
+					<title><![CDATA[Can add to cart multiple items]]></title>
+					<value><![CDATA[false]]></value>
+					<description><![CDATA[Can add to cart multiple items]]></description>
+					<set_function><![CDATA[tep_cfg_select_option(array('true', 'false'),]]></set_function>
+
+				</PRODUCT_LISTING_SELECT_MULTIPLES>
+				<PRODUCT_LISTING_PRODUCTS_LIMIT_ARRAY>
+					<title><![CDATA[Results Per Page drop down values]]></title>
+					<value><![CDATA[12,24,48,96]]></value>
+					<description><![CDATA[Results Per Page drop down values (comma seperated example: 12,24,48,96)]]></description>
+				</PRODUCT_LISTING_PRODUCTS_LIMIT_ARRAY>
+			</configurations>
+		</general>
+	</tabs>
+</ConfigurationGroup>

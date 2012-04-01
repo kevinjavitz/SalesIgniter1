@@ -1,0 +1,36 @@
+<ConfigurationGroup>
+	<title>Error Reporting</title>
+	<key>coreErrorReporting</key>
+	<description>Error reporting settings</description>
+	<tabs>
+		<general>
+			<title>General</title>
+			<description>General Settings</description>
+			<configurations>
+				<ERROR_REPORTING_METHOD>
+					<title><![CDATA[Reporting Method]]></title>
+					<value><![CDATA[Display]]></value>
+					<description><![CDATA[Method for error reporting]]></description>
+					<set_function><![CDATA[tep_cfg_select_option(array('None','Display','Log ( Not implemented )','Email ( Not implemented )'),]]></set_function>
+				</ERROR_REPORTING_METHOD>
+				<ERROR_REPORTING_LEVEL>
+					<title><![CDATA[Reporting Level]]></title>
+					<value><![CDATA[Error]]></value>
+					<description><![CDATA[Php level for error reporting]]></description>
+					<set_function><![CDATA[tep_cfg_select_multioption(array('Notice','Warning','Error'),]]></set_function>
+				</ERROR_REPORTING_LEVEL>
+				<ERROR_REPORTING_EMAIL_TO>
+					<title><![CDATA[Email Report To]]></title>
+					<value><![CDATA[]]></value>
+					<description><![CDATA[Email reports to this person, only used if the reporting method is set to email]]></description>
+				</ERROR_REPORTING_EMAIL_TO>
+				<ERROR_REPORTING_STORAGE_METHOD>
+					<title><![CDATA[Storage Method]]></title>
+					<value><![CDATA[None]]></value>
+					<description><![CDATA[Storage method for error reports, only used if the reporting method is set to none]]></description>
+					<set_function><![CDATA[tep_cfg_select_option(array('None','Database ( Not implemented )','File ( Not implemented )'),]]></set_function>
+				</ERROR_REPORTING_STORAGE_METHOD>
+			</configurations>
+		</general>
+	</tabs>
+</ConfigurationGroup>

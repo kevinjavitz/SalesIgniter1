@@ -1,0 +1,18 @@
+<ConfigurationGroup>
+	<title>Recurring Billing</title>
+	<key>recurringBilling</key>
+	<description>auto-retry failed transactions X number of times</description>
+	<tabs>
+		<general>
+			<title>General</title>
+			<description>General Settings</description>
+			<configurations>
+				<MAX_RECURRING_BILLING_DAYS>
+					<title><![CDATA[auto-retry failed transactions X number of times]]></title>
+					<value><![CDATA[3]]></value>
+					<description><![CDATA[auto-retry failed transactions X number of times]]></description>
+				</MAX_RECURRING_BILLING_DAYS>
+			</configurations>
+		</general>
+	</tabs>
+</ConfigurationGroup>

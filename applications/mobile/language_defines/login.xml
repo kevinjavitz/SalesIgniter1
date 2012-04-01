@@ -1,0 +1,6 @@
+<definitions>
+	<define key="TEXT_NEW_CUSTOMER"><![CDATA[I am a new customer.]]></define>
+	<define key="TEXT_NEW_CUSTOMER_INTRODUCTION"><![CDATA[By creating an account at %s you will be able to shop faster, be up to date on an orders status, and keep track of the orders you have previously made.]]></define>
+	<define key="TEXT_RETURNING_CUSTOMER"><![CDATA[I am a returning customer.]]></define>
+	<define key="TEXT_PASSWORD_FORGOTTEN"><![CDATA[Password forgotten? Click here.]]></define>
+</definitions>

@@ -1,0 +1,133 @@
+<ConfigurationGroup>
+	<title>Customer Details</title>
+	<key>coreCustomerDetails</key>
+	<description>Customer account configuration</description>
+	<tabs>
+		<general>
+			<title>General</title>
+			<description>General Settings</description>
+			<configurations>
+				<ACCOUNT_GENDER>
+					<title><![CDATA[Gender]]></title>
+					<value><![CDATA[false]]></value>
+					<description><![CDATA[Display gender in the customers account]]></description>
+					<set_function><![CDATA[tep_cfg_select_option(array('true', 'false'),]]></set_function>
+				</ACCOUNT_GENDER>
+				<ACCOUNT_DOB>
+					<title><![CDATA[Date of Birth]]></title>
+					<value><![CDATA[false]]></value>
+					<description><![CDATA[Display date of birth in the customers account]]></description>
+					<set_function><![CDATA[tep_cfg_select_option(array('true', 'false'),]]></set_function>
+				</ACCOUNT_DOB>
+				<ACCOUNT_COMPANY>
+					<title><![CDATA[Company]]></title>
+					<value><![CDATA[true]]></value>
+					<description><![CDATA[Display company in the customers account]]></description>
+					<set_function><![CDATA[tep_cfg_select_option(array('true', 'false'),]]></set_function>
+				</ACCOUNT_COMPANY>
+				<ACCOUNT_SUBURB>
+					<title><![CDATA[Suburb]]></title>
+					<value><![CDATA[false]]></value>
+					<description><![CDATA[Display suburb in the customers account]]></description>
+					<set_function><![CDATA[tep_cfg_select_option(array('true', 'false'),]]></set_function>
+				</ACCOUNT_SUBURB>
+				<ACCOUNT_STATE>
+					<title><![CDATA[State]]></title>
+					<value><![CDATA[true]]></value>
+					<description><![CDATA[Display state in the customers account]]></description>
+					<set_function><![CDATA[tep_cfg_select_option(array('true', 'false'),]]></set_function>
+				</ACCOUNT_STATE>
+				<REFERRAL_REQUIRED>
+					<title><![CDATA[Require Referral]]></title>
+					<value><![CDATA[true]]></value>
+					<description><![CDATA[Require the Referral Source in account creation]]></description>
+					<set_function><![CDATA[tep_cfg_select_option(array('true', 'false'),]]></set_function>
+				</REFERRAL_REQUIRED>
+				<ACCOUNT_TELEPHONE_REQUIRED>
+					<title><![CDATA[Telephone Required]]></title>
+					<value><![CDATA[false]]></value>
+					<description><![CDATA[Telephone Required on checkout]]></description>
+					<set_function><![CDATA[tep_cfg_select_option(array('true', 'false'),]]></set_function>
+				</ACCOUNT_TELEPHONE_REQUIRED>
+				<ACCOUNT_FISCAL_CODE_REQUIRED>
+					<title><![CDATA[Fiscal Code required]]></title>
+					<value><![CDATA[false]]></value>
+					<description><![CDATA[Fiscal Code required]]></description>
+					<set_function><![CDATA[tep_cfg_select_option(array('true', 'false'),]]></set_function>
+				</ACCOUNT_FISCAL_CODE_REQUIRED>
+				<ACCOUNT_VAT_NUMBER_REQUIRED>
+					<title><![CDATA[VAT Number required]]></title>
+					<value><![CDATA[false]]></value>
+					<description><![CDATA[VAT Number required]]></description>
+					<set_function><![CDATA[tep_cfg_select_option(array('true', 'false'),]]></set_function>
+				</ACCOUNT_VAT_NUMBER_REQUIRED>
+				<ACCOUNT_CITY_BIRTH_REQUIRED>
+					<title><![CDATA[City of birth required]]></title>
+					<value><![CDATA[false]]></value>
+					<description><![CDATA[City of birth required]]></description>
+					<set_function><![CDATA[tep_cfg_select_option(array('true', 'false'),]]></set_function>
+				</ACCOUNT_CITY_BIRTH_REQUIRED>
+				<ACCOUNT_NEWSLETTER>
+					<title><![CDATA[Enable newsletter subscription]]></title>
+					<value><![CDATA[false]]></value>
+					<description><![CDATA[Enable newsletter subscription]]></description>
+					<set_function><![CDATA[tep_cfg_select_option(array('true', 'false'),]]></set_function>
+				</ACCOUNT_NEWSLETTER>
+				<ACCOUNT_COMPANY_REQUIRED>
+					<title><![CDATA[Company required]]></title>
+					<value><![CDATA[false]]></value>
+					<description><![CDATA[Company required]]></description>
+					<set_function><![CDATA[tep_cfg_select_option(array('true', 'false'),]]></set_function>
+				</ACCOUNT_COMPANY_REQUIRED>
+				<ACCOUNT_SUBURB_REQUIRED>
+					<title><![CDATA[Suburb required]]></title>
+					<value><![CDATA[false]]></value>
+					<description><![CDATA[Suburb required]]></description>
+					<set_function><![CDATA[tep_cfg_select_option(array('true', 'false'),]]></set_function>
+				</ACCOUNT_SUBURB_REQUIRED>
+				<ACCOUNT_GENDER_REQUIRED>
+					<title><![CDATA[Gender required]]></title>
+					<value><![CDATA[false]]></value>
+					<description><![CDATA[Gender required]]></description>
+					<set_function><![CDATA[tep_cfg_select_option(array('true', 'false'),]]></set_function>
+				</ACCOUNT_GENDER_REQUIRED>
+				<ACCOUNT_DOB_REQUIRED>
+					<title><![CDATA[DOB required]]></title>
+					<value><![CDATA[false]]></value>
+					<description><![CDATA[DOB required]]></description>
+					<set_function><![CDATA[tep_cfg_select_option(array('true', 'false'),]]></set_function>
+				</ACCOUNT_DOB_REQUIRED>
+				<ACCOUNT_STATE_REQUIRED>
+					<title><![CDATA[State required]]></title>
+					<value><![CDATA[false]]></value>
+					<description><![CDATA[State required]]></description>
+					<set_function><![CDATA[tep_cfg_select_option(array('true', 'false'),]]></set_function>
+				</ACCOUNT_STATE_REQUIRED>
+				<ACCOUNT_VAT_NUMBER>
+					<title><![CDATA[VAT Number]]></title>
+					<value><![CDATA[false]]></value>
+					<description><![CDATA[VAT Number]]></description>
+					<set_function><![CDATA[tep_cfg_select_option(array('true', 'false'),]]></set_function>
+				</ACCOUNT_VAT_NUMBER>
+				<ACCOUNT_TELEPHONE>
+					<title><![CDATA[Telephone Number]]></title>
+					<value><![CDATA[false]]></value>
+					<description><![CDATA[Telephone Number]]></description>
+					<set_function><![CDATA[tep_cfg_select_option(array('true', 'false'),]]></set_function>
+				</ACCOUNT_TELEPHONE>
+				<ACCOUNT_FISCAL_CODE>
+					<title><![CDATA[Fiscal Code]]></title>
+					<value><![CDATA[false]]></value>
+					<description><![CDATA[Fiscal Code]]></description>
+					<set_function><![CDATA[tep_cfg_select_option(array('true', 'false'),]]></set_function>
+				</ACCOUNT_FISCAL_CODE>
+				<ACCOUNT_CITY_BIRTH>
+					<title><![CDATA[City of birth]]></title>
+					<value><![CDATA[false]]></value>
+					<description><![CDATA[City of birth]]></description>
+					<set_function><![CDATA[tep_cfg_select_option(array('true', 'false'),]]></set_function>
+				</ACCOUNT_CITY_BIRTH>
+			</configurations>
+		</general>
+	</tabs>
+</ConfigurationGroup>

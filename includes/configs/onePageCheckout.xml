@@ -1,0 +1,95 @@
+<ConfigurationGroup>
+	<title>One Page Checkout</title>
+	<key>onePageCheckout</key>
+	<description>Settings for one page checkout</description>
+	<tabs>
+		<general>
+			<title>General</title>
+			<description>General Settings</description>
+			<configurations>
+				<ONEPAGE_CHECKOUT_PRODUCTS_MODEL>
+					<title><![CDATA[Show products model on checkout page]]></title>
+					<value><![CDATA[True]]></value>
+					<description><![CDATA[Show products model on checkout page]]></description>
+					<set_function><![CDATA[tep_cfg_select_option(array('True','False'),]]></set_function>
+				</ONEPAGE_CHECKOUT_PRODUCTS_MODEL>
+				<ONEPAGE_DEFAULT_COUNTRY>
+					<title><![CDATA[Default Address Country]]></title>
+					<value><![CDATA[223]]></value>
+					<description><![CDATA[Default country for new address and for checking out wihtout account]]></description>
+					<set_function><![CDATA[tep_cfg_pull_down_country_list(]]></set_function>
+				</ONEPAGE_DEFAULT_COUNTRY>
+				<ONEPAGE_ACCOUNT_CREATE>
+					<title><![CDATA[Account Creation]]></title>
+					<value><![CDATA[create]]></value>
+					<description><![CDATA[<b>required</b> - Password is required<br><b>optional</b> - Password is optional, no account created if empty<br><b>create</b> - Password is optional, account created with random password]]></description>
+					<set_function><![CDATA[tep_cfg_select_option(array('required', 'optional', 'create'),]]></set_function>
+				</ONEPAGE_ACCOUNT_CREATE>
+				<ONEPAGE_SHOW_CUSTOM_COLUMN>
+					<title><![CDATA[Show Custom Right Column]]></title>
+					<value><![CDATA[true]]></value>
+					<description><![CDATA[Show custom right column]]></description>
+					<set_function><![CDATA[tep_cfg_select_option(array('true','false'),]]></set_function>
+				</ONEPAGE_SHOW_CUSTOM_COLUMN>
+				<ONEPAGE_LOGIN_REQUIRED>
+					<title><![CDATA[Require Login]]></title>
+					<value><![CDATA[false]]></value>
+					<description><![CDATA[Require customer to be logged in to proceed through checkout]]></description>
+					<set_function><![CDATA[tep_cfg_select_option(array('true', 'false'),]]></set_function>
+				</ONEPAGE_LOGIN_REQUIRED>
+				<ONEPAGE_SHOW_OSC_COLUMNS>
+					<title><![CDATA[Show Oscommerce Columns]]></title>
+					<value><![CDATA[true]]></value>
+					<description><![CDATA[Show default oscommerce left and right columns]]></description>
+					<set_function><![CDATA[tep_cfg_select_option(array('true','false'),]]></set_function>
+				</ONEPAGE_SHOW_OSC_COLUMNS>
+				<ONEPAGE_BOX_ONE_HEADING>
+					<title><![CDATA[Custom Colum Box #1 Heading]]></title>
+					<value><![CDATA[100% Private Secure SSL Transaction]]></value>
+					<description><![CDATA[Custom Colum Box #1 Heading]]></description>
+				</ONEPAGE_BOX_ONE_HEADING>
+				<ONEPAGE_BOX_ONE_CONTENT>
+					<title><![CDATA[Custom Colum Box #1 Content]]></title>
+					<value><![CDATA[Your shopping cart transaction is taking place on an encrypted SSL webpage, meaning it is secure and safe. We respect all of your private information and none of it will be shared with anyone in anyway.]]></value>
+					<description><![CDATA[Custom Colum Box #1 Content]]></description>
+					<set_function><![CDATA[tep_cfg_textarea(]]></set_function>
+				</ONEPAGE_BOX_ONE_CONTENT>
+				<ONEPAGE_BOX_TWO_HEADING>
+					<title><![CDATA[Custom Colum Box #2 Heading]]></title>
+					<value><![CDATA[Ordering Information]]></value>
+					<description><![CDATA[Custom Colum Box #2 Heading]]></description>
+				</ONEPAGE_BOX_TWO_HEADING>
+				<ONEPAGE_BOX_TWO_CONTENT>
+					<title><![CDATA[Custom Colum Box #2 Content]]></title>
+					<value><![CDATA[<b>Processing Time</b><br>We will process your order as quickly as possible. Typical processing time for orders shipped ground is 1 ]]></value>
+					<description><![CDATA[Custom Colum Box #2 Content]]></description>
+					<set_function><![CDATA[tep_cfg_textarea(]]></set_function>
+				</ONEPAGE_BOX_TWO_CONTENT>
+				<ONEPAGE_CHECKOUT_LOADING_MESSAGE_METHOD>
+					<title><![CDATA[Loading Message Method]]></title>
+					<value><![CDATA[Default]]></value>
+					<description><![CDATA[Method to use when performing ajax requests.]]></description>
+					<set_function><![CDATA[tep_cfg_select_option(array('Dialog','Default'),]]></set_function>
+				</ONEPAGE_CHECKOUT_LOADING_MESSAGE_METHOD>
+				<HIDE_SHIP_ADDRESS>
+					<title><![CDATA[Hide shipping address from checkout]]></title>
+					<value><![CDATA[false]]></value>
+					<description><![CDATA[Hide ship address from checkout]]></description>
+					<set_function><![CDATA[tep_cfg_select_option(array('true', 'false'),]]></set_function>
+				</HIDE_SHIP_ADDRESS>
+				<ONEPAGE_CHECKOUT_PICKUP_ADDRESS>
+					<title><![CDATA[Is Pickup Address Enabled]]></title>
+					<value><![CDATA[false]]></value>
+					<description><![CDATA[Is pickup address Enabled?]]></description>
+					<set_function><![CDATA[tep_cfg_select_option(array('true','false'),]]></set_function>
+				</ONEPAGE_CHECKOUT_PICKUP_ADDRESS>
+				<ONEPAGE_CHECKOUT_SHIPPING_ADDRESS>
+					<title><![CDATA[Show shipping address on checkout]]></title>
+					<value><![CDATA[true]]></value>
+					<description><![CDATA[Show shipping address on checkout]]></description>
+					<set_function><![CDATA[tep_cfg_select_option(array('true','false'),]]></set_function>
+				</ONEPAGE_CHECKOUT_SHIPPING_ADDRESS>
+			</configurations>
+		</general>
+	</tabs>
+</ConfigurationGroup>

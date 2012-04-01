@@ -1,0 +1,13 @@
+<definitions>
+	<define key="HEADING_TITLE_CREATE"><![CDATA[My Account Information]]></define>
+	<define key="HEADING_TITLE_CREATE_SUCCESS"><![CDATA[Your Account Has Been Created!]]></define>
+
+	<define key="TEXT_ALREADY_HAVE_ACCOUNT"><![CDATA[Already have an account?]]></define>
+	<define key="TEXT_ACCOUNT_SETTINGS"><![CDATA[&nbsp;Account Settings]]></define>
+	<define key="TEXT_ADDRESS"><![CDATA[&nbsp;Address Details]]></define>
+
+	<define key="ENTRY_CELLPHONE_NUMBER"><![CDATA[Cellphone: ]]></define>
+	<define key="ENTRY_CELLPHONE_CARRIER"><![CDATA[Cellphone Carrier: ]]></define>
+	<define key="ENTRY_PRIVACY_AGREEMENT"><![CDATA[I have read the <a href="%s" data-rel="dialog" data-transition="flip">terms and conditions</a> and agree to them]]></define>
+	<define key="ENTRY_PRIVACY_AGREEMENT_ERROR"><![CDATA[Please read our terms & conditions and agree to it. If you do not do so, we can not register you.]]></define>
+</definitions>
