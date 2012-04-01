@@ -30,7 +30,6 @@
 	function addCategoryTreeToGrid($parentId, &$tableGrid, &$infoBoxes, $namePrefix = ''){
 		global $lID, $allGetParams, $cInfo;
 		$Qcategories = Doctrine_Query::create()
-		->select('c.*, cd.categories_name')
 		->from('Categories c')
 		->leftJoin('c.CategoriesDescription cd')
 		->where('cd.language_id = ?', $lID)
@@ -39,9 +38,9 @@
 
 		EventManager::notify('CategoryListingQueryBeforeExecute', &$Qcategories);
 		
-		$Result = $Qcategories->execute();
-		if ($Result->count() > 0){
-			foreach($Result->toArray(true) as $Category){
+		$Result = $Qcategories->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+
+		foreach($Result as $Category){
 				if ($Category['parent_id'] > 0){
 					//$namePrefix .= '&nbsp;';
 				}
@@ -49,7 +48,7 @@
 				$infoBoxSettings = array(
 					'categoryId'           => $Category['categories_id'],
 					'categoryImage'        => $Category['categories_image'],
-					'categoryName'         => $Category['CategoriesDescription'][Session::get('languages_id')]['categories_name'],
+					'categoryName'         => $Category['CategoriesDescription'][0]['categories_name'],
 					'categoryDateAdded'    => $Category['date_added'],
 					'categoryLastModified' => $Category['last_modified'],
 					'categoryChildren'     => tep_childs_in_category_count($Category['categories_id']),
@@ -90,14 +89,13 @@
 				
 				addCategoryTreeToGrid($Category['categories_id'], &$tableGrid, &$infoBoxes, '&nbsp;&nbsp;&nbsp;' . $namePrefix);
 			}
-		}
 	}
 	
 	$categories_count = 0;
 	$rows = 0;
 	$lID = (int)Session::get('languages_id');
 
-	$tableGrid = htmlBase::newElement('grid');
+	$tableGrid = htmlBase::newElement('newGrid');
 
 	$tableGrid->addHeaderRow(array(
 		'columns' => array(

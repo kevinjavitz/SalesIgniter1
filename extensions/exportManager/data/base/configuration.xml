@@ -2,7 +2,16 @@
 	<title>Export Manager</title>
 	<key>exportManager</key>
 	<description>Configuration Settings For The Export Manager Extension</description>
-	<Configuration>
+	<tabs>
+	<general>
+	<title>General</title>
+	<description>General Extension Settings</description>
+	<configurations>
+		<EXTENSION_EXPORT_MANAGER_INSTALLED editable="false">
+			<title>Installation Status</title>
+			<value>False</value>
+			<description></description>
+		</EXTENSION_EXPORT_MANAGER_INSTALLED>
 		<EXTENSION_EXPORT_MANAGER_ENABLED>
 			<title>Enable Export Manager</title>
 			<value>True</value>
@@ -22,5 +31,7 @@
 			<description>Password to check when getting data</description>
 			<sort_order>3</sort_order>
 		</EXTENSION_EXPORT_MANAGER_PASSWORD>
-	</Configuration>
+	</configurations>
+	</general>
+	</tabs>
 </ConfigurationGroup>

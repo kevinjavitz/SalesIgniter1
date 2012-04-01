@@ -2,26 +2,45 @@
 	<title>Reviews</title>
 	<key>reviews</key>
 	<description>Configuration Settings For The Reviews Extension</description>
-	<Configuration>
-		<EXTENSION_REVIEWS_ENABLED>
-			<title>Enable Reviews</title>
-			<value>True</value>
-			<description>Enable Or Disable The Reviews Extension</description>
-			<sort_order>1</sort_order>
-			<set_function>tep_cfg_select_option(array('True','False'),</set_function>
-		</EXTENSION_REVIEWS_ENABLED>
-		<EXTENSION_REVIEWS_LISTING_METHOD>
-			<title>Listing Method For Reviews Page</title>
-			<value>row</value>
-			<description>Listing method used on the reviews page</description>
-			<sort_order>4</sort_order>
-			<set_function>tep_cfg_select_option(array('row'),</set_function>
-		</EXTENSION_REVIEWS_LISTING_METHOD>
-		<EXTENSION_REVIEWS_PER_PAGE>
-			<title>Number of reviews per page</title>
-			<value>5</value>
-			<description>Number of reviews per page</description>
-			<sort_order>5</sort_order>
-		</EXTENSION_REVIEWS_PER_PAGE>
-	</Configuration>
+	<tabs>
+		<general>
+			<title>General</title>
+			<description>General Extension Settings</description>
+			<configurations>
+				<EXTENSION_REVIEWS_INSTALLED editable="false">
+					<title>Installation Status</title>
+					<value>False</value>
+					<description></description>
+				</EXTENSION_REVIEWS_INSTALLED>
+				<EXTENSION_REVIEWS_ENABLED>
+					<title>Enable Reviews</title>
+					<value>False</value>
+					<description>Enable Or Disable The Reviews Extension</description>
+					<set_function>
+						<type>radio</type>
+						<values>
+							<value>True</value>
+							<value>False</value>
+						</values>
+					</set_function>
+				</EXTENSION_REVIEWS_ENABLED>
+				<EXTENSION_REVIEWS_LISTING_METHOD>
+					<title>Listing Method For Reviews Page</title>
+					<value>row</value>
+					<description>Listing method used on the reviews page</description>
+					<set_function>
+						<type>radio</type>
+						<values>
+							<value id="row">Row</value>
+						</values>
+					</set_function>
+				</EXTENSION_REVIEWS_LISTING_METHOD>
+				<EXTENSION_REVIEWS_PER_PAGE>
+					<title>Number of reviews per page</title>
+					<value>5</value>
+					<description>Number of reviews per page</description>
+				</EXTENSION_REVIEWS_PER_PAGE>
+			</configurations>
+		</general>
+	</tabs>
 </ConfigurationGroup>

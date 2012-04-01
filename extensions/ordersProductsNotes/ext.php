@@ -18,7 +18,7 @@ class Extension_ordersProductsNotes extends ExtensionBase {
 	       
 	public function init(){
 		global $App, $appExtension, $Template;
-		if ($this->enabled === false) return;
+		if ($this->isEnabled() === false) return;
 		
 		require(dirname(__FILE__) . '/classEvents/ShoppingCart.php');
 		$eventClass = new ShoppingCart_ordersProductsNotes();

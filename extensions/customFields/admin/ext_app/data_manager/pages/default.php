@@ -17,7 +17,7 @@ class customFields_admin_data_manager_default extends Extension_customFields {
 	}
 	
 	public function load(){
-		if ($this->enabled === false) return;
+		if ($this->isEnabled() === false) return;
 		
 		EventManager::attachEvents(array(
 			'DataExportFullQueryBeforeExecute',

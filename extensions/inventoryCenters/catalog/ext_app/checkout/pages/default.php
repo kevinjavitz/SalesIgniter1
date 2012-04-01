@@ -11,7 +11,7 @@
 		}
 	
 		public function load(){
-			if ($this->enabled === false) return;
+			if ($this->isEnabled() === false) return;
 
 			EventManager::attachEvents(array(
 				'CheckoutShippingMethodsAfterQuoteMethod',
@@ -35,7 +35,7 @@
 		public function CheckoutShippingMethodsAfterQuoteMethod(&$quotes){
 			global $ShoppingCart;
 			$show_method = true;
-			if (sysConfig::get('EXTENSION_PAY_PER_RENTALS_CHOOSE_PICKUP') == 'True' && sysConfig::get('EXTENSION_INVENTORY_CENTERS_SHIPPING_PER_INVENTORY') == 'True'){
+			if (sysConfig::get('EXTENSION_PAY_PER_RENTALS_DATE_SELECTION') != 'Using calendar after browsing products and clicking Reserve' && sysConfig::get('EXTENSION_PAY_PER_RENTALS_CHOOSE_PICKUP') == 'True' && sysConfig::get('EXTENSION_INVENTORY_CENTERS_SHIPPING_PER_INVENTORY') == 'True'){//check here when new products in cart
 				$show_method = false;
 				foreach($ShoppingCart->getProducts() as $cartProduct){
 					if ($cartProduct->hasInfo('reservationInfo') === true){
@@ -82,7 +82,7 @@
 
 		public function CheckoutSetShippingStatus(){
 			global $ShoppingCart, $onePageCheckout;
-			if ($this->enabled === false) return;
+			if ($this->isEnabled() === false) return;
 
 			if (sysConfig::get('EXTENSION_INVENTORY_CENTERS_SHIPPING_PER_INVENTORY') == 'True'){
 				if(Session::exists('onlyReservations')){

@@ -24,12 +24,6 @@ if (sysConfig::get('STORE_PAGE_PARSE_TIME') == 'true') {
 	}
 }
 
-if ( (sysConfig::get('GZIP_COMPRESSION') == 'true') && ($ext_zlib_loaded == true) && ($ini_zlib_output_compression < 1) ) {
-	if ( (PHP_VERSION < '4.0.4') && (PHP_VERSION >= '4') ) {
-		tep_gzip_output(sysConfig::get('GZIP_LEVEL'));
-	}
-}
-
 if (isset($_GET['showStats'])){
 	$execStart = explode(' ', PAGE_PARSE_START_TIME);
 	$execEnd = explode(' ', microtime());
@@ -138,5 +132,34 @@ if (isset($_GET['showStats'])){
  </tr>
 </table></div>
 <?php
+}
+
+if (isset($_GET['runProfile'])){
+	// stop profiler
+	$xhprof_data = xhprof_disable();
+
+	//
+	// Saving the XHProf run
+	// using the default implementation of iXHProfRuns.
+	//
+	include_once "/home/itweb1/public_html/xhprof/xhprof_lib/utils/xhprof_lib.php";
+	include_once "/home/itweb1/public_html/xhprof/xhprof_lib/utils/xhprof_runs.php";
+
+	$xhprof_runs = new XHProfRuns_Default();
+
+	// Save the run under a namespace "xhprof_foo".
+	//
+	// **NOTE**:
+	// By default save_run() will automatically generate a unique
+	// run id for you. [You can override that behavior by passing
+	// a run id (optional arg) to the save_run() method instead.]
+	//
+	$run_id = $xhprof_runs->save_run($xhprof_data, "et_video");
+
+	echo "---------------\n".
+		"Assuming you have set up the http based UI for \n".
+		"XHProf at some address, you can view run at \n".
+		"http://<xhprof-ui-address>/index.php?run=$run_id&source=xhprof_foo\n".
+		"---------------\n";
 }
 ?>

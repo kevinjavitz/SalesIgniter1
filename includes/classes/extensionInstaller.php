@@ -32,20 +32,12 @@ class extensionInstaller {
 	 */
 	public function install(){
 		global $appExtension;
-		
+
 		/* Add configuration settings for this extension */
 		if (file_exists($this->extensionDir . 'data/base/configuration.xml')){
 			$this->addBaseExtensionConfigration();
 		}
-		
-		/* Add configuration settings for other extensions from this extension */
-		if (is_dir($this->extensionDir . 'data/ext')){
-			$this->addExternalExtensionConfiguration();
-		}
-		
-		/* Add configuration settings for this extension from other extensions */
-		$this->addOtherExtensionsConfiguration();
-		
+
 		/* Create tables for this extension */
 		if (is_dir($this->extensionDir . 'Doctrine/base')){
 			$this->installBaseExtensionTables();
@@ -109,14 +101,6 @@ class extensionInstaller {
 			
 			if (!empty($tables)){
 				$this->removeTables($tables);
-			}
-		
-			/* Remove configuration settings for this extension from other extensions */
-			$this->removeOtherExtensionsConfiguration();
-
-			/* Remove configuration settings for other extensions from this extension */
-			if (is_dir($this->extensionDir . 'data/ext')){
-				$this->removeExternalExtensionConfiguration();
 			}
 		
 			/* Remove configuration settings for this extension */
@@ -300,22 +284,8 @@ class extensionInstaller {
 				$entry->set_function = (string) $configSettings->set_function;
 			}
 			$entry->save();
-			
-			sysConfig::set($entry->configuration_key, $entry->configuration_value);
-		}
-	}
 
-	/**
-	 * Removes configuration entries from xml data
-	 * @param SimpleXMLElement $data Xml data containing the configuration data
-	 * @return void
-	 */
-	public function removeConfigFromXml($data){
-		foreach((array) $data as $configKey => $configSettings){
-			Doctrine_Query::create()
-			->delete('Configuration')
-			->where('configuration_key = ?', (string) $configKey)
-			->execute();
+			sysConfig::set($entry->configuration_key, $entry->configuration_value);
 		}
 	}
 
@@ -554,141 +524,21 @@ class extensionInstaller {
 	public function addBaseExtensionConfigration(){
 		$configData = $this->loadXmlFile($this->extensionDir . 'data/base/configuration.xml');
 		if (sizeof($configData) > 0){
-			$ConfigurationGroup = Doctrine_Core::getTable('ConfigurationGroup');
+			$Group = $this->addConfigurationGroupFromXml($configData);
 
-			$Group = $ConfigurationGroup->findOneByConfigurationGroupKey((string) $configData->key);
-			if ($Group === false){
-				$Group = $this->addConfigurationGroupFromXml($configData);
-			}
+			$key = (string)$this->extensionInfo->installed_key;
 
-			$this->addConfigFromXml($configData->Configuration, $Group->configuration_group_id);
+			$Group->Configuration[$key]->configuration_key = $key;
+			$Group->Configuration[$key]->configuration_value = 'True';
+			$Group->save();
 		}
 	}
 
 	public function removeBaseExtensionConfigration(){
 		$configData = $this->loadXmlFile($this->extensionDir . 'data/base/configuration.xml');
-		if (sizeof($configData) > 0){
-			$this->removeConfigFromXml($configData->Configuration);
-		}
 		$this->removeConfigurationGroupFromXml($configData->key);
 	}
 
-	public function addExternalExtensionConfiguration(){
-		$dirObj = new DirectoryIterator($this->extensionDir . 'data/ext');
-		foreach($dirObj as $dInfo){
-			if ($dInfo->isDot()) continue;
-			
-			$curPath = $dInfo->getPathname() . '/';
-			if (file_exists($curPath . 'configuration.xml')){
-				$configData = $this->loadXmlFile($curPath . 'configuration.xml');
-				if (sizeof($configData) > 0){
-					$ConfigurationGroup = Doctrine_Core::getTable('ConfigurationGroup');
-					if (isset($configData->group_key)){
-						$Group = $ConfigurationGroup->findOneByConfigurationGroupKey((string) $configData->group_key);
-						if ($Group === false){
-							$this->installError = true;
-						}else{
-							$groupId = $Group->configuration_group_id;
-						}
-					}elseif (isset($configData->key)){
-						$Group = $ConfigurationGroup->findOneByConfigurationGroupKey((string) $configData->key);
-						if ($Group === false){
-							$Group = $this->addConfigurationGroupFromXml($configData);
-						}
-						$groupId = $Group->configuration_group_id;
-					}else{
-						$this->installError = true;
-					}
-
-					if ($this->installError === false){
-						$this->addConfigFromXml($configData->Configuration, $groupId);
-					}
-				}
-			}
-		}
-	}
-
-	public function removeExternalExtensionConfiguration(){
-		$dirObj = new DirectoryIterator($this->extensionDir . 'data/ext');
-		foreach($dirObj as $dInfo){
-			if ($dInfo->isDot()) continue;
-			
-			$curPath = $dInfo->getPathname() . '/';
-			if (file_exists($curPath . 'configuration.xml')){
-				$configData = $this->loadXmlFile($curPath . 'configuration.xml');
-				if (sizeof($configData) > 0){
-					$ConfigurationGroup = Doctrine_Core::getTable('ConfigurationGroup');
-					if (isset($configData->group_key)){
-						$this->removeConfigFromXml($configData->Configuration);
-					}elseif (isset($configData->key)){
-						$this->removeConfigFromXml($configData->Configuration);
-						$this->removeConfigurationGroupFromXml($configData->key);
-					}else{
-						$this->installError = true;
-					}
-				}
-			}
-		}
-	}
-
-	public function addOtherExtensionsConfiguration(){
-		$dirObj = new DirectoryIterator(sysConfig::getDirFsCatalog() . 'extensions/');
-		foreach($dirObj as $dInfo){
-			if ($dInfo->isDot()) continue;
-			
-			$curPath = $dInfo->getPathname() . '/data/ext/' . $this->extension . '/';
-			if (file_exists($curPath . 'configuration.xml')){
-				$configData = $this->loadXmlFile($curPath . 'configuration.xml');
-				if (sizeof($configData) > 0){
-					$ConfigurationGroup = Doctrine_Core::getTable('ConfigurationGroup');
-					if (isset($configData->group_key)){
-						$Group = $ConfigurationGroup->findOneByConfigurationGroupKey((string) $configData->group_key);
-						if ($Group === false){
-							$this->installError = true;
-						}else{
-							$groupId = $Group->configuration_group_id;
-						}
-					}elseif (isset($configData->key)){
-						$Group = $ConfigurationGroup->findOneByConfigurationGroupKey((string) $configData->key);
-						if ($Group === false){
-							$Group = $this->addConfigurationGroupFromXml($configData);
-						}
-						$groupId = $Group->configuration_group_id;
-					}else{
-						$this->installError = true;
-					}
-
-					if ($this->installError === false){
-						$this->addConfigFromXml($configData->Configuration, $groupId);
-					}
-				}
-			}
-		}
-	}
-
-	public function removeOtherExtensionsConfiguration(){
-		$dirObj = new DirectoryIterator(sysConfig::getDirFsCatalog() . 'extensions/');
-		foreach($dirObj as $dInfo){
-			if ($dInfo->isDot()) continue;
-			
-			$curPath = $dInfo->getPathname() . '/data/ext/' . $this->extension . '/';
-			if (file_exists($curPath . 'configuration.xml')){
-				$configData = $this->loadXmlFile($curPath . 'configuration.xml');
-				if (sizeof($configData) > 0){
-					$ConfigurationGroup = Doctrine_Core::getTable('ConfigurationGroup');
-					if (isset($configData->group_key)){
-						$this->removeConfigFromXml($configData->Configuration);
-					}elseif (isset($configData->key)){
-						$this->removeConfigFromXml($configData->Configuration);
-						$this->removeConfigurationGroupFromXml($configData->key);
-					}else{
-						$this->installError = true;
-					}
-				}
-			}
-		}
-	}
-	
 	public function checkUpgrades(){
 		global $messageStack;
 

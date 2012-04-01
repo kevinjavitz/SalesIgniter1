@@ -32,9 +32,11 @@ class SystemModulesLoader {
 			$returnArr = array();
 			foreach(self::getClassModules() as $ModuleName => $Module){
 				if ($Module->isEnabled() === true){
+					$enabledModulesId[$ModuleName] = $Module->getDisplayOrder();
 					$returnArr[$ModuleName] = $Module;
 				}
 			}
+			array_multisort($enabledModulesId, $returnArr);
 			return $returnArr;
 		}
 	}

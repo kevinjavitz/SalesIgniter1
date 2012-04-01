@@ -96,7 +96,8 @@ class osC_onePageCheckout {
 	}
 
 	public function init(){
-		if ($this->isNormalCheckout() === true){
+		global $App;
+		if ($this->isNormalCheckout() === true && $App->getAppName() == 'checkout' && $App->getAppPage() != 'success'){
 			$this->verifyContents();
 		}
 

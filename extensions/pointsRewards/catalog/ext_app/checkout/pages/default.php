@@ -5,7 +5,7 @@ class pointsRewards_catalog_checkout_default extends Extension_pointsRewards {
 	}
 
 	public function load(){
-		if ($this->enabled === false) return;
+		if ($this->isEnabled() === false) return;
 
 		EventManager::attachEvents(array(
 			'CheckoutAddBlockAfterCart',

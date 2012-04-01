@@ -10,7 +10,7 @@
     }
 
     public function load(){
-        if ($this->enabled === false) return;
+        if ($this->isEnabled() === false) return;
 
         EventManager::attachEvents(array(
                                         'AccountDefaultMyAccountAddLink',

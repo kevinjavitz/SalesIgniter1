@@ -73,4 +73,5 @@
 	<define key="ERROR_PRICE_TO_LESS_THAN_PRICE_FROM"><![CDATA[Price To must be greater than or equal to Price From.]]></define>
 	<define key="ERROR_INVALID_KEYWORDS"><![CDATA[Invalid keywords.]]></define>
     <define key="PRODUCT_LISTING_SELECT_SORT_OPTION"><![CDATA[Select Sort Option]]></define>
+	<define key="TEXT_BUTTON_SEARCH"><![CDATA[Search]]></define>
 </definitions>

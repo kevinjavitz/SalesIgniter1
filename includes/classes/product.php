@@ -3,6 +3,7 @@ require(dirname(__FILE__) . '/product/PurchaseTypeAbstract.php');
 require(dirname(__FILE__) . '/product/Inventory.php');
 
 class Product {
+
 	public function __construct($pID){
 		global $appExtension;
 		$this->pluginDir = sysConfig::getDirFsCatalog() . 'includes/classes/product/plugins/';
@@ -99,11 +100,9 @@ class Product {
 	}
 
 	function updateViews(){
-		$Qupdate = dataAccess::setQuery('update {products_description} set products_viewed = products_viewed+1 where products_id = {product_id} and language_id = {language_id}');
-		$Qupdate->setTable('{products_description}', TABLE_PRODUCTS_DESCRIPTION);
-		$Qupdate->setValue('{product_id}', $this->productInfo['products_id']);
-		$Qupdate->setValue('{language_id}', Session::get('languages_id'));
-		$Qupdate->runQuery();
+		Doctrine_Manager::getInstance()
+			->getCurrentConnection()
+			->exec('update products_description set products_viewed = products_viewed+1 where products_id = "'.$this->productInfo['products_id'].'" and language_id = "'.Session::get('languages_id').'"');
 	}
 
 	function isValid(){

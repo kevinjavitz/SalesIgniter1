@@ -91,10 +91,8 @@ if ($admin){
 ?>
 <div class="pageHeading"><?php echo sysLanguage::get('HEADING_TITLE');?></div>
 <br />
-<div class="gridContainer">
-	<div style="width:100%;float:left;">
-		<div class="ui-widget ui-widget-content ui-corner-all" style="width:99%;margin-right:5px;margin-left:5px;">
-			<div style="width:99%;margin:5px;"><?php echo $tableGrid->draw();?></div>
-		</div>
+<div>
+	<div class="ui-widget ui-widget-content ui-corner-all" style="margin-right:5px;margin-left:5px;">
+		<div style="margin:5px;"><?php echo $tableGrid->draw();?></div>
 	</div>
 </div>

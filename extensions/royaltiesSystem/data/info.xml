@@ -4,4 +4,5 @@
 	<version>1.0</version>
 	<author>Arcu Cristian ( http://www.itwebexperts.com )</author>
 	<status_key>EXTENSION_ROYALTIES_SYSTEM_ENABLED</status_key>
+	<installed_key>EXTENSION_ROYALTIES_SYSTEM_INSTALLED</installed_key>
 </data>

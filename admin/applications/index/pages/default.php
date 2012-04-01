@@ -25,7 +25,7 @@
 
 	EventManager::notify('AdminOrdersListingBeforeExecute', $Qorders);
 
-	$tableGridOrders = htmlBase::newElement('grid')
+	$tableGridOrders = htmlBase::newElement('newGrid')
 	->usePagination(false)
 	->setPageLimit(10)
 	->setQuery($Qorders);
@@ -485,7 +485,7 @@
 			if ($sel_month == 0){
 				$col1Text = htmlBase::newElement('a')
 				->setHref(itw_app_link('month=' . $sInfo['i_month'] . '&year=' . $sInfo['row_year'],'statistics','monthlySales'))
-				->html($col1Text)
+				->html((!empty($col1Text) ? $col1Text : '&nbsp;'))
 				->draw();
 			}
 

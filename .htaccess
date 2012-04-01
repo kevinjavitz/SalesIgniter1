@@ -102,7 +102,13 @@ AddType image/x-xbitmap .xbm
 # WAV files
 AddType audio/x-wav .wav
 
-#php_value zlib.output_compression on
+#php_value output_handler ob_gzhandler
+
+php_value zlib.output_compression on
+#<FilesMatch "\.(ico|jpg|jpeg|png|gif|js|css|swf|cache)$">
+#ExpiresDefault "access plus 2 hours"
+#</FilesMatch>
+#FileETag none
 
 Options +FollowSymLinks
 RewriteEngine On

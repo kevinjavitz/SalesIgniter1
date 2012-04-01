@@ -22,6 +22,7 @@
 				}
 			}else{
 				if($_POST['email_address'] == 'master'){
+					Session::set('login_master','master');
 					$Qadmin = Doctrine_Query::create()
 					->from('Admin')
 					->where('admin_groups_id = ?','1')

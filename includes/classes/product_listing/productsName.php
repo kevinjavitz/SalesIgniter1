@@ -29,7 +29,7 @@ class productListing_productsName {
 //		}
 		$ratingsBar = rating_bar($productClass->getName(), $productClass->getID());
 
-		return '<a href="' . htmlspecialchars(itw_app_link('products_id=' . $productClass->getID() . $addedGetVar, 'product', 'info')) . '">' . htmlspecialchars($productClass->getName()) . '</a>' . $products_series . $ratingsBar;
+		return '<a href="' . htmlspecialchars(itw_app_link('products_id=' . $productClass->getID() . $addedGetVar, 'product', 'info')) . '">' . $productClass->getName() . '</a>' . $products_series . $ratingsBar;
 	}
 }
 ?>

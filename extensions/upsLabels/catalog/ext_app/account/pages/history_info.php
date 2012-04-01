@@ -17,7 +17,7 @@ class upsLabels_catalog_account_history_info extends Extension_upsLabels {
 	}
 	
 	public function load(){
-		if ($this->enabled === false) return;
+		if ($this->isEnabled() === false) return;
 
 		EventManager::attachEvents(array(
 			'AccountHistoryAfterTracking'

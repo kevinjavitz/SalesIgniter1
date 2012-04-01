@@ -1,19 +1,12 @@
 <?php
 require(sysConfig::getDirFsCatalog() . 'includes/classes/fileSystemBrowser.php');
-$Qwidget = Doctrine_Query::create()
-	->from('TemplatesInfoboxes')
-	->where('box_code = ?', $_GET['widgetCode'])
-	->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
-
-$WidgetCode = $Qwidget[0]['box_code'];
-$WidgetPath = sysConfig::getDirFsCatalog() . $Qwidget[0]['box_path'];
-if (file_exists($WidgetPath . 'infobox.php')){
+$Widget = $TemplateManager->getWidget($_GET['widgetCode']);
+if ($Widget !== false){
 	$WidgetSettings = json_decode(urldecode($_POST['widgetSettings']));
 
-	$Dir = new fileSystemBrowser(sysConfig::getDirFsCatalog() . 'extensions/templateManager/widgetTemplates/');
 	$WidgetTemplates = array();
-	foreach($Dir->getFiles() as $fileInfo){
-		$WidgetTemplates[$fileInfo['fileName_noExt']] = $fileInfo;
+	foreach($TemplateManager->getWidgetTemplatePaths() as $WidgetTemplateCode => $WidgetTemplatePath){
+		$WidgetTemplates[$WidgetTemplateCode] = $WidgetTemplatePath;
 	}
 
 	ksort($WidgetTemplates);
@@ -21,8 +14,8 @@ if (file_exists($WidgetPath . 'infobox.php')){
 	$TemplateFileSelect = htmlBase::newElement('selectbox')
 		->setName('template_file')
 		->selectOptionByValue((isset($WidgetSettings->template_file) ? $WidgetSettings->template_file : 'noFormatingBox.tpl'));
-	foreach($WidgetTemplates as $fileInfo){
-		$TemplateFileSelect->addOption($fileInfo['fileName'], $fileInfo['fileName']);
+	foreach($WidgetTemplates as $WidgetTemplateCode => $WidgetTemplatePath){
+		$TemplateFileSelect->addOption($WidgetTemplateCode . '.tpl', $WidgetTemplateCode);
 	}
 
 	$WidgetSettingsTable = htmlBase::newElement('table')
@@ -78,12 +71,12 @@ if (file_exists($WidgetPath . 'infobox.php')){
 		)
 	));
 
-	if (file_exists($WidgetPath . 'windows/editInfobox.php')){
-		require($WidgetPath . 'windows/editInfobox.php');
+	if (file_exists($Widget->getPath() . 'windows/editInfobox.php')){
+		require($Widget->getPath() . 'windows/editInfobox.php');
 	}
 
 	$saveButton = htmlBase::newElement('button')
-		->attr('data-widget_code', $WidgetCode)
+		->attr('data-widget_code', $Widget->getBoxCode())
 		->addClass('saveButton')
 		->usePreset('save');
 

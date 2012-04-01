@@ -22,13 +22,13 @@ class infoPages_catalog_center_address_check extends Extension_infoPages {
 	}
 	
 	public function load(){
-		if ($this->enabled === false) return;
+		if ($this->isEnabled() === false) return;
 		
 		EventManager::attachEvent('CenterAddressCheckAfterTitle', null, $this);
 	}
 	
 	public function CenterAddressCheckAfterTitle(&$template){
-		if ($this->enabled === false) return;
+		if ($this->isEnabled() === false) return;
 		$Query = $this->getInfoPage(14);
 		
 		$messageContainer = htmlBase::newElement('div')

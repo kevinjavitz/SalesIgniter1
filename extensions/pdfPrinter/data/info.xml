@@ -5,4 +5,5 @@
 	<version>1.0</version>
 	<author>Cristian Arcu ( http://www.itwebexperts.com )</author>
 	<status_key>EXTENSION_PDF_PRINTER_ENABLED</status_key>
+	<installed_key>EXTENSION_PDF_PRINTER_INSTALLED</installed_key>
 </data>

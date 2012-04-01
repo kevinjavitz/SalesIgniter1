@@ -17,7 +17,7 @@ class customFields_admin_products_new_product extends Extension_customFields {
 	}
 	
 	public function load(){
-		if ($this->enabled === false) return;
+		if ($this->isEnabled() === false) return;
 		
 		EventManager::attachEvents(array(
 			'NewProductTabHeader',

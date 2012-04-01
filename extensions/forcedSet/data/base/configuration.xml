@@ -2,7 +2,16 @@
 	<title>Forced Set</title>
 	<key>forcedSet</key>
 	<description>Configuration Settings For The Forced Set Extension</description>
-	<Configuration>
+	<tabs>
+	<general>
+	<title>General</title>
+	<description>General Extension Settings</description>
+	<configurations>
+		<EXTENSION_FORCED_SET_INSTALLED editable="false">
+			<title>Installation Status</title>
+			<value>False</value>
+			<description></description>
+		</EXTENSION_FORCED_SET_INSTALLED>
 		<EXTENSION_FORCED_SET_ENABLED>
 			<title>Enable Forced Set</title>
 			<value>True</value>
@@ -17,5 +26,7 @@
 			<sort_order>2</sort_order>
 			<set_function>tep_cfg_select_option(array('True','False'),</set_function>
 		</EXTENSION_FORCED_SET_USE_CATEGORIES>
-	</Configuration>
+	</configurations>
+	</general>
+	</tabs>
 </ConfigurationGroup>

@@ -18,7 +18,7 @@ class multiStore_admin_infoPages_manage_newContentBlock extends Extension_multiS
 	
 	public function load(){
 		global $appExtension;
-		if ($this->enabled === false) return;
+		if ($this->isEnabled() === false) return;
 		$appExtension->registerAsResource(__CLASS__, $this);
 		
 		$resourceName = 'appExtensionResource:' . __CLASS__;

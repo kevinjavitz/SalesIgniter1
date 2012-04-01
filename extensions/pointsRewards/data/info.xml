@@ -4,4 +4,5 @@
 	<version>1.0</version>
 	<author>Waqas Ahmad ( http://www.itwebexperts.com )</author>
 	<status_key>EXTENSION_POINTS_REWARDS_SYSTEM_ENABLED</status_key>
+	<installed_key>EXTENSION_POINTS_REWARDS_SYSTEM_INSTALLED</installed_key>
 </data>

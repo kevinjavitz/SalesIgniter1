@@ -129,7 +129,7 @@
 				);
 
 				if (tep_not_null($labelInfo['barcode'])){
-					switch(sysConfig::get('BARCODE_TYPE')){
+					switch(sysConfig::get('SYSTEM_BARCODE_FORMAT')){
 						case 'Code 25':
 							$params = $this->pdf->serializeTCPDFtagParameters(array($labelInfo['barcode'], 'S25', '', '', '' ,1, 0.4, $style, 'N'));
 							$labelContent[] = '<tcpdf method="write1DBarcode" params="'.$params.'" />';

@@ -19,7 +19,7 @@ class royaltiesSystem_admin_customers_default extends Extension_royaltiesSystem 
 	}
 
 	public function load(){
-		if ($this->enabled === false) return;
+		if ($this->isEnabled() === false) return;
 		EventManager::attachEvents(array(
 			'AdminCustomerListingAddHeader',
 			'AdminCustomerListingAddBody'

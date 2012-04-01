@@ -35,7 +35,7 @@ class metaTags_admin_products_new_product extends Extension_metaTags {
 	 * @return void
 	 */
 	public function load(){
-		if ($this->enabled === false) return;
+		if ($this->isEnabled() === false) return;
 
 		EventManager::attachEvents(array(
 			'ProductsFormMiddle',

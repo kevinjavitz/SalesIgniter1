@@ -2,7 +2,16 @@
 	<title>iDevAffiliate</title>
 	<description>idevaffiliate Integration</description>
 	<key>idevAffiliate</key>
-	<Configuration>
+	<tabs>
+	<general>
+	<title>General</title>
+	<description>General Extension Settings</description>
+	<configurations>
+		<EXTENSION_IDEVAFFILIATE_INSTALLED editable="false">
+			<title>Installation Status</title>
+			<value>False</value>
+			<description></description>
+		</EXTENSION_IDEVAFFILIATE_INSTALLED>
 
 		<EXTENSION_IDEVAFFILIATE_ENABLED>
 			<title>Enable iDevAffiliate</title>
@@ -17,6 +26,7 @@
 			<description>This is the code from the idevAffiliate script for custom integration</description>
 			<sort_order>1</sort_order>
 		</EXTENSION_IDEVAFFILIATE_URL>
-
-	</Configuration>
+	</configurations>
+	</general>
+	</tabs>
 </ConfigurationGroup>

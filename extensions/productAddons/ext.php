@@ -17,7 +17,7 @@ class Extension_productAddons extends ExtensionBase {
 	}
 
 	public function init(){
-		if ($this->enabled === false) return;
+		if ($this->isEnabled() === false) return;
 		EventManager::attachEvents(array(
 			'PurchaseTypeHiddenFields',
 			'ProductListingModuleShowBeforeShow'
@@ -30,10 +30,12 @@ class Extension_productAddons extends ExtensionBase {
 	}
 
 	public function PurchaseTypeHiddenFields(&$hiddenFields){
-		foreach($_POST['addon_product'] as $addon => $val){
-			$purchaseTypeCode = $_POST['addon_product_type'][$addon];
-			$hiddenFields[] = tep_draw_hidden_field('addon_product['.$addon.']', $val);
-			$hiddenFields[] = tep_draw_hidden_field('addon_product_type['.$addon.']', $purchaseTypeCode);
+		if(isset($_POST['addon_product'])){
+			foreach($_POST['addon_product'] as $addon => $val){
+				$purchaseTypeCode = $_POST['addon_product_type'][$addon];
+				$hiddenFields[] = tep_draw_hidden_field('addon_product['.$addon.']', $val);
+				$hiddenFields[] = tep_draw_hidden_field('addon_product_type['.$addon.']', $purchaseTypeCode);
+			}
 		}
 	}
 

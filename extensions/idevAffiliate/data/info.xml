@@ -5,4 +5,5 @@
 	<author>Cristian Arcu ( http://www.itwebexperts.com )</author>
 	<status_key>EXTENSION_IDEVAFFILIATE_ENABLED</status_key>
 	<description><![CDATA[IDevAffiliate Integration]]></description>
+	<installed_key>EXTENSION_IDEVAFFILIATE_INSTALLED</installed_key>
 </data>

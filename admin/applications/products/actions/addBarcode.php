@@ -61,11 +61,11 @@
 				}
 			}
 			$genBarcode = $nameFix . '_' . $type . '_' . $numberString;
-			if(sysConfig::get('BARCODE_TYPE') == 'Code 39'){
+			if(sysConfig::get('SYSTEM_BARCODE_FORMAT') == 'Code 39'){
 				$genBarcode = strtoupper($genBarcode);
 				$genBarcode = str_replace('_','-', $genBarcode);
 			}
-			if(sysConfig::get('BARCODE_TYPE') == 'Code 25' || sysConfig::get('BARCODE_TYPE') == 'Code 25 Interleaved'){
+			if(sysConfig::get('SYSTEM_BARCODE_FORMAT') == 'Code 25' || sysConfig::get('SYSTEM_BARCODE_FORMAT') == 'Code 25 Interleaved'){
 				$genBarcode = strtotime(date('Y-m-d H:i:s')).$endNumber;
 				if(strlen($genBarcode) % 2 == 1){
 					$genBarcode = '0'.$genBarcode;
@@ -104,7 +104,7 @@
 				'errorMsg' => 'This barcode already exists under product "' . tep_get_products_name($Qproduct[0]['products_id']) . '"'
 			);
 		}else{
-			if(sysConfig::get('BARCODE_TYPE') == 'Code 39'){
+			if(sysConfig::get('SYSTEM_BARCODE_FORMAT') == 'Code 39'){
 				if(preg_match('/[^0-9A-Z]/', $barcode)){
 					$json = array(
 						'success' => true,
@@ -112,14 +112,14 @@
 					);
 				}
 			}else
-			if(sysConfig::get('BARCODE_TYPE') == 'Code 25' || sysConfig::get('BARCODE_TYPE') == 'Code 25 Interleaved'){
+			if(sysConfig::get('SYSTEM_BARCODE_FORMAT') == 'Code 25' || sysConfig::get('SYSTEM_BARCODE_FORMAT') == 'Code 25 Interleaved'){
 				if(preg_match('/[^0-9]/', $barcode)){
 					$json = array(
 						'success' => true,
 						'errorMsg' => 'This barcode is not Code 25 or code 25 Interleaved'
 					);
 				}
-				if(strlen($barcode) % 2 == 1 && sysConfig::get('BARCODE_TYPE') == 'Code 25 Interleaved'){
+				if(strlen($barcode) % 2 == 1 && sysConfig::get('SYSTEM_BARCODE_FORMAT') == 'Code 25 Interleaved'){
 					$json = array(
 						'success' => true,
 						'errorMsg' => 'This barcode is not Code 25 Interleaved'

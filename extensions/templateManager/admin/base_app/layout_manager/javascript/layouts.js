@@ -82,11 +82,8 @@ $(document).ready(function () {
 					$(self).effect('fade', {
 						mode: 'hide'
 					}, function () {
-						$('.gridContainer').effect('fade', {
-							mode: 'show'
-						}, function () {
-							$(self).remove();
-						});
+						$('.gridContainer').show();
+						$('.newWindowContainer').remove();
 					});
 				});
 				$(self).find('.saveButton').click(function () {
@@ -106,6 +103,8 @@ $(document).ready(function () {
 								if ($(ui.triggerEl).hasClass('configureButton')){
 									$('.gridBodyRow.state-active').find('.layoutName').html(data.layoutName);
 									$('.gridBodyRow.state-active').find('.layoutType').html(data.layoutType);
+									$('.gridBodyRow.state-active').attr('data-layout_id',data.layoutId);
+									$('.gridBodyRow.state-active').data('layout_id', data.layoutId);
 								}else{
 									$('.grid tbody').append('<tr class="gridBodyRow" data-layout_id="' + data.layoutId + '">' +
 										'<td class="gridBodyRowColumn layoutName">' + data.layoutName + '</td>' +
@@ -115,11 +114,8 @@ $(document).ready(function () {
 								$(self).effect('fade', {
 									mode: 'hide'
 								}, function () {
-									$('.gridContainer').effect('fade', {
-										mode: 'show'
-									}, function () {
-										$(self).remove();
-									});
+									$('.gridContainer').show();
+									$('.newWindowContainer').remove();
 								});
 							}
 						}

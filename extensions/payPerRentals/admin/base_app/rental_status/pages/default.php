@@ -2,10 +2,9 @@
 	$QrentalStatus = Doctrine_Query::create()
 	->from('RentalStatus');	
 	
-	$tableGrid = htmlBase::newElement('grid')
+	$tableGrid = htmlBase::newElement('newGrid')
 	->usePagination(true)
-	->setPageLimit((isset($_GET['limit']) ? (int)$_GET['limit']: 25))
-	->setCurrentPage((isset($_GET['page']) ? (int)$_GET['page'] : 1))
+
 	->setQuery($QrentalStatus);
 
 	$tableGrid->addHeaderRow(array(

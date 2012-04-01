@@ -22,13 +22,13 @@ class infoPages_catalog_index extends Extension_infoPages {
 	}
 	
 	public function load(){
-		if ($this->enabled === false) return;
+		if ($this->isEnabled() === false) return;
 		
 		EventManager::attachEvent('IndexDefaultCustomerGreeting', null, $this);
 	}
 	
 	public function IndexDefaultCustomerGreeting($pagesId = null){
-		if ($this->enabled === false) return;
+		if ($this->isEnabled() === false) return;
 		
 		if (is_null($pagesId) === false){
 			$Query = $this->getInfoPage($pagesId)->toArray();

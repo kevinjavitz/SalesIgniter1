@@ -2,113 +2,175 @@
 	<title>Article Manager</title>
 	<key>articleManager</key>
 	<description>Configuration Settings For The Article Manager Extension</description>
-	<Configuration>
-		<EXTENSION_ARTICLE_MANAGER_ENABLED>
-			<title>Enable Article Manager</title>
-			<value>True</value>
-			<description>Enable Or Disable The Article Manager Extension</description>
-			<sort_order>1</sort_order>
-			<set_function>tep_cfg_select_option(array('True','False'),</set_function>
-		</EXTENSION_ARTICLE_MANAGER_ENABLED>
-		<EXTENSION_ARTICLE_MANAGER_ARTICLE_LIST_MODULE>
-			<title>Enable Articles</title>
-			<value>Default</value>
-			<description>Listing module to use for article listings.</description>
-			<sort_order>2</sort_order>
-			<set_function>tep_cfg_select_option(array('Default','Date'),</set_function>
-		</EXTENSION_ARTICLE_MANAGER_ARTICLE_LIST_MODULE>
-		<EXTENSION_ARTICLE_MANAGER_DISPLAY_NEW_ARTICLES>
-			<title>Display New Articles Link</title>
-			<value>True</value>
-			<description>Display a link to New Articles in the Articles box?</description>
-			<sort_order>4</sort_order>
-			<set_function>tep_cfg_select_option(array('True','False'),</set_function>
-		</EXTENSION_ARTICLE_MANAGER_DISPLAY_NEW_ARTICLES>
-		<EXTENSION_ARTICLE_MANAGER_NEW_ARTICLES_DAYS_DISPLAY>
-			<title>Number of Days Display New Articles</title>
-			<value>30</value>
-			<description>The number of days to display New Articles?</description>
-			<sort_order>5</sort_order>
-		</EXTENSION_ARTICLE_MANAGER_NEW_ARTICLES_DAYS_DISPLAY>
-		<EXTENSION_ARTICLE_MANAGER_MAX_NEW_ARTICLES_PER_PAGE>
-			<title>Maximum New Articles Per Page</title>
-			<value>10</value>
-			<description>The maximum number of New Articles to display per page (New Articles page)</description>
-			<sort_order>6</sort_order>
-		</EXTENSION_ARTICLE_MANAGER_MAX_NEW_ARTICLES_PER_PAGE>
-		<EXTENSION_ARTICLE_MANAGER_DISPLAY_ALL_ARTICLES>
-			<title>Display All Articles Link</title>
-			<value>True</value>
-			<description>Display a link to All Articles in the Articles box?</description>
-			<sort_order>7</sort_order>
-			<set_function>tep_cfg_select_option(array('True','False'),</set_function>
-		</EXTENSION_ARTICLE_MANAGER_DISPLAY_ALL_ARTICLES>
-		<EXTENSION_ARTICLE_MANAGER_MAX_ARTICLES_PER_PAGE>
-			<title>Maximum Articles Per Page</title>
-			<value>10</value>
-			<description>The maximum number of Articles to display per page (All Articles and Topic/Author pages)</description>
-			<sort_order>8</sort_order>
-		</EXTENSION_ARTICLE_MANAGER_MAX_ARTICLES_PER_PAGE>
-		<EXTENSION_ARTICLE_MANAGER_MAX_DISPLAY_UPCOMING_ARTICLES>
-			<title>Maximum Display Upcoming Articles</title>
-			<value>5</value>
-			<description>Maximum number of articles to display in the Upcoming Articles module</description>
-			<sort_order>9</sort_order>
-		</EXTENSION_ARTICLE_MANAGER_MAX_DISPLAY_UPCOMING_ARTICLES>
-		<EXTENSION_ARTICLE_MANAGER_SHOW_ARTICLE_COUNTS>
-			<title>Show Article Counts</title>
-			<value>True</value>
-			<description>Count recursively how many articles are in each topic</description>
-			<sort_order>14</sort_order>
-			<set_function>tep_cfg_select_option(array('True','False'),</set_function>
-		</EXTENSION_ARTICLE_MANAGER_SHOW_ARTICLE_COUNTS>
-		<EXTENSION_ARTICLE_MANAGER_DISPLAY_TOPIC_ARTICLE_LISTING>
-			<title>Display Topic in Article Listing</title>
-			<value>True</value>
-			<description>Display the Topic in the Article Listing?</description>
-			<sort_order>16</sort_order>
-			<set_function>tep_cfg_select_option(array('True','False'),</set_function>
-		</EXTENSION_ARTICLE_MANAGER_DISPLAY_TOPIC_ARTICLE_LISTING>
-		<EXTENSION_ARTICLE_MANAGER_DISPLAY_ABSTRACT_ARTICLE_LISTING>
-			<title>Display Abstract in Article Listing</title>
-			<value>True</value>
-			<description>Display the Abstract in the Article Listing?</description>
-			<sort_order>17</sort_order>
-			<set_function>tep_cfg_select_option(array('True','False'),</set_function>
-		</EXTENSION_ARTICLE_MANAGER_DISPLAY_ABSTRACT_ARTICLE_LISTING>
-		<EXTENSION_ARTICLE_MANAGER_DISPLAY_DATE_ADDED_ARTICLE_LISTING>
-			<title>Display Date Added in Article Listing</title>
-			<value>True</value>
-			<description>Display the Date Added in the Article Listing?</description>
-			<sort_order>18</sort_order>
-			<set_function>tep_cfg_select_option(array('True','False'),</set_function>
-		</EXTENSION_ARTICLE_MANAGER_DISPLAY_DATE_ADDED_ARTICLE_LISTING>
-		<EXTENSION_ARTICLE_MANAGER_MAX_ARTICLE_ABSTRACT_LENGTH>
-			<title>Maximum Article Abstract Length</title>
-			<value>300</value>
-			<description>Sets the maximum length of the Article Abstract to be displayed (No. of characters)</description>
-			<sort_order>19</sort_order>
-		</EXTENSION_ARTICLE_MANAGER_MAX_ARTICLE_ABSTRACT_LENGTH>
-		<EXTENSION_ARTICLE_MANAGER_ARTICLE_LIST_FILTER>
-			<title>Display Topic Filter</title>
-			<value>True</value>
-			<description>Do you want to display the Topic Filter?</description>
-			<sort_order>20</sort_order>
-			<set_function>tep_cfg_select_option(array('True','False'),</set_function>
-		</EXTENSION_ARTICLE_MANAGER_ARTICLE_LIST_FILTER>
-		<EXTENSION_ARTICLE_MANAGER_ARTICLE_PREV_NEXT_BAR_LOCATION>
-			<title>Location of Prev/Next Navigation Bar</title>
-			<value>Both</value>
-			<description>Sets the location of the Previous/Next Navigation Bar (top; bottom; both)</description>
-			<sort_order>21</sort_order>
-			<set_function>tep_cfg_select_option(array('Top', 'Bottom', 'Both'),</set_function>
-		</EXTENSION_ARTICLE_MANAGER_ARTICLE_PREV_NEXT_BAR_LOCATION>
-		<EXTENSION_ARTICLE_MANAGER_SHOW_RSS_ON_BAR>
-			<title>Show RSS Icon on browser URL Bar</title>
-			<value>True</value>
-			<description>Show RSS Icon on browser URL Bar</description>
-			<sort_order>22</sort_order>
-			<set_function>tep_cfg_select_option(array('True', 'False'),</set_function>
-		</EXTENSION_ARTICLE_MANAGER_SHOW_RSS_ON_BAR>
-	</Configuration>
+	<tabs>
+		<general>
+			<title>General</title>
+			<description>General Extension Settings</description>
+			<configurations>
+				<EXTENSION_ARTICLE_MANAGER_INSTALLED editable="false">
+					<title>Installation Status</title>
+					<value>False</value>
+					<description></description>
+				</EXTENSION_ARTICLE_MANAGER_INSTALLED>
+				<EXTENSION_ARTICLE_MANAGER_ENABLED>
+					<title>Enable Article Manager</title>
+					<value>False</value>
+					<description>Enable Or Disable The Article Manager Extension</description>
+					<set_function>
+						<type>radio</type>
+						<values>
+							<value>True</value>
+							<value>False</value>
+						</values>
+					</set_function>
+				</EXTENSION_ARTICLE_MANAGER_ENABLED>
+				<EXTENSION_ARTICLE_MANAGER_ARTICLE_LIST_MODULE>
+					<title>Enable Articles</title>
+					<value>Default</value>
+					<description>Listing module to use for article listings.</description>
+					<set_function>
+						<type>radio</type>
+						<values>
+							<value>Default</value>
+							<value>Date</value>
+						</values>
+					</set_function>
+				</EXTENSION_ARTICLE_MANAGER_ARTICLE_LIST_MODULE>
+				<EXTENSION_ARTICLE_MANAGER_DISPLAY_NEW_ARTICLES>
+					<title>Display New Articles Link</title>
+					<value>True</value>
+					<description>Display a link to New Articles in the Articles box?</description>
+					<set_function>
+						<type>radio</type>
+						<values>
+							<value>True</value>
+							<value>False</value>
+						</values>
+					</set_function>
+				</EXTENSION_ARTICLE_MANAGER_DISPLAY_NEW_ARTICLES>
+				<EXTENSION_ARTICLE_MANAGER_NEW_ARTICLES_DAYS_DISPLAY>
+					<title>Number of Days Display New Articles</title>
+					<value>30</value>
+					<description>The number of days to display New Articles?</description>
+				</EXTENSION_ARTICLE_MANAGER_NEW_ARTICLES_DAYS_DISPLAY>
+				<EXTENSION_ARTICLE_MANAGER_MAX_NEW_ARTICLES_PER_PAGE>
+					<title>Maximum New Articles Per Page</title>
+					<value>10</value>
+					<description>The maximum number of New Articles to display per page (New Articles page)</description>
+				</EXTENSION_ARTICLE_MANAGER_MAX_NEW_ARTICLES_PER_PAGE>
+				<EXTENSION_ARTICLE_MANAGER_DISPLAY_ALL_ARTICLES>
+					<title>Display All Articles Link</title>
+					<value>True</value>
+					<description>Display a link to All Articles in the Articles box?</description>
+					<set_function>
+						<type>radio</type>
+						<values>
+							<value>True</value>
+							<value>False</value>
+						</values>
+					</set_function>
+				</EXTENSION_ARTICLE_MANAGER_DISPLAY_ALL_ARTICLES>
+				<EXTENSION_ARTICLE_MANAGER_MAX_ARTICLES_PER_PAGE>
+					<title>Maximum Articles Per Page</title>
+					<value>10</value>
+					<description>The maximum number of Articles to display per page (All Articles and Topic/Author pages)</description>
+				</EXTENSION_ARTICLE_MANAGER_MAX_ARTICLES_PER_PAGE>
+				<EXTENSION_ARTICLE_MANAGER_MAX_DISPLAY_UPCOMING_ARTICLES>
+					<title>Maximum Display Upcoming Articles</title>
+					<value>5</value>
+					<description>Maximum number of articles to display in the Upcoming Articles module</description>
+				</EXTENSION_ARTICLE_MANAGER_MAX_DISPLAY_UPCOMING_ARTICLES>
+				<EXTENSION_ARTICLE_MANAGER_SHOW_ARTICLE_COUNTS>
+					<title>Show Article Counts</title>
+					<value>True</value>
+					<description>Count recursively how many articles are in each topic</description>
+					<set_function>
+						<type>radio</type>
+						<values>
+							<value>True</value>
+							<value>False</value>
+						</values>
+					</set_function>
+				</EXTENSION_ARTICLE_MANAGER_SHOW_ARTICLE_COUNTS>
+				<EXTENSION_ARTICLE_MANAGER_DISPLAY_TOPIC_ARTICLE_LISTING>
+					<title>Display Topic in Article Listing</title>
+					<value>True</value>
+					<description>Display the Topic in the Article Listing?</description>
+					<set_function>
+						<type>radio</type>
+						<values>
+							<value>True</value>
+							<value>False</value>
+						</values>
+					</set_function>
+				</EXTENSION_ARTICLE_MANAGER_DISPLAY_TOPIC_ARTICLE_LISTING>
+				<EXTENSION_ARTICLE_MANAGER_DISPLAY_ABSTRACT_ARTICLE_LISTING>
+					<title>Display Abstract in Article Listing</title>
+					<value>True</value>
+					<description>Display the Abstract in the Article Listing?</description>
+					<set_function>
+						<type>radio</type>
+						<values>
+							<value>True</value>
+							<value>False</value>
+						</values>
+					</set_function>
+				</EXTENSION_ARTICLE_MANAGER_DISPLAY_ABSTRACT_ARTICLE_LISTING>
+				<EXTENSION_ARTICLE_MANAGER_DISPLAY_DATE_ADDED_ARTICLE_LISTING>
+					<title>Display Date Added in Article Listing</title>
+					<value>True</value>
+					<description>Display the Date Added in the Article Listing?</description>
+					<set_function>
+						<type>radio</type>
+						<values>
+							<value>True</value>
+							<value>False</value>
+						</values>
+					</set_function>
+				</EXTENSION_ARTICLE_MANAGER_DISPLAY_DATE_ADDED_ARTICLE_LISTING>
+				<EXTENSION_ARTICLE_MANAGER_MAX_ARTICLE_ABSTRACT_LENGTH>
+					<title>Maximum Article Abstract Length</title>
+					<value>300</value>
+					<description>Sets the maximum length of the Article Abstract to be displayed (No. of characters)</description>
+				</EXTENSION_ARTICLE_MANAGER_MAX_ARTICLE_ABSTRACT_LENGTH>
+				<EXTENSION_ARTICLE_MANAGER_ARTICLE_LIST_FILTER>
+					<title>Display Topic Filter</title>
+					<value>True</value>
+					<description>Do you want to display the Topic Filter?</description>
+					<set_function>
+						<type>radio</type>
+						<values>
+							<value>True</value>
+							<value>False</value>
+						</values>
+					</set_function>
+				</EXTENSION_ARTICLE_MANAGER_ARTICLE_LIST_FILTER>
+				<EXTENSION_ARTICLE_MANAGER_ARTICLE_PREV_NEXT_BAR_LOCATION>
+					<title>Location of Prev/Next Navigation Bar</title>
+					<value>Both</value>
+					<description>Sets the location of the Previous/Next Navigation Bar (top; bottom; both)</description>
+					<set_function>
+						<type>radio</type>
+						<values>
+							<value>Top</value>
+							<value>Bottom</value>
+							<value>Both</value>
+						</values>
+					</set_function>
+				</EXTENSION_ARTICLE_MANAGER_ARTICLE_PREV_NEXT_BAR_LOCATION>
+				<EXTENSION_ARTICLE_MANAGER_SHOW_RSS_ON_BAR>
+					<title>Show RSS Icon on browser URL Bar</title>
+					<value>True</value>
+					<description>Show RSS Icon on browser URL Bar</description>
+					<set_function>
+						<type>radio</type>
+						<values>
+							<value>True</value>
+							<value>False</value>
+						</values>
+					</set_function>
+				</EXTENSION_ARTICLE_MANAGER_SHOW_RSS_ON_BAR>
+			</configurations>
+		</general>
+	</tabs>
 </ConfigurationGroup>

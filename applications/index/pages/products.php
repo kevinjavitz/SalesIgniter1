@@ -12,7 +12,7 @@
      //print_r($Qcategory);
 
 	$pageTitle = $Qcategory[0]['CategoriesDescription'][0]['categories_htc_title_tag'];
-	if (tep_not_null($Qcategory[0]['CategoriesDescription'][0]['categories_description'])){
+	if (!empty($Qcategory[0]['CategoriesDescription'][0]['categories_description']) && sysConfig::get('SHOW_PRODUCTS_FROM_SUBCATEGORIES') == 'false'){
 		echo '<div class="pageHeadingSub">' . $Qcategory[0]['CategoriesDescription'][0]['categories_description'] . '</div><br />';
 	}
 

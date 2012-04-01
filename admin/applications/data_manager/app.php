@@ -1,5 +1,6 @@
 <?php
-	require(sysConfig::getDirFsAdmin() . 'includes/classes/upload.php');
+set_time_limit(0);
+require(sysConfig::getDirFsAdmin() . 'includes/classes/upload.php');
 
 	$appContent = $App->getAppContentFile();
 

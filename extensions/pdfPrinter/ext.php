@@ -19,7 +19,7 @@ class Extension_pdfPrinter extends ExtensionBase {
 
 	public function init(){
 		global $App, $appExtension, $Template;
-		if ($this->enabled === false) return;
+		if ($this->isEnabled() === false) return;
 
 		EventManager::attachEvents(array(
 			'AdminOrderDefaultInfoBoxAddButton',

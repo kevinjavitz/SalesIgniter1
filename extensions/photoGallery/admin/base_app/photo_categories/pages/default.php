@@ -95,7 +95,7 @@
 	$rows = 0;
 	$lID = (int)Session::get('languages_id');
 
-	$tableGrid = htmlBase::newElement('grid');
+	$tableGrid = htmlBase::newElement('newGrid');
 
 	$tableGrid->addHeaderRow(array(
 		'columns' => array(

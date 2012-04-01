@@ -1,5 +1,5 @@
 <?php
-	$tableGrid = htmlBase::newElement('grid');
+	$tableGrid = htmlBase::newElement('newGrid');
 
 	$tableGrid->addHeaderRow(array(
 		'columns' => array(

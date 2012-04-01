@@ -3,6 +3,6 @@
 	<key>customFields</key>
 	<version>1.0</version>
 	<author>Stephen Walker ( http://www.itwebexperts.com )</author>
-	<tables>ProductsCustomFields,ProductsCustomFieldsDescription,ProductsCustomFieldsGroups,ProductsCustomFieldsGroupsToProducts,ProductsCustomFieldsOptions,ProductsCustomFieldsOptionsDescription,ProductsCustomFieldsOptionsToFields,ProductsCustomFieldsToGroups,ProductsCustomFieldsToProducts</tables>
 	<status_key>EXTENSION_CUSTOM_FIELDS_ENABLED</status_key>
+	<installed_key>EXTENSION_CUSTOM_FIELDS_INSTALLED</installed_key>
 </data>

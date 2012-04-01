@@ -3,12 +3,19 @@
  * Html Tabs Widget Class
  * @package Html
  */
-class htmlWidget_tabs implements htmlWidgetPlugin {
-	protected $tabElement, $tabPages, $tabHeaders, $selectedTab;
-	
-	public function __construct(){
+class htmlWidget_tabs implements htmlWidgetPlugin
+{
+
+	protected $tabHeaderElement;
+	protected $tabElement;
+	protected $tabPages = array();
+	protected $tabHeaders = array();
+	protected $selectedTab = 0;
+	protected $disabledTabs = array();
+
+	public function __construct() {
 		$this->tabHeaderElement = htmlBase::newElement('list');
-		$this->tabElement = new htmlElement('div');
+		$this->tabElement = htmlBase::newElement('div')->addClass('makeTabs');
 		$this->tabPages = array();
 		$this->tabHeaders = array();
 	}
@@ -52,6 +59,9 @@ class htmlWidget_tabs implements htmlWidgetPlugin {
 				if (!empty($this->selectedTab) && $this->selectedTab == $id){
 					$obj->addClass('ui-tabs-selected');
 				}
+				if (in_array($id, $this->disabledTabs)){
+					$obj->addClass('ui-state-disabled');
+				}
 				$this->tabHeaderElement->addItemObj($obj);
 			}
 		}
@@ -60,6 +70,9 @@ class htmlWidget_tabs implements htmlWidgetPlugin {
 		
 		foreach($this->tabPages as $id => $obj){
 			if (isset($this->tabHeaders[$id])){
+				if (in_array($id, $this->disabledTabs)){
+					$obj->addClass('ui-state-disabled');
+				}
 				$this->tabElement->append($obj);
 			}
 		}
@@ -87,7 +100,8 @@ class htmlWidget_tabs implements htmlWidgetPlugin {
 		
 		if (is_object($settings['text'])){
 			$this->tabPages[$id]->append($settings['text']);
-		}else{
+		}
+		else {
 			$this->tabPages[$id]->html($settings['text']);
 		}
 		return $this;
@@ -96,7 +110,8 @@ class htmlWidget_tabs implements htmlWidgetPlugin {
 	public function &getTabPages($id = false){
 		if ($id === false){
 			return $this->tabPages;
-		}else{
+		}
+		else {
 			return $this->tabPages[$id];
 		}
 		return false;
@@ -106,5 +121,9 @@ class htmlWidget_tabs implements htmlWidgetPlugin {
 		$this->selectedTab = $id;
 		return $this;
 	}
+
+	public function disableTab($id){
+		$this->disabledTabs[] = $id;
+		return $this;
+	}
 }
-?>

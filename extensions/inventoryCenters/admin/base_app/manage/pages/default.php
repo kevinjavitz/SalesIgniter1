@@ -4,10 +4,9 @@
 	->orderBy('inventory_center_name asc');
 	EventManager::notify('AdminInventoryCentersListingQueryBeforeExecute', &$Qcenters);
 
-	$tableGrid = htmlBase::newElement('grid')
+	$tableGrid = htmlBase::newElement('newGrid')
 	->usePagination(true)
-	->setPageLimit((isset($_GET['limit']) ? (int)$_GET['limit']: 25))
-	->setCurrentPage((isset($_GET['page']) ? (int)$_GET['page'] : 1))
+
 	->setQuery($Qcenters);
 
 	$tableGrid->addHeaderRow(array(

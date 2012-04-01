@@ -2,20 +2,41 @@
 	<title>Product Custom Fields</title>
 	<key>customFields</key>
 	<description>Configuration Settings For The Product Custom Fields Extension</description>
-	<Configuration>
-		<EXTENSION_CUSTOM_FIELDS_ENABLED>
-			<title>Enable Product Custom Fields</title>
-			<value>True</value>
-			<description>Enable Or Disable The Product Custom Fields Extension</description>
-			<sort_order>1</sort_order>
-			<set_function>tep_cfg_select_option(array('True','False'),</set_function>
-		</EXTENSION_CUSTOM_FIELDS_ENABLED>
-		<EXTENSION_CUSTOM_FIELDS_SHOW_DOWNLOAD_FILE_COLUMN>
-			<title>Show download file column on label maker</title>
-			<value>False</value>
-			<description>Show download file column on label maker</description>
-			<sort_order>1</sort_order>
-			<set_function>tep_cfg_select_option(array('True','False'),</set_function>
-		</EXTENSION_CUSTOM_FIELDS_SHOW_DOWNLOAD_FILE_COLUMN>
-	</Configuration>
+	<tabs>
+		<general>
+			<title>General</title>
+			<description>General Extension Settings</description>
+			<configurations>
+				<EXTENSION_CUSTOM_FIELDS_INSTALLED editable="false">
+					<title>Installation Status</title>
+					<value>False</value>
+					<description></description>
+				</EXTENSION_CUSTOM_FIELDS_INSTALLED>
+				<EXTENSION_CUSTOM_FIELDS_ENABLED>
+					<title>Enable Product Custom Fields</title>
+					<value>False</value>
+					<description>Enable Or Disable The Product Custom Fields Extension</description>
+					<set_function>
+						<type>radio</type>
+						<values>
+							<value>True</value>
+							<value>False</value>
+						</values>
+					</set_function>
+				</EXTENSION_CUSTOM_FIELDS_ENABLED>
+				<EXTENSION_CUSTOM_FIELDS_SHOW_DOWNLOAD_FILE_COLUMN>
+					<title>Show download file column on label maker</title>
+					<value>False</value>
+					<description>Show download file column on label maker</description>				
+					<set_function>
+						<type>radio</type>
+						<values>
+							<value>True</value>
+							<value>False</value>
+						</values>
+					</set_function>		
+				</EXTENSION_CUSTOM_FIELDS_SHOW_DOWNLOAD_FILE_COLUMN>
+			</configurations>
+		</general>
+	</tabs>
 </ConfigurationGroup>

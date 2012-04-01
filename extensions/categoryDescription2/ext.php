@@ -17,7 +17,7 @@ class Extension_categoryDescription2 extends ExtensionBase {
 	}
 	
 	public function init(){
-		if ($this->enabled === false) return;
+		if ($this->isEnabled() === false) return;
 		
 		EventManager::attachEvent('PageLayoutFooterBeforeDraw', null, $this);
 	}

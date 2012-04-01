@@ -2,7 +2,16 @@
 	<title>PDF Printer</title>
 	<key>pdfPrinter</key>
 	<description>Configuration Settings For The PDF Printer Extension</description>
-	<Configuration>
+	<tabs>
+	<general>
+	<title>General</title>
+	<description>General Extension Settings</description>
+	<configurations>
+		<EXTENSION_PDF_PRINTER_INSTALLED editable="false">
+			<title>Installation Status</title>
+			<value>False</value>
+			<description></description>
+		</EXTENSION_PDF_PRINTER_INSTALLED>
 		<EXTENSION_PDF_PRINTER_ENABLED>
 			<title>Enable PDF Printer</title>
 			<value>True</value>
@@ -49,5 +58,7 @@
 			<set_function><![CDATA[tep_cfg_pull_down_layout_list(]]></set_function>
 		</EXTENSION_PDF_PRINTER_PACKING_SLIP_LAYOUT>
 
-	</Configuration>
+	</configurations>
+	</general>
+	</tabs>
 </ConfigurationGroup>

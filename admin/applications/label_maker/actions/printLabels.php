@@ -19,20 +19,20 @@ if ($_GET['printMethod'] == 'dymo'){
 		if ($labelType == '8160-b'){
 			$labelInfo['data'][] = array(
 				'Barcode'     => $rInfo['barcode'],
-				'BarcodeType' => sysConfig::get('BARCODE_TYPE')
+				'BarcodeType' => sysConfig::get('SYSTEM_BARCODE_FORMAT')
 			);
 		}
 		elseif ($labelType == '8160-s') {
 			$Address = $rInfo['customers_address'];
 			$labelInfo['data'][] = array(
-				'Address' => strip_tags(str_replace('&nbsp;', ' ', tep_address_format(tep_get_address_format_id($Address['entry_country_id']), $Address, false)))
+				'Address' => strip_tags(str_replace('&nbsp;', ' ', tep_address_format(tep_get_address_format_id($Address['entry_country_id']), $Address, false,'','')))
 			);
 		}
 		elseif ($labelType == '8164') {
 			$labelInfo['data'][] = array(
 				'ProductsName'         => $rInfo['products_name'],
 				'Barcode'              => $rInfo['barcode'],
-				'BarcodeType'          => sysConfig::get('BARCODE_TYPE'),
+				'BarcodeType'          => sysConfig::get('SYSTEM_BARCODE_FORMAT'),
 				'ProductsDescription'  => $rInfo['products_description'],
 			);
 			//print_r($labelInfo);
@@ -49,7 +49,7 @@ else {
 		$labelInfo['data'][] = array(
 			'products_name'        => $rInfo['products_name'],
 			'barcode'              => $rInfo['barcode'],
-			'barcode_type'         => sysConfig::get('BARCODE_TYPE'),
+			'barcode_type'         => sysConfig::get('SYSTEM_BARCODE_FORMAT'),
 			'barcode_id'           => $rInfo['barcode_id'],
 			'products_description' => $rInfo['products_description'],
 			'customers_address'    => $rInfo['customers_address']

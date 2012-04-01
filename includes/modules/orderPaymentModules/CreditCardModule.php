@@ -40,7 +40,7 @@ class CreditCardModule extends PaymentModuleBase
 		public function getCardImages(){
 			$cc_images = '';
 			foreach($this->allowedTypes as $k => $v){
-				$cc_images .= tep_image(sysConfig::get('DIR_WS_ICONS') . $k . '.gif', $v);
+				$cc_images .= '<img src="images/ccImages/'. $k . '.png"/>';
 			}
 			return $cc_images;
 		}
@@ -92,7 +92,19 @@ class CreditCardModule extends PaymentModuleBase
 
 			$headerPaymentCols[] = '<td class="ui-widget-content ui-state-hover" align="left" style="border-top:none;border-left:none;">'.'<input type="text" class="ui-widget-content" name="payment_amount" size="10">'.'</td>';
 			$headerPaymentCols[] = '<td class="ui-widget-content ui-state-hover" align="left" style="border-top:none;border-left:none;">'.'<input type="text" class="ui-widget-content" name="payment_cc_number" size="18" maxlength="16">'.'</td>';
-			$headerPaymentCols[] = '<td class="ui-widget-content ui-state-hover" align="left" style="border-top:none;border-left:none;">'.'<input type="text" class="ui-widget-content" name="payment_cc_expires" size="6" maxlength="4">'.'</td>';
+			$inputMonth = htmlBase::newElement('selectbox')->setName('cardExpMonth')->setId('cardExpMonth');
+
+			foreach(self::getMonthDropMenuArr() as $mInfo){
+				$inputMonth->addOption($mInfo['id'], $mInfo['text']);
+			}
+
+			$inputYear = htmlBase::newElement('selectbox')->setName('cardExpYear')->setId('cardExpYear');
+			foreach(self::getYearDropMenuArr() as $yInfo){
+				$inputYear->addOption($yInfo['id'], $yInfo['text']);
+			}
+
+
+			$headerPaymentCols[] = '<td class="ui-widget-content ui-state-hover" align="left" style="border-top:none;border-left:none;">'.$inputMonth->draw().$inputYear->draw().'</td>';
 			$headerPaymentCols[] = '<td class="ui-widget-content ui-state-hover" align="left" style="border-top:none;border-left:none;">'.'<input type="text" class="ui-widget-content" name="payment_cc_cvv" size="4" maxlength="4">'.'</td>';
 
 			$headerPaymentCols[] = '<td class="ui-widget-content ui-state-hover" align="left" style="border-top:none;border-left:none;">'.($Editor->getOrderId() ? htmlBase::newElement('button')->addClass('paymentProcessButton')->setText('Process')->draw() : 'Will process on save').'</td>';

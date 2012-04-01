@@ -79,7 +79,7 @@ EventManager::notify('ProductInfoProductsImageShow', &$image, &$product);
 	
 	echo '</p>' . 
 	'<div style="clear:both;"></div>';
-	
+
 	$purchaseBoxes = array();
 	$purchaseTypes = array();
 	foreach($product->productInfo['typeArr'] as $typeName){

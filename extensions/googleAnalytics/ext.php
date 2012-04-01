@@ -17,7 +17,7 @@ class Extension_googleAnalytics extends ExtensionBase {
 	}
 	
 	public function init(){
-		if ($this->enabled === false) return;
+		if ($this->isEnabled() === false) return;
 		
 		EventManager::attachEvents(array(
 			'PageLayoutHeaderCustomMeta',

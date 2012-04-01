@@ -75,8 +75,6 @@
 	sort($listingClasses);
 	$columnHolder = htmlBase::newElement('div')->attr('id', 'columnsHolder');
 
-	$languages = tep_get_languages();
-	$n = sizeof($languages);
 	$Qlisting = Doctrine_Query::create()
 	->from('ProductsListing p')
 	->leftJoin('p.ProductsListingDescription pd')
@@ -100,8 +98,8 @@
 			$nameInputs = htmlBase::newElement('div')
 			->append(htmlBase::newElement('b')->html('<u>Display Name</u>'))
 			->append(htmlBase::newElement('br'));
-			for($i=0; $i<$n; $i++){
-				$langId = $languages[$i]['id'];
+			foreach(sysLanguage::getLanguages() as $lInfo){
+				$langId = $lInfo['id'];
 				
 				$curName = '';
 				if (isset($listing['ProductsListingDescription'][$langId])){
@@ -111,7 +109,7 @@
 				$nameInput = htmlBase::newElement('input')
 				->setName('products_listing_name[' . $listingId . '][' . $langId . ']')
 				->setValue($curName)
-				->setLabel($languages[$i]['name'] . ': ')
+				->setLabel($lInfo['name'] . ': ')
 				->setLabelPosition('before');
 				
 				$nameInputs->append($nameInput)->append(htmlBase::newElement('br'));
@@ -267,13 +265,12 @@
 	$nameInputs = htmlBase::newElement('div')
 	->append(htmlBase::newElement('b')->html('<u>Display Name</u>'))
 	->append(htmlBase::newElement('br'));
-	for($i=0; $i<$n; $i++){
-		$langId = $languages[$i]['id'];
-		$langImage = tep_image(DIR_WS_CATALOG_LANGUAGES . $languages[$i]['directory'] . '/images/' . $languages[$i]['image'], $languages[$i]['name']);
-				
+	foreach(sysLanguage::getLanguages() as $lInfo){
+		$langId = $lInfo['id'];
+
 		$nameInput = htmlBase::newElement('input')
 		->setName('products_listing_name[new][RandomNumber][' . $langId . ']')
-		->setLabel($langImage)
+		->setLabel($lInfo['showName']())
 		->setLabelPosition('before');
 				
 		$nameInputs->append($nameInput)->append(htmlBase::newElement('br'));

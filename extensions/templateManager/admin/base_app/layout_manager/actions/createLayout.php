@@ -5,10 +5,12 @@
 	if (!is_object($parent)){
 		$Container = $Layout->Containers->getTable()->create();
 		$Layout->Containers->add($Container);
-	}elseif ($el->hasClass('container')){
+	}
+	elseif ($el->hasClass('container')) {
 		$Container = $parent->Children->getTable()->create();
 		$parent->Children->add($Container);
-	}else{
+	}
+	else {
 		$Container = $parent->Columns->getTable()->create();
 		$parent->Columns->add($Container);
 	}
@@ -51,14 +53,19 @@
 		$InputVals = json_decode(urldecode($el->attr('data-inputs')));
 
 		foreach($Styles as $k => $v){
-			if ($k == 'boxShadow') continue;
-			if (substr($k, 0, 10) == 'background') continue;
+			if ($k == 'boxShadow') {
+				continue;
+			}
+			if (substr($k, 0, 10) == 'background') {
+				continue;
+			}
 
 			$Style = $Container->Styles->getTable()->create();
 			$Style->definition_key = $k;
 			if (is_array($v) || is_object($v)){
 				$Style->definition_value = json_encode($v);
-			}else{
+			}
+			else {
 				$Style->definition_value = $v;
 			}
 			$Container->Styles->add($Style);
@@ -66,13 +73,16 @@
 
 		if (!empty($InputVals)){
 			foreach($InputVals as $k => $v){
-				if ($k == 'boxShadow') continue;
+				if ($k == 'boxShadow') {
+					continue;
+				}
 
 				$Configuration = $Container->Configuration->getTable()->create();
 				$Configuration->configuration_key = $k;
 				if (is_array($v) || is_object($v)){
 					$Configuration->configuration_value = json_encode($v);
-				}else{
+				}
+				else {
 					$Configuration->configuration_value = $v;
 				}
 				$Container->Configuration->add($Configuration);
@@ -83,7 +93,8 @@
 	foreach($el->children() as $child){
 		$childObj = pq($child);
 		if ($childObj->is('ul')){
-		}else{
+		}
+		else {
 			$newParent = ($el->hasClass('column') ? null : (isset($Container) ? $Container : null));
 			parseElement($childObj, $newParent);
 		}
@@ -94,10 +105,11 @@ $TemplateLayouts = Doctrine_Core::getTable('TemplateManagerLayouts');
 $TemplatePages = Doctrine_Core::getTable('TemplatePages');
 
 if (isset($_GET['lID'])){
-	$Layout = $TemplateLayouts->find((int) $_GET['lID']);
-}else{
+	$Layout = $TemplateLayouts->find((int)$_GET['lID']);
+}
+else {
 	$Layout = $TemplateLayouts->create();
-	$Layout->template_id = (int) $_GET['tID'];
+	$Layout->template_id = (int)$_GET['tID'];
 }
 $Layout->layout_name = $_POST['layoutName'];
 $Layout->layout_type = $_POST['layoutType'];
@@ -260,6 +272,160 @@ if (isset($_POST['applications']['ext'])){
 			}
 		}
 	}
+}
+
+function LoadAllWidgetData(&$Data, &$New){
+
+	$New->identifier = $Data->identifier;
+
+	$New->sort_order = $Data->sort_order;
+
+	foreach($Data->Configuration as $Config){
+
+		$New->Configuration[$Config->configuration_key]->configuration_value = $Config->configuration_value;
+
+	}
+
+	foreach($Data->Styles as $Style){
+
+		$New->Styles[$Style->definition_key]->definition_value = $Style->definition_value;
+
+	}
+
+}
+
+function LoadAllColumnData(&$Data, &$New){
+
+	$New->sort_order = $Data->sort_order;
+
+	foreach($Data->Configuration as $Config){
+
+		$New->Configuration[$Config->configuration_key]->configuration_value  = $Config->configuration_value;
+
+	}
+
+	foreach($Data->Styles as $Style){
+
+		$New->Styles[$Style->definition_key]->definition_value = $Style->definition_value;
+
+	}
+
+	if ($Data->Widgets && $Data->Widgets->count() > 0){
+
+		foreach($Data->Widgets as $wInfo){
+
+			$newWidget = $New->Widgets->getTable()->create();
+
+			LoadAllWidgetData($wInfo, $newWidget);
+
+			$New->Widgets->add($newWidget);
+
+		}
+
+	}
+
+}
+
+function LoadAllContainerData(&$Data, &$New){
+
+	$New->sort_order = $Data->sort_order;
+
+	foreach($Data->Configuration as $Config){
+
+		$New->Configuration[$Config->configuration_key]->configuration_value  = $Config->configuration_value;
+
+	}
+
+	foreach($Data->Styles as $Style){
+
+		$New->Styles[$Style->definition_key]->definition_value = $Style->definition_value;
+
+	}
+
+
+
+	if ($Data->Children && $Data->Children->count() > 0){
+
+		foreach($Data->Children as $Container){
+
+			$NewContainer = $New->Children->getTable()->create();
+
+			LoadAllContainerData($Container, $NewContainer);
+
+			$New->Children->add($NewContainer);
+
+		}
+
+	}else
+
+		if ($Data->Columns && $Data->Columns->count() > 0){
+
+			foreach($Data->Columns as $col){
+
+				$NewColumn = $New->Columns->getTable()->create();
+
+				LoadAllColumnData($col, $NewColumn);
+
+				$New->Columns->add($NewColumn);
+
+			}
+
+		}
+
+}
+
+function LoadAllData(&$Original, &$New){
+
+	foreach($Original->Containers as $Container){
+
+		$NewContainer = $New->Containers->getTable()->create();
+
+		LoadAllContainerData($Container, $NewContainer);
+
+		$New->Containers->add($NewContainer);
+
+	}
+
+}
+
+function saveConfigurationForLayout($olID, $nlID){
+	$TemplatePages = Doctrine_Query::create()
+				->from('TemplatePages')
+				->where('FIND_IN_SET(' . $olID . ', layout_id) > 0')
+				->execute();
+			foreach($TemplatePages as $iTemplatePage){
+				$iTemplatePage->layout_id = $iTemplatePage->layout_id.','.$nlID;
+				$iTemplatePage->save();
+			}
+}
+
+if(isset($_POST['layoutBackup']) && $_POST['layoutBackup'] > 0){
+	$TemplateLayouts = Doctrine_Core::getTable('TemplateManagerLayouts');
+	$Original = $TemplateLayouts->find((int) $_POST['layoutBackup']);
+	$New = $TemplateLayouts->create();
+	$New->template_id = $Original->template_id;
+	$New->layout_name = $Original->layout_name;
+
+	foreach($Original->Configuration as $Config){
+		$New->Configuration[$Config->configuration_key]->configuration_value = $Config->configuration_value;
+	}
+
+	foreach($Original->Styles as $Style){
+		$New->Styles[$Style->definition_key]->definition_value = $Style->definition_value;
+	}
+
+	LoadAllData($Original, $New);
+	$New->save();
+	saveConfigurationForLayout($_GET['lID'], $New->layout_id);
+	$deleteLayout = $TemplateLayouts->find((int) $_GET['lID']);
+	$deleteLayout->delete();
+	$layoutId = $New->layout_id;
+
+	$QLayoutsBackup = Doctrine_Query::create()
+	->update('TemplateManagerLayouts')
+	->set('backupof_layout_id','?',$layoutId)
+	->where('backupof_layout_id = ?', $_GET['lID'])
+	->execute();
 }
 
 EventManager::attachActionResponse(array(

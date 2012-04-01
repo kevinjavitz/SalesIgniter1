@@ -18,7 +18,7 @@ class multiStore_admin_blog_blog_categories_new_category extends Extension_multi
 	
 	public function load(){
 		global $appExtension;
-		if ($this->enabled === false) return;
+		if ($this->isEnabled() === false) return;
 		$appExtension->registerAsResource(__CLASS__, $this);
 		
 		EventManager::attachEvents(array(

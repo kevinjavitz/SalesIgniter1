@@ -95,10 +95,7 @@ class RentalStoreUser implements Serializable {
 		Session::remove('rentalQueueBase');
 		//$rentalQueueBase = &Session::getReference('rentalQueueBase');
 		//$rentalQueueBase->emptyQueue();
-
-		if (USER_ADDRESS_BOOK_ENABLED == 'True'){
-			$this->plugins['addressBook']->reset();
-		}
+		$this->plugins['addressBook']->reset();
 		EventManager::notify('ProcessLogoutExecute');
 	}
 
@@ -230,12 +227,10 @@ class RentalStoreUser implements Serializable {
 				Session::set('customer_first_name', $this->customerInfo['firstName']);
 				Session::set('customer_country_id', $this->customerInfo['countryId']);
 				Session::set('customer_zone_id', $this->customerInfo['zoneId']);
+				Session::set('customer_default_address_id', $this->plugins['addressBook']->defaultAddress);
 
-				if (USER_ADDRESS_BOOK_ENABLED == 'True'){
-					Session::set('customer_default_address_id', $this->plugins['addressBook']->defaultAddress);
-				}
 
-				if (ALLOW_RENTALS == 'true'){
+				if (sysConfig::get('ALLOW_RENTALS') == 'true'){
 					Session::set('rental_address_id', $this->plugins['membership']->membershipInfo['rental_address_id']);
 				}
 

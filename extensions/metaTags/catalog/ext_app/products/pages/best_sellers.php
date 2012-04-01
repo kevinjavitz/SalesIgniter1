@@ -43,7 +43,7 @@ class metaTags_catalog_products_best_sellers extends Extension_metaTags {
 	 * @return void
 	 */
 	public function load(){
-		if ($this->enabled === false) return;
+		if ($this->isEnabled() === false) return;
 
 		EventManager::attachEvents(array(
 			'HeaderTagsTitle',

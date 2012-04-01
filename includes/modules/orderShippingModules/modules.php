@@ -62,7 +62,7 @@
 		
 		public static function calculateWeight(){
 			global $total_weight, $shipping_weight, $shipping_num_boxes;
-			
+
 			$boxWeight = sysConfig::get('SHIPPING_BOX_WEIGHT');
 			$boxPadding = sysConfig::get('SHIPPING_BOX_PADDING');
 			$boxMaxWeight = sysConfig::get('SHIPPING_MAX_WEIGHT');

@@ -11,10 +11,9 @@
 	->groupBy('s.sources_id')
 	->orderBy('no_referrals DESC');
 
-	$tableGrid = htmlBase::newElement('grid')
+	$tableGrid = htmlBase::newElement('newGrid')
 	->usePagination(false)
-	->setPageLimit((isset($_GET['limit']) ? (int)$_GET['limit']: 25))
-	->setCurrentPage((isset($_GET['page']) ? (int)$_GET['page'] : 1))
+
 	->setQuery($Qreferrals);
 	
 	$tableGrid->addHeaderRow(array(
@@ -44,10 +43,9 @@
 	->groupBy('so.sources_other_name')
 	->orderBy('no_referrals DESC');
 
-	$tableGrid2 = htmlBase::newElement('grid')
+	$tableGrid2 = htmlBase::newElement('newGrid')
 	->usePagination(false)
-	->setPageLimit((isset($_GET['limit']) ? (int)$_GET['limit']: 25))
-	->setCurrentPage((isset($_GET['page']) ? (int)$_GET['page'] : 1))
+
 	->setQuery($QreferralsOther);
 	
 	$tableGrid2->addHeaderRow(array(

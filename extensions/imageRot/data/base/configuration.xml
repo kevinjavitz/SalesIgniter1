@@ -2,21 +2,41 @@
 	<title>Image Rotator</title>
 	<key>imageRot</key>
 	<description>Configuration Settings For The Banner Manager Extension</description>
-	<Configuration>
-		<EXTENSION_BANNER_MANAGER_ENABLED>
-			<title>Enable Banner Manager</title>
-			<value>True</value>
-			<description>Enable Or Disable The Banner Manager Extension</description>
-			<sort_order>1</sort_order>
-			<set_function>tep_cfg_select_option(array('True','False'),</set_function>
-		</EXTENSION_BANNER_MANAGER_ENABLED>
-
-		<EXTENSION_BANNER_MANAGER_INFOBOX>
-			<title>Enable Banner Manager Info Box</title>
-			<value>False</value>
-			<description>Enable Or Disable The Banner Manager Info Box</description>
-			<sort_order>4</sort_order>
-			<set_function>tep_cfg_select_option(array('True','False'),</set_function>
-		</EXTENSION_BANNER_MANAGER_INFOBOX>
-	</Configuration>
+	<tabs>
+		<general>
+			<title>General</title>
+			<description>General Extension Settings</description>
+			<configurations>
+				<EXTENSION_BANNER_MANAGER_INSTALLED editable="false">
+					<title>Installation Status</title>
+					<value>False</value>
+					<description></description>
+				</EXTENSION_BANNER_MANAGER_INSTALLED>
+				<EXTENSION_BANNER_MANAGER_ENABLED>
+					<title>Enable Banner Manager</title>
+					<value>False</value>
+					<description>Enable Or Disable The Banner Manager Extension</description>
+					<set_function>
+						<type>radio</type>
+						<values>
+							<value>True</value>
+							<value>False</value>
+						</values>
+					</set_function>
+				</EXTENSION_BANNER_MANAGER_ENABLED>
+				<EXTENSION_BANNER_MANAGER_INFOBOX>
+					<title>Enable Banner Manager Info Box</title>
+					<value>False</value>
+					<description>Enable Or Disable The Banner Manager Info Box</description>
+					<set_function>
+						<type>radio</type>
+						<values>
+							<value>True</value>
+							<value>False</value>
+						</values>
+					</set_function>
+				</EXTENSION_BANNER_MANAGER_INFOBOX>
+			</configurations>
+		</general>
+	</tabs>
 </ConfigurationGroup>

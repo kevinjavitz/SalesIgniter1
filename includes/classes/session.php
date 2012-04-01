@@ -4,8 +4,8 @@ class Session {
 	private static $cookiePath;
 	private static $cookieDomain;
 
-	public static function init(){
-		global $request_type;
+	public static function init() {
+		global $request_type, $session_started;
 		self::resetSaveHandler();
 		
 		// set the session name and save path
@@ -44,6 +44,84 @@ class Session {
 		}elseif ($sessionName == 'osCAdminID' && isset($_GET[$sessionName])){
 			self::setSessionId($_GET[$sessionName]);
 		}
+
+		// start the session
+		$session_started = false;
+		if (sysConfig::get('SESSION_FORCE_COOKIE_USE') == 'True'){
+			tep_setcookie('cookie_test', 'please_accept_for_session', time() + 60 * 60 * 24 * 30, $cookie_path, $cookie_domain);
+
+			if (isset($_COOKIE['cookie_test'])){
+				Session::start();
+				$session_started = true;
+			}
+		}
+		elseif (sysConfig::get('SESSION_BLOCK_SPIDERS') == 'True') {
+			$user_agent = strtolower(getenv('HTTP_USER_AGENT'));
+			$spider_flag = false;
+
+			if (tep_not_null($user_agent)){
+				$spiders = file(sysConfig::getDirFsCatalog() . 'includes/spiders.txt');
+
+				for($i = 0, $n = sizeof($spiders); $i < $n; $i++){
+					if (tep_not_null($spiders[$i])){
+						if (is_integer(strpos($user_agent, trim($spiders[$i])))){
+							$spider_flag = true;
+							break;
+						}
+					}
+				}
+			}
+
+			if ($spider_flag == false){
+				Session::start();
+				$session_started = true;
+			}
+		}
+		else {
+			Session::start();
+			$session_started = true;
+		}
+
+		// set SID once, even if empty
+		$SID = (defined('SID') ? SID : '');
+
+		// verify the ssl_session_id if the feature is enabled
+		if (($request_type == 'SSL') && (sysConfig::get('SESSION_CHECK_SSL_SESSION_ID') == 'True') && (sysConfig::get('ENABLE_SSL') == true) && ($session_started == true)){
+			if (Session::exists('SSL_SESSION_ID') === false){
+				Session::set('SSL_SESSION_ID', $_SERVER['SSL_SESSION_ID']);
+			}
+
+			if (Session::get('SSL_SESSION_ID') != $_SERVER['SSL_SESSION_ID']){
+				Session::destroy();
+				tep_redirect(itw_app_link('appExt=infoPages', 'show_page', 'ssl_check'));
+			}
+		}
+
+		// verify the browser user agent if the feature is enabled
+		if (sysConfig::get('SESSION_CHECK_USER_AGENT') == 'True'){
+			$http_user_agent = (isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '');
+			if (Session::exists('SESSION_USER_AGENT') === false){
+				Session::set('SESSION_USER_AGENT', $http_user_agent);
+			}
+
+			if (Session::get('SESSION_USER_AGENT') != $http_user_agent){
+				Session::destroy();
+				tep_redirect(itw_app_link(null, 'account', 'login'));
+			}
+		}
+
+		// verify the IP address if the feature is enabled
+		if (sysConfig::get('SESSION_CHECK_IP_ADDRESS') == 'True'){
+			$ip_address = tep_get_ip_address();
+			if (Session::exists('SESSION_IP_ADDRESS') === false){
+				Session::set('SESSION_IP_ADDRESS', $ip_address);
+			}
+
+			if (Session::get('SESSION_IP_ADDRESS') != $ip_address){
+				Session::destroy();
+				tep_redirect(itw_app_link(null, 'account', 'login'));
+			}
+		}
 	}
 
 	public static function resetSaveHandler(){
@@ -78,19 +156,26 @@ class Session {
 		return '';
 	}
 
-	public static function _write($key, $val){
-		$Check = Doctrine_Manager::getInstance()
-			->getCurrentConnection()
-			->fetchAssoc('select count(*) as total from sessions where sesskey = "' . $key . '"');
+	public static function _write($key, $val) {
+		if (
+			(basename($_SERVER['PHP_SELF']) != 'stylesheet.php') &&
+			(basename($_SERVER['PHP_SELF']) != 'javascript.php') &&
+			($_GET['rType'] != 'ajax' && APPLICATION_ENVIRONMENT == 'admin' || APPLICATION_ENVIRONMENT == 'catalog')
+		){
+			$Check = Doctrine_Manager::getInstance()
+				->getCurrentConnection()
+				->fetchAssoc('select count(*) as total from sessions where sesskey = "' . $key . '"');
 
-		if ($Check[0]['total'] <= 0){
-			$queryStr = 'insert into sessions (sesskey, value, expiry) values ("' . $key . '", "' . addslashes($val) . '", "' . (time() + self::$sessionLife) . '")';
-		}else{
-			$queryStr = 'update sessions set value = "' . addslashes($val) . '", expiry = "' . (time() + self::$sessionLife) . '" where sesskey = "' . $key . '"';
+			if ($Check[0]['total'] <= 0){
+				$queryStr = 'insert into sessions (sesskey, value, expiry) values ("' . $key . '", "' . addslashes($val) . '", "' . (time() + self::$sessionLife) . '")';
+			}
+			else {
+				$queryStr = 'update sessions set value = "' . addslashes($val) . '", expiry = "' . (time() + self::$sessionLife) . '" where sesskey = "' . $key . '"';
+			}
+			Doctrine_Manager::getInstance()
+				->getCurrentConnection()
+				->exec($queryStr);
 		}
-		Doctrine_Manager::getInstance()
-			->getCurrentConnection()
-			->exec($queryStr);
 		return true;
 	}
 
@@ -167,8 +252,9 @@ class Session {
 			}else{
 				return $_SESSION[$varName];
 			}
-		}else{
-			ExceptionManager::report('Undefined Array Index', E_USER_ERROR);
+		}
+		else {
+			ExceptionManager::report('Undefined Array Index ( ' . $varName . ' )', E_USER_ERROR);
 		}
 	}
 

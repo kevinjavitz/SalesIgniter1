@@ -17,6 +17,14 @@
 	</configuration>
 	<configuration>
 		<tab><![CDATA[General]]></tab>
+		<title><![CDATA[Show CC images]]></title>
+		<key><![CDATA[SHOW_CC_IMAGES]]></key>
+		<value><![CDATA[False]]></value>
+		<description><![CDATA[Do you want to show cc images?]]></description>
+		<set_function><![CDATA[tep_cfg_select_option(array('True', 'False'),]]></set_function>
+	</configuration>
+	<configuration>
+		<tab><![CDATA[General]]></tab>
 		<title><![CDATA[Display Order]]></title>
 		<key><![CDATA[DISPLAY_ORDER]]></key>
 		<value><![CDATA[0]]></value>

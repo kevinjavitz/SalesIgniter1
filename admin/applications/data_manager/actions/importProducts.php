@@ -1,5 +1,6 @@
 <?php
-    /* New Tabbed Logging - BEGIN */
+set_time_limit(0);
+/* New Tabbed Logging - BEGIN */
 	require('includes/classes/data_populate/export.php');
 	$dataExport = new dataExport();
 	$uploaded = false;
@@ -345,7 +346,7 @@
 						->select('c.categories_id')
 						->from('Categories c')
 						->leftJoin('c.CategoriesDescription cd')
-						->where('cd.categories_name = ?', trim($catName));
+						->where('LOWER(cd.categories_name) = ?', strtolower(trim($catName)));
 				
 						if (isset($currentParent)){
 							$Qcategory->andWhere('c.parent_id = ?', $currentParent);
@@ -361,9 +362,37 @@
 							$Description =& $Categories->CategoriesDescription;
 							$Description[Session::get('languages_id')]->categories_name = $catName;
 							$Description[Session::get('languages_id')]->language_id = Session::get('languages_id');
+							if($Description[Session::get('languages_id')]->categories_seo_url == ''){
+								$Description[Session::get('languages_id')]->categories_seo_url = makeUniqueCategory($Categories->categories_id, tep_friendly_seo_url($Description[Session::get('languages_id')]->categories_name), true);
+							}else{
+								$Description[Session::get('languages_id')]->categories_seo_url = makeUniqueCategory($Categories->categories_id, tep_friendly_seo_url($Description[Session::get('languages_id')]->categories_seo_url), true);
+							}
 							$Categories->save();
-					
 							$categoryId = $Categories->categories_id;
+							$Categories->free();
+							unset($Categories);
+						}
+
+
+						if($appExtension->isInstalled('multiStore') && $appExtension->isEnabled('multiStore')){
+							$multiStoreExt = $appExtension->getExtension('multiStore');
+							$Category = Doctrine_Core::getTable('Categories')->find($categoryId);
+
+							if(isset($items['v_store_id']) && !empty($items['v_store_id'])){
+								$stores = explode(',', $items['v_store_id']);
+
+								$CategoriesToStores =& $Category->CategoriesToStores;
+								$CategoriesToStores->delete();
+								foreach($stores as $storeId){
+									if(!empty($storeId)){
+										$CategoriesToStores[]->stores_id = $storeId;
+									}
+								}
+
+								$Category->save();
+								$Category->free();
+								unset($Category);
+							}
 						}
 						$currentParent = $categoryId;
 					}
@@ -373,65 +402,21 @@
 			}
 
 			EventManager::notify('DataImportBeforeSave', &$items, &$Product);
-			
-			//echo '<pre>';print_r($Product->toArray(true));echo '</pre>';
+
 			$Product->save();
 			$QPPR = Doctrine_Core::getTable('ProductsPayPerRental')->findByProductsId($Product->products_id);
 			EventManager::notify('DataImportAfterSave', &$items, &$QPPR[0]);
-
+			$QPPR->free();
+			unset($QPPR);
 			if (isset($items['v_status']) && $items['v_status'] == $deleteStatus){
 				$Product->delete();
 				$status = 'Deleted';
 			}else{
 				$status = $Product->products_status;
 			}
-			
-			$productLogArr = array(
-				'ID:'              => $Product->products_id,
-				'Image:'           => $Product->products_image,
-				'Model:'           => $Product->products_model,
-				'Price:'           => $Product->products_price,
-				'Price User:'      => $Product->products_price_used,
-				'Price Stream:'    => $Product->products_price_stream,
-				'Price Download:'  => $Product->products_price_download,
-				'Status:'          => $status,
-				'Tax Class ID:'    => $Product->products_tax_class_id,
-				'Weight:'          => $Product->products_weight,
-				'Type:'            => $Product->products_type,
-				'In Box:'          => $Product->products_in_box,
-				'Featured'         => $Product->products_featured
-			);
-	
-			EventManager::notify('DataImportProductLogBeforeExecute', &$Product, &$productLogArr);
-	
-			if ($isNewProduct === true){
-				logNew('product', $productLogArr);
-			} else {
-				logUpdate('product', $productLogArr);
-			}
-
-			foreach($Product->ProductsDescription as $Description){
-				$productDescLogArr = array(
-					'ID:'                 => $Description['products_id'],
-					'Language:'           => $Description['language_id'],
-					'Name:'               => $Description['products_name'],
-					'Description:'        => $Description['products_description'],
-					'Header Title:'       => $Description['products_head_title_tag'],
-					'Header Description:' => $Description['products_head_desc_tag'],
-					'Header Keywords:'    => $Description['products_head_keywords_tag']
-				);
-	
-				EventManager::notify('DataImportProductDescriptionLogBeforeExecute', &$productDescLogArr);
-		
-				if ($isNewProduct === true){
-					logNew('product_description', $productDescLogArr);
-				}else{
-					logUpdate('product_description', $productDescLogArr);
-				}
-			}
 			// end of row insertion code
 			$Product->free();
-			
+			unset($Product);
 			$lineIterator->next();
 		}
 	}

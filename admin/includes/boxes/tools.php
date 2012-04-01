@@ -85,6 +85,12 @@
 			'text' => 'Fill Empty Models'
 		);
 	}
+	if (sysPermissions::adminAccessAllowed('tools', 'setTaxable') === true){
+		$contents['children'][] = array(
+			'link' => itw_app_link(null, 'tools', 'setTaxable'),
+			'text' => 'Make Products Taxable'
+		);
+	}
 
 	EventManager::notify('BoxToolsAddLink', &$contents);
 if(count($contents['children']) == 0){

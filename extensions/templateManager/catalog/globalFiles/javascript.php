@@ -1,6 +1,5 @@
 <?php
 	chdir('../../../../');
-
 if (isset($_GET['layout_id'])){
 	$env = 'catalog';
 	$layoutId = $_GET['layout_id'];
@@ -18,7 +17,7 @@ if (isset($_GET['import']) && !empty($_GET['import'])){
 $cacheKey = $env . '-javascript-' . $templateDir . '-' . md5($layoutId . '-' . $import);
 
 require('includes/classes/system_cache.php');
-$JavascriptCache = new SystemCache($cacheKey);
+$JavascriptCache = new SystemCache($cacheKey, 'cache/' . $env . '/javascript/');
 if ($JavascriptCache->loadData() === true && !isset($_GET['noCache'])){
 	$JavascriptCache->output(false, true);
 	exit;
@@ -26,8 +25,8 @@ if ($JavascriptCache->loadData() === true && !isset($_GET['noCache'])){
 else {
 	include('includes/application_top.php');
 
-	ob_start();
 	if ($env == 'catalog'){
+		ob_start();
 		?>
 	$(document).ready(function (){
 	$('.starRating').stars({
@@ -66,64 +65,79 @@ else {
 	});
 	});
 	<?php
+		$TemplateManager = $appExtension->getExtension('templateManager');
+		$TemplateManager->loadWidgets($templateDir);
 		$boxJavascriptsEntered = array();
 		$boxJavascriptSourcesEntered = array();
-		$infoBoxSrouces = array();
+		$infoBoxSources = array();
 		function parseContainer($Container) {
-			global $boxJavascriptsEntered, $boxJavascriptSourcesEntered, $infoBoxSrouces;
-			if ($Container->Children->count() > 0){
-				foreach($Container->Children as $ChildObj){
+			global $TemplateManager, $boxJavascriptsEntered, $boxJavascriptSourcesEntered, $infoBoxSources;
+
+			if (isset($Container['widget_id'])){
+				$typeId = $Container['widget_id'];
+				$type = 'widget';
+			}
+			elseif (isset($Container['column_id'])) {
+				$typeId = $Container['column_id'];
+				$type = 'column';
+			}
+			elseif (isset($Container['container_id'])) {
+				$typeId = $Container['container_id'];
+				$type = 'container';
+			}
+
+			if ($type == 'container' && (($Containers = $TemplateManager->getContainerChildren($typeId)) !== false)){
+				foreach($Containers as $ChildObj){
 					parseContainer($ChildObj);
 				}
 			}
-			else {
-				foreach($Container->Columns as $colInfo){
-					foreach($colInfo->Widgets as $wInfo){
-						foreach($wInfo->Configuration as $config){
-							if ($config->configuration_key == 'widget_settings'){
-								$WidgetSettings = json_decode($config->configuration_value);
-								break;
+			elseif ($type == 'container' && (($Columns = $TemplateManager->getContainerColumns($typeId)) !== false)) {
+				foreach($Columns as $ChildObj){
+					parseContainer($ChildObj);
+				}
+			}
+			elseif ($type == 'column' && (($Columns = $TemplateManager->getColumnChildren($typeId)) !== false)) {
+				foreach($Columns as $ChildObj){
+					parseContainer($ChildObj);
+				}
+			}
+			elseif ($type == 'column' && (($Widgets = $TemplateManager->getColumnWidgets($typeId)) !== false)) {
+				foreach($Widgets as $wInfo){
+					parseContainer($wInfo);
+				}
+			}
+			elseif ($type == 'widget') {
+				if (($Configuration = $TemplateManager->getConfigInfo($type, $typeId)) !== false){
+					foreach($Configuration as $config){
+						if ($config['configuration_key'] == 'widget_settings'){
+							$WidgetSettings = json_decode($config['configuration_value']);
+							break;
+						}
+					}
+
+					$WidgetClass = $TemplateManager->getWidget($Container['identifier']);
+					if ($WidgetClass !== false){
+						if (isset($WidgetSettings->id) && !empty($WidgetSettings->id)){
+							$WidgetClass->setBoxId($WidgetSettings->id);
+						}
+						$WidgetClass->setWidgetProperties($WidgetSettings);
+						if (method_exists($WidgetClass, 'buildJavascript')){
+							if ($WidgetClass->buildJavascriptMultiple === true || !in_array($WidgetClass->getBoxCode(), $boxJavascriptsEntered)){
+								echo $WidgetClass->buildJavascript();
+
+								$boxJavascriptsEntered[] = $WidgetClass->getBoxCode();
 							}
 						}
-						$className = 'InfoBox' . ucfirst($wInfo->identifier);
-						if (!class_exists($className)){
-							$Qbox = Doctrine_Query::create()
-								->select('box_path')
-								->from('TemplatesInfoboxes')
-								->where('box_code = ?', $wInfo->identifier)
-								->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
-
-							require($Qbox[0]['box_path'] . 'infobox.php');
-						}
-
-						$Box = new $className();
-						if (method_exists($className, 'buildJavascript')){
-							if ($Box->buildJavascriptMultiple === true || !in_array($className, $boxJavascriptsEntered)){
-								if (isset($WidgetSettings->id) && !empty($WidgetSettings->id)){
-									$Box->setBoxId($WidgetSettings->id);
-								}
-								$Box->setWidgetProperties($WidgetSettings);
-
-								echo $Box->buildJavascript();
-
-								$boxJavascriptsEntered[] = $className;
-							}
-						}
-						if (method_exists($className, 'getJavascriptSources')){
-							if (!in_array($className, $boxJavascriptSourcesEntered)){
-								if (isset($WidgetSettings->id) && !empty($WidgetSettings->id)){
-									$Box->setBoxId($WidgetSettings->id);
-								}
-								$Box->setWidgetProperties($WidgetSettings);
-
-								$infoBoxJsFiles = $Box->getJavascriptSources();
+						if (method_exists($WidgetClass, 'getJavascriptSources')){
+							if (!in_array($WidgetClass->getBoxCode(), $boxJavascriptSourcesEntered)){
+								$infoBoxJsFiles = $WidgetClass->getJavascriptSources();
 								foreach($infoBoxJsFiles as $infoBoxJsFile){
 									if (file_exists($infoBoxJsFile)){
-										$infoBoxSrouces[] = $infoBoxJsFile;
+										$infoBoxSources[] = $infoBoxJsFile;
 									}
 								}
 
-								$boxJavascriptSourcesEntered[] = $className;
+								$boxJavascriptSourcesEntered[] = $WidgetClass->getBoxCode();
 							}
 						}
 					}
@@ -131,40 +145,50 @@ else {
 			}
 		}
 
-		$Layout = Doctrine_Core::getTable('TemplateManagerLayouts')->find((int)$_GET['layout_id']);
+		$Layout = Doctrine_Manager::getInstance()
+			->getCurrentConnection()
+			->fetchAssoc('select * from template_manager_layouts where layout_id = "' . (int)$_GET['layout_id'] . '"');
 		if ($Layout){
-			$Template = $Layout->Template;
-			foreach($Layout->Containers as $Container){
-				parseContainer($Container);
+			echo '/*' . "\n" .
+				' * Layout Manager Generated Javascript' . "\n" .
+				' * --BEGIN--' . "\n" .
+				' */' . "\n";
+			$Containers = Doctrine_Manager::getInstance()
+				->getCurrentConnection()
+				->fetchAssoc('select * from template_manager_layouts_containers where layout_id = "' . $Layout[0]['layout_id'] . '" and parent_id = 0 order by sort_order');
+			if (sizeof($Containers) > 0){
+				foreach($Containers as $cInfo){
+					if ($cInfo['link_id'] > 0){
+						$Link = Doctrine_Manager::getInstance()
+							->getCurrentConnection()
+							->fetchAssoc('select c.* from template_manager_container_links l left join template_manager_layouts_containers c using(container_id) where l.link_id = "' . $cInfo['link_id'] . '"');
+						parseContainer($Link[0]);
+					}
+					else {
+						parseContainer($cInfo);
+					}
+				}
 			}
+			echo '/*' . "\n" .
+				' * Layout Manager Generated Javascript' . "\n" .
+				' * --END--' . "\n" .
+				' */' . "\n";
 		}
 		?>
 	});
 	<?php
-	 echo file_get_contents(sysConfig::getDirFsCatalog() . 'ext/jQuery/external/reflection/reflection.js');
+		echo file_get_contents(sysConfig::getDirFsCatalog() . 'ext/jQuery/external/reflection/reflection.js');
+		$fileContent = ob_get_contents();
+		ob_end_clean();
 	}
-	$fileContent = ob_get_contents();
-	ob_end_clean();
 
 	function src1_fetch() {
 		global $fileContent, $env;
 		if ($env == 'catalog'){
 			return $fileContent;
 		}
+		return '';
 	}
-
-	define('MINIFY_MIN_DIR', sysConfig::getDirFsCatalog() . 'min');
-
-	/*
-		 * This script implements a Minify server for a single set of sources.
-		 * If you don't want '.php' in the URL, use mod_rewrite...
-		 */
-
-	// setup Minify
-	set_include_path(MINIFY_MIN_DIR . '/lib' . PATH_SEPARATOR . get_include_path());
-	require 'Minify.php';
-	require 'Minify/Cache/File.php';
-	Minify::setCache(new Minify_Cache_File()); // guesses a temp directory
 
 	// setup sources
 	$sources = array(
@@ -172,7 +196,7 @@ else {
 		sysConfig::getDirFsCatalog() . 'ext/jQuery/ui/minified/jquery.ui.core.min.js',
 		sysConfig::getDirFsCatalog() . 'ext/jQuery/ui/minified/jquery.ui.widget.min.js',
 		sysConfig::getDirFsCatalog() . 'ext/jQuery/ui/minified/jquery.effects.core.min.js',
-		sysConfig::getDirFsCatalog() . 'ext/jQuery/ui/minified/jquery.ui.mouse.min.js',
+		sysConfig::getDirFsCatalog() . 'ext/jQuery/ui/jquery.ui.mouse.js',
 		sysConfig::getDirFsCatalog() . 'ext/jQuery/ui/minified/jquery.ui.position.min.js',
 		sysConfig::getDirFsCatalog() . 'ext/jQuery/ui/minified/jquery.ui.draggable.min.js',
 		sysConfig::getDirFsCatalog() . 'ext/jQuery/ui/minified/jquery.ui.droppable.min.js',
@@ -184,6 +208,7 @@ else {
 		sysConfig::getDirFsCatalog() . 'ext/jQuery/ui/jquery.ui.accordion.js',
 		sysConfig::getDirFsCatalog() . 'ext/jQuery/ui/jquery.ui.stars.js',
 		sysConfig::getDirFsCatalog() . 'ext/jQuery/ui/jquery.ui.progressbar.js',
+		sysConfig::getDirFsCatalog() . 'ext/jQuery/ui/jquery.ui.newGrid.js',
 		sysConfig::getDirFsCatalog() . 'ext/jQuery/ui/jquery.effects.fade.js',
 		sysConfig::getDirFsCatalog() . 'ext/jQuery/external/virtualKeyboard/jquery.keyboard.js'
 	);
@@ -194,8 +219,8 @@ else {
 	}
 	else {
 		$sources[] = sysConfig::getDirFsCatalog() . 'includes/javascript/general.js';
-		if(count($infoBoxSrouces)){
-			$sources = array_merge($sources,$infoBoxSrouces);
+		if (count($infoBoxSources)){
+			$sources = array_merge($sources, $infoBoxSources);
 		}
 	}
 
@@ -224,42 +249,25 @@ else {
 		$sources[] = sysConfig::getDirFsCatalog() . 'ext/jQuery/ui/i18n/' . Session::get('languages_code') . '.js';
 	}
 
-	$sources[] = new Minify_Source(array(
-			'id' => 'source1',
-			'getContentFunc' => 'src1_fetch',
-			'contentType' => Minify::TYPE_JS,
-			'lastModified' => time()
-		));
+	//include('includes/classes/minifier/JSMinPlus.php');
+	include('includes/classes/minifier/JSMin.php');
 
-	// handle request
-	$serveArr = array(
-		'files' => $sources,
-		'maxAge' => 86400,
-		'debug' => true,
-		'quiet' => true
-	);
+	$minified = '';
 
-	if (isset($Template) && is_object($Template)){
-		switch($Template->Configuration['JAVASCRIPT_COMPRESSION']->configuration_value){
-			case 'gzip':
-				//ob_start("ob_gzhandler");
-				break;
-			case 'min':
-				$serveArr['debug'] = false;
-				break;
-			case 'min_gzip':
-				//ob_start("ob_gzhandler");
-				$serveArr['debug'] = false;
-				break;
-		}
+	foreach($sources as $source){
+		//$minified .= JSMinPlus::minify($source);
+		$minified .= JSMin::minify(file_get_contents($source)).';';
+
+		//$minified .= file_get_contents($source);
 	}
-	$Result = Minify::serve('Files', $serveArr);
+	//$minified .= src1_fetch();
+	$minified .= JSMin::minify(src1_fetch());
 
-	$JavascriptCache->setAddedHeaders($Result['headers']);
-	//$JavascriptCache->setContentType('text/javascript');
-	$JavascriptCache->setContent($Result['content']);
+	//$JavascriptCache->setAddedHeaders('Content-Type: application/x-javascript');
+	$JavascriptCache->setContentType('text/javascript');
+	$JavascriptCache->setContent($minified);
 	$JavascriptCache->setExpires(time() + (60 * 60 * 24 * 2));
-	$JavascriptCache->setLastModified($Result['headers']['Last-Modified']);
+	$JavascriptCache->setLastModified(gmdate("D, d M Y H:i:s"));
 	$JavascriptCache->store();
 
 	$JavascriptCache->output(false, true);

@@ -42,7 +42,7 @@
       if ($params == '') $params = array();
 
 // Make sure we use the correct linfeed sequence
-      if (EMAIL_LINEFEED == 'CRLF') {
+      if (sysConfig::get('EMAIL_LINEFEED') == 'CRLF') {
         $this->lf = "\r\n";
       } else {
         $this->lf = "\n";

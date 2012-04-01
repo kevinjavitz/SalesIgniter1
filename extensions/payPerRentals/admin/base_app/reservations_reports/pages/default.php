@@ -286,7 +286,7 @@
 
 	EventManager::notify('ProductInventoryReportsListingQueryBeforeExecute', &$Qproducts);
 
-	$tableGrid = htmlBase::newElement('grid');
+	$tableGrid = htmlBase::newElement('newGrid');
 	if (isset($_GET['page']) && !empty($_GET['page'])){
 		$page = $_GET['page'];
 	}else{

@@ -6,7 +6,7 @@ class MultiStore_admin_admin_members_default extends Extension_multiStore {
 	}
 
 	public function load(){
-		if ($this->enabled === false) return;
+		if ($this->isEnabled() === false) return;
 
 		EventManager::attachEvents(array(
 				'AdminMembersNewEditWindowBeforeDraw'

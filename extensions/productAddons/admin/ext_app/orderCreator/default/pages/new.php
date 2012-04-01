@@ -17,7 +17,7 @@ class productAddons_admin_orderCreator_default_new extends Extension_productAddo
 
 	public function load(){
 		global $App;
-		if ($this->enabled === false) return;
+		if ($this->isEnabled() === false) return;
 
 		EventManager::attachEvents(array(
 			'OrderProductAfterProductNameEdit'

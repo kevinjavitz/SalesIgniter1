@@ -14,104 +14,12 @@ if ($messageStack->size('headerStack') > 0) {
 	echo $messageStack->output('headerStack');
 }
 if (Session::exists('login_id') === true){
-?>
-<div style="float:left;" class="adminLogo"><span><a href="<?php echo itw_app_link(null, 'index', 'default');?>" class="ui-corner-all" style="text-decoration:none;padding:.75em;"><img src="<?php echo sysConfig::getDirWsCatalog(). 'images/'.sysConfig::get('STORE_LOGO');?>"/></a></span></div>
-<div style="float:left;height:36px;padding-right:10px;padding-top:5px;">
-<?php
-$contents = EventManager::notifyWithReturn('AdminHeaderLeftAddContent');
-if (!empty($contents)){
-	foreach($contents as $content){
-		echo '<div class="headerBlock" style="float:left;">' .
-		$content .
-		'</div>';
-	}
-}
-	if(sysPermissions::isSimple()){
-		$contents = EventManager::notifyWithReturn('AdminHeaderRightAddContent');
-		if (!empty($contents)){
-			foreach($contents as $content){
-				echo '<div class="headerBlock" style="display:none;">' .
-					$content .
-					'</div>';
-			}
-		}
-		$Admin = Doctrine_Core::getTable('Admin')->findOneByAdminId((int)Session::get('login_id'));
-		$AdminFavs = Doctrine_Core::getTable('AdminFavorites')->find($Admin->admin_favs_id);
-		if($AdminFavs){
-			$favorites_links = explode(';', $AdminFavs->favorites_links);
-			$favorites_names = explode(';', $AdminFavs->favorites_names);
-		}else{
-			$favorites_links = explode(';', $Admin->favorites_links);
-			$favorites_names = explode(';', $Admin->favorites_names);
-		}
-
-		for($i = 0;$i < sizeof($favorites_links); $i++){
-			if(!empty($favorites_links[$i])){
-				$myItem = $favorites_links[$i];
-
-				$htmlButton = htmlBase::newElement('button')
-				->setName('myfavbutton'.$i)
-				->setHref($myItem)
-				->setText($favorites_names[$i]);
-				echo $htmlButton->draw().'&nbsp;&nbsp;&nbsp;';
-
-			}
-		}
-		$htmlButton = htmlBase::newElement('button')
-			->setName('logoff')
-			->setHref(itw_app_link('action=logoff', 'login', 'default'))
-			->setText('Logoff');
-		echo $htmlButton->draw().'&nbsp;&nbsp;&nbsp;'.'</div><div style="clear:both;"></div>';
-	}else{
-?>
-
-<div class="headerBlock" style="float:left;"><span><a href="<?php echo itw_app_link(null, 'index', 'default');?>" class="ui-corner-all" style="text-decoration:none;padding:.75em;"><b>Home</b></a></span></div>
-<div class="headerBlock" style="float:left;"><span><a href="<?php echo itw_app_link(null, 'admin_account', 'default');?>" class="ui-corner-all" style="text-decoration:none;padding:.75em;"><b>My Account</b></a></span></div>
-<div class="headerBlock" style="float:left;"><span><a id="addToFavorites" href="<?php echo itw_app_link('action=addToFavorites', 'index', 'default');?>" class="ui-corner-all" style="text-decoration:none;padding:.75em;"><b>Add To Favorites</b></a></span></div>
-<div class="headerMenuHeadingBlock" style="float:left;"><span><a href="<?php echo itw_app_link('action=clearCache', 'index', 'default');?>" class="ui-corner-all" style="text-decoration:none;padding:.75em;"><b>Clear Cache</b></a></span></div>
-<div class="headerBlock" style="float:left;"><span><a href="<?php echo itw_app_link('action=logoff', 'login', 'default');?>" class="ui-corner-all" style="text-decoration:none;padding:.75em;"><b>Logoff</b></a></span></div>
-</div>
-<div style="float:right;padding-right:10px;padding-top:5px;">
-<?php
-	$langDrop = htmlBase::newElement('selectbox')
-	->setName('language')
-	->selectOptionByValue(Session::get('languages_code'))
-	->attr('onchange', 'this.form.submit()');
-	foreach(sysLanguage::getLanguages() as $lInfo){
-		$langDrop->addOption($lInfo['code'], $lInfo['name']);
-	}
-	echo '<div class="headerBlock" style="float:right;margin:0.5em;"><form name="changeLanguage" action="' . itw_app_link(tep_get_all_get_params(array('app', 'appPage', 'action')), $App->getAppName(), $App->getAppPage()) . '" method="get">Language: ' . $langDrop->draw() . '</form></div>';
-$contents = EventManager::notifyWithReturn('AdminHeaderRightAddContent');
-if (!empty($contents)){
-	foreach($contents as $content){
-		echo '<div class="headerBlock" style="float:right;margin:0 .5em;">' .
-		$content .
-		'</div>';
-	}
-}
-?>
-</div><div style="clear:both;"></div>
-<div id="headerMenu_wrapper" class="ui-widget"><?php
-	$boxes = array(
-		'configuration.php',
-		'catalog.php',
-		'cms.php',
-		'modules.php',
-		'customers.php',
-		'tools.php',
-		'rental_membership.php',
-		'marketing.php',
-		'data_management.php'
-	);
-
-	EventManager::notify('AdminNavMenuAddBox', &$boxes);
-	
 	function parseMenuItem($item, $isRoot = false, $isLast = false){
 		global $firstAdded;
 		$itemTemplate = '';
 		if(isset($item['text'])){
 			$itemLink = htmlBase::newElement('a')
-			->addClass('ui-corner-all');
+				->addClass('ui-corner-all');
 			if ($item['link'] !== false){
 				$itemLink->setHref($item['link']);
 			}
@@ -151,24 +59,93 @@ if (!empty($contents)){
 
 			$itemTemplate .= '</li>';
 		}
-		
+
 		return $itemTemplate;
 	}
 
 	$firstAdded = false;
-	echo '<div id="headerMenu" class="ui-navigation-menu ui-widget-content ui-corner-all"><ol>';
-	foreach($boxes as $boxIdx => $boxFileName){
-		if (strstr($boxFileName, '/') || strstr($boxFileName, '\\')){
-			require($boxFileName);
-		}else{
-			require(sysConfig::get('DIR_WS_BOXES') . $boxFileName);
-		}
-		echo parseMenuItem($contents, true, (!isset($boxes[$boxIdx + 1])));
-	}
-	echo '</ol></div>';
-?></div>
+?>
+<div class="headerBarOne">
+	<a href="<?php echo itw_app_link(null, 'index', 'default');?>" class="ui-corner-all">Home</a> |
+	<a href="<?php echo itw_app_link(null, 'admin_account', 'default');?>" class="ui-corner-all">My Account</a> |
+	<a href="<?php echo itw_app_link('action=addToFavorites', 'index', 'default');?>" id="addToFavorites" class="ui-corner-all">Add To Favorites</a> |
+	<a href="<?php echo itw_app_link('action=clearCache', 'index', 'default');?>" id="clearCache" class="ui-corner-all">Clear Cache</a> |
+	<a href="<?php echo itw_app_link('action=logoff', 'login', 'default');?>" class="ui-corner-all">Logoff</a> |
 	<?php
-	}
+		$langDrop = htmlBase::newElement('selectbox')
+			->setName('language')
+			->selectOptionByValue(Session::get('languages_code'))
+			->attr('onchange', 'this.form.submit()');
+		foreach(sysLanguage::getLanguages() as $lInfo){
+			$langDrop->addOption($lInfo['code'], $lInfo['name']);
+		}
+		echo '<form name="changeLanguage" action="' . itw_app_link(tep_get_all_get_params(array('app', 'appPage', 'action')), $App->getAppName(), $App->getAppPage()) . '" method="get">Language: ' . $langDrop->draw() . '</form>';
+	?>
+</div>
+<div class="headerBarTwo">
+	<a href="<?php echo itw_app_link(null, 'index', 'default');?>" class="ui-corner-all"><img src="<?php echo sysConfig::getDirWsCatalog().'images/logo.png';?>"/></a>
+	<div style="float:right;height:36px;padding-right:10px;padding-top:5px;font-size:inherit;">
+		<?php
+		$contents = EventManager::notifyWithReturn('AdminHeaderRightAddContent');
+		if (!empty($contents)){
+			foreach($contents as $content){
+				echo '<div style="margin:0 .5em;font-size:inherit;">' .
+					$content .
+					'</div>';
+			}
+		}
+		?>
+	</div>
+</div>
+<div class="headerBarThree"><?php
+	if (sysPermissions::isSimple()){
+		$Admin = Doctrine_Core::getTable('Admin')->find((int)Session::get('login_id'));
+		$AdminFavs = Doctrine_Core::getTable('AdminFavorites')->find($Admin->admin_favs_id);
+		if($AdminFavs){
+			$favorites_links = explode(';', $AdminFavs->favorites_links);
+			$favorites_names = explode(';', $AdminFavs->favorites_names);
+		}else{
+			$favorites_links = explode(';', $Admin->favorites_links);
+			$favorites_names = explode(';', $Admin->favorites_names);
+		}
 
+		echo '<div id="headerMenu" class="ui-navigation-menu ui-widget-content ui-corner-all"><ol>';
+		for($i = 0;$i < sizeof($favorites_links); $i++){
+			if(!empty($favorites_links[$i])){
+				echo parseMenuItem(array(
+					'text' => $favorites_names[$i],
+					'link' => $favorites_links[$i]
+				), true, (!isset($favorites_names[$i + 1])));
+			}
+		}
+		echo '</ol></div>';
+	}else{
+		$boxes = array(
+			'configuration.php',
+			'catalog.php',
+			'cms.php',
+			'modules.php',
+			'customers.php',
+			'tools.php',
+			'marketing.php',
+			'data_management.php'
+		);
+
+		EventManager::notify('AdminNavMenuAddBox', &$boxes);
+
+		echo '<div id="headerMenu" class="ui-navigation-menu ui-widget-content ui-corner-all"><ol>';
+		foreach($boxes as $boxIdx => $boxFileName){
+			if (strstr($boxFileName, '/') || strstr($boxFileName, '\\')){
+				require($boxFileName);
+			}else{
+				require(sysConfig::get('DIR_WS_BOXES') . $boxFileName);
+			}
+			echo parseMenuItem($contents, true, (!isset($boxes[$boxIdx + 1])));
+		}
+		echo '</ol></div>';
+	}
+?></div>
+
+	<?php
 }
 ?>

@@ -1210,10 +1210,53 @@ class PurchaseType_reservation extends PurchaseTypeAbstract {
 					$button = htmlBase::newElement('button')
 					->setType('submit')
 					->setName('reserve_now')
+					->addClass('pprResButton')
 					->setText(sysLanguage::get('TEXT_BUTTON_PAY_PER_RENTAL'));
 
 					if ($this->hasInventory() === false){
 						$button->disable();
+					}
+
+					if(sysConfig::get('EXTENSION_PAY_PER_RENTALS_USE_ZIPCODES_SHIPPING') == 'True'){
+						ob_start();
+						?>
+					<script type="text/javascript">
+						$(document).ready(function(){
+							var hasZip = <?php echo (Session::exists('zipClient') == false? 'false':'true');?>;
+							$('.pprResButton').click(function(){
+								var self = $(this);
+								if(hasZip == false){
+									$( '<div id="dialog-mesage-ppr" title="Select Zip"><div class="zipBD"><span class="zip_text">Zip: </span><input class="zipInput" name="zipClient" ></div></div>' ).dialog({
+										modal: false,
+										autoOpen: true,
+										buttons: {
+											Submit: function() {
+												var dial = $(this);
+												$.ajax({
+													cache: false,
+													url: js_app_link('appExt=multiStore&app=zip&appPage=default&action=selectZip'),
+													type: 'post',
+													data: $('#dialog-mesage-ppr *').serialize(),
+													dataType: 'json',
+													success: function (data){
+														hasZip = true;
+														dial.dialog( "close" );
+														self.click();
+													}
+												});
+											}
+										}
+									});
+									return false;
+								}
+							});
+						});
+
+					</script>
+						<?php
+						   $scriptBut = ob_get_contents();
+							ob_end_clean();
+							$priceTableHtmlPrices.= $scriptBut;
 					}
 
 					$link = itw_app_link('appExt=payPerRentals&products_id=' . $_GET['products_id'], 'build_reservation', 'default');
@@ -1917,8 +1960,6 @@ class PurchaseType_reservation extends PurchaseTypeAbstract {
 	public function getPricingTable(){
 		global $currencies;
 		$table = '';
-		if ($this->inventoryCls->hasInventory($this->typeLong)){
-
 			$table .= '<table cellpadding="0" cellspacing="0" border="0">';
 
 			$QPricePerRentalProducts = Doctrine_Query::create()
@@ -1937,7 +1978,6 @@ class PurchaseType_reservation extends PurchaseTypeAbstract {
 			}
 
 			$table .= '</table>';
-		}
 		return $table;
 	}
 

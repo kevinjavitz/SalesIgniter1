@@ -17,7 +17,7 @@ class payPerRentals_catalog_checkout_default extends Extension_payPerRentals {
 	}
 	
 	public function load(){
-		if ($this->enabled === false) return;
+		if ($this->isEnabled() === false) return;
 		
 		EventManager::attachEvents(array(
 			'CheckoutSetShippingStatus',
@@ -128,7 +128,7 @@ class payPerRentals_catalog_checkout_default extends Extension_payPerRentals {
 
 	public function CheckoutSetShippingStatus(){
 		global $appExtension, $order, $ShoppingCart, $onePageCheckout;
-		if ($this->enabled === false) return;
+		if ($this->isEnabled() === false) return;
 		
 		$reservationProducts = 0;
 
@@ -207,7 +207,10 @@ class payPerRentals_catalog_checkout_default extends Extension_payPerRentals {
 							array('text' => '(' . $currencies->format($shippingInfo['cost'], true, $order->info['currency'], $order->info['currency_value']) . ')')
 						)
 					);
-				}else if($Module->getType() == 'Order'){
+				}elseif($Module->getType() == 'Order' && sysConfig::get('EXTENSION_PAY_PER_RENTALS_SHOW_SHIPPING') == 'False'){
+
+				}
+				else if($Module->getType() == 'Order'){
 					$showStoreMethods = true;
 				}
 			}else{

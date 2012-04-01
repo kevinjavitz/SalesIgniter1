@@ -5,4 +5,5 @@
 	<version>1.1</version>
 	<author>Stephen Walker ( http://www.itwebexperts.com )</author>
 	<status_key>EXTENSION_MULTI_STORE_ENABLED</status_key>
+	<installed_key>EXTENSION_MULTI_STORE_INSTALLED</installed_key>
 </data>

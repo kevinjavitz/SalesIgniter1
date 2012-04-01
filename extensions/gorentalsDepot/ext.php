@@ -18,7 +18,7 @@ class Extension_gorentalsDepot extends ExtensionBase {
 	
 	public function init(){
 		global $App, $appExtension, $Template;
-		if ($this->enabled === false) return;
+		if ($this->isEnabled() === false) return;
 		
 		$currentFile = basename($_SERVER['PHP_SELF']);
 		

@@ -1,7 +1,7 @@
 <?php
 	require(sysConfig::getDirFsCatalog() . 'includes/classes/extensionInstaller.php');
 	
-	$extension = basename($_GET['ext']);
+	$extension = basename($_GET['extension']);
 	$extensionDir = sysConfig::getDirFsCatalog() . 'extensions/' . $extension . '/';
 	if (file_exists($extensionDir . 'install/install.php')) {
 		$className = $extension . 'Install';

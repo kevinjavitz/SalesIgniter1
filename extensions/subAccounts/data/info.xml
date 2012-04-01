@@ -5,4 +5,5 @@
 	<author>Cristian Arcu( http://www.itwebexperts.com )</author>
 	<status_key>EXTENSION_SUBACCOUNTS_ENABLED</status_key>
 	<description><![CDATA[Regular customers can add subaccounts like for child to see only movies for theirs age]]></description>
+	<installed_key>EXTENSION_SUBACCOUNTS_INSTALLED</installed_key>
 </data>

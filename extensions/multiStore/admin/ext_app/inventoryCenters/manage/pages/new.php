@@ -18,7 +18,7 @@ class multiStore_admin_inventoryCenters_manage_new extends Extension_multiStore 
 	
 	public function load(){
 		global $appExtension;
-		if ($this->enabled === false) return;
+		if ($this->isEnabled() === false) return;
 		$appExtension->registerAsResource(__CLASS__, $this);
 
 		EventManager::attachEvents(array(

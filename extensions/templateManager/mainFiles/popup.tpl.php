@@ -47,29 +47,43 @@ if (isset($_GET['cPath']) && $thisApp == 'index'){
 	$thisAppPage = 'index.php';
 }
 
-$Qpages = mysql_query('select layout_id from template_pages where extension = "' . $thisExtension . '" and application = "' . $thisApp . '" and page = "' . $thisAppPage . '"');
-$Page = mysql_fetch_assoc($Qpages);
+$Qpages = Doctrine_Manager::getInstance()
+	->getCurrentConnection()
+	->fetchAssoc('select layout_id from template_pages where extension = "' . $thisExtension . '" and application = "' . $thisApp . '" and page = "' . $thisAppPage . '"');
+$Page = $Qpages[0];
 $pageLayouts = $Page['layout_id'];
 
-$QtemplateId = mysql_query('select template_id from template_manager_templates_configuration where configuration_key = "DIRECTORY" and configuration_value = "' . $thisTemplate . '"');
-$TemplateId = mysql_fetch_assoc($QtemplateId);
+$QtemplateId = Doctrine_Manager::getInstance()
+	->getCurrentConnection()
+	->fetchAssoc('select template_id from template_manager_templates_configuration where configuration_key = "DIRECTORY" and configuration_value = "' . $thisTemplate . '"');
+$TemplateId = $QtemplateId[0];
 
 $Page['layout_id'] = implode(',',array_filter(explode(',',$Page['layout_id'])));
-$QpageLayout = mysql_query('select layout_id from template_manager_layouts where template_id = "' . $TemplateId['template_id'] . '" and layout_id IN(' . $Page['layout_id'] . ')');
-$PageLayoutId = mysql_fetch_assoc($QpageLayout);
+if(isset($Page['layout_id']) && !empty($Page['layout_id'])){
+	$QpageLayout = Doctrine_Manager::getInstance()
+		->getCurrentConnection()
+		->fetchAssoc('select layout_id from template_manager_layouts where template_id = "' . $TemplateId['template_id'] . '" and layout_id IN(' . $Page['layout_id'] . ')');
+	if(isset($QpageLayout[0])){
+		$PageLayoutId = $QpageLayout[0];
+	}
+}
 
 if(!isset($_GET['lID'])){
-	if(!isset($Page['layout_id']) || empty($Page['layout_id'])){
-		$QpageLayout = mysql_query('select layout_id from template_manager_layouts where template_id = "' . $TemplateId['template_id'] . '" ');
+	if(!isset($QpageLayout[0])){
+		$QpageLayout = Doctrine_Manager::getInstance()
+			->getCurrentConnection()
+			->fetchAssoc('select layout_id from template_manager_layouts where template_id = "' . $TemplateId['template_id'] . '" ');
 		$tLayouts = array();
-		while($PageLayoutId = mysql_fetch_assoc($QpageLayout)){
+		foreach($QpageLayout as $PageLayoutId){
 			$tLayouts[] = $PageLayoutId['layout_id'];
 		}
 		$maxLayout = -1;
 		$maxCount = -1;
 		foreach($tLayouts as $iLayout){
-			$Qpages = mysql_query('select count(*) from template_pages where FIND_IN_SET("'.$iLayout.'",layout_id)');
-			$PageCount = mysql_fetch_assoc($Qpages);
+			$Qpages = Doctrine_Manager::getInstance()
+				->getCurrentConnection()
+				->fetchAssoc('select count(*) from template_pages where FIND_IN_SET("'.$iLayout.'",layout_id)');
+			$PageCount = $Qpages[0];
 			if($maxCount < $PageCount){
 				$maxCount = $PageCount;
 				$maxLayout = $iLayout;
@@ -77,7 +91,9 @@ if(!isset($_GET['lID'])){
 		}
 		$PageLayoutId['layout_id'] = $maxLayout;
 		$pageLayouts .= ','.$maxLayout;
-		mysql_query('update template_pages set layout_id = "'.$pageLayouts.'" where extension = "' . $thisExtension . '" and application = "' . $thisApp . '" and page = "' . $thisAppPage . '"');
+		Doctrine_Manager::getInstance()
+			->getCurrentConnection()
+			->exec('update template_pages set layout_id = "'.$pageLayouts.'" where extension = "' . $thisExtension . '" and application = "' . $thisApp . '" and page = "' . $thisAppPage . '"');
 	}
 
 	$layout_id = $PageLayoutId['layout_id'];

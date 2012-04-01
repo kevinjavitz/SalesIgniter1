@@ -20,7 +20,7 @@ class Extension_attributes extends ExtensionBase {
 
 	public function init(){
 		global $App, $appExtension, $Template;
-		if ($this->enabled === false)
+		if ($this->isEnabled() === false)
 			return;
 
 		EventManager::attachEvents(array(

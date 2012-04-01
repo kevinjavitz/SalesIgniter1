@@ -34,7 +34,7 @@
       $this->html_images = array();
       $this->headers = array();
 
-      if (EMAIL_LINEFEED == 'CRLF') {
+      if (sysConfig::get('EMAIL_LINEFEED') == 'CRLF') {
         $this->lf = "\r\n";
       } else {
         $this->lf = "\n";

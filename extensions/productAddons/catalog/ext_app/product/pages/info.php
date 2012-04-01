@@ -7,7 +7,7 @@
 		}
 
 		public function load(){
-			if ($this->enabled === false) return;
+			if ($this->isEnabled() === false) return;
 
 			EventManager::attachEvent('ProductInfoPurchaseBoxOnLoad', null, $this);
 		}

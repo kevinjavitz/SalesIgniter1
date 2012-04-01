@@ -6,8 +6,7 @@
 
 	$tableGrid = htmlBase::newElement('newGrid')
 	->usePagination(false)
-	->setPageLimit((isset($_GET['limit']) ? (int)$_GET['limit']: 25))
-	->setCurrentPage((isset($_GET['page']) ? (int)$_GET['page'] : 1))
+
 	->setQuery($QdiffReports);
 	
 	$tableGrid->addButtons(array(

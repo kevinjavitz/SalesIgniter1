@@ -5,4 +5,5 @@
 	<author>Stephen Walker ( http://www.itwebexperts.com )</author>
 	<status_key>EXTENSION_WAITINGLIST_ENABLED</status_key>
     <description><![CDATA[Waiting list is to allow guests/customers to add themselves to a list to be notified when a product in is stock again, this script is run via a cron script.<br><br>Cron Script Location<br>http://mydomain.com/path/to/catalog/waitingList/notify/cron.php]]></description>
+	<installed_key>EXTENSION_WAITINGLIST_INSTALLED</installed_key>
 </data>

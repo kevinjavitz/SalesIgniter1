@@ -2,7 +2,8 @@
 	<name>Template Manager</name>
 	<key>templateManager</key>
 	<version>1.0</version>
-	<author>Cristian Arcu ( http://www.itwebexperts.com )</author>
+	<author>Stephen Walker ( http://www.itwebexperts.com )</author>
 	<status_key>EXTENSION_TEMPLATEMANAGER_ENABLED</status_key>
+	<installed_key>EXTENSION_TEMPLATEMANAGER_INSTALLED</installed_key>
     <description><![CDATA[Template Manager is an extension used to modify the template to your needs]]></description>
 </data>

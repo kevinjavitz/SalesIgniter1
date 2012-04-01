@@ -1,9 +1,10 @@
 <?php
-	$Qprogress = tep_db_query('select message, percentage from progress_bar where name = "' . $_GET['barName'] . '"');
-	$progress = tep_db_fetch_array($Qprogress);
+	$progress = Doctrine_Manager::getInstance()
+		->getCurrentConnection()
+		->fetchAssoc('select message, percentage from progress_bar where name = "' . $_GET['barName'] . '"');
 	
 	EventManager::attachActionResponse(array(
-		'message' => $progress['message'],
-		'percent' => $progress['percentage']
+		'message' => $Progress[0]['message'],
+		'percent' => $Progress[0]['percentage']
 	), 'json');
 ?>

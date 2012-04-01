@@ -4,4 +4,5 @@
 	<version>1.0</version>
 	<author>Stephen Walker ( http://www.itwebexperts.com )</author>
 	<status_key>EXTENSION_PAY_PER_RENTALS_ENABLED</status_key>
+	<installed_key>EXTENSION_PAY_PER_RENTALS_INSTALLED</installed_key>
 </data>

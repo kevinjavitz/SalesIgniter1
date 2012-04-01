@@ -3,10 +3,9 @@
 	->from('AddressFormat')
 	->orderBy('address_format_id asc');
 	
-	$tableGrid = htmlBase::newElement('grid')
+	$tableGrid = htmlBase::newElement('newGrid')
 	->usePagination(true)
-	->setPageLimit((isset($_GET['limit']) ? (int)$_GET['limit']: 25))
-	->setCurrentPage((isset($_GET['page']) ? (int)$_GET['page'] : 1))
+
 	->setQuery($QaddressFormat);
 
 	$tableGrid->addHeaderRow(array(

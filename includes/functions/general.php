@@ -41,17 +41,26 @@ function getLayout($app, $page, $ext){
 	$thisExtension = $ext;
 	$thisAppPage = $page;
 
-	$Qpages = mysql_query('select layout_id from template_pages where extension = "' . $thisExtension . '" and application = "' . $thisApp . '" and page = "' . $thisAppPage . '"');
-	$Page = mysql_fetch_assoc($Qpages);
+	$Qpages = Doctrine_Manager::getInstance()
+		->getCurrentConnection()
+		->fetchAssoc('select layout_id from template_pages where extension = "' . $thisExtension . '" and application = "' . $thisApp . '" and page = "' . $thisAppPage . '"');
+
+	$Page = $Qpages[0];
 	//$pageLayouts = $Page['layout_id'];
 
-	$QtemplateId = mysql_query('select template_id from template_manager_templates_configuration where configuration_key = "DIRECTORY" and configuration_value = "' . $thisTemplate . '"');
-	$TemplateId = mysql_fetch_assoc($QtemplateId);
+	$QtemplateId = Doctrine_Manager::getInstance()
+		->getCurrentConnection()
+		->fetchAssoc('select template_id from template_manager_templates_configuration where configuration_key = "DIRECTORY" and configuration_value = "' . $thisTemplate . '"');
+	$TemplateId = $QtemplateId[0];
 
 	$Page['layout_id'] = implode(',',array_filter(explode(',',$Page['layout_id'])));
-	$QpageLayout = mysql_query('select layout_id from template_manager_layouts where template_id = "' . $TemplateId['template_id'] . '" and layout_id IN(' . $Page['layout_id'] . ')');
-	if(mysql_num_rows($QpageLayout) > 0){
-		$PageLayoutId = mysql_fetch_assoc($QpageLayout);
+	if(isset($Page['layout_id']) && !empty($Page['layout_id'])){
+		$QpageLayout = Doctrine_Manager::getInstance()
+		->getCurrentConnection()
+		->fetchAssoc('select layout_id from template_manager_layouts where template_id = "' . $TemplateId['template_id'] . '" and layout_id IN(' . $Page['layout_id'] . ')');
+	}
+	if(isset($QpageLayout) && sizeof($QpageLayout) > 0){
+		$PageLayoutId = $QpageLayout[0];
 		$layout_id = $PageLayoutId['layout_id'];
 	}else{
 		$layout_id = '';
@@ -66,8 +75,10 @@ function getAssoc($app, $page, $ext){
 	$thisAppPage = $page;
 
 	//echo $app.'-'.$page;
-	$Qpages = mysql_query('select associative_url from template_pages where extension = "' . $thisExtension . '" and application = "' . $thisApp . '" and page = "' . $thisAppPage . '"');
-	$Page = mysql_fetch_assoc($Qpages);
+	$Qpages = Doctrine_Manager::getInstance()
+		->getCurrentConnection()
+		->fetchAssoc('select associative_url from template_pages where extension = "' . $thisExtension . '" and application = "' . $thisApp . '" and page = "' . $thisAppPage . '"');
+	$Page = $Qpages[0];
 	$pageAssocUrl = explode(',',$Page['associative_url']);
 	$i = count($pageAssocUrl) - 1;
 	while($pageAssocUrl[$i] == '' && $i >=0){
@@ -84,9 +95,9 @@ function tep_redirect($url) {
       tep_redirect(itw_app_link(null, 'index', 'default', 'NONSSL', false));
     }
 
-    if ( (ENABLE_SSL == true) && (getenv('HTTPS') == 'on') ) { // We are loading an SSL page
-      if (substr($url, 0, strlen(HTTP_SERVER)) == HTTP_SERVER) { // NONSSL url
-        $url = HTTPS_SERVER . substr($url, strlen(HTTP_SERVER)); // Change it to SSL
+	if ((sysConfig::get('ENABLE_SSL') == true) && (getenv('HTTPS') == 'on')){ // We are loading an SSL page
+		if (substr($url, 0, strlen(sysConfig::get('HTTP_SERVER'))) == sysConfig::get('HTTP_SERVER')){ // NONSSL url
+			$url = sysConfig::get('HTTPS_SERVER') . substr($url, strlen(sysConfig::get('HTTP_SERVER'))); // Change it to SSL
       }
     }
 	$parsedUrl = parse_url($url);
@@ -276,6 +287,23 @@ function tep_get_all_get_params($exclude_array = '') {
 	return $ResultSet;
 }
 
+function tep_get_uprid($prid, $params) {
+	$uprid = $prid;
+	if ( (is_array($params)) && (!strstr($prid, '{')) ) {
+		while (list($option, $value) = each($params)) {
+			$uprid = $uprid . '{' . $option . '}' . $value;
+		}
+	}
+
+	return $uprid;
+}
+
+function tep_get_prid($uprid) {
+	$pieces = explode('{', $uprid);
+
+	return $pieces[0];
+}
+
 ////
 // Alias function to tep_get_countries, which also returns the countries iso codes
   function tep_get_countries_with_iso_codes($countries_id) {
@@ -336,28 +364,35 @@ function tep_get_all_get_params($exclude_array = '') {
 ////
 // Returns the zone (State/Province) name
 // TABLES: zones
-  function tep_get_zone_name($country_id, $zone_id, $default_zone) {
-    $zone_query = tep_db_query("select zone_name from " . TABLE_ZONES . " where zone_country_id = '" . (int)$country_id . "' and zone_id = '" . (int)$zone_id . "'");
-    if (tep_db_num_rows($zone_query)) {
-      $zone = tep_db_fetch_array($zone_query);
-      return $zone['zone_name'];
-    } else {
-      return $default_zone;
-    }
-  }
+function tep_get_zone_name($country_id, $zone_id, $default_zone) {
+	$Zones = Doctrine_Core::getTable('Zones')->getRecordInstance();
+
+	$zoneName = $Zones->getZoneName((int)$zone_id, (int)$country_id);
+	if ($zoneName){
+		return $zoneName;
+	}
+	else {
+		return $default_zone;
+	}
+}
 
 ////
 // Returns the zone (State/Province) code
 // TABLES: zones
-  function tep_get_zone_code($country_id, $zone_id, $default_zone) {
-    $zone_query = tep_db_query("select zone_code from " . TABLE_ZONES . " where zone_country_id = '" . (int)$country_id . "' and zone_id = '" . (int)$zone_id . "'");
-    if (tep_db_num_rows($zone_query)) {
-      $zone = tep_db_fetch_array($zone_query);
-      return $zone['zone_code'];
-    } else {
-      return $default_zone;
-    }
-  }
+function tep_get_zone_code($country_id, $zone_id, $default_zone) {
+	$ResultSet = Doctrine_Manager::getInstance()
+		->getCurrentConnection()
+		->fetchArray("select zone_code from zones where zone_country_id = '" . (int)$country_id . "' and zone_id = '" . (int)$zone_id . "'");
+
+	if (sizeof($ResultSet) <= 0){
+		$state_prov_code = $default_zone;
+	}
+	else {
+		$state_prov_code = $ResultSet[0]['zone_code'];
+	}
+
+	return $state_prov_code;
+}
 
 ////
 // Wrapper function for round()
@@ -406,7 +441,7 @@ function tep_get_all_get_params($exclude_array = '') {
 	->leftJoin('z.ZonesToGeoZones zt')
 	->where('zt.zone_country_id is null or zt.zone_country_id = "0" or zt.zone_country_id = "' . (int)$country_id . '"')
 	->andWhere('r.tax_class_id = ?',(int)$class_id)
-	->andWhere('(zt.zone_id= '.$zone_id.' OR zt.zone_id < 1)')
+	->andWhere('(zt.zone_id= "' . $zone_id . '" OR zt.zone_id < 1)')
 	->orderBy('r.tax_priority')
 	->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 
@@ -432,7 +467,7 @@ function tep_get_all_get_params($exclude_array = '') {
 	->leftJoin('z.ZonesToGeoZones zt')
 	->where('zt.zone_country_id is null or zt.zone_country_id = "0" or zt.zone_country_id = "' . (int)$country_id . '"')
 	->andWhere('r.tax_class_id = ?',(int)$class_id)
-	->andWhere('(zt.zone_id='.$zone_id.' OR zt.zone_id < 1)')
+	->andWhere('(zt.zone_id="' . $zone_id . '" OR zt.zone_id < 1)')
 	->orderBy('r.tax_priority')
 	->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 
@@ -457,74 +492,83 @@ function tep_get_all_get_params($exclude_array = '') {
 
 ////
 // Add tax to a products price
-  function tep_add_tax($price, $tax) {
-    global $currencies;
-    //die(DISPLAY_PRICE_WITH_TAX);
+function tep_add_tax($price, $tax) {
+	global $currencies;
+	//die(DISPLAY_PRICE_WITH_TAX);
 
-    if ( (sysConfig::get('DISPLAY_PRICE_WITH_TAX') == 'true') && ($tax > 0) ) {
-      return tep_round($price, $currencies->currencies[sysConfig::get('DEFAULT_CURRENCY')]['decimal_places']) + tep_calculate_tax($price, $tax);
-    } else {
-      return tep_round($price, $currencies->currencies[sysConfig::get('DEFAULT_CURRENCY')]['decimal_places']);
-    }
-  }
+	if ((sysConfig::get('DISPLAY_PRICE_WITH_TAX') == 'true') && ($tax > 0)){
+		return tep_round($price, $currencies->currencies[Session::get('currency')]['decimal_places']) + tep_calculate_tax($price, $tax);
+	}
+	else {
+		return tep_round($price, $currencies->currencies[Session::get('currency')]['decimal_places']);
+	}
+}
 
 // Calculates Tax rounding the result
-  function tep_calculate_tax($price, $tax) {
-    global $currencies;
+function tep_calculate_tax($price, $tax) {
+	global $currencies;
 
-    return tep_round($price * $tax / 100, $currencies->currencies[sysConfig::get('DEFAULT_CURRENCY')]['decimal_places']);
-  }
+	return tep_round($price * $tax / 100, $currencies->currencies[Session::get('currency')]['decimal_places']);
+}
 
 ////
 // Return the number of products in a category
 // TABLES: products, products_to_categories, categories
-  function tep_count_products_in_category($category_id, $include_inactive = false) {
-    $products_count = 0;
-    if ($include_inactive == true) {
-      $products_query = tep_db_query("select count(*) as total from " . TABLE_PRODUCTS . " p, " . TABLE_PRODUCTS_TO_CATEGORIES . " p2c where p.products_id = p2c.products_id and p2c.categories_id = '" . (int)$category_id . "'");
-    } else {
-      $products_query = tep_db_query("select count(*) as total from " . TABLE_PRODUCTS . " p, " . TABLE_PRODUCTS_TO_CATEGORIES . " p2c where p.products_id = p2c.products_id and p.products_status = '1' and p2c.categories_id = '" . (int)$category_id . "'");
-    }
-    $products = tep_db_fetch_array($products_query);
-    $products_count += $products['total'];
+function tep_count_products_in_category($category_id, $include_inactive = false) {
+	$products_count = 0;
+	if ($include_inactive == true){
+		$query = "select count(*) as total from products p, products_to_categories p2c where p.products_id = p2c.products_id and p2c.categories_id = '" . (int)$category_id . "'";
+	}
+	else {
+		$query = "select count(*) as total from products p, products_to_categories p2c where p.products_id = p2c.products_id and p.products_status = '1' and p2c.categories_id = '" . (int)$category_id . "'";
+	}
+	$Products = Doctrine_Manager::getInstance()
+		->getCurrentConnection()
+		->fetchArray($query);
+	$products_count += $Products[0]['total'];
 
-    $child_categories_query = tep_db_query("select categories_id from " . TABLE_CATEGORIES . " where parent_id = '" . (int)$category_id . "'");
-    if (tep_db_num_rows($child_categories_query)) {
-      while ($child_categories = tep_db_fetch_array($child_categories_query)) {
-        $products_count += tep_count_products_in_category($child_categories['categories_id'], $include_inactive);
-      }
-    }
+	$ResultSet = Doctrine_Manager::getInstance()
+		->getCurrentConnection()
+		->fetchAssoc("select categories_id from categories where parent_id = '" . (int)$category_id . "'");
+	if (sizeof($ResultSet) > 0){
+		foreach($ResultSet as $child_categories){
+			$products_count += tep_count_products_in_category($child_categories['categories_id'], $include_inactive);
+		}
+	}
 
-    return $products_count;
-  }
+	return $products_count;
+}
 
 ////
 // Return true if the category has subcategories
 // TABLES: categories
-  function tep_has_category_subcategories($category_id) {
-    $child_category_query = tep_db_query("select count(*) as count from " . TABLE_CATEGORIES . " where parent_id = '" . (int)$category_id . "'");
-    $child_category = tep_db_fetch_array($child_category_query);
+function tep_has_category_subcategories($category_id) {
+	$ResultSet = Doctrine_Manager::getInstance()
+		->getCurrentConnection()
+		->fetchArray("select count(*) as count from categories where parent_id = '" . (int)$category_id . "'");
 
-    if ($child_category['count'] > 0) {
-      return true;
-    } else {
-      return false;
-    }
-  }
+	if ($ResultSet[0]['count'] > 0){
+		return true;
+	}
+	else {
+		return false;
+	}
+}
 
 ////
 // Returns the address_format_id for the given country
 // TABLES: countries;
-  function tep_get_address_format_id($country_id) {
-    $address_format_query = tep_db_query("select address_format_id as format_id from " . TABLE_COUNTRIES . " where countries_id = '" . (int)$country_id . "'");
-    if (tep_db_num_rows($address_format_query)) {
-      $address_format = tep_db_fetch_array($address_format_query);
-      return $address_format['format_id'];
-    } else {
-      return '1';
-    }
-  }
-
+function tep_get_address_format_id($country_id) {
+	$ResultSet = Doctrine_Manager::getInstance()
+		->getCurrentConnection()
+		->fetchArray("select address_format_id as format_id from countries where countries_id = '" . (int)$country_id . "'");
+	if (sizeof($ResultSet) > 0){
+		return $ResultSet[0]['format_id'];
+	}
+	else {
+		return '1';
+	}
+}
 
 //
 //Return a formatted address
@@ -579,94 +623,109 @@ function tep_get_all_get_params($exclude_array = '') {
 
 // Return a formatted address
 // TABLES: customers, address_book
-  function tep_address_label($customers_id, $address_id = 1, $html = false, $boln = '', $eoln = "\n") {
-    $address_query = tep_db_query("select entry_firstname as firstname, entry_lastname as lastname, entry_company as company, entry_street_address as street_address, entry_suburb as suburb, entry_city as city, entry_postcode as postcode, entry_state as state, entry_zone_id as zone_id, entry_country_id as country_id from " . TABLE_ADDRESS_BOOK . " where customers_id = '" . (int)$customers_id . "' and address_book_id = '" . (int)$address_id . "'");
-    $address = tep_db_fetch_array($address_query);
+function tep_address_label($customers_id, $address_id = 1, $html = false, $boln = '', $eoln = "\n") {
+	$ResultSet = Doctrine_Manager::getInstance()
+		->getCurrentConnection()
+		->fetchArray("select entry_firstname as firstname, entry_lastname as lastname, entry_company as company, entry_street_address as street_address, entry_suburb as suburb, entry_city as city, entry_postcode as postcode, entry_state as state, entry_zone_id as zone_id, entry_country_id as country_id from " . TABLE_ADDRESS_BOOK . " where customers_id = '" . (int)$customers_id . "' and address_book_id = '" . (int)$address_id . "'");
 
-    $format_id = tep_get_address_format_id($address['country_id']);
+	$format_id = tep_get_address_format_id($ResultSet[0]['country_id']);
 
     return tep_address_format($format_id, $address, $html, $boln, $eoln);
   }
 
 // Return a formatted address
 // TABLES: customers, address_book
-  function tep_center_address_label($address_id = 1, $html = false, $boln = '', $eoln = "\n") {
-    $address_query = tep_db_query("select inventory_center_address from " . TABLE_PRODUCTS_INVENTORY_CENTERS . " where inventory_center_id = '" . (int)$address_id . "'");
-    $address = tep_db_fetch_array($address_query);
+function tep_center_address_label($address_id = 1, $html = false, $boln = '', $eoln = "\n") {
+	$ResultSet = Doctrine_Manager::getInstance()
+		->getCurrentConnection()
+		->fetchArray("select inventory_center_address from products_inventory_centers where inventory_center_id = '" . (int)$address_id . "'");
 
-    return nl2br($address['inventory_center_address']);
-  }
+	return nl2br($ResultSet[0]['inventory_center_address']);
+}
 
-  function tep_row_number_format($number) {
-    if ( ($number < 10) && (substr($number, 0, 1) != '0') ) $number = '0' . $number;
+function tep_row_number_format($number) {
+	if (($number < 10) && (substr($number, 0, 1) != '0')) {
+		$number = '0' . $number;
+	}
 
     return $number;
   }
 
-  function tep_get_categories($categories_array = '', $parent_id = '0', $indent = '') {
-    if (!is_array($categories_array)) $categories_array = array();
+function tep_get_categories($categories_array = '', $parent_id = '0', $indent = '') {
+	if (!is_array($categories_array)) {
+		$categories_array = array();
+	}
 
-    $categories_query = tep_db_query("select c.categories_id, cd.categories_name from " . TABLE_CATEGORIES . " c, " . TABLE_CATEGORIES_DESCRIPTION . " cd where parent_id = '" . (int)$parent_id . "' and c.categories_id = cd.categories_id and cd.language_id = '" . (int)Session::get('languages_id') . "' order by sort_order, cd.categories_name");
-    while ($categories = tep_db_fetch_array($categories_query)) {
-      $categories_array[] = array('id' => $categories['categories_id'],
-                                  'text' => $indent . $categories['categories_name']);
+	$ResultSet = Doctrine_Manager::getInstance()
+		->getCurrentConnection()
+		->fetchAssoc("select c.categories_id, cd.categories_name from categories c, categories_description cd where parent_id = '" . (int)$parent_id . "' and c.categories_id = cd.categories_id and cd.language_id = '" . (int)Session::get('languages_id') . "' order by sort_order, cd.categories_name");
+	foreach($ResultSet as $categories){
+		$categories_array[] = array('id'   => $categories['categories_id'],
+		                            'text' => $indent . $categories['categories_name']);
 
-      if ($categories['categories_id'] != $parent_id) {
-        $categories_array = tep_get_categories($categories_array, $categories['categories_id'], $indent . '&nbsp;&nbsp;');
-      }
-    }
+		if ($categories['categories_id'] != $parent_id){
+			$categories_array = tep_get_categories($categories_array, $categories['categories_id'], $indent . '&nbsp;&nbsp;');
+		}
+	}
 
-    return $categories_array;
-  }
+	return $categories_array;
+}
 
 ////
 // Return all subcategory IDs
 // TABLES: categories
-  function tep_get_subcategories(&$subcategories_array, $parent_id = 0) {
-    $subcategories_query = tep_db_query("select categories_id from " . TABLE_CATEGORIES . " where parent_id = '" . (int)$parent_id . "'");
-    while ($subcategories = tep_db_fetch_array($subcategories_query)) {
-      $subcategories_array[sizeof($subcategories_array)] = $subcategories['categories_id'];
-      if ($subcategories['categories_id'] != $parent_id) {
-        tep_get_subcategories($subcategories_array, $subcategories['categories_id']);
-      }
-    }
-  }
+function tep_get_subcategories(&$subcategories_array, $parent_id = 0) {
+	$ResultSet = Doctrine_Manager::getInstance()
+		->getCurrentConnection()
+		->fetchAssoc("select categories_id from categories where parent_id = '" . (int)$parent_id . "'");
+	foreach($ResultSet as $subcategories){
+		$subcategories_array[sizeof($subcategories_array)] = $subcategories['categories_id'];
+		if ($subcategories['categories_id'] != $parent_id){
+			tep_get_subcategories($subcategories_array, $subcategories['categories_id']);
+		}
+	}
+}
 
 // Output a raw date string in the selected locale date format
 // $raw_date needs to be in this format: YYYY-MM-DD HH:MM:SS
-  function tep_date_long($raw_date) {
-    if ( ($raw_date == '0000-00-00 00:00:00') || ($raw_date == '') ) return false;
+function tep_date_long($raw_date) {
+	if (($raw_date == '0000-00-00 00:00:00') || ($raw_date == '')) {
+		return false;
+	}
 
-    $year = (int)substr($raw_date, 0, 4);
-    $month = (int)substr($raw_date, 5, 2);
-    $day = (int)substr($raw_date, 8, 2);
-    $hour = (int)substr($raw_date, 11, 2);
-    $minute = (int)substr($raw_date, 14, 2);
-    $second = (int)substr($raw_date, 17, 2);
+	$year = (int)substr($raw_date, 0, 4);
+	$month = (int)substr($raw_date, 5, 2);
+	$day = (int)substr($raw_date, 8, 2);
+	$hour = (int)substr($raw_date, 11, 2);
+	$minute = (int)substr($raw_date, 14, 2);
+	$second = (int)substr($raw_date, 17, 2);
 
-    return strftime(sysLanguage::getDateFormat('long'), mktime($hour,$minute,$second,$month,$day,$year));
-  }
+	return strftime(sysLanguage::getDateFormat('long'), mktime($hour, $minute, $second, $month, $day, $year));
+}
 
 ////
 // Output a raw date string in the selected locale date format
 // $raw_date needs to be in this format: YYYY-MM-DD HH:MM:SS
 // NOTE: Includes a workaround for dates before 01/01/1970 that fail on windows servers
-  function tep_date_short($raw_date) {
-    if ( ($raw_date == '0000-00-00 00:00:00') || empty($raw_date) ) return false;
+function tep_date_short($raw_date) {
+	if (($raw_date == '0000-00-00 00:00:00') || empty($raw_date)) {
+		return false;
+	}
 
-    $year = substr($raw_date, 0, 4);
-    $month = (int)substr($raw_date, 5, 2);
-    $day = (int)substr($raw_date, 8, 2);
-    $hour = (int)substr($raw_date, 11, 2);
-    $minute = (int)substr($raw_date, 14, 2);
-    $second = (int)substr($raw_date, 17, 2);
+	$year = substr($raw_date, 0, 4);
+	$month = (int)substr($raw_date, 5, 2);
+	$day = (int)substr($raw_date, 8, 2);
+	$hour = (int)substr($raw_date, 11, 2);
+	$minute = (int)substr($raw_date, 14, 2);
+	$second = (int)substr($raw_date, 17, 2);
 
-    if (@date('Y', mktime($hour, $minute, $second, $month, $day, $year)) == $year) {
-      return date(sysLanguage::getDateFormat(), mktime($hour, $minute, $second, $month, $day, $year));
-    } else {
-      return ereg_replace('2037' . '$', $year, date(sysLanguage::getDateFormat(), mktime($hour, $minute, $second, $month, $day, 2037)));
-    }
-  }
+	if (@date('Y', mktime($hour, $minute, $second, $month, $day, $year)) == $year){
+		return date(sysLanguage::getDateFormat(), mktime($hour, $minute, $second, $month, $day, $year));
+	}
+	else {
+		return ereg_replace('2037' . '$', $year, date(sysLanguage::getDateFormat(), mktime($hour, $minute, $second, $month, $day, 2037)));
+	}
+}
 
 ////
 // Parse search string into indivual objects
@@ -953,110 +1012,45 @@ function tep_get_all_get_params($exclude_array = '') {
 ////
 // Recursively go through the categories and retreive all parent categories IDs
 // TABLES: categories
-  function tep_get_parent_categories(&$categories, $categories_id) {
-    $Parents = Doctrine_Manager::getInstance()
+function tep_get_parent_categories(&$categories, $categories_id) {
+	$Parents = Doctrine_Manager::getInstance()
 		->getCurrentConnection()
-		->fetchAssoc("select parent_id from " . TABLE_CATEGORIES . " where categories_id = '" . (int)$categories_id . "'");
-    foreach ($Parents as $parent_categories) {
-      if ($parent_categories['parent_id'] == 0) return true;
-      $categories[sizeof($categories)] = $parent_categories['parent_id'];
-      if ($parent_categories['parent_id'] != $categories_id) {
-        tep_get_parent_categories($categories, $parent_categories['parent_id']);
-      }
-    }
-  }
+		->fetchAssoc("select parent_id from categories where categories_id = '" . (int)$categories_id . "'");
+	foreach($Parents as $parent_categories){
+		if ($parent_categories['parent_id'] == 0) {
+			return true;
+		}
+		$categories[sizeof($categories)] = $parent_categories['parent_id'];
+		if ($parent_categories['parent_id'] != $categories_id){
+			tep_get_parent_categories($categories, $parent_categories['parent_id']);
+		}
+	}
+}
 
 ////
 // Construct a category path to the product
 // TABLES: products_to_categories
-  function tep_get_product_path($products_id) {
-    $cPath = '';
+function tep_get_product_path($products_id) {
+	$cPath = '';
 
-    $Category = Doctrine_Manager::getInstance()
+	$Category = Doctrine_Manager::getInstance()
 		->getCurrentConnection()
-		->fetchAssoc("select p2c.categories_id from " . TABLE_PRODUCTS . " p, " . TABLE_PRODUCTS_TO_CATEGORIES . " p2c where p.products_id = '" . (int)$products_id . "' and p.products_status = '1' and p.products_id = p2c.products_id limit 1");
-    if (sizeof($Category) > 0) {
-      $categories = array();
-      tep_get_parent_categories($categories, $Category[0]['categories_id']);
+		->fetchAssoc("select p2c.categories_id from products p, products_to_categories p2c where p.products_id = '" . (int)$products_id . "' and p.products_status = '1' and p.products_id = p2c.products_id limit 1");
+	if (sizeof($Category) > 0){
+		$categories = array();
+		tep_get_parent_categories($categories, $Category[0]['categories_id']);
 
-      $categories = array_reverse($categories);
+		$categories = array_reverse($categories);
 
-      $cPath = implode('_', $categories);
+		$cPath = implode('_', $categories);
 
-      if (tep_not_null($cPath)) $cPath .= '_';
-      $cPath .= $Category[0]['categories_id'];
-    }
+		if (tep_not_null($cPath)) {
+			$cPath .= '_';
+		}
+		$cPath .= $Category[0]['categories_id'];
+	}
 
-    return $cPath;
-  }
-
-////
-function tep_get_uprid($prid, $params) {
-  if (is_numeric($prid)) {
-    $uprid = $prid;
-
-    if (is_array($params) && (sizeof($params) > 0)) {
-      $attributes_check = true;
-      $attributes_ids = '';
-
-      reset($params);
-      while (list($option, $value) = each($params)) {
-        if (is_numeric($option) && is_numeric($value)) {
-          $attributes_ids .= '{' . (int)$option . '}' . (int)$value;
-        } else {
-          $attributes_check = false;
-          break;
-        }
-      }
-
-      if ($attributes_check == true) {
-        $uprid .= $attributes_ids;
-      }
-    }
-  } else {
-    $uprid = tep_get_prid($prid);
-
-    if (is_numeric($uprid)) {
-      if (strpos($prid, '{') !== false) {
-        $attributes_check = true;
-        $attributes_ids = '';
-
-// strpos()+1 to remove up to and including the first { which would create an empty array element in explode()
-        $attributes = explode('{', substr($prid, strpos($prid, '{')+1));
-
-        for ($i=0, $n=sizeof($attributes); $i<$n; $i++) {
-          $pair = explode('}', $attributes[$i]);
-
-          if (is_numeric($pair[0]) && is_numeric($pair[1])) {
-            $attributes_ids .= '{' . (int)$pair[0] . '}' . (int)$pair[1];
-          } else {
-            $attributes_check = false;
-            break;
-          }
-        }
-
-        if ($attributes_check == true) {
-          $uprid .= $attributes_ids;
-        }
-      }
-    } else {
-      return false;
-    }
-  }
-
-  return $uprid;
-}
-
-////
-// Return a product ID from a product ID with attributes
-function tep_get_prid($uprid) {
-  $pieces = explode('{', $uprid);
-
-  if (is_numeric($pieces[0])) {
-    return $pieces[0];
-  } else {
-    return false;
-  }
+	return $cPath;
 }
 
 ////
@@ -1086,8 +1080,10 @@ function tep_get_prid($uprid) {
 // $from_email_adress The eMail address of the sender,
 //                    e.g. info@mytepshop.com
 
-  function tep_mail($to_name, $to_email_address, $email_subject, $email_text, $from_email_name, $from_email_address, $attachments = '') {
-    if (sysConfig::get('SEND_EMAILS') != 'true') return false;
+function tep_mail($to_name, $to_email_address, $email_subject, $email_text, $from_email_name, $from_email_address, $attachments = '') {
+	if (sysConfig::get('SEND_EMAILS') != 'true') {
+		return false;
+	}
 
     // Instantiate a new mail object
     $message = new email(array('X-Mailer: osCommerce Mailer'));
@@ -1119,19 +1115,6 @@ function tep_get_prid($uprid) {
   }
 
 ////
-// Check if product has attributes
-  function tep_has_product_attributes($products_id) {
-    $attributes_query = tep_db_query("select count(*) as count from " . TABLE_PRODUCTS_ATTRIBUTES . " where products_id = '" . (int)$products_id . "'");
-    $attributes = tep_db_fetch_array($attributes_query);
-
-    if ($attributes['count'] > 0) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-
-////
 // Get the number of times a word/character is present in a string
   function tep_word_count($string, $needle) {
     $temp_array = split($needle, $string);
@@ -1139,154 +1122,144 @@ function tep_get_prid($uprid) {
     return sizeof($temp_array);
   }
 
-  function tep_count_modules($modules = '') {
-    $count = 0;
+function tep_create_random_value($length, $type = 'mixed') {
+	if (($type != 'mixed') && ($type != 'chars') && ($type != 'digits')) {
+		return false;
+	}
 
-    if (empty($modules)) return $count;
+	$rand_value = '';
+	while(strlen($rand_value) < $length){
+		if ($type == 'digits'){
+			$char = tep_rand(0, 9);
+		}
+		else {
+			$char = chr(tep_rand(0, 255));
+		}
+		if ($type == 'mixed'){
+			if (preg_match('/^[a-z0-9]$/i', $char)) {
+				$rand_value .= $char;
+			}
+		}
+		elseif ($type == 'chars') {
+			if (preg_match('/^[a-z]$/i', $char)) {
+				$rand_value .= $char;
+			}
+		}
+		elseif ($type == 'digits') {
+			if (preg_match('/^[0-9]$/', $char)) {
+				$rand_value .= $char;
+			}
+		}
+	}
 
-    $modules_array = split(';', $modules);
+	return $rand_value;
+}
 
-    for ($i=0, $n=sizeof($modules_array); $i<$n; $i++) {
-      $class = substr($modules_array[$i], 0, strrpos($modules_array[$i], '.'));
+function tep_array_to_string($array, $exclude = '', $equals = '=', $separator = '&') {
+	if (!is_array($exclude)) {
+		$exclude = array();
+	}
 
-      if (is_object($GLOBALS[$class])) {
-        if ($GLOBALS[$class]->enabled) {
-          $count++;
-        }
-      }
-    }
+	$get_string = '';
+	if (sizeof($array) > 0){
+		while(list($key, $value) = each($array)){
+			if ((!in_array($key, $exclude)) && ($key != 'x') && ($key != 'y')){
+				$get_string .= $key . $equals . $value . $separator;
+			}
+		}
+		$remove_chars = strlen($separator);
+		$get_string = substr($get_string, 0, -$remove_chars);
+	}
 
-    return $count;
-  }
+	return $get_string;
+}
 
-  function tep_count_shipping_modules() {
-    global $shippingModules;
-      if (isset($shippingModules) && is_object($shippingModules)){
-          if ($shippingModules->modulesAreInstalled()){
-              return 1;
-          }
-      }
-    return 0;
-  }
-
-  function tep_count_payment_modules() {
-    global $paymentModules;
-      if (isset($paymentModules) && is_object($paymentModules)){
-          if ($paymentModules->modulesAreInstalled()){
-              return 1;
-          }
-      }
-    return 0;
-  }
-
-  function tep_create_random_value($length, $type = 'mixed') {
-    if ( ($type != 'mixed') && ($type != 'chars') && ($type != 'digits')) return false;
-
-    $rand_value = '';
-    while (strlen($rand_value) < $length) {
-      if ($type == 'digits') {
-        $char = tep_rand(0,9);
-      } else {
-        $char = chr(tep_rand(0,255));
-      }
-      if ($type == 'mixed') {
-        if (preg_match('/^[a-z0-9]$/i', $char)) $rand_value .= $char;
-      } elseif ($type == 'chars') {
-        if (preg_match('/^[a-z]$/i', $char)) $rand_value .= $char;
-      } elseif ($type == 'digits') {
-        if (preg_match('/^[0-9]$/', $char)) $rand_value .= $char;
-      }
-    }
-
-    return $rand_value;
-  }
-
-  function tep_array_to_string($array, $exclude = '', $equals = '=', $separator = '&') {
-    if (!is_array($exclude)) $exclude = array();
-
-    $get_string = '';
-    if (sizeof($array) > 0) {
-      while (list($key, $value) = each($array)) {
-        if ( (!in_array($key, $exclude)) && ($key != 'x') && ($key != 'y') ) {
-          $get_string .= $key . $equals . $value . $separator;
-        }
-      }
-      $remove_chars = strlen($separator);
-      $get_string = substr($get_string, 0, -$remove_chars);
-    }
-
-    return $get_string;
-  }
-
-  function tep_not_null($value) {
-    if (is_array($value)) {
-      if (sizeof($value) > 0) {
-        return true;
-      } else {
-        return false;
-      }
-    } else {
-      if (($value != '') && (strtolower($value) != 'null') && (strlen(trim($value)) > 0)) {
-        return true;
-      } else {
-        return false;
-      }
-    }
-  }
+function tep_not_null($value) {
+	if (is_array($value)){
+		if (sizeof($value) > 0){
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+	else {
+		if (($value != '') && (strtolower($value) != 'null') && (strlen(trim($value)) > 0)){
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+}
 
 ////
 // Output the tax percentage with optional padded decimals
-  function tep_display_tax_value($value, $padding = TAX_DECIMAL_PLACES) {
-    if (strpos($value, '.')) {
-      $loop = true;
-      while ($loop) {
-        if (substr($value, -1) == '0') {
-          $value = substr($value, 0, -1);
-        } else {
-          $loop = false;
-          if (substr($value, -1) == '.') {
-            $value = substr($value, 0, -1);
-          }
-        }
-      }
-    }
+function tep_display_tax_value($value, $padding = false) {
+	if ($padding === false){
+		$padding = sysConfig::get('TAX_DECIMAL_PLACES');
+	}
+	
+	if (strpos($value, '.')){
+		$loop = true;
+		while($loop){
+			if (substr($value, -1) == '0'){
+				$value = substr($value, 0, -1);
+			}
+			else {
+				$loop = false;
+				if (substr($value, -1) == '.'){
+					$value = substr($value, 0, -1);
+				}
+			}
+		}
+	}
 
-    if ($padding > 0) {
-      if ($decimal_pos = strpos($value, '.')) {
-        $decimals = strlen(substr($value, ($decimal_pos+1)));
-        for ($i=$decimals; $i<$padding; $i++) {
-          $value .= '0';
-        }
-      } else {
-        $value .= '.';
-        for ($i=0; $i<$padding; $i++) {
-          $value .= '0';
-        }
-      }
-    }
+	if ($padding > 0){
+		if ($decimal_pos = strpos($value, '.')){
+			$decimals = strlen(substr($value, ($decimal_pos + 1)));
+			for($i = $decimals; $i < $padding; $i++){
+				$value .= '0';
+			}
+		}
+		else {
+			$value .= '.';
+			for($i = 0; $i < $padding; $i++){
+				$value .= '0';
+			}
+		}
+	}
 
-    return $value;
-  }
-  
-  function hex2bin($h){
-      if (!is_string($h)) return null;
-      $r='';
-      for ($a=0; $a<strlen($h); $a+=2) { $r.=chr(hexdec($h{$a}.$h{($a+1)})); }
-      return $r;
-  }
+	return $value;
+}
+
+function hex2bin($h) {
+	if (!is_string($h)) {
+		return null;
+	}
+	$r = '';
+	for($a = 0; $a < strlen($h); $a += 2){
+		$r .= chr(hexdec($h{$a} . $h{($a + 1)}));
+	}
+	return $r;
+}
+
 ////
 // Checks to see if the currency code exists as a currency
 // TABLES: currencies
-  function tep_currency_exists($code) {
-    $code = tep_db_prepare_input($code);
+function tep_currency_exists($code) {
+	$code = addslashes($code);
 
-    $currency_code = tep_db_query("select currencies_id from " . TABLE_CURRENCIES . " where code = '" . tep_db_input($code) . "'");
-    if (tep_db_num_rows($currency_code)) {
-      return $code;
-    } else {
-      return false;
-    }
-  }
+	$ResultSet = Doctrine_Manager::getInstance()
+		->getCurrentConnection()
+		->fetchAssoc("select currencies_id from currencies where code = '" . $code . "'");
+	if (sizeof($currency_code) > 0){
+		return $code;
+	}
+	else {
+		return false;
+	}
+}
 
   function tep_string_to_int($string) {
     return (int)$string;
@@ -1374,11 +1347,12 @@ function tep_get_prid($uprid) {
       }
     }
 
-    $orders_check_query = tep_db_query("select count(*) as total from " . TABLE_ORDERS . " where customers_id = '" . (int)$id . "'");
-    $orders_check = tep_db_fetch_array($orders_check_query);
+	$ResultSet = Doctrine_Manager::getInstance()
+		->getCurrentConnection()
+		->fetchAssoc("select count(*) as total from orders where customers_id = '" . (int)$id . "'");
 
-    return $orders_check['total'];
-  }
+	return $ResultSet[0]['total'];
+}
 
   function tep_count_customer_address_book_entries($id = '', $check_session = true) {
     global $userAccount;
@@ -1397,11 +1371,12 @@ function tep_get_prid($uprid) {
       }
     }
 
-    $addresses_query = tep_db_query("select count(*) as total from " . TABLE_ADDRESS_BOOK . " where customers_id = '" . (int)$id . "'");
-    $addresses = tep_db_fetch_array($addresses_query);
+	$ResultSet = Doctrine_Manager::getInstance()
+		->getCurrentConnection()
+		->fetchAssoc("select count(*) as total from address_book where customers_id = '" . (int)$id . "'");
 
-    return $addresses['total'];
-  }
+	return $ResultSet[0]['total'];
+}
 
 // nl2br() prior PHP 4.2.0 did not convert linefeeds on all OSs (it only converted \n)
   function tep_convert_linefeeds($from, $to, $string) {
@@ -1412,12 +1387,7 @@ function tep_get_prid($uprid) {
     }
   }
 
-  function tep_get_pages_content($pageID){
-      $QpageContent = tep_db_query('select pages_html_text from ' .TABLE_PAGES_DESCRIPTION . ' where language_id = "' . (int)$_SESSION['languages_id'] . '" and pages_id = "' . $pageID . '"');
-      $pageContent = tep_db_fetch_array($QpageContent);
-    return stripslashes($pageContent['pages_html_text']);
-  }
-  
+
 	function addChildren($child, $currentPath, &$ulElement, $catArrExcl = array()) {
 		global $current_category_id;
 		//$currentPath .= '_' . $child['categories_id'];
@@ -1542,7 +1512,7 @@ function makeUniqueCategory($categoryId, $category_seo, $removeLast){
 	}
 	$catArr = array_reverse($catArr, true);
 	$categorySeoUrl = createSeoUrl($catArr);
-	if(strpos($categorySeoUrl, $category_seo) === 0){
+	if(!empty($category_seo) && strpos($categorySeoUrl, $category_seo) === 0){
 		if(strlen($category_seo) <= strlen($categorySeoUrl)){
 			$categorySeoUrl = str_replace($category_seo, '', $categorySeoUrl);
 		}
@@ -1550,7 +1520,7 @@ function makeUniqueCategory($categoryId, $category_seo, $removeLast){
 			$categorySeoUrl = substr($categorySeoUrl,1);
 		}
 	}
-	if(strpos($category_seo, $categorySeoUrl) === 0){
+	if(!empty($categorySeoUrl) && strpos($category_seo, $categorySeoUrl) === 0){
 		if(strlen($categorySeoUrl) <= strlen($category_seo)){
 			$category_seo = str_replace($categorySeoUrl, '', $category_seo);
 		}
@@ -1566,6 +1536,249 @@ function createSeoUrl($catArr){
 	}
 
 	return $catName;
+}
+
+function rating_bar($name, $product_id) {
+	global $userAccount;
+	if (sysConfig::get('EXTENSION_REVIEWS_ENABLED') != 'True') return '';
+
+	$units = 5;
+	$voted = false;
+	$current_rating = 0;
+
+	if ($userAccount->isLoggedIn()){
+		$QcustomerRating = Doctrine_Query::create()
+			->select('reviews_rating')
+			->from('Reviews')
+			->where('products_id = ?', $product_id)
+			->andWhere('customers_id = ?', $userAccount->getCustomerId())
+			->execute();
+		if ($QcustomerRating !== false){
+			$current_rating = number_format($QcustomerRating[0]->reviews_rating, 1);
+		}
+	}else{
+		$Qtotals = Doctrine_Query::create()
+			->select('avg(reviews_rating) as total')
+			->from('Reviews')
+			->where('products_id = ?', $product_id)
+			->groupBy('products_id')
+			->execute();
+		if ($Qtotals->count()){
+			$current_rating = number_format($Qtotals[0]->total, 1);
+		}
+	}
+
+	$inputFields = '';
+	for($i=1; $i<11; $i++){
+		$inputFields .= tep_draw_radio_field('star_rating_' . $product_id, $i, ($current_rating == ($i/2)), 'id="star_rating_' . $product_id . '_' . $i . '" style="display:none;"');
+	}
+	return '<br /><table style="margin:0 auto;"><tr><td align="left"><div class="starRating starRating_' . $product_id . '" products_id="' . $product_id . '" style="width:' . ($userAccount->isLoggedIn() === true ? (17*6) : (16*5)) . 'px;">
+        ' . $inputFields . '
+      </div><div style="clear:both;"></div></td></tr></table>';
+}
+function request_uri(){
+	if (isset($_SERVER['REQUEST_URI'])){
+		$uri = $_SERVER['REQUEST_URI'];
+	}else{
+		if (isset($_SERVER['argv'])){
+			$uri = $_SERVER['PHP_SELF'] .'?'. $_SERVER['argv'][0];
+		}else{
+			$uri = $_SERVER['PHP_SELF'] .'?'. $_SERVER['QUERY_STRING'];
+		}
+	}
+	return $uri;
+}
+
+function fixImagesPath($htmlCode){
+	if(sysConfig::getDirWsCatalog() == '/' || (strpos($htmlCode, sysConfig::getDirWsCatalog()) === 0)){
+		$imgPath = $htmlCode;
+	}else{
+		$imgPath = sysConfig::getDirWsCatalog() .$htmlCode;
+	}
+	$imgPath = str_replace('//','/', $imgPath);
+	return $imgPath;
+}
+
+function tep_update_whos_online() {
+	// WOL 1.6 - Need access to spider_flag and user_agent and moved some assignments up here from below
+	global $spider_flag, $user_agent, $userAccount;
+
+	if (
+		basename($_SERVER['PHP_SELF']) == 'stylesheet.php' ||
+		basename($_SERVER['PHP_SELF']) == 'javascript.php'
+	){
+		return;
+	}
+
+	$wo_ip_address = tep_get_ip_address();
+	$wo_last_page_url = request_uri();
+	$current_time = time();
+	$xx_mins_ago = ($current_time - 900);
+	$wo_session_id = Session::getSessionId();
+	$user_agent = getenv('HTTP_USER_AGENT');
+	$wo_user_agent = $user_agent;
+	// WOL 1.6 EOF
+
+	if ($userAccount->getCustomerId() > 0){
+		$wo_customer_id = $userAccount->getCustomerId();
+		$wo_full_name = $userAccount->getFullName();
+	}else{
+		if ($spider_flag || strpos($user_agent, "Googlebot") > 0){
+			// Bots are customerID = -1
+			$wo_customer_id = -1;
+
+			// The Bots name is extracted from the User Agent in the WOE Admin screen
+			$wo_full_name = $user_agent;
+
+			// Session IDs are the WOE primary key.  If a Bot doesn't have a session (normally shouldn't),
+			//   use the IP Address as unique identifier, otherwise, use the session ID
+			if ($wo_session_id == ""){
+				$wo_session_id = $wo_ip_address;
+			}
+		}else{
+			// Must be a Guest
+			$wo_full_name = 'Guest';
+			$wo_customer_id = 0;
+		}
+		// WOL 1.6 EOF
+	}
+
+	// remove entries that have expired
+	Doctrine_Manager::getInstance()
+		->getCurrentConnection()
+		->exec('delete from whos_online where time_last_click < "' . $xx_mins_ago . '"');
+
+	/**
+	 * @TODO: Fix This
+	 */
+
+	$WhosOnline = Doctrine_Core::getTable('WhosOnline');
+	$Entry = $WhosOnline->findOneBySessionId($wo_session_id);
+	if (!$Entry){
+		$Entry = $WhosOnline->create();
+		$Entry->session_id = $wo_session_id;
+	}
+	$Entry->customer_id = (int)$wo_customer_id;
+	$Entry->full_name = $wo_full_name;
+	$Entry->ip_address = $wo_ip_address;
+	$Entry->time_entry = $current_time;
+	$Entry->time_last_click = $current_time;
+	$Entry->last_page_url = $wo_last_page_url;
+	$Entry->http_referer = (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '');
+	$Entry->user_agent = $user_agent;
+	$Entry->save();
+}
+
+
+function tep_validate_email($email) {
+	$valid_address = true;
+
+	$mail_pat = '^(.+)@(.+)$';
+	$valid_chars = "[^] \(\)<>@,;:\.\\\"\[]";
+	$atom = "$valid_chars+";
+	$quoted_user='(\"[^\"]*\")';
+	$word = "($atom|$quoted_user)";
+	$user_pat = "^$word(\.$word)*$";
+	$ip_domain_pat='^\[([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3})\]$';
+	$domain_pat = "^$atom(\.$atom)*$";
+
+	if (eregi($mail_pat, $email, $components)) {
+		$user = $components[1];
+		$domain = $components[2];
+		// validate user
+		if (eregi($user_pat, $user)) {
+			// validate domain
+			if (eregi($ip_domain_pat, $domain, $ip_components)) {
+				// this is an IP address
+				for ($i=1;$i<=4;$i++) {
+					if ($ip_components[$i] > 255) {
+						$valid_address = false;
+						break;
+					}
+				}
+			}
+			else {
+				// Domain is a name, not an IP
+				if (eregi($domain_pat, $domain)) {
+					/* domain name seems valid, but now make sure that it ends in a valid TLD or ccTLD
+								   and that there's a hostname preceding the domain or country. */
+					$domain_components = explode(".", $domain);
+					// Make sure there's a host name preceding the domain.
+					if (sizeof($domain_components) < 2) {
+						$valid_address = false;
+					} else {
+						$top_level_domain = strtolower($domain_components[sizeof($domain_components)-1]);
+						// Allow all 2-letter TLDs (ccTLDs)
+						if (eregi('^[a-z][a-z]$', $top_level_domain) != 1) {
+							$tld_pattern = '';
+							// Get authorized TLDs from text file
+							$tlds = file(DIR_WS_INCLUDES . 'tld.txt');
+							while (list(,$line) = each($tlds)) {
+								// Get rid of comments
+								$words = explode('#', $line);
+								$tld = trim($words[0]);
+								// TLDs should be 3 letters or more
+								if (eregi('^[a-z]{3,}$', $tld) == 1) {
+									$tld_pattern .= '^' . $tld . '$|';
+								}
+							}
+							// Remove last '|'
+							$tld_pattern = substr($tld_pattern, 0, -1);
+							if (eregi("$tld_pattern", $top_level_domain) == 0) {
+								$valid_address = false;
+							}
+						}
+					}
+				}
+				else {
+					$valid_address = false;
+				}
+			}
+		}
+		else {
+			$valid_address = false;
+		}
+	}
+	else {
+		$valid_address = false;
+	}
+	if ($valid_address && ENTRY_EMAIL_ADDRESS_CHECK == 'true') {
+		if (!checkdnsrr($domain, "MX") && !checkdnsrr($domain, "A")) {
+			$valid_address = false;
+		}
+	}
+	return $valid_address;
+}
+
+function tep_validate_password($plain, $encrypted) {
+	if (tep_not_null($plain) && tep_not_null($encrypted)) {
+		// split apart the hash / salt
+		$stack = explode(':', $encrypted);
+
+		if (sizeof($stack) != 2) return false;
+
+		if (md5($stack[1] . $plain) == $stack[0]) {
+			return true;
+		}
+	}
+
+	return false;
+}
+
+////
+// This function makes a new password from a plaintext password.
+function tep_encrypt_password($plain) {
+	$password = '';
+
+	for ($i=0; $i<10; $i++) {
+		$password .= tep_rand();
+	}
+
+	$salt = substr(md5($password), 0, 2);
+
+	$password = md5($salt . $plain) . ':' . $salt;
+
+	return $password;
 }
 
 ?>

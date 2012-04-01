@@ -40,6 +40,8 @@
 				$this->requireCvv = true;
 				$this->testMode = ($this->getConfigData('MODULE_PAYMENT_AUTHORIZENET_TESTMODE') == 'Test' || $this->getConfigData('MODULE_PAYMENT_AUTHORIZENET_TESTMODE') == 'Test And Debug');
 				$this->cim_mode = ($this->getConfigData('MODULE_PAYMENT_AUTHORIZENET_CIM') == 'True');
+				$this->show_cc_images = ($this->getConfigData('SHOW_CC_IMAGES') == 'True');
+
 				$this->curlCompiled = ($this->getConfigData('MODULE_PAYMENT_AUTHORIZENET_CURL') != 'Not Compiled');
 				$this->can_reuse = $this->getReuses();
 
@@ -272,7 +274,7 @@
 			}
 
 			$return = parent::onSelect();
-			$return['module'] .= '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' . $this->getCardImages();
+			$return['moduleText'] .= $this->getCardImages();
 			$return['fields'] = $fieldsArray;
 
 			return $return;

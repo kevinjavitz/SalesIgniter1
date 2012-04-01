@@ -183,7 +183,7 @@ class OrderPaymentDotpay extends StandardPaymentModule {
                                tep_draw_hidden_field('control', $control) .
                                tep_draw_hidden_field('vmodule', '6.0.3') .
 			       				tep_draw_hidden_field('URLC', tep_href_link('ext/modules/payment/dotpay/dotpay.php','','SSL')) .
-                               tep_draw_hidden_field('return_url', itw_app_link('action=sessionClean&order_id='.$order->newOrder['orderID'], 'account', 'default', 'SSL')) .
+                               tep_draw_hidden_field('return_url', itw_app_link(null, 'checkout', 'success', 'SSL')) .
 							   tep_draw_hidden_field('cancel_return_url', itw_app_link(null,'checkout','default','SSL'));
 
 		return $process_button_string;

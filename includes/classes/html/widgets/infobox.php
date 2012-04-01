@@ -19,7 +19,7 @@ class htmlWidget_infobox implements htmlWidgetPlugin {
 		->addClass('ui-corner-all')
 		->css(array(
 			'position'     => 'relative',
-			'width'        => '100%'
+			'width'        => 'auto'
 		));
 		
 		$this->headerBarElement

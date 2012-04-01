@@ -1,6 +1,10 @@
 <ConfigurationGroup>
 	<group_key>productDesigner</group_key>
-	<Configuration>
+	<tabs>
+	<general>
+	<title>General</title>
+	<description>General Extension Settings</description>
+	<configurations>
 		<EXTENSION_PRODUCT_DESIGNER_STORES>
 			<title>Enable Product Designer For Stores</title>
 			<value>1</value>
@@ -8,5 +12,7 @@
 			<sort_order>2</sort_order>
 			<set_function>tep_cfg_select_stores(</set_function>
 		</EXTENSION_PRODUCT_DESIGNER_STORES>
-	</Configuration>
+	</configurations>
+	</general>
+	</tabs>
 </ConfigurationGroup>

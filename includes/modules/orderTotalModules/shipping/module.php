@@ -96,13 +96,14 @@ class OrderTotalShipping extends OrderTotalModuleBase
 				));
 		}
 
-		$totalShippingCost = 0;
-		EventManager::notify('OrderTotalShippingProcess', &$totalShippingCost, &$shippingCost);
-
-		if (isset($shippingCost) && $shippingCost > 0 && $totalShippingCost > 0){
-			$totalShippingCost += $shippingCost;
+		$totalShippingCost = -1;
+		$shippingmodulesInfo = '';
+		EventManager::notify('OrderTotalShippingProcess', &$totalShippingCost, &$shippingmodulesInfo);
+		//echo 'hh'.$shippingCost.'-'.$totalShippingCost;
+		if ($totalShippingCost >= 0){
+			//echo 'd';
 			$this->addOutput(array(
-					'title' => '<b>Total Shipping Cost</b>:',
+					'title' => '<b>'.$shippingmodulesInfo.'</b>:',
 					'text' => $this->formatAmount($totalShippingCost),
 					'value' => $totalShippingCost
 				));

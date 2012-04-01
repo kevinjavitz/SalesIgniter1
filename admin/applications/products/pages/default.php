@@ -64,6 +64,7 @@
 		$tableGrid->addBodyRow(array(
 			'rowAttr' => $rowAttr,
 			'columns' => array(
+				array('text' => $nameSpacing . '<input type="checkbox" class="selectedProducts" name="selectedProducts[]" value="'.$productId.'">', 'align' => ($nameAlignCenter === true ? 'center' : 'left')),
 				array('text' => ($productClass->isBox() === true ? htmlBase::newElement('icon')->addClass('setExpander')->setType('triangleEast')->draw() : '&nbsp;'), 'align' => 'center'),
 				array('text' => $nameSpacing . $productName, 'align' => ($nameAlignCenter === true ? 'center' : 'left')),
 				array('text' => $productModel, 'align' => ($modelAlignCenter === true ? 'center' : 'left')),
@@ -126,8 +127,8 @@
 		if (!empty($productImage) && file_exists($_SERVER['DOCUMENT_ROOT'] . $productImage)){
 			$imageHtml = htmlBase::newElement('image')
 			->setSource($productImage)
-			->setWidth(SMALL_IMAGE_WIDTH)
-			->setHeight(SMALL_IMAGE_HEIGHT)
+			->setWidth(sysConfig::get('SMALL_IMAGE_WIDTH'))
+			->setHeight(sysConfig::get('SMALL_IMAGE_HEIGHT'))
 			->thumbnailImage(true);
 		}else{
 			$imageHtml = htmlBase::newElement('span')
@@ -166,7 +167,7 @@
 	->andWhere('p.products_in_box = ?', '0')
 	->orderBy('p.products_featured desc, pd.products_name asc, p.products_id desc');
 	if (isset($_GET['search'])) {
-		$search = tep_db_prepare_input($_GET['search']);
+		$search = $_GET['search'];
 		$Qproducts->andWhere('pd.products_name LIKE ?', '%' . $search . '%');
 	}
 
@@ -293,15 +294,13 @@
 
 	}
     end of update*/
-	$tableGrid = htmlBase::newElement('grid')
+	$tableGrid = htmlBase::newElement('newGrid')
 	->usePagination(true)
-	->setPageLimit((isset($_GET['limit']) ? (int)$_GET['limit']: 10))
-	->setCurrentPage((isset($_GET['page']) ? (int)$_GET['page'] : 1))
 	->setQuery($Qproducts);
 
 	$tableGrid->addHeaderRow(array(
 		'columns' => array(
-			array('colspan' => 3, 'text' => sysLanguage::get('TABLE_HEADING_PRODUCTS')),
+			array('colspan' => 4, 'text' => sysLanguage::get('TABLE_HEADING_PRODUCTS')),
 			array('text' => sysLanguage::get('TABLE_HEADING_ID')),
 			array('colspan' => 4, 'text' => 'Stock'),
 			array('text' => sysLanguage::get('TABLE_HEADING_VIEW_COMMENTS')),
@@ -313,6 +312,7 @@
 
 	$tableGrid->addHeaderRow(array(
 		'columns' => array(
+			array('text' => 'Select'),
 			array('text' => 'Set'),
 			array('text' => 'Name'),
 			array('text' => 'Model'),
@@ -425,7 +425,17 @@
 
    $contents = EventManager::notify('ProductsDefaultAddFilterOptions', &$searchForm);
 
-   echo $searchForm->draw();
+   $deleteMultipleProducts = '<div class="deleteForm" style="float:left;display:inline-block;margin-right:30px"><div class="" style="display:inline-block;"><input type="checkbox" class="selectallProducts"> <span class="selectAllProductsText">Check All Products</span></div>';
+   $deleteProductsButton = htmlBase::newElement('button')
+   ->usePreset('delete')
+   ->setText('Delete Selected Products')
+   ->addClass('deleteMultipleProducts')
+   ->css(array(
+		   'display' =>'inline-block'
+	   ));
+   $deleteMultipleProducts.= $deleteProductsButton->draw().'</div>';
+
+   echo $deleteMultipleProducts. $searchForm->draw();
    ?></td>
   </tr>
  </table>
@@ -434,26 +444,6 @@
   <div class="ui-widget ui-widget-content ui-corner-all" style="width:99%;margin-right:5px;margin-left:5px;">
    <div style="width:99%;margin:5px;">
    <?php echo $tableGrid->draw();?>
-   <?php
-	   $formPages = htmlBase::newElement('form')
-		            ->attr('action', itw_app_link(null,'products','default'))
-                    ->attr('id', 'form_page')
-		            ->attr('method', 'get');
-       $pageSelect = htmlBase::newElement('selectbox')
-	                    ->setName('page')
-                        ->setId('select_page')
-	                    ->setLabel('Go To')
-                        ->setLabelPosition('before');
-
-	   for($i=1;$i<=$tableGrid->pager->getLastPage();$i++){
-		   $pageSelect->addOption($i, 'Page '. $i);
-	   }
-	   if (isset($_GET['page'])){
-	        $pageSelect->selectOptionByValue($_GET['page']);
-	   }
-	   $formPages->append($pageSelect);
-	   echo $formPages->draw();
-	?>
 
    </div>
   </div>

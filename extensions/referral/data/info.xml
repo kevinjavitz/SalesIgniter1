@@ -3,6 +3,6 @@
 	<key>referral</key>
 	<version>1.0</version>
 	<author>Stephen Walker ( http://www.itwebexperts.com )</author>
-	<tables>customersReferrer</tables>
 	<status_key>EXTENSION_REFFERAL_SYSTEM_ENABLED</status_key>
+	<installed_key>EXTENSION_REFFERAL_SYSTEM_INSTALLED</installed_key>
 </data>

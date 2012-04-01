@@ -17,7 +17,7 @@ class quantityDiscount_admin_products_new_product extends Extension_quantityDisc
 	}
 	
 	public function load(){
-		if ($this->enabled === false) return;
+		if ($this->isEnabled() === false) return;
 		
 		EventManager::attachEvent('NewProductPricingTabBottom', null, $this);
 	}

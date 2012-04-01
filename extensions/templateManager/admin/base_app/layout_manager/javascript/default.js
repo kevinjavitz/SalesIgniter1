@@ -27,6 +27,67 @@ $(document).ready(function () {
 		.data('template_id')));
 	});
 
+	$('.stylesheetButton').click(function (){
+		var getVars = getLinkParams([
+			'rType=ajax',
+			'action=getActionWindow',
+			'window=editTemplateStylesheet'
+		]);
+
+		gridWindow({
+			buttonEl: this,
+			gridEl: $('.gridContainer'),
+			contentUrl: js_app_link(getVars),
+			onShow: function () {
+				var self = this;
+
+				$(self).find('.cancelButton').click(function () {
+					$(self).effect('fade', {
+						mode: 'hide'
+					}, function () {
+						$('.gridContainer').effect('fade', {
+							mode: 'show'
+						}, function () {
+							$('.newWindowContainer').remove();
+						});
+					});
+				});
+
+				$(self).find('.saveButton').click(function () {
+					var getVars = getLinkParams([
+						'rType=ajax',
+						'action=saveTemplateStylesheet'
+					]);
+
+					$.ajax({
+						cache: false,
+						url: js_app_link(getVars),
+						dataType: 'json',
+						data: $(self).find('*').serialize(),
+						type: 'post',
+						success: function (data) {
+							if (data.success){
+								$(self).effect('fade', {
+									mode: 'hide'
+								}, function () {
+									$('.gridContainer').effect('fade', {
+										mode: 'show'
+									}, function () {
+										$('.newWindowContainer').remove();
+									});
+								});
+							}
+						}
+					});
+				});
+
+				if (typeof newWindowOnLoad != 'undefined'){
+					newWindowOnLoad.apply(self);
+				}
+			}
+		});
+	});
+
 	$('.newButton').click(function () {
 		var getVars = getLinkParams([
 			'rType=ajax',
@@ -48,7 +109,7 @@ $(document).ready(function () {
 						$('.gridContainer').effect('fade', {
 							mode: 'show'
 						}, function () {
-							$(self).remove();
+							$('.newWindowContainer').remove();
 						});
 					});
 				});
@@ -77,7 +138,7 @@ $(document).ready(function () {
 									$('.gridContainer').effect('fade', {
 										mode: 'show'
 									}, function () {
-										$(self).remove();
+										$('.newWindowContainer').remove();
 									});
 								});
 							}
@@ -112,7 +173,7 @@ $(document).ready(function () {
 						$('.gridContainer').effect('fade', {
 							mode: 'show'
 						}, function () {
-							$(self).remove();
+							$('.newWindowContainer').remove();
 						});
 					});
 				});
@@ -141,7 +202,7 @@ $(document).ready(function () {
 									$('.gridContainer').effect('fade', {
 										mode: 'show'
 									}, function () {
-										$(self).remove();
+										$('.newWindowContainer').remove();
 									});
 								});
 							}
@@ -176,7 +237,7 @@ $(document).ready(function () {
 						$('.gridContainer').effect('fade', {
 							mode: 'show'
 						}, function () {
-							$(self).remove();
+							$('.newWindowContainer').remove();
 						});
 					});
 				});
@@ -194,7 +255,14 @@ $(document).ready(function () {
 						data: $(self).find('*').serialize(),
 						type: 'post',
 						success: function (data) {
-							alert('Template Imported');
+							if(data.error == ''){
+								alert('Templates Imported');
+
+							}else{
+								alert('Template Folder already exists.')
+							}
+							js_redirect(js_app_link('appExt=templateManager&app=layout_manager&appPage=default'));
+
 						}
 					});
 				});
@@ -212,14 +280,15 @@ $(document).ready(function () {
 			'action=exportTemplate'
 		]);
 
-		$.ajax({
+		/*$.ajax({
 			cache: false,
 			url: js_app_link(getVars),
 			dataType: 'json',
 			success: function (data) {
 				alert('Template exported successfully, you can download it from the templates directory.');
 			}
-		});
+		});*/
+		window.open(js_app_link(getVars));
 	});
 
 	$('.configureButton').click(function () {
@@ -233,18 +302,16 @@ $(document).ready(function () {
 			buttonEl: this,
 			gridEl: $('.gridContainer'),
 			contentUrl: js_app_link(getVars),
-			onShow: function () {
+			onShow: function (ui) {
 				var self = this;
 
 				$(self).find('.cancelButton').click(function () {
 					$(self).effect('fade', {
 						mode: 'hide'
 					}, function () {
-						$('.gridContainer').effect('fade', {
-							mode: 'show'
-						}, function () {
-							$(self).remove();
-						});
+						$('.gridContainer').show();
+						$('.newWindowContainer').remove();
+
 					});
 				});
 
@@ -265,11 +332,9 @@ $(document).ready(function () {
 								$(self).effect('fade', {
 									mode: 'hide'
 								}, function () {
-									$('.gridContainer').effect('fade', {
-										mode: 'show'
-									}, function () {
-										$(self).remove();
-									});
+									$('.gridContainer').show();
+									$('.newWindowContainer').remove();
+
 								});
 							}
 						}

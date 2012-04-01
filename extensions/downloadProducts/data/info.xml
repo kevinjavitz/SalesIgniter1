@@ -4,8 +4,5 @@
 	<version>1.0</version>
 	<author>Stephen Walker ( http://www.itwebexperts.com )</author>
 	<status_key>EXTENSION_DOWNLOADPRODUCTS_ENABLED</status_key>
-	<core_version_support>
-		<version number="1.5">false</version>
-		<version number="1.6">true</version>
-	</core_version_support>
+	<installed_key>EXTENSION_DOWNLOADPRODUCT_INSTALLED</installed_key>
 </data>

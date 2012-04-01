@@ -10,7 +10,7 @@
 	This script and it's source is not redistributable
 */
 	$currentPage = (isset($_GET['page']) ? (int)$_GET['page'] : 0);
-	$tableGrid = htmlBase::newElement('grid');
+	$tableGrid = htmlBase::newElement('newGrid');
 
 	$tableGrid->addHeaderRow(array(
 		'columns' => array(

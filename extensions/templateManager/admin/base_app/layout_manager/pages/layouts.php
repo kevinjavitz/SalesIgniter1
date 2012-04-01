@@ -14,12 +14,12 @@ $tableGrid->addHeaderRow(array(
 ));
 
 $buttArr = array(
-	htmlBase::newElement('button')->setText('Back To Templates')->addClass('backButton'),
-	htmlBase::newElement('button')->setText('New')->addClass('newButton'),
-	htmlBase::newElement('button')->setText('Duplicate')->addClass('duplicateButton')->disable(),
-	htmlBase::newElement('button')->setText('Configure')->addClass('configureButton')->disable(),
-	htmlBase::newElement('button')->setText('Edit Layout Template')->addClass('editButton')->disable(),
-	htmlBase::newElement('button')->setText('Delete')->addClass('deleteButton')->disable()
+	htmlBase::newElement('button')->usePreset('back')->setText('Back To Templates')->addClass('backButton'),
+	htmlBase::newElement('button')->usePreset('new')->addClass('newButton'),
+	htmlBase::newElement('button')->usePreset('copy')->setText('Duplicate')->addClass('duplicateButton')->disable(),
+	htmlBase::newElement('button')->usePreset('edit')->addClass('configureButton')->disable(),
+	htmlBase::newElement('button')->usePreset('edit')->setText('Edit Layout Template')->addClass('editButton')->disable(),
+	htmlBase::newElement('button')->usePreset('delete')->addClass('deleteButton')->disable()
 );
 
 $iTemplate = Doctrine_Query::create()
@@ -39,6 +39,7 @@ $QLayouts = Doctrine_Query::create()
 ->select('layout_id, layout_name, layout_type')
 ->from('TemplateManagerLayouts')
 ->where('template_id = ?', $_GET['tID'])
+->andWhere('backupof_layout_id = ?','0')
 ->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 
 if ($QLayouts){
@@ -83,7 +84,7 @@ if ($QLayouts){
 
 <br />
 
-<div class="gridContainer">
+<div class="gridContainerElem">
 
 	<div style="width:100%;float:left;">
 

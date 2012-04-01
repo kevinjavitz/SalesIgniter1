@@ -3,6 +3,6 @@
 	<key>relatedProducts</key>
 	<version>1.0</version>
 	<author>Stephen Walker ( http://www.itwebexperts.com )</author>
-	<tables></tables>
 	<status_key>EXTENSION_RELATED_PRODUCTS_ENABLED</status_key>
+	<installed_key>EXTENSION_RELATED_PRODUCTS_INSTALLED</installed_key>
 </data>

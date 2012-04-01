@@ -271,8 +271,26 @@ if ($ShoppingCart->countContents() > 0) {
 	 if (sysConfig::get('TERMS_CONDITIONS_SHOPPING_CART') == 'true'){
 		 $checkoutFormButton->addClass('checkoutFormButton');
 	 }
-	$div3 = htmlBase::newElement('div');
-	$div3->html('<div class="main" style="text-align:right;"><span class="smallText" style="float:left;"></span><b>'. sysLanguage::get('SUB_TITLE_SUB_TOTAL'). $currencies->format($ShoppingCart->showTotal()).'</b></div><div style="clear:both;"></div>');
+
+	$divBeforeSubtotal = htmlBase::newElement('div')
+	->addClass('beforeSubtotal');
+
+	EventManager::notify('ShoppingCartListingBeforeSubtotal', &$divBeforeSubtotal);
+
+	$div3 = htmlBase::newElement('div')
+	->addClass('subtotalDiv');
+	$totalShippingCost = -1;
+	$shippingmodulesInfo = '';
+	EventManager::notify('OrderTotalShippingProcess', &$totalShippingCost, &$shippingmodulesInfo);
+	$totals = '';
+	$totalPrice = $ShoppingCart->showTotal();
+	//extra fees
+	if ($totalShippingCost >= 0){
+		$totals .= '<b>'.$shippingmodulesInfo.': '.$currencies->format($totalShippingCost).'</b><br/>';
+		//$totalPrice -= $totalShippingCost;
+	}
+	$totals .= '<b>'. sysLanguage::get('SUB_TITLE_SUB_TOTAL').'&nbsp;'. $currencies->format($totalPrice).'</b>';
+	$div3->html('<div class="main" style="text-align:right;"><span class="smallText" style="float:left;"></span>'. $totals.'</div><div style="clear:both;"></div>');
 ?>
 <?php
 if (sysConfig::exists('MODULE_SHIPPING_FREE_SHOW_TEXT')){
@@ -332,7 +350,7 @@ if (sysConfig::exists('MODULE_SHIPPING_FREE_SHOW_TEXT')){
     ->css(array(
 		'margin-bottom' => '10px'
     ));
-	$PageForm->append($div)->append($div3)->append($div2)->append($div4);
+	$PageForm->append($div)->append($divBeforeSubtotal)->append($div3)->append($div2)->append($div4);
 	echo '<style type="text/css">.shopButtons a.ui-button-text-only .ui-button-text{ padding: .4em 1em;} .shopButtons .updateProductButton .ui-button-text{ padding: .4em 1em;}</style>'.$PageForm->draw();
 	
 	$pageButtons = '';

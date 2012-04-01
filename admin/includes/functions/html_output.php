@@ -187,38 +187,6 @@
 	function tep_draw_separator($image = 'pixel_black.gif', $width = '100%', $height = '1') {
 		return tep_image(DIR_WS_IMAGES . $image, '', $width, $height);
 	}
-
-	////
-	// javascript to dynamically update the states/provinces list when the country is changed
-	// TABLES: zones
-	function tep_js_zone_list($country, $form, $field) {
-		$countries_query = tep_db_query("select distinct zone_country_id from " . TABLE_ZONES . " order by zone_country_id");
-		$num_country = 1;
-		$output_string = '';
-		while ($countries = tep_db_fetch_array($countries_query)) {
-			if ($num_country == 1) {
-				$output_string .= '  if (' . $country . ' == "' . $countries['zone_country_id'] . '") {' . "\n";
-			} else {
-				$output_string .= '  } else if (' . $country . ' == "' . $countries['zone_country_id'] . '") {' . "\n";
-			}
-
-			$states_query = tep_db_query("select zone_name, zone_id from " . TABLE_ZONES . " where zone_country_id = '" . $countries['zone_country_id'] . "' order by zone_name");
-
-			$num_state = 1;
-			while ($states = tep_db_fetch_array($states_query)) {
-				if ($num_state == '1') $output_string .= '    ' . $form . '.' . $field . '.options[0] = new Option("' . sysLanguage::get('PLEASE_SELECT') . '", "");' . "\n";
-				$output_string .= '    ' . $form . '.' . $field . '.options[' . $num_state . '] = new Option("' . $states['zone_name'] . '", "' . $states['zone_id'] . '");' . "\n";
-				$num_state++;
-			}
-			$num_country++;
-		}
-		$output_string .= '  } else {' . "\n" .
-		'    ' . $form . '.' . $field . '.options[0] = new Option("' . sysLanguage::get('TYPE_BELOW') . '", "");' . "\n" .
-		'  }' . "\n";
-
-		return $output_string;
-	}
-
 	////
 	// Output a form
 	function tep_draw_form($name, $action, $parameters = '', $method = 'post', $params = '') {
@@ -462,19 +430,23 @@
 			$catList = '<ul class="catListingUL">';
 
 			if ($parent_id == '0'){
-				$category_query = tep_db_query("select cd.categories_name from " . TABLE_CATEGORIES_DESCRIPTION . " cd where cd.language_id = '" . (int)Session::get('languages_id') . "' and cd.categories_id = '" . (int)$parent_id . "'");
-				if (tep_db_num_rows($category_query)){
-					$category = tep_db_fetch_array($category_query);
-
-					$catList .= '<li>' . tep_draw_checkbox_field('categories[]', $parent_id, (in_array($parent_id, $checked)), 'id="catCheckbox_' . $parent_id . '"') . '<label for="catCheckbox_' . $parent_id . '">' . $category['categories_name'] . '</label></li>';
+				$category = Doctrine_Manager::getInstance()
+					->getCurrentConnection()
+					->fetchAssoc("select cd.categories_name from categories_description cd where cd.language_id = '" . (int)Session::get('languages_id') . "' and cd.categories_id = '" . (int)$parent_id . "'");
+				if (sizeof($category) > 0){
+					$catList .= '<li>' . tep_draw_checkbox_field('categories[]', $parent_id, (in_array($parent_id, $checked)), 'id="catCheckbox_' . $parent_id . '"') . '<label for="catCheckbox_' . $parent_id . '">' . $category[0]['categories_name'] . '</label></li>';
 				}
 			}
 
-			$categories_query = tep_db_query("select c.categories_id, cd.categories_name, c.parent_id from " . TABLE_CATEGORIES . " c, " . TABLE_CATEGORIES_DESCRIPTION . " cd where c.categories_id = cd.categories_id and cd.language_id = '" . (int)Session::get('languages_id') . "' and c.parent_id = '" . (int)$parent_id . "' order by c.sort_order, cd.categories_name");
-			while ($categories = tep_db_fetch_array($categories_query)) {
-				$catList .= '<li>' . tep_draw_checkbox_field('categories[]', $categories['categories_id'], (in_array($categories['categories_id'], $checked)), 'id="catCheckbox_' . $categories['categories_id'] . '"') . '<label for="catCheckbox_' . $categories['categories_id'] . '">' . $categories['categories_name'] . '</label></li>';
-				if (tep_childs_in_category_count($categories['categories_id']) > 0){
-					$catList .= '<li class="subCatContainer">' . tep_get_category_tree_list($categories['categories_id'], $checked, false) . '</li>';
+			$QCategories = Doctrine_Manager::getInstance()
+				->getCurrentConnection()
+				->fetchAssoc("select c.categories_id, cd.categories_name, c.parent_id from categories c, categories_description cd where c.categories_id = cd.categories_id and cd.language_id = '" . (int)Session::get('languages_id') . "' and c.parent_id = '" . (int)$parent_id . "' order by c.sort_order, cd.categories_name");
+			if (sizeof($QCategories) > 0){
+				foreach ($QCategories as $categories) {
+					$catList .= '<li>' . tep_draw_checkbox_field('categories[]', $categories['categories_id'], (in_array($categories['categories_id'], $checked)), 'id="catCheckbox_' . $categories['categories_id'] . '"') . '<label for="catCheckbox_' . $categories['categories_id'] . '">' . $categories['categories_name'] . '</label></li>';
+					if (tep_childs_in_category_count($categories['categories_id']) > 0){
+						$catList .= '<li class="subCatContainer">' . tep_get_category_tree_list($categories['categories_id'], $checked, false) . '</li>';
+					}
 				}
 			}
 			$catList .= '</ul>';

@@ -3,6 +3,6 @@
 	<key>productDesigner</key>
 	<version>1.0</version>
 	<author>Stephen Walker ( http://www.itwebexperts.com )</author>
-	<tables></tables>
 	<status_key>EXTENSION_PRODUCT_DESIGNER_ENABLED</status_key>
+	<installed_key>EXTENSION_PRODUCT_DESIGNER_INSTALLED</installed_key>
 </data>

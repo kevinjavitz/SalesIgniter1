@@ -2,7 +2,16 @@
 	<title>Inventory Centers</title>
 	<key>inventoryCenters</key>
 	<description>Configuration Settings For The Inventory Centers Extension</description>
-	<Configuration>
+	<tabs>
+	<general>
+	<title>General</title>
+	<description>General Extension Settings</description>
+	<configurations>
+		<EXTENSION_INVENTORY_CENTERS_INSTALLED editable="false">
+			<title>Installation Status</title>
+			<value>False</value>
+			<description></description>
+		</EXTENSION_INVENTORY_CENTERS_INSTALLED>
 		<EXTENSION_INVENTORY_CENTERS_ENABLED>
 			<title>Enable Inventory Centers</title>
 			<value>True</value>
@@ -152,6 +161,8 @@
 			<sort_order>13</sort_order>
 			<set_function>tep_cfg_select_option(array('True','False'),</set_function>
 		</EXTENSION_INVENTORY_CENTERS_INTERMEDIARY_PAGE>
-		
-	</Configuration>
+
+	</configurations>
+	</general>
+	</tabs>
 </ConfigurationGroup>

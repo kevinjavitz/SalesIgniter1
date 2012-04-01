@@ -261,7 +261,7 @@ function itw_admin_app_link($params=null, $appName=null, $appPage=null, $connect
 // Scales product images dynamically, resulting in smaller file sizes, and keeps
 // proper image ratio. Used in conjunction with product_thumb.php t/n generator.
 function tep_image($src, $alt = '', $width = '', $height = '', $params = '') {
-	if (empty($src) || $src == DIR_WS_IMAGES || !file_exists(DIR_FS_CATALOG . $src)) return;
+	if (empty($src) || $src == sysConfig::get('DIR_WS_IMAGES') || !file_exists(sysConfig::getDirFsCatalog() . $src)) return;
 	// Set default image variable and code
 	$image = '<img src="' . $src . '"';
 
@@ -280,7 +280,7 @@ function tep_image($src, $alt = '', $width = '', $height = '', $params = '') {
 	}
 
 	// Do we calculate the image size?
-	if (CONFIG_CALCULATE_IMAGE_SIZE && !$dont_calculate) {
+	if (sysConfig::get('CONFIG_CALCULATE_IMAGE_SIZE') == 'true' && !$dont_calculate) {
 
 		// Get the image's information
 		if ($image_size = @getimagesize($src)) {
@@ -314,7 +314,7 @@ function tep_image($src, $alt = '', $width = '', $height = '', $params = '') {
 				tep_output_string($width).'&amp;h='.tep_output_string($height).'"';
 			}
 
-		} elseif (IMAGE_REQUIRED == 'false') {
+		} elseif (sysConfig::get('IMAGE_REQUIRED') == 'false') {
 			return '';
 		}
 	}
@@ -344,7 +344,7 @@ function tep_image($src, $alt = '', $width = '', $height = '', $params = '') {
 ////
 // Output a separator either through whitespace, or with an image
 function tep_draw_separator($image = 'pixel_black.gif', $width = '100%', $height = '1') {
-	return tep_image(DIR_WS_IMAGES . $image, '', $width, $height);
+	return tep_image(sysConfig::get('DIR_WS_IMAGES') . $image, '', $width, $height);
 }
 
 ////

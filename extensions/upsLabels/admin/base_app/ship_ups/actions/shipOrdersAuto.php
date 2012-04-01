@@ -67,21 +67,25 @@ if(empty($QOrders->ups_track_num) && empty($QOrders->ups_track_num2)){
 		}
 	}
 
-	$order_qty_query = mysql_query("select * from orders_products where orders_id = '" . $_GET['oID']. "'");
+	$order_qty_query = Doctrine_Manager::getInstance()
+		->getCurrentConnection()
+		->fetchAssoc("select * from orders_products where orders_id = '" . $_GET['oID']. "'");
 	$order_qty = 0;
 	$order_weight = 0;
 	$order_item_html = '';
-	if (mysql_num_rows($order_qty_query)) {
-		while ($order_qtys = mysql_fetch_array($order_qty_query)){
+	if (sizeof($order_qty_query) > 0) {
+		foreach ($order_qty_query as $order_qtys){
 			$order_item_html = $order_item_html . '          <tr>' . "\n" .
 				'            <td class="smallText" align="left"><b>Product:</b><br>' . $order_qtys['products_quantity'] . ' * ' .
 				$order_qtys['products_name'] . '</td>' . "\n" .
 				'            <td class="smallText" align="left">';
 			$order_qty = $order_qty + $order_qtys['products_quantity'];
 			$products_id = $order_qtys['products_id'];
-			$products_weight_query = mysql_query("select * from products where products_id = '" . $products_id . "'");
-			if (mysql_num_rows($products_weight_query)) {
-				$products_weights = mysql_fetch_array($products_weight_query);
+			$products_weight_query = Doctrine_Manager::getInstance()
+				->getCurrentConnection()
+				->fetchAssoc("select * from products where products_id = '" . $products_id . "'");
+			if (sizeof($products_weight_query) > 0) {
+				$products_weights = $products_weight_query[0];
 				$order_weight = $order_weight + ($order_qtys['products_quantity'] * ($products_weights['products_weight']));
 				$item_weights[] = $products_weights['products_weight'];
 			}

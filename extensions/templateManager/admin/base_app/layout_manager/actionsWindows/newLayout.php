@@ -33,14 +33,14 @@ if (isset($_GET['lID'])){
 		if (in_array($layoutId, $layouts) && !empty($pageType) && !empty($assocurls)){
 			if (!empty($sInfo['extension'])){
 				$selApps['ext'][$sInfo['extension']][$sInfo['application']][$sInfo['page']] = true;
-				$pageTypes['ext'][$sInfo['extension']][$sInfo['application']][$sInfo['page']] = $pageType[array_search($layoutId,$layouts)];
-				$assocurl['ext'][$sInfo['extension']][$sInfo['application']][$sInfo['page']] = $assocurls[array_search($layoutId,$layouts)];
+				$pageTypes['ext'][$sInfo['extension']][$sInfo['application']][$sInfo['page']] = isset($pageType[array_search($layoutId,$layouts)])?$pageType[array_search($layoutId,$layouts)]:'';
+				$assocurl['ext'][$sInfo['extension']][$sInfo['application']][$sInfo['page']] = isset($assocurls[array_search($layoutId,$layouts)])?$assocurls[array_search($layoutId,$layouts)]:'';
 
 			}
 			else {
 				$selApps[$sInfo['application']][$sInfo['page']] = true;
-				$pageTypes[$sInfo['application']][$sInfo['page']] = $pageType[array_search($layoutId,$layouts)];
-				$assocurl[$sInfo['application']][$sInfo['page']] = $assocurls[array_search($layoutId,$layouts)];
+				$pageTypes[$sInfo['application']][$sInfo['page']] = isset($pageType[array_search($layoutId,$layouts)])?$pageType[array_search($layoutId,$layouts)]:'';
+				$assocurl[$sInfo['application']][$sInfo['page']] = isset($assocurls[array_search($layoutId,$layouts)])?$assocurls[array_search($layoutId,$layouts)]:'';
 			}
 		}
 	}
@@ -70,6 +70,28 @@ $SettingsTable->addBodyRow(array(
 				->addOption('tablet', 'Tablet')
 				->selectOptionByValue($layoutType)
 				->draw())
+		)
+	));
+
+$layoutBackupsHtml = htmlBase::newElement('selectbox')
+	->setName('layoutBackup')
+	->selectOptionByValue('0');
+$layoutBackupsHtml->addOption('0','Please Select');
+
+$QLayoutsBackup = Doctrine_Query::create()
+	->from('TemplateManagerLayouts')
+	->andWhere('backupof_layout_id = ?', $_GET['lID'])
+	->orderBy('backup_date desc')
+	->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+
+foreach($QLayoutsBackup as $backupL){
+	$layoutBackupsHtml->addOption($backupL['layout_id'], $backupL['backup_date']);
+}
+
+$SettingsTable->addBodyRow(array(
+		'columns' => array(
+			array('text' => 'Load Layout Backup:'),
+			array('text' => $layoutBackupsHtml->draw())
 		)
 	));
 

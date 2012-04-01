@@ -18,7 +18,7 @@ class Extension_ordersCustomFields extends ExtensionBase {
 
 	public function init(){
 		global $App, $appExtension, $Template;
-		if ($this->enabled === false) return;
+		if ($this->isEnabled() === false) return;
 		
 		EventManager::attachEvents(array(
 			'OrderInfoAddBlock',

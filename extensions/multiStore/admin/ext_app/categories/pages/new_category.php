@@ -17,7 +17,7 @@ class multiStore_admin_categories_new_category extends Extension_multiStore {
 	}
 	
 	public function load(){
-		if ($this->enabled === false) return;
+		if ($this->isEnabled() === false) return;
 		
 		EventManager::attachEvents(array(
 			'NewCategoryTabHeader',

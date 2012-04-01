@@ -1,8 +1,0 @@
-<definitions>
-	<define key="INFOBOX_HEADING_RENTALISSUES"><![CDATA[Rental Issues]]></define>
-	<define key="BOX_HEADING_OPEN_TICKET"><![CDATA[View Open Issues]]></define>
-	<define key="BOX_RENTAL_QUEUE_EMPTY"><![CDATA[You have nothing rented out]]></define>
-	<define key="BUTTON_OPEN_TICKET"><![CDATA[Open A Ticket]]></define>
-	<define key="RENTALISSUES_RENTED_ITEMS"><![CDATA[Rented Items]]></define>
-	<define key="RENTALISSUES_PROBLEM"><![CDATA[Problem]]></define>
-</definitions>

@@ -1440,8 +1440,8 @@ class ReservationUtilities {
 		var secColumnWidth = $('.calendarTable').width()*80/100;
 
 		$('.pprButttons').css('left',firstColumnWidth+'px');
-		$('.refreshCal').css('left','90px');
-		//$('.calendarTable').css('height', ($('.calendarTable').height()-50) + 'px');
+		$('.refreshCal').css('left',(1.4*firstColumnWidth)+'px');
+		$('.calendarTable').css('padding-bottom', '20px');
 	});
 	</script>
 	<style>
@@ -1679,6 +1679,7 @@ class ReservationUtilities {
 	        ?>
 		 </div>
 	 </div>
+	 <br style="clear:both"/>
 
 	 <div class="dateRow">
       <div><table cellpadding="3" cellspacing="0" border="0" width="100%">

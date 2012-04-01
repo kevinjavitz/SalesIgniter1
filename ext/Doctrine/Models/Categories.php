@@ -99,7 +99,7 @@ class Categories extends Doctrine_Record {
 		->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 		return $Query[0]['parent_id'];
 	}
-	
+
 	public function getParentSubCategories($parentId, $languageId){
 		$Qcategories = Doctrine_Query::create()
 		->select('c.categories_id, cd.categories_name, c.parent_id')

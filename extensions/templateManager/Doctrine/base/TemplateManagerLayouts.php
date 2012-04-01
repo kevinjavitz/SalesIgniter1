@@ -22,25 +22,39 @@ class TemplateManagerLayouts extends Doctrine_Record
 	public function setTableDefinition()
 	{
 		$this->setTableName('template_manager_layouts');
-		$this->hasColumn('template_id', 'integer', 11, array(
+		$this->hasColumn('template_id', 'integer', 4, array(
 			'type' => 'integer',
-			'length' => '11',
+			'length' => 4,
 		));
-		$this->hasColumn('layout_id', 'integer', 11, array(
+		$this->hasColumn('layout_id', 'integer', 4, array(
 			'primary' => true,
 			'type' => 'integer',
 			'autoincrement' => true,
-			'length' => '11',
+			'length' => 4,
 		));
 		$this->hasColumn('layout_name', 'string', 128, array(
 				'type' => 'string',
-				'length' => '128',
+				'length' => 128,
 			));
 		$this->hasColumn('layout_type', 'string', 128, array(
 				'type' => 'string',
-				'length' => '128',
+				'length' => 128,
 				'default' => 'desktop'
-			));
+		));
+		$this->hasColumn('backupof_layout_id', 'integer', 4, array(
+				'type' => 'integer',
+				'default' => 0,
+				'notnull' => true,
+				'length' => 4,
+		));
+
+		$this->hasColumn('backup_date', 'datetime', null, array(
+				'type'          => 'datetime',
+				'primary'       => false,
+				'notnull'       => true,
+				'autoincrement' => false
+		));
+
 	}
 
 	public function setUp()

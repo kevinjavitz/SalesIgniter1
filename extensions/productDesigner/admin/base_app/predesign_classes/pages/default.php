@@ -14,7 +14,7 @@
 	->from('ProductDesignerPredesignClasses')
 	->orderBy('class_name');
 
-	$tableGrid = htmlBase::newElement('grid')
+	$tableGrid = htmlBase::newElement('newGrid')
 	->usePagination(true)
 	->setPageLimit((isset($_GET['limit']) ? (int)$_GET['limit'] : 25))
 	->setCurrentPage((isset($_GET['page']) ? (int)$_GET['page'] : 0))

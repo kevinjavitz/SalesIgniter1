@@ -18,7 +18,7 @@ class multiStore_admin_featuredManager_featured_groups_new_group extends Extensi
 	
 	public function load(){
 		global $appExtension;
-		if ($this->enabled === false) return;
+		if ($this->isEnabled() === false) return;
 		$appExtension->registerAsResource(__CLASS__, $this);
 
 		EventManager::attachEvents(array(

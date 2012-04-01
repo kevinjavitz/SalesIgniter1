@@ -272,7 +272,17 @@ function addConfiguration($key, $group, $title, $desc, $default, $func) {
 	$Qcheck->free();
 }
 
+function table_exists($tableName){
+
+	if( mysql_num_rows( mysql_query("SHOW TABLES LIKE '" . $tableName . "'"))){
+		return true;
+	}else{
+		return false;
+	}
+}
+
 function add_extra_fields($table, $column, $column_attr = 'VARCHAR(255) NULL'){
+
 	$configXml = simplexml_load_file('includes/configure.xml');
 	$db = $configXml->config[7]->value;
 	$link = mysql_connect($configXml->config[4]->value, $configXml->config[5]->value, $configXml->config[6]->value);
@@ -280,21 +290,49 @@ function add_extra_fields($table, $column, $column_attr = 'VARCHAR(255) NULL'){
 		die(mysql_error());
 	}
 	mysql_select_db($db , $link) or die("Select Error: ".mysql_error());
+	if(table_exists($table)){
+		$exists = false;
+		$columns = mysql_query("show columns from $table");
+		while($c = mysql_fetch_assoc($columns)){
+			if($c['Field'] == $column){
+				$exists = true;
+				break;
+			}
+		}
 
-	$exists = false;
-	$columns = mysql_query("show columns from $table");
-	while($c = mysql_fetch_assoc($columns)){
-		if($c['Field'] == $column){
-			$exists = true;
-			break;
+		if(!$exists){
+			mysql_query("ALTER TABLE `$table` ADD `$column`  $column_attr") or die("An error occured when running \n ALTER TABLE `$table` ADD `$column`  $column_attr \n" . mysql_error());
 		}
 	}
 
-	if(!$exists){
-		mysql_query("ALTER TABLE `$table` ADD `$column`  $column_attr") or die("An error occured when running \n ALTER TABLE `$table` ADD `$column`  $column_attr \n" . mysql_error());
+}
+
+function update_extra_fields($table, $column, $column_attr = 'VARCHAR(255) NULL'){
+
+	$configXml = simplexml_load_file('includes/configure.xml');
+	$db = $configXml->config[7]->value;
+	$link = mysql_connect($configXml->config[4]->value, $configXml->config[5]->value, $configXml->config[6]->value);
+	if (! $link){
+		die(mysql_error());
+	}
+	mysql_select_db($db , $link) or die("Select Error: ".mysql_error());
+	if(table_exists($table)){
+		$exists = false;
+		$columns = mysql_query("show columns from $table");
+		while($c = mysql_fetch_assoc($columns)){
+			if($c['Field'] == $column){
+				$exists = true;
+				break;
+			}
+		}
+
+		if(!$exists){
+			mysql_query("ALTER TABLE `$table` CHANGE `$column` `$column` $column_attr") or die("An error occured when running \n ALTER TABLE `$table` ADD `$column`  $column_attr \n" . mysql_error());
+		}
 	}
 
 }
+
 
 function updatePagesDescription(){
 	$db=sysConfig::get('DB_DATABASE');
@@ -439,7 +477,6 @@ function installInfobox($boxPath, $className, $extName = null){
 
 function addLayoutToPage($app, $appPage, $extName, $layoutId){
 	$TemplatePages = Doctrine_Core::getTable('TemplatePages');
-
 	if (!is_null($extName)){
 		$Page = $TemplatePages->findOneByApplicationAndPageAndExtension($app, $appPage, $extName);
 	}else{
@@ -475,8 +512,11 @@ function importPDFLayouts(){
 }
 
 function tep_get_languages() {
-	$languages_query = tep_db_query("select languages_id, name, code, image, directory from " . TABLE_LANGUAGES . " where status = '1' order by sort_order");
-	while ($languages = tep_db_fetch_array($languages_query)) {
+	$languages_query =  Doctrine_Manager::getInstance()
+		->getCurrentConnection()
+		->fetchAssoc('select languages_id, name, code, image, directory from languages where status = "1" order by sort_order');
+	$languages_array = array();
+	foreach($languages_query as $languages){
 		$languages_array[] = array('id' => $languages['languages_id'],
 			'name' => $languages['name'],
 			'code' => $languages['code'],
@@ -536,6 +576,8 @@ function update_extra(){
 	add_extra_fields('admin','admin_simple_admin',"int(1) NOT NULL default '0'");
 	add_extra_fields('admin','admin_favs_id',"int(11) NOT NULL");
 	add_extra_fields('languages','forced_default',"int(1) NOT NULL default '0'");
+	add_extra_fields('configuration','configuration_group_key',"VARCHAR( 200 ) NOT NULL DEFAULT  ''");
+	update_extra_fields('orders','terms','TEXT');
 }
 
 function update_configs(){
@@ -628,6 +670,133 @@ function updateModules(){
 		->exec('update modules set modules_type = "orderTotal" where modules_type = "order_total"');
 	//Update Module Types From Old
 	//--END--
+
+	//Delete all configuration entries that are the same value as the xml configuration files
+	// --BEGIN--
+	$Directory = new DirectoryIterator(sysConfig::getDirFsCatalog() . 'includes/configs/');
+	foreach($Directory as $ConfigFile){
+		if ($ConfigFile->isDot() || $ConfigFile->isDir()) continue;
+
+		$Configuration = simplexml_load_file(
+			$ConfigFile->getPathname(),
+			'SimpleXMLElement',
+			LIBXML_NOCDATA
+		);
+		$keys = array();
+		foreach($Configuration->tabs->children() as $tInfo){
+			foreach($tInfo->configurations->children() as $ConfigKey => $Config){
+				$key = (string) $ConfigKey;
+				$value = (string) $Config->value;
+
+				$ResultSet = Doctrine_Manager::getInstance()
+					->getCurrentConnection()
+					->fetchAssoc('select configuration_value from configuration where configuration_key = "' . $key . '"');
+				if ($ResultSet && sizeof($ResultSet) > 0){
+					/*if ($value == $ResultSet[0]['configuration_value']){
+						$keys[] = '"' . $key . '"';
+					}else{*/
+						Doctrine_Manager::getInstance()
+							->getCurrentConnection()
+							->exec('update configuration set configuration_group_key = "' . (string)$Configuration->key . '" where configuration_key = "' . $key . '"');
+					//}
+				}else{
+					$Configuration1 = Doctrine_Core::getTable('Configuration')->findAll();
+					$ConfigGroup = new MainConfigReader((string)$Configuration->key);
+					//foreach($_POST['configuration'] as $k => $v){
+					$Configuration1[$key]->configuration_group_key = $ConfigGroup->getKey();
+					$Configuration1[$key]->configuration_key = $key;
+					/*if (is_array($value)){
+							$Config = $ConfigGroup->getConfig($key);
+							$Configuration[$key]->configuration_value = implode($Config->getGlue(), $value);
+					}else{*/
+						$Configuration1[$key]->configuration_value = $value;
+						$Configuration1->save();
+					//}
+
+					//}
+				}
+
+			}
+		}
+
+		/*if (!empty($keys)){
+			Doctrine_Manager::getInstance()
+				->getCurrentConnection()
+				->exec('delete from configuration where configuration_key in(' . implode(',', $keys) . ')');
+		} */
+	}
+
+
+	$Directory = new DirectoryIterator(sysConfig::getDirFsCatalog() . 'extensions/');
+	foreach($Directory as $ConfigFile){
+		if ($ConfigFile->isDot() || $ConfigFile->isFile()) continue;
+
+		$Configuration = simplexml_load_file(
+			$ConfigFile->getPathname() . '/data/base/configuration.xml',
+			'SimpleXMLElement',
+			LIBXML_NOCDATA
+		);
+		$keys = array();
+		foreach($Configuration->tabs->children() as $tInfo){
+			foreach($tInfo->configurations->children() as $ConfigKey => $Config){
+				$key = (string) $ConfigKey;
+				$value = (string) $Config->value;
+
+				$ResultSet = Doctrine_Manager::getInstance()
+					->getCurrentConnection()
+					->fetchAssoc('select configuration_value from configuration where configuration_key = "' . $key . '"');
+				if ($ResultSet && sizeof($ResultSet) > 0){
+					/*if ($value == $ResultSet[0]['configuration_value']){
+						$keys[] = '"' . $key . '"';
+					}else{*/
+						Doctrine_Manager::getInstance()
+							->getCurrentConnection()
+							->exec('update configuration set configuration_group_key = "' . (string)$Configuration->key . '" where configuration_key = "' . $key . '"');
+					//}
+				}else{
+					/*$Configuration1 = Doctrine_Core::getTable('Configuration')
+						->findByConfigurationGroupKey((string)$Configuration->key);
+					if(strpos($key,'_INSTALLED') === false && strpos($key,'_ENABLED') === false){
+						$ExtConfig = new ExtensionConfigReader((string)$Configuration->key);
+						//foreach($_POST['configuration'] as $k => $v){
+							$Configuration1[$key]->configuration_group_key = $ExtConfig->getKey();
+							$Configuration1[$key]->configuration_key = $key;
+							$Configuration1[$key]->configuration_value = $value;
+						//}
+						$Configuration1->save();
+					}*/
+				}
+			}
+		}
+
+		/*if (!empty($keys)){
+			Doctrine_Manager::getInstance()
+				->getCurrentConnection()
+				->exec('delete from configuration where configuration_key in(' . implode(',', $keys) . ')');
+		} */
+	}
+	//Delete all configuration entries that are the same value as the xml configuration files
+	// --END--
+
+	//Add Installed Key For Extensions That Are Enabled
+	//--BEGIN--
+	$ResultSet = Doctrine_Manager::getInstance()
+		->getCurrentConnection()
+		->fetchAssoc('select configuration_key, configuration_value, configuration_group_key from configuration where configuration_key LIKE "EXTENSION_%_ENABLED"');
+	foreach($ResultSet as $kInfo){
+		$newKey = preg_replace('/_ENABLED/', '_INSTALLED', $kInfo['configuration_key']);
+		$ResultSet1 = Doctrine_Manager::getInstance()
+			->getCurrentConnection()
+			->fetchAssoc('select configuration_key, configuration_value, configuration_group_key from configuration where configuration_key LIKE "EXTENSION_%_INSTALLED" AND configuration_group_key = "'.$kInfo['configuration_group_key'].'"');
+		if(!$ResultSet1 || sizeof($ResultSet1) <= 0){
+		Doctrine_Manager::getInstance()
+			->getCurrentConnection()
+			->exec('insert into configuration (configuration_key, configuration_value, configuration_group_key) values ("' . $newKey . '", "True", "' . $kInfo['configuration_group_key'] . '")');
+		}
+	}
+	//Add Installed Key For Extensions That Are Enabled
+	//--END--
+
 }
 
 function updateAddressFormat(){
@@ -648,68 +817,68 @@ function updateAddressFormat(){
 }
 
 function updateToolsConfiguration(){
-	addConfiguration('SHOW_MANUFACTURER_ON_PRODUCT_INFO', 1, 'Show manufacturer name on product Info', 'Show manufacturer name on product Info', 'false', "tep_cfg_select_option(array('true', 'false'),");
-	addConfiguration('SHOW_PRODUCTS_FROM_SUBCATEGORIES', 1, 'Show all the products from all the subcategories of the current category', 'Show all the products from all the subcategories of the current category', 'false', "tep_cfg_select_option(array('true', 'false'),");
-	addConfiguration('SHOW_SUBCATEGORIES', 1, 'Show subcategories of the current category', 'Show subcategories of the current category', 'true', "tep_cfg_select_option(array('true', 'false'),");
-	addConfiguration('ONEPAGE_CHECKOUT_SHIPPING_ADDRESS', 7575, 'Show shipping address on checkout', 'Show shipping address on checkout', 'true', "tep_cfg_select_option(array('true', 'false'),");
-	addConfiguration('PRODUCT_INFO_SHOW_MODEL', 1, 'Show model on product info', 'Show model on product Info', 'true', "tep_cfg_select_option(array('true', 'false'),");
-	addConfiguration('CUSTOMER_CHANGE_SEND_NOTIFICATION_EMAIL_DEFAULT', 1, 'Send customer email when a change is made to his account set as default', 'Send customer email set as default', 'true', "tep_cfg_select_option(array('true', 'false'),");
-	addConfiguration('CHECK_STOCK_NEW_USED', 1, 'Check Stock for new and used purchase types', 'Check Stock for new and used purchase types', 'true', "tep_cfg_select_option(array('true', 'false'),");
-	addConfiguration('ORDERS_STATUS_CANCELLED_ID', 1, 'Order Status cancel ID', 'Order Status cancel ID', '7', 'tep_cfg_pull_down_order_status_list(');
-	addConfiguration('ORDERS_STATUS_WAITING_ID', 1, 'Order Status Waiting for Confirmation ID', 'Order Status Waiting for Confirmation ID', '6', 'tep_cfg_pull_down_order_status_list(');
-	addConfiguration('ORDERS_STATUS_APPROVED_ID', 1, 'Order Status Order Approved ID', 'Order Status order Approved ID', '8', 'tep_cfg_pull_down_order_status_list(');
-	addConfiguration('ORDERS_STATUS_PROCESSING_ID', 1, 'Order Status order Processing ID', 'Order Status order Processing ID', '1', 'tep_cfg_pull_down_order_status_list(');
-	addConfiguration('ORDERS_STATUS_DELIVERED_ID', 1, 'Order Status order Delivered ID', 'Order Status order Delivered ID', '3', 'tep_cfg_pull_down_order_status_list(');
-	addConfiguration('ORDERS_STATUS_ESTIMATE_ID', 1, 'Order Status order Estimate ID', 'Order Status order estimate ID', '9', 'tep_cfg_pull_down_order_status_list(');
-	addConfiguration('ORDERS_STATUS_SHIPPED_ID', 1, 'Order Status Order Shipped ID', 'Order Status order Shipped ID', '10', 'tep_cfg_pull_down_order_status_list(');
-	addConfiguration('ACCOUNT_FISCAL_CODE_REQUIRED', 5, 'Fiscal Code required', 'Fiscal Code required', 'false', "tep_cfg_select_option(array('true', 'false'),");
-	addConfiguration('ACCOUNT_VAT_NUMBER_REQUIRED', 5, 'VAT Number required', 'VAT Number required', 'false', "tep_cfg_select_option(array('true', 'false'),");
-	addConfiguration('ACCOUNT_CITY_BIRTH_REQUIRED', 5, 'City of birth required', 'City of birth required', 'false', "tep_cfg_select_option(array('true', 'false'),");
-	addConfiguration('ACCOUNT_NEWSLETTER', 5, 'Enable newsletter subscription', 'Enable newsletter subscription', 'false', "tep_cfg_select_option(array('true', 'false'),");
-	addConfiguration('ENABLE_HTML_EDITOR', 1, 'Use wysiwyg editor for product description', 'Use wysiwyg editor to edit product description', 'true', "tep_cfg_select_option(array('true', 'false'),");
-	addConfiguration('SHOW_ENLAGE_IMAGE_TEXT', 1, 'Show enlarge image text on product info page', 'Show enlarge image text on product info page', 'true', "tep_cfg_select_option(array('true', 'false'),");
-	addConfiguration('PRODUCT_LISTING_TYPE', 8, 'Use rows or columns for product listing', 'Use rows or columns for product listing', 'row', "tep_cfg_select_option(array('row', 'column'),");
-	addConfiguration('PRODUCT_LISTING_ALLOW_PRODUCT_SORTER', 8, 'Allow sort products', 'Allow sort products', 'True', "tep_cfg_select_option(array('True', 'False'),");
+	/*//addConfiguration('SHOW_MANUFACTURER_ON_PRODUCT_INFO', 1, 'Show manufacturer name on product Info', 'Show manufacturer name on product Info', 'false', "tep_cfg_select_option(array('true', 'false'),");
+	//addConfiguration('SHOW_PRODUCTS_FROM_SUBCATEGORIES', 1, 'Show all the products from all the subcategories of the current category', 'Show all the products from all the subcategories of the current category', 'false', "tep_cfg_select_option(array('true', 'false'),");
+	//addConfiguration('SHOW_SUBCATEGORIES', 1, 'Show subcategories of the current category', 'Show subcategories of the current category', 'true', "tep_cfg_select_option(array('true', 'false'),");
+	//addConfiguration('ONEPAGE_CHECKOUT_SHIPPING_ADDRESS', 7575, 'Show shipping address on checkout', 'Show shipping address on checkout', 'true', "tep_cfg_select_option(array('true', 'false'),");
+	//addConfiguration('PRODUCT_INFO_SHOW_MODEL', 1, 'Show model on product info', 'Show model on product Info', 'true', "tep_cfg_select_option(array('true', 'false'),");
+	//addConfiguration('CUSTOMER_CHANGE_SEND_NOTIFICATION_EMAIL_DEFAULT', 1, 'Send customer email when a change is made to his account set as default', 'Send customer email set as default', 'true', "tep_cfg_select_option(array('true', 'false'),");
+	//addConfiguration('CHECK_STOCK_NEW_USED', 1, 'Check Stock for new and used purchase types', 'Check Stock for new and used purchase types', 'true', "tep_cfg_select_option(array('true', 'false'),");
+	//addConfiguration('ORDERS_STATUS_CANCELLED_ID', 1, 'Order Status cancel ID', 'Order Status cancel ID', '7', 'tep_cfg_pull_down_order_status_list(');
+	//addConfiguration('ORDERS_STATUS_WAITING_ID', 1, 'Order Status Waiting for Confirmation ID', 'Order Status Waiting for Confirmation ID', '6', 'tep_cfg_pull_down_order_status_list(');
+	//addConfiguration('ORDERS_STATUS_APPROVED_ID', 1, 'Order Status Order Approved ID', 'Order Status order Approved ID', '8', 'tep_cfg_pull_down_order_status_list(');
+	//addConfiguration('ORDERS_STATUS_PROCESSING_ID', 1, 'Order Status order Processing ID', 'Order Status order Processing ID', '1', 'tep_cfg_pull_down_order_status_list(');
+	//addConfiguration('ORDERS_STATUS_DELIVERED_ID', 1, 'Order Status order Delivered ID', 'Order Status order Delivered ID', '3', 'tep_cfg_pull_down_order_status_list(');
+	//addConfiguration('ORDERS_STATUS_ESTIMATE_ID', 1, 'Order Status order Estimate ID', 'Order Status order estimate ID', '9', 'tep_cfg_pull_down_order_status_list(');
+	//addConfiguration('ORDERS_STATUS_SHIPPED_ID', 1, 'Order Status Order Shipped ID', 'Order Status order Shipped ID', '10', 'tep_cfg_pull_down_order_status_list(');
+	//addConfiguration('ACCOUNT_FISCAL_CODE_REQUIRED', 5, 'Fiscal Code required', 'Fiscal Code required', 'false', "tep_cfg_select_option(array('true', 'false'),");
+	//addConfiguration('ACCOUNT_VAT_NUMBER_REQUIRED', 5, 'VAT Number required', 'VAT Number required', 'false', "tep_cfg_select_option(array('true', 'false'),");
+	//addConfiguration('ACCOUNT_CITY_BIRTH_REQUIRED', 5, 'City of birth required', 'City of birth required', 'false', "tep_cfg_select_option(array('true', 'false'),");
+	//addConfiguration('ACCOUNT_NEWSLETTER', 5, 'Enable newsletter subscription', 'Enable newsletter subscription', 'false', "tep_cfg_select_option(array('true', 'false'),");
+	//addConfiguration('ENABLE_HTML_EDITOR', 1, 'Use wysiwyg editor for product description', 'Use wysiwyg editor to edit product description', 'true', "tep_cfg_select_option(array('true', 'false'),");
+	//addConfiguration('SHOW_ENLAGE_IMAGE_TEXT', 1, 'Show enlarge image text on product info page', 'Show enlarge image text on product info page', 'true', "tep_cfg_select_option(array('true', 'false'),");
+	//addConfiguration('PRODUCT_LISTING_TYPE', 8, 'Use rows or columns for product listing', 'Use rows or columns for product listing', 'row', "tep_cfg_select_option(array('row', 'column'),");
+	//addConfiguration('PRODUCT_LISTING_ALLOW_PRODUCT_SORTER', 8, 'Allow sort products', 'Allow sort products', 'True', "tep_cfg_select_option(array('True', 'False'),");
 
-	addConfiguration('PRODUCT_LISTING_TOTAL_WIDTH', 8, 'When using columns for product listing content area width to use when calculating image width', 'When using columns for product listing content area width to use when calculating image width', '600', "");
-	addConfiguration('PRODUCT_LISTING_PRODUCTS_COLUMNS', 8, 'When using columns for product listing number of products to display in a row', 'When using columns for product listing number of products to display in a row', '4', "");
-	addConfiguration('CATEGORIES_MAX_WIDTH', 8, 'Max width for the subcategories images', 'Max width for the subcategories images', '170', "");
-	addConfiguration('CATEGORIES_MAX_HEIGHT', 8, 'Max height for the subcategories images', 'Max height for the subcategories images', '170', "");
-	addConfiguration('PRODUCT_LISTING_PRODUCTS_LIMIT', 8, 'Number of products to list per page', 'Number of products to list per page (max 25)', '12', "");
-	addConfiguration('PRODUCT_LISTING_SELECT_MULTIPLES', 8, 'Can add to cart multiple items', 'Can add to cart multiple items?', 'false', "tep_cfg_select_option(array('true', 'false'),");
-	addConfiguration('PRODUCT_LISTING_PRODUCTS_LIMIT_ARRAY', 8, 'Results Per Page drop down values', 'Results Per Page drop down values (comma seperated example:<br>12,24,48,96)', '12,24,48,96', "");
-	addConfiguration('TOOLTIP_DESCRIPTION_ENABLED', 8, 'Enable product image tooltip description for products listing?', 'Enable product image tooltip description for products listing?', 'true', "tep_cfg_select_option(array('true', 'false'),");
-	addConfiguration('TOOLTIP_DESCRIPTION_BUTTONS', 8, 'Show buttons in product image tooltip description for products listing?', 'Show buttons in product image tooltip description for products listing?', 'true', "tep_cfg_select_option(array('true', 'false'),");
+	//addConfiguration('PRODUCT_LISTING_TOTAL_WIDTH', 8, 'When using columns for product listing content area width to use when calculating image width', 'When using columns for product listing content area width to use when calculating image width', '600', "");
+	//addConfiguration('PRODUCT_LISTING_PRODUCTS_COLUMNS', 8, 'When using columns for product listing number of products to display in a row', 'When using columns for product listing number of products to display in a row', '4', "");
+	//addConfiguration('CATEGORIES_MAX_WIDTH', 8, 'Max width for the subcategories images', 'Max width for the subcategories images', '170', "");
+	//addConfiguration('CATEGORIES_MAX_HEIGHT', 8, 'Max height for the subcategories images', 'Max height for the subcategories images', '170', "");
+	//addConfiguration('PRODUCT_LISTING_PRODUCTS_LIMIT', 8, 'Number of products to list per page', 'Number of products to list per page (max 25)', '12', "");
+	//addConfiguration('PRODUCT_LISTING_SELECT_MULTIPLES', 8, 'Can add to cart multiple items', 'Can add to cart multiple items?', 'false', "tep_cfg_select_option(array('true', 'false'),");
+	//addConfiguration('PRODUCT_LISTING_PRODUCTS_LIMIT_ARRAY', 8, 'Results Per Page drop down values', 'Results Per Page drop down values (comma seperated example:<br>12,24,48,96)', '12,24,48,96', "");
+	//addConfiguration('TOOLTIP_DESCRIPTION_ENABLED', 8, 'Enable product image tooltip description for products listing?', 'Enable product image tooltip description for products listing?', 'true', "tep_cfg_select_option(array('true', 'false'),");
+	//addConfiguration('TOOLTIP_DESCRIPTION_BUTTONS', 8, 'Show buttons in product image tooltip description for products listing?', 'Show buttons in product image tooltip description for products listing?', 'true', "tep_cfg_select_option(array('true', 'false'),");
 
-	addConfiguration('RENTAL_DAYS_CUSTOMER_PAST_DUE', 16, 'How many days past due the customer is allowed to rent and receive items', 'How many days past due the customer is allowed to rent and receive items', '3', '');
-	updateConfiguration('DIR_WS_TEMPLATES_DEFAULT', -1, -1, -1, -1, "tep_cfg_pull_down_template_list(");
-	addConfiguration('SHOW_COMMENTS_CHECKOUT', 1, 'Show comments on checkout', 'Show comments on checkout page', 'true', "tep_cfg_select_option(array('true', 'false'),");
+	//addConfiguration('RENTAL_DAYS_CUSTOMER_PAST_DUE', 16, 'How many days past due the customer is allowed to rent and receive items', 'How many days past due the customer is allowed to rent and receive items', '3', '');
+	//updateConfiguration('DIR_WS_TEMPLATES_DEFAULT', -1, -1, -1, -1, "tep_cfg_pull_down_template_list(");
+	//addConfiguration('SHOW_COMMENTS_CHECKOUT', 1, 'Show comments on checkout', 'Show comments on checkout page', 'true', "tep_cfg_select_option(array('true', 'false'),");
 
-	addConfiguration('ACCOUNT_COMPANY_REQUIRED',5, 'Company required', 'Company required','false',"tep_cfg_select_option(array('true', 'false'),");
-	addConfiguration('ACCOUNT_SUBURB_REQUIRED',5, 'Suburb required', 'Suburb required','false',"tep_cfg_select_option(array('true', 'false'),");
-	addConfiguration('ACCOUNT_GENDER_REQUIRED',5, 'Gender required', 'Gender required','false',"tep_cfg_select_option(array('true', 'false'),");
-	addConfiguration('ACCOUNT_DOB_REQUIRED',5, 'DOB required', 'DOB required','false',"tep_cfg_select_option(array('true', 'false'),");
-	addConfiguration('ACCOUNT_STATE_REQUIRED',5, 'State required', 'State required','false',"tep_cfg_select_option(array('true', 'false'),");
-	addConfiguration('ACCOUNT_VAT_NUMBER',5, 'VAT Number', 'VAT Number','false',"tep_cfg_select_option(array('true', 'false'),");
-	addConfiguration('ACCOUNT_TELEPHONE',5, 'Telephone Number', 'Telephone Number','false',"tep_cfg_select_option(array('true', 'false'),");
-	addConfiguration('ACCOUNT_FISCAL_CODE',5, 'Fiscal Code', 'Fiscal Code','false',"tep_cfg_select_option(array('true', 'false'),");
-	addConfiguration('ACCOUNT_CITY_BIRTH', 5, 'City of birth', 'City of birth', 'false', "tep_cfg_select_option(array('true', 'false'),");
+	//addConfiguration('ACCOUNT_COMPANY_REQUIRED',5, 'Company required', 'Company required','false',"tep_cfg_select_option(array('true', 'false'),");
+	//addConfiguration('ACCOUNT_SUBURB_REQUIRED',5, 'Suburb required', 'Suburb required','false',"tep_cfg_select_option(array('true', 'false'),");
+	//addConfiguration('ACCOUNT_GENDER_REQUIRED',5, 'Gender required', 'Gender required','false',"tep_cfg_select_option(array('true', 'false'),");
+	//addConfiguration('ACCOUNT_DOB_REQUIRED',5, 'DOB required', 'DOB required','false',"tep_cfg_select_option(array('true', 'false'),");
+	//addConfiguration('ACCOUNT_STATE_REQUIRED',5, 'State required', 'State required','false',"tep_cfg_select_option(array('true', 'false'),");
+	//addConfiguration('ACCOUNT_VAT_NUMBER',5, 'VAT Number', 'VAT Number','false',"tep_cfg_select_option(array('true', 'false'),");
+	//addConfiguration('ACCOUNT_TELEPHONE',5, 'Telephone Number', 'Telephone Number','false',"tep_cfg_select_option(array('true', 'false'),");
+	//addConfiguration('ACCOUNT_FISCAL_CODE',5, 'Fiscal Code', 'Fiscal Code','false',"tep_cfg_select_option(array('true', 'false'),");
+	//addConfiguration('ACCOUNT_CITY_BIRTH', 5, 'City of birth', 'City of birth', 'false', "tep_cfg_select_option(array('true', 'false'),");
 
-	addConfiguration('BARCODE_TYPE', 1, 'Choose barcode type to use in the store', 'Choose barcode type to use in the store', 'Code 39', "tep_cfg_select_option(array('Code 128B', 'Code 39 Extended', 'QR', 'Code 39', 'Code 25', 'Code 25 Interleaved'),");
-	addConfiguration('SHOW_IP_ADDRESS_ORDERS_DETAILS', 1, 'Show IP address on orders details page', 'Show IP address on orders details page', 'true', "tep_cfg_select_option(array('true', 'false'),");
-	addConfiguration('SHOW_PACKING_SLIP_BUTTONS', 1, 'Show packing slip buttons', 'Show packing slip buttons', 'true', "tep_cfg_select_option(array('true', 'false'),");
-	addConfiguration('BARCODES_INVENTORY_TYPES', 1, 'List of barcodes inventory types', 'List of barcodes inventory types separated by ;', '', '');
+	//addConfiguration('BARCODE_TYPE', 1, 'Choose barcode type to use in the store', 'Choose barcode type to use in the store', 'Code 39', "tep_cfg_select_option(array('Code 128B', 'Code 39 Extended', 'QR', 'Code 39', 'Code 25', 'Code 25 Interleaved'),");
+	//addConfiguration('SHOW_IP_ADDRESS_ORDERS_DETAILS', 1, 'Show IP address on orders details page', 'Show IP address on orders details page', 'true', "tep_cfg_select_option(array('true', 'false'),");
+	//addConfiguration('SHOW_PACKING_SLIP_BUTTONS', 1, 'Show packing slip buttons', 'Show packing slip buttons', 'true', "tep_cfg_select_option(array('true', 'false'),");
+	//addConfiguration('BARCODES_INVENTORY_TYPES', 1, 'List of barcodes inventory types', 'List of barcodes inventory types separated by ;', '', '');
 
-	addConfiguration('SITE_MAINTENANCE_MODE', 1, 'Site In maintenance mode', 'Site in maintenance mode', 'false', "tep_cfg_select_option(array('true', 'false'),");
-	addConfiguration('IP_LIST_MAINTENANCE_ENABLED', 1, 'List of IP enabled in maintenance mode', 'List of IP enabled in maintenance mode separated by ;', '', '');
+	//addConfiguration('SITE_MAINTENANCE_MODE', 1, 'Site In maintenance mode', 'Site in maintenance mode', 'false', "tep_cfg_select_option(array('true', 'false'),");
+	//addConfiguration('IP_LIST_MAINTENANCE_ENABLED', 1, 'List of IP enabled in maintenance mode', 'List of IP enabled in maintenance mode separated by ;', '', '');
 
 
-	addConfiguration('REQUEST_PICKUP_BEFORE_DAYS', 16, 'How many days to not show on the request pickup or delivery', 'How many days to not show on the request pickup or delivery', '2', '');
-	addConfiguration('SHOW_STANDARD_CREATE_ACCOUNT', 1, 'Show standard create account tab on account login', 'Show standard create account tab on account login', 'true', "tep_cfg_select_option(array('true', 'false'),");
+	//addConfiguration('REQUEST_PICKUP_BEFORE_DAYS', 16, 'How many days to not show on the request pickup or delivery', 'How many days to not show on the request pickup or delivery', '2', '');
+	//addConfiguration('SHOW_STANDARD_CREATE_ACCOUNT', 1, 'Show standard create account tab on account login', 'Show standard create account tab on account login', 'true', "tep_cfg_select_option(array('true', 'false'),");
 
-	addConfiguration('GOOGLE_API_SERVER_KEY', 1, 'Google API Server Key', 'The server key created through googles apis page', '', '');
-	addConfiguration('GOOGLE_API_BROWSER_KEY', 1, 'Google API Browser Key', 'The browser key created through googles apis page', '', '');
-
+	//addConfiguration('GOOGLE_API_SERVER_KEY', 1, 'Google API Server Key', 'The server key created through googles apis page', '', '');
+	//addConfiguration('GOOGLE_API_BROWSER_KEY', 1, 'Google API Browser Key', 'The browser key created through googles apis page', '', '');
+    */
 
 
 	$EmailTemplatesVariables = Doctrine_Core::getTable('EmailTemplatesVariables');
@@ -786,7 +955,7 @@ function updateToolsConfiguration(){
 }
 
 function updateTemplates(){
-	$TemplateLayouts = Doctrine_Core::getTable('TemplateLayouts');
+	//$TemplateLayouts = Doctrine_Core::getTable('TemplateLayouts');
 	$TemplatePages = Doctrine_Core::getTable('TemplatePages');
 	$TemplatesInfoboxes = Doctrine_Core::getTable('TemplatesInfoboxes');
 	$TemplatesInfoboxesToTemplates = Doctrine_Core::getTable('TemplatesInfoboxesToTemplates');
@@ -803,9 +972,10 @@ function updateTemplates(){
 }
 
 function run_updates(){
+	global $appExtension;
 	updateAllDbFields();
 	update_configs();
-	addMissingConfigs();
+	//addMissingConfigs();
 	updateModules();
 	updateTemplates();
 	updateToolsConfiguration();

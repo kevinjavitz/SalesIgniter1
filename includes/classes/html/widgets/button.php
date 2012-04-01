@@ -97,7 +97,8 @@ class htmlWidget_button implements htmlWidgetPlugin {
 	public function setHref($val, $encode = false, $target = null){
 		if ($encode === true){
 			$this->settings['href'] = htmlspecialchars($val);
-		}else{
+		}
+		else {
 			$this->settings['href'] = $val;
 		}
 		$this->buttonElement->changeElement('a');
@@ -116,73 +117,103 @@ class htmlWidget_button implements htmlWidgetPlugin {
 		switch($preset){
 			case 'back':
 				$this->setIcon('circleTriangleWest')
-				->setText(sysLanguage::get('TEXT_BUTTON_BACK'))
-				->setTooltip(sysLanguage::get('TEXT_BUTTON_BACK'));
+					->setText(sysLanguage::get('TEXT_BUTTON_BACK'));
 				break;
 			case 'new':
 				$this->setIcon('circlePlus')
-				->setText(sysLanguage::get('TEXT_BUTTON_NEW'))
-				->setTooltip(sysLanguage::get('TEXT_BUTTON_NEW'));
+					->setText(sysLanguage::get('TEXT_BUTTON_NEW'));
 				break;
 			case 'edit':
 				$this->setIcon('wrench')
-				->setText(sysLanguage::get('TEXT_BUTTON_EDIT'))
-				->setTooltip(sysLanguage::get('TEXT_BUTTON_EDIT'));
+					->setText(sysLanguage::get('TEXT_BUTTON_EDIT'));
 				break;
 			case 'delete':
 				$this->setIcon('closeThick')
-				->setText(sysLanguage::get('TEXT_BUTTON_DELETE'))
-				->setTooltip(sysLanguage::get('TEXT_BUTTON_DELETE'));
+					->setText(sysLanguage::get('TEXT_BUTTON_DELETE'));
 				break;
 			case 'cancel':
 				$this->setIcon('cancel')
-				->setText(sysLanguage::get('TEXT_BUTTON_CANCEL'))
-				->setTooltip(sysLanguage::get('TEXT_BUTTON_CANCEL'));
+					->setText(sysLanguage::get('TEXT_BUTTON_CANCEL'));
 				break;
 			case 'next':
 				$this->setIcon('next')
-				->setText(sysLanguage::get('TEXT_BUTTON_NEXT'))
-				->setTooltip(sysLanguage::get('TEXT_BUTTON_NEXT'));
+					->setText(sysLanguage::get('TEXT_BUTTON_NEXT'));
 				break;
 			case 'save':
 				$this->setIcon('save')
-				->setText(sysLanguage::get('TEXT_BUTTON_SAVE'))
-				->setTooltip(sysLanguage::get('TEXT_BUTTON_SAVE'));
+					->setText(sysLanguage::get('TEXT_BUTTON_SAVE'));
 				break;
 			case 'install':
 				$this->setIcon('plusThick')
-				->setText(sysLanguage::get('TEXT_BUTTON_INSTALL'))
-				->setTooltip(sysLanguage::get('TEXT_BUTTON_INSTALL'));
+					->setText(sysLanguage::get('TEXT_BUTTON_INSTALL'));
 				break;
 			case 'uninstall':
 				$this->setIcon('closeThick')
-				->setText(sysLanguage::get('TEXT_BUTTON_UNINSTALL'))
-				->setTooltip(sysLanguage::get('TEXT_BUTTON_UNINSTALL'));
+					->setText(sysLanguage::get('TEXT_BUTTON_UNINSTALL'));
 				break;
 			case 'continue':
 				$this->setIcon('circleTriangleEast')
-				->setText(sysLanguage::get('TEXT_BUTTON_CONTINUE'))
-				->setTooltip(sysLanguage::get('TEXT_BUTTON_CONTINUE'));
+					->setText(sysLanguage::get('TEXT_BUTTON_CONTINUE'));
 				break;
 			case 'load':
 				$this->setIcon('disc')
-				->setText(sysLanguage::get('TEXT_BUTTON_LOAD'))
-				->setTooltip(sysLanguage::get('TEXT_BUTTON_LOAD'));
+					->setText(sysLanguage::get('TEXT_BUTTON_LOAD'));
 				break;
 			case 'trash':
 				$this->setIcon('trash')
-				->setText(sysLanguage::get('TEXT_BUTTON_TRASH'))
-				->setTooltip(sysLanguage::get('TEXT_BUTTON_TRASH'));
+					->setText(sysLanguage::get('TEXT_BUTTON_TRASH'));
 				break;
 			case 'print':
 				$this->setIcon('print')
-				->setText(sysLanguage::get('TEXT_BUTTON_PRINT'))
-				->setTooltip(sysLanguage::get('TEXT_BUTTON_PRINT'));
+					->setText(sysLanguage::get('TEXT_BUTTON_PRINT'));
 				break;
 			case 'help':
 				$this->setIcon('help')
-				->setText(sysLanguage::get('TEXT_BUTTON_HELP'))
-				->setTooltip(sysLanguage::get('TEXT_BUTTON_HELP'));
+					->setText(sysLanguage::get('TEXT_BUTTON_HELP'));
+				break;
+			case 'search':
+				$this->setIcon('search')
+					->setText(sysLanguage::get('TEXT_BUTTON_SEARCH'));
+				break;
+			case 'email':
+				$this->setIcon('email')
+					->setText(sysLanguage::get('TEXT_BUTTON_EMAIL'));
+				break;
+			case 'orders':
+				$this->setIcon('orders')
+					->setText(sysLanguage::get('TEXT_BUTTON_ORDERS'));
+				break;
+			case 'login':
+				$this->setIcon('login')
+					->setText(sysLanguage::get('TEXT_BUTTON_LOGIN'));
+				break;
+			case 'copy':
+				$this->setIcon('copy')
+					->setText(sysLanguage::get('TEXT_BUTTON_COPY'));
+				break;
+			case 'invoice':
+				$this->setIcon('invoice')
+					->setText(sysLanguage::get('TEXT_BUTTON_INVOICE'));
+				break;
+			case 'details':
+				$this->setIcon('details')
+					->setText(sysLanguage::get('TEXT_BUTTON_DETAILS'));
+				break;
+			case 'process':
+				$this->setIcon('process')
+					->setText(sysLanguage::get('TEXT_BUTTON_PROCESS'));
+				break;
+			case 'comment':
+				$this->setIcon('comment')
+					->setText(sysLanguage::get('TEXT_BUTTON_COMMENT'));
+				break;
+			case 'moveup':
+				$this->setIcon('thickArrowNorth')
+					->setText('Move Up');
+				break;
+			case 'movedown':
+				$this->setIcon('thickArrowSouth')
+					->setText('Move Down');
 				break;
 		}
 		return $this;

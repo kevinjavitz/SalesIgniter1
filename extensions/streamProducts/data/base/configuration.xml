@@ -2,7 +2,16 @@
 	<title>Stream Products</title>
 	<key>streamProducts</key>
 	<description>Configuration Settings For The Stream Products Extension</description>
-	<Configuration>
+	<tabs>
+	<general>
+	<title>General</title>
+	<description>General Extension Settings</description>
+	<configurations>
+		<EXTENSION_STREAMPRODUCTS_INSTALLED editable="false">
+			<title>Installation Status</title>
+			<value>False</value>
+			<description></description>
+		</EXTENSION_STREAMPRODUCTS_INSTALLED>
 		<EXTENSION_STREAMPRODUCTS_ENABLED>
 			<title>Enable Stream Products</title>
 			<value>True</value>
@@ -30,5 +39,7 @@
 			<description>Set player's default width. Height will be calculated from video aspect ratio</description>
 			<sort_order>4</sort_order>
 		</EXTENSION_STREAMPRODUCTS_STREAMER_WIDTH>
-	</Configuration>
+	</configurations>
+	</general>
+	</tabs>
 </ConfigurationGroup>

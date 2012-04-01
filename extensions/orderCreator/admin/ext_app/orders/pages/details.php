@@ -17,7 +17,7 @@ class orderCreator_admin_orders_details extends Extension_orderCreator {
 	}
 	
 	public function load(){
-		if ($this->enabled === false) return;
+		if ($this->isEnabled() === false) return;
 		
 		EventManager::attachEvents(array(
 			'OrderInfoAddBlock'

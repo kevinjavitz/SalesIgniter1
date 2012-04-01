@@ -67,11 +67,11 @@ class OrderCreatorPaymentManager extends OrderPaymentManager implements Serializ
 			}
 		}
 		
-		if (isset($_POST['payment_cc_number']) && $_POST['payment_cc_number']!='' && $_POST['payment_cc_expires']!='' && $_POST['payment_cc_cvv']!=''){
+		if (isset($_POST['payment_cc_number']) && $_POST['payment_cc_number']!='' && $_POST['payment_cc_cvv']!=''){
 			$RequestData['cardNum'] = $_POST['payment_cc_number'];
-			$RequestData['cardExpDate'] = $_POST['payment_cc_expires'];
-			$expDate[0] = substr(date('Y'),0,2).substr($_POST['payment_cc_expires'],0,2);
-			$expDate[1] = substr($_POST['payment_cc_expires'],2,2);
+			$RequestData['cardExpDate'] = $_POST['cardExpMonth'].$_POST['cardExpYear'];
+			$expDate[0] = $_POST['cardExpYear'];
+			$expDate[1] = $_POST['cardExpMonth'];
 			if(count($expDate) == 2){
 				$RequestData['cardExpDateCIM'] = $expDate[0].'-'.$expDate[1];
 			}

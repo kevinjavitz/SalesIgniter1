@@ -219,6 +219,15 @@ foreach($QLayout as $iLayout){
 	saveConfigurationForLayout($iLayout['layout_id'], $New->layout_id);
 }
 
+$QProductListing = Doctrine_Query::create()
+	->from('ProductsListing')
+	->execute();
+
+foreach($QProductListing as $listingCol){
+	$listingCol->products_listing_template = $listingCol->products_listing_template.','.$TemplateDirectory;
+	$listingCol->save();
+}
+
 
 $json = array(
 	'success' => true

@@ -29,9 +29,9 @@ class OrderShippingZonereservation extends OrderShippingModuleBase
 		if(sysConfig::get('EXTENSION_PAY_PER_RENTALS_SHOW_SHIPPING') == 'False'){
 			$this->setEnabled(true);
 		}
-		if(sysConfig::get('EXTENSION_PAY_PER_RENTALS_SHOW_SHIPPING_ON_CALENDAR_IF_ORDER') == 'True' && (isset($_GET['app']) && $_GET['app'] == 'checkout')){
+		/*if(sysConfig::get('EXTENSION_PAY_PER_RENTALS_SHOW_SHIPPING_ON_CALENDAR_IF_ORDER') == 'True' && (isset($_GET['app']) && $_GET['app'] == 'checkout')){
 			$this->setEnabled(false);
-		}
+		} */
 
 
 		/*if (isset($_GET['app']) && $_GET['app'] == 'checkout' && (!Session::exists('onlyReservations') || Session::get('onlyReservations') == false)){

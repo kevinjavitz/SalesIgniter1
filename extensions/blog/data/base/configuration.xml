@@ -2,63 +2,99 @@
 	<title>Blog</title>
 	<description>Configuration Settings For The Blog Extension</description>
 	<key>blog</key>
-	<Configuration>
-		<EXTENSION_BLOG_ENABLED>
-			<title>Enable Blog</title>
-			<value>True</value>
-			<description>Enable Or Disable The Blog Extension</description>
-			<sort_order>1</sort_order>
-			<set_function>tep_cfg_select_option(array('True','False'),</set_function>
-		</EXTENSION_BLOG_ENABLED>
-		<EXTENSION_BLOG_POST_PER_PAGE>
-			<title>Blog Post per Page</title>
-			<value>10</value>
-			<description>Number of blog post per page</description>
-			<sort_order>2</sort_order>
-		</EXTENSION_BLOG_POST_PER_PAGE>
-		<EXTENSION_BLOG_ENABLE_COMMENTS>
-			<title>Enable Blog Comments</title>
-			<value>True</value>
-			<description>Enable Or Disable The Blog Comments</description>
-			<sort_order>3</sort_order>
-			<set_function>tep_cfg_select_option(array('True','False'),</set_function>
-		</EXTENSION_BLOG_ENABLE_COMMENTS>
-
-		<EXTENSION_BLOG_ENABLE_CAPTCHA>
-			<title>Enable Blog Captcha</title>
-			<value>True</value>
-			<description>Enable Or Disable The Blog Comments captcha</description>
-			<sort_order>4</sort_order>
-			<set_function>tep_cfg_select_option(array('True','False'),</set_function>
-		</EXTENSION_BLOG_ENABLE_CAPTCHA>
-
-		<EXTENSION_BLOG_SHOW_ONLY_INFOBOXES>
-			<title>Show only blog infoboxes on the blog pages</title>
-			<value>True</value>
-			<description>If set to true, on the blog pages(categories, archives, posts) it will show only two infoboxes(categories and archives) </description>
-			<sort_order>5</sort_order>
-			<set_function>tep_cfg_select_option(array('True','False'),</set_function>
-		</EXTENSION_BLOG_SHOW_ONLY_INFOBOXES>
-		<EXTENSION_BLOG_SHOW_INFOBOXES_ON_REST_SITE>
-			<title>Show blog infoboxes on the rest of the site pages</title>
-			<value>True</value>
-			<description>If set to true, on the rest of the site it will show the infoboxes(categories and archives) </description>
-			<sort_order>5</sort_order>
-			<set_function>tep_cfg_select_option(array('True','False'),</set_function>
-		</EXTENSION_BLOG_SHOW_INFOBOXES_ON_REST_SITE>
-
-        <EXTENSION_BLOG_DEFAULT_CATEGORY>
-			<title>Blog default category</title>
-			<value></value>
-			<description>Blog default category. Will take the RSS name and description.</description>
-			<sort_order>6</sort_order>
-		</EXTENSION_BLOG_DEFAULT_CATEGORY>
-        <EXTENSION_BLOG_SHOW_RSS_ON_BAR>
-			<title>Show RSS Icon on browser URL Bar</title>
-			<value>True</value>
-			<description>Show RSS Icon on browser URL Bar</description>
-			<sort_order>22</sort_order>
-			<set_function>tep_cfg_select_option(array('True', 'False'),</set_function>
-		</EXTENSION_BLOG_SHOW_RSS_ON_BAR>
-	</Configuration>
+	<tabs>
+		<general>
+			<title>General</title>
+			<description>General Extension Settings</description>
+			<configurations>
+				<EXTENSION_BLOG_INSTALLED editable="false">
+					<title>Installation Status</title>
+					<value>False</value>
+					<description></description>
+				</EXTENSION_BLOG_INSTALLED>
+				<EXTENSION_BLOG_ENABLED>
+					<title>Enable Blog</title>
+					<value>False</value>
+					<description>Enable Or Disable The Blog Extension</description>
+					<set_function>
+						<type>radio</type>
+						<values>
+							<value>True</value>
+							<value>False</value>
+						</values>
+					</set_function>
+				</EXTENSION_BLOG_ENABLED>
+				<EXTENSION_BLOG_POST_PER_PAGE>
+					<title>Blog Post per Page</title>
+					<value>10</value>
+					<description>Number of blog post per page</description>
+				</EXTENSION_BLOG_POST_PER_PAGE>
+				<EXTENSION_BLOG_ENABLE_COMMENTS>
+					<title>Enable Blog Comments</title>
+					<value>True</value>
+					<description>Enable Or Disable The Blog Comments</description>
+					<set_function>
+						<type>radio</type>
+						<values>
+							<value>True</value>
+							<value>False</value>
+						</values>
+					</set_function>
+				</EXTENSION_BLOG_ENABLE_COMMENTS>
+				<EXTENSION_BLOG_ENABLE_CAPTCHA>
+					<title>Enable Blog Captcha</title>
+					<value>True</value>
+					<description>Enable Or Disable The Blog Comments captcha</description>
+					<set_function>
+						<type>radio</type>
+						<values>
+							<value>True</value>
+							<value>False</value>
+						</values>
+					</set_function>
+				</EXTENSION_BLOG_ENABLE_CAPTCHA>
+				<EXTENSION_BLOG_SHOW_ONLY_INFOBOXES>
+					<title>Show only blog infoboxes on the blog pages</title>
+					<value>True</value>
+					<description>If set to true, on the blog pages(categories, archives, posts) it will show only two infoboxes(categories and archives)</description>
+					<set_function>
+						<type>radio</type>
+						<values>
+							<value>True</value>
+							<value>False</value>
+						</values>
+					</set_function>
+				</EXTENSION_BLOG_SHOW_ONLY_INFOBOXES>
+				<EXTENSION_BLOG_SHOW_INFOBOXES_ON_REST_SITE>
+					<title>Show blog infoboxes on the rest of the site pages</title>
+					<value>True</value>
+					<description>If set to true, on the rest of the site it will show the infoboxes(categories and archives)</description>
+					<set_function>
+						<type>radio</type>
+						<values>
+							<value>True</value>
+							<value>False</value>
+						</values>
+					</set_function>
+				</EXTENSION_BLOG_SHOW_INFOBOXES_ON_REST_SITE>
+				<EXTENSION_BLOG_DEFAULT_CATEGORY>
+					<title>Blog default category</title>
+					<value></value>
+					<description>Blog default category. Will take the RSS name and description.</description>
+				</EXTENSION_BLOG_DEFAULT_CATEGORY>
+				<EXTENSION_BLOG_SHOW_RSS_ON_BAR>
+					<title>Show RSS Icon on browser URL Bar</title>
+					<value>True</value>
+					<description>Show RSS Icon on browser URL Bar</description>
+					<set_function>
+						<type>radio</type>
+						<values>
+							<value>True</value>
+							<value>False</value>
+						</values>
+					</set_function>
+				</EXTENSION_BLOG_SHOW_RSS_ON_BAR>
+			</configurations>
+		</general>
+	</tabs>
 </ConfigurationGroup> 

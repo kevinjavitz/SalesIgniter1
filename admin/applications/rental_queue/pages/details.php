@@ -1,6 +1,6 @@
 <?php
 	$cID = $_GET['cID'];
-	$tableGrid = htmlBase::newElement('grid');
+	$tableGrid = htmlBase::newElement('newGrid');
 $QCustomersToPickupRequest = Doctrine_Query::create()
 	->from('PickupRequests pr')
 	->leftJoin('pr.PickupRequestsTypes prt')
@@ -60,8 +60,8 @@ if(count($QCustomersToPickupRequest) > 0){
 				}else{
 					foreach($invItems as $invItem){
 						$text = $invItem['barcode'];
-						if (defined('EXTENSION_INVENTORY_CENTERS_ENABLED') && EXTENSION_INVENTORY_CENTERS_ENABLED == 'True' && isset($invItem['center_id'])){
-							if (!isset($selected) && $invItem['center_id'] == $QcustomerInvCenter->getVal('inventory_center_id')){
+						if (defined('EXTENSION_INVENTORY_CENTERS_ENABLED') && sysConfig::get('EXTENSION_INVENTORY_CENTERS_ENABLED') == 'True' && isset($invItem['center_id'])){
+							if (!isset($selected) && $invItem['center_id'] == $QcustomerInvCenter[0]['inventory_center_id']){
 								$selected = $invItem['id'];
 							}
 							$text .= ' ( ' . $invItem['center_name'] . ' )';
@@ -74,19 +74,17 @@ if(count($QCustomersToPickupRequest) > 0){
 				}
 			}
 
-			$QqueueID = dataAccess::setQuery('select customers_queue_id from {queue} where customers_id = {customer_id} and products_id = {product_id}')
-			->setTable('{queue}', TABLE_RENTAL_QUEUE)
-			->setValue('{customer_id}', $cID)
-			->setValue('{product_id}', $products[$i]['id'])
-			->runQuery();
+			$QqueueID = Doctrine_Manager::getInstance()
+				->getCurrentConnection()
+			->fetchAssoc('select customers_queue_id from rental_queue where customers_id = "'.$cID.'" and products_id = "'.$products[$i]['id'].'"');
 
 			$tableGrid->addBodyRow(array(
 				'columns' => array(
-					array('text' => ($products[$i]['canSend'] === true ? tep_draw_checkbox_field('queueItem[]', $QqueueID->getVal('customers_queue_id')) : ''), 'align' => 'center'),
+					array('text' => ($products[$i]['canSend'] === true ? tep_draw_checkbox_field('queueItem[]', $QqueueID[0]['customers_queue_id']) : ''), 'align' => 'center'),
 					array('text' => $products[$i]['id']),
 					array('text' => $products[$i]['priority'], 'align' => 'center'),
 					array('text' => '<a href="' . itw_app_link('action=viewProduct&cID=' . $cID . '&pID=' . $products[$i]['id'],'rental_queue','details') . '#page-4">' . $products[$i]['name'] . '</a>'),
-					array('text' => tep_draw_pull_down_menu('barcode[' . $QqueueID->getVal('customers_queue_id') . ']', $barcodeArray[$products[$i]['id']], $selected, 'class="barcodeMenu"'))
+					array('text' => tep_draw_pull_down_menu('barcode[' . $QqueueID[0]['customers_queue_id'] . ']', $barcodeArray[$products[$i]['id']], $selected, 'class="barcodeMenu"'))
 				)
 			));
 		}
@@ -100,16 +98,15 @@ if(count($QCustomersToPickupRequest) > 0){
       <td class="main" colspan="2">' . sprintf(sysLanguage::get('TEXT_MEMBER_SINCE'), tep_date_short($membership->getMembershipDate())) . '</td>
      </tr>';
 
-	if (defined('EXTENSION_INVENTORY_CENTERS_ENABLED') && EXTENSION_INVENTORY_CENTERS_ENABLED == 'True'){
+	if (defined('EXTENSION_INVENTORY_CENTERS_ENABLED') && sysConfig::get('EXTENSION_INVENTORY_CENTERS_ENABLED') == 'True'){
 		$centerID = $addressBook->getAddressInventoryCenter($membership->getRentalAddressId());
-		$QcustomerInvCenter = dataAccess::setQuery('select inventory_center_id, inventory_center_name from {centers} where inventory_center_id = {center_id}')
-		->setTable('{centers}', TABLE_PRODUCTS_INVENTORY_CENTERS)
-		->setValue('{center_id}', $centerID)
-		->runQuery();
+		$QcustomerInvCenter = Doctrine_Manager::getInstance()
+		->getCurrentConnection()
+		->fetchAssoc('select inventory_center_id, inventory_center_name from products_inventory_centers where inventory_center_id = "'.$centerID.'"');
 
 		$infoTable .= '<tr>
 		 <td class="main">Inventory Center:</td>
-		 <td class="main">' . $QcustomerInvCenter->getVal('inventory_center_name') . '</td>
+		 <td class="main">' . $QcustomerInvCenter[0]['inventory_center_name'] . '</td>
 		</tr>';
 	}
 

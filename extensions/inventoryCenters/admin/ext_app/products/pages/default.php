@@ -18,7 +18,7 @@ class inventoryCenters_admin_products_default extends Extension_inventoryCenters
 	
 	public function load(){
 		global $appExtension;
-		if ($this->enabled === false) return;
+		if ($this->isEnabled() === false) return;
 
 			EventManager::attachEvents(array(
 				'ProductsDefaultAddFilterOptions',

@@ -21,7 +21,7 @@ function SetFocus(TargetFormName) {
   }
 
   var TargetForm = document.forms[target];
-    
+
   for (i=0; i<TargetForm.length; i++) {
     if ( (TargetForm.elements[i].type != "image") && (TargetForm.elements[i].type != "hidden") && (TargetForm.elements[i].type != "reset") && (TargetForm.elements[i].type != "submit") ) {
       TargetForm.elements[i].focus();
@@ -70,7 +70,7 @@ function IsValidDate(DateToCheck, FormatString) {
 
   strDateToCheck = DateToCheck.toLowerCase();
   strFormatString = FormatString.toLowerCase();
-  
+
   if (strDateToCheck.length != strFormatString.length) {
     return false;
   }
@@ -171,7 +171,7 @@ function IsValidDate(DateToCheck, FormatString) {
   if (intday > intDaysArray[intMonth - 1]) {
     return false;
   }
-  
+
   return true;
 }
 

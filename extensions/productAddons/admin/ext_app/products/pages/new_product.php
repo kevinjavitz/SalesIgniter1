@@ -17,7 +17,7 @@ class productAddons_admin_products_new_product extends Extension_productAddons {
 	}
 	
 	public function load(){
-		if ($this->enabled === false) return;
+		if ($this->isEnabled() === false) return;
 		
 		EventManager::attachEvents(array(
 			'NewProductTabHeader',
@@ -32,11 +32,11 @@ class productAddons_admin_products_new_product extends Extension_productAddons {
 		$excludedList = array();
 		$excludedList[] = $ProdID;
 		$catList = '';
-		//$categories_query = tep_db_query("select c.categories_id, cd.categories_name, c.parent_id from " . TABLE_CATEGORIES . " c, " . TABLE_CATEGORIES_DESCRIPTION . " cd where c.categories_id = cd.categories_id and cd.language_id = '" . (int)$langId . "' and c.parent_id = '" . (int)$parent_id . "' order by c.sort_order, cd.categories_name");
 		$QCategories = Doctrine_Query::create()
 		->from('Categories c')
 		->leftJoin('c.CategoriesDescription cd')
 		->where('cd.language_id = ?', $langId)
+		->andWhere('c.parent_id = ?', $parent_id)
 		->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 		foreach($QCategories as $cat){
 			$catList .= '<optgroup label="' . $cat['CategoriesDescription'][0]['categories_name'] . '">';

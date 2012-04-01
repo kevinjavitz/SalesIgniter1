@@ -1,6 +1,5 @@
 <?php
 $isAjax = (isset($_GET['rType']) && $_GET['rType'] == 'ajax');
-
 	$QlastOrder = Doctrine_Query::create()
 			->from('Orders o')
 			->leftJoin('o.OrdersProducts op')
@@ -35,6 +34,30 @@ $isAjax = (isset($_GET['rType']) && $_GET['rType'] == 'ajax');
 	}
 if ($isAjax === false){
 	ob_start();
+	?>
+<div class="bar_step1">
+	<div class="bar1">
+		<div class="text1"><?php echo sysLanguage::get('TEXT_BEGIN'); ?></div>
+		<div class="text2"><?php echo sysLanguage::get('TEXT_PAYMENT_SHIPPING'); ?></div>
+		<div class="text3"><?php echo sysLanguage::get('CHECKOUT_BAR_FINISHED'); ?></div>
+	</div>
+
+</div>
+<div class="bar_step2" style="display:none">
+	<div class="bar2">
+		<div class="text1"><?php echo sysLanguage::get('TEXT_BEGIN'); ?></div>
+		<div class="text2"><?php echo sysLanguage::get('TEXT_PAYMENT_SHIPPING'); ?></div>
+		<div class="text3"><?php echo sysLanguage::get('CHECKOUT_BAR_FINISHED'); ?></div>
+	</div>
+</div>
+<div class="bar_step3" style="display:none">
+	<div class="bar3">
+		<div class="text1"><?php echo sysLanguage::get('TEXT_BEGIN'); ?></div>
+		<div class="text2"><?php echo sysLanguage::get('TEXT_PAYMENT_SHIPPING'); ?></div>
+		<div class="text3"><?php echo sysLanguage::get('CHECKOUT_BAR_FINISHED'); ?></div>
+	</div>
+</div>
+	<?php
 }
 ?>
 <div class="ui-widget">
@@ -369,6 +392,101 @@ for($i=0, $n=sizeof($trackings); $i<$n; $i++){
 	}
 
 if ($isAjax === false){
+	?>
+<div class="bar_step1">
+	<div class="bar1">
+		<div class="text1"><?php echo sysLanguage::get('TEXT_BEGIN'); ?></div>
+		<div class="text2"><?php echo sysLanguage::get('TEXT_PAYMENT_SHIPPING'); ?></div>
+		<div class="text3"><?php echo sysLanguage::get('CHECKOUT_BAR_FINISHED'); ?></div>
+	</div>
+
+</div>
+<div class="bar_step2" style="display:none">
+	<div class="bar2">
+		<div class="text1"><?php echo sysLanguage::get('TEXT_BEGIN'); ?></div>
+		<div class="text2"><?php echo sysLanguage::get('TEXT_PAYMENT_SHIPPING'); ?></div>
+		<div class="text3"><?php echo sysLanguage::get('CHECKOUT_BAR_FINISHED'); ?></div>
+	</div>
+</div>
+<div class="bar_step3" style="display:none">
+	<div class="bar3">
+		<div class="text1"><?php echo sysLanguage::get('TEXT_BEGIN'); ?></div>
+		<div class="text2"><?php echo sysLanguage::get('TEXT_PAYMENT_SHIPPING'); ?></div>
+		<div class="text3"><?php echo sysLanguage::get('CHECKOUT_BAR_FINISHED'); ?></div>
+	</div>
+</div>
+<script type="text/javascript">
+
+	$(document).ready(function(){
+		$('#printOrder').button();
+		$('.bar_step1').hide();
+		$('.bar_step2').hide();
+		$('.bar_step3').show();
+		$('.breadcrumbTrail').html('<a class="headerNavigation" href="'+js_app_link('app=index&appPage=default')+'">You Are Here: Home</a> &raquo; Checkout &raquo; Order Processed');
+	});
+
+</script>
+<style type="text/css">
+	.bar1{
+		background-image:url(<?php echo sysConfig::getDirWsCatalog();?>images/b1.png);
+		width:388px;
+		height:43px;
+		background-repeat: no-repeat;
+	}
+
+	.bar2{
+		background-image:url(<?php echo sysConfig::getDirWsCatalog();?>images/b2.png);
+		width:388px;
+		height:43px;
+		background-repeat: no-repeat;
+	}
+
+	.bar3{
+		background-image:url(<?php echo sysConfig::getDirWsCatalog();?>images/b3.png);
+		width:388px;
+		height:43px;
+		background-repeat: no-repeat;
+	}
+
+	.text1{
+		font-weight: bold;
+		color:#7b7b7b;
+		display:inline-block;
+		margin-top:13px;
+		margin-left:30px;
+		margin-right:40px;
+	}
+	.text2{
+		margin-top:13px;
+		margin-left:30px;
+		margin-right:40px;
+		font-weight: bold;
+		color:#7b7b7b;
+		display:inline-block;
+	}
+	.text3{
+		margin-top:13px;
+		margin-left:20px;
+		margin-right:20px;
+		font-weight: bold;
+		color:#7b7b7b;
+		display:inline-block;
+	}
+
+	.bar_step1 .text1{
+		color:#ffffff;
+		font-weight: bold;
+	}
+	.bar_step2 .text2{
+		color:#ffffff;
+		font-weight: bold;
+	}
+	.bar_step3 .text3{
+		color:#ffffff;
+		font-weight: bold;
+	}
+</style>
+	<?php
 	$pageContents = ob_get_contents();
 	ob_end_clean();
 

@@ -1,55 +1,161 @@
 <?php
 
-function LoadAllWidgetData(&$Data, &$New){
-	$New->identifier = $Data->identifier;
-	$New->sort_order = $Data->sort_order;
-	foreach($Data->Configuration as $Config){
-		$New->Configuration[$Config->configuration_key]->configuration_value = $Config->configuration_value;
-	}
-	foreach($Data->Styles as $Style){
-		$New->Styles[$Style->definition_key]->definition_value = $Style->definition_value;
-	}
-}
-function LoadAllColumnData(&$Data, &$New){
-	$New->sort_order = $Data->sort_order;
-	foreach($Data->Configuration as $Config){
-		$New->Configuration[$Config->configuration_key]->configuration_value  = $Config->configuration_value;
-	}
-	foreach($Data->Styles as $Style){
-		$New->Styles[$Style->definition_key]->definition_value = $Style->definition_value;
-	}
-	if ($Data->Widgets && $Data->Widgets->count() > 0){
-		foreach($Data->Widgets as $wInfo){
-			$newWidget = $New->Widgets->getTable()->create();
-			LoadAllWidgetData($wInfo, $newWidget);
-			$New->Widgets->add($newWidget);
+if((int) ini_get('magic_quotes_gpc') == 0){
+
+	function LoadAllWidgetData(&$Data, &$New){
+
+		$New->identifier = $Data->identifier;
+
+		$New->sort_order = $Data->sort_order;
+
+		foreach($Data->Configuration as $Config){
+
+			$New->Configuration[$Config->configuration_key]->configuration_value = $Config->configuration_value;
+
 		}
-	}
-}
-function LoadAllContainerData(&$Data, &$New){
-	$New->sort_order = $Data->sort_order;
-	foreach($Data->Configuration as $Config){
-		$New->Configuration[$Config->configuration_key]->configuration_value  = $Config->configuration_value;
-	}
-	foreach($Data->Styles as $Style){
-		$New->Styles[$Style->definition_key]->definition_value = $Style->definition_value;
+
+		foreach($Data->Styles as $Style){
+
+			$New->Styles[$Style->definition_key]->definition_value = $Style->definition_value;
+
+		}
+
 	}
 
-	if ($Data->Children && $Data->Children->count() > 0){
-		foreach($Data->Children as $Container){
-			$NewContainer = $New->Children->getTable()->create();
-			LoadAllContainerData($Container, $NewContainer);
-			$New->Children->add($NewContainer);
+	function LoadAllColumnData(&$Data, &$New){
+
+		$New->sort_order = $Data->sort_order;
+
+		foreach($Data->Configuration as $Config){
+
+			$New->Configuration[$Config->configuration_key]->configuration_value  = $Config->configuration_value;
+
 		}
-	}else
-		if ($Data->Columns && $Data->Columns->count() > 0){
-			foreach($Data->Columns as $col){
-				$NewColumn = $New->Columns->getTable()->create();
-				LoadAllColumnData($col, $NewColumn);
-				$New->Columns->add($NewColumn);
+
+		foreach($Data->Styles as $Style){
+
+			$New->Styles[$Style->definition_key]->definition_value = $Style->definition_value;
+
+		}
+
+		if ($Data->Widgets && $Data->Widgets->count() > 0){
+
+			foreach($Data->Widgets as $wInfo){
+
+				$newWidget = $New->Widgets->getTable()->create();
+
+				LoadAllWidgetData($wInfo, $newWidget);
+
+				$New->Widgets->add($newWidget);
+
 			}
+
 		}
-}
+
+	}
+
+	function LoadAllContainerData(&$Data, &$New){
+
+		$New->sort_order = $Data->sort_order;
+
+		foreach($Data->Configuration as $Config){
+
+			$New->Configuration[$Config->configuration_key]->configuration_value  = $Config->configuration_value;
+
+		}
+
+		foreach($Data->Styles as $Style){
+
+			$New->Styles[$Style->definition_key]->definition_value = $Style->definition_value;
+
+		}
+
+
+
+		if ($Data->Children && $Data->Children->count() > 0){
+
+			foreach($Data->Children as $Container){
+
+				$NewContainer = $New->Children->getTable()->create();
+
+				LoadAllContainerData($Container, $NewContainer);
+
+				$New->Children->add($NewContainer);
+
+			}
+
+		}else
+
+			if ($Data->Columns && $Data->Columns->count() > 0){
+
+				foreach($Data->Columns as $col){
+
+					$NewColumn = $New->Columns->getTable()->create();
+
+					LoadAllColumnData($col, $NewColumn);
+
+					$New->Columns->add($NewColumn);
+
+				}
+
+			}
+
+	}
+
+	function LoadAllData(&$Original, &$New){
+
+		foreach($Original->Containers as $Container){
+
+			$NewContainer = $New->Containers->getTable()->create();
+
+			LoadAllContainerData($Container, $NewContainer);
+
+			$New->Containers->add($NewContainer);
+
+		}
+
+	}
+
+	function saveConfigurationForLayout($olID, $nlID){
+		/*$TemplatePages = Doctrine_Query::create()
+			->from('TemplatePages')
+			->where('FIND_IN_SET(' . $olID . ', layout_id) > 0')
+			->execute();
+		foreach($TemplatePages as $iTemplatePage){
+			$iTemplatePage->layout_id = $iTemplatePage->layout_id.','.$nlID;
+			$iTemplatePage->save();
+		} */
+	}
+	if ($_GET['layout_id'] != 'null'){
+		$QLayoutsBackup = Doctrine_Query::create()
+			->from('TemplateManagerLayouts')
+			->andWhere('backupof_layout_id = ?', $_GET['layout_id'])
+			->orderBy('backup_date')
+			->execute();
+
+		if(sizeof($QLayoutsBackup) > 3){
+			$QLayoutsBackup[0]->delete();
+		}
+
+		$TemplateLayouts = Doctrine_Core::getTable('TemplateManagerLayouts');
+		$Original = $TemplateLayouts->find((int) $_GET['layout_id']);
+		$New = $TemplateLayouts->create();
+		$New->template_id = $Original->template_id;
+		$New->layout_name = $Original->layout_name;
+		$New->backupof_layout_id = $_GET['layout_id'];
+		$New->backup_date = date('Y-m-d H:i:d');
+		foreach($Original->Configuration as $Config){
+			$New->Configuration[$Config->configuration_key]->configuration_value = $Config->configuration_value;
+		}
+
+		foreach($Original->Styles as $Style){
+			$New->Styles[$Style->definition_key]->definition_value = $Style->definition_value;
+		}
+
+		LoadAllData($Original, $New);
+		$New->save();
+		saveConfigurationForLayout($_GET['layout_id'], $New->layout_id);
+	}
 
 function parseElementSettings($el, &$Container) {
 	if ($el->attr('data-styles')){
@@ -267,11 +373,30 @@ function parseElement(&$el, &$parent) {
 			$Layout->Containers->add($Container);
 			$Container->parent_id = 0;
 		}
+
+		if ($el->attr('data-link_id')){
+			$Container->link_id = (int)$el->attr('data-link_id');
+			$Container->sort_order = (int)$el->attr('data-sort_order');
+			return;
+		}
 	}
 	elseif ($el->hasClass('container')) {
 		if ($el->attr('data-container_id')){
 			$containerId = $el->attr('data-container_id');
 			$Container = $parent->Children->getTable()->find($containerId);
+			if ($Container->parent_id == 0){
+				$parent->Children->add($Container);
+			}
+		}
+		else {
+			$Container = $parent->Children->getTable()->create();
+			$parent->Children->add($Container);
+		}
+	}
+	elseif ($el->hasClass('column') && $parent instanceof TemplateManagerLayoutsColumns){
+		if ($el->attr('data-column_id')){
+			$columnId = $el->attr('data-column_id');
+			$Container = $parent->Children->getTable()->find($columnId);
 			if ($Container->parent_id == 0){
 				$parent->Children->add($Container);
 			}
@@ -297,39 +422,10 @@ function parseElement(&$el, &$parent) {
 		$Container->Configuration->clear();
 	}
 	$Container->sort_order = (int)$el->attr('data-sort_order');
-	$Container->is_anchor = (int)$el->attr('data-is_anchor');
-	$Container->anchor_id = (int)$el->attr('data-anchor_id');
 
 	if ($el->attr('tmid')){
 		$newElementHolder[$el->attr('tmid')] = $Container;
 	}
-
-	//here I check the anchor id if is not blank and anchor is 0 then I'll duplicate the container
-	//after that I exit the function?
-	if(!empty($Container->anchor_id) && (int)$Container->anchor_id > 0){
-
-		if ($el->attr('data-container_id')){
-			if ($Container->Children){
-				$Container->Children->clear();
-			}
-			if ($Container->Columns){
-				$Container->Columns->clear();
-			}
-			$TemplateLayoutsContainer = Doctrine_Core::getTable('TemplateManagerLayoutsContainers');
-			$Original = $TemplateLayoutsContainer->find((int)$Container->anchor_id);
-			LoadAllContainerData($Original, $Container);
-		}else{
-			if ($Container->Widgets){
-				$Container->Widgets->clear();
-			}
-			$TemplateManagerLayoutsColumns = Doctrine_Core::getTable('TemplateManagerLayoutsColumns');
-			$Original = $TemplateManagerLayoutsColumns->find((int)$Container->anchor_id);
-			LoadAllColumnData($Original, $Container);
-		}
-		return;
-	}
-
-
 
 	parseElementSettings($el, $Container);
 
@@ -363,56 +459,16 @@ function parseElement(&$el, &$parent) {
 				$Widget->sort_order = $wInfo->attr('data-sort_order');
 				$Widget->Configuration['widget_settings']->configuration_value = $wInfo->attr('data-widget_settings');
 
+				parseElementSettings($wInfo, $Widget);
+
 				if ($wInfo->attr('tmid')){
 					$newElementHolder[$wInfo->attr('tmid')] = $Widget;
 				}
 			}
 		}
 		else {
-			$newParent = ($el->hasClass('column') ? null : (isset($Container) ? $Container : null));
+			$newParent = (isset($Container) ? $Container : null);
 			parseElement($childObj, $newParent);
-		}
-	}
-
-	if ($el->attr('data-container_id')){
-		$QContainerAnchors = Doctrine_Query::create()
-			->from('TemplateManagerLayoutsContainers')
-			->where('anchor_id = ?',$el->attr('data-container_id'))
-			->execute();
-		foreach($QContainerAnchors as $anchor){
-			if ($anchor->Styles){
-				$anchor->Styles->clear();
-			}
-			if ($anchor->Configuration){
-				$anchor->Configuration->clear();
-			}
-			if ($anchor->Children){
-				$anchor->Children->clear();
-			}
-			if ($anchor->Columns){
-				$anchor->Columns->clear();
-			}
-			LoadAllContainerData($Container, $anchor);
-			$anchor->save();
-		}
-	}else{
-		$QContainerAnchors = Doctrine_Query::create()
-			->from('TemplateManagerLayoutsColumns')
-			->where('anchor_id = ?',$el->attr('data-column_id'))
-			->execute();
-		foreach($QContainerAnchors as $anchor){
-			if ($anchor->Styles){
-				$anchor->Styles->clear();
-			}
-			if ($anchor->Configuration){
-				$anchor->Configuration->clear();
-			}
-			if ($anchor->Widgets){
-				$anchor->Widgets->clear();
-			}
-
-			LoadAllColumnData($Container, $anchor);
-			$anchor->save();
 		}
 	}
 }
@@ -436,6 +492,11 @@ function deleteRemovedElements(&$Element, $existingContainers, $existingColumns,
 	elseif (isset($Element->container_id) && isset($Element->column_id)) {
 		if (!in_array($Element->column_id, $existingColumns)){
 			$Element->delete();
+		}
+		elseif ($Element->Children->count() > 0) {
+			foreach($Element->Children as $childObj){
+				deleteRemovedElements($childObj, $existingContainers, $existingColumns, $existingWidgets);
+			}
 		}
 		elseif ($Element->Widgets->count() > 0) {
 			foreach($Element->Widgets as $widgetObj){
@@ -499,6 +560,7 @@ if ($_GET['layout_id'] != 'null'){
 			$parent = null;
 			parseElement($childObj, $parent);
 		}
+		//echo '<pre>';print_r($Layout->toArray());itwExit();
 		$Layout->save();
 	}
 
@@ -514,8 +576,12 @@ if ($_GET['layout_id'] != 'null'){
 		}
 	}
 }
-
+	$success = true;
+}else{
+	$newElementInfo = array();
+	$success = false;
+}
 EventManager::attachActionResponse(array(
-		'success' => true,
+		'success' => $success,
 		'newElementInfo' => $newElementInfo
 	), 'json');

@@ -17,7 +17,7 @@ class attributes_catalog_product_info extends Extension_attributes {
 	
 	public function load(){
 		global $appExtension;
-		if ($this->enabled === false) return;
+		if ($this->isEnabled() === false) return;
 	}
 	
 	public function drawAttributes($settings = null){

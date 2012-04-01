@@ -23,28 +23,25 @@ class TemplateManagerLayoutsColumns extends Doctrine_Record
 	public function setTableDefinition()
 	{
 		$this->setTableName('template_manager_layouts_columns');
-		$this->hasColumn('container_id', 'integer', 11, array(
+		$this->hasColumn('container_id', 'integer', 4, array(
 			'type' => 'integer',
-			'length' => '11',
+			'length' => 4,
 		));
-		$this->hasColumn('column_id', 'integer', 11, array(
+		$this->hasColumn('column_id', 'integer', 4, array(
 			'primary' => true,
 			'type' => 'integer',
 			'autoincrement' => true,
-			'length' => '11',
+			'length' => 4,
 		));
-		$this->hasColumn('sort_order', 'integer', 3, array(
+		$this->hasColumn('parent_id', 'integer', 4, array(
 			'type' => 'integer',
-			'length' => '3',
+			'default' => 0,
+			'notnull' => false,
+			'length' => 4,
 		));
-		$this->hasColumn('is_anchor', 'integer', 1, array(
-				'type' => 'integer',
-				'length' => '1',
-			));
-
-		$this->hasColumn('anchor_id', 'integer', 11, array(
-				'type' => 'integer',
-				'length' => '11',
+		$this->hasColumn('sort_order', 'integer', 2, array(
+			'type' => 'integer',
+			'length' => 2,
 		));
 	}
 
@@ -54,6 +51,16 @@ class TemplateManagerLayoutsColumns extends Doctrine_Record
 		$this->hasOne('TemplateManagerLayoutsContainers as Container', array(
 			'local' => 'container_id',
 			'foreign' => 'container_id'));
+
+		$this->hasOne('TemplateManagerLayoutsColumns as Parent', array(
+			'local' => 'parent_id',
+			'foreign' => 'column_id'));
+
+		$this->hasMany('TemplateManagerLayoutsColumns as Children', array(
+			'local' => 'column_id',
+			'foreign' => 'parent_id',
+			'orderBy' => 'sort_order',
+			'cascade' => array('delete')));
 
 		$this->hasMany('TemplateManagerLayoutsWidgets as Widgets', array(
 			'local' => 'column_id',

@@ -7,7 +7,7 @@ class postaffiliatepro_admin_membership_packages extends Extension_postaffiliate
 	}
 	
 	public function load(){
-		if ($this->enabled === false) return;
+		if ($this->isEnabled() === false) return;
 		
 		EventManager::attachEvents(array(
 			'MembershipPackageEditWindowBeforeDraw'

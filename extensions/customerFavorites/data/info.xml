@@ -3,6 +3,6 @@
 	<key>customerFavorites</key>
 	<version>1.0</version>
 	<author>Cristian Arcu ( http://www.itwebexperts.com )</author>
-	<tables></tables>
 	<status_key>EXTENSION_CUSTOMER_FAVORITES_ENABLED</status_key>
+	<installed_key>EXTENSION_CUSTOMER_FAVORITE_INSTALLED</installed_key>
 </data>

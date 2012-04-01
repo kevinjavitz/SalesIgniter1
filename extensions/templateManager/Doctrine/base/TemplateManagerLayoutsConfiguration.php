@@ -21,19 +21,19 @@ class TemplateManagerLayoutsConfiguration extends Doctrine_Record
     public function setTableDefinition()
     {
         $this->setTableName('template_manager_layouts_configuration');
-        $this->hasColumn('layout_id', 'integer', 11, array(
+        $this->hasColumn('layout_id', 'integer', 4, array(
              'type' => 'integer',
-             'length' => '11',
+             'length' => 4,
              ));
-        $this->hasColumn('configuration_id', 'integer', 11, array(
+        $this->hasColumn('configuration_id', 'integer', 4, array(
              'primary' => true,
              'type' => 'integer',
              'autoincrement' => true,
-             'length' => '11',
+             'length' => 4,
              ));
         $this->hasColumn('configuration_key', 'string', 128, array(
              'type' => 'string',
-             'length' => '128',
+             'length' => 128,
              ));
         $this->hasColumn('configuration_value', 'string', null, array(
              'type' => 'string',

@@ -17,7 +17,7 @@ class Extension_imageRot extends ExtensionBase {
 	}
 	
 	public function init(){
-		if ($this->enabled === false) return;
+		if ($this->isEnabled() === false) return;
 		//update_banners();//change_status to published or expired
 		EventManager::attachEvents(array(
 				'DataExportFullQueryFileLayoutHeader',
@@ -133,6 +133,7 @@ class Extension_imageRot extends ExtensionBase {
 	}
 
 }
+
 if (!function_exists('getFlashMovie')){
  function getFlashMovie($moviePath, $movieDesc, $w, $h){
     $movie = '<!--[if !IE]> -->';
@@ -162,8 +163,10 @@ function tep_get_group_tree_list($checked = false, $include_itself = true) {
           }
           $catList = '<ul class="catListingUL">';
 
-          $groups_query = tep_db_query("select * from banner_manager_groups");
-          while ($groups = tep_db_fetch_array($groups_query)) {
+		$Qgroups = Doctrine_Manager::getInstance()
+			->getCurrentConnection()
+			->fetchAssoc("select * from banner_manager_groups");
+          foreach ($Qgroups as $groups) {
               $catList .= '<li>' . tep_draw_checkbox_field('groups[]', $groups['banner_group_id'], (in_array($groups['banner_group_id'], $checked)), 'id="catCheckbox_' . $groups['banner_group_id'] . '"') . '<label for="catCheckbox_' . $groups['banner_group_id'] . '">' . $groups['banner_group_name'] . '</label></li>';
           }
           $catList .= '</ul>';
@@ -175,7 +178,10 @@ function tep_get_group_tree_list($checked = false, $include_itself = true) {
 
 if (!function_exists('tep_set_banners_status')){
 function tep_set_banners_status($banner_id, $status) {
-		return tep_db_query("update banner_manager_banners set banners_status = " . $status . " where banners_id = '" . (int)$banner_id . "'");
+		$success = Doctrine_Manager::getInstance()
+			->getCurrentConnection()
+			->exec("update banner_manager_banners set banners_status = " . $status . " where banners_id = '" . (int)$banner_id . "'");
+		return $success;
 }
 }
 if(!function_exists('tep_friendly_seo_url')){

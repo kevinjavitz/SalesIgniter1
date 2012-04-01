@@ -1,6 +1,7 @@
 <?php
 //print_r($_GET);
 //print_r($_POST);
+$isSuccess = false;
 if (isset($_GET['type']) && $_GET['type'] == 'addressBook'){
 	switch($_POST['address_type']){
 		case 'billing':
@@ -542,10 +543,8 @@ if (isset($_GET['type']) && $_GET['type'] == 'addressBook'){
 					//$ShoppingCart->emptyCart(true);
 				}
 				if ($messageStack->size('pageStack') == 0){
-					ob_start();
-					require(sysConfig::getDirFsCatalog() . 'applications/checkout/pages/success.php');
-					$pageHtml = ob_get_contents();
-					ob_end_clean();
+					$isSuccess = true;
+					$pageHtml = 'notEmpty';
 				}
 			}
 		} else {
@@ -563,6 +562,7 @@ if ($messageStack->size('pageStack') > 0) {
 }
 EventManager::attachActionResponse(array(
 		'success' => true,
+		'isSuccess' => $isSuccess,
 		'pageHtml' => $pageHtml,
 		'isShipping' => (isset($_POST['shipping_diff'])? true:false),
 		'isPickup' => (isset($_POST['pickup_diff'])? true:false)

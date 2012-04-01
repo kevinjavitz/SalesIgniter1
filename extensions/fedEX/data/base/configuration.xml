@@ -2,7 +2,16 @@
 	<title>FEDEX</title>
 	<key>fedEX</key>
 	<description>Configuration Settings For The FEDEX Extension</description>
-	<Configuration>
+	<tabs>
+	<general>
+	<title>General</title>
+	<description>General Extension Settings</description>
+	<configurations>
+		<EXTENSION_FED_EX_INSTALLED editable="false">
+			<title>Installation Status</title>
+			<value>False</value>
+			<description></description>
+		</EXTENSION_FED_EX_INSTALLED>
 		<EXTENSION_FED_EX_ENABLED>
 			<title>Enable FEDEX</title>
 			<value>True</value>
@@ -86,5 +95,7 @@
 			<sort_order>2</sort_order>
 		</EXTENSION_FED_EX_LASTSHIPMENT>
 
-	</Configuration>
+	</configurations>
+	</general>
+	</tabs>
 </ConfigurationGroup>

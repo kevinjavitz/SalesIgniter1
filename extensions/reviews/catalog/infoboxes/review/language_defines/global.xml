@@ -1,6 +1,0 @@
-<definitions>
-	<define key="INFOBOX_HEADING_REVIEWS"><![CDATA[Reviews]]></define>
-	<define key="INFOBOX_REVIEWS_WRITE_REVIEW"><![CDATA[Write a review on this product!]]></define>
-	<define key="INFOBOX_REVIEWS_NO_REVIEWS"><![CDATA[There are currently no product reviews]]></define>
-	<define key="INFOBOX_REVIEWS_TEXT_OF_5_STARS"><![CDATA[%s of 5 Stars!]]></define>
-</definitions>

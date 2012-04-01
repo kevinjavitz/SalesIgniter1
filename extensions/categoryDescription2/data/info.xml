@@ -3,6 +3,6 @@
 	<key>categoryDescription2</key>
 	<version>1.0</version>
 	<author>Stephen Walker ( http://www.itwebexperts.com )</author>
-	<tables></tables>
 	<status_key>EXTENSION_CATEGORIES_DESCRIPTION2_ENABLED</status_key>
+	<installed_key>EXTENSION_CATEGORIES_DESCRIPTION2_INSTALLED</installed_key>
 </data>

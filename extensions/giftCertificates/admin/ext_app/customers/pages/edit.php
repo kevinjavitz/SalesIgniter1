@@ -17,7 +17,7 @@ class giftCertificates_admin_customers_edit extends Extension_giftCertificates {
 	}
 
 	public function load(){
-		if ($this->enabled === false) return;
+		if ($this->isEnabled() === false) return;
 
 		EventManager::attachEvent('AdminCustomerEditBuildTabs', null, $this);
 	}

@@ -25,12 +25,11 @@
 	}
 
 	$pageTabsFolder = sysConfig::getDirFsCatalog() . 'applications/product/pages_tabs/' . $App->getAppPage() . '/';
-	
 	if (isset($_GET['products_id'])){
 		$product = new Product((int)$_GET['products_id']);
 	}
-	if($_GET['tplDir'] == 'codeGenerator'){
-		Session::set('current_app_page', $_GET['products_id']);
+	if(isset($_GET['tplDir']) && $_GET['tplDir'] == 'codeGenerator'){
+		$_GET['actualPage'] =  $_GET['products_id'];
 	}
 
 	if(!isset($_GET['products_id']) && !isset($_GET['pID']) && !isset($_POST['products_id']) && !isset($_POST['pID'])){

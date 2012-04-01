@@ -7,7 +7,7 @@ class attributes_admin_orderCreator_default_new extends Extension_attributes {
 
 	public function load(){
 		global $App;
-		if ($this->enabled === false) return;
+		if ($this->isEnabled() === false) return;
 		
 		EventManager::attachEvents(array(
 			'OrderCreatorAddProductToEmail',

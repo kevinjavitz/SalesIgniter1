@@ -223,6 +223,19 @@ class messageStack implements SplObserver {
 	public function output($group, $groupMessages = false) {
 		$output = array();
 		$urgency = array();
+		if (Session::exists('messageToStack') === true){
+			$msgArr = &Session::getReference('messageToStack');
+			foreach($msgArr as $index => $msg){
+				if ($msg['group'] == $group){
+					$this->add($msg['group'], $msg['text'], $msg['type']);
+					unset($msgArr[$index]);
+				}
+			}
+			if (sizeof($msgArr) <= 0){
+				Session::remove('messageToStack');
+			}
+		}
+
 		foreach($this->messages as $msg){
 			if ($msg['group'] == $group) {
 				$urgency[$msg['type']][] = $msg;
@@ -286,15 +299,11 @@ class messageStack implements SplObserver {
 	public function size($group) {
 		$count = 0;
 		if (Session::exists('messageToStack') === true){
-			$msgArr = &Session::getReference('messageToStack');
+			$msgArr = Session::get('messageToStack');
 			foreach($msgArr as $index => $msg){
 				if ($msg['group'] == $group){
-					$this->add($msg['group'], $msg['text'], $msg['type']);
-					unset($msgArr[$index]);
+					$count++;
 				}
-			}
-			if (sizeof($msgArr) <= 0){
-				Session::remove('messageToStack');
 			}
 		}
 

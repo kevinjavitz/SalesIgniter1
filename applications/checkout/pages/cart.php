@@ -13,7 +13,7 @@
 		/* @TODO: Get into pay per rental extension */
 		$qtyInput = htmlBase::newElement('input')
 		->setName('qty')
-		->attr('pID', $pID_string)
+		->attr('pID', $cartProduct->getUniqID())
 		->attr('ptype',$purchaseType)
 		->val($productQuantity);
 

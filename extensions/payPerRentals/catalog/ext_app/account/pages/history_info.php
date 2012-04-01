@@ -17,7 +17,7 @@ class payPerRentals_catalog_account_history_info extends Extension_payPerRentals
 	}
 	
 	public function load(){
-		if ($this->enabled === false) return;
+		if ($this->isEnabled() === false) return;
 
 		EventManager::attachEvents(array(
 			'OrderInfoProductTableHeading',

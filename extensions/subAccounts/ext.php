@@ -22,7 +22,7 @@ class Extension_subAccounts extends ExtensionBase {
 	 */
 	public function init() {
 		global $App, $appExtension, $Template;
-		if ($this->enabled === FALSE) return;
+		if ($this->isEnabled() === FALSE) return;
 
 
 		EventManager::attachEvents(array(

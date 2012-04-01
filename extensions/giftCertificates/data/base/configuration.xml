@@ -2,7 +2,16 @@
     <title>Gift Certificates</title>
     <key>giftCertificates</key>
     <description>Configuration Settings For The Gift Certificates Extension</description>
-    <Configuration>
+	<tabs>
+		<general>
+			<title>General</title>
+			<description>General Extension Settings</description>
+			<configurations>
+				<EXTENSION_GIFT_CERTIFICATES_INSTALLED editable="false">
+					<title>Installation Status</title>
+					<value>False</value>
+					<description></description>
+				</EXTENSION_GIFT_CERTIFICATES_INSTALLED>
         <EXTENSION_GIFT_CERTIFICATES_ENABLED>
             <title>Enable Gift Certificates</title>
             <value>True</value>
@@ -28,5 +37,7 @@
             <description>Enter the Server ID provided by valutec</description>
             <sort_order>2</sort_order>
         </EXTENSION_GIFT_CERTIFICATES_SERVER_ID>
-    </Configuration>
+    </configurations>
+</general>
+	</tabs>
 </ConfigurationGroup>

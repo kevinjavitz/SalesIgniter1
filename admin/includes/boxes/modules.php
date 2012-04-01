@@ -19,25 +19,15 @@
 
 if (sysPermissions::adminAccessAllowed('extensions', 'default') === true){
 	$extensionPages = array();
-	$dir = new DirectoryIterator(sysConfig::getDirFsCatalog() . 'extensions/');
 	$sorted = array();
-	foreach($dir as $fileObj){
-		if ($fileObj->isDot() || $fileObj->isFile()) {
-			continue;
-		}
-
-		$sorted[] = $fileObj->getBasename();
+	foreach($appExtension->getExtensions() as $extCls){
+		$sorted[$extCls->getExtensionKey()] = $extCls;
 	}
-	sort($sorted);
+	ksort($sorted);
 
 	$k = 0;
-	foreach($sorted as $extensionName){
+	foreach($sorted as $classObj){
 		$k++;
-		$className = 'Extension_' . $extensionName;
-		if (!class_exists($className)){
-			require(sysConfig::getDirFsCatalog() . 'extensions/' . $extensionName . '/ext.php');
-		}
-		$classObj = new $className;
 		$pages  = array();
 		if (sysPermissions::adminAccessAllowed('configure', 'configure', $classObj->getExtensionKey()) === true){
 			$pages = array(
@@ -110,13 +100,6 @@ if (sysPermissions::adminAccessAllowed('extensions', 'default') === true){
 		'link' => itw_app_link('moduleType=orderTotal', 'modules', 'default', 'SSL'),
 		'text' => sysLanguage::get('BOX_MODULES_ORDER_TOTAL')
 	);
-
-	if (sysPermissions::adminAccessAllowed('modules', 'infoboxes') === true){
-		$contents['children'][] = array(
-			'link' => itw_app_link(null, 'modules', 'infoboxes', 'SSL'),
-			'text' => sysLanguage::get('BOX_MODULES_INFOBOXES')
-		);
-	}
 	}
 	
  	if (sysPermissions::adminAccessAllowed('coupons') === true){

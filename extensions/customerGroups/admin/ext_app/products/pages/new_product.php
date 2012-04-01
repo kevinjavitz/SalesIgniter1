@@ -17,7 +17,7 @@ class customerGroups_admin_products_new_product extends Extension_customerGroups
 	}
 	
 	public function load(){
-		if ($this->enabled === false) return;
+		if ($this->isEnabled() === false) return;
 		EventManager::attachEvents(array(
 			'NewProductTabHeader',
 			'NewProductTabBody'
@@ -49,8 +49,10 @@ class customerGroups_admin_products_new_product extends Extension_customerGroups
 
 		$catList = '<ul class="catListingUL">';
 		$catList .= '<li>' . tep_draw_checkbox_field('groups[]', '-1', (in_array('-1', $checkedCats)), 'id="catCheckbox_' . '-1' . '"') . '<label for="catCheckbox_' . '-1' . '">' . 'Guests Customers' . '</label></li>';
-		$groups_query = mysql_query("select * from customer_groups");
-		while ($groups = mysql_fetch_array($groups_query)) {
+		$groups_query = Doctrine_Manager::getInstance()
+			->getCurrentConnection()
+			->fetchAssoc("select * from customer_groups");
+		foreach ($groups_query as $groups) {
 			$catList .= '<li>' . tep_draw_checkbox_field('groups[]', $groups['customer_groups_id'], (in_array($groups['customer_groups_id'], $checkedCats)), 'id="catCheckbox_' . $groups['customer_groups_id'] . '"') . '<label for="catCheckbox_' . $groups['customer_groups_id'] . '">' . $groups['customer_groups_name'] . '</label></li>';
 		}
 		$catList .= '</ul>';

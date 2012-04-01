@@ -40,7 +40,7 @@ if ($session_started == false) {
 		}
 
 		if (!isset($_GET['delete']) && !isset($_GET['edit'])){
-			if (sizeof($addressBook->addresses) >= MAX_ADDRESS_BOOK_ENTRIES){
+			if (sizeof($addressBook->addresses) >= sysConfig::get('MAX_ADDRESS_BOOK_ENTRIES')){
 				$messageStack->addSession('pageStack', sysLanguage::get('ERROR_ADDRESS_BOOK_FULL'), 'error');
 				tep_redirect(itw_app_link(null, 'account', 'address_book', 'SSL'));
 			}
@@ -58,9 +58,10 @@ if ($session_started == false) {
 			tep_redirect(itw_app_link(null, 'account', 'history', 'SSL'));
 		}
 		
-		$customer_info_query = tep_db_query("select customers_id from " . TABLE_ORDERS . " where orders_id = '". (int)$_GET['order_id'] . "'");
-		$customer_info = tep_db_fetch_array($customer_info_query);
-		if ($customer_info['customers_id'] != $userAccount->getCustomerId()){
+		$Check = Doctrine_Manager::getInstance()
+			->getCurrentConnection()
+			->fetchAssoc("select customers_id from orders where orders_id = '". (int)$_GET['order_id'] . "'");
+		if ($Check[0]['customers_id'] != $userAccount->getCustomerId()){
 			tep_redirect(itw_app_link(null, 'account', 'history', 'SSL'));
 		}
 		
@@ -70,8 +71,10 @@ if ($session_started == false) {
 		$breadcrumb->add(sprintf(sysLanguage::get('NAVBAR_TITLE_HISTORY'), $_GET['order_id']), itw_app_link(null, 'account', 'history_info', 'SSL'));
 		$breadcrumb->add(sprintf(sysLanguage::get('NAVBAR_TITLE_HISTORY_INFO'), $_GET['order_id']), itw_app_link('order_id=' . $_GET['order_id'], 'account', 'history_info', 'SSL'));
 	}elseif ($App->getPageName() == 'newsletters'){
-		$newsletter_query = tep_db_query("select customers_newsletter from " . TABLE_CUSTOMERS . " where customers_id = '" . (int)$userAccount->getCustomerId() . "'");
-		$newsletter = tep_db_fetch_array($newsletter_query);
+		$QnewsLetter = Doctrine_Manager::getInstance()
+			->getCurrentConnection()
+			->fetchAssoc("select customers_newsletter from customers where customers_id = '" . (int)$userAccount->getCustomerId() . "'");
+		$newsletter = $QnewsLetter[0];
 	}elseif ($App->getPageName() == 'logoff'){
 		$userAccount->processLogOut();
 		Session::remove('userAccount');
@@ -80,23 +83,31 @@ if ($session_started == false) {
 		Session::set('userAccount', $userAccount);
 	}elseif ($App->getPageName() == 'rental_issues'){
 		function issues_getCustomerInfo($cID){
-			$Qcustomer = tep_db_query('select customers_firstname, customers_lastname, customers_email_address from ' . TABLE_CUSTOMERS . ' where customers_id = "' . $cID . '"');
-			return tep_db_fetch_array($Qcustomer);
+			$Customer = Doctrine_Manager::getInstance()
+				->getCurrentConnection()
+				->fetchAssoc('select customers_firstname, customers_lastname, customers_email_address from customers where customers_id = "' . $cID . '"');
+			return $Customer[0];
 		}
 
 		function issues_getQueueInfo($cID, $pID){
-			$Qproduct = tep_db_query('select r.customers_queue_id, r.customers_queue_id, r.products_id, p.products_name, date_format(r.shipment_date,"%m/%d/%Y") as rented_date from ' . TABLE_RENTED_QUEUE . ' r, ' . TABLE_PRODUCTS_DESCRIPTION . ' p where p.products_id = r.products_id and customers_id = "' . $cID . '" and  r.products_id = "' . $pID . '"');
-			return tep_db_fetch_array($Qproduct);
+			$Product = Doctrine_Manager::getInstance()
+				->getCurrentConnection()
+				->fetchAssoc('select r.customers_queue_id, r.customers_queue_id, r.products_id, p.products_name, date_format(r.shipment_date,"%m/%d/%Y") as rented_date from rented_queue r, products_description p where p.products_id = r.products_id and customers_id = "' . $cID . '" and  r.products_id = "' . $pID . '"');
+			return $Product[0];
 		}
 
 		function issues_getBookingInfo($cID, $pID){
-			$Qproduct = tep_db_query('select r.rental_booking_id, r.orders_id, r.products_id, p.products_name, date_format(r.date_shipped,"%m/%d/%Y") as rented_date from rental_bookings r, ' . TABLE_PRODUCTS_DESCRIPTION . ' p where p.products_id = r.products_id and r.customers_id = "' . $cID . '" and  r.products_id = "' . $pID . '"');
-			return tep_db_fetch_array($Qproduct);
+			$Product = Doctrine_Manager::getInstance()
+				->getCurrentConnection()
+				->fetchAssoc('select r.rental_booking_id, r.orders_id, r.products_id, p.products_name, date_format(r.date_shipped,"%m/%d/%Y") as rented_date from rental_bookings r, products_description p where p.products_id = r.products_id and r.customers_id = "' . $cID . '" and  r.products_id = "' . $pID . '"');
+			return $Product[0];
 		}
 
 		function issues_getIssueInfo($iID){
-			$Qissue = tep_db_query('select * from ' . TABLE_RENTAL_ISSUES . ' where issue_id = "' . $iID . '"');
-			return tep_db_fetch_array($Qissue);
+			$Issue = Doctrine_Manager::getInstance()
+				->getCurrentConnection()
+				->fetchAssoc('select * from rental_issues where issue_id = "' . $iID . '"');
+			return $Issue[0];
 		}
 
 		function issues_getEmailText($type, $eInfo){

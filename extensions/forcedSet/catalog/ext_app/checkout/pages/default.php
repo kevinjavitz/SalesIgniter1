@@ -17,7 +17,7 @@ class forcedSet_catalog_checkout_default extends Extension_forcedSet {
 	}
 	
 	public function load(){
-		if ($this->enabled === false) return;
+		if ($this->isEnabled() === false) return;
 		
 		EventManager::attachEvents(array(
 			'CheckoutPreInit'

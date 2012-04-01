@@ -35,7 +35,7 @@ class metaTags_catalog_inventoryCenters_show_inventory_default extends Extension
 	 * @return void
 	 */
 	public function load(){
-		if ($this->enabled === false) return;
+		if ($this->isEnabled() === false) return;
 
 		EventManager::attachEvents(array(
 			'HeaderTagsTitle',

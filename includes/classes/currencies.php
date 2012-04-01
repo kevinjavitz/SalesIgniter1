@@ -16,16 +16,18 @@ Released under the GNU General Public License
 class currencies {
 	public $currencies;
 
+	private $exchange_rates = array();
+
 	public function __construct(){
 		$this->currencies = array();
 
-		$currencies = Doctrine_Query::create()
-			->select('*')
-			->from('CurrenciesTable')
-			->orderBy('title')->fetchArray();
-		if ($currencies){
-			foreach($currencies as $currency){
+		$ResultSet = Doctrine_Manager::getInstance()
+			->getCurrentConnection()
+			->fetchAssoc('select * from currencies');
+		if ($ResultSet && sizeof($ResultSet) > 0){
+			foreach($ResultSet as $currency){
 				$this->currencies[$currency['code']] = array(
+					'code'            => $currency['code'],
 					'title'           => $currency['title'],
 					'symbol_left'     => $currency['symbol_left'],
 					'symbol_right'    => $currency['symbol_right'],
@@ -35,6 +37,22 @@ class currencies {
 					'value'           => $currency['value']
 				);
 			}
+		}
+
+		$useLanguageCurrency = sysConfig::get('USE_DEFAULT_LANGUAGE_CURRENCY');
+		$systemDefaultCurrency = sysConfig::get('DEFAULT_CURRENCY');
+		$languageDefaultCurrency = sysLanguage::getCurrency();
+		if (Session::exists('currency') === false || isset($_GET['currency']) || ($useLanguageCurrency == 'true' && $languageDefaultCurrency != Session::get('currency'))){
+			if (isset($_GET['currency'])) {
+				if ($this->is_set($_GET['currency']) === false){
+					$currency = ($useLanguageCurrency == 'true') ? $languageDefaultCurrency : $systemDefaultCurrency;
+				}
+			} else {
+				$currency = ($useLanguageCurrency == 'true') ? $languageDefaultCurrency : $systemDefaultCurrency;
+			}
+
+			Session::set('currency', $currency);
+			Session::set('currency_value', $this->currencies[$currency]['value']);
 		}
 	}
 
@@ -91,8 +109,15 @@ class currencies {
 		return $format_string;
 	}
 
+	public function get($code){
+		if (isset($this->currencies[$code])){
+			return $this->currencies[$code];
+		}
+		return false;
+	}
+
 	function is_set($code) {
-		if (isset($this->currencies[$code]) && tep_not_null($this->currencies[$code])){
+		if (isset($this->currencies[$code])){
 			return true;
 		}
 		return false;
@@ -108,6 +133,31 @@ class currencies {
 
 	function display_price($products_price, $products_tax, $quantity = 1) {
 		return $this->format(tep_add_tax($products_price, $products_tax) * $quantity);
+	}
+
+	public function convert($amount = 1, $from = "GBP", $to = null, $decimals = 2){
+		if (is_null($to)){
+			$to = Session::get('currency');
+		}
+
+		if (!isset($this->exchange_rates[$from][$to])){
+			//make string to be put in API
+			$string = 1 . $from."=?".$to;
+
+			//Call Google API
+			$google_url = "http://www.google.com/ig/calculator?hl=en&q=1" . $from . "=?" . $to;
+
+			//Get and Store API results into a variable
+			$result = file_get_contents($google_url);
+			$result = preg_replace('/(\w+):/', '"\\1":', $result);
+			$result = json_decode($result);
+			$result->lhs = (float) $result->lhs;
+			$result->rhs = (float) $result->rhs;
+
+			$this->exchange_rates[$from][$to] = $result->rhs;
+		}
+
+		return (number_format($amount * $this->exchange_rates[$from][$to], $decimals));
 	}
 }
 ?>

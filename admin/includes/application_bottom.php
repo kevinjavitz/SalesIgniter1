@@ -19,7 +19,7 @@ if (sysConfig::get('STORE_PAGE_PARSE_TIME') == 'true') {
 }
 
 if (isset($_GET['showStats'])){
-	$execStart = explode(' ', PAGE_PARSE_START_TIME);
+	$execStart = explode(' ', sysConfig::get('PAGE_PARSE_START_TIME'));
 	$execEnd = explode(' ', microtime());
 	$executionTime = number_format(($execEnd[1] + $execEnd[0] - ($execStart[1] + $execStart[0])), 3);
 	$time = 0;
@@ -148,5 +148,34 @@ if (isset($_GET['showStats'])){
  </tr>
 </table></div>
 <?php
+}
+
+if (isset($_GET['runProfile'])){
+	// stop profiler
+	$xhprof_data = xhprof_disable();
+
+	//
+	// Saving the XHProf run
+	// using the default implementation of iXHProfRuns.
+	//
+	include_once "/home/itweb1/public_html/xhprof/xhprof_lib/utils/xhprof_lib.php";
+	include_once "/home/itweb1/public_html/xhprof/xhprof_lib/utils/xhprof_runs.php";
+
+	$xhprof_runs = new XHProfRuns_Default();
+
+	// Save the run under a namespace "xhprof_foo".
+	//
+	// **NOTE**:
+	// By default save_run() will automatically generate a unique
+	// run id for you. [You can override that behavior by passing
+	// a run id (optional arg) to the save_run() method instead.]
+	//
+	$run_id = $xhprof_runs->save_run($xhprof_data, "rentatruss");
+
+	echo "---------------\n".
+		"Assuming you have set up the http based UI for \n".
+		"XHProf at some address, you can view run at \n".
+		"http://<xhprof-ui-address>/index.php?run=$run_id&source=rentatruss\n".
+		"---------------\n";
 }
 ?>

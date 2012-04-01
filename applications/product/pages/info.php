@@ -1,5 +1,6 @@
 <?php
 	$pageContents = '';
+
 	if ($product->isValid() === false || $product->isActive() === false){
 		$notFoundDiv = htmlBase::newElement('div')
 		->addClass('ui-widget ui-widget-content ui-corner-all')
@@ -22,16 +23,16 @@
 		}
 		$product->updateViews();
 
-
 		$showAlsoPurchased = false;
 		if (isset($_GET['products_id'])) {
-			$orders_query = mysql_query("select p.products_id, p.products_image from orders_products opa, orders_products opb, orders o, products p where opa.products_id = '" . (int)$_GET['products_id'] . "' and opa.orders_id = opb.orders_id and opb.products_id != '" . (int)$_GET['products_id'] . "' and opb.products_id = p.products_id and opb.orders_id = o.orders_id and p.products_status = '1' group by p.products_id order by o.date_purchased desc limit " . sysConfig::get('MAX_DISPLAY_ALSO_PURCHASED')) or die(mysql_error());
-			$num_products_ordered = mysql_num_rows($orders_query);
+			$orders_query = Doctrine_Manager::getInstance()
+				->getCurrentConnection()
+				->fetchAssoc("select p.products_id, p.products_image from orders_products opa, orders_products opb, orders o, products p where opa.products_id = '" . (int)$_GET['products_id'] . "' and opa.orders_id = opb.orders_id and opb.products_id != '" . (int)$_GET['products_id'] . "' and opb.products_id = p.products_id and opb.orders_id = o.orders_id and p.products_status = '1' group by p.products_id order by o.date_purchased desc limit " . sysConfig::get('MAX_DISPLAY_ALSO_PURCHASED'));
+			$num_products_ordered = sizeof($orders_query);
 			if ($num_products_ordered >= sysConfig::get('MIN_DISPLAY_ALSO_PURCHASED')) {
 				$showAlsoPurchased = true;
 			}
 		}
-		
 		$contents = EventManager::notifyWithReturn('ProductInfoBeforeInfo', &$product);
 		
 		if (!empty($contents)){

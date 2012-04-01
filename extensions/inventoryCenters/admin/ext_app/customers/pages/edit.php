@@ -17,7 +17,7 @@ class inventoryCenters_admin_customers_edit extends Extension_inventoryCenters {
 	}
 	
 	public function load(){
-		if ($this->enabled === false) return;
+		if ($this->isEnabled() === false) return;
 		
 		EventManager::attachEvent('CustomerInfoAddTableContainer', null, $this);
 	}

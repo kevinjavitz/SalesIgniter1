@@ -18,7 +18,7 @@ class Extension_categoriesPages extends ExtensionBase {
 	
 	public function init(){
 		global $App, $appExtension, $Template;
-		if ($this->enabled === false) return;
+		if ($this->isEnabled() === false) return;
 		
 	}
 

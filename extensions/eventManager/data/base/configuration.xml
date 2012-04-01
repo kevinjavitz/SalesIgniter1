@@ -2,7 +2,16 @@
 	<title>eventManager</title>
 	<description>Configuration Settings For The Event Manager Extension</description>
 	<key>eventManager</key>
-	<Configuration>
+	<tabs>
+		<general>
+			<title>General</title>
+			<description>General Extension Settings</description>
+			<configurations>
+				<EXTENSION_EVENT_MANAGER_INSTALLED editable="false">
+					<title>Installation Status</title>
+					<value>False</value>
+					<description></description>
+				</EXTENSION_EVENT_MANAGER_INSTALLED>
 		<EXTENSION_EVENT_MANAGER_ENABLED>
 			<title>Enable Event Manager</title>
 			<value>True</value>
@@ -11,5 +20,7 @@
 			<set_function>tep_cfg_select_option(array('True','False'),</set_function>
 		</EXTENSION_EVENT_MANAGER_ENABLED>
 
-	</Configuration>
+	</configurations>
+</general>
+	</tabs>
 </ConfigurationGroup> 

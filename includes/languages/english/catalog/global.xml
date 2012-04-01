@@ -604,6 +604,8 @@
 	<define key="TEXT_BUTTON_ALL_RESERVATION"><![CDATA[Reserve Now Selected Products]]></define>
 	<define key="TEXT_BUTTON_RESERVE_OUT_OF_STOCK"><![CDATA[Out of Stock]]></define>
 	<define key="RENTAL_CUSTOMER_IS_PAST_DUE"><![CDATA[We have not been able to process your membership payment. Please update your credit card on file by  <a style="color:red;" href="%s">clicking here</a> ]]></define>
+	<define key="RENTAL_CUSTOMER_IS_EXPIRING"><![CDATA[Your credit card is expiring this month. Please update your credit card on file by  <a style="color:red;" href="%s">clicking here</a> ]]></define>
+
 	<define key="EXTENSION_PAY_PER_RENTALS_ERROR_NO_INVENTORY_FOR_SELECTED_DATES"><![CDATA[There is no inventory for the selected dates.]]></define>
 	<define key="TEXT_NOT_ENOUGH_INVENTORY"><![CDATA[There is not enough inventory for the product. Please contact us at 609 661-8929 or info@shoresolutionsgroup.com]]></define>
 	<define key="TEXT_PRODUCT_OPTIONS"><![CDATA[Choose Your]]></define>

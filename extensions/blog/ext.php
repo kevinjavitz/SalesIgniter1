@@ -18,7 +18,7 @@
 
 		public function init() {
 			global $App;
-			if ($this->enabled === false) return;
+			if ($this->isEnabled() === false) return;
 
 			//load extenders
 			$this->extenders = array();
@@ -678,9 +678,13 @@
 
 	function tep_set_post_status($post_id, $status) {
 		if ($status == '1') {
-			return tep_db_query("update blog_posts set post_status = '1' where post_id = '" . (int)$post_id . "'");
+			return Doctrine_Manager::getInstance()
+				->getCurrentConnection()
+				->exec("update blog_posts set post_status = '1' where post_id = '" . (int)$post_id . "'");
 		} elseif ($status == '0') {
-			return tep_db_query("update blog_posts set post_status = '0' where post_id = '" . (int)$post_id . "'");
+			return Doctrine_Manager::getInstance()
+				->getCurrentConnection()
+				->exec("update blog_posts set post_status = '0' where post_id = '" . (int)$post_id . "'");
 		} else {
 			return -1;
 		}
@@ -688,9 +692,13 @@
 
 	function tep_set_comment_status($comment_id, $status) {
 		if ($status == '1') {
-			return tep_db_query("update blog_comments set comment_status = '1' where comment_id = '" . (int)$comment_id . "'");
+			return Doctrine_Manager::getInstance()
+				->getCurrentConnection()
+				->exec("update blog_comments set comment_status = '1' where comment_id = '" . (int)$comment_id . "'");
 		} elseif ($status == '0') {
-			return tep_db_query("update blog_comments set comment_status = '0' where comment_id = '" . (int)$comment_id . "'");
+			return Doctrine_Manager::getInstance()
+				->getCurrentConnection()
+				->exec("update blog_comments set comment_status = '0' where comment_id = '" . (int)$comment_id . "'");
 		} else {
 			return -1;
 		}

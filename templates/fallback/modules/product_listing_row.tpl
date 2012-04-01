@@ -203,6 +203,47 @@
 	<?php
 	 }
 	?>
+	<script type="text/javascript">
+		$(document).ready(function(){
+			<?php
+				if(sysConfig::get('EXTENSION_PAY_PER_RENTALS_USE_ZIPCODES_SHIPPING') == 'True'){
+				?>
+				var hasZip = <?php echo (Session::exists('zipClient') == false? 'false':'true');?>;
+				$('.pprResButton').click(function(){
+					var self = $(this);
+
+					if(hasZip == false){
+						$( '<div id="dialog-mesage-ppr" title="Select Zip"><div class="zipBD"><span class="zip_text">Zip: </span><input class="zipInput" name="zipClient" ></div></div>' ).dialog({
+							modal: false,
+							autoOpen: true,
+							buttons: {
+								Submit: function() {
+									var dial = $(this);
+									$.ajax({
+										cache: false,
+										url: js_app_link('appExt=multiStore&app=zip&appPage=default&action=selectZip'),
+										type: 'post',
+										data: $('#dialog-mesage-ppr *').serialize(),
+										dataType: 'json',
+										success: function (data){
+											hasZip = true;
+											dial.dialog( "close" );
+											self.click();
+										}
+									});
+								}
+							}
+						});
+						return false;
+					}else{
+						window.location = self.attr('href');
+					}
+				});
+				<?php
+				}
+			?>
+		});
+		</script>
 
  <div class="productListingRowContents"><?php echo $listingTable->draw();?></div>
 <?php if (isset($pager) || isset($sorter)){ ?>

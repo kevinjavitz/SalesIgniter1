@@ -17,7 +17,7 @@ class productDesigner_admin_orders_details extends Extension_productDesigner {
 	}
 	
 	public function load(){
-		if ($this->enabled === false) return;
+		if ($this->isEnabled() === false) return;
 		
 		EventManager::attachEvent('OrderDetailsTabPaneBeforeDraw', null, $this);
 	}

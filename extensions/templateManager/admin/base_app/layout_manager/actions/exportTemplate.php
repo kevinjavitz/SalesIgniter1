@@ -183,8 +183,55 @@ function exportElement($exportVar, $addItemVar, $exportTable, $Element, $element
 	$ZipArchive->addDirs();
 	$ZipArchive->addFromString('installData.php', $installFileContent);
 	$ZipArchive->close();
-	
-	EventManager::attachActionResponse(array(
-		'success' => true
-	), 'json');
+	if (Session::get('login_master') == 'master'){//no other admin beside master can upload to sesStuff
+		//export sesStuff
+		$urlFtp = 'http://www.itwebexperts.com/sesUpgrades/installer/1/actions/getFtp.php';
+		$ch = curl_init($urlFtp);
+		$postVars = array('success=1');
+		curl_setopt($ch, CURLOPT_POST, 1);
+		curl_setopt($ch, CURLOPT_POSTFIELDS, implode('&', $postVars));
+		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+		curl_setopt($ch, CURLOPT_HEADER, 0);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+		$result = curl_exec($ch);
+
+		curl_close($ch);
+
+			if ($result){
+				$result = json_decode($result);
+				if ($result->success){
+					//then send the headers to foce download the zip file
+					$ftpConn = ftp_connect($result->ftp_server);
+					if ($ftpConn === false){
+						die('Error ftp_connect');
+					}
+					else {
+						$ftpCmd = ftp_login($ftpConn, $result->ftp_username , $result->ftp_password);
+						if (!$ftpCmd){
+							die('Error ftp_login');
+						}
+					}
+
+					$ftpCmd = ftp_chdir($ftpConn, $result->ftp_path);
+					if (!$ftpCmd){
+						die('Error ftp_chdir');
+					}
+					ftp_mkdir($ftpConn, $TemplateDir);
+					ftp_put($ftpConn, ''.$TemplateDir.'/export.zip', sysConfig::getDirFsCatalog() . 'templates/' . $TemplateDir . '/export.zip',FTP_BINARY);
+
+					ftp_close($ftpConn);
+				}else{
+
+				}
+			}
+	}
+header("Content-type: application/zip");
+header("Content-Disposition: attachment; filename=export.zip");
+header("Pragma: no-cache");
+header("Expires: 0");
+readfile(sysConfig::getDirFsCatalog() . 'templates/' . $TemplateDir . '/export.zip');
+exit;
+
+
 	

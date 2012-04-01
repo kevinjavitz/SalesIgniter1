@@ -8,7 +8,7 @@ class inventoryCenters_admin_orderCreator_default_new extends Extension_inventor
 
 	public function load() {
 		global $appExtension;
-		if ($this->enabled === false){
+		if ($this->isEnabled() === false){
 			return;
 		}
 

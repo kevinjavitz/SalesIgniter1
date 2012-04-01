@@ -18,7 +18,7 @@ class multiStore_admin_modules_default extends Extension_multiStore
 	}
 
 	public function load() {
-		if ($this->enabled === false) {
+		if ($this->isEnabled() === false) {
 			return;
 		}
 

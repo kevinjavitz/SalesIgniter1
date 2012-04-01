@@ -26,34 +26,29 @@ class TemplateManagerLayoutsContainers extends Doctrine_Record
 	public function setTableDefinition()
 	{
 		$this->setTableName('template_manager_layouts_containers');
-		$this->hasColumn('layout_id', 'integer', 11, array(
+		$this->hasColumn('layout_id', 'integer', 4, array(
 			'type' => 'integer',
-			'length' => '11',
+			'length' => 4,
 		));
-		$this->hasColumn('parent_id', 'integer', 11, array(
+		$this->hasColumn('parent_id', 'integer', 4, array(
 			'type' => 'integer',
 			'default' => 0,
 			'notnull' => false,
-			'length' => '11',
+			'length' => 4,
 		));
-		$this->hasColumn('container_id', 'integer', 11, array(
+		$this->hasColumn('container_id', 'integer', 4, array(
 			'primary' => true,
 			'type' => 'integer',
 			'autoincrement' => true,
-			'length' => '11',
+			'length' => 4,
 		));
-		$this->hasColumn('sort_order', 'integer', 3, array(
+		$this->hasColumn('sort_order', 'integer', 2, array(
 			'type' => 'integer',
-			'length' => '3',
+			'length' => 2,
 		));
-		$this->hasColumn('is_anchor', 'integer', 1, array(
+		$this->hasColumn('link_id', 'integer', 4, array(
 				'type' => 'integer',
-				'length' => '1',
-		));
-
-		$this->hasColumn('anchor_id', 'integer', 11, array(
-				'type' => 'integer',
-				'length' => '11',
+				'length' => 4,
 		));
 	}
 
@@ -89,5 +84,16 @@ class TemplateManagerLayoutsContainers extends Doctrine_Record
 			'local' => 'container_id',
 			'foreign' => 'container_id',
 			'cascade' => array('delete')));
+
+		$this->hasMany('TemplateManagerContainerLinks as LinkedElements', array(
+			'local' => 'container_id',
+			'foreign' => 'container_id',
+			'cascade' => array('delete')
+		));
+
+		$this->hasOne('TemplateManagerContainerLinks as Link', array(
+			'local' => 'link_id',
+			'foreign' => 'link_id'
+		));
 	}
 }

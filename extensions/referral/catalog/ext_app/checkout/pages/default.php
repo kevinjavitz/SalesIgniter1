@@ -5,7 +5,7 @@ class referral_catalog_checkout_default extends Extension_referral {
 	}
 
 	public function load(){
-		if ($this->enabled === false) return;
+		if ($this->isEnabled() === false) return;
 
 		EventManager::attachEvents(array(
 		                                'CheckoutAddBlockAfterCart',

@@ -4,7 +4,7 @@ $Qaccounts = Doctrine_Query::create()
 ->from('Customers')
 ->where('parent = ?', $userAccount->getCustomerId());
 
-$tableGridOrders = htmlBase::newElement('grid')
+$tableGridOrders = htmlBase::newElement('newGrid')
 	->usePagination(false)
 	->setPageLimit(10)
 	->setQuery($Qaccounts);

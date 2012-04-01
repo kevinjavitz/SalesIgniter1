@@ -2,10 +2,9 @@
 	$QcategoriesPages = Doctrine_Query::create()
 	->from('CategoriesPages');
 	
-	$tableGrid = htmlBase::newElement('grid')
+	$tableGrid = htmlBase::newElement('newGrid')
 	->usePagination(true)
-	->setPageLimit((isset($_GET['limit']) ? (int)$_GET['limit']: 25))
-	->setCurrentPage((isset($_GET['page']) ? (int)$_GET['page'] : 1))
+
 	->setQuery($QcategoriesPages);
 
 	$tableGrid->addHeaderRow(array(

@@ -8,7 +8,12 @@
 	This script and it's source is not redistributable
 */
 
-	error_reporting(E_ALL & ~E_DEPRECATED);
+// start profiling
+if (isset($_GET['runProfile'])){
+	xhprof_enable(XHPROF_FLAGS_CPU + XHPROF_FLAGS_MEMORY);
+}
+
+error_reporting(E_ALL & ~E_DEPRECATED);
 
 	function onShutdown(){
 		global $ExceptionManager;
@@ -27,18 +32,15 @@
 	// start the timer for the page parse time log
 	define('PAGE_PARSE_START_TIME', microtime());
 	define('START_MEMORY_USAGE', memory_get_usage());
-	require('includes/classes/system_configuration.php');
 
-	/* TO BE MOVED LATER -- BEGIN -- */
+	require('includes/classes/Profiler/Base.php');
+	require('includes/classes/ConfigReader/Base.php');
+	require('includes/classes/MainConfigReader.php');
+	require('includes/classes/ExtensionConfigReader.php');
+	require('includes/classes/system_configuration.php');
 	include('includes/conversionArrays.php');
-	define('USER_ADDRESS_BOOK_ENABLED', 'True');
-	/* TO BE MOVED LATER -- END -- */
 
 	date_default_timezone_set('America/New_York');
-
-	/*
-	 * Load system path/database settings
-	 */
 	sysConfig::init();
 
 	require(sysConfig::getDirFsCatalog() . 'ext/Doctrine.php');
@@ -47,22 +49,19 @@
 	$manager = Doctrine_Manager::getInstance();
 	$manager->setAttribute(Doctrine_Core::ATTR_AUTO_FREE_QUERY_OBJECTS, true);
 	$manager->setAttribute(Doctrine_Core::ATTR_AUTOLOAD_TABLE_CLASSES, true);
-	/*
-	 * KNOWN ISSUES
-	 1: causes the extension installer to not install doctrine tables
-	*/
 	$manager->setAttribute(Doctrine_Core::ATTR_MODEL_LOADING, Doctrine_Core::MODEL_LOADING_CONSERVATIVE);
 	Doctrine_Core::setModelsDirectory(sysConfig::getDirFsCatalog() . 'ext/Doctrine/Models');
+
 	//Doctrine_Core::loadModels(sysConfig::getDirFsCatalog() . 'ext/Doctrine/Models');
 
-	$profiler = new Doctrine_Connection_Profiler();
+	//$profiler = new Doctrine_Connection_Profiler();
 
 	$conn = Doctrine_Manager::connection(sysConfig::get('DOCTRINE_CONN_STRING'), 'mainConnection');
 	/*$cacheDriver = new Doctrine_Cache_Apc();
 	$conn->setAttribute(Doctrine_Core::ATTR_QUERY_CACHE, $cacheDriver);
 	$conn->setAttribute(Doctrine_Core::ATTR_RESULT_CACHE, $cacheDriver);*/
 
-	$conn->setListener($profiler);
+	//$conn->setListener($profiler);
 
 	/*$cacheConnection = Doctrine_Manager::connection(new PDO('sqlite::memory:'), 'cacheConnection');
 	$cacheDriver = new Doctrine_Cache_Db(array(
@@ -72,33 +71,25 @@
 	$conn->setAttribute(Doctrine_Core::ATTR_QUERY_CACHE, $cacheDriver);
 	$conn->setAttribute(Doctrine_Core::ATTR_RESULT_CACHE, $cacheDriver);
 	$conn->setAttribute(Doctrine_Core::ATTR_RESULT_CACHE_LIFESPAN, 3600);*/
-$conn->setCharset(sysConfig::get('SYSTEM_CHARACTER_SET'));
-$conn->setCollate(sysConfig::get('SYSTEM_CHARACTER_SET_COLLATION'));
+
+	$conn->setCharset(sysConfig::get('SYSTEM_CHARACTER_SET'));
+	$conn->setCollate(sysConfig::get('SYSTEM_CHARACTER_SET_COLLATION'));
 	$manager->setCurrentConnection('mainConnection');
+	Doctrine_Manager::connection()->setAttribute(Doctrine_Core::ATTR_AUTO_FREE_QUERY_OBJECTS, true );
 
-	// include the list of project filenames
-	require(sysConfig::getDirFsCatalog() . 'includes/filenames.php');
+	//require(sysConfig::getDirFsCatalog() . 'includes/functions/database.php'); //to be removed
 
-	// include the list of project database tables
-	require(sysConfig::getDirFsCatalog() . 'includes/database_tables.php');
-
-	// customization for the design layout
-	define('BOX_WIDTH', 195); // how wide the boxes should be in pixels (default: 125)
-	define('RATING_UNITWIDTH', 10);
-	// include the database functions
-	require(sysConfig::getDirFsCatalog() . 'includes/classes/dataAccess.php');
-	new dataAccess(); /* Establish Database Connection */
-
-	require(sysConfig::getDirFsCatalog() . 'includes/functions/database.php');
 
 	// set the application parameters
 	sysConfig::load();
 
 	if(isset($_GET['lID'])){
 
-		$QApps = mysql_query('select * from template_pages where FIND_IN_SET("'.$_GET['lID'].'",layout_id)');
-		if(mysql_num_rows($QApps) == 1){
-			$myApps = mysql_fetch_assoc($QApps);
+		$QApps = Doctrine_Manager::getInstance()
+			->getCurrentConnection()
+			->fetchAssoc('select * from template_pages where FIND_IN_SET("'.$_GET['lID'].'",layout_id)');
+		if(sizeof($QApps) == 1){
+			$myApps = $QApps[0];
 			$_GET['app'] = $myApps['application'];
 			if($_GET['app'] == 'product'){
 				$_GET['appPage'] = $myApps['page'];
@@ -114,10 +105,9 @@ $conn->setCollate(sysConfig::get('SYSTEM_CHARACTER_SET_COLLATION'));
 require(sysConfig::getDirFsCatalog() . 'includes/classes/MultipleInheritance.php');
 require(sysConfig::getDirFsCatalog() . 'includes/classes/Importable/Installable.php');
 require(sysConfig::getDirFsCatalog() . 'includes/classes/Importable/SortedDisplay.php');
-
 require(sysConfig::getDirFsCatalog() . 'includes/classes/cache.php');
-require(sysConfig::getDirFsCatalog() . 'includes/classes/Profiler/Base.php');
 require(sysConfig::getDirFsCatalog() . 'includes/classes/htmlBase.php');
+
 	require(sysConfig::getDirFsCatalog() . 'includes/classes/exceptionManager.php');
 	$ExceptionManager = new ExceptionManager;
 	set_error_handler(array($ExceptionManager, 'addError'));
@@ -125,167 +115,58 @@ require(sysConfig::getDirFsCatalog() . 'includes/classes/htmlBase.php');
 
 	require(sysConfig::getDirFsCatalog() . 'includes/classes/eventManager/Manager.php');
 
-	require(sysConfig::getDirFsCatalog() . 'includes/classes/application.php');
-	$App = new Application((isset($_GET['app']) ? $_GET['app'] : ''), (isset($_GET['appPage']) ? $_GET['appPage'] : ''));
+// define general functions used application-wide
+require(sysConfig::getDirFsCatalog() . 'includes/functions/general.php');
+require(sysConfig::getDirFsCatalog() . 'includes/functions/crypt.php');
+require(sysConfig::getDirFsCatalog() . 'includes/classes/system_modules_loader.php');
+require(sysConfig::getDirFsCatalog() . 'includes/classes/ModuleBase.php');
+require(sysConfig::getDirFsCatalog() . 'includes/classes/ModuleConfigReader.php');
 
-	if ($App->isValid() === false) die('No valid application found.');
+require(sysConfig::getDirFsCatalog() . 'includes/functions/html_output.php');
+require(sysConfig::getDirFsCatalog() . 'includes/classes/email_events.php');
 
-	require(sysConfig::getDirFsCatalog() . 'includes/classes/extension.php');
-	$appExtension = new Extension;
-	$appExtension->preSessionInit();
+require(sysConfig::getDirFsCatalog() . 'includes/classes/user/membership.php');
+require(sysConfig::getDirFsCatalog() . 'includes/classes/user/address_book.php');
+require(sysConfig::getDirFsCatalog() . 'includes/classes/user.php');
+require(sysConfig::getDirFsCatalog() . 'includes/classes/shopping_cart.php');
+require(sysConfig::getDirFsCatalog() . 'includes/classes/rental_queue-base.php');
+require(sysConfig::getDirFsCatalog() . 'includes/classes/rental_queue.php');
+require(sysConfig::getDirFsCatalog() . 'includes/classes/navigation_history.php');
+require(sysConfig::getDirFsCatalog() . 'includes/classes/product.php');
+require(sysConfig::getDirFsCatalog() . 'includes/classes/http_client.php');
 
-	// define general functions used application-wide
-	require(sysConfig::getDirFsCatalog() . 'includes/functions/general.php');
-	require(sysConfig::getDirFsCatalog() . 'includes/functions/crypt.php');
-	require(sysConfig::getDirFsCatalog() . 'includes/classes/system_modules_loader.php');
-	require(sysConfig::getDirFsCatalog() . 'includes/classes/ModuleBase.php');
-	require(sysConfig::getDirFsCatalog() . 'includes/classes/ModuleConfigReader.php');
-	require(sysConfig::getDirFsCatalog() . 'includes/modules/infoboxes/InfoBoxAbstract.php');
-	require(sysConfig::getDirFsCatalog() . 'includes/modules/pdfinfoboxes/PDFInfoBoxAbstract.php');
-	require(sysConfig::getDirFsCatalog() . 'includes/functions/html_output.php');
 
-	//Email Template Manager Start
-	require(sysConfig::getDirFsCatalog() . 'includes/classes/email_events.php');
-	//Email Template Manager End
+require(sysConfig::getDirFsCatalog() . 'includes/classes/application.php');
+require(sysConfig::getDirFsCatalog() . 'includes/classes/extension.php');
 
-	// include cache functions if enabled
-	if (sysConfig::get('USE_CACHE') == 'true') include(sysConfig::getDirFsCatalog() . 'includes/functions/cache.php');
+$App = new Application((isset($_GET['app']) ? $_GET['app'] : ''), (isset($_GET['appPage']) ? $_GET['appPage'] : ''));
+$appExtension = new Extension;
+$appExtension->preSessionInit();
 
-	/*
-	* All Classes that will be registered in sessions must go here -- BEGIN
-	*/
+require(sysConfig::getDirFsCatalog() . 'includes/classes/session.php');
+Session::init(); /* Initialize the session */
 
-	require(sysConfig::getDirFsCatalog() . 'includes/classes/user/membership.php');
-	require(sysConfig::getDirFsCatalog() . 'includes/classes/user/address_book.php');
-	require(sysConfig::getDirFsCatalog() . 'includes/classes/user.php');
+require(sysConfig::getDirFsCatalog() . 'includes/classes/message_stack.php');
+$messageStack = new messageStack;
 
-	// include shopping cart class
-	require(sysConfig::getDirFsCatalog() . 'includes/classes/shopping_cart.php');
+require(sysConfig::getDirFsCatalog() . 'includes/classes/system_language.php');
+sysLanguage::init();
+	
+$appExtension->postSessionInit();
+$appExtension->loadExtensions();
 
-	// include rental queue class
-	require(sysConfig::getDirFsCatalog() . 'includes/classes/rental_queue-base.php');
-	require(sysConfig::getDirFsCatalog() . 'includes/classes/rental_queue.php');
+$ExceptionManager->initSessionMessages();
+require(sysConfig::getDirFsCatalog() . 'includes/modules/pdfinfoboxes/PDFInfoBoxAbstract.php');
+require(sysConfig::getDirFsCatalog() . 'includes/modules/orderShippingModules/modules.php');
+require(sysConfig::getDirFsCatalog() . 'includes/modules/orderPaymentModules/modules.php');
+require(sysConfig::getDirFsCatalog() . 'includes/modules/orderTotalModules/modules.php');
 
-	// include navigation history class
-	require(sysConfig::getDirFsCatalog() . 'includes/classes/navigation_history.php');
 
-	// include the product class
-	require(sysConfig::getDirFsCatalog() . 'includes/classes/product.php');
+require(sysConfig::getDirFsCatalog() . 'includes/classes/breadcrumb.php');
+$breadcrumb = new breadcrumb;
+$breadcrumb->add(sysLanguage::get('HEADER_TITLE_CATALOG') .' '. sysLanguage::get('HEADER_LINK_HOME'), itw_app_link(null, 'index', 'default'));
 
-	//Include the order class
-	//require(sysConfig::getDirFsCatalog() . 'includes/classes/Order/Base.php');
 
-	/*
-	* All Classes that will be registered in sessions must go here -- END
-	*/
-
-	require(sysConfig::getDirFsCatalog() . 'includes/classes/http_client.php');
-
-	// define how the session functions will be used
-	require(sysConfig::getDirFsCatalog() . 'includes/classes/session.php');
-	Session::init(); /* Initialize the session */
-
-	// start the session
-	$session_started = false;
-	if (sysConfig::get('SESSION_FORCE_COOKIE_USE') == 'True') {
-		tep_setcookie('cookie_test', 'please_accept_for_session', time()+60*60*24*30, $cookie_path, $cookie_domain);
-
-		if (isset($_COOKIE['cookie_test'])) {
-			Session::start();
-			$session_started = true;
-		}
-	} elseif (sysConfig::get('SESSION_BLOCK_SPIDERS') == 'True') {
-		$user_agent = strtolower(getenv('HTTP_USER_AGENT'));
-		$spider_flag = false;
-
-		if (tep_not_null($user_agent)) {
-			$spiders = file(sysConfig::getDirFsCatalog() . 'includes/spiders.txt');
-
-			for ($i=0, $n=sizeof($spiders); $i<$n; $i++) {
-				if (tep_not_null($spiders[$i])) {
-					if (is_integer(strpos($user_agent, trim($spiders[$i])))) {
-						$spider_flag = true;
-						break;
-					}
-				}
-			}
-		}
-
-		if ($spider_flag == false) {
-			Session::start();
-			$session_started = true;
-		}
-	} else {
-		Session::start();
-		$session_started = true;
-	}
-
-	// set SID once, even if empty
-	$SID = (defined('SID') ? SID : '');
-
-	// verify the ssl_session_id if the feature is enabled
-	if ( ($request_type == 'SSL') && (sysConfig::get('SESSION_CHECK_SSL_SESSION_ID') == 'True') && (sysConfig::get('ENABLE_SSL') == true) && ($session_started == true) ) {
-		if (Session::exists('SSL_SESSION_ID') === false){
-			Session::set('SSL_SESSION_ID', $_SERVER['SSL_SESSION_ID']);
-		}
-
-		if (Session::get('SSL_SESSION_ID') != $_SERVER['SSL_SESSION_ID']) {
-			Session::destroy();
-			tep_redirect(itw_app_link('appExt=infoPages', 'show_page', 'ssl_check'));
-		}
-	}
-
-	// verify the browser user agent if the feature is enabled
-	if (sysConfig::get('SESSION_CHECK_USER_AGENT') == 'True') {
-		$http_user_agent = (isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '');
-		if (Session::exists('SESSION_USER_AGENT') === false) {
-			Session::set('SESSION_USER_AGENT', $http_user_agent);
-		}
-
-		if (Session::get('SESSION_USER_AGENT') != $http_user_agent) {
-			Session::destroy();
-			tep_redirect(itw_app_link(null, 'account', 'login'));
-		}
-	}
-
-	// verify the IP address if the feature is enabled
-	if (sysConfig::get('SESSION_CHECK_IP_ADDRESS') == 'True') {
-		$ip_address = tep_get_ip_address();
-		if (Session::exists('SESSION_IP_ADDRESS') === false) {
-			Session::set('SESSION_IP_ADDRESS', $ip_address);
-		}
-
-		if (Session::get('SESSION_IP_ADDRESS') != $ip_address) {
-			Session::destroy();
-			tep_redirect(itw_app_link(null, 'account', 'login'));
-		}
-	}
-	$appExtension->postSessionInit();
-
-	$ExceptionManager->initSessionMessages();
-
-	require(sysConfig::getDirFsCatalog() . 'includes/modules/orderShippingModules/modules.php');
-	require(sysConfig::getDirFsCatalog() . 'includes/modules/orderPaymentModules/modules.php');
-	require(sysConfig::getDirFsCatalog() . 'includes/modules/orderTotalModules/modules.php');
-
-	// initialize the message stack for output messages
-	require(sysConfig::getDirFsCatalog() . 'includes/classes/message_stack.php');
-	$messageStack = new messageStack;
-
-	require(sysConfig::getDirFsCatalog() . 'includes/classes/system_language.php');
-	sysLanguage::init();
-
-	// include the breadcrumb class and start the breadcrumb trail
-	require(sysConfig::getDirFsCatalog() . 'includes/classes/breadcrumb.php');
-	$breadcrumb = new breadcrumb;
-
-	$breadcrumb->add(sysLanguage::get('HEADER_TITLE_CATALOG') .' '. sysLanguage::get('HEADER_LINK_HOME'), itw_app_link(null, 'index', 'default'));
-
-	$appExtension->loadExtensions();
-
-	//Doctrine_Core::initializeModels(Doctrine_Core::getLoadedModels());
-
-	$App->loadLanguageDefines();
 
 	/*This position might not be the best since it might throw some errors on update.*/
 	if(sysConfig::get('SITE_MAINTENANCE_MODE') == 'true' && $App->getEnv() == 'catalog'){
@@ -310,7 +191,7 @@ require(sysConfig::getDirFsCatalog() . 'includes/classes/htmlBase.php');
 
 	// create the shopping cart & fix the cart if necesary
 	if (Session::exists('ShoppingCart') === false){
-		$ShoppingCart = new ShoppingCart;
+		$ShoppingCart = new ShoppingCart();
 		Session::set('ShoppingCart', $ShoppingCart);
 	}
 	$ShoppingCart = &Session::getReference('ShoppingCart');
@@ -325,23 +206,11 @@ require(sysConfig::getDirFsCatalog() . 'includes/classes/htmlBase.php');
 
 	$rentalQueue = new rentalQueue;
 
-	// include currencies class and create an instance
+
 	require(sysConfig::getDirFsCatalog() . 'includes/classes/currencies.php');
 	$currencies = new currencies();
-
-	// include the mail classes
 	require(sysConfig::getDirFsCatalog() . 'includes/classes/mime.php');
 	require(sysConfig::getDirFsCatalog() . 'includes/classes/email.php');
-
-	// currency
-	if (Session::exists('currency') === false || isset($_GET['currency']) || ( (sysConfig::get('USE_DEFAULT_LANGUAGE_CURRENCY') == 'true') && (sysConfig::get('LANGUAGE_CURRENCY') != Session::get('currency')) ) ) {
-		if (isset($_GET['currency'])) {
-			if (!$currency = tep_currency_exists($_GET['currency'])) $currency = (sysConfig::get('USE_DEFAULT_LANGUAGE_CURRENCY') == 'true') ? sysConfig::get('LANGUAGE_CURRENCY') : sysConfig::get('DEFAULT_CURRENCY');
-		} else {
-			$currency = sysConfig::get('DEFAULT_CURRENCY');
-		}
-		Session::set('currency', $currency);
-	}
 
 	// navigation history
 	if (Session::exists('navigation') === false){
@@ -349,6 +218,15 @@ require(sysConfig::getDirFsCatalog() . 'includes/classes/htmlBase.php');
 		Session::set('navigation', $navigation);
 	}
 	$navigation = &Session::getReference('navigation');
+
+
+
+	if ($App->isValid() === false){
+		die('No valid application found.');
+	}
+	$appExtension->initApplicationPlugins();
+	$App->loadLanguageDefines();
+
 
 	EventManager::notify('ApplicationTopBeforeCartAction');
 
@@ -380,7 +258,7 @@ require(sysConfig::getDirFsCatalog() . 'includes/classes/htmlBase.php');
 		}elseif (sysConfig::get('DISPLAY_CART') == 'true') {
 			$parameters = array('app', 'appPage', 'action', 'cPath', 'products_id', 'pid');
 			$goto = itw_app_link(tep_get_all_get_params($parameters), 'shoppingCart', 'default');
-			$gotologin =  FILENAME_LOGIN;
+			$gotologin =  itw_app_link(null,'account','login');
 		} else {
 			$parameters = array('action', 'pid', 'products_id');
 			if (isset($_GET['seoTag'])){
@@ -589,33 +467,17 @@ require(sysConfig::getDirFsCatalog() . 'includes/classes/htmlBase.php');
 		EventManager::notify('ApplicationTopAction_' . $action);
 	}
 
-
-	// include the who's online functions
-	require(sysConfig::getDirFsCatalog() . 'includes/functions/whos_online.php');
-	tep_update_whos_online();
-
-	// include the password crypto functions
-	require(sysConfig::getDirFsCatalog() . 'includes/functions/password_funcs.php');
-
-	// include validation functions (right now only email address)
-	require(sysConfig::getDirFsCatalog() . 'includes/functions/validations.php');
-
-	// split-page-results
-	require(sysConfig::getDirFsCatalog() . 'includes/classes/split_page_results.php');
-
-	// infobox
-	require(sysConfig::getDirFsCatalog() . 'includes/classes/boxes.php');
-
 Session::set('current_category_id', '-1');
-Session::remove('current_app_page');
+//Session::remove('current_app_page');
 
 
 	// add the products model to the breadcrumb trail
-	if (isset($_GET['products_id'])) {
-		$Qproduct = mysql_query('select products_name from products_description where products_id = "' . (int)$_GET['products_id'] . '" and language_id = "' . Session::get('languages_id') . '"');
-		if (mysql_num_rows($Qproduct)){
-			$Product = mysql_fetch_assoc($Qproduct);
-			$breadcrumb->add($Product['products_name'], itw_app_link('products_id=' . (int)$_GET['products_id'], 'product', 'info'));
+	if (isset($_GET['products_id'])){
+		$Product = Doctrine_Manager::getInstance()
+			->getCurrentConnection()
+			->fetchAssoc('select products_name from products_description where products_id = "' . (int)$_GET['products_id'] . '" and language_id = "' . Session::get('languages_id') . '"');
+		if (sizeof($Product) > 0){
+			$breadcrumb->add($Product[0]['products_name'], itw_app_link('products_id=' . (int)$_GET['products_id'], 'product', 'info'));
 		}
 	}
 
@@ -626,7 +488,6 @@ Session::remove('current_app_page');
 	define('WARN_SESSION_AUTO_START', 'true');
 	define('WARN_DOWNLOAD_DIRECTORY_NOT_READABLE', 'true');
 
-	include(sysConfig::getDirFsCatalog() . 'includes/functions/drawrating.php');
 
 	class PagerLayoutWithArrows extends Doctrine_Pager_Layout {
 		private $myType = '';

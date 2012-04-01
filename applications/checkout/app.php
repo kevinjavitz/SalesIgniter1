@@ -16,7 +16,7 @@
 		}
 	}
 
-	if (isset($_GET['rType'])){
+	if (isset($_GET['rType']) && $_GET['rType'] == 'ajax'){
 		header('content-type: text/html; charset=' . sysLanguage::getCharset());
 	}
 
@@ -79,7 +79,7 @@
 
 		$onePageCheckout->setShippingStatus();
 	}
-	
+
 	if ($onePageCheckout->onePage['shippingEnabled'] === true){
 		if ($onePageCheckout->isNormalCheckout() === true){
 			$total_weight = $ShoppingCart->showWeight();

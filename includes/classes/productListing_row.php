@@ -13,7 +13,7 @@ class productListing_row extends productListing {
 		$currentPage = (isset($_GET['page']) ? (int)$_GET['page'] : 1);
 		$limitsArray = explode(',',sysConfig::get('PRODUCT_LISTING_PRODUCTS_LIMIT_ARRAY'));
 		$limitResults = sysConfig::get('PRODUCT_LISTING_PRODUCTS_LIMIT');
-		if((isset($_GET['limit']) && (int)$_GET['limit'] > 0 && (int)$_GET['limit'] <= 25) || ((int)$_GET['limit'] >= 25 && in_array((int)$_GET['limit'],$limitsArray)) ){
+		if((isset($_GET['limit']) && (int)$_GET['limit'] > 0 && (int)$_GET['limit'] <= 25) || isset($_GET['limit'])&& ((int)$_GET['limit'] >= 25 && in_array((int)$_GET['limit'],$limitsArray)) ){
 			$limitResults = (int)$_GET['limit'];
 		}
 		//$limitResults = (isset($_GET['limit']) ? (int)$_GET['limit'] : 10);
@@ -267,10 +267,10 @@ class productListing_row extends productListing {
 				$key = $header['key'];
 
 				$boxContents[0][$col] = array(
-					'align'  => $header['align'],
-					'valign' => $header['valign'],
+					'align'  => isset($header['align'])?$header['align']:'',
+					'valign' => isset($header['valign'])?$header['valign']:'',
 					'addCls' => (isset($this->templateData['headerSettings']['addCls']) ? $this->templateData['headerSettings']['addCls'] : false),
-					'text'   => $header['text']
+					'text'   => isset($header['text'])?$header['text']:''
 				);
 
 				foreach($this->templateData['listingColumns'][$key] as $row => $rInfo){

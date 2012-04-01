@@ -3,8 +3,8 @@ class ConfigurationGroup extends Doctrine_Record {
 
 	public function setUp(){
 		$this->hasMany('Configuration', array(
-			'local'   => 'configuration_group_id',
-			'foreign' => 'configuration_group_id',
+			'local'   => 'configuration_group_key',
+			'foreign' => 'configuration_group_key',
 			'cascade' => array('delete')
 		));
 	}

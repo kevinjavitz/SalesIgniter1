@@ -11,9 +11,11 @@ $groupWidth = 1;
 $groupThumbsWidth = 1;
 $groupThumbsHeight = 1;
 $groupName = '';
-$Qgroup = mysql_query('select * from banner_manager_groups where banner_group_id = "' . $gId . '"');
-if (mysql_num_rows($Qgroup)){
-	while($cInfo = mysql_fetch_assoc($Qgroup)){
+$Qgroup = Doctrine_Manager::getInstance()
+	->getCurrentConnection()
+	->fetchAssoc('select * from banner_manager_groups where banner_group_id = "' . $gId . '"');
+if (sizeof($Qgroup) > 0){
+	foreach($Qgroup as $cInfo){
 		$groupName = $cInfo['banner_group_name'];
 		$groupWidth = $cInfo['banner_group_width'];
 		$groupHeight = $cInfo['banner_group_height'];
@@ -27,19 +29,23 @@ mysql_free_result($Qgroup);
 
 
 
-$Qproducts = mysql_query('select * from products LEFT JOIN banner_manager_products_to_groups ON products.products_id=banner_manager_products_to_groups.products_id WHERE banner_manager_products_to_groups.banner_group_id = "' . $gId . '"')or die(mysql_error());
-if (mysql_num_rows($Qproducts) > 0){
-	if (mysql_num_rows($Qproducts) <= $start){
+$Qproducts = Doctrine_Manager::getInstance()
+	->getCurrentConnection()
+	->fetchAssoc('select * from products LEFT JOIN banner_manager_products_to_groups ON products.products_id=banner_manager_products_to_groups.products_id WHERE banner_manager_products_to_groups.banner_group_id = "' . $gId . '"')or die(mysql_error());
+if (sizeof($Qproducts) > 0){
+	if (sizeof($Qproducts) <= $start){
 		$start = 0;
 	}
 }
-mysql_free_result($Qproducts);
-$Qbanner = mysql_query('select products.products_id, products.products_image from products LEFT JOIN banner_manager_products_to_groups ON products.products_id=banner_manager_products_to_groups.products_id WHERE banner_manager_products_to_groups.banner_group_id = "' . $gId . '" ORDER BY RAND() LIMIT '.$start. ', '.$numItems)or die(mysql_error());
+
+$Qbanner = Doctrine_Manager::getInstance()
+	->getCurrentConnection()
+	->fetchAssoc('select products.products_id, products.products_image from products LEFT JOIN banner_manager_products_to_groups ON products.products_id=banner_manager_products_to_groups.products_id WHERE banner_manager_products_to_groups.banner_group_id = "' . $gId . '" ORDER BY RAND() LIMIT '.$start. ', '.$numItems)or die(mysql_error());
 
 $start += $numItems;
 $html = '';
-if (mysql_num_rows($Qbanner) > 0){
-	while($bInfo = mysql_fetch_assoc($Qbanner)){
+if (sizeof($Qbanner) > 0){
+	while($bInfo = $Qbanner[0]){
 		$Img = htmlBase::newElement('image')
 			->setSource(sysConfig::getDirWsCatalog() . 'images/' . $bInfo['products_image'])
 			->setWidth($groupThumbsWidth)
@@ -53,7 +59,6 @@ if (mysql_num_rows($Qbanner) > 0){
 			'</li>';
 	}
 }
-mysql_free_result($Qbanner);
 
 EventManager::attachActionResponse(array(
 		'success' => true,

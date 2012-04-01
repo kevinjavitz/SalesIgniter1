@@ -1,35 +1,27 @@
 <?php
-$Qwidget = Doctrine_Query::create()
-	->from('TemplatesInfoboxes')
-	->where('box_code = ?', $_GET['widgetCode'])
-	->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+$success = false;
+$Widget = $TemplateManager->getWidget($_GET['widgetCode']);
+if ($Widget !== false){
+	$WidgetProperties = array(
+		'id' => $_POST['id'],
+		'template_file' => $_POST['template_file'],
+		'widget_title' => $_POST['widget_title']
+	);
 
-$WidgetCode = $Qwidget[0]['box_code'];
-$WidgetPath = sysConfig::getDirFsCatalog() . $Qwidget[0]['box_path'];
-$WidgetProperties = array(
-	'id' => $_POST['id'],
-	'template_file' => $_POST['template_file'],
-	'widget_title' => $_POST['widget_title']
-);
+	$WidgetPreview = false;
+	if (file_exists($Widget->getPath() . 'actions/saveInfobox.php')){
+		require($Widget->getPath() . 'actions/saveInfobox.php');
 
-$WidgetPreview = false;
-if (file_exists($WidgetPath . 'actions/saveInfobox.php')){
-	require($WidgetPath . 'actions/saveInfobox.php');
-
-	$className = 'InfoBox' . ucfirst($WidgetCode);
-	if (!class_exists($className)){
-		require($WidgetPath . 'infobox.php');
+		if (method_exists($Widget, 'showLayoutPreview')){
+			$WidgetPreview = $Widget->showLayoutPreview(json_decode(json_encode($WidgetProperties)));
+		}
 	}
-
-	$Class = new $className;
-	if (method_exists($Class, 'showLayoutPreview')){
-		$WidgetPreview = $Class->showLayoutPreview(json_decode(json_encode($WidgetProperties)));
-	}
+	$success = true;
 }
 
 EventManager::attachActionResponse(array(
-	'success' => true,
-	'widgetSettings' => $WidgetProperties,
-	'widgetPreview' => $WidgetPreview
+	'success' => $success,
+	'widgetSettings' => ($success === true ? $WidgetProperties : ''),
+	'widgetPreview' => ($success === true ? $WidgetPreview : '')
 ), 'json');
 ?>

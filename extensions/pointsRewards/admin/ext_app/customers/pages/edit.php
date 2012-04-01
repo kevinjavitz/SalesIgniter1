@@ -17,7 +17,7 @@ class pointsRewards_admin_customers_edit extends Extension_pointsRewards {
 	}
 
 	public function load(){
-		if ($this->enabled === false) return;
+		if ($this->isEnabled() === false) return;
 
 		EventManager::attachEvent('AdminCustomerEditBuildTabs', null, $this);
 	}

@@ -2,7 +2,16 @@
 	<title>Download Products</title>
 	<key>downloadProducts</key>
 	<description>Configuration Settings For The Download Products Extension</description>
-	<Configuration>
+	<tabs>
+	<general>
+	<title>General</title>
+	<description>General Extension Settings</description>
+	<configurations>
+		<EXTENSION_DOWNLOADPRODUCTS_INSTALLED editable="false">
+			<title>Installation Status</title>
+			<value>False</value>
+			<description></description>
+		</EXTENSION_DOWNLOADPRODUCTS_INSTALLED>
 		<EXTENSION_DOWNLOADPRODUCTS_ENABLED>
 			<title>Enable Download Products</title>
 			<value>True</value>
@@ -30,5 +39,7 @@
 			<description>Set the maximum number of downloads. 0 means no limit.</description>
 			<sort_order>5</sort_order>
 		</EXTENSION_DOWNLOADPRODUCTS_MAX_COUNT>
-	</Configuration>
+		</configurations>
+	</general>
+</tabs>
 </ConfigurationGroup>

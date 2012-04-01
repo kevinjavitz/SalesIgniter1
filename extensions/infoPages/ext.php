@@ -30,7 +30,7 @@ class Extension_infoPages extends ExtensionBase {
 
 	public function init(){
 		global $appExtension;
-		if ($this->enabled === false) return;
+		if ($this->isEnabled() === false) return;
 
 		if ($appExtension->isAdmin()){
 			EventManager::attachEvent('BoxCmsAddLink', null, $this);
@@ -267,7 +267,7 @@ class Extension_infoPages extends ExtensionBase {
 		$block = $this->getInfoPage($id, Session::get('languages_id'), false, true);
 		if ($block && isset($block['PagesDescription'][Session::get('languages_id')])){
 			$content = $block['PagesDescription'][Session::get('languages_id')]['pages_html_text'];
-			if ($this->checkMultiStore === true){
+			if ($this->checkMultiStore === true && Session::exists('current_store_id')){
 				if ($block['StoresPages'][Session::get('current_store_id')]['show_method'] == 'use_custom'){
 					$content = $block['StoresPages'][Session::get('current_store_id')]['StoresPagesDescription'][Session::get('languages_id')]['pages_html_text'];
 				}

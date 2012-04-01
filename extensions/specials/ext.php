@@ -18,7 +18,7 @@ class Extension_specials extends ExtensionBase {
 	
 	public function init(){
 		global $appExtension;
-		if ($this->enabled === false) return;
+		if ($this->isEnabled() === false) return;
 		
 		EventManager::attachEvents(array(
 			'ProductQueryBeforeExecute',
@@ -34,22 +34,19 @@ class Extension_specials extends ExtensionBase {
 				'BoxCatalogAddLink'
 			), null, $this);
 		}
-		
-		Doctrine_Query::create()
-		->update('Specials')
-		->set('status', '?', '0')
-		->set('date_status_change', 'now()')
-		->where('status = ?', '1')
-		->andWhere('expires_date > ?', '0')
-		->andWhere('expires_date <= now()')
-		->execute();
+
+		Doctrine_Manager::getInstance()
+			->getCurrentConnection()
+			->exec('update specials set status = 0, date_status_change = now() where status = 1 and expires_date > 0 and expires_date <= now()');
 	}
 	
 	public function BoxCatalogAddLink(&$contents){
-		$contents['children'][] = array(
-			'link'       => itw_app_link('appExt=specials','manage','default','SSL'),
-			'text' => sysLanguage::get('BOX_CATALOG_SPECIALS')
-		);
+		if (sysPermissions::adminAccessAllowed('manage', 'default','specials') === true){
+			$contents['children'][] = array(
+				'link'       => itw_app_link('appExt=specials','manage','default','SSL'),
+				'text' => sysLanguage::get('BOX_CATALOG_SPECIALS')
+			);
+		}
 	}
 	
 	public function getSpecialsPrice($productClass){

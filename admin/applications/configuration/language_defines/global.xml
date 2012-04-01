@@ -13,7 +13,6 @@
 	<define key="PRODUCT_LISTING_NAME"><![CDATA[Products name]]></define>
 	<define key="PRODUCT_LISTING_PRODUCT_MODEL"><![CDATA[Product Model]]></define>
 	<define key="PRODUCT_LISTING_PRODUCT_WEIGHT"><![CDATA[Product Weight]]></define>
-	<define key="PRODUCT_LISTING_MANUFACTURERES"><![CDATA[Manufacturers Name]]></define>
 	<define key="PRODUCT_LISTING_DISCRIPTION"><![CDATA[Discription]]></define>
 
 </definitions>

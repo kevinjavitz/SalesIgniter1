@@ -1,15 +1,21 @@
 <?php
-	while (list($key, $value) = each($_POST['configuration'])) {
-		if (is_array($value)){
-			$value = implode(',', $value);
-		}
+$Configuration = Doctrine_Core::getTable('Configuration')
+	->findByConfigurationGroupKey($_GET['extension']);
 
-		$Qupdate = Doctrine_Query::create()
-		->update('Configuration')
-		->set('configuration_value', '?', $value)
-		->where('configuration_key = ?', $key)
-		->execute();
+$ExtConfig = new ExtensionConfigReader($_GET['extension']);
+foreach($_POST['configuration'] as $k => $v){
+	$Configuration[$k]->configuration_group_key = $ExtConfig->getKey();
+	$Configuration[$k]->configuration_key = $k;
+	if (is_array($v)){
+		$Config = $ExtConfig->getConfig($k);
+		$Configuration[$k]->configuration_value = implode($Config->getGlue(), $v);
+	}else{
+		$Configuration[$k]->configuration_value = $v;
 	}
-	
-	EventManager::attachActionResponse(itw_app_link(tep_get_all_get_params(array('action'))), 'redirect');
+}
+$Configuration->save();
+
+EventManager::attachActionResponse(array(
+	'success' => true
+), 'json');
 ?>

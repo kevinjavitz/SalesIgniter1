@@ -17,7 +17,7 @@ class payPerRentals_admin_orderCreator_default_new extends Extension_payPerRenta
 
 	public function load(){
 		global $App;
-		if ($this->enabled === false) return;
+		if ($this->isEnabled() === false) return;
 
 		EventManager::attachEvents(array(
 			'OrderCreatorAddProductToEmail'

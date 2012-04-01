@@ -260,7 +260,13 @@ $.widget( "ui.tabs", {
 		if ( o.event !== "mouseover" ) {
 			var addState = function( state, el ) {
 				if ( el.is( ":not(.ui-state-disabled)" ) ) {
-					el.addClass( "ui-state-" + state );
+					if (state == 'hover'){
+						if ( el.is( ":not(.ui-state-active)" ) ){
+							el.addClass( "ui-state-" + state );
+						}
+					}else{
+						el.addClass( "ui-state-" + state );
+					}
 				}
 			};
 			var removeState = function( state, el ) {
@@ -303,7 +309,7 @@ $.widget( "ui.tabs", {
 		// Show a tab...
 		var showTab = showFx
 			? function( clicked, $show ) {
-				$( clicked ).closest( "li" ).addClass( "ui-tabs-selected ui-state-active" );
+				$( clicked ).closest( "li" ).addClass( "ui-tabs-selected ui-state-active" ).removeClass( "ui-state-hover" );
 				$show.hide().removeClass( "ui-tabs-hide" ) // avoid flicker that way
 					.animate( showFx, showFx.duration || "normal", function() {
 						resetStyle( $show, showFx );
@@ -311,7 +317,7 @@ $.widget( "ui.tabs", {
 					});
 			}
 			: function( clicked, $show ) {
-				$( clicked ).closest( "li" ).addClass( "ui-tabs-selected ui-state-active" );
+				$( clicked ).closest( "li" ).addClass( "ui-tabs-selected ui-state-active" ).removeClass( "ui-state-hover" );
 				$show.removeClass( "ui-tabs-hide" );
 				self._trigger( "show", null, self._ui( clicked, $show[ 0 ] ) );
 			};

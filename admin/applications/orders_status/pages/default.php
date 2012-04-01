@@ -9,20 +9,17 @@
 
 	$tableGrid = htmlBase::newElement('newGrid')
 	->usePagination(true)
-	->setPageLimit((isset($_GET['limit']) ? (int)$_GET['limit']: 25))
-	->setCurrentPage((isset($_GET['page']) ? (int)$_GET['page'] : 1))
 	->setQuery($Qstatus);
 	
 	$tableGrid->addButtons(array(
-		htmlBase::newElement('button')->setText('New')->addClass('newButton'),
-		htmlBase::newElement('button')->setText('Edit')->addClass('editButton')->disable(),
-		htmlBase::newElement('button')->setText('Delete')->addClass('deleteButton')->disable()
+		htmlBase::newElement('button')->usePreset('new')->addClass('newButton'),
+		htmlBase::newElement('button')->usePreset('edit')->addClass('editButton')->disable(),
+		htmlBase::newElement('button')->usePreset('delete')->addClass('deleteButton')->disable()
 	));
 
 	$tableGrid->addHeaderRow(array(
 		'columns' => array(
-			array('text' => sysLanguage::get('TABLE_HEADING_ORDERS_STATUS')),
-			array('text' => sysLanguage::get('TABLE_HEADING_INFO'))
+			array('text' => sysLanguage::get('TABLE_HEADING_ORDERS_STATUS'))
 		)
 	));
 	
@@ -87,8 +84,7 @@
 					'data-deleteMessage' => $deleteMessage
 				),
 				'columns' => array(
-					array('text' => $nameDisplay),
-					array('align' => 'center', 'text' => '&nbsp;'/*htmlBase::newElement('icon')->setType('info')->draw()*/)
+					array('text' => $nameDisplay)
 				)
 			));
 
@@ -99,10 +95,8 @@
 	echo sysLanguage::get('HEADING_TITLE');
 ?></div>
 <br />
-<div class="gridContainer">
-	<div style="width:100%;float:left;">
-		<div class="ui-widget ui-widget-content ui-corner-all" style="width:99%;margin-right:5px;margin-left:5px;">
-			<div style="width:99%;margin:5px;"><?php echo $tableGrid->draw();?></div>
-		</div>
+<div class="ui-widget ui-widget-content ui-corner-all" style="margin-right:5px;margin-left:5px;">
+	<div style="margin:5px;">
+		<?php echo $tableGrid->draw();?>
 	</div>
 </div>

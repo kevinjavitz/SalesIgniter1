@@ -33,6 +33,15 @@ $Template->Configuration['NAME']->configuration_value = $TemplateName;
 $Template->Configuration['DIRECTORY']->configuration_value = $TemplateDirectory;
 $Template->save();
 
+$QProductListing = Doctrine_Query::create()
+	->from('ProductsListing')
+	->execute();
+
+foreach($QProductListing as $listingCol){
+	$listingCol->products_listing_template = $listingCol->products_listing_template.','.$TemplateDirectory;
+	$listingCol->save();
+}
+
 $json = array(
 	'success' => true,
 	'layoutName'=> ucfirst($TemplateName)

@@ -23,11 +23,11 @@
 		$htmlField->selectOptionByValue((isset($_GET['state'])?htmlentities($_GET['state'], ENT_IGNORE, 'utf-8'):1));
 
 	} else {
-		$addressEntry = $addressBook->getAddress($_GET['edit']);
+
 		$htmlField = htmlBase::newElement('input')
 					->setName('entry_state')
 					->attr('id',$_GET['state_type'])
-					->setValue($addressEntry['entry_state']);
+					->setValue($_GET['state']);
 	}
 
 	

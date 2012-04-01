@@ -17,7 +17,7 @@ class forcedSet_admin_customers_edit extends Extension_forcedSet {
 	}
 	
 	public function load(){
-		if ($this->enabled === false) return;
+		if ($this->isEnabled() === false) return;
 		
 		EventManager::attachEvent('CustomerInfoAddTableContainer', null, $this);
 	}

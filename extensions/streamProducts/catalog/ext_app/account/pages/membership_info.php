@@ -17,7 +17,7 @@ class streamProducts_catalog_account_membership_info extends Extension_streamPro
 	}
 	
 	public function load(){
-		if ($this->enabled === false) return;
+		if ($this->isEnabled() === false) return;
 		
 		EventManager::attachEvents(array(
 			'AccountMembershipInfoAddToTable'

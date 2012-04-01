@@ -17,7 +17,7 @@ class payPerRentals_admin_multiStore_manage_new_store extends Extension_payPerRe
 	}
 	
 	public function load(){
-		if ($this->enabled === false) return;
+		if ($this->isEnabled() === false) return;
 		
 		EventManager::attachEvents(array(
 			'NewStoreAddTab'

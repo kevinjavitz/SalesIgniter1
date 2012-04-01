@@ -3,6 +3,6 @@
 	<key>ordersProductsNotes</key>
 	<version>1.0</version>
 	<author>Stephen Walker ( http://www.itwebexperts.com )</author>
-	<tables></tables>
 	<status_key>EXTENSION_ORDERS_PRODUCTS_NOTES_ENABLED</status_key>
+	<installed_key>EXTENSION_ORDERS_PRODUCTS_NOTES_INSTALLED</installed_key>
 </data>

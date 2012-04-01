@@ -79,6 +79,16 @@ $(document).ready(function (){
             success: function (data) {
                 removeAjaxLoader($elem);
 				$('#checkoutShoppingCart').html(data.pageHtml);
+	            if($('.shippingTableDiv').size() > 0){
+	                $('.shippingTableDiv').html(data.shippingTable);
+	            }
+	            if($('input[name=shipping_method]').length == 1){
+		            updateShipping($('input[name=shipping_method]').val());
+	            }else{
+		          $('input[name=shipping_method]:checked').each(function(){
+			          updateShipping($(this).val());
+		          });
+	            }
                 updateTotals();
             }
         });
@@ -104,6 +114,16 @@ $(document).ready(function (){
                 removeAjaxLoader($elem);
                 if (data.empty == false){
 				    $('#checkoutShoppingCart').html(data.pageHtml);
+	                if($('.shippingTableDiv').size() > 0){
+		                $('.shippingTableDiv').html(data.shippingTable);
+	                }
+	                if($('input[name=shipping_method]').length == 1){
+		                updateShipping($('input[name=shipping_method]').val());
+	                }else{
+		                $('input[name=shipping_method]:checked').each(function(){
+			                updateShipping($(this).val());
+		                });
+	                }
                     updateTotals();
                 }else{
                     js_redirect(js_app_link('app=shoppingCart&appPage=default'));
@@ -259,100 +279,94 @@ $(document).ready(function (){
 			data: $('form[name=checkout]').serialize(),
 			type: 'post',
 			success: function (data){
-				removeAjaxLoader($('.checkoutContent'));
-				$('.checkoutContent').html(data.pageHtml);
-                if (data.isShipping == true) {
-                    $('.shippingAddressDiff').trigger('click');
-                    $('.shippingAddress').show();
-                }
-                if (data.isPickup == true) {
-                    $('.pickupAddressDiff').trigger('click');
-                    $('.pickupAddress').show();
-                }
-                if ($('#currentPage').val() == 'processing'){
-                     $('#continueButton').hide();
-                    $('.breadCrumb').html('<a class="headerNavigation" href="'+js_app_link('app=index&appPage=default')+'">You Are Here: Home</a> &raquo; Checkout &raquo; Processing');
-                }else{
-                     $('#continueButton').show();
-                }                
-                if ($('#currentPage').val() == 'success'){
-                    $('#checkoutMessage').hide();
-                    $('.bar_step1').hide();
-                    $('.bar_step2').hide();
-                    $('.bar_step3').show();
-                    $('#continueButton').find('.ui-button-text').html(CONTINUE_TO_HOMEPAGE);
-					$('#printOrder').button();
-                    $('.breadCrumb').html('<a class="headerNavigation" href="'+js_app_link('app=index&appPage=default')+'">You Are Here: Home</a> &raquo; Checkout &raquo; Order Processed');
-                }else
-                if ($('#currentPage').val() != 'addresses'){	              
+				if(data.isSuccess){
+					js_redirect(js_app_link('app=checkout&appPage=success&rType=noajax'));
+				}else{
+					removeAjaxLoader($('.checkoutContent'));
+					$('.checkoutContent').html(data.pageHtml);
+					if (data.isShipping == true) {
+						$('.shippingAddressDiff').trigger('click');
+						$('.shippingAddress').show();
+					}
+					if (data.isPickup == true) {
+						$('.pickupAddressDiff').trigger('click');
+						$('.pickupAddress').show();
+					}
+					if ($('#currentPage').val() == 'processing'){
+						 $('#continueButton').hide();
+						$('.breadcrumbTrail').html('<a class="headerNavigation" href="'+js_app_link('app=index&appPage=default')+'">You Are Here: Home</a> &raquo; Checkout &raquo; Processing');
+					}else{
+						 $('#continueButton').show();
+					}
+					if ($('#currentPage').val() != 'addresses'){
+						 $('#voucherRedeem').button();
+						 $('#gcRedeem').button();
+						 $('#agreeMessage').hide();
+						 $('.bar_step1').hide();
+						 $('.bar_step2').show();
+						 $('.bar_step3').hide();
+						 $('#continueButton').find('.ui-button-text').html(TEXT_CONFIRM_ORDER);
 
-                     $('#voucherRedeem').button();
-                     $('#gcRedeem').button();
-                     $('#agreeMessage').hide();
-                     $('.bar_step1').hide();
-                     $('.bar_step2').show();
-                     $('.bar_step3').hide();
-                     $('#continueButton').find('.ui-button-text').html(TEXT_CONFIRM_ORDER);
+						 if($(':radio[name="shipping_method"]:checked').size() == 0){
+							 $(':radio[name="shipping_method"]').each(function(){
+								 $(this).trigger('click');
+							 });
+						 }else{
+							 $(':radio[name="shipping_method"]:checked').each(function(){
+								 $(this).trigger('click');
+							 });
+						 }
 
-					 if($(':radio[name="shipping_method"]:checked').size() == 0){
-						 $(':radio[name="shipping_method"]').each(function(){
-							 $(this).trigger('click');
+						if($('input[name=shipping_method]').length == 1){
+							updateShipping($('input[name=shipping_method]').val());
+						}
+						$('.shipInfo').css('cursor','pointer');
+						 $('.shipInfo').click(function(){
+							 link = js_app_link('appExt=payPerRentals&app=show_shipping&appPage=default_all&dialog=true');
+							 popupWindow(link,'400','300');
+							 return false;
 						 });
-					 }else{
-						 $(':radio[name="shipping_method"]:checked').each(function(){
-                        	 $(this).trigger('click');
-                     	 });
-					 }
-
-	                if($('input[name=shipping_method]').length == 1){
-		                updateShipping($('input[name=shipping_method]').val());
-	                }
-	                $('.shipInfo').css('cursor','pointer');
-	                 $('.shipInfo').click(function(){
-		                 link = js_app_link('appExt=payPerRentals&app=show_shipping&appPage=default_all&dialog=true');
-		                 popupWindow(link,'400','300');
-		                 return false;
-	                 });
-	                if($(':radio[name="payment_method"]:checked').size() == 0){
-		                var p=0;
-		                $(':radio[name="payment_method"]').each(function(){
-			                p++;
-			                if(p == 1){
-				                $(this).trigger('click');
-			                }
-		                });
-	                }else{
-		                $(':radio[name="payment_method"]:checked').each(function(){
-			                $(this).trigger('click');
-		                });
-	                }
-
-                     $('.breadCrumb').html('<a class="headerNavigation" href="'+js_app_link('app=index&appPage=default')+'">You Are Here: Home</a> &raquo; Checkout &raquo; Payment & Shipping');
-					 $('#insure_button').button();
-	                if ($('.rentalPlans').length > 0){
-						if($('.rentalPlans:checked').size() == 0){
-							$('.rentalPlans').each(function(){
-								$(this).trigger('click');
+						if($(':radio[name="payment_method"]:checked').size() == 0){
+							var p=0;
+							$(':radio[name="payment_method"]').each(function(){
+								p++;
+								if(p == 1){
+									$(this).trigger('click');
+								}
 							});
-						} else{
-							$('.rentalPlans:checked').each(function(){
+						}else{
+							$(':radio[name="payment_method"]:checked').each(function(){
 								$(this).trigger('click');
 							});
 						}
-	                }
 
-                	if ($('.rentalPlans').length <= 0){
-                        updateTotals();
-                	}
-                    if ($('.giftCertificates').length <= 0){
-                        updateTotals();
-                    }
-                }
-                $('#loginButton').button();
-                $('#changeBillingAddress').button();
-                $('#changeShippingAddress').button();
-                $('#changePickupAddress').button();
-                window.scrollTo(0,0);
+						 $('.breadcrumbTrail').html('<a class="headerNavigation" href="'+js_app_link('app=index&appPage=default')+'">You Are Here: Home</a> &raquo; Checkout &raquo; Payment & Shipping');
+						 $('#insure_button').button();
+						if ($('.rentalPlans').length > 0){
+							if($('.rentalPlans:checked').size() == 0){
+								$('.rentalPlans').each(function(){
+									$(this).trigger('click');
+								});
+							} else{
+								$('.rentalPlans:checked').each(function(){
+									$(this).trigger('click');
+								});
+							}
+						}
+
+						if ($('.rentalPlans').length <= 0){
+							updateTotals();
+						}
+						if ($('.giftCertificates').length <= 0){
+							updateTotals();
+						}
+					}
+					$('#loginButton').button();
+					$('#changeBillingAddress').button();
+					$('#changeShippingAddress').button();
+					$('#changePickupAddress').button();
+					window.scrollTo(0,0);
+				}
 			}
 		});
 		return false;

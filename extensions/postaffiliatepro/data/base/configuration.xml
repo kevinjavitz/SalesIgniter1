@@ -2,7 +2,16 @@
 	<title>Post Affiliate Pro</title>
 	<description>Post Affiliate Pro Integration</description>
 	<key>postaffiliatepro</key>
-	<Configuration>
+	<tabs>
+	<general>
+	<title>General</title>
+	<description>General Extension Settings</description>
+	<configurations>
+		<EXTENSION_PAP_INSTALLED editable="false">
+			<title>Installation Status</title>
+			<value>False</value>
+			<description></description>
+		</EXTENSION_PAP_INSTALLED>
 
 		<EXTENSION_PAP_ENABLED>
 			<title>Enable postaffiliatepro</title>
@@ -29,6 +38,7 @@
 			<description>The API password, usually the same as your merchant password</description>
 			<sort_order>3</sort_order>
 		</EXTENSION_PAP_PASS>
-
-	</Configuration>
+	</configurations>
+	</general>
+	</tabs>
 </ConfigurationGroup>

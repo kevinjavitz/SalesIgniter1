@@ -32,6 +32,7 @@ class productListing_productsPricePayPerRental {
 			if (sysConfig::get('EXTENSION_PAY_PER_RENTALS_DATE_SELECTION') == 'Using calendar after browsing products and clicking Reserve' && $purchaseTypeClass->hasInventory()){
 				$payPerRentalButton = htmlBase::newElement('button')
 				->setText(sysLanguage::get('TEXT_BUTTON_PAY_PER_RENTAL'))
+				->addClass('pprResButton')
 				->setHref(
 					itw_app_link(
 						tep_get_all_get_params(array('action', 'products_id')) .

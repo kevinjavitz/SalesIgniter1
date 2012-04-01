@@ -7,7 +7,7 @@
 	->andWhere('p.page_type = ?', 'popup')
 	->orderBy('p.sort_order, pd.pages_title');
 
-	$tableGrid = htmlBase::newElement('grid')
+	$tableGrid = htmlBase::newElement('newGrid')
 	->usePagination(false)
 	->setPageLimit((isset($_GET['limit']) ? (int)$_GET['limit'] : 25))
 	->setCurrentPage((isset($_GET['page']) ? (int)$_GET['page'] : 0))

@@ -21,15 +21,15 @@ class TemplateManagerLayoutsWidgetsConfiguration extends Doctrine_Record
     public function setTableDefinition()
     {
         $this->setTableName('template_manager_layouts_widgets_configuration');
-        $this->hasColumn('widget_id', 'integer', 11, array(
+        $this->hasColumn('widget_id', 'integer', 4, array(
              'type' => 'integer',
-             'length' => '11',
+             'length' => 4,
              ));
-        $this->hasColumn('configuration_id', 'integer', 11, array(
+        $this->hasColumn('configuration_id', 'integer', 4, array(
              'primary' => true,
              'type' => 'integer',
              'autoincrement' => true,
-             'length' => '11',
+             'length' => 4,
              ));
         $this->hasColumn('configuration_key', 'string', 128, array(
              'type' => 'string',

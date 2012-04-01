@@ -106,10 +106,14 @@ class htmlWidget_radio implements htmlWidgetPlugin {
 			
 			if (isset($bInfo['labelPosition'])){
 				$button->setLabelPosition($bInfo['labelPosition']);
+			}elseif (isset($data['labelPosition'])){
+				$button->setLabelPosition($data['labelPosition']);
 			}
 			
 			if (isset($bInfo['labelSeparator'])){
 				$button->setLabelSeparator($bInfo['labelSeparator']);
+			}elseif (isset($data['labelSeparator'])){
+				$button->setLabelSeparator($data['labelSeparator']);
 			}
 			
 			if (isset($bInfo['disabled']) && $bInfo['disabled'] === true){

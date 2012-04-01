@@ -3,7 +3,7 @@
 	<define key="TABLE_HEADING_CURRENCY_NAME"><![CDATA[Currency]]></define>
 	<define key="TABLE_HEADING_CURRENCY_CODES"><![CDATA[Code]]></define>
 	<define key="TABLE_HEADING_CURRENCY_VALUE"><![CDATA[Value]]></define>
-	<define key="TABLE_HEADING_ACTION"><![CDATA[Action]]></define>
+
 	<define key="TEXT_INFO_EDIT_INTRO"><![CDATA[Please make any necessary changes]]></define>
 	<define key="TEXT_INFO_CURRENCY_TITLE"><![CDATA[Title:]]></define>
 	<define key="TEXT_INFO_CURRENCY_CODE"><![CDATA[Code:]]></define>
@@ -26,5 +26,4 @@
 	<define key="ERROR_CURRENCY_INVALID"><![CDATA[Error: The exchange rate for %s (%s) was not updated via %s. Is it a valid currency code?]]></define>
 	<define key="WARNING_PRIMARY_SERVER_FAILED"><![CDATA[Warning: The primary exchange rate server (%s) failed for %s (%s) - trying the secondary exchange rate server.]]></define>
 	<define key="TEXT_BUTTON_UPDATE_CURRENCIES"><![CDATA[Update Exchange Rate]]></define>
-	<define key="TEXT_BUTTON_NEW_CURRENCY"><![CDATA[New Currency]]></define>
 </definitions>

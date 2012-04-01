@@ -25,7 +25,7 @@
 
 		public function init() {
 			global $App, $appExtension, $Template, $blog_cPath, $blog_cPath_array, $current_blog_category_id;
-			if ($this->enabled === false) return;
+			if ($this->isEnabled() === false) return;
 
 			EventManager::attachEvents(array(
 

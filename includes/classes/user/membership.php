@@ -495,6 +495,27 @@ class rentalStoreUser_membership extends StandardClass {
 		return ($this->isRentalMember() && ($this->getNextBillDate() + sysConfig::get('RENTAL_DAYS_CUSTOMER_PAST_DUE')*60*60*24) < time());
 	}
 
+	public function isExpiring(){
+		$cardInfo = $this->getCreditCardInfo();
+
+		if (!empty($cardInfo['cardNumEnc'])){
+			$cardExpDate = cc_decrypt($cardInfo['expDateEnc']);
+
+			$year = substr($cardExpDate,-4);
+			if ($year != null){
+				$arr_date = explode($year, $cardExpDate);
+			}
+			$todayMonth = date('m');
+			$todayYear = date('Y');
+			if(isset($arr_date[0]) && $todayMonth == $arr_date[0] && $todayYear == $year){
+				return true;
+			}
+
+		}
+	   return false;
+
+	}
+
 	public function isActivated(){
 		return ($this->membershipInfo['activate'] == 'Y');
 	}

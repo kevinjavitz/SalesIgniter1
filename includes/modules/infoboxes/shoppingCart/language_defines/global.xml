@@ -1,9 +1,0 @@
-<definitions>
-	<define key="INFOBOX_HEADING_SHOPPINGCART"><![CDATA[Shopping Cart]]></define>
-	<define key="INFOBOX_SHOPPINGCART_EMPTY"><![CDATA[0 items]]></define>
-	<define key="INFOBOX_SHOPPINGCART_COUPON"><![CDATA[Coupon :]]></define>
-	<define key="INFOBOX_SHOPPINGCART_VOUCHER_BALANCE"><![CDATA[Voucher Balance]]></define>
-	<define key="INFOBOX_SHOPPINGCART_SEND_TO_FRIEND"><![CDATA[Send Gift Voucher To A Friend]]></define>
-	<define key="INFOBOX_SHOPPINGCART_VOUCHER_REDEEMED"><![CDATA[Voucher Redeemed]]></define>
-	<define key="INFOBOX_SHOPPINGCART_CHECKOUT"><![CDATA[Checkout]]></define>
-</definitions>

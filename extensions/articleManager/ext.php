@@ -18,7 +18,7 @@
 
 		public function init(){
 			global $App, $appExtension, $Template, $tPath, $tPath_array, $current_topic_id, $breadcrumb;
-			if ($this->enabled === false) return;
+			if ($this->isEnabled() === false) return;
 
 			// Article Manager
 			if (isset($_GET['tPath'])){

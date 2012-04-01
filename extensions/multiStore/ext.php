@@ -22,7 +22,7 @@ class Extension_multiStore extends ExtensionBase {
 
 	public function init(){
 		global $App, $appExtension, $Template;
-		if ($this->enabled === false) return;
+		if ($this->isEnabled() === false) return;
 		
 		EventManager::attachEvents(array(
 			'EmailEventSetAllowedVars',
@@ -123,9 +123,16 @@ class Extension_multiStore extends ExtensionBase {
 			$Qstore = Doctrine_Query::create()
 				->from('Stores')
 				->execute(array(), Doctrine::HYDRATE_ARRAY);
+			$adminsStores = array();
+			foreach($Qstore as $iStore){
+				$adminsStores[] = $iStore['stores_id'];
+			}
 			$this->storeInfo = $Qstore[0];
-
-			Session::set('admin_allowed_stores', explode(',', $Qadmin[0]['admins_stores']));
+			if (Session::exists('login_groups_id') && Session::get('login_groups_id') == '1'){
+				Session::set('admin_allowed_stores', $adminsStores);
+			}else{
+				Session::set('admin_allowed_stores', explode(',', $Qadmin[0]['admins_stores']));
+			}
 			if (Session::exists('admin_showing_stores') === false || Session::get('admin_showing_stores') == '' || sizeof(Session::get('admin_showing_stores')) == 0){
 				Session::set('admin_showing_stores',  explode(',', $Qadmin[0]['admins_stores']));
 			}
@@ -163,7 +170,9 @@ class Extension_multiStore extends ExtensionBase {
 			if (isset($_GET['forceStoreId'])){
 				$checkId = $_GET['forceStoreId'];
 			}
-			$Qstore = mysql_query('select * from stores where stores_id = "' . $checkId . '"');
+			$Qstore = Doctrine_Manager::getInstance()
+				->getCurrentConnection()
+				->fetchAssoc('select * from stores where stores_id = "' . $checkId . '"');
 		}
 		else {
 			$domainCheck = array($_SERVER['HTTP_HOST']);
@@ -180,9 +189,11 @@ class Extension_multiStore extends ExtensionBase {
 			else {
 				$checkCol = 'stores_domain';
 			}
-			$Qstore = mysql_query('select * from stores where ' . $checkCol . ' IN("' . implode('", "', $domainCheck) . '")');
+			$Qstore = Doctrine_Manager::getInstance()
+				->getCurrentConnection()
+				->fetchAssoc('select * from stores where ' . $checkCol . ' IN("' . implode('", "', $domainCheck) . '")');
 		}
-		$this->storeInfo = mysql_fetch_assoc($Qstore);
+		$this->storeInfo = $Qstore[0];
 		Session::set('tplDir', $this->storeInfo['stores_template']);
 
 		if (!Session::exists('current_store_id') || (Session::get('current_store_id') != $this->storeInfo['stores_id'])){
@@ -191,9 +202,11 @@ class Extension_multiStore extends ExtensionBase {
 			//}
 		}
 		else {
-			$Qconfig = mysql_query('select configuration_key, configuration_value from stores_configuration where stores_id = "' . Session::get('current_store_id') . '"');
-			if (mysql_num_rows($Qconfig)){
-				while($cInfo = mysql_fetch_assoc($Qconfig)){
+			$Qconfig = Doctrine_Manager::getInstance()
+				->getCurrentConnection()
+				->fetchAssoc('select configuration_key, configuration_value from stores_configuration where stores_id = "' . Session::get('current_store_id') . '"');
+			if (sizeof($Qconfig) > 0){
+				foreach($Qconfig as $cInfo){
 					sysConfig::set($cInfo['configuration_key'], $cInfo['configuration_value']);
 				}
 			}
@@ -219,19 +232,29 @@ class Extension_multiStore extends ExtensionBase {
 
 			if(sysConfig::get('EXTENSION_MULTI_STORE_REDIRECT_BY_COUNTRY') == 'True'){
 				include(sysConfig::getDirFsCatalog().'extensions/multiStore/geoip/geoip.php');
-				$gi = geoip_open(sysConfig::getDirFsCatalog().'extensions/multiStore/geoip/GeoIP.dat',GEOIP_STANDARD);
-				$visitorCountry = geoip_country_name_by_addr($gi, $_SERVER['REMOTE_ADDR']);
-				geoip_close($gi);
-
 				$storeCountries = explode(',', $this->storeInfo['stores_countries']);
+
+				if(file_exists(sysConfig::getDirFsCatalog().'extensions/multiStore/geoip/GeoIP.dat')){
+					$gi = geoip_open(sysConfig::getDirFsCatalog().'extensions/multiStore/geoip/GeoIP.dat',GEOIP_STANDARD);
+					$visitorCountry = geoip_country_name_by_addr($gi, $_SERVER['REMOTE_ADDR']);
+					geoip_close($gi);
+				}else{
+					$visitorCountry = 'United States';
+				}
+
+
 				if(!in_array($visitorCountry, $storeCountries)){
-					$Qstoresr = mysql_query('select * from stores where FIND_IN_SET("'.$visitorCountry.'", stores_countries) > 0');
+					$Qstoresr = Doctrine_Manager::getInstance()
+						->getCurrentConnection()
+						->fetchAssoc('select * from stores where FIND_IN_SET("'.$visitorCountry.'", stores_countries) > 0');
 					$redirectStoreInfo = false;
-					if (mysql_num_rows($Qstoresr)){
-						$redirectStoreInfo = mysql_fetch_assoc($Qstoresr);
+					if (sizeof($Qstoresr) > 0){
+						$redirectStoreInfo = $Qstoresr[0];
 					}else{
-						$Qstoresr = mysql_query('select * from stores where is_default = 1');
-						$redirectStoreInfo = mysql_fetch_assoc($Qstoresr);
+						$Qstoresr = Doctrine_Manager::getInstance()
+							->getCurrentConnection()
+							->fetchAssoc('select * from stores where is_default = 1');
+						$redirectStoreInfo = $Qstoresr[0];
 					}
 					if($redirectStoreInfo !== false){
 						if($this->storeInfo['stores_domain'] != $redirectStoreInfo['stores_domain']){
@@ -265,7 +288,7 @@ class Extension_multiStore extends ExtensionBase {
 	public function AdminProductListingQueryBeforeExecute(&$Qproducts){
 		if(Session::exists('admin_showing_stores')){
 			$Qproducts->leftJoin('p.ProductsToStores p2s')
-				->andWhereIn('p2s.stores_id', Session::get('admin_showing_stores'));
+				->andWhere('FIND_IN_SET(p2s.stores_id,"'.implode(',',Session::get('admin_showing_stores')).'") > 0 OR p2s.stores_id is null' );
 		}
 	}
 
@@ -287,9 +310,12 @@ class Extension_multiStore extends ExtensionBase {
 	}
 
 	public function CategoryListingQueryBeforeExecute(&$Qcategories) {
-		$Qcategories
+		if(Session::exists('admin_showing_stores')){
+			$Qcategories
 			->leftJoin('c.CategoriesToStores c2s')
-			->whereIn('c2s.stores_id', Session::get('admin_showing_stores'));
+			->andWhere('FIND_IN_SET(c2s.stores_id,"'.implode(',',Session::get('admin_showing_stores')).'") > 0 OR c2s.stores_id is null' );
+			//->where('c2s.stores_id', Session::get('admin_showing_stores'));
+		}
 	}
 
 	public function AdminOrdersListingBeforeExecute(&$Qorders) {
@@ -514,7 +540,9 @@ class Extension_multiStore extends ExtensionBase {
 	
 	public function ModuleConfigReaderModuleConfigLoad($cfgKey, $moduleCode, $moduleType, &$configVal) {
 
-		$Query = mysql_query('select ' .
+		$Query = Doctrine_Manager::getInstance()
+			->getCurrentConnection()
+			->fetchAssoc('select ' .
 				'configuration_value' .
 				' from ' .
 				'stores_modules_configuration' .
@@ -526,8 +554,8 @@ class Extension_multiStore extends ExtensionBase {
 				'configuration_key = "' . $cfgKey . '"' .
 				' and ' .
 				'store_id = "' . $this->storeInfo['stores_id'] . '"');
-		if (mysql_num_rows($Query)){
-			while($Result = mysql_fetch_assoc($Query)){
+		if (sizeof($Query) > 0){
+			foreach($Query as $Result){
 				$configVal = $Result['configuration_value'];
 			}
 		}

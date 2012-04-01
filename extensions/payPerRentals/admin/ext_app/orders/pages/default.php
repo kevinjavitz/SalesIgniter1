@@ -18,7 +18,7 @@ class payPerRentals_admin_orders_default extends Extension_payPerRentals {
 	
 	public function load(){
 		global $appExtension;
-		if ($this->enabled === false) return;
+		if ($this->isEnabled() === false) return;
 		
 		EventManager::attachEvents(array(
 			'AdminOrdersListingBeforeExecute',

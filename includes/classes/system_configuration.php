@@ -173,6 +173,9 @@
 
 		/**
 		 * getDirWsCatalog
+		public static function getAll(){
+			return self::$config;
+		}
 		 * returns the correct relative catalog path based on the request type
 		 *
 		 * @param string $forceType [optional] Used to force the request type, possible values ( SSL or NONSSL )
@@ -282,11 +285,14 @@
 		 * @return void
 		 */
 		public static function load(){
-			$ResultSet = Doctrine_Manager::getInstance()
-				->getCurrentConnection()
-				->fetchAssoc('select configuration_key, configuration_value from configuration');
-			foreach($ResultSet as $cInfo){
-				self::set($cInfo['configuration_key'], $cInfo['configuration_value']);
+			$Directory = new DirectoryIterator(self::getDirFsCatalog() . 'includes/configs/');
+			foreach($Directory as $ConfigFile){
+				if ($ConfigFile->isDot() || $ConfigFile->isDir()) {
+					continue;
+				}
+
+				$Configuration = new MainConfigReader($ConfigFile->getBasename('.xml'));
+				$Configuration->loadToSystem();
 			}
 		}
 		
@@ -379,7 +385,8 @@
 		 * @return bool
 		 */
 		public static function isNotEmpty($k){
-			return tep_not_null(self::get($k));
+		$val = self::get($k);
+		return !empty($val);
 		}
 		
 		/**

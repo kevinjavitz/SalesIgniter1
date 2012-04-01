@@ -8,7 +8,7 @@ class multiStore_admin_orderCreator_default_new extends Extension_multiStore
 
 	public function load() {
 		global $appExtension;
-		if ($this->enabled === false){
+		if ($this->isEnabled() === false){
 			return;
 		}
 

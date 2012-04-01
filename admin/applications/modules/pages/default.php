@@ -2,19 +2,20 @@
 $tableGrid = htmlBase::newElement('newGrid');
 
 $tableGrid->addButtons(array(
-		htmlBase::newElement('button')->setText('Install')->addClass('installButton')->disable(),
-		htmlBase::newElement('button')->setText('Uninstall')->addClass('uninstallButton')->disable(),
-		htmlBase::newElement('button')->setText('Edit')->addClass('editButton')->disable()
-	));
+	htmlBase::newElement('button')->usePreset('install')->addClass('installButton')->disable(),
+	htmlBase::newElement('button')->usePreset('uninstall')->addClass('uninstallButton')->disable(),
+	htmlBase::newElement('button')->usePreset('edit')->addClass('editButton')->disable()
+));
 
 $tableGrid->addHeaderRow(array(
-		'columns' => array(
-			array('text' => sysLanguage::get('TABLE_HEADING_MODULES')),
-			array('text' => sysLanguage::get('TABLE_HEADING_SORT_ORDER')),
-			array('text' => sysLanguage::get('TABLE_HEADING_INSTALLED')),
-			array('text' => sysLanguage::get('TABLE_HEADING_INFO'))
-		)
-	));
+	'columns' => array(
+		array('text' => sysLanguage::get('TABLE_HEADING_MODULES')),
+		array('text' => sysLanguage::get('TABLE_HEADING_SORT_ORDER')),
+		array('text' => sysLanguage::get('TABLE_HEADING_INSTALLED')),
+		array('text' => sysLanguage::get('TABLE_HEADING_ENABLED')),
+		array('text' => sysLanguage::get('TABLE_HEADING_INFO'))
+	)
+));
 
 $moduleDirs = array(
 	sysConfig::getDirFsCatalog() . 'includes/modules/' . $moduleDirectory . '/'
@@ -45,7 +46,8 @@ ksort($modules);
 $gridRows = array();
 $infoBoxes = array();
 foreach($modules as $moduleCode => $moduleCls){
-	$installedIcon = htmlBase::newElement('icon');
+	$installedIcon = htmlBase::newElement('icon')
+		->addClass('installedIcon');
 	if ($moduleCls->isInstalled() === true){
 		$installedIcon->setType('circleCheck');
 	}
@@ -53,41 +55,50 @@ foreach($modules as $moduleCode => $moduleCls){
 		$installedIcon->setType('circleClose');
 	}
 
-	$tableGrid->addBodyRow(array(
-			'rowAttr' => array(
-				'data-module_code' => $moduleCls->getCode(),
-				'data-module_path' => $moduleCls->getPath(),
-				'data-module_type' => $moduleCls->getModuleType(),
-				'data-installed' => ($moduleCls->isInstalled() === true ? 'true' : 'false')
-			),
-			'columns' => array(
-				array('text' => $moduleCls->getTitle()),
-				array('align' => 'center', 'text' => ($moduleCls->imported('sortedDisplay') ? $moduleCls->getDisplayOrder() : '')),
-				array('align' => 'center', 'text' => $installedIcon->draw()),
-				array('align' => 'center', 'text' => htmlBase::newElement('icon')->setType('info')->draw())
-			)
-		));
+	$enabledIcon = htmlBase::newElement('icon')
+		->addClass('enabledIcon');
+	if ($moduleCls->isEnabled() === true){
+		$enabledIcon->setType('circleCheck');
+	}
+	else {
+		$enabledIcon->setType('circleClose');
+	}
 
 	$tableGrid->addBodyRow(array(
-			'addCls' => 'gridInfoRow',
-			'columns' => array(
-				array('colspan' => 4, 'text' => '<table cellpadding="1" cellspacing="0" border="0" width="75%">' .
-					'<tr>' .
-					'<td>' . $moduleCls->getDescription() . '</td>' .
-					'</tr>' .
-					'</table>')
-			)
-		));
+		'rowAttr' => array(
+			'data-module_code' => $moduleCls->getCode(),
+			'data-module_path' => $moduleCls->getPath(),
+			'data-module_type' => $moduleCls->getModuleType(),
+			'data-installed'   => ($moduleCls->isInstalled() === true ? 'true' : 'false')
+		),
+		'columns' => array(
+			array('text' => $moduleCls->getTitle()),
+			array('align' => 'center', 'text' => ($moduleCls->imported('SortedDisplay') ? $moduleCls->getDisplayOrder() : '')),
+			array('align' => 'center', 'text' => $installedIcon->draw()),
+			array('align' => 'center', 'text' => $enabledIcon->draw()),
+			array('align' => 'center', 'text' => htmlBase::newElement('icon')->setType('info')->draw())
+		)
+	));
+
+	$tableGrid->addBodyRow(array(
+		'addCls'  => 'gridInfoRow',
+		'columns' => array(
+			array('colspan' => 5,
+			      'text'    => '<table cellpadding="1" cellspacing="0" border="0" width="75%">' .
+				      '<tr>' .
+				      '<td>' . $moduleCls->getDescription() . '</td>' .
+				      '</tr>' .
+				      '</table>')
+		)
+	));
 }
 ?>
 <div class="pageHeading"><?php
 	echo $headingTitle;
 	?></div>
 <br />
-<div class="gridContainer">
-	<div style="width:100%;float:left;">
-		<div class="ui-widget ui-widget-content ui-corner-all" style="width:99%;margin-right:5px;margin-left:5px;">
-			<div style="width:99%;margin:5px;"><?php echo $tableGrid->draw();?></div>
-		</div>
+<div>
+	<div class="ui-widget ui-widget-content ui-corner-all" style="margin-right:5px;margin-left:5px;">
+		<div style="margin:5px;"><?php echo $tableGrid->draw();?></div>
 	</div>
 </div>

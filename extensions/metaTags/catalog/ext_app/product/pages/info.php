@@ -36,7 +36,7 @@ class metaTags_catalog_product_info extends Extension_metaTags {
 	 * @return void
 	 */
 	public function load(){
-		if ($this->enabled === false) return;
+		if ($this->isEnabled() === false) return;
 
 		EventManager::attachEvents(array(
 			'HeaderTagsTitle',

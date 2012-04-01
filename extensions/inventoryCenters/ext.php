@@ -16,7 +16,7 @@ class Extension_inventoryCenters extends ExtensionBase {
 		parent::__construct('inventoryCenters');
 		$this->stockMethod = 'Zone';
 
-		if ($this->enabled === true){
+		if ($this->isEnabled() === true){
 			$this->stockMethod = sysConfig::get('EXTENSION_INVENTORY_CENTERS_STOCK_METHOD');
 		}
 		$this->ignoreCenter = (sysConfig::get('EXTENSION_INVENTORY_CENTERS_IGNORE_STOCK_METHOD') == 'True')?true:false;
@@ -24,7 +24,7 @@ class Extension_inventoryCenters extends ExtensionBase {
 	
 	public function init(){
 		global $appExtension;
-		if ($this->enabled === false) return;
+		if ($this->isEnabled() === false) return;
 		
 		EventManager::attachEvents(array(
 			'ApplicationTopBeforeCartAction',
@@ -79,7 +79,7 @@ class Extension_inventoryCenters extends ExtensionBase {
             $Qproducts->leftJoin('p.ProductsStreams ps')
                 ->orwhere('p.products_id = ps.products_id');
         }
-        if ($appExtension->isEnabled('ProductsDownloads') === true){
+        if ($appExtension->isEnabled('downloadProducts') === true){
             $Qproducts->leftJoin('p.ProductsDownloads pdl')
                 ->orwhere('p.products_id = pdl.products_id');
         }
@@ -204,7 +204,7 @@ class Extension_inventoryCenters extends ExtensionBase {
             $Qproducts->leftJoin('p.ProductsStreams ps')
                 ->orwhere('p.products_id = ps.products_id');
         }
-        if ($appExtension->isEnabled('ProductsDownloads') === true){
+        if ($appExtension->isEnabled('downloadProducts') === true){
             $Qproducts->leftJoin('p.ProductsDownloads pdl')
                 ->orwhere('p.products_id = pdl.products_id');
         }
@@ -339,7 +339,9 @@ class Extension_inventoryCenters extends ExtensionBase {
 				$Qorders->andWhereIn('b2c.inventory_center_id', Session::get('isppr_inventory_pickup'));
 			}
 		}else{
-			$Qorders->andWhere('b2c.inventory_center_id = ?', Session::get('isppr_inventory_pickup'));
+			if(Session::exists('isppr_inventory_pickup') === true){
+				$Qorders->andWhere('b2c.inventory_center_id = ?', Session::get('isppr_inventory_pickup'));
+			}
 		}
 
 	}
@@ -397,7 +399,9 @@ class Extension_inventoryCenters extends ExtensionBase {
 			if (is_object($Editor)&& $Editor->hasData('inventory_center_id')){
 				$Qcheck->andWhere('ib2c.inventory_center_id = ?', $Editor->getData('inventory_center_id'));
 			}else{
-				$Qcheck->andWhereIn('ib2c.inventory_center_id', Session::get('isppr_inventory_pickup'));
+				if(Session::exists('isppr_inventory_pickup') === true){
+					$Qcheck->andWhereIn('ib2c.inventory_center_id', Session::get('isppr_inventory_pickup'));
+				}
 			}
 		}else{
 			if ($invData['use_center'] == '1'){

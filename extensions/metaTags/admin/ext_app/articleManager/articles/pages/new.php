@@ -35,7 +35,7 @@ class metaTags_admin_articleManager_articles_new extends Extension_metaTags {
 	 * @return void
 	 */
 	public function load(){
-		if ($this->enabled === false) return;
+		if ($this->isEnabled() === false) return;
 
 		EventManager::attachEvents(array(
 			'ArticleManagerFormMiddle',

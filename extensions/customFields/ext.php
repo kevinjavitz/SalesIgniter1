@@ -18,7 +18,7 @@ class Extension_customFields extends ExtensionBase {
 
     public function init(){
         global $App, $appExtension, $Template;
-        if ($this->enabled === false) return;
+        if ($this->isEnabled() === false) return;
 
         EventManager::attachEvents(array(
                                         'ProductQueryBeforeExecute',
@@ -319,9 +319,12 @@ class Extension_customFields extends ExtensionBase {
                 ->andWhere('search_key is not NULL')
                 ->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 		*/
-	    $Qcheck = tep_db_query('select search_key from products_custom_fields where search_key <> "" and include_in_search = 1 and search_key is not NULL');
-        if (tep_db_num_rows($Qcheck)){
-            while($cInfo = tep_db_fetch_array($Qcheck)){
+	    $Qcheck = Doctrine_Manager::getInstance()
+		    ->getCurrentConnection()
+	        ->fetchAssoc('select search_key from products_custom_fields where search_key <> "" and include_in_search = 1 and search_key is not NULL');
+
+        if (sizeof($Qcheck) > 0){
+            foreach($Qcheck as $cInfo){
                 if((isset($_GET['keywords']) && !empty($_GET['keywords'])) || (isset($_GET[$cInfo['search_key']]) && !empty($_GET[$cInfo['search_key']]))){
                     $this->validSearchKeys[$cInfo['search_key']] = (isset($_GET['keywords']) && !empty($_GET['keywords'])) ? $_GET['keywords'] : $_GET[$cInfo['search_key']];
                 }
@@ -333,12 +336,18 @@ class Extension_customFields extends ExtensionBase {
 		    foreach($this->validSearchKeys as $k => $v){
 			    if(empty($v))   continue;
 			    if ($k == 'field_val'){
-				    $query = tep_db_query('SELECT f2p.product_id FROM products_custom_fields_to_products f2p LEFT JOIN products_custom_fields f using(field_id) WHERE f.field_id = "' . $this->validSearchKeys['field_id'] . '" AND f2p.value LIKE "%' . str_replace('.', '%', $v) . '%"');
-				    if(tep_db_num_rows($query)){
-					    while($result = tep_db_fetch_array($query)){
+
+				    $query = Doctrine_Manager::getInstance()
+					    ->getCurrentConnection()
+				        ->fetchAssoc('SELECT f2p.product_id FROM products_custom_fields_to_products f2p LEFT JOIN products_custom_fields f using(field_id) WHERE f.field_id = "' . $this->validSearchKeys['field_id'] . '" AND f2p.value LIKE "%' . str_replace('.', '%', $v) . '%"');
+
+
+				    if(sizeof($query) > 0){
+					    foreach($query as $result){
 						    $productIds[$result['product_id']] = $result['products_id'];
 					    }
 				    }
+
 			    }elseif ($k == 'field_id'){
 				    continue;
 			    }elseif (is_array($v)){
@@ -347,13 +356,17 @@ class Extension_customFields extends ExtensionBase {
 					    $addSearch[] = 'f2p.value like "%' . str_replace('.', '%', $val) . '%"';
 				    }
 
-				    $query = tep_db_query('SELECT f2p.product_id FROM products_custom_fields_to_products f2p LEFT JOIN products_custom_fields f using(field_id) WHERE f.search_key = "' . $k . '" AND (' . implode(' OR ', $addSearch) . ')');
+				    $query = Doctrine_Manager::getInstance()
+					    ->getCurrentConnection()
+					    ->fetchAssoc('SELECT f2p.product_id FROM products_custom_fields_to_products f2p LEFT JOIN products_custom_fields f using(field_id) WHERE f.search_key = "' . $k . '" AND (' . implode(' OR ', $addSearch) . ')');
 
 			    }else{
-				    $query =  tep_db_query('SELECT f2p.product_id FROM products_custom_fields_to_products f2p LEFT JOIN products_custom_fields f using(field_id) WHERE f.search_key = "' . $k . '" AND f2p.value LIKE "%' . str_replace('.', '%', $v) . '%")');
+				    $query =  Doctrine_Manager::getInstance()
+					    ->getCurrentConnection()
+					    ->fetchAssoc('SELECT f2p.product_id FROM products_custom_fields_to_products f2p LEFT JOIN products_custom_fields f using(field_id) WHERE f.search_key = "' . $k . '" AND f2p.value LIKE "%' . str_replace('.', '%', $v) . '%")');
 			    }
-			    if(tep_db_num_rows($query)){
-				    while($result = tep_db_fetch_array($query)){
+			    if(sizeof($query) > 0){
+				    foreach($query as $result){
 					    $productIds[$result['product_id']] = $result['product_id'];
 				    }
 			    }
@@ -366,36 +379,6 @@ class Extension_customFields extends ExtensionBase {
 		    }
 
 	    }
-
-	    /*
-        if (isset($this->validSearchKeys) && sizeof($this->validSearchKeys) > 0){
-            $fieldsSearch = array();
-            $i = 1;
-            $j = 1;
-            foreach($this->validSearchKeys as $k => $v){
-                if(empty($v))   continue;
-                if ($k == 'field_val'){
-                    $fieldsSearch[] = '(SELECT count(*) FROM ProductsCustomFieldsToProducts f2p' . $i . ' LEFT JOIN f2p' . $i . '.ProductsCustomFields f' . $j . ' WHERE f' . $j . '.field_id = "' . $this->validSearchKeys['field_id'] . '" AND f2p' . $i . '.value LIKE "%' . str_replace('.', '%', $v) . '%") > 0';
-                    $i++;$j++;
-                }elseif ($k == 'field_id'){
-                    continue;
-                }elseif (is_array($v)){
-                    $addSearch = array();
-                    foreach($v as $count => $val){
-                        $addSearch[] = 'f2p' . $i . '.value like "%' . str_replace('.', '%', $val) . '%"';
-                    }
-                    $fieldsSearch[] = '(SELECT count(*) FROM ProductsCustomFieldsToProducts f2p' . $i . ' LEFT JOIN f2p' . $i . '.ProductsCustomFields f' . $j . ' WHERE p.products_id = f2p' . $i . '.product_id AND f' . $j . '.search_key = "' . $k . '" AND (' . implode(' OR ', $addSearch) . ')) > 0';
-                    $i++;$j++;
-                }else{
-                    $fieldsSearch[] = '(SELECT count(*) FROM ProductsCustomFieldsToProducts f2p' . $i . ' LEFT JOIN f2p' . $i . '.ProductsCustomFields f' . $j . ' WHERE p.products_id = f2p' . $i . '.product_id AND f' . $j . '.search_key = "' . $k . '" AND f2p' . $i . '.value LIKE "%' . str_replace('.', '%', $v) . '%") > 0';
-                    $i++;$j++;
-                }
-            }
-            $Qproducts->leftJoin('p.ProductsCustomFieldsToProducts f2p')
-                    ->leftJoin('f2p.ProductsCustomFields f')
-                    ->orWhere('((' . implode(') OR (', $fieldsSearch) . '))');
-        }
-	    */
     }
 
     public function BoxCatalogAddLink(&$contents){

@@ -2,7 +2,16 @@
 	<title>Gallery</title>
 	<key>gallery</key>
 	<description>Configuration Settings For The Gallery Extension</description>
-	<Configuration>
+	<tabs>
+	<general>
+	<title>General</title>
+	<description>General Extension Settings</description>
+	<configurations>
+		<EXTENSION_GALLERY_INSTALLED editable="false">
+			<title>Installation Status</title>
+			<value>False</value>
+			<description></description>
+		</EXTENSION_GALLERY_INSTALLED>
 		<EXTENSION_GALLERY_ENABLED>
 			<title>Enable Gallery</title>
 			<value>True</value>
@@ -24,5 +33,7 @@
 			<sort_order>1</sort_order>
 
 		</EXTENSION_GALLERY_THUMBS_HEIGHT>
-	</Configuration>
+	</configurations>
+	</general>
+	</tabs>
 </ConfigurationGroup>

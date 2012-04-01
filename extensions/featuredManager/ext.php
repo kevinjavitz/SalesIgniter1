@@ -17,7 +17,7 @@ class Extension_featuredManager extends ExtensionBase {
 	}
 	
 	public function init(){
-		if ($this->enabled === false) return;
+		if ($this->isEnabled() === false) return;
 	}
 
 

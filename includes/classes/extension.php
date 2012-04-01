@@ -2,7 +2,9 @@
 class ExtensionBase
 {
 
-	private $_isInstalled = '';
+	private $_isInstalled = false;
+
+	private $enabled = false;
 
 	public function __construct($extensionKey) {
 		$this->extName = $extensionKey;
@@ -12,16 +14,26 @@ class ExtensionBase
 		$this->addColumns = $this->loadXmlFile($this->dir . 'data/base/add_columns.xml');
 		$this->config = array();
 
-		$configXml = $this->loadXmlFile($this->dir . 'data/base/configuration.xml');
-		if (is_null($configXml) === false){
-			$this->parseConfigXmlToArray($configXml->Configuration);
+		$Config = new ExtensionConfigReader($this->extName);
+
+		$Installed = $Config->getConfig((string)$this->info->installed_key);
+		if (is_object($Installed)){
+			$this->_isInstalled = (bool)($Installed->getValue() == 'True' ? true : false);;
+		}else{
+			$this->_isInstalled = false;
 		}
 
-		if ($this->isInstalled() === false){
-			$this->enabled = (bool)false;
-		}
-		else {
-			$this->enabled = (bool)(sysConfig::get((string)$this->info->status_key) == 'True' ? true : false);
+		if ($this->_isInstalled === true){
+			$Status = $Config->getConfig((string)$this->info->status_key);
+			if (is_object($Status)){
+				$this->enabled = (bool)($Status->getValue() == 'True' ? true : false);
+			}else{
+				$this->enabled = false;
+			}
+
+			if ($this->enabled === true){
+				$Config->loadToSystem();
+			}
 		}
 	}
 
@@ -32,29 +44,7 @@ class ExtensionBase
 		return null;
 	}
 
-	public function parseConfigXmlToArray($data) {
-		foreach((array)$data as $configKey => $configSettings){
-			$this->config[] = $configKey;
-		}
-	}
-
-	public function getOtherExtensionsConfig() {
-		global $appExtension;
-		foreach($appExtension->extensionDirs as $dir){
-			$curPath = $dir['pathname'] . '/data/ext/' . $this->extName . '/';
-			if (file_exists($curPath . 'configuration.xml')){
-				$configData = $this->loadXmlFile($curPath . 'configuration.xml');
-				if (sizeof($configData) > 0){
-					$this->parseConfigXmlToArray($configData->Configuration);
-				}
-			}
-		}
-	}
-
 	public function isInstalled() {
-		if ($this->_isInstalled == ''){
-			$this->_isInstalled = sysConfig::exists((string)$this->info->status_key, false);
-		}
 		return $this->_isInstalled;
 	}
 
@@ -76,6 +66,14 @@ class ExtensionBase
 
 	public function getExtensionName() {
 		return (string)$this->info->name;
+	}
+
+	public function getExtensionDescription(){
+		return (string)$this->info->description;
+	}
+
+	public function getExtensionAuthor(){
+		return (string)$this->info->author;
 	}
 
 	public function getExtensionDir() {
@@ -161,13 +159,17 @@ class ExtensionBase
 	public function setUpDoctrine() {
 		global $App;
 		if ($this->hasDoctrine()){
+			$initModels = array();
 			$extObj = new DirectoryIterator(sysConfig::getDirFsCatalog() . 'extensions/' . $this->extName . '/Doctrine/base/');
 			foreach($extObj as $eInfo){
 				if ($eInfo->isDot() || $eInfo->isDir()){
 					continue;
 				}
-				Doctrine_Core::addExtModelsDirectory($eInfo->getBasename('.php'), $eInfo->getPath() . '/');
+				$initModels[] = $eInfo->getBasename('.php');
+				require($eInfo->getPathname());
+				Doctrine_Core::loadModel($eInfo->getBasename('.php'), $eInfo->getPath() . '/');
 			}
+			Doctrine_Core::initializeModels($initModels);
 		}
 	}
 
@@ -177,14 +179,17 @@ class ExtensionBase
 			if (is_dir($dir['pathname'] . '/Doctrine/ext/' . $this->extName)){
 				$extCheck = $appExtension->getExtension($dir['basename']);
 				if ($extCheck !== false && $extCheck->isInstalled() === true){
+					$initModels = array();
 					$exteObj = new DirectoryIterator($dir['pathname'] . '/Doctrine/ext/' . $this->extName);
 					foreach($exteObj as $eeInfo){
 						if ($eeInfo->isDot() || $eeInfo->isDir()){
 							continue;
 						}
-
-						Doctrine_Core::addExtModelsDirectory($eeInfo->getBasename('.php'), $eeInfo->getPath() . '/');
+						$initModels[] = $eeInfo->getBasename('.php');
+						require($eeInfo->getPathname());
+						Doctrine_Core::loadModel($eeInfo->getBasename('.php'), $eeInfo->getPath() . '/');
 					}
+					Doctrine_Core::initializeModels($initModels);
 				}
 			}
 		}
@@ -291,8 +296,6 @@ class Extension
 			$extCls->setUpAddColumns();
 			$extCls->setUpExtAddColumns();
 		}
-
-		$this->initExtensions();
 	}
 
 	public function bindMethods(&$class) {
@@ -443,7 +446,7 @@ class Extension
 		}
 	}
 
-	public function initExtensions() {
+	public function initApplicationPlugins() {
 		global $App;
 		$pagePlugins = array();
 		$this->getAppFiles('pages', array(
@@ -474,6 +477,14 @@ class Extension
 				}
 
 				unset($className);
+			}
+		}
+	}
+
+	public function onLoadApplication(&$App){
+		foreach($this->extensions as $extName => $clsObj){
+			if (method_exists($clsObj, 'onLoadApplication')){
+				$clsObj->onLoadApplication($App);
 			}
 		}
 	}

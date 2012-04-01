@@ -9,13 +9,14 @@ $tableGrid->addHeaderRow(array(
 ));
 
 $tableGrid->addButtons(array(
-	htmlBase::newElement('button')->setText('View Layouts')->addClass('layoutsButton')->disable(),
-	htmlBase::newElement('button')->setText('New')->addClass('newButton'),
-	htmlBase::newElement('button')->setText('Copy')->addClass('copyButton'),
-	htmlBase::newElement('button')->setText('Import')->addClass('importButton'),
-	htmlBase::newElement('button')->setText('Export')->addClass('exportButton')->disable(),
-	htmlBase::newElement('button')->setText('Configure')->addClass('configureButton')->disable(),
-	htmlBase::newElement('button')->setText('Delete')->addClass('deleteButton')->disable()
+	htmlBase::newElement('button')->setIcon('document')->setText('Edit Stylesheet')->addClass('stylesheetButton')->disable(),
+	htmlBase::newElement('button')->setIcon('document')->setText('View Layouts')->addClass('layoutsButton')->disable(),
+	htmlBase::newElement('button')->usePreset('new')->addClass('newButton'),
+	htmlBase::newElement('button')->usePreset('copy')->addClass('copyButton'),
+	htmlBase::newElement('button')->setIcon('arrowreturnthick-1-s')->setText('Import')->addClass('importButton'),
+	htmlBase::newElement('button')->setIcon('arrowreturnthick-1-n')->setText('Export')->addClass('exportButton')->disable(),
+	htmlBase::newElement('button')->usePreset('edit')->addClass('configureButton')->disable(),
+	htmlBase::newElement('button')->usePreset('delete')->addClass('deleteButton')->disable()
 ));
 
 $Templates = Doctrine_Core::getTable('TemplateManagerTemplates')
@@ -35,7 +36,7 @@ foreach($Templates as $Template){
 	echo sysLanguage::get('HEADING_TITLE_TEMPLATES');
 	?></div>
 <br />
-<div class="gridContainer">
+<div class="gridContainerElem">
 	<div style="width:100%;float:left;">
 		<div class="ui-widget ui-widget-content ui-corner-all" style="width:99%;margin-right:5px;margin-left:5px;">
 			<div style="width:99%;margin:5px;"><?php echo $tableGrid->draw();?></div>

@@ -18,7 +18,7 @@ class Extension_productDesigner extends ExtensionBase {
 
 	public function init(){
 		global $App, $appExtension;
-		if ($this->enabled === false) return;
+		if ($this->isEnabled() === false) return;
 
 		EventManager::attachEvents(array(
 			'ApplicationTopActionCheckPost',

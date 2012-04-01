@@ -70,6 +70,10 @@
 					$ex='';
 				}
 
+				if($membership->isExpiring()){
+					$beforeText .= sprintf(sysLanguage::get('RENTAL_CUSTOMER_IS_EXPIRING'), itw_app_link('edit='.$membership->getRentalAddressId(),'account','billing_address_book','SSL'));
+				}
+
 				if($membership->isPastDue()){
 					$beforeText .= $errorMsg = sprintf(sysLanguage::get('RENTAL_CUSTOMER_IS_PAST_DUE'), itw_app_link('edit='.$membership->getRentalAddressId(),'account','billing_address_book','SSL'));
 				}

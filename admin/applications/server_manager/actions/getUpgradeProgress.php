@@ -1,14 +1,16 @@
 <?php
-	$QglobalProgress = mysql_query('select message, percentage from progress_bar where name = "upgradeCheckGlobal"');
-	$globalProgress = mysql_fetch_assoc($QglobalProgress);
+	$globalProgress = Doctrine_Manager::getInstance()
+		->getCurrentConnection()
+		->fetchAssoc('select message, percentage from progress_bar where name = "upgradeCheckGlobal"');
 	
-	$QprocessProgress = mysql_query('select message, percentage from progress_bar where name = "upgradeCheckProcess"');
-	$processProgress = mysql_fetch_assoc($QprocessProgress);
+	$processProgress = Doctrine_Manager::getInstance()
+		->getCurrentConnection()
+		->fetchAssoc('select message, percentage from progress_bar where name = "upgradeCheckProcess"');
 	
 	EventManager::attachActionResponse(array(
-		'globalMessage' => $globalProgress['message'],
-		'processMessage' => $processProgress['message'],
-		'globalPercent' => $globalProgress['percentage'],
-		'processPercent' => $processProgress['percentage']
+		'globalMessage' => $globalProgress[0]['message'],
+		'processMessage' => $processProgress[0]['message'],
+		'globalPercent' => $globalProgress[0]['percentage'],
+		'processPercent' => $processProgress[0]['percentage']
 	), 'json');
 ?>

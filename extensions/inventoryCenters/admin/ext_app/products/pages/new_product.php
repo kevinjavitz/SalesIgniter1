@@ -22,7 +22,7 @@ class inventoryCenters_admin_products_new_product extends Extension_inventoryCen
 	
 	public function load(){
 		global $appExtension;
-		if ($this->enabled === false) return;
+		if ($this->isEnabled() === false) return;
 		
 		$multiStore = $appExtension->getExtension('multiStore');
 		$this->multiStoreEnabled = ($multiStore !== false && $multiStore->isEnabled() === true);

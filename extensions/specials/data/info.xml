@@ -5,4 +5,5 @@
 	<author>Stephen Walker ( http://www.itwebexperts.com )</author>
 	<tables>Specials</tables>
 	<status_key>EXTENSION_SPECIALS_ENABLED</status_key>
+	<installed_key>EXTENSION_SPECIALS_INSTALLED</installed_key>
 </data>

@@ -28,54 +28,6 @@ $appContent = $App->getAppContentFile();
 			$breadcrumb->add(sysLanguage::get('NAVBAR_TITLE_SEARCH'), itw_app_link(null, 'products', 'search'));
 			break;
 		case 'search_result':
-			// Search enhancement mod start
-			if(isset($_GET['keywords']) && $_GET['keywords'] != ''){
-				if(!isset($_GET['s'])){
-					$pwstr_check = strtolower(substr($_GET['keywords'], strlen($_GET['keywords'])-1, strlen($_GET['keywords'])));
-					if($pwstr_check == 's'){
-						$pwstr_replace = substr($_GET['keywords'], 0, strlen($_GET['keywords'])-1);
-						header('location: ' . itw_app_link('search_in_keywords=1&plural=1&s=1&keywords=' . urlencode($pwstr_replace), 'products', 'search_result'));
-						exit;
-					}
-				}
-
-				$pw_keywords = explode(' ',stripslashes(strtolower($_GET['keywords'])));
-				$pw_replacement_words = $pw_keywords;
-				$pw_boldwords = $pw_keywords;
-				$sql_words = tep_db_query("SELECT * FROM searchword_swap");
-				$pw_replacement = '';
-				$pw_link_text = '';
-				while ($sql_words_result = tep_db_fetch_array($sql_words)) {
-					if(stripslashes(strtolower($_GET['keywords'])) == stripslashes(strtolower($sql_words_result['sws_word']))){
-						$pw_replacement = stripslashes($sql_words_result['sws_replacement']);
-						$pw_link_text = '<b><i>' . stripslashes($sql_words_result['sws_replacement']) . '</i></b>';
-						$pw_phrase = 1;
-						$pw_mispell = 1;
-						break;
-					}
-					for($i=0; $i<sizeof($pw_keywords); $i++){
-						if($pw_keywords[$i]  == stripslashes(strtolower($sql_words_result['sws_word']))){
-							$pw_replacement_words[$i] = stripslashes($sql_words_result['sws_replacement']);
-							$pw_boldwords[$i] = '<b><i>' . stripslashes($sql_words_result['sws_replacement']) . '</i></b>';
-							$pw_mispell = 1;
-							break;
-						}
-					}
-				}
-				if(!isset($pw_phrase)){
-					for($i=0; $i<sizeof($pw_keywords); $i++){
-						$pw_replacement .= $pw_replacement_words[$i] . ' ';
-						$pw_link_text   .= $pw_boldwords[$i]. ' ';
-					}
-				}
-
-				$pw_replacement = trim($pw_replacement);
-				$pw_link_text   = trim($pw_link_text);
-				$pw_string      = '<br><span class="main"><font color="red">' . sysLanguage::get('TEXT_REPLACEMENT_SUGGESTION') . '</font><a href="' . itw_app_link(tep_get_all_get_params(array('keywords')) . 'keywords=' . urlencode($pw_replacement), 'products', 'search_result') . '">' . $pw_link_text . '</a></span><br><br>';
-
-			}
-			// Search enhancement mod end
-
 			$errors = 0;
 
 			$validSearchKeys = array('keywords', 'dfrom', 'dto', 'pfrom', 'pto');

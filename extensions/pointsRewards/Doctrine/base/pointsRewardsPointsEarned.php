@@ -3,13 +3,13 @@ class pointsRewardsPointsEarned extends Doctrine_Record {
 	public function setUp(){
 		parent::setUp();
 		$this->setUpParent();
-		if (sysConfig::exists('EXTENSION_STREAMPRODUCTS_ENABLED')) {
+		if (sysConfig::exists('EXTENSION_STREAMPRODUCTS_ENABLED') == 'True' && sysConfig::exists('EXTENSION_STREAMPRODUCTS_INSTALLED') == 'True') {
 			$this->hasOne('ProductsStreams', array(
 												  'local' => 'streaming_id',
 												  'foreign' => 'stream_id'
 											 ));
 		}
-		if (sysConfig::exists('EXTENSION_DOWNLOADPRODUCTS_ENABLED')) {
+		if (sysConfig::exists('EXTENSION_DOWNLOADPRODUCTS_ENABLED') == 'True' && sysConfig::exists('EXTENSION_DOWNLOADPRODUCTS_INSTALLED') == 'True') {
 			$this->hasOne('ProductsDownloads', array(
 													'local' => 'download_id',
 													'foreign' => 'download_id'
@@ -60,14 +60,14 @@ class pointsRewardsPointsEarned extends Doctrine_Record {
 		                                                            'local' => 'products_id',
 		                                                            'foreign' => 'products_id'
 		                                                       ));
-		if (sysConfig::exists('EXTENSION_STREAMPRODUCTS_ENABLED')) {
+		if (sysConfig::exists('EXTENSION_STREAMPRODUCTS_ENABLED') == 'True' && sysConfig::exists('EXTENSION_STREAMPRODUCTS_INSTALLED') == 'True') {
 			$Streams = Doctrine::getTable('ProductsStreams')->getRecordInstance();
 			$Streams->hasOne('pointsRewardsPointsEarned', array(
 												  'local' => 'stream_id',
 												  'foreign' => 'streaming_id'
 											 ));
 		}
-		if (sysConfig::exists('EXTENSION_DOWNLOADPRODUCTS_ENABLED')) {
+		if (sysConfig::exists('EXTENSION_DOWNLOADPRODUCTS_ENABLED') == 'True' && sysConfig::exists('EXTENSION_DOWNLOADPRODUCTS_INSTALLED') == 'True') {
 			$Downloads = Doctrine::getTable('ProductsDownloads')->getRecordInstance();
 			$Downloads->hasOne('pointsRewardsPointsEarned', array(
 													'local' => 'download_id',

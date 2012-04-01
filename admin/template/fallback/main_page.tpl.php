@@ -1,20 +1,17 @@
 <?php
-if(Session::exists('tplDir') === false){
-	Session::set('tplDir', 'fallback');
-}
 $stylesheetLink = sysConfig::getDirWsCatalog() . 'extensions/templateManager/catalog/globalFiles/stylesheet.php?' .
 	'&env=admin' .
 	'&' . Session::getSessionName() . '=' . Session::getSessionId() .
 	'&tplDir=' . Session::get('tplDir') .
 	'&import=' . implode(',', $App->getStylesheetFiles()) .
-	(isset($stylesheetCache) && $stylesheetCache === false || isset($_GET['noCache']) ? '&noCache' : '');
+	(isset($_GET['noCache']) ? '&noCache' : '');
 
 $javascriptLink = sysConfig::getDirWsCatalog() . 'extensions/templateManager/catalog/globalFiles/javascript.php?' .
 	'&env=admin' .
 	'&' . Session::getSessionName() . '=' . Session::getSessionId() .
 	'&tplDir=' . Session::get('tplDir') .
 	'&import=' . implode(',', $App->getJavascriptFiles()) .
-	(isset($javascriptCache) && $javascriptCache === false || isset($_GET['noCache']) ? '&noCache' : '');
+	(isset($_GET['noCache']) ? '&noCache' : '');
 ?>
 <!DOCTYPE html>
 <html <?php echo sysLanguage::getHtmlParams(); ?>>

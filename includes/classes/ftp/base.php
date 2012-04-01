@@ -104,7 +104,7 @@ class SystemFTP
 		/*
 		 * @TODO: How do i handle users who's home directory is not the one that includes public_html?????
 		 */
-		ftp_chdir($this->ftpConn, 'public_html');
+		ftp_chdir($this->ftpConn, sysConfig::get('SYSTEM_FTP_PATH'));
 
 		/*
 		 * Get to the catalog directory for all relative paths
@@ -148,6 +148,10 @@ class SystemFTP
 
 	public function deleteDir($filePath) {
 		ftp_rmdir($this->ftpConn, $this->cleanPath($filePath));
+	}
+
+	public function getFile($localfilePath, $srcFile) {
+		ftp_get($this->ftpConn, $localfilePath, $this->cleanPath($srcFile), FTP_BINARY);
 	}
 
 	public function deleteFile($filePath) {

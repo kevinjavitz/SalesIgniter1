@@ -20,7 +20,7 @@ class Template {
 		}elseif (file_exists($baseDir . $fileName)){
 			$this->baseDir = $baseDir;
 		}else{
-			$this->baseDir = sysConfig::getDirFsCatalog() . 'templates/fallback/';
+			$this->baseDir = sysConfig::getDirFsCatalog() . 'extensions/templateManager/mainFiles/';
 		}
 		
 		$this->setTemplateFile($fileName);
@@ -105,7 +105,7 @@ class Template {
 		}
 		$contents = ob_get_contents();
 		ob_end_clean();
-		
+
 		return $contents;
 	}
 }

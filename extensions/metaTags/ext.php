@@ -44,7 +44,7 @@ class Extension_metaTags extends ExtensionBase {
 	 */
 	public function init() {
 		global $appExtension;
-		if ($this->enabled === FALSE) return;
+		if ($this->isEnabled() === FALSE) return;
 		if ($appExtension->isCatalog()){
 			if (!isset($this->checkMultiStore)){
 				$multiStore = $appExtension->getExtension('multiStore');

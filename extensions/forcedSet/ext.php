@@ -18,7 +18,7 @@ class Extension_forcedSet extends ExtensionBase {
 	
 	public function init(){
 		global $App, $appExtension, $Template;
-		if ($this->enabled === false) return; 		
+		if ($this->isEnabled() === false) return;
 		/*
 		* Shopping Cart Actions --BEGIN--
 		*/

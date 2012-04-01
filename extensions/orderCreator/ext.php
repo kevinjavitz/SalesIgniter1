@@ -28,14 +28,18 @@ class Extension_orderCreator extends ExtensionBase {
 	
 	public function postSessionInit(){
 		if (Session::exists('OrderCreator')){
-			if (isset($this->removeSession) && $this->removeSession === true){
-				Session::remove('OrderCreator');
+			if (basename($_SERVER['PHP_SELF']) != 'stylesheet.php' && basename($_SERVER['PHP_SELF']) != 'javascript.php'){
+				if (isset($this->removeSession) && $this->removeSession === true){
+					Session::remove('OrderCreator');
+				}
 			}
 		}
 	}
 	
 	public function init(){
 		global $appExtension;
+		if ($this->isEnabled() === false) return;
+
 		EventManager::attachEvents(array(
 			'OrdersGridButtonsBeforeAdd',
 			'EstimatesGridButtonsBeforeAdd',

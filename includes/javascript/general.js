@@ -291,8 +291,8 @@
 })(jQuery);
 
 function urldecode(str){
-    // Decodes URL-encoded string  
-    // 
+    // Decodes URL-encoded string
+    //
     // version: 1004.2314
     // discuss at: http://phpjs.org/functions/urldecode    // +   original by: Philip Peterson
     // +   improved by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
@@ -355,11 +355,11 @@ function parse_str (str, array){
 		fixStr = function (str) {
 			return that.urldecode(str).replace(/([\\"'])/g, '\\$1').replace(/\n/g, '\\n').replace(/\r/g, '\\r');
 		};
-		
+
 	if (!array){
 		array = this.window;
 	}
-	
+
 	for(i = 0; i < array2.length; i++){
 		tmp = array2[i].split(glue1);
 		if (tmp.length < 2){
@@ -542,7 +542,7 @@ function js_app_link(params, connection){
 			link = link + paramsObj.appExt + '/';
 		}
 		link = link + paramsObj.app + '/' + paramsObj.appPage + '.php';
-		
+
 		var linkParams = [];
 		var requireSID = false;
 		$.each(paramsObj, function (k, v){
@@ -550,7 +550,7 @@ function js_app_link(params, connection){
 			if (k == 'rType' && v == 'ajax') requireSID = true;
 			linkParams.push(k + '=' + v);
 		});
-		
+
 		if (linkParams.length > 0){
 			link = link + '?' + linkParams.join('&') + '&' + (requireSID === true ? sessionName + '=' + sessionId : SID);
 		}else{
@@ -621,7 +621,7 @@ function showAjaxLoader($el, size, placement){
             $el.data('ajaxLoader', $ajaxLoader);
         }
 
-	
+
         /*var $curOverlay = $el.data('ajaxOverlay');
         if ($curOverlay.outerWidth() != $el.outerWidth() || $curOverlay.outerHeight() != $el.outerHeight()){
             $curOverlay.css({
@@ -733,7 +733,7 @@ $(document).ready(function (){
 		popupWindow(js_app_link("appExt=infoPages&app=show_page&appPage=insurance_info&dialog=true"),"400","300");
 		return false;
 	});
-	
+
 	$('a[type=button], button').each(function (){
 		var disable = false;
 		if ($(this).hasClass('ui-state-disabled')){
@@ -748,16 +748,16 @@ $(document).ready(function (){
 			}
 		});
 	});
-	
+
 	$('.searchShowMoreLink a').click(function (){
 		$('li', $(this).parent().parent()).show();
 		$(this).parent().remove();
 		return false;
 	});
-	
+
 	$('.phpTraceView').click(function (e){
 		e.preventDefault();
-		
+
 		var traceTable = $(this).parent().parent().find('table.phpTrace');
 		if (traceTable.is(':visible')){
 			traceTable.hide();
@@ -771,7 +771,7 @@ $(document).ready(function (){
 	$('.useKeyboard').keyboard({
 		layout   : 'qwerty'
 	});
-	
+
 	$('[tooltip]').live('mouseover mouseout click', function (e){
 		if (e.type == 'mouseover'){
 			this.Tooltip = showToolTip({

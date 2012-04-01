@@ -18,7 +18,7 @@ class multiStore_admin_bannerManager_banner_groups_new_group extends Extension_m
 	
 	public function load(){
 		global $appExtension;
-		if ($this->enabled === false) return;
+		if ($this->isEnabled() === false) return;
 		$appExtension->registerAsResource(__CLASS__, $this);
 
 		EventManager::attachEvents(array(

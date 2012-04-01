@@ -290,11 +290,11 @@ class OrderPaymentPaypalipn extends StandardPaymentModule
 		$parameters['cbt'] = '';
 		$parameters['rm'] = '2';
 		if ($onePageCheckout->isMembershipCheckout() === false){
-			$parameters['return'] = itw_app_link('action=sessionClean&order_id=' . $parameters['invoice'], 'account', 'default', 'SSL');
+			$parameters['return'] = itw_app_link(null, 'checkout', 'success', 'SSL');
 			$parameters['cancel_return'] = itw_app_link(null, 'checkout', 'default', 'SSL');
 		}
 		else {
-			$parameters['return'] = itw_app_link('action=sessionClean&order_id=' . $parameters['invoice'], 'account', 'default', 'SSL');
+			$parameters['return'] = itw_app_link(null, 'checkout', 'success', 'SSL');
 			$parameters['cancel_return'] = itw_app_link(null, 'checkout', 'default', 'SSL');
 		}
 		$parameters['bn'] = $this->identifier;

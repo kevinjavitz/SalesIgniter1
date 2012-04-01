@@ -13,5 +13,7 @@
 	$GoogleZone->gmaps_polygon = $polygon;
 	$GoogleZone->save();
 	
-	EventManager::attachActionResponse(itw_app_link('zID=' . $GoogleZone->google_zones_id, 'zones', 'default'), 'redirect');
+	EventManager::attachActionResponse(array(
+		'success' => true
+	), 'json');
 ?>

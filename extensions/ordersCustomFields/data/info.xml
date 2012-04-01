@@ -5,4 +5,5 @@
 	<version>1.0</version>
 	<author>Stephen Walker ( http://www.itwebexperts.com )</author>
 	<status_key>EXTENSION_ORDERS_CUSTOM_FIELDS_ENABLED</status_key>
+	<installed_key>EXTENSION_ORDERS_CUSTOM_FIELDS_INSTALLED</installed_key>
 </data>

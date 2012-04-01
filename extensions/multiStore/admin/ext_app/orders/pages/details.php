@@ -17,7 +17,7 @@ class multiStore_admin_orders_details extends Extension_multiStore {
 	}
 	
 	public function load(){
-		if ($this->enabled === false) return;
+		if ($this->isEnabled() === false) return;
 		
 		EventManager::attachEvents(array(
 			'OrderInfoAddBlock'

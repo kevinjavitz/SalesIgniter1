@@ -169,7 +169,7 @@ class htmlElement
 			}
 		}
 		elseif ($val !== false) {
-			if (is_object($val) || substr($val, 0, 1) == '{' || substr($val, 0, 1) == '[') {
+			if (is_object($val) || is_array($val) || substr($val, 0, 1) == '{' || substr($val, 0, 1) == '[') {
 				$Style = new StyleBuilder();
 				$Style->addRule($key, $val);
 				foreach($Style->getArray() as $k => $v){
@@ -402,7 +402,7 @@ class htmlElement
 		if (!empty($this->styles)){
 			$arr = array();
 			foreach($this->styles as $name => $val){
-				if (is_numeric($name)){
+				if ($name == 'custom_css' || is_numeric($name)){
 					$arr[] = $val;
 				}
 				else {
@@ -579,6 +579,7 @@ interface htmlWidgetPlugin
 
 class StyleBuilder {
 	private $definitions = array();
+	private $extDefinitions = array();
 	private $selector = '';
 
 	public function __construct(){
@@ -750,14 +751,7 @@ class StyleBuilder {
 						$this
 					);
 				}elseif ($backgroundType == 'image'){
-					$htmlCode = $Config->background_image;
-					if(sysConfig::getDirWsCatalog() == '/' || (strpos($htmlCode, sysConfig::getDirWsCatalog()) === 0)){
-						$imgPath = $htmlCode;
-					}else{
-						$imgPath = sysConfig::getDirWsCatalog() .$htmlCode;
-					}
-					$imgPath = str_replace('//','/', $imgPath);
-					$bgImage = $imgPath;
+					$bgImage = fixImagesPath($Config->background_image);
 					$this->addRule('background-color', $Config->background_color);
 					$this->addRule('background-image', 'url(' . $bgImage . ')');
 					$this->addRule('background-position', $Config->background_position_x . '% ' . $Config->background_position_y . '%');
@@ -799,14 +793,7 @@ class StyleBuilder {
 					$images = false;
 					if (isset($Settings->imagesBefore)){
 						foreach($Settings->imagesBefore as $bimageInfo){
-							$htmlCode = $bimageInfo->image_source;
-							if(sysConfig::getDirWsCatalog() == '/' || (strpos($htmlCode, sysConfig::getDirWsCatalog()) === 0)){
-								$imgPath = $htmlCode;
-							}else{
-								$imgPath = sysConfig::getDirWsCatalog() .$htmlCode;
-							}
-							$imgPath = str_replace('//','/', $imgPath);
-							$bgImage = $imgPath;
+							$bgImage = fixImagesPath($bimageInfo->image_source);
 
 							$images[] = array(
 								'css_placement' => 'before',
@@ -820,14 +807,7 @@ class StyleBuilder {
 
 					if (isset($Settings->imagesAfter)){
 						foreach($Settings->imagesAfter as $aimageInfo){
-							$htmlCode = $aimageInfo->image_source;
-							if(sysConfig::getDirWsCatalog() == '/' || (strpos($htmlCode, sysConfig::getDirWsCatalog()) === 0)){
-								$imgPath = $htmlCode;
-							}else{
-								$imgPath = sysConfig::getDirWsCatalog() .$htmlCode;
-							}
-							$imgPath = str_replace('//','/', $imgPath);
-							$bgImage = $imgPath;
+							$bgImage = fixImagesPath($aimageInfo->image_source);
 							$images[] = array(
 								'css_placement' => 'after',
 								'image' => $bgImage,
@@ -856,14 +836,7 @@ class StyleBuilder {
 				);
 				break;
 			case 'background_image':
-				$htmlCode = $val->background_image;
-				if(sysConfig::getDirWsCatalog() == '/' || (strpos($htmlCode, sysConfig::getDirWsCatalog()) === 0)){
-					$imgPath = $htmlCode;
-				}else{
-					$imgPath = sysConfig::getDirWsCatalog() .$htmlCode;
-				}
-				$imgPath = str_replace('//','/', $imgPath);
-				$bgImage = $imgPath;
+				$bgImage = fixImagesPath($val->background_image);
 				$this->addRule('background-color', $val->background_color);
 				$this->addRule('background-image', 'url(' . $bgImage . ')');
 				$this->addRule('background-position', $val->background_position_x . '% ' . $val->background_position_y . '%');
@@ -891,14 +864,7 @@ class StyleBuilder {
 				if (isset($val->images)){
 					$images = array();
 					foreach($val->images as $iInfo){
-						$htmlCode = $iInfo->image;
-						if(sysConfig::getDirWsCatalog() == '/' || (strpos($htmlCode, sysConfig::getDirWsCatalog()) === 0)){
-							$imgPath = $htmlCode;
-						}else{
-							$imgPath = sysConfig::getDirWsCatalog() .$htmlCode;
-						}
-						$imgPath = str_replace('//','/', $imgPath);
-						$bgImage = $imgPath;
+						$bgImage = fixImagesPath($iInfo->image);
 						$images[] = array(
 							'css_placement' => $iInfo->css_placement,
 							'image' => $bgImage,
@@ -931,7 +897,60 @@ class StyleBuilder {
 
 				buildBoxShadow($allShadows, $this);
 				break;
+			case 'text_shadow':
+				$allShadows = array();
+				foreach($val as $sInfo){
+					$allShadows[] = array(
+						$sInfo->shadow_offset_x,
+						$sInfo->shadow_offset_y,
+						$sInfo->shadow_blur,
+						$sInfo->shadow_color
+					);
+				}
+
+				buildTextShadow($allShadows, $this);
+				break;
+			case 'link':
+				$keys = array('unvisited', 'visited', 'hover', 'active');
+				foreach($keys as $k){
+					$color = $val->$k->color;
+					$weight = $val->$k->weight;
+					$backgroundColor = $val->$k->background_color;
+					$textDecoration = $val->$k->text_decoration;
+
+					switch($k){
+						case 'unvisited':
+							$this->addExternalRule('a:link', 'color', $color);
+							$this->addExternalRule('a:link', 'font-weight', $weight);
+							$this->addExternalRule('a:link', 'background-color', $backgroundColor);
+							$this->addExternalRule('a:link', 'text-decoration', $textDecoration);
+							break;
+						case 'visited':
+							$this->addExternalRule('a:visited', 'color', $color);
+							$this->addExternalRule('a:visited', 'font-weight', $weight);
+							$this->addExternalRule('a:visited', 'background-color', $backgroundColor);
+							$this->addExternalRule('a:visited', 'text-decoration', $textDecoration);
+							break;
+						case 'hover':
+							$this->addExternalRule('a:hover', 'color', $color);
+							$this->addExternalRule('a:hover', 'font-weight', $weight);
+							$this->addExternalRule('a:hover', 'background-color', $backgroundColor);
+							$this->addExternalRule('a:hover', 'text-decoration', $textDecoration);
+							break;
+						case 'active':
+							$this->addExternalRule('a:active', 'color', $color);
+							$this->addExternalRule('a:active', 'font-weight', $weight);
+							$this->addExternalRule('a:active', 'background-color', $backgroundColor);
+							$this->addExternalRule('a:active', 'text-decoration', $textDecoration);
+							break;
+					}
+				}
+				break;
 		}
+	}
+
+	public function addExternalRule($ruleText, $def, $val){
+		$this->extDefinitions[$this->selector . ' ' . $ruleText][$def] = $val;
 	}
 
 	public function getArray(){
@@ -948,11 +967,21 @@ class StyleBuilder {
 	}
 
 	public function outputCss(){
-		$output = $this->selector . ' { ';
+		$output .= $this->selector . ' { ';
 		foreach($this->definitions as $k => $v){
 			$output .= $k . ': ' . $v . ';';
 		}
 		$output .= ' }' . "\n";
+
+		if (!empty($this->extDefinitions)){
+			foreach($this->extDefinitions as $sel => $rInfo){
+				$output .= $sel . ' { ';
+				foreach($rInfo as $def => $val){
+					$output .= $def . ': ' . $val . ';';
+				}
+				$output .= ' }' . "\n";
+			}
+		}
 		return $output;
 	}
 }

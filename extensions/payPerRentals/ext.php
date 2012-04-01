@@ -17,7 +17,7 @@ class Extension_payPerRentals extends ExtensionBase {
 
 	public function init(){
 		global $App, $appExtension, $typeNames, $inventoryTypes;
-		if ($this->enabled === false)
+		if ($this->isEnabled() === false)
 			return;
 
 		$typeNames['reservation'] = 'Reservation';
@@ -42,6 +42,7 @@ class Extension_payPerRentals extends ExtensionBase {
 			'ShoppingCartFindKey',
 			'UpdateTotalsCheckout',
 			'BeforeShowShippingOrderTotals',
+			'OrderTotalShippingProcess',
 			'CouponsPurchaseTypeRestrictionCheck'
 		), null, $this);
 
@@ -116,6 +117,40 @@ class Extension_payPerRentals extends ExtensionBase {
 									'title'  => isset($quotes[0]['methods'][0]['title'])?$quotes[0]['methods'][0]['title']:'',
 									'cost'   => isset($quotes[0]['methods'][0]['cost'])?$quotes[0]['methods'][0]['cost']:''
 			);
+		}
+	}
+
+	public function OrderTotalShippingProcess(&$totalShippingCost, &$shippingmodulesInfo){
+		global $ShoppingCart;
+		$hasShipping = false;
+		foreach($ShoppingCart->getProducts() as $cartProduct){
+			if ($cartProduct->getPurchaseType() != 'reservation'){
+				continue;
+			}
+
+			$pInfo = $cartProduct->getInfo();
+			$pID = $cartProduct->getIdString();
+			$uniqID = $cartProduct->getUniqID();
+			$reservationInfo = $pInfo['reservationInfo'];
+			if (isset($reservationInfo['shipping']) && $reservationInfo['shipping'] !== false){
+				$shippingInfo = $reservationInfo['shipping'];
+				$Module = OrderShippingModules::getModule($shippingInfo['module'], true);
+
+				if($Module->getType() == 'Order' && sysConfig::get('EXTENSION_PAY_PER_RENTALS_SHOW_SHIPPING') == 'False'){
+					if(sysConfig::get('EXTENSION_PAY_PER_RENTALS_USE_ONE_SHIPPING_METHOD') == 'False'){
+						$totalShippingCost += $shippingInfo['cost'];
+						$hasShipping = true;
+						$shippingmodulesInfo .= 'Shipping('.$shippingInfo['title'].')';
+					}else{
+						$totalShippingCost = $shippingInfo['cost'] - 1;
+						$hasShipping = true;
+						$shippingmodulesInfo = 'Shipping('.$shippingInfo['title'].')';
+					}
+				}
+			}
+		}
+		if($hasShipping){
+			$totalShippingCost += 1;
 		}
 	}
 	

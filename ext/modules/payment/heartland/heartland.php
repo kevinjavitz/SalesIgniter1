@@ -81,7 +81,7 @@
 		}
 	}
 
-    tep_redirect(itw_app_link('action=sessionClean&order_id='.$orderID, 'account', 'default', 'SSL'));
+    tep_redirect(itw_app_link(null, 'checkout', 'success', 'SSL'));
     require('includes/application_bottom.php');
 //}
 

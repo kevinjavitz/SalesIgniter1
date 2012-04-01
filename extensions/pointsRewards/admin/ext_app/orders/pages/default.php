@@ -4,7 +4,7 @@
 			parent::__construct();
 		}
 		public function load(){
-			if ($this->enabled === false) return;
+			if ($this->isEnabled() === false) return;
 
 			$pointsRewardsPointsEarnedOrders = Doctrine_Query::create()
 					->select('orders_id')

@@ -2,7 +2,16 @@
 	<title>Orders Products Notes</title>
 	<key>ordersProductsNotes</key>
 	<description>Configuration Settings For The Orders Products Notes Extension</description>
-	<Configuration>
+	<tabs>
+	<general>
+	<title>General</title>
+	<description>General Extension Settings</description>
+	<configurations>
+		<EXTENSION_ORDERS_PRODUCTS_NOTES_INSTALLED editable="false">
+			<title>Installation Status</title>
+			<value>False</value>
+			<description></description>
+		</EXTENSION_ORDERS_PRODUCTS_NOTES_INSTALLED>
 		<EXTENSION_ORDERS_PRODUCTS_NOTES_ENABLED>
 			<title>Enable Orders Products Notes</title>
 			<value>True</value>
@@ -10,5 +19,7 @@
 			<sort_order>1</sort_order>
 			<set_function>tep_cfg_select_option(array('True','False'),</set_function>
 		</EXTENSION_ORDERS_PRODUCTS_NOTES_ENABLED>
-	</Configuration>
+	</configurations>
+	</general>
+	</tabs>
 </ConfigurationGroup>

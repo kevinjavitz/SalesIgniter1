@@ -3,7 +3,7 @@
 	$passWord = (isset($_POST['password']) ? $_POST['password'] : '');
 	if ($userAccount->processLogIn($emailAddress, $passWord) === true){
 
-		if (isset($navigation->snapshot['get']) && sizeof($navigation->snapshot['get']) > 0) {
+		/*if (isset($navigation->snapshot['get']) && sizeof($navigation->snapshot['get']) > 0) {
 			if(is_array($navigation->snapshot['get'])){
 				$paramsArr = $navigation->snapshot['get'];
 				if(isset($navigation->snapshot['get']['app'])){
@@ -21,7 +21,9 @@
 				}
 				$paramVar = '';
 				foreach($navigation->snapshot['get'] as $key => $param){
-					$paramVar .= $key. '='. $param . '&';
+					if($key != 'rType' && $key != 'action'){
+						$paramVar .= $key. '='. $param . '&';
+					}
 				}
 
 			}else{
@@ -49,9 +51,9 @@
 			//$origin_href = tep_href_link($navigation->snapshot['page'], tep_array_to_string($navigation->snapshot['get'], array(Session::getSessionName())), $navigation->snapshot['mode']);
 			$navigation->clear_snapshot();
 			$redirectUrl = $origin_href;
-		} else {
+		} else { */
 			$redirectUrl = itw_app_link(null, 'account', 'default', 'SSL');
-		}
+		//}
 	}
 	
 	if (!isset($redirectUrl)){

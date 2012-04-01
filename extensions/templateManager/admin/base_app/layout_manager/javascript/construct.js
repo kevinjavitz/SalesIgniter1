@@ -5,17 +5,10 @@ var wrapperEl = '<div class="container wrapper"></div>';
 var containerEl = '<div class="container"></div>';
 var columnEl = '<div class="column"></div>';
 var listEl = '<ul class="sortableList"></ul>';
-var widgetEl = '<li class="widget">' +
-	'<div class="iconHolder">' +
-	'<span class="ui-icon ui-icon-comment showWidgetData" tooltip="Show Element Data"></span>' +
-	'<span class="ui-icon ui-icon-link" tooltip="Create Linked Widget"></span>' +
-	'<span class="ui-icon ui-icon-pencil" tooltip="Edit Widget"></span>' +
-	'<span class="ui-icon ui-icon-trash" tooltip="Delete Widget"></span>' +
-	'</div>' +
-	'<span class="widgetName"></span>' +
-	'</li>';
-var selectedClass = 'ui-state-active';
-var hoverClass = 'ui-state-hover';
+var widgetEl = '<li class="widget"><span class="widgetName"></span></li>';
+var selectedClass = 'state-active';
+var hoverClass = 'state-hover';
+var highlightClass = 'state-highlight';
 var selectedOpacity = 1;
 var unselectedOpacity = .8;
 var Designer;
@@ -28,7 +21,9 @@ function getParams(addParams) {
 	getVars.push('appExt=templateManager');
 	getVars.push('app=layout_manager');
 	getVars.push('appPage=editLayout');
+	getVars.push('templateName=' + templateName);
 	getVars.push('rType=ajax');
+	getVars.push('showErrors=true');
 
 	if (addParams){
 		$.each(addParams, function () {
@@ -69,6 +64,8 @@ function addWidget(draggable, ul) {
 	$listItem.attr('tmid', new Date().getTime());
 	$listItem.data('widget_code', widgetCode);
 	$listItem.data('widget_settings', {});
+	$listItem.data('styles', {});
+	$listItem.data('inputs', {});
 	$listItem.find('.widgetName').html(widgetCode);
 	$listItem.appendTo(ul);
 
@@ -78,6 +75,7 @@ function addWidget(draggable, ul) {
 function editWidget(li) {
 	var widgetEl = $(li);
 	var ajaxLoaderEl = widgetEl.parent().parent();
+	var isLinkedWidget = (widgetEl.parentsUntil('#construct').last().data('link_id') > 0);
 
 	$.ajax({
 		cache: false,
@@ -105,12 +103,16 @@ function editWidget(li) {
 
 					$(self).find('.saveButton').click(function () {
 						var buttonEl = $(this);
+						var urlParams = ['widgetCode=' + widgetEl.data('widget_code')];
+						if (isLinkedWidget === true){
+							urlParams.push('widgetId=' + widgetEl.data('widget_id'));
+							urlParams.push('action=saveLinkedContainerWidget');
+						}else{
+							urlParams.push('action=saveInfobox');
+						}
 						$.ajax({
 							cache: false,
-							url: js_app_link(getParams([
-								'action=saveInfobox',
-								'widgetCode=' + widgetEl.data('widget_code')
-							])),
+							url: js_app_link(getParams(urlParams)),
 							dataType: 'json',
 							data: $('.editWindow').find('input, textarea, select').serialize(),
 							type: 'post',
@@ -123,10 +125,14 @@ function editWidget(li) {
 							success: function (data) {
 								widgetEl.data('widget_settings', data.widgetSettings);
 								if (data.widgetPreview && data.widgetPreview !== false){
-									widgetEl.find('.widget_name').html(data.widgetPreview);
+									widgetEl.find('.widgetName').html(data.widgetPreview);
 								}
 								hideWidgetEditWindow.apply(self);
-								showSaveLayout();
+								if (isLinkedWidget === false){
+									showSaveLayout();
+								}else{
+									liveMessage('Linked Container Widget Has Been Saved')
+								}
 							}
 						});
 					});
@@ -154,7 +160,7 @@ function runLayoutAction(action) {
 	if (rType == 'post'){
 		var postVars = [];
 		postVars.push($('#templatePages *').serialize());
-		postVars.push('templateData=' + encodeURIComponent(getMarkup()));
+		postVars.push('templateData=' + escape(getMarkup()));//encodeURIComponent
 	}
 
 	showAjaxLoader($Column, 'xlarge');
@@ -166,7 +172,7 @@ function runLayoutAction(action) {
 		data: (rType == 'post' ? postVars.join('&') : null),
 		success: function (data) {
 			removeAjaxLoader($Column);
-			if (action == 'save'){
+			if (action == 'save' && data.success == true){
 				$.each(data.newElementInfo, function (type, tInfo){
 					$.each(tInfo, function (tmId, elId){
 						if (type == 'containers'){
@@ -179,6 +185,10 @@ function runLayoutAction(action) {
 					});
 				});
 				hideSaveLayout();
+			}else{
+				if(data.success == false){
+					alert('Magic Quotes must be set to Off on your server');
+				}
 			}
 		}
 	});
@@ -191,8 +201,6 @@ function containerAdd() {
 	var sortOrder = 1;
 	$('#construct > div').each(function (){
 		$(this).attr('data-sort_order', sortOrder);
-		$(this).attr('data-anchor_id', '0');
-		$(this).attr('data-is_anchor', '0');
 		sortOrder++;
 	});
 
@@ -213,6 +221,9 @@ function columnAdd() {
 	}
 
 	var $parentContainer = $('.container.' + selectedClass).not('.wrapper');
+	if ($parentContainer.parentsUntil('#construct').last().data('link_id')){
+		return false;
+	}
 
 	var newColumnList = $(listEl);
 	var $newColumn = $(columnEl).append(newColumnList);
@@ -220,8 +231,46 @@ function columnAdd() {
 	var sortOrder = 1;
 	$parentContainer.find('.column').each(function (){
 		$(this).attr('data-sort_order', sortOrder);
-		$(this).attr('data-anchor_id', '0');
-		$(this).attr('data-is_anchor', '0');
+		sortOrder++;
+	});
+
+	$parentContainer.append($newColumn);
+
+	setupColumn($newColumn);
+	$newColumn.trigger('click');
+
+	showSaveLayout();
+
+	return false;
+}
+
+function subColumnAdd(){
+	// if no selected container, just cancel
+	if (!$(this).data('current_column')){
+		return false;
+	}
+
+	var $parentContainer = $($(this).data('current_column'));
+	if ($parentContainer.parentsUntil('#construct').last().data('link_id')){
+		return false;
+	}
+
+	if ($parentContainer.find('.ui-sortable li').size() > 0){
+		var response = confirm('Adding a column will remove all widgets currently in the column, are you sure?');
+		if (!response){
+			return false;
+		}
+	}
+
+	$parentContainer.children('.ui-sortable:first').sortable('destroy').remove();
+	$parentContainer.droppable('disable');
+
+	var newColumnList = $(listEl);
+	var $newColumn = $(columnEl).append(newColumnList);
+	$newColumn.attr('tmid', new Date().getTime());
+	var sortOrder = 1;
+	$parentContainer.children('.column:first').each(function (){
+		$(this).attr('data-sort_order', sortOrder);
 		sortOrder++;
 	});
 
@@ -253,37 +302,39 @@ function deleteElement(el, withChildren) {
 				$el.parent().append($el.html());
 			}
 		}
+		$el.next('.container').trigger('click');
 		$el.remove();
 		showSaveLayout();
 	}
-	else {
-		if ($el.hasClass('container')){
-			if ($el.next().is('hr')){
-				$el.next().remove();
-			}
-
-			$el.next('.container').trigger('click');
-			$el.remove();
-
-			if ($('.container.' + selectedClass).size() < 1){
-				// we deleted the last container, so now select the "new" last container
-				$('.container:last').trigger('click');
-			}
-			showSaveLayout();
+	else if ($el.hasClass('container')){
+		if ($el.next().is('hr')){
+			$el.next().remove();
 		}
-		else {
-			if ($el.hasClass('column')){
-				// remove the selected column from the DOM and select the next one
-				$el.next('.column').trigger('click');
-				$el.remove();
 
-				if ($('.container.' + selectedClass + ' .column.' + selectedClass).size() < 1){
-					// we deleted the last column, so now select the "new" last column and make it the last one
-					$('.container.' + selectedClass + ' .column:last').trigger('click');
-				}
-				showSaveLayout();
-			}
+		$el.next('.container').trigger('click');
+		$el.remove();
+
+		if ($('.container.' + selectedClass).size() < 1){
+			// we deleted the last container, so now select the "new" last container
+			$('.container:last').trigger('click');
 		}
+		showSaveLayout();
+	}
+	else if ($el.hasClass('column')){
+		// remove the selected column from the DOM and select the next one
+		$el.next('.column').trigger('click');
+		$el.remove();
+
+		if ($('.container.' + selectedClass + ' .column.' + selectedClass).size() < 1){
+			// we deleted the last column, so now select the "new" last column and make it the last one
+			$('.container.' + selectedClass + ' .column:last').trigger('click');
+		}
+		showSaveLayout();
+	}
+	else if ($el.hasClass('widget')){
+		$el.remove();
+		updateBreadcrumb();
+		showSaveLayout();
 	}
 }
 
@@ -291,19 +342,22 @@ function setupContainer($container, isWrapper) {
 	isWrapper = isWrapper || false;
 
 	if (isWrapper === false){
-		$container.droppable({
-			accept: function (el) {
-				if ($(el).hasClass('column')){
-					return true;
+		if ($container.data('link_id') || $container.parentsUntil('#construct').last().data('link_id')){
+		}else{
+			$container.droppable({
+				accept: function (el) {
+					if ($(el).hasClass('column')){
+						return true;
+					}
+					return false;
+				},
+				hoverClass: highlightClass,
+				drop: function (e, ui) {
+					$(this).append(ui.draggable);
+					showSaveLayout();
 				}
-				return false;
-			},
-			hoverClass: 'ui-state-highlight',
-			drop: function (e, ui) {
-				$(this).append(ui.draggable);
-				showSaveLayout();
-			}
-		});
+			});
+		}
 	}
 
 	if (!$container.data('styles')){
@@ -337,45 +391,50 @@ function setupContainer($container, isWrapper) {
 }
 
 function setupColumn($column) {
-	$column.droppable({
-		accept: function (el) {
-			if ($(el).hasClass('draggableField') && !$(el).hasClass('notInstalled')){
-				return true;
+	if ($column.parentsUntil('#construct').last().data('link_id')){
+		$('ul', $column).sortable({
+			disabled: true
+		});
+	}else{
+		if ($column.parent().hasClass('ui-droppable') && $column.parent().hasClass('column')){
+			$column.parent().droppable('disable');
+		}
+		$column.droppable({
+			accept: function (el) {
+				if ($(el).hasClass('draggableField')){
+					return true;
+				}
+				return false;
+			},
+			hoverClass: highlightClass,
+			drop: function (e, ui) {
+				if ($(ui.draggable).hasClass('draggableField')){
+					addWidget(ui.draggable, $(this).children('.ui-sortable'));
+				}
+				showSaveLayout();
 			}
-			return false;
-		},
-		hoverClass: 'ui-state-highlight',
-		drop: function (e, ui) {
-			addWidget(ui.draggable, $column.find('.ui-sortable'));
-			showSaveLayout();
-		}
-	});
+		});
 
-	$column.draggable({
-		helper: 'clone',
-		revert: 'invalid',
-		containment: $('#construct')
-	});
-
-	$('ul', $column).sortable({
-		helper: 'clone',
-		containment: $('#construct'),
-		connectWith: '.ui-sortable',
-		forceHelperSize: true,
-		forcePlaceholderSize: true,
-		tolerance: 'pointer',
-		placeholder: 'ui-state-highlight',
-		cursor: 'move',
-		items: 'li',
-		opacity: .5,
-		revert: true,
-		update: function () {
-			showSaveLayout();
-		},
-		recieve: function (e, ui) {
-			alert('CHECKING');
-		}
-	});
+		$('ul', $column).sortable({
+			helper: 'clone',
+			containment: $('#construct'),
+			connectWith: '.ui-sortable',
+			forceHelperSize: true,
+			forcePlaceholderSize: true,
+			tolerance: 'pointer',
+			placeholder: highlightClass,
+			cursor: 'move',
+			items: 'li',
+			opacity: .5,
+			revert: true,
+			update: function (e, ui) {
+				showSaveLayout();
+			},
+			recieve: function (e, ui) {
+				alert('CHECKING');
+			}
+		});
+	}
 
 	if (!$column.data('styles')){
 		$column.data('styles', { });
@@ -397,6 +456,13 @@ function setupColumn($column) {
 	});
 
 	$column.find('.widget').each(function (){
+		if (!$(this).data('styles')){
+			$(this).data('styles', { });
+		}
+
+		if (!$(this).data('inputs')){
+			$(this).data('inputs', { });
+		}
 		//$(this).removeAttr('data-widget_id');
 		//$(this).removeAttr('data-widget_code');
 		//$(this).removeAttr('data-widget_settings');
@@ -404,98 +470,6 @@ function setupColumn($column) {
 	});
 
 	//$column.disableSelection();
-}
-
-function setupWidgetInstaller() {
-	$('.dropToInstall').droppable({
-		accept: function (el) {
-			if ($(el).hasClass('draggableField') && $(el).hasClass('notInstalled')){
-				return true;
-			}
-			return false;
-		},
-		hoverClass: 'ui-state-highlight',
-		drop: function (e, ui) {
-			var $this = $(this);
-			var boxCode = $(ui.draggable).attr('id');
-
-			var getVars = [];
-			getVars.push('module=' + boxCode);
-
-			if ($(ui.draggable).attr('extName')){
-				var extName = $(ui.draggable).attr('extName');
-				getVars.push('extName=' + extName);
-			}
-
-			$.ajax({
-				cache: false,
-				url: js_app_link('rType=ajax&app=modules&appPage=infoboxes&action=install&' + getVars.join('&')),
-				dataType: 'json',
-				beforeSend: function () {
-					showAjaxLoader($this, 'xlarge');
-				},
-				complete: function () {
-					removeAjaxLoader($this);
-				},
-				success: function (data) {
-					$(ui.draggable).removeClass('notInstalled').addClass('installed');
-					var lastDraggable = $this.find('.draggableField').last();
-					if (lastDraggable.size() <= 0){
-						$(ui.draggable).insertBefore($this.find('.ui-helper-clearfix').last());
-					}
-					else {
-						$(ui.draggable).insertAfter(lastDraggable);
-					}
-				}
-			});
-		}
-	});
-
-	$('.dropToUninstall').droppable({
-		accept: function (el) {
-			if ($(el).hasClass('draggableField') && $(el).hasClass('installed')){
-				return true;
-			}
-			return false;
-		},
-		hoverClass: 'ui-state-highlight',
-		drop: function (e, ui) {
-			var $this = $(this);
-			var boxCode = $(ui.draggable).attr('id');
-
-			var getVars = [];
-			getVars.push('module=' + boxCode);
-
-			if ($(ui.draggable).attr('extName')){
-				var extName = $(ui.draggable).attr('extName');
-				getVars.push('extName=' + extName);
-			}
-
-			$.ajax({
-				cache: false,
-				url: js_app_link('rType=ajax&app=modules&appPage=infoboxes&action=remove&' + getVars.join('&')),
-				dataType: 'json',
-				beforeSend: function () {
-					showAjaxLoader($this, 'xlarge');
-				},
-				complete: function () {
-					hideAjaxLoader($this);
-				},
-				success: function (data) {
-					$(ui.draggable).removeClass('installed').addClass('notInstalled');
-					var lastDraggable = $this.find('.draggableField').last();
-					if (lastDraggable.size() <= 0){
-						$(ui.draggable).insertBefore($this.find('.ui-helper-clearfix').last());
-					}
-					else {
-						$(ui.draggable).insertAfter(lastDraggable);
-					}
-
-					$('#templateSwitcher').trigger('change');
-				}
-			});
-		}
-	});
 }
 
 function setupDraggableFields() {
@@ -560,8 +534,16 @@ function updateBackgroundImage() {
 }
 
 function updateBreadcrumb() {
-	var $bodyIcons = $('<span></span>').addClass('iconBlock')
-		.append('<span class="ui-icon ui-icon-pencil editElement" tooltip="Edit Element"></span>');
+	if ($('#construct').find('.' + selectedClass).first().data('link_id')){
+		$('#construct-link').addClass('ui-state-disabled');
+	}else{
+		$('#construct-link').removeClass('ui-state-disabled');
+	}
+	var isLinkElement = ($('#construct').find('.' + selectedClass).first().data('link_id') ? true : false);
+
+	var $bodyIcons = $('<span></span>').addClass('iconBlock');
+	$bodyIcons.append('<span class="ui-icon ui-icon-pencil editElement" tooltip="Edit Element"></span>');
+
 	$('.containerBreadcrumb').empty().append('<b>Body</b>').append($bodyIcons);
 	var El = $('#construct');
 	$bodyIcons.find('.ui-icon').each(function () {
@@ -570,45 +552,77 @@ function updateBreadcrumb() {
 
 	$('#construct').find('.' + selectedClass).each(function () {
 		var $icons = $('<span></span>').addClass('iconBlock');
+
 		if ($(this).hasClass('column')){
 			$icons.append('<span class="ui-icon ui-icon-comment showColumnData" tooltip="Show Element Data"></span>');
+		}else if ($(this).hasClass('widget')){
+			$icons.append('<span class="ui-icon ui-icon-comment showWidgetContainerData" tooltip="Show Element Data"></span>');
+			$icons.append('<span class="ui-icon ui-icon-wrench configureWidget" tooltip="Configure Widget"></span>');
+			if (isLinkElement === false){
+				$icons.append('<span class="ui-icon ui-icon-link linkWidget" tooltip="Create Linked Widget"></span>');
+			}
 		}else{
 			$icons.append('<span class="ui-icon ui-icon-comment showContainerData" tooltip="Show Element Data"></span>');
 		}
 
 		if ($(this).hasClass('wrapper')){
-			$icons
-				.append('<span class="ui-icon ui-icon-arrowreturnthick-1-w removeWrapper" tooltip="Remove Wrapper Element"></span>');
+			if (isLinkElement === false){
+				$icons
+					.append('<span class="ui-icon ui-icon-arrowreturnthick-1-w removeWrapper" tooltip="Remove Wrapper Element"></span>');
+			}
 		}
 		else {
-			if (!$(this).hasClass('column')){
-				$icons.append('<span class="ui-icon ui-icon-newwin wrapElement" tooltip="Wrap Element"></span>');
+			if (!$(this).hasClass('column') && !$(this).hasClass('widget')){
+				if (isLinkElement === false){
+					$icons.append('<span class="ui-icon ui-icon-newwin wrapElement" tooltip="Wrap Element"></span>');
+				}
 				$icons
 					.append('<span class="ui-icon ui-icon-arrowthick-1-n moveContainerUp" tooltip="Move Container And Wrappers Up"></span>');
 				$icons
 					.append('<span class="ui-icon ui-icon-arrowthick-1-s moveContainerDown" tooltip="Move Container And Wrappers Down"></span>');
 			}
 		}
-		$icons.append('<span class="ui-icon ui-icon-pencil editElement" tooltip="Edit Element"></span>');
-		$icons
-			.append('<span class="ui-icon ui-icon-closethick deleteElement" tooltip="Delete Element And Children"></span>');
+		if (isLinkElement === false){
+			$icons.append('<span class="ui-icon ui-icon-pencil editElement" tooltip="Edit Styles"></span>');
+			$icons
+				.append('<span class="ui-icon ui-icon-closethick deleteElement" tooltip="Delete Element And Children"></span>');
+		}
+		else if (isLinkElement === true && $(this).parent().attr('id') == 'construct'){
+			$icons
+				.append('<span class="ui-icon ui-icon-closethick deleteElement" tooltip="Delete Element And Children"></span>');
+		}
+
 
 		$('.containerBreadcrumb').append(' &raquo; ');
+		var typeText = '';
 		if ($(this).hasClass('wrapper')){
-			$('.containerBreadcrumb').append('Wrapper');
-		}else
-		if ($(this).hasClass('container')){
-			$('.containerBreadcrumb').append('Container');
+			typeText = 'Wrapper';
+		}else if ($(this).hasClass('container')){
+			typeText = 'Container';
+		}else if ($(this).hasClass('column')){
+			typeText = 'Column';
+		}else if ($(this).hasClass('widget')){
+			typeText = 'Widget';
 		}
-		else {
-			$('.containerBreadcrumb').append('Column');
+
+		var El = $(this);
+		var typeLink = $('<a href="Javascript:void(0)"></a>')
+			.html(typeText)
+			.data('element', El)
+			.click(function (){
+				$(this).data('element').trigger('click');
+			});
+		$('.containerBreadcrumb').append(typeLink);
+
+		if ($(this).hasClass('widget')){
+			$('.containerBreadcrumb').append(' ( ' + $(this).data('widget_code') + ' )');
 		}
+
 		if ($(this).attr('id')){
 			$('.containerBreadcrumb').append(' ( <small>' + $(this).attr('id') + '</small> ) ');
 		}
 		$('.containerBreadcrumb').append($icons);
 
-		var El = $(this);
 		$icons.find('.ui-icon').each(function () {
 			$(this).data('element', El);
 		});
@@ -659,6 +673,7 @@ function unloadMessage() {
 $(document).ready(function() {
 	$('#construct-addContainer').click(containerAdd);
 	$('#construct-addColumn').click(columnAdd);
+	$('#construct-addSubColumn').click(subColumnAdd);
 
 	$('#construct-widgets').click(function() {
 		if ($('#widgetsForm').css('display') != 'none'){
@@ -679,15 +694,7 @@ $(document).ready(function() {
 		}
 	});
 
-	$('#saveLayoutT').click(function() {
-		if($('#construct').html() == ''){
-			if (confirm("Do you really want to save the template. It has no data in it")) {
-				runLayoutAction('save');
-			}
-		}else{
-			runLayoutAction('save');
-		}
-	});
+	$('#saveLayoutT').click(function() { runLayoutAction('save'); });
 	$('#noSaveLayout').click(function () { hideSaveLayout(); });
 
 	/* column and container properties */
@@ -695,83 +702,65 @@ $(document).ready(function() {
 
 	/*end here*/
 
-	// add "onclick" event to select by click
-	$('.column').live('click mouseover mouseout', function(e) {
-		if ($(this).hasClass(selectedClass)) return false;
-
-		if (e.type == 'mouseover'){
+	/**
+	 * Used to reset variables that are required due to event bubbling
+	 */
+	var selectedCleared = false;
+	var isFirstClick = true;
+	$('#construct').click(function (){
+		selectedCleared = false;
+		isFirstClick = true;
+	});
+	$('#construct').on({
+		mouseover: function (e){
+			if (($(this).hasClass('widget') || $(this).hasClass('column')) && !$(this).parentsUntil('#construct').last().data('link_id')){
+				this.style.cursor = 'move';
+			}
 			$(this).addClass(hoverClass);
-		}else if (e.type == 'mouseout'){
+		},
+		mouseout: function (e){
+			if (($(this).hasClass('widget') || $(this).hasClass('column')) && !$(this).parentsUntil('#construct').last().data('link_id')){
+				this.style.cursor = 'default';
+			}
 			$(this).removeClass(hoverClass);
-		}else{
-			$('.column.' + selectedClass).fadeTo(0, unselectedOpacity).removeClass(selectedClass);
+		},
+		click: function (e){
+			if (selectedCleared === false){
+				$('.container.' + selectedClass).fadeTo(0, unselectedOpacity).removeClass(selectedClass);
+				$('.column.' + selectedClass).fadeTo(0, unselectedOpacity).removeClass(selectedClass);
+				$('.widget.' + selectedClass).removeClass(selectedClass);
+				selectedCleared = true;
+			}
 
 			if ($('.adjustPopup').size() > 0){
 				$('.adjustPopup').find('.closeAdjustPopup').trigger('click');
 			}
-			$(this).removeClass(selectedClass).addClass(selectedClass).fadeTo(0, selectedOpacity);
 
-			$(this).parent().trigger('click');
-		}
-		return false;
-	});
+			$(this).removeClass(hoverClass).addClass(selectedClass).fadeTo(0, selectedOpacity);
 
-	$('.container').live('click mouseover mouseout', function(e) {
-		if ($(this).hasClass(selectedClass) && e.type != 'click') return false;
-
-		if (e.type == 'mouseover'){
-			$(this).addClass(hoverClass);
-		}else if (e.type == 'mouseout'){
-			$(this).removeClass(hoverClass);
-		}else{
-			if (!$(this).hasClass(selectedClass)){
-				$('.container.' + selectedClass).fadeTo(0, unselectedOpacity).removeClass(selectedClass);
-
-				if ($('.adjustPopup').size() > 0){
-					$('.adjustPopup').find('.closeAdjustPopup').trigger('click');
-				}
-				$(this).removeClass(hoverClass).addClass(selectedClass).fadeTo(0, selectedOpacity);
-				$(this).parentsUntil('#construct').addClass(selectedClass).fadeTo(0, selectedOpacity);
-				if ($(this).hasClass('wrapper')){
-					$(this).find('.container').addClass(selectedClass).fadeTo(0, selectedOpacity);
-				}
-
-				if ($(this).find('.column').size() <= 0){
-					$('.column.' + selectedClass).removeClass(selectedClass);
-				}
-				else {
-					if ($(this).find('.column.' + selectedClass).size() <= 0){
-						$(this).find('.column').first().trigger('click');
-					}
-				}
+			if (isFirstClick === true && $(this).hasClass('column')){
+				$('#construct-addSubColumn').data('current_column', this);
+				isFirstClick = false;
 			}
 			updateBreadcrumb();
 		}
-		return false;
-	});
+	}, '.container, .column, li.widget');
 
-	$('.ui-icon-pencil').live('click', function (e) {
-		e.preventDefault();
+	$('.configureWidget').live('click', function (e) {
 		if (!$(this).hasClass('editElement')){
-			editWidget($(this).parent().parent());
+			editWidget($(this).data('element'));
 		}
 	});
 
-	$('.ui-icon-link').live('click', function (e) {
+	$('.linkWidget').live('click', function (e) {
 		e.preventDefault();
-		var newWidget = $(this).parent().parent().clone(true);
-		newWidget.insertAfter($(this).parent().parent());
+		var newWidget = $(this).data('element').clone(true);
+		newWidget.insertAfter($(this).data('element'));
 		newWidget.data('widget_settings', { "linked_to": newWidget.data('widget_id') });
 		newWidget.attr('data-widget_settings', JSON.stringify({ "linked_to": newWidget.data('widget_id') }));
 		newWidget.removeAttr('data-widget_id');
 		newWidget.data('widget_id', '');
 		newWidget.find('.ui-icon-link').remove();
-		showSaveLayout();
-	});
-
-	$('.ui-icon-trash').live('click', function (e) {
-		e.preventDefault();
-		$(this).parent().parent().remove();
 		showSaveLayout();
 	});
 
@@ -812,33 +801,36 @@ $(document).ready(function() {
 			'<b><u>Inputs</u></b> :: ' + JSON.stringify(El.data('inputs'), null, '\t') + '<br>' +
 			'</pre>')
 			.dialog({
-			            height: 500,
-			            width: 600
-			        });
+				height: 500,
+				width: 600
+			});
 	});
 
-	$('li.widget').live('mouseover mouseout', function (e) {
-		switch(e.type){
-			case 'mouseover':
-				this.style.cursor = 'move';
-				$(this).addClass('ui-state-highlight');
-				break;
-			case 'mouseout':
-				this.style.cursor = 'default';
-				$(this).removeClass('ui-state-highlight');
-				break;
-		}
+	$('.showWidgetContainerData').live('click', function (){
+		var El = $(this).data('element');
+
+		$('<div title="Widget Data"></div>').html('<pre>' +
+			'<b><u>Widget Id</u></b> :: ' + El.data('widget_id') + '<br>' +
+			'<b><u>Sort Order</u></b> :: ' + El.data('sort_order') + '<br>' +
+			'<b><u>Widget Settings</u></b> :: ' + JSON.stringify(El.data('widget_settings'), null, '\t') + '<br>' +
+			'<b><u>Styles</u></b> :: ' + JSON.stringify(El.data('styles'), null, '\t') + '<br>' +
+			'<b><u>Inputs</u></b> :: ' + JSON.stringify(El.data('inputs'), null, '\t') + '<br>' +
+			'</pre>')
+			.dialog({
+				height: 500,
+				width: 600
+			});
 	});
 
 	$('.draggableField').live('mouseover mouseout', function (e) {
 		switch(e.type){
 			case 'mouseover':
 				this.style.cursor = 'move';
-				$(this).addClass('ui-state-highlight');
+				$(this).addClass(highlightClass);
 				break;
 			case 'mouseout':
 				this.style.cursor = 'default';
-				$(this).removeClass('ui-state-highlight');
+				$(this).removeClass(highlightClass);
 				break;
 		}
 	});
@@ -862,6 +854,13 @@ $(document).ready(function() {
 
 	$('.deleteElement').live('click', function () {
 		if ($(this).data('element').hasClass('wrapper')){
+			if ($(this).data('element').data('link_id') != ''){
+				deleteElement($(this).data('element'), true);
+			}else{
+				deleteElement($(this).data('element'), false);
+			}
+		}
+		else if ($(this).data('element').hasClass('widget')){
 			deleteElement($(this).data('element'), false);
 		}
 		else {
@@ -887,18 +886,6 @@ $(document).ready(function() {
 			Container.attr('data-sort_order', newContainerSort);
 			showSaveLayout();
 		}
-	});
-
-	$('.isAnchor').live('change', function(){
-			var Container = $('.adjustPopup').data('targetElement');//$(this);
-			Container.attr('data-is_anchor', $('.isAnchor option:selected').val());
-
-	});
-
-	$('.anchorID').live('change', function(){
-		var Container = $('.adjustPopup').data('targetElement');//$(this);
-		Container.attr('data-anchor_id', $('.anchorID option:selected').val());
-
 	});
 
 	$('.moveContainerDown').live('click', function (e) {
@@ -942,7 +929,6 @@ $(document).ready(function() {
 	});
 
 	setupDraggableFields();
-	setupWidgetInstaller();
 	$('.container.' + selectedClass).first().trigger('click');
 
 	$('#construct-borders').click(function (e){
@@ -974,55 +960,248 @@ $(document).ready(function() {
 		showAjaxLoader(inputField, 'small');
 		$.ajax({
 			cache: false,
-			url: js_app_link('appExt=templateManager&app=layout_manager&appPage=default&action=translateText&from=' + $(this).attr('data-from') + '&to=' + $(this).attr('data-to') + '&string=' + inputField.val()),
-			dataType: 'html',
-			success: function (html){
-				inputField.val(html);
+			url: js_app_link('app=languages&appPage=default&action=translateText'),
+			dataType: 'json',
+			type: 'post',
+			data: 'fromLang=' + $(this).attr('data-from') + '&toLang=' + $(this).attr('data-to') + '&text=' + inputField.val(),
+			success: function (data){
+				inputField.val(data.translated[0]);
 				removeAjaxLoader(inputField);
 			}
 		});
 	});
+
+	$('#construct-link').click(function (e){
+		e.preventDefault();
+		if ($(this).hasClass('ui-state-disabled')){
+			return false;
+		}
+
+		var containerId = $('#construct').find('.' + selectedClass).first().data('container_id');
+		$('<div><input type="text" name="link_name"></div>').dialog({
+			title: 'Name Your Link',
+			buttons: {
+				'Create Link': function (){
+					if ($(this).find('input[name=link_name]').val() == ''){
+						alert('Your Link Must Have A Name.');
+						return false;
+					}
+					var self = this;
+					$.ajax({
+						cache: false,
+						url: js_app_link(getActionLinkParams(['action=createContainerLink'])),
+						dataType: 'json',
+						data: 'cID=' + containerId + '&link_name=' + $(this).find('input[name=link_name]').val(),
+						type: 'post',
+						success: function (){
+							$(self).dialog('close');
+							alert('Link Has Been Created.');
+						}
+					});
+				},
+				'Cancel': function (){
+					$(this).dialog('close');
+				}
+			}
+		});
+	});
+
+	$('#construct-importlink').click(function (e){
+		e.preventDefault();
+		if ($('select[name=link_id]').find('option').size() == 0){
+			alert('No Links Available To Import');
+			return false;
+		}
+
+		$('#importableLinks').dialog({
+			buttons: {
+				'Import Selected': function (){
+					var self = this;
+					$.ajax({
+						cache: false,
+						url: js_app_link(getActionLinkParams(['action=importLinkedContainer'])),
+						dataType: 'html',
+						data: 'lID=' + $(this).find('select').val(),
+						type: 'post',
+						success: function (html){
+							if (html == 'false'){
+								alert('There was a problem importing the selected container.');
+							}else{
+								var $html = $(html);
+								$('#construct').append($html);
+
+								$html.find('.container').each(function (){
+									setupContainer($(this), $(this).hasClass('wrapper'));
+								});
+								$html.find('.column').each(function (){
+									setupColumn($(this));
+								});
+								$html.find('.container').first().click();
+								showSaveLayout();
+							}
+							$(self).dialog('close');
+						}
+					});
+				},
+				'Cancel': function (){
+					$(this).dialog('close');
+				}
+			}
+		});
+		return false;
+	});
+
+	$('#construct-container').css({
+		width: $('#construct-container').width() + 'px'
+	});
+
+	$.widget("ui.tmZoom", $.ui.mouse, {
+		pageX: 0,
+		pageY: 0,
+		options: {
+			distance: 1,
+			delay: 0
+		},
+		_create: function() {
+			var currentScaleX = 1;
+			var currentScaleY = 1;
+			$('#construct-zoomMode').click(function (){
+				if ($(this).data('zoommode') == true){
+					$(this).data('zoommode', false);
+					$(this).html('Zoom Mode Off');
+					$('#zoomOverlay').hide();
+				}else{
+					$(this).data('zoommode', true);
+					$(this).html('Zoom Mode On');
+					$('#zoomOverlay').show();
+				}
+				return false;
+			});
+
+			var containerOffset = $('#construct-container').position();
+			$('#zoomOverlay').css({
+				width: $('#construct-container').width() + 'px',
+				height: $('#construct-container').height() + 'px',
+				position: 'absolute',
+				top: containerOffset.top,
+				left: containerOffset.left,
+				background: 'transparent',
+				display: 'none'
+			}).mousewheel(function (e, delta){
+					e.preventDefault();
+					if (delta > 0){
+						currentScaleX += .1;
+						currentScaleY += .1;
+						var constructWidth = parseFloat($('#construct').width());
+						var constructHeight = parseFloat($('#construct').height());
+						var translateX = ((constructWidth * currentScaleX) - constructWidth) / 2;
+						var translateY = ((constructHeight * currentScaleY) - constructHeight) / 2;
+						$('#construct').css('-webkit-transform', 'translate(' + translateX + 'px, ' + translateY + 'px) scale(' + currentScaleX + ', ' + currentScaleY + ')');
+					}else if (delta < 0){
+						currentScaleX -= .1;
+						currentScaleY -= .1;
+						var constructWidth = parseFloat($('#construct').width());
+						var constructHeight = parseFloat($('#construct').height());
+						var translateX = ((constructWidth * currentScaleX) - constructWidth) / 2;
+						var translateY = ((constructHeight * currentScaleY) - constructHeight) / 2;
+						$('#construct').css('-webkit-transform', 'translate(' + translateX + 'px, ' + translateY + 'px) scale(' + currentScaleX + ', ' + currentScaleY + ')');
+					}
+				});
+
+			this._mouseInit();
+		},
+		_mouseCapture: function(event) {
+			this.element.addClass('mouseCapture');
+			return true;
+		},
+		_mouseStart: function(event) {
+			this.element.addClass('mouseStart');
+			this.startingScrollTop = $('#construct-container').scrollTop();
+			this.startingScrollLeft = $('#construct-container').scrollLeft();
+			//this._mouseDrag(event, true); //Execute the drag once - this causes the helper not to be visible before getting its correct position
+			return true;
+		},
+		_mouseStop: function(event) {
+			this.element.addClass('mouseStop');
+			return false;
+		},
+		_mouseDrag: function(event, noPropagation) {
+			this.element.addClass('mouseDrag');
+
+			if (this.pageX != event.pageX || this.pageY != event.pageY){
+				this.pageX = event.pageX;
+				this.pageY = event.pageY;
+
+				var containerPosition = $('#construct-container').offset();
+				var pageX = (event.pageX - containerPosition.left) - (this._mouseDownEvent.pageX - containerPosition.left);
+				var pageY = (event.pageY - containerPosition.top) - (this._mouseDownEvent.pageY - containerPosition.top);
+
+				var newX = (this.startingScrollLeft - pageX);
+				if (newX <= 0){
+					newX = 0;
+				}
+				var newY = (this.startingScrollTop - pageY);
+				if (newY <= 0){
+					newY = 0;
+				}
+				$('#construct-container').scrollLeft(newX);
+				$('#construct-container').scrollTop(newY);
+			}
+			return false;
+		}
+	});
+
+	$('#zoomOverlay').tmZoom();
 });
 
 
 var LayoutDesigner = {
+	TabPanel: null,
 	tabs: {},
 	options: {
 		curElement: false
 	},
 	_init: function (o){
-		this.options = $.extend(this.options, o);
-		var $TabPanel = $('#mainTabPanel');
-
-		this.buildBackgroundColorPicker_RGBA($TabPanel.find('.makeColorPicker_RGBA'));
-		this.buildColorPicker_RGB($TabPanel.find('.makeColorPicker'));
-
 		var self = this;
-		$.each(this.tabs, function (){
+		self.options = $.extend(self.options, o);
+		self.TabPanel = $('#mainTabPanel');
+
+		this.buildBackgroundColorPicker_RGBA(self.TabPanel.find('.makeColorPicker_RGBA'));
+		this.buildColorPicker_RGB(self.TabPanel.find('.makeColorPicker'));
+
+		$.each(self.tabs, function (){
 			this.init.apply(self);
 		});
 
-		if (this.options.curElement.hasClass('container')){
-			$TabPanel.find('.containerOnly').show();
-			$TabPanel.find('.columnOnly').hide();
-			$TabPanel.find('.widgetOnly').hide();
-		}
-		else {
-			if (this.options.curElement.hasClass('widget')){
-				$TabPanel.find('.containerOnly').hide();
-				$TabPanel.find('.columnOnly').hide();
-				$TabPanel.find('.widgetOnly').show();
-			}
-			else {
-				$TabPanel.find('.containerOnly').hide();
-				$TabPanel.find('.columnOnly').show();
-				$TabPanel.find('.widgetOnly').hide();
-			}
-		}
+		self.TabPanel.find('#font').tabs();
+		self.TabPanel.tabs();
+		self.TabPanel.find('.ui-tabs-nav li').each(function (k, el){
+			var disableTab = false;
+			var isContainerOnly = $(this).hasClass('containerOnly');
+			var isColumnOnly = $(this).hasClass('columnOnly');
+			var isWidgetOnly = $(this).hasClass('widgetOnly');
 
-		$TabPanel.tabs();
-		$TabPanel.tabs('disable', 6);
-		$TabPanel.tabs('disable', 7);
+			if (self.options.curElement.hasClass('container')){
+				if ((isColumnOnly || isWidgetOnly) && !isContainerOnly){
+					disableTab = true;
+				}
+			} else if (self.options.curElement.hasClass('widget')){
+				if ((isColumnOnly || isContainerOnly) && !isWidgetOnly){
+					disableTab = true;
+				}
+			} else {
+				if ((isContainerOnly || isWidgetOnly) && !isColumnOnly){
+					disableTab = true;
+				}
+			}
+
+			if (disableTab === true){
+				if (self.TabPanel.tabs('option', 'selected') == k){
+					self.TabPanel.tabs('select', k+1);
+				}
+				self.TabPanel.tabs('disable', k);
+			}
+		});
 	},
 	getCurrentElement: function () {
 		return this.options.curElement;
@@ -1045,8 +1224,21 @@ var LayoutDesigner = {
 		this.setElInputData(inputVals);
 	},
 	updateStylesVal: function (key, val, skipCssUpdate) {
-		if (!skipCssUpdate){
-			this.options.curElement.css(key, val);
+		if (key == 'custom_css'){
+			var currentCss = this.options.curElement.attr('style');
+			if (this.options.curElement.data('custom_css')){
+				var currentCustomCss = this.options.curElement.data('custom_css');
+				currentCss = currentCss.replace(currentCustomCss, '');
+			}
+			this.options.curElement.data('custom_css', val);
+			currentCss += val;
+			if (!skipCssUpdate){
+				this.options.curElement.attr('style', currentCss);
+			}
+		}else{
+			if (!skipCssUpdate){
+				this.options.curElement.css(key, val);
+			}
 		}
 
 		var Styles = this.getElStylesData();

@@ -6,7 +6,7 @@ class streamProducts_catalog_product_info extends Extension_streamProducts {
 	}
 	
 	public function load(){
-		if ($this->enabled === false) return;
+		if ($this->isEnabled() === false) return;
 		
 		EventManager::attachEvents(array(
 			'ProductInfoTabHeader',

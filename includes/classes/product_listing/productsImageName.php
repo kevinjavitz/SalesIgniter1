@@ -45,7 +45,7 @@ class productListing_productsImageName {
 
 			$retuned .=  '<a href="' . htmlspecialchars(itw_app_link('products_id=' . $productClass->getID() . $addedGetVar, 'product', 'info')) . '">' . $imageHtml->draw() . '</a><br/>';
 		}
-		$retuned .= '<a href="' . htmlspecialchars(itw_app_link('products_id=' . $productClass->getID() . $addedGetVar, 'product', 'info')) . '">' . htmlspecialchars($productClass->getName()) . '</a>' . $products_series .'</div>';
+		$retuned .= '<a href="' . htmlspecialchars(itw_app_link('products_id=' . $productClass->getID() . $addedGetVar, 'product', 'info')) . '">' . $productClass->getName() . '</a>' . $products_series .'</div>';
 		return $retuned;
 	}
 }

@@ -17,7 +17,7 @@ class reviews_catalog_product_info extends Extension_reviews {
 	}
 	
 	public function load(){
-		if ($this->enabled === false) return;
+		if ($this->isEnabled() === false) return;
 		
 		EventManager::attachEvents(array(
 			'ProductInfoTabHeader',

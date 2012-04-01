@@ -23,23 +23,23 @@ class TemplateManagerLayoutsWidgets extends Doctrine_Record
 	public function setTableDefinition()
 	{
 		$this->setTableName('template_manager_layouts_widgets');
-		$this->hasColumn('column_id', 'integer', 11, array(
+		$this->hasColumn('column_id', 'integer', 4, array(
 			'type' => 'integer',
-			'length' => '11',
+			'length' => 4,
 		));
-		$this->hasColumn('widget_id', 'integer', 11, array(
+		$this->hasColumn('widget_id', 'integer', 4, array(
 			'primary' => true,
 			'type' => 'integer',
 			'autoincrement' => true,
-			'length' => '11',
+			'length' => 4,
 		));
 		$this->hasColumn('identifier', 'string', 255, array(
 			'type' => 'string',
-			'length' => '255',
+			'length' => 255,
 		));
-		$this->hasColumn('sort_order', 'integer', 3, array(
+		$this->hasColumn('sort_order', 'integer', 2, array(
 			'type' => 'integer',
-			'length' => '3',
+			'length' => 2,
 		));
 	}
 

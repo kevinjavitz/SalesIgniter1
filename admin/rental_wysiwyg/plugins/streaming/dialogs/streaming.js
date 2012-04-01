@@ -5,8 +5,7 @@
 CKEDITOR.dialog.add( 'streaming', function ( editor )
 {
 	var lang = editor.lang.video;
-	var streamProvider = false;
-	var streamContentProvider = false;
+
 	function commitValue( videoNode, extraStyles )
 	{
 		var value=this.getValue();
@@ -42,12 +41,11 @@ CKEDITOR.dialog.add( 'streaming', function ( editor )
 				this.setValue( generateId() );
 		}
 	}
-	/*
+	
 	function onChange( videoNode )
 	{
-
+		
 	}
-	*/
 
 	function generateId()
 	{
@@ -169,58 +167,84 @@ CKEDITOR.dialog.add( 'streaming', function ( editor )
 				[
 					{
 						type : 'select',
-						id : 'provider',
 						items :
 						[
 							[ 'Please Select', '' ]
 						],
+
+						id : 'provider',
 						label : 'Stream Provider',
 						commit : commitValue,
 						setup : function (videoNode){
 							//loadValue(videoNode);
+							//$(videoNode).attr('name','stream_provider');
 							if ( videoNode ) {
 								this.setValue( videoNode.getAttribute( this.id ) );
-								var oldStreamProviderValue = videoNode.getAttribute('provider');
-								var oldStreamTypeValue = videoNode.getAttribute('type');
-								//alert(oldStreamProviderValue);
-								//alert(oldStreamTypeValue);
 							} else {
 								if ( this.id == 'id')
 									this.setValue( generateId() );
 							}
-							var ctr = 0;
-							$('.cke_dialog_contents').find('select').each(function (){
-								switch(ctr){
-									case 0:
-										streamProviders = $(this);
-
-									break;
-									case 1:
-										streamContentProvider = $(this);
-									break;
-								}
-								ctr++;
-							});
 							$.ajax({
-									cache: false,
-									dataType: 'html',
-									url: js_app_link('app=products&appPage=new_product&action=getStreamProviders'),
-									success: function (data){
-										streamProviders.html($(data).html());
-										streamProviders.val(oldStreamProviderValue);
-										
-										$.ajax({
-											cache: false,
-											dataType: 'html',
-											url: js_app_link('app=products&appPage=new_product&action=getProviderStreamTypes&pID=' + streamProviders.val()),
-											success: function (data){
-												streamContentProvider.html($(data).html());
-												streamContentProvider.val(oldStreamTypeValue);
-											}
-										});
+								cache: false,
+								dataType: 'html',
+								url: js_app_link('app=products&appPage=new_product&action=getStreamProviders'),
+								success: function (data){
 
-									}
+									$('#cke_112_select')
+										.html($(data).html());
+									$("#cke_112_select option:first").attr('selected','selected');
+									$('#cke_112_select').trigger('change');
+									$.ajax({
+										cache: false,
+										dataType: 'html',
+										url: js_app_link('app=products&appPage=new_product&action=getProviderStreamTypes&pID=' + $('#cke_112_select').val()),
+										success: function (data){
+											var oldVal = $('#cke_115_select').val();
+											$('#cke_115_select')
+												.html($(data).html());
+											if(oldVal)
+												$('#cke_115_select').val(oldval);
+
+										}
+									});
+
+								}
 							});
+						},
+						onChange : function()
+						{
+							var dialog = this.getDialog(),
+								newValue = this.getValue();
+
+							var $row = dialog;
+							var stream_type_box = $('#stream-type');
+							
+						
+							//
+							$.ajax({
+								cache: false,
+								dataType: 'html',
+								url: js_app_link('app=products&appPage=new_product&action=getProviderStreamTypes&pID=' + newValue),
+								success: function (data){
+									//populate stream types
+									/*
+									var regexp = /\<select name="new_stream_provider_type"\>(.*)\<\/select\>/;									
+									
+									var oldval = $('#cke_108_select').val();
+                                                                        
+									$('#cke_108_select')
+										.html(data.replace(regexp, '$1'))
+										.val(oldval);
+									*/
+									var oldVal = $('#cke_115_select').val();
+									$('#cke_115_select')
+										.html($(data).html());
+									if(oldVal)
+										$('#cke_115_select').val(oldval);
+									
+								}
+							});
+							
 
 						}
 					},
@@ -240,7 +264,12 @@ CKEDITOR.dialog.add( 'streaming', function ( editor )
 						id : 'file',
 						label : 'Stream File',
 						commit : commitValue,
-						setup : loadValue
+						setup : loadValue,
+						onChange : function()
+						{
+							var dialog = this.getDialog(),
+								newValue = this.getValue();
+						}
 					},					
 																
 					{
@@ -268,7 +297,7 @@ CKEDITOR.dialog.add( 'streaming', function ( editor )
 						label : 'ID',
 						commit : commitValue,
 						setup : loadValue
-					}
+					},
 					
 				]
 			}

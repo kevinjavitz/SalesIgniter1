@@ -76,7 +76,7 @@ class SystemCache {
 		}
 
 		if (!empty($path)){
-			$this->cachePath = $path;
+			$this->cachePath = realpath(dirname(__FILE__) . '/../../') . '/' . $path;
 		}else{
 			$this->cachePath = realpath(dirname(__FILE__) . '/../../') . '/cache/';
 		}

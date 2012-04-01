@@ -7,7 +7,7 @@ class Extension_waitingList extends ExtensionBase {
 	
 	public function init(){
 		global $appExtension;
-		if ($this->enabled === false) return;
+		if ($this->isEnabled() === false) return;
 		
 		EventManager::attachEvents(array(
 			'ProductInfoPurchaseBoxOnLoad',

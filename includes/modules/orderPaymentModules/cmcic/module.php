@@ -330,7 +330,7 @@ class OrderPaymentCmcic extends StandardPaymentModule
 			tep_draw_hidden_field('lgue', HtmlEncode($oTpe->sLangue)) . "\n" .
 			tep_draw_hidden_field('societe', HtmlEncode($oTpe->sCodeSociete)) . "\n" .
 			tep_draw_hidden_field('url_retour', itw_app_link(null, 'checkout', 'default', 'SSL')) . "\n" .
-			tep_draw_hidden_field('url_retour_ok', itw_app_link('action=sessionClean&order_id=' . $order->newOrder['orderID'], 'account', 'default', 'SSL')) . "\n" .
+			tep_draw_hidden_field('url_retour_ok', itw_app_link(null, 'checkout', 'success', 'SSL')) . "\n" .
 			tep_draw_hidden_field('url_retour_err', itw_app_link(null, 'checkout', 'default', 'SSL')) . "\n" .
 			tep_draw_hidden_field('texte-libre', HtmlEncode($sTexteLibre)) . "\n" .
 			tep_draw_hidden_field('mail', $sEmail) . "\n" .

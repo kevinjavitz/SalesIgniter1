@@ -1,7 +1,0 @@
-<definitions>
-	<define key="INFOBOX_HEADING_CUFON_FONTS"><![CDATA[Cufon Fonts]]></define>
-
-	<define key="TEXT_INFOBOX_CUFON_FONT_FILE"><![CDATA[Font file(if multiple add cufon.tpl to only one):]]></define>
-	<define key="TEXT_INFOBOX_CUFON_ELEMENTS"><![CDATA[Elements To apply font to elements:]]></define>
-
-</definitions>                                                                       

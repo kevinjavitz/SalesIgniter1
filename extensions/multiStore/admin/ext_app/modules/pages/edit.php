@@ -17,7 +17,7 @@ class multiStore_admin_modules_edit extends Extension_multiStore {
 	}
 	
 	public function load(){
-		if ($this->enabled === false) return;
+		if ($this->isEnabled() === false) return;
 		
 		EventManager::attachEvent('ApplicationTemplateBeforeInclude', null, $this);
 	}

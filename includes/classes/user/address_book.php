@@ -465,12 +465,12 @@ class rentalStoreUser_addressBook {
 		$zone_id = -1;
 		$Check = Doctrine_Manager::getInstance()
 			->getCurrentConnection()
-			->fetchAssoc('select count(*) as total from ' . TABLE_ZONES . ' where zone_country_id = "' . $countryId . '"');
+			->fetchAssoc('select count(*) as total from zones where zone_country_id = "' . $countryId . '"');
 		if ($Check[0]['total'] > 0) {
 			$zone_id = 0;
 			$Zone = Doctrine_Manager::getInstance()
 				->getCurrentConnection()
-				->fetchAssoc('select distinct zone_id from ' . TABLE_ZONES . ' where zone_country_id = "' . $countryId . '" and (zone_name = "' . $state . '" or zone_code = "' . $state . '")');
+				->fetchAssoc('select distinct zone_id from zones where zone_country_id = "' . $countryId . '" and (zone_name = "' . $state . '" or zone_code = "' . $state . '")');
 			if (sizeof($Zone) == 1){
 				$zone_id = $Zone[0]['zone_id'];
 			}
