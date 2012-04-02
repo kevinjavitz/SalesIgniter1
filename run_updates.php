@@ -590,6 +590,10 @@ function update_configs(){
 	$Ftp->connect();
 	$Ftp->makeWritable(sysConfig::getDirFsCatalog().'images');
 	$Ftp->makeWritable(sysConfig::getDirFsCatalog().'cache');
+	$Ftp->makeWritable(sysConfig::getDirFsCatalog().'cache/admin/javascript');
+	$Ftp->makeWritable(sysConfig::getDirFsCatalog().'cache/admin/stylesheet');
+	$Ftp->makeWritable(sysConfig::getDirFsCatalog().'cache/catalog/javascript');
+	$Ftp->makeWritable(sysConfig::getDirFsCatalog().'cache/catalog/stylesheet');
 	$Ftp->makeWritable(sysConfig::getDirFsCatalog().'temp');
 	$Ftp->makeWritable(sysConfig::getDirFsCatalog().'temp/pdf');
 	$Ftp->makeWritable(sysConfig::getDirFsCatalog().'extensions/imageRot/images');
