@@ -833,7 +833,9 @@ function updateHTaccess(){
 	$pos = array_search('RewriteRule ^installAuto($|/) - [L]',$htaccessFileContents);
 	if($pos !== false){
 		foreach($folderList as $folder){
-			array_splice($htaccessFileContents,$pos,0, 'RewriteRule ^'.$folder.'($|/) - [L]');
+			if(!empty($folder)){
+				array_splice($htaccessFileContents,$pos,0, 'RewriteRule ^'.$folder.'($|/) - [L]');
+			}
 		}
 	}
 
