@@ -577,7 +577,6 @@ function update_extra(){
 	add_extra_fields('admin','admin_favs_id',"int(11) NOT NULL");
 	add_extra_fields('languages','forced_default',"int(1) NOT NULL default '0'");
 	add_extra_fields('configuration','configuration_group_key',"VARCHAR( 200 ) NOT NULL DEFAULT  ''");
-	update_extra_fields('orders','terms','TEXT');
 }
 
 function update_configs(){
@@ -982,7 +981,7 @@ function updateToolsConfiguration(){
 	add_extra_fields('modules_shipping_zone_reservation_methods','weight_rates','TEXT NULL');
 	add_extra_fields('modules_shipping_zone_reservation_methods','min_rental_number'," INT( 1 ) NOT NULL DEFAULT  '0'");
 	add_extra_fields('modules_shipping_zone_reservation_methods','min_rental_type'," INT( 1 ) NOT NULL DEFAULT  '0'");
-
+	update_extra_fields('orders','terms','TEXT');
 }
 
 function updateTemplates(){
