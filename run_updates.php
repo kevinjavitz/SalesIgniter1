@@ -820,6 +820,30 @@ function updateAddressFormat(){
 	//--END--
 }
 
+function updateHTaccess(){
+	global $ftpConn;
+	$folderList = explode(';', sysConfig::get('HTACCESS_FOLDERS'));
+	$ftpCmd = ftp_chmod($ftpConn, octdec('0777'), '.htaccess');
+	if (!$ftpCmd){
+		echo 'Error chmod 777 .htaccess';
+	}
+	$htaccessPath = sysConfig::getDirFsCatalog(). '.htaccess';
+	$htaccessFile = file_get_contents($htaccessPath);
+	$htaccessFileContents = explode("\n", $htaccessFile);
+	$pos = array_search('RewriteRule ^installAuto($|/) - [L]',$htaccessFileContents);
+	if($pos !== false){
+		foreach($folderList as $folder){
+			array_splice($htaccessFileContents,$pos,0, 'RewriteRule ^'.$folder.'($|/) - [L]');
+		}
+	}
+
+	file_put_contents($htaccessPath, implode("\n", $htaccessFileContents));
+	$ftpCmd = ftp_chmod($ftpConn, octdec('0644'), '.htaccess');
+	if (!$ftpCmd){
+		echo 'Error chmod 644 .htaccess';
+	}
+}
+
 function updateToolsConfiguration(){
 	/*//addConfiguration('SHOW_MANUFACTURER_ON_PRODUCT_INFO', 1, 'Show manufacturer name on product Info', 'Show manufacturer name on product Info', 'false', "tep_cfg_select_option(array('true', 'false'),");
 	//addConfiguration('SHOW_PRODUCTS_FROM_SUBCATEGORIES', 1, 'Show all the products from all the subcategories of the current category', 'Show all the products from all the subcategories of the current category', 'false', "tep_cfg_select_option(array('true', 'false'),");
@@ -943,6 +967,7 @@ function updateToolsConfiguration(){
 	updatePagesDescription();
 	updateCategoriesSEOUrls();
 	updateAddressFormat();
+	updateHTaccess();
 	importPDFLayouts();
 
 	Doctrine_Query::create()

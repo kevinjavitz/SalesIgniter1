@@ -382,6 +382,11 @@ Casa Grande, AZ  85122]]></value>
 					<value><![CDATA[]]></value>
 					<description><![CDATA[List of barcodes inventory types separated by ;]]></description>
 				</BARCODES_INVENTORY_TYPES>
+				<HTACCESS_FOLDERS>
+					<title><![CDATA[Folders to include into htaccess]]></title>
+					<value><![CDATA[]]></value>
+					<description><![CDATA[List of folders name to be included into htaccess separated by ;]]></description>
+				</HTACCESS_FOLDERS>
 			</configurations>
 		</advanced>
 		<order_status>
