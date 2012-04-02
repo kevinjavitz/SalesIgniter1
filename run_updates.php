@@ -583,11 +583,13 @@ function update_configs(){
 
 
 	mkdir(sysConfig::getDirFsCatalog().'temp/pdf');
+	mkdir(sysConfig::getDirFsCatalog().'images/templates');
 
 	require(sysConfig::getDirFsCatalog() . 'includes/classes/ftp/base.php');
 	$Ftp = new SystemFTP();
 	$Ftp->connect();
 	$Ftp->makeWritable(sysConfig::getDirFsCatalog().'images');
+	$Ftp->makeWritable(sysConfig::getDirFsCatalog().'images/templates');
 	$Ftp->makeWritable(sysConfig::getDirFsCatalog().'cache');
 	$Ftp->makeWritable(sysConfig::getDirFsCatalog().'cache/admin/javascript');
 	$Ftp->makeWritable(sysConfig::getDirFsCatalog().'cache/admin/stylesheet');
