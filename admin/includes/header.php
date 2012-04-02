@@ -127,6 +127,7 @@ if (Session::exists('login_id') === true){
 			'modules.php',
 			'customers.php',
 			'tools.php',
+			'rental_membership.php',
 			'marketing.php',
 			'data_management.php'
 		);
