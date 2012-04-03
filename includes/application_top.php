@@ -123,6 +123,7 @@ require(sysConfig::getDirFsCatalog() . 'includes/classes/ModuleBase.php');
 require(sysConfig::getDirFsCatalog() . 'includes/classes/ModuleConfigReader.php');
 
 require(sysConfig::getDirFsCatalog() . 'includes/functions/html_output.php');
+require(sysConfig::getDirFsCatalog() . 'includes/classes/boxes.php');
 require(sysConfig::getDirFsCatalog() . 'includes/classes/email_events.php');
 
 require(sysConfig::getDirFsCatalog() . 'includes/classes/user/membership.php');

@@ -5,49 +5,48 @@
 	I.T. Web Experts
 	http://www.itwebexperts.com
 
-	Copyright (c) 2009 I.T. Web Experts
+	Copyright (c) 2012 I.T. Web Experts
 
 	This script and it's source is not redistributable
 */
 
-class OrderPaymentPayflow extends CreditCardModule
+class OrderPaymentFirstData extends CreditCardModule
 {
-	private $gatewayUrl;
-
+       	private $gatewayUrl;
+		
 	public function __construct() {
-		/*
-					 * Default title and description for modules that are not yet installed
-					 */
-		$this->setTitle('Credit Card Via Payflow');
-		$this->setDescription('Credit Card Via Payflow');
 
-		$this->init('payflow');
+		//is called 5 times with one order? synchro errors requires private gatewayUrl variable
+		
+		$this->setTitle('Credit Card Via First Data GG');
+		$this->setDescription('Credit Card Via First Data GG');
+
+		$this->init('firstdata');
 
 		if ($this->isEnabled() === true){
 			$this->isCron = false;
 			$this->removeOrderOnFail = false;
 			$this->requireCvv = true;
-			$this->testMode = ($this->getConfigData('MODULE_PAYMENT_PAYFLOW_GATEWAY_SERVER') == 'Test');
-			$this->currencyValue = $this->getConfigData('MODULE_PAYMENT_PAYFLOW_CURRENCY');
+			$this->testMode = ($this->getConfigData('MODULE_PAYMENT_FIRSTDATA_GATEWAY_SERVER') == 'Test');
+			$this->currencyValue = $this->getConfigData('MODULE_PAYMENT_FIRSTDATA_CURRENCY');
 			$this->allowedTypes = array();
 
 			// Credit card pulldown list
-			$cc_array = explode(',', $this->getConfigData('MODULE_PAYMENT_PAYFLOW_ACCEPTED_CC'));
+			$cc_array = explode(',', $this->getConfigData('MODULE_PAYMENT_FIRSTDATA_ACCEPTED_CC'));
 			foreach($cc_array as $k => $v){
 				$this->allowedTypes[trim($v)] = $this->cardTypes[trim($v)];
 			}
 
 			if ($this->testMode === true){
-				$subDomain = 'pilot-';
+				$subDomain = 'staging.';
 			}
 			else {
-				$subDomain = '';
+				$subDomain = 'secure.';
 			}
-			$this->gatewayUrl = 'https://' . $subDomain . 'payflowpro.paypal.com/';
-			/*
-							 * Use Authorize.net's param dump to show what they are recieving from the server
-							 */
-			//$this->gatewayUrl = 'https://developer.authorize.net/param_dump.asp';
+                     
+			//$this->gatewayUrl = ' https://ws.' . $subDomain . '.firstdataglobalgateway.com/fdggwsapi/service';
+			$this->gatewayUrl = 'https://' . $subDomain . 'linkpt.net';
+
 		}
 	}
 
@@ -55,28 +54,28 @@ class OrderPaymentPayflow extends CreditCardModule
 		$fieldsArray = array();
 
 		$fieldsArray[] = array(
-			'title' => sysLanguage::get('MODULE_PAYMENT_PAYFLOW_TEXT_CREDIT_CARD_TYPE'),
+			'title' => sysLanguage::get('MODULE_PAYMENT_FIRSTDATA_TEXT_CREDIT_CARD_TYPE'),
 			'field' => $this->getCreditCardTypeField()
 		);
 
 		$fieldsArray[] = array(
-			'title' => sysLanguage::get('MODULE_PAYMENT_PAYFLOW_TEXT_CREDIT_CARD_OWNER'),
+			'title' => sysLanguage::get('MODULE_PAYMENT_FIRSTDATA_TEXT_CREDIT_CARD_OWNER'),
 			'field' => $this->getCreditCardOwnerField()
 		);
 
 		$fieldsArray[] = array(
-			'title' => sysLanguage::get('MODULE_PAYMENT_PAYFLOW_TEXT_CREDIT_CARD_NUMBER'),
+			'title' => sysLanguage::get('MODULE_PAYMENT_FIRSTDATA_TEXT_CREDIT_CARD_NUMBER'),
 			'field' => $this->getCreditCardNumber()
 		);
 
 		$fieldsArray[] = array(
-			'title' => sysLanguage::get('MODULE_PAYMENT_PAYFLOW_TEXT_CREDIT_CARD_EXPIRES'),
+			'title' => sysLanguage::get('MODULE_PAYMENT_FIRSTDATA_TEXT_CREDIT_CARD_EXPIRES'),
 			'field' => $this->getCreditCardExpMonthField() . '&nbsp;' . $this->getCreditCardExpYearField()
 		);
 
 		if ($this->requireCvv === true){
 			$fieldsArray[] = array(
-				'title' => 'CVV number ' . ' ' . '<a href="#" onclick="popupWindow(\'' . itw_app_link('rType=ajax&appExt=infoPages&dialog=true', 'show_page', 'cvv_help') . '\', 400, 300);return false">' . '<u><i>' . '(' . sysLanguage::get('MODULE_PAYMENT_PAYFLOW_TEXT_CVV_LINK') . ')' . '</i></u></a>',
+				'title' => 'CVV number ' . ' ' . '<a href="#" onclick="popupWindow(\'' . itw_app_link('rType=ajax&appExt=infoPages&dialog=true', 'show_page', 'cvv_help') . '\', 400, 300);return false">' . '<u><i>' . '(' . sysLanguage::get('MODULE_PAYMENT_FIRSTDATA_TEXT_CVV_LINK') . ')' . '</i></u></a>',
 				'field' => $this->getCreditCardCvvField()
 			);
 		}
@@ -89,35 +88,42 @@ class OrderPaymentPayflow extends CreditCardModule
 	}
 
 	public function refundPayment($requestData) {
-		$dataArray = array(
-			'USER' => $this->getConfigData('MODULE_PAYMENT_PAYPALWPP_API_USERNAME'),
-			'PWD' => $this->getConfigData('MODULE_PAYMENT_PAYPALWPP_API_PASSWORD'),
-			'SIGNATURE' => $this->getConfigData('MODULE_PAYMENT_PAYPALWPP_API_SIGNATURE'),
-			'VERSION' => '64.0',
-			'METHOD' => 'RefundTransaction',
-			'PAYMENTACTION' => $this->getConfigData('MODULE_PAYMENT_PAYPALWPP_TRANSACTION_TYPE')
-		);
-		$dataArray['TRANSACTIONID'] = $requestData['transactionID'];
-		$dataArray['REFUNDTYPE'] = 'Full';
-		$dataArray['CURRENCYCODE'] = $this->currencyValue;
+		$dataArray = array();
 		$CurlRequest = new CurlRequest($this->gatewayUrl);
-		$CurlRequest->setData($dataArray);
+
+		$beforeData = '<order><merchantinfo><configfile>' . $this->getConfigData('MODULE_PAYMENT_FIRSTDATA_STORENUMBER') . '</configfile></merchantinfo><orderoptions><ordertype>Credit</ordertype></orderoptions><transactiondetails>';
+              $afterData = '</payment></order>';
+		$dataArray['oid'] = array($requestData['orderID']);
+		$dataArray['chargetotal'] = array($requestData['amount']);
+              $CurlRequest->setData($dataArray, "xml", $beforeData, $afterData);
+		$formatted='';
+              $formatted .=$CurlRequest->getDataFormatted();
+		$formatted=preg_replace("/<\/oid>/", '</oid></transactiondetails><payment>', $formatted);
+		$formatted=preg_replace('/<\?xml version="1.0"\?>/', '' , $formatted);
+		$formatted=preg_replace('/<0>/', '', $formatted);
+		$formatted=preg_replace('/<\/0>/', '' , $formatted);
+              $CurlRequest->setData($formatted);
+
+		$CurlRequest->setReturnTransfer(1);
+		$CurlRequest->setOption(CURLOPT_POST, 1);
+		$CurlRequest->setOption(CURLOPT_VERBOSE, 1);
+		$CurlRequest->setOption(CURLOPT_PORT, '1129');
+		if ($this->getConfigData('MODULE_PAYMENT_FIRSTDATA_GATEWAY_SERVER') == 'Test')
+		{
+			$CurlRequest->setOption(CURLOPT_SSL_VERIFYHOST, 0);
+			$CurlRequest->setOption(CURLOPT_SSL_VERIFYPEER, 0);
+		}
+		$CurlRequest->setOption(CURLOPT_POSTFIELDS, $CurlRequest->getDataFormatted());
+		$CurlRequest->setOption(CURLOPT_RETURNTRANSFER, 1);
+		
+		$CurlRequest->setOption(CURLOPT_SSLCERT, $this->getConfigData('MODULE_PAYMENT_FIRSTDATA_CERTPATH'));
+		$CurlRequest->setOption(CURLOPT_SSLKEY, $this->getConfigData('MODULE_PAYMENT_FIRSTDATA_KEYPATH'));
+
 		$CurlResponse = $CurlRequest->execute();
 		$response = $CurlResponse->getResponse();
 
-		$httpResponseAr = explode("&", $response);
-		$httpParsedResponseAr = array();
-		foreach($httpResponseAr as $i => $value){
-			$tmpAr = explode("=", $value);
-			if (sizeof($tmpAr) > 1){
-				$httpParsedResponseAr[$tmpAr[0]] = $tmpAr[1];
-			}
-		}
-		$code = '';
-		if ((0 == sizeof($httpParsedResponseAr)) || !array_key_exists('ACK', $httpParsedResponseAr)){
-			$code = 0;
-		}
-		if ("SUCCESS" == strtoupper($httpParsedResponseAr["ACK"]) || "SUCCESSWITHWARNING" == strtoupper($httpParsedResponseAr["ACK"])){
+		$code = 0;
+		if (preg_match("/<r_approved>APPROVED<\/r_approved>/", $response)){
 			$code = 1;
 		}
 		if ($code == 0){
@@ -156,7 +162,6 @@ class OrderPaymentPayflow extends CreditCardModule
 
 		$xExpDate = $paymentInfo['cardDetails']['cardExpMonth'] . $paymentInfo['cardDetails']['cardExpYear'];
 		$state_abbr = tep_get_zone_code($billingAddress['entry_country_id'], $billingAddress['entry_zone_id'], $billingAddress['entry_state']);
-
 		$cardOwner = explode(' ', $paymentInfo['cardDetails']['cardOwner']);
 
 		return $this->sendPaymentRequest(array(
@@ -171,7 +176,7 @@ class OrderPaymentPayflow extends CreditCardModule
 				'customerEmail' => $userAccount->getEmailAddress(),
 				'customerIp' => $_SERVER['REMOTE_ADDR'],
 				'customerFirstName' => (isset($cardOwner[0])?$cardOwner[0]:''),//$billingAddress['entry_firstname'],
-				'customerLastName' => (isset($cardOwner[1]) ? $cardOwner[1] : ''), //$billingAddress['entry_lastname'],
+				'customerLastName' => (isset($cardOwner[1])?$cardOwner[1]:''),//$billingAddress['entry_lastname'],
 				'customerCompany' => $billingAddress['entry_company'],
 				'customerStreetAddress' => $billingAddress['entry_street_address'],
 				'customerPostcode' => $billingAddress['entry_postcode'],
@@ -231,111 +236,116 @@ class OrderPaymentPayflow extends CreditCardModule
 
 	public function sendPaymentRequest($requestParams) {
 
-		$dataArray = array(
-			'USER' => $this->getConfigData('MODULE_PAYMENT_PAYFLOW_API_ID'),
-			'VENDOR' => $this->getConfigData('MODULE_PAYMENT_PAYFLOW_API_VENDOR'),
-			'PARTNER' => $this->getConfigData('MODULE_PAYMENT_PAYFLOW_API_PARTNER'),
-			'PWD' => $this->getConfigData('MODULE_PAYMENT_PAYFLOW_API_PWD'),
-			'TRXTYPE' => 'S', //S - Sale
-			'TENDER' => 'C', //C-CREDIT CARD P- PAYPAL
-			'VERBOSITY' => 'MEDIUM'
-		);
-
-		if (isset($requestParams['orderID'])) {
-			$dataArray['INVNUM'] = $requestParams['orderID'];
-		}
-		if (isset($requestParams['description'])) {
-			$dataArray['ORDERDESC'] = $requestParams['description'];
-		}
+		//payment
 		if (isset($requestParams['amount'])) {
-			$dataArray['AMT'] = $requestParams['amount'];
+			$dataArray['chargetotal'] = array($requestParams['amount']);
 		}
-		if (isset($requestParams['currencyCode'])) {
-			$dataArray['CURRENCYCODE'] = $requestParams['currencyCode'];
+		//end payment
+		//creditcard
+              if (isset($requestParams['cardNum'])) {
+			$dataArray['cardnumber'] = array($requestParams['cardNum']);
 		}
-		if (isset($requestParams['customerId'])) {
-			$dataArray['COMMENT1'] = $requestParams['customerId'];
-		}
-		if (isset($requestParams['customerIp'])) {
-			$dataArray['CUSTIP'] = $requestParams['customerIp'];
-		}
-		if (isset($requestParams['customerFirstName'])) {
-			$dataArray['FIRSTNAME'] = $requestParams['customerFirstName'];
-		}
-		if (isset($requestParams['customerLastName'])) {
-			$dataArray['LASTNAME'] = $requestParams['customerLastName'];
-		}
-		if (isset($requestParams['customerStreetAddress'])) {
-			$dataArray['STREET'] = $requestParams['customerStreetAddress'];
-		}
-		if (isset($requestParams['customerPostcode'])) {
-			$dataArray['ZIP'] = $requestParams['customerPostcode'];
-		}
-		if (isset($requestParams['customerCity'])) {
-			$dataArray['CITY'] = $requestParams['customerCity'];
-		}
-		if (isset($requestParams['customerState'])) {
-			$dataArray['STATE'] = $requestParams['customerState'];
-		}
-		if (isset($requestParams['customerCountryCode'])) {
-			$dataArray['COUNTRYCODE'] = $requestParams['customerCountryCode'];
-		}
-		if (isset($requestParams['cardNum'])) {
-			$dataArray['ACCT'] = $requestParams['cardNum'];
-		}
-		if (isset($requestParams['cardType'])) {
-			$dataArray['ACCTTYPE'] = $requestParams['cardType'];
-		}
+		
 		if (isset($requestParams['cardExpDate'])) {
-			$dataArray['EXPDATE'] = $requestParams['cardExpDate'];
+			$dataArray['cardexpmonth'] = array(substr($requestParams['cardExpDate'],0,2));
+			$dataArray['cardexpyear'] = array(substr($requestParams['cardExpDate'],4,2));
 		}
 		if (isset($requestParams['cardCvv'])) {
-			$dataArray['CVV2'] = $requestParams['cardCvv'];
+			$dataArray['cvmvalue'] = array($requestParams['cardCvv']);
+			$dataArray['cvmindicator'] = array('provided');
+		}
+	
+		//end creditcard
+              //billing
+		if (isset($requestParams['customerFirstName'])) {
+			$dataArray['name'] = array($requestParams['customerFirstName'] . " " . $requestParams['customerLastName']);
+		}
+		if (isset($requestParams['customerStreetAddress'])) {
+			$dataArray['address1'] = array($requestParams['customerStreetAddress']);
+		}
+              if (isset($requestParams['customerCity'])) {
+			$dataArray['city'] = array($requestParams['customerCity']);
+		}
+		if (isset($requestParams['customerStateCode'])) {
+			$dataArray['state'] = array($requestParams['customerStateCode']);
+		}
+		if (isset($requestParams['customerPostcode'])) {
+			$dataArray['zip'] = array($requestParams['customerPostcode']);
+		}	
+
+		//cut numeric part of street address - this should really be a separate field in the form
+		//not needed apparently
+		//preg_match('/([0-9]+).*/', $requestParams['customerStreetAddress'], $numeric);
+		//$dataArray['addrnum'] = array($numeric[1]);
+
+		if (isset($requestParams['customerCountryCode'])) {
+			$dataArray['country'] = array($requestParams['customerCountryCode']);
+		}
+		
+		if (isset($requestParams['customerId'])) {
+			$dataArray['userid'] = array($requestParams['customerId']);
 		}
 
-		/*
-						$headers[] = "Content-Type: text/namevalue"; // either text/namevalue or text/xml
-						$headers[] = "X-VPS-Timeout: 45"; // timeout length - keep trying to access the page for this long (in seconds)
-						$headers[] = "X-VPS-VIT-OS-Name: x";  // Name of your Operating System (OS) o
-						$headers[] = "X-VPS-VIT-OS-Version: x";  // OS Version    o
-						$headers[] = "X-VPS-VIT-Client-Type: x";  // Language you are using  o
-						$headers[] = "X-VPS-VIT-Client-Version: x"; // version
-						$headers[] = "X-VPS-VIT-Client-Architecture: x86";  // computer information architecture o
-						$headers[] = "X-VPS-VIT-Integration-Product: x";  // application name
-						$headers[] = "X-VPS-VIT-Integration-Version: x"; // Application version
-						$headers[] = "X-VPS-Request-ID: md5(time().'ab')"; // your request id goes here.  to
-					 * */
-
+		//end billing
+		//transactiondetails	
+		if (isset($requestParams['orderID'])) {
+			$dataArray['oid'] = array($requestParams['orderID']);
+		}
+		if (isset($requestParams['customerIp'])) {
+			$dataArray['ip'] = array($requestParams['customerIp']);
+		}
+		//end transactiondetails
+	
 		$CurlRequest = new CurlRequest($this->gatewayUrl);
-		$CurlRequest->setData($dataArray);
-		//echo $CurlRequest->getDataFormatted().'lll';
+	
+              $beforeData = '<order><merchantinfo><configfile>' . $this->getConfigData('MODULE_PAYMENT_FIRSTDATA_STORENUMBER') . '</configfile></merchantinfo><orderoptions><ordertype>Sale</ordertype></orderoptions><payment>';
+              $afterData = '</order>';
+              $CurlRequest->setData($dataArray, "xml", $beforeData, $afterData);
+		$formatted='';
+              $formatted .=$CurlRequest->getDataFormatted();
+		$formatted=preg_replace("/<\/chargetotal>/", '</chargetotal></payment><creditcard>', $formatted);
+		$formatted=preg_replace("/<\/cvmindicator>/", '</cvmindicator></creditcard><billing>' , $formatted);
+		$formatted=preg_replace("/<\/userid>/", '</userid></billing><transactiondetails>' , $formatted);
+		$formatted=preg_replace("/<\/ip>/", '</ip></transactiondetails>', $formatted);
+		$formatted=preg_replace('/<\?xml version="1.0"\?>/', '' , $formatted);
+		$formatted=preg_replace('/<0>/', '', $formatted);
+		$formatted=preg_replace('/<\/0>/', '' , $formatted);
+              $CurlRequest->setData($formatted);
+
+		$CurlRequest->setReturnTransfer(1);
+		$CurlRequest->setOption(CURLOPT_POST, 1);
+		$CurlRequest->setOption(CURLOPT_VERBOSE, 1);
+		$CurlRequest->setOption(CURLOPT_PORT, '1129');
+		if ($this->getConfigData('MODULE_PAYMENT_FIRSTDATA_GATEWAY_SERVER') == 'Test')
+		{
+			$CurlRequest->setOption(CURLOPT_SSL_VERIFYHOST, 0);
+			$CurlRequest->setOption(CURLOPT_SSL_VERIFYPEER, 0);
+		}
+		$CurlRequest->setOption(CURLOPT_POSTFIELDS, $CurlRequest->getDataFormatted());
+		$CurlRequest->setOption(CURLOPT_RETURNTRANSFER, 1);
+
+	
+		$CurlRequest->setOption(CURLOPT_SSLCERT, $this->getConfigData('MODULE_PAYMENT_FIRSTDATA_CERTPATH'));
+		$CurlRequest->setOption(CURLOPT_SSLKEY, $this->getConfigData('MODULE_PAYMENT_FIRSTDATA_KEYPATH'));
+
 		$CurlResponse = $CurlRequest->execute();
 
 		return $this->onResponse($CurlResponse);
 	}
 
 	private function onResponse($CurlResponse, $isCron = false) {
-		$response = $CurlResponse->getResponse();
 
-		$httpResponseAr = explode("&", $response);
-		$httpParsedResponseAr = array();
-		foreach($httpResponseAr as $i => $value){
-			$tmpAr = explode("=", $value);
-			if (sizeof($tmpAr) > 1){
-				$httpParsedResponseAr[$tmpAr[0]] = $tmpAr[1];
-			}
-		}
-		$code = '';
-		if ((0 == sizeof($httpParsedResponseAr)) || !array_key_exists('ACK', $httpParsedResponseAr)){
-			$code = '';
-		}
-		if ("SUCCESS" == strtoupper($httpParsedResponseAr["ACK"]) || "SUCCESSWITHWARNING" == strtoupper($httpParsedResponseAr["ACK"])){
+		$response = $CurlResponse->getResponse();
+              
+		if (preg_match("/<r_approved>APPROVED<\/r_approved>/", $response)){
 			$code = '1';
 		}
+		else $code = '';
 
 		$success = true;
 		$errMsg = '';
-		if ($code != '1'){
+
+            if ($code != '1'){
 			$success = false;
 			switch($code){
 				case '':
@@ -343,7 +353,7 @@ class OrderPaymentPayflow extends CreditCardModule
 					break;
 
 				default:
-					$errMsg = 'There was an unspecified error processing your credit card: ' . implode(';', $httpParsedResponseAr);
+					$errMsg = 'There was an unspecified error processing your credit card: ';
 					break;
 			}
 		}
@@ -353,7 +363,7 @@ class OrderPaymentPayflow extends CreditCardModule
 		}
 
 		if ($success === true){
-			$this->onSuccess(array(
+              	$this->onSuccess(array(
 					'curlResponse' => $CurlResponse,
 					'message' => $errMsg
 				));
@@ -427,6 +437,7 @@ class OrderPaymentPayflow extends CreditCardModule
 					)
 				));
 		}
+
 	}
 }
 
