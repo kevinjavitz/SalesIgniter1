@@ -12,6 +12,7 @@
 
 class OrderPaymentPaypal_wpp extends CreditCardModule
 {
+	private $gatewayUrl;
 
 	public function __construct() {
 		/*

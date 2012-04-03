@@ -12,6 +12,7 @@
 
 class OrderPaymentPayflow extends CreditCardModule
 {
+	private $gatewayUrl;
 
 	public function __construct() {
 		/*
