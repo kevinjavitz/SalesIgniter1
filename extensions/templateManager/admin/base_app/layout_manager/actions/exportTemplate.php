@@ -61,9 +61,26 @@ function sprintfConfig($pattern, $Configuration){
 function exportElement($exportVar, $addItemVar, $exportTable, $Element, $elementId){
 	global $TemplateDir, $WidgetUpdates;
 	$return = "\n" . $exportVar . '[' . $elementId . '] = ' . $addItemVar . '->' . $exportTable . '->getTable()->create();' . "\n";
+
+	$return .= "\n" . $exportVar . '[' . $elementId . ']->save();';
 	$return .= $addItemVar . '->' . $exportTable . '->add(' . $exportVar . '[' . $elementId . ']);' . "\n";
 	if ($exportTable == 'Widgets'){
 		$return .= $exportVar . '[' . $elementId . ']->identifier = \'' . $Element->identifier . '\';' . "\n";
+	}
+	if($exportTable == 'Containers'){
+
+			$LinkedContainers = Doctrine_Core::getTable('TemplateManagerContainerLinks')
+			->find($Element->link_id);
+			if($LinkedContainers){
+				$return .= '$ContainerLink = new TemplateManagerContainerLinks();';
+
+				$return .= '$ContainerLink->link_name = "'.$LinkedContainers->link_name.'";';
+
+				$return .= '$ContainerLink->save();';
+				$return .= '$linksArr[$ContainerLink->link_id] = array("var1"=>'.$exportVar . ',"var2"=>' .$LinkedContainers->container_id.');';
+
+				$return .= $exportVar . '[' . $elementId . ']->link_id = $ContainerLink->link_id;' . "\n";
+			}
 	}
 	$return .= $exportVar . '[' . $elementId . ']->sort_order = \'' . $Element->sort_order . '\';' . "\n";
 	$return .= sprintfStyles($exportVar . '[' . $elementId . ']->Styles[\'%s\']->definition_value = \'%s\';', $Element->Styles);
@@ -134,9 +151,10 @@ function exportElement($exportVar, $addItemVar, $exportTable, $Element, $element
 	echo '$Template = Doctrine_Core::getTable(\'TemplateManagerTemplates\')->create();' . "\n";
 	echo sprintfStyles('$Template->Styles[\'%s\']->definition_value = \'%s\';', $Template->Styles);
 	echo sprintfConfig('$Template->Configuration[\'%s\']->configuration_value = \'%s\';', $Template->Configuration);
-
+	echo '$linksArr = array();';
 	$layoutIds = array();
 	foreach($Template->Layouts as $Layout){
+		if($Layout->backupof_layout_id > 0) continue;
 		$layoutKey = $Layout->layout_id;
 		$layoutIds[] = $layoutKey;
 		echo "\n" . '$Layout[' . $layoutKey . '] = $Template->Layouts->getTable()->create();' . "\n";
@@ -157,6 +175,13 @@ function exportElement($exportVar, $addItemVar, $exportTable, $Element, $element
 			);
 		}
 	}
+
+	echo 'foreach($linksArr as $linkA => $contVal){';
+	echo '$linkCont = Doctrine_Core::getTable("TemplateManagerContainerLinks")->find($linkA);';
+	echo 'if($linkCont){';
+    	echo '$linkCont->container_id = $Container[$contVal[\'var2\']]->container_id;';
+ 	echo '$linkCont->save();';
+	echo '}}';
 	echo '$Template->save();' . "\n";
 	echo $WidgetUpdates;
 
@@ -218,6 +243,7 @@ function exportElement($exportVar, $addItemVar, $exportTable, $Element, $element
 						die('Error ftp_chdir');
 					}
 					ftp_mkdir($ftpConn, $TemplateDir);
+					ftp_delete($ftpConn, ''.$TemplateDir.'/export.zip', sysConfig::getDirFsCatalog() . 'templates/' . $TemplateDir . '/export.zip');
 					ftp_put($ftpConn, ''.$TemplateDir.'/export.zip', sysConfig::getDirFsCatalog() . 'templates/' . $TemplateDir . '/export.zip',FTP_BINARY);
 
 					ftp_close($ftpConn);

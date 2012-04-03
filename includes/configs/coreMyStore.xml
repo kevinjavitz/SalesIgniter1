@@ -205,7 +205,7 @@ Casa Grande, AZ  85122]]></value>
 				</TEMPLATE_SWITCHING_MENU>
 				<DIR_WS_TEMPLATES_DEFAULT>
 					<title><![CDATA[Default Template Directory]]></title>
-					<value><![CDATA[fallback]]></value>
+					<value><![CDATA[newred]]></value>
 					<description><![CDATA[Subdirectory (in templates/) where the template files are stored which should be loaded by default.]]></description>
 					<set_function>
 						<type>selectbox</type>

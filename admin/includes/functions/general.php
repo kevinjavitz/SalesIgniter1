@@ -1444,6 +1444,23 @@ function tep_cfg_pull_down_order_status_list($status_id, $key = '') {
 	return '<br>' . $htmlSelect->draw();
 }
 
+function itw_get_templates_array(){
+	$templates = new fileSystemBrowser(sysConfig::getDirFsCatalog()  . 'templates/');
+	$directories = $templates->getDirectories(array('email', 'help', 'help-text'));
+	$templatesArray = array();
+	foreach($directories as $dirInfo){
+		$templatesArray[] = array(
+			'id' => $dirInfo['basename'],
+			'text' => ucfirst($dirInfo['basename'])
+		);
+	}
+
+	usort($templatesArray, function ($a, $b){
+		return ($a['id']{0} > $b['id']{0} ? 1 : -1);
+	});
+
+	return $templatesArray;
+}
 
 function tep_cfg_pull_down_template_list($templateName){
 	$templates = new fileSystemBrowser(sysConfig::getDirFsCatalog()  . 'templates/');
