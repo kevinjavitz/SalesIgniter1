@@ -363,7 +363,7 @@ class Extension_customFields extends ExtensionBase {
 			    }else{
 				    $query =  Doctrine_Manager::getInstance()
 					    ->getCurrentConnection()
-					    ->fetchAssoc('SELECT f2p.product_id FROM products_custom_fields_to_products f2p LEFT JOIN products_custom_fields f using(field_id) WHERE f.search_key = "' . $k . '" AND f2p.value LIKE "%' . str_replace('.', '%', $v) . '%")');
+					    ->fetchAssoc('SELECT f2p.product_id FROM products_custom_fields_to_products f2p LEFT JOIN products_custom_fields f using(field_id) WHERE f.search_key = "' . $k . '" AND f2p.value LIKE "%' . str_replace('.', '%', $v) . '%"');
 			    }
 			    if(sizeof($query) > 0){
 				    foreach($query as $result){
