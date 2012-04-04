@@ -2,6 +2,7 @@
 
 
  	$selectedFacebook = (isset($WidgetSettings->facebook)?$WidgetSettings->facebook:'');
+	$selectedGooglePlus = (isset($WidgetSettings->googlePlus)?$WidgetSettings->googlePlus:'');
    	$selectedTwitter = (isset($WidgetSettings->twitter)?$WidgetSettings->twitter:'');
 	$selectedLinked = (isset($WidgetSettings->linked)?$WidgetSettings->linked:'');
 	$selectedBeforeText = (isset($WidgetSettings->beforeText)?$WidgetSettings->beforeText:'');
@@ -10,6 +11,10 @@
 	$linkFacebook = htmlBase::newElement('input')
 	->setName('facebook')
 	->setValue($selectedFacebook);
+
+	$linkGooglePlus = htmlBase::newElement('input')
+	->setName('googlePlus')
+	->setValue($selectedGooglePlus);
 
 	$linkLinked = htmlBase::newElement('input')
 	->setName('linked')
@@ -51,6 +56,13 @@
 		'columns' => array(
 			array('text' => 'Facebook Link:'),
 			array('text' => $linkFacebook->draw())
+		)
+	));
+
+	$WidgetSettingsTable->addBodyRow(array(
+		'columns' => array(
+			array('text' => 'Google Plus Link:'),
+			array('text' => $linkGooglePlus->draw())
 		)
 	));
 

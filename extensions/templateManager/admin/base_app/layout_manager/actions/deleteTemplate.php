@@ -23,7 +23,6 @@ if ($Template){
 	}
 	$Template->delete();
 
-	if (isset($_GET['deleteFiles']) && $_GET['deleteFiles'] == 'true'){
 		$Ftp = new SystemFTP();
 		$Ftp->connect();
 
@@ -43,9 +42,8 @@ if ($Template){
 				$Ftp->deleteFile(str_replace(sysConfig::getDirFsCatalog(), '', $d->getPathname()));
 			}
 		}
-		$Ftp->deleteDir('templates/' . $Template);
+		$Ftp->deleteDir('templates/' . $TemplateDir);
 		$Ftp->disconnect();
-	}
 }
 
 EventManager::attachActionResponse(array(

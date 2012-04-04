@@ -15,6 +15,11 @@ if(!isset($_GET['actualPage'])){
 $thisExtension = (isset($_GET['appExt']) ? $_GET['appExt'] : '');
 $thisTemplate = Session::get('tplDir');
 
+//load language
+if(file_exists(sysConfig::getDirFsCatalog() .'templates/'.$thisTemplate . '/language_defines/global.xml')){
+	sysLanguage::loadDefinitions(sysConfig::getDirFsCatalog() .'templates/'.$thisTemplate . '/language_defines/global.xml');
+}
+
 $layoutPath = sysConfig::getDirFsCatalog() . 'extensions/templateManager/mainFiles';
 if(!isset($_GET['tplDir']) || $_GET['tplDir'] != 'codeGeneration'){
 	if (file_exists(sysConfig::getDirFsCatalog() . 'templates/' . Session::get('tplDir') . '/layout.tpl')){

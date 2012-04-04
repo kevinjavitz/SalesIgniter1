@@ -163,5 +163,31 @@
 	$pageContents = ob_get_contents();
 	ob_end_clean();
 
-	$pageContent->set('pageTitle', $pageTitle);
-	$pageContent->set('pageContent', $pageContents);
+$pageContent->set('pageTitle', $pageTitle);
+$pageContent->set('pageContent', $pageContents);
+
+
+$link = itw_app_link(null, 'products', 'all');
+$lastPath = $navigation->getPath(2);
+if ($lastPath){
+	$getVars = array();
+	if (is_array($lastPath['get'])){
+		foreach($lastPath['get'] as $k => $v){
+			if($k == 'app' || $k == 'appPage')
+				continue;
+			$getVars[] = $k . '=' . $v;
+		}
+	}else{
+		$getVars[] = $lastPath['get'];
+	}
+
+	$link = itw_app_link(implode('&', $getVars), $lastPath['app'], $lastPath['appPage'], $lastPath['mode']);
+
+
+	$pageButtons = htmlBase::newElement('button')
+	->addClass('infoBack')
+	->usePreset('back')
+	->setHref($link)
+	->draw();
+	$pageContent->set('pageButtons', $pageButtons);
+}

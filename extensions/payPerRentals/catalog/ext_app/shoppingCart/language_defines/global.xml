@@ -1,3 +1,3 @@
 <definitions>
-	<define key="TEXT_BUTTON_CHECKOUT"><![CDATA[Submit Reservation (No Payment Necessary)]]></define>
+	<define key="TEXT_BUTTON_CHECKOUT"><![CDATA[Checkout]]></define>
 </definitions>
