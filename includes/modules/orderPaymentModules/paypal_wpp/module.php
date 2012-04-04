@@ -12,8 +12,7 @@
 
 class OrderPaymentPaypal_wpp extends CreditCardModule
 {
-	private $gatewayUrl;
-
+	private $gatewayUrl; private $details;
 	public function __construct() {
 		/*
 					 * Default title and description for modules that are not yet installed
@@ -44,11 +43,9 @@ class OrderPaymentPaypal_wpp extends CreditCardModule
 				$subDomain = '';
 			}
 			$this->gatewayUrl = 'https://api-3t.' . $subDomain . 'paypal.com/nvp';
-			/*
-							 * Use Authorize.net's param dump to show what they are recieving from the server
-							 */
-			//$this->gatewayUrl = 'https://developer.authorize.net/param_dump.asp';
+			
 		}
+
 	}
 
 	public function onSelect() {
@@ -199,13 +196,18 @@ class OrderPaymentPaypal_wpp extends CreditCardModule
 			->andWhereIn('ot.module_type', array('total', 'ot_total'))
 			->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 
+		$userAccount = OrderPaymentModules::getUserAccount();
+		$addressBook =& $userAccount->plugins['addressBook'];
+		$billingAddress = $addressBook->getAddress('billing');
+		$state_abbr = tep_get_zone_code($billingAddress['entry_country_id'], $billingAddress['entry_zone_id'], $billingAddress['entry_state']);
+
+
+
 		$xExpDate = cc_decrypt($Qorder[0]['Customers']['CustomersMembership']['exp_date']);
 		include(sysConfig::getDirFsCatalog() . 'includes/classes/cc_validation.php');
 		$validator = new cc_validation();
-		//get state abbreviation from orders addresses data
-		$state_abbr = 'CA';
 		return $this->sendPaymentRequest(array(
-				'amount' => $Qorder[0]['OrdersTotal'][0]['value'],
+				'amount' => round($Qorder[0]['OrdersTotal'][0]['value'],2),
 				'currencyCode' => $this->currencyValue,
 				'orderID' => $orderID,
 				'description' => sysConfig::get('STORE_NAME') . ' Subscription Payment',
@@ -290,10 +292,10 @@ class OrderPaymentPaypal_wpp extends CreditCardModule
 		if (isset($requestParams['cardCvv'])) {
 			$dataArray['CVV2'] = $requestParams['cardCvv'];
 		}
+		$this->details=$dataArray;
 
 		$CurlRequest = new CurlRequest($this->gatewayUrl);
 		$CurlRequest->setData($dataArray);
-		//echo $CurlRequest->getDataFormatted().'lll';
 		$CurlResponse = $CurlRequest->execute();
 
 		return $this->onResponse($CurlResponse);
@@ -354,29 +356,22 @@ class OrderPaymentPaypal_wpp extends CreditCardModule
 
 	private function onSuccess($info) {
 		global $order;
-		$ResponseData = explode('&', $info['curlResponse']->getResponse());
-		$httpParsedResponseAr = array();
-		foreach($ResponseData as $i => $value){
-			$tmpAr = explode("=", $value);
-			if (sizeof($tmpAr) > 1){
-				$httpParsedResponseAr[$tmpAr[0]] = $tmpAr[1];
-			}
-		}
+		$response=$info['curlResponse']->getResponse();
 		$userAccount = OrderPaymentModules::getUserAccount();
 		$paymentInfo = OrderPaymentModules::getPaymentInfo();
 		$addressBook =& $userAccount->plugins['addressBook'];
 		$billingAddress = $addressBook->getAddress('billing');
 
 		$this->logPayment(array(
-				'orderID' => $order->newOrder['orderID'],
-				'amount' => $order->info['total'],
-				'message' => $httpParsedResponseAr['TRANSACTIONID'],
+				'orderID' => $this->details['INVNUM'],
+				'amount' => $this->details['AMT'],
+				'message' => $response,
 				'success' => 1,
 				'cardDetails' => array(
-					'cardOwner' => $billingAddress['entry_firstname'] . ' ' . $billingAddress['entry_lastname'],
-					'cardNumber' => $paymentInfo['cardDetails']['cardNumber'],
-					'cardExpMonth' => $paymentInfo['cardDetails']['cardExpMonth'],
-					'cardExpYear' => $paymentInfo['cardDetails']['cardExpYear']
+					'cardOwner' => $this->details['FIRSTNAME'] . " " . $this->details['LASTNAME'],
+					'cardNumber' => $this->details['ACCT'],
+					'cardExpMonth' => substr($this->details['EXPDATE'], 0, 2),
+					'cardExpYear' => substr($this->details['EXPDATE'], 4, 2)
 				)
 			));
 	}
@@ -384,6 +379,7 @@ class OrderPaymentPaypal_wpp extends CreditCardModule
 	private function onFail($info) {
 		global $messageStack, $order;
 		$orderId = $order->newOrder['orderID'];
+		$response=$info['curlResponse']->getResponse();
 		$this->setErrorMessage($this->getTitle() . ' : ' . $info['message']);
 		$messageStack->addSession('pageStack', $info['message'], 'error');
 		if ($this->removeOrderOnFail === true){
@@ -398,17 +394,16 @@ class OrderPaymentPaypal_wpp extends CreditCardModule
 			$paymentInfo = OrderPaymentModules::getPaymentInfo();
 			$addressBook =& $userAccount->plugins['addressBook'];
 			$billingAddress = $addressBook->getAddress('billing');
-
 			$this->logPayment(array(
-					'orderID' => $order->newOrder['orderID'],
-					'amount' => $order->info['total'],
-					'message' => '',
-					'success' => 01,
+					'orderID' => $this->details['INVNUM'],
+					'amount' => $this->details['AMT'],
+					'message' => $response,
+					'success' => 1,
 					'cardDetails' => array(
-						'cardOwner' => $billingAddress['entry_firstname'] . ' ' . $billingAddress['entry_lastname'],
-						'cardNumber' => $paymentInfo['cardDetails']['cardNumber'],
-						'cardExpMonth' => $paymentInfo['cardDetails']['cardExpMonth'],
-						'cardExpYear' => $paymentInfo['cardDetails']['cardExpYear']
+						'cardOwner' => $this->details['FIRSTNAME'] . " " . $this->details['LASTNAME'],
+						'cardNumber' => $this->details['ACCT'],
+						'cardExpMonth' => substr($this->details['EXPDATE'], 0 , 2),
+						'cardExpYear' => substr($this->details['EXPDATE'], 4, 2)
 					)
 				));
 		}
