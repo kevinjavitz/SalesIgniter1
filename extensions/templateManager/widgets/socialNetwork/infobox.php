@@ -19,14 +19,15 @@ class InfoBoxSocialNetwork extends InfoBoxAbstract {
 
 		$boxWidgetProperties = $this->getWidgetProperties();
 		$facebook = (isset($boxWidgetProperties->facebook) && $boxWidgetProperties->facebook!= '')?'<a target="_blank" href="'.$boxWidgetProperties->facebook.'"><img src="'. sysConfig::getDirWsCatalog() .'templates/' . Session::get('tplDir') . '/images/facebookSocial.png" /></a>'. $boxWidgetProperties->facebookText:'';
+		$googlePlus = (isset($boxWidgetProperties->googlePlus) && $boxWidgetProperties->googlePlus!= '')?'<a target="_blank" href="'.$boxWidgetProperties->googlePlus.'"><img src="'. sysConfig::getDirWsCatalog() .'templates/' . Session::get('tplDir') . '/images/googleSocial.png" /></a>'. $boxWidgetProperties->googleText:'';
 		$twitter = (isset($boxWidgetProperties->twitter) && $boxWidgetProperties->twitter != '')?'<a href="'.$boxWidgetProperties->twitter.'" target="_blank"><img src="'. sysConfig::getDirWsCatalog().'templates/' . Session::get('tplDir') . '/images/twitterSocial.png" /></a>'. $boxWidgetProperties->twitterText:'';
-		$linked = (isset($boxWidgetProperties->linked) && $boxWidgetProperties->linked != '')?'<a href="'.$boxWidgetProperties->twitter.'" target="_blank"><img src="'. sysConfig::getDirWsCatalog() .'templates/'.Session::get('tplDir').'/images/linkedinSocial.png" /></a>'. $boxWidgetProperties->linkedText:'';
+		$linked = (isset($boxWidgetProperties->linked) && $boxWidgetProperties->linked != '')?'<a href="'.$boxWidgetProperties->linked.'" target="_blank"><img src="'. sysConfig::getDirWsCatalog() .'templates/'.Session::get('tplDir').'/images/linkedinSocial.png" /></a>'. $boxWidgetProperties->linkedText:'';
 		$email = (isset($boxWidgetProperties->email) && $boxWidgetProperties->email != '')?'<a href="'.$boxWidgetProperties->email.'" target="_blank"><img src="'. sysConfig::getDirWsCatalog().'templates/'.Session::get('tplDir') .'/images/emailSocial.png" /></a>'. $boxWidgetProperties->emailText:'';
 		$beforeText = (isset($boxWidgetProperties->beforeText) && $boxWidgetProperties->beforeText != '')?$boxWidgetProperties->beforeText:'';
 
 		$htmlText = htmlBase::newElement('div')
 		->addClass('socialNetwork')
-		->html($beforeText . $facebook .$linked. $twitter .$email);
+		->html($beforeText . $facebook .$linked. $twitter . $googlePlus.$email);
 
 		$this->setBoxContent($htmlText->draw());
 		return $this->draw();

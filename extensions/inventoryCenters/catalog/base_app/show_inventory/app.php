@@ -10,4 +10,5 @@
 	This script and it's source is not redistributable
 */
 	$appContent = $App->getAppContentFile();
+	$navigation->add_current_page();
 ?>

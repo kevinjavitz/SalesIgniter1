@@ -160,7 +160,7 @@ class Session {
 		if (
 			(basename($_SERVER['PHP_SELF']) != 'stylesheet.php') &&
 			(basename($_SERVER['PHP_SELF']) != 'javascript.php') &&
-			($_GET['rType'] != 'ajax' && APPLICATION_ENVIRONMENT == 'admin' || APPLICATION_ENVIRONMENT == 'catalog')
+			(isset($_GET['rType']) && $_GET['rType'] != 'ajax' && APPLICATION_ENVIRONMENT == 'admin' || APPLICATION_ENVIRONMENT == 'catalog' || APPLICATION_ENVIRONMENT == 'admin' && !isset($_GET['rType']))
 		){
 			$Check = Doctrine_Manager::getInstance()
 				->getCurrentConnection()

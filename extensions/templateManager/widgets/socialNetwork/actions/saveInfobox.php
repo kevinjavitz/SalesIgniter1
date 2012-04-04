@@ -2,6 +2,10 @@
 	if(isset($_POST['facebook'])){
 		$WidgetProperties['facebook'] = $_POST['facebook'];
 	}
+
+	if(isset($_POST['googlePlus'])){
+		$WidgetProperties['googlePlus'] = $_POST['googlePlus'];
+	}
 	if(isset($_POST['twitter'])){
 		$WidgetProperties['twitter'] = $_POST['twitter'];
 	}

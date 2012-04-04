@@ -242,6 +242,10 @@
 
 				$FormTable->addRow(sysLanguage::get('ENTRY_CITY'));
 				$FormTable->addRow($Fields['city']);
+				if(sysConfig::get('CHECKOUT_COUNTRY_BEFORE_STATE') == 'True'){
+					$FormTable->addRow(sysLanguage::get('ENTRY_COUNTRY'));
+					$FormTable->addRow($Fields['country']);
+				}
 
 				if (isset($Fields['state'])){
 					$FormTable->addRow(sysLanguage::get('ENTRY_STATE'));
@@ -251,8 +255,11 @@
 				$FormTable->addRow(sysLanguage::get('ENTRY_POST_CODE'));
 				$FormTable->addRow($Fields['postcode']);
 
-				$FormTable->addRow(sysLanguage::get('ENTRY_COUNTRY'));
-				$FormTable->addRow($Fields['country']);
+				if(sysConfig::get('CHECKOUT_COUNTRY_BEFORE_STATE') == 'False'){
+					$FormTable->addRow(sysLanguage::get('ENTRY_COUNTRY'));
+					$FormTable->addRow($Fields['country']);
+				}
+
 
 				if (isset($Fields['telephone'])){
 					$FormTable->addRow(sysLanguage::get('ENTRY_TELEPHONE_NUMBER'));
