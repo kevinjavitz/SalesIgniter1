@@ -462,9 +462,6 @@ foreach($httpResponseAr as $val)
 		global $messageStack, $order;
 		$orderId = $order->newOrder['orderID'];
 		$response=$info['curlResponse']->getResponse();
-$fp=fopen("/home/josh0ren/public_html/log.txt", "w");
-fwrite($fp, "\n\ndata: " . print_r($this->details, true) . "response: " . $response);
-fclose($fp);
 		$this->setErrorMessage($this->getTitle() . ' : ' . $info['message']);
 		$messageStack->addSession('pageStack', $info['message'], 'error');
 		if ($this->removeOrderOnFail === true){
