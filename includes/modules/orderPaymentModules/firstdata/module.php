@@ -12,12 +12,12 @@
 
 class OrderPaymentFirstData extends CreditCardModule
 {
-       	private $gatewayUrl;
+       	private $gatewayUrl; private $details;
 		
 	public function __construct() {
 
 		//is called 5 times with one order? synchro errors requires private gatewayUrl variable
-		
+
 		$this->setTitle('Credit Card Via First Data GG');
 		$this->setDescription('Credit Card Via First Data GG');
 
@@ -118,6 +118,7 @@ class OrderPaymentFirstData extends CreditCardModule
 		
 		$CurlRequest->setOption(CURLOPT_SSLCERT, $this->getConfigData('MODULE_PAYMENT_FIRSTDATA_CERTPATH'));
 		$CurlRequest->setOption(CURLOPT_SSLKEY, $this->getConfigData('MODULE_PAYMENT_FIRSTDATA_KEYPATH'));
+		$this->details=$dataArray;
 
 		$CurlResponse = $CurlRequest->execute();
 		$response = $CurlResponse->getResponse();
@@ -149,7 +150,6 @@ class OrderPaymentFirstData extends CreditCardModule
 
 		public function processPayment($orderID = null, $amount = null){
 			global $order, $onePageCheckout;
-
 		$this->removeOrderOnFail = false;
 
 		$paymentAmount = $order->info['total'];
@@ -163,6 +163,8 @@ class OrderPaymentFirstData extends CreditCardModule
 		$xExpDate = $paymentInfo['cardDetails']['cardExpMonth'] . $paymentInfo['cardDetails']['cardExpYear'];
 		$state_abbr = tep_get_zone_code($billingAddress['entry_country_id'], $billingAddress['entry_zone_id'], $billingAddress['entry_state']);
 		$cardOwner = explode(' ', $paymentInfo['cardDetails']['cardOwner']);
+	
+		
 
 		return $this->sendPaymentRequest(array(
 				'amount' => $paymentAmount,
@@ -193,7 +195,6 @@ class OrderPaymentFirstData extends CreditCardModule
 
 	public function processPaymentCron($orderID) {
 		$this->removeOrderOnFail = false;
-
 		$Qorder = Doctrine_Query::create()
 			->from('Orders o')
 			->leftJoin('o.Customers c')
@@ -204,12 +205,16 @@ class OrderPaymentFirstData extends CreditCardModule
 			->andWhere('oa.address_type = ?', 'billing')
 			->andWhereIn('ot.module_type', array('total', 'ot_total'))
 			->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+		$userAccount = OrderPaymentModules::getUserAccount();
+		$addressBook =& $userAccount->plugins['addressBook'];
+		$billingAddress = $addressBook->getAddress('billing');
+		$state_abbr = tep_get_zone_code($billingAddress['entry_country_id'], $billingAddress['entry_zone_id'], $billingAddress['entry_state']);
+
 
 		$xExpDate = cc_decrypt($Qorder[0]['Customers']['CustomersMembership']['exp_date']);
 		include(sysConfig::getDirFsCatalog() . 'includes/classes/cc_validation.php');
 		$validator = new cc_validation();
-		//get state abbreviation from orders addresses data
-		$state_abbr = 'CA';
+		
 		return $this->sendPaymentRequest(array(
 				'amount' => $Qorder[0]['OrdersTotal'][0]['value'],
 				'currencyCode' => $this->currencyValue,
@@ -295,6 +300,8 @@ class OrderPaymentFirstData extends CreditCardModule
 			$dataArray['ip'] = array($requestParams['customerIp']);
 		}
 		//end transactiondetails
+		$this->details=$dataArray;
+
 	
 		$CurlRequest = new CurlRequest($this->gatewayUrl);
 	
@@ -306,7 +313,11 @@ class OrderPaymentFirstData extends CreditCardModule
 		$formatted=preg_replace("/<\/chargetotal>/", '</chargetotal></payment><creditcard>', $formatted);
 		$formatted=preg_replace("/<\/cvmindicator>/", '</cvmindicator></creditcard><billing>' , $formatted);
 		$formatted=preg_replace("/<\/userid>/", '</userid></billing><transactiondetails>' , $formatted);
-		$formatted=preg_replace("/<\/ip>/", '</ip></transactiondetails>', $formatted);
+		if (isset($requestParams['customerIp'])) {
+			$formatted=preg_replace("/<\/ip>/", '</ip></transactiondetails>', $formatted);
+		} else {
+			$formatted=preg_replace("/<\/oid>/", '</oid></transactiondetails>', $formatted);	
+		}
 		$formatted=preg_replace('/<\?xml version="1.0"\?>/', '' , $formatted);
 		$formatted=preg_replace('/<0>/', '', $formatted);
 		$formatted=preg_replace('/<\/0>/', '' , $formatted);
@@ -329,8 +340,10 @@ class OrderPaymentFirstData extends CreditCardModule
 		$CurlRequest->setOption(CURLOPT_SSLKEY, $this->getConfigData('MODULE_PAYMENT_FIRSTDATA_KEYPATH'));
 
 		$CurlResponse = $CurlRequest->execute();
+	
 
 		return $this->onResponse($CurlResponse);
+
 	}
 
 	private function onResponse($CurlResponse, $isCron = false) {
@@ -358,6 +371,7 @@ class OrderPaymentFirstData extends CreditCardModule
 			}
 		}
 
+
 		if ($isCron === true){
 			$this->cronMsg = $errMsg;
 		}
@@ -379,31 +393,24 @@ class OrderPaymentFirstData extends CreditCardModule
 
 	private function onSuccess($info) {
 		global $order;
-		$ResponseData = explode('&', $info['curlResponse']->getResponse());
-		$httpParsedResponseAr = array();
-		foreach($ResponseData as $i => $value){
-			$tmpAr = explode("=", $value);
-			if (sizeof($tmpAr) > 1){
-				$httpParsedResponseAr[$tmpAr[0]] = $tmpAr[1];
-			}
-		}
+		$response = $info['curlResponse']->getResponse();
 		$userAccount = OrderPaymentModules::getUserAccount();
 		$paymentInfo = OrderPaymentModules::getPaymentInfo();
 		$addressBook =& $userAccount->plugins['addressBook'];
 		$billingAddress = $addressBook->getAddress('billing');
 
 		$this->logPayment(array(
-				'orderID' => $order->newOrder['orderID'],
-				'amount' => $order->info['total'],
-				'message' => $httpParsedResponseAr['TRANSACTIONID'],
+				'orderID' => $this->details['oid'],
+				'amount' => $this->details['chargetotal'],
+				'message' => $response , //transactionid
 				'success' => 1,
 				'cardDetails' => array(
-					'cardOwner' => $billingAddress['entry_firstname'] . ' ' . $billingAddress['entry_lastname'],
-					'cardNumber' => $paymentInfo['cardDetails']['cardNumber'],
-					'cardExpMonth' => $paymentInfo['cardDetails']['cardExpMonth'],
-					'cardExpYear' => $paymentInfo['cardDetails']['cardExpYear']
+					'cardOwner' => $this->details['name'],
+					'cardNumber' => $this->details['cardnumber'],
+					'cardExpMonth' => $this->details['cardexpmonth'],
+					'cardExpYear' => $this->details['cardexpyear']
 				)
-			));
+			));  
 	}
 
 	private function onFail($info) {
@@ -411,6 +418,7 @@ class OrderPaymentFirstData extends CreditCardModule
 		$orderId = $order->newOrder['orderID'];
 		$this->setErrorMessage($this->getTitle() . ' : ' . $info['message']);
 		$messageStack->addSession('pageStack', $info['message'], 'error');
+
 		if ($this->removeOrderOnFail === true){
 			$Order = Doctrine_Core::getTable('Orders')->find($orderId);
 			if ($Order){
@@ -425,20 +433,19 @@ class OrderPaymentFirstData extends CreditCardModule
 			$billingAddress = $addressBook->getAddress('billing');
 
 			$this->logPayment(array(
-					'orderID' => $order->newOrder['orderID'],
-					'amount' => $order->info['total'],
-					'message' => '',
-					'success' => 01,
-					'cardDetails' => array(
-						'cardOwner' => $billingAddress['entry_firstname'] . ' ' . $billingAddress['entry_lastname'],
-						'cardNumber' => $paymentInfo['cardDetails']['cardNumber'],
-						'cardExpMonth' => $paymentInfo['cardDetails']['cardExpMonth'],
-						'cardExpYear' => $paymentInfo['cardDetails']['cardExpYear']
-					)
-				));
+				'orderID' => $this->details['oid'],
+				'amount' => $this->details['chargetotal'],
+				'message' => $response , //transactionid
+				'success' => 1,
+				'cardDetails' => array(
+					'cardOwner' => $this->details['name'],
+					'cardNumber' => $this->details['cardnumber'],
+					'cardExpMonth' => $this->details['cardexpmonth'],
+					'cardExpYear' => $this->details['cardexpyear']
+				)
+			));  
 		}
 
-	}
-}
+	}}
 
 ?>
