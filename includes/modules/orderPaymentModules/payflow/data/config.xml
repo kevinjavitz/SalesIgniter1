@@ -61,21 +61,21 @@
 	    <tab><![CDATA[General]]></tab>
 		<title><![CDATA[E-Mail Address]]></title>
 		<key><![CDATA[MODULE_PAYMENT_PAYFLOW_USER]]></key>
-		<value><![CDATA[pro_1299838585_biz@itwebexperts.com]]></value>
+		<value><![CDATA[]]></value>
 		<description><![CDATA[Payflow username(Merchant ID)]]></description>
 	</configuration>
 	<configuration>
 		<tab><![CDATA[General]]></tab>
 		<title><![CDATA[API Username]]></title>
 		<key><![CDATA[MODULE_PAYMENT_PAYFLOW_API_VENDOR]]></key>
-		<value><![CDATA[pro_1299838585_biz_api1.itwebexperts.com]]></value>
+		<value><![CDATA[]]></value>
 		<description><![CDATA[Payflow vendor]]></description>
 	</configuration>
 	<configuration>
 		<tab><![CDATA[General]]></tab>
 		<title><![CDATA[API Password]]></title>
 		<key><![CDATA[MODULE_PAYMENT_PAYFLOW_API_PASSWORD]]></key>
-		<value><![CDATA[1299838629]]></value>
+		<value><![CDATA[]]></value>
 		<description><![CDATA[Payflow password]]></description>
 	</configuration>
 	<configuration>

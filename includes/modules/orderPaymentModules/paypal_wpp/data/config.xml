@@ -61,28 +61,28 @@
 	    <tab><![CDATA[General]]></tab>
 		<title><![CDATA[E-Mail Address]]></title>
 		<key><![CDATA[MODULE_PAYMENT_PAYPALWPP_ID]]></key>
-		<value><![CDATA[pro_1299838585_biz@itwebexperts.com]]></value>
+		<value><![CDATA[]]></value>
 		<description><![CDATA[The e-mail address to use for the Paypal WPP service]]></description>
 	</configuration>
 	<configuration>
 		<tab><![CDATA[General]]></tab>
 		<title><![CDATA[API Username]]></title>
 		<key><![CDATA[MODULE_PAYMENT_PAYPALWPP_API_USERNAME]]></key>
-		<value><![CDATA[pro_1299838585_biz_api1.itwebexperts.com]]></value>
+		<value><![CDATA[]]></value>
 		<description><![CDATA[Paypal API Username]]></description>
 	</configuration>
 	<configuration>
 		<tab><![CDATA[General]]></tab>
 		<title><![CDATA[API Password]]></title>
 		<key><![CDATA[MODULE_PAYMENT_PAYPALWPP_API_PASSWORD]]></key>
-		<value><![CDATA[1299838629]]></value>
+		<value><![CDATA[]]></value>
 		<description><![CDATA[Paypal API Password]]></description>
 	</configuration>
 	<configuration>
 		<tab><![CDATA[General]]></tab>
 		<title><![CDATA[API Signature]]></title>
 		<key><![CDATA[MODULE_PAYMENT_PAYPALWPP_API_SIGNATURE]]></key>
-		<value><![CDATA[ATzvfFlNFTe0HS7SSfmXnvhfJMMZA11yRjCXBxYKuHQBM58oFUYIJVGW]]></value>
+		<value><![CDATA[]]></value>
 		<description><![CDATA[Paypal API Signature]]></description>
 	</configuration>
 	<configuration>

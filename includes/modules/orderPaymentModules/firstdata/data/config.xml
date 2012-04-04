@@ -61,21 +61,21 @@
 	    <tab><![CDATA[General]]></tab>
 		<title><![CDATA[Store Number]]></title>
 		<key><![CDATA[MODULE_PAYMENT_FIRSTDATA_STORENUMBER]]></key>
-		<value><![CDATA[1909936362]]></value>
+		<value><![CDATA[]]></value>
 		<description><![CDATA[The store number associated with the FirstData GG]]></description>
 	</configuration>
 	<configuration>
 		<tab><![CDATA[General]]></tab>
 		<title><![CDATA[FirstData Key Path]]></title>
 		<key><![CDATA[MODULE_PAYMENT_FIRSTDATA_KEYPATH]]></key>
-		<value><![CDATA[/home/josh0ren/firstdata.key]]></value>
+		<value><![CDATA[]]></value>
 		<description><![CDATA[The full path to the FirstData GG key file]]></description>
 	</configuration>
 	<configuration>
 		<tab><![CDATA[General]]></tab>
 		<title><![CDATA[FirstData Cert Path]]></title>
 		<key><![CDATA[MODULE_PAYMENT_FIRSTDATA_CERTPATH]]></key>
-		<value><![CDATA[/home/josh0ren/firstdata.pem]]></value>
+		<value><![CDATA[]]></value>
 		<description><![CDATA[The full path to the FirstData GG certificate (.pem) file]]></description>
 	</configuration>
 	<configuration>
