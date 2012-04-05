@@ -80,7 +80,7 @@
 				<RENTAL_DAYS_CUSTOMER_PAST_DUE>
 					<title><![CDATA[How many days past due the customer is allowed to rent and receive items]]></title>
 					<value><![CDATA[3]]></value>
-					<description><![CDATA[How many days past due the customer is allowed to rent and receive items]]></description>
+					<description><![CDATA[How many days past due the customer is allowed to rent and receive items(A negative number means that they will show past due before their next bill date)]]></description>
 				</RENTAL_DAYS_CUSTOMER_PAST_DUE>
 				<REQUEST_PICKUP_BEFORE_DAYS>
 					<title><![CDATA[How many days to not show on the request pickup or delivery]]></title>

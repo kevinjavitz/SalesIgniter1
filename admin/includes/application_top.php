@@ -155,16 +155,6 @@ require(sysConfig::getDirFsCatalog() . 'includes/modules/orderTotalModules/modul
 
 	$appExtension->loadExtensions();
 
-	if (Session::exists('currency') === false || isset($_GET['currency']) || ( (sysConfig::get('USE_DEFAULT_LANGUAGE_CURRENCY') == 'true') && (sysConfig::get('LANGUAGE_CURRENCY') != Session::get('currency')) ) ) {
-		if (isset($_GET['currency'])) {
-			if (!$currency = tep_currency_exists($_GET['currency'])) $currency = (sysConfig::get('USE_DEFAULT_LANGUAGE_CURRENCY') == 'true') ? sysConfig::get('LANGUAGE_CURRENCY') : sysConfig::get('DEFAULT_CURRENCY');
-		} else {
-			$currency = (sysConfig::get('USE_DEFAULT_LANGUAGE_CURRENCY') == 'true') ? sysConfig::get('LANGUAGE_CURRENCY') : sysConfig::get('DEFAULT_CURRENCY');
-		}
-		Session::set('currency', $currency);
-	}
-
-
 $appExtension->initApplicationPlugins();
 
 	if (isset($_GET['verifyModels'])){

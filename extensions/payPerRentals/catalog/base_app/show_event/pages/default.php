@@ -18,3 +18,7 @@
 	$pageContent->set('pageTitle', $pageTitle);
 	$pageContent->set('pageContent', $pageContents);
 	$pageContent->set('pageButtons', $pageButtons);
+
+	if (isset($_GET['dialog'])){
+		$Template->setPopupMode(true);
+	}

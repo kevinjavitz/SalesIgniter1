@@ -86,7 +86,7 @@ class Extension_pdfPrinter extends ExtensionBase {
 	public function AdminOrderDetailsAddButton($oID, &$infoBox){
 
 		$pdfinvoiceButton = htmlBase::newElement('button')->setText(sysLanguage::get('TEXT_BUTTON_INVOICE_PDF'))
-		->setHref(itw_catalog_app_link('appExt=pdfPrinter&oID=' . $oID, 'generate_pdf', 'default'));
+		->setHref(itw_catalog_app_link('appExt=pdfPrinter&oID=' . $oID.(isset($_GET['isEstimate'])?'&isEstimate=1':''), 'generate_pdf', 'default'));
 
 		$infoBox->append($pdfinvoiceButton);
 	}
@@ -94,7 +94,7 @@ class Extension_pdfPrinter extends ExtensionBase {
 	public function AdminOrderCreatorAddButton(&$infoBox){
 		if(isset($_GET['oID'])){
 			$pdfinvoiceButton = htmlBase::newElement('button')->setText(sysLanguage::get('TEXT_BUTTON_INVOICE_PDF'))
-			->setHref(itw_catalog_app_link('appExt=pdfPrinter&oID=' . $_GET['oID'], 'generate_pdf', 'default'));
+			->setHref(itw_catalog_app_link('appExt=pdfPrinter&oID=' . $_GET['oID'].(isset($_GET['isEstimate'])?'&isEstimate=1':''), 'generate_pdf', 'default'));
 
 			$infoBox->append($pdfinvoiceButton);
 		}

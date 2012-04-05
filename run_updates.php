@@ -923,6 +923,55 @@ function updateToolsConfiguration(){
 		$Variable->save();
 	}
 
+	addEmailTemplate('(Admin) Estimate Success','estimate_success','','Estimate Receipt','{$store_name} -
+------------------------------------------------------------------
+Estimate Order ID: {$order_id}
+Estimate Invoice URL: {$invoice_link}
+Date Ordered: {$date_ordered}
+<!-- if ($rental_city)
+Rental City/Town: {$rental_city}
+Delivery Depot: {$delivery_depot}
+-->
+
+{$order_comments}
+
+Products Ordered:
+------------------------------------------------------------------
+{$ordered_products}
+------------------------------------------------------------------
+{$orderTotals}
+
+<!-- if ($shipping_address)
+Shipping Address
+------------------------------------------------------------------
+{$shipping_address}
+
+-->
+Billing Address
+------------------------------------------------------------------
+{$billing_address}
+
+
+Payment Method
+------------------------------------------------------------------
+{$paymentTitle}
+<!-- if ($po_number)
+{$po_number}
+-->
+<!-- if ($payment_footer)
+{$payment_footer}
+-->
+
+{$terms}');
+	addEmailTemplateVariables('order_id','estimate_success');
+	addEmailTemplateVariables('invoice_link','estimate_success');
+	addEmailTemplateVariables('date_ordered','estimate_success');
+	addEmailTemplateVariables('ordered_products','estimate_success');
+	addEmailTemplateVariables('orderTotals','estimate_success');
+	addEmailTemplateVariables('billing_address','estimate_success');
+	addEmailTemplateVariables('paymentTitle','estimate_success');
+	addEmailTemplateVariables('terms','estimate_success');
+
 	addEmailTemplate('Return Reminders','return_reminder','','Return Reminder Alert','Hello {$firstname},<br/><br/>The following products are to be returned {$rented_list}<br/><br/>Regards,<br/>{$store_owner}');
 	addEmailTemplateVariables('firstname','return_reminder');
 	addEmailTemplateVariables('email_address','return_reminder');

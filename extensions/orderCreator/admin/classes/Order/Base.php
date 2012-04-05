@@ -435,6 +435,85 @@ class OrderCreator extends Order implements Serializable {
 		}
 	}
 
+	public function sendUpdateOrderEmail($CollectionObj){
+		global $appExtension, $currencies;
+		$DeliveryAddress = $this->AddressManager->getAddress('delivery');
+		$BillingAddress = $this->AddressManager->getAddress('billing');
+
+		$sendToFormatted = $this->AddressManager->showAddress($DeliveryAddress, false);
+		$billToFormatted = $this->AddressManager->showAddress($BillingAddress, false);
+
+		$products_ordered = '';
+		foreach($CollectionObj->OrdersProducts as $opInfo){
+			$products_ordered .= sprintf("%s x %s (%s) = %s\n",
+				$opInfo->products_quantity,
+				$opInfo->products_name,
+				$opInfo->products_model,
+				$currencies->display_price(
+					$opInfo->products_price,
+					$opInfo->products_tax,
+					$opInfo->products_quantity
+				)
+			);
+
+			EventManager::notify('OrderCreatorAddProductToEmail', $opInfo, &$products_ordered);
+		}
+
+		$orders_statuses = array();
+		$orders_status_array = array();
+		$Qstatus = Doctrine_Query::create()
+			->select('s.orders_status_id, sd.orders_status_name')
+			->from('OrdersStatus s')
+			->leftJoin('s.OrdersStatusDescription sd')
+			->where('sd.language_id = ?', (int)Session::get('languages_id'))
+			->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+		foreach($Qstatus as $status){
+			$orders_statuses[] = array(
+				'id' => $status['orders_status_id'],
+				'text' => $status['OrdersStatusDescription'][0]['orders_status_name']
+			);
+			$orders_status_array[$status['orders_status_id']] = $status['OrdersStatusDescription'][0]['orders_status_name'];
+		}
+
+		$emailEvent = new emailEvent('order_update', Session::get('languages_id'));
+		$emailEvent->setVar('orderID', $CollectionObj->orders_id);
+		$emailEvent->setVar('datePurchased', strftime(sysLanguage::getDateFormat('long')));
+		$emailEvent->setVar('orderedProducts', $products_ordered);
+		$emailEvent->setVar('status', $orders_status_array[$CollectionObj->orders_status]);
+		$emailEvent->setVar('adminComments', $CollectionObj->OrdersStatusHistory[0]->comments);
+
+		$orderTotals = '';
+		foreach($CollectionObj->OrdersTotal as $tInfo){
+			$orderTotals .= strip_tags($tInfo['title']) . ' ' . strip_tags($tInfo['text']) . "\n";
+		}
+		$emailEvent->setVar('orderTotals', $orderTotals);
+
+		/*
+		 * @TODO: Why is ['payment_module'] == payment method title, it should be ['payment_method'] == payment method title
+		 */
+		if (!empty($CollectionObj->payment_module)){
+			$Module = OrderPaymentModules::getModule($CollectionObj->payment_module);
+			$emailEvent->setVar('paymentTitle', $Module->getTitle());
+			if ($CollectionObj->payment_module == 'po'){
+				$emailEvent->setVar('po_number', 'P.O. Number: ' . $CollectionObj->po_number);
+			}
+		}
+		$sendVariables = array();
+		EventManager::notify('OrderCreatorBeforeSendUpdateEmail', $CollectionObj, $emailEvent, &$products_ordered, &$sendVariables);
+		$sendVariables['email'] = $CollectionObj->customers_email_address;
+		$sendVariables['name'] = $BillingAddress->getName();
+
+		$emailEvent->sendEmail($sendVariables);
+
+		// send emails to other people
+		if (sysConfig::get('SEND_EXTRA_ORDER_EMAILS_TO') != '') {
+			$emailEvent->sendEmail(array(
+					'email' => sysConfig::get('SEND_EXTRA_ORDER_EMAILS_TO'),
+					'name'  => ''
+				));
+		}
+	}
+
 	public function sendNewEstimateEmail($CollectionObj, $emailAddress = ''){
 		global $appExtension, $currencies;
 		$DeliveryAddress = $this->AddressManager->getAddress('delivery');

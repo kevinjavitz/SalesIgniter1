@@ -69,6 +69,41 @@ product[85544][price]:17.99
 		$CollectionObj->clear();
 		$langId = Session::get('languages_id');
 		foreach($this->Contents as $id => $Product){
+
+			//this part somehow need to be moved
+			$allInfo = $Product->getPInfo();
+			if (sysConfig::get('EXTENSION_PAY_PER_RENTALS_USE_EVENTS') == 'True' && isset($allInfo['reservationInfo']['multiple_dates']) && $allInfo['purchase_type'] == 'reservation'){
+				$i1 = 0;
+				$totalPrice = $allInfo['final_price'];
+				$nrCount = count($allInfo['reservationInfo']['multiple_dates']);
+				foreach($allInfo['reservationInfo']['multiple_dates'] as $iDate){
+					$allInfo['reservationInfo']['start_date'] = $iDate;
+					$allInfo['reservationInfo']['end_date'] = $iDate;
+					$allInfo['reservationInfo']['event_date'] = $iDate;
+					$allInfo['final_price'] = $totalPrice/$nrCount;
+					$allInfo['products_price'] = $totalPrice/$nrCount;
+					if($i1 == 0){
+						$Product->setPInfo($allInfo);
+						$i1++;
+						continue;
+					}
+
+					$OrderProduct = new OrderCreatorProduct();
+					$OrderProduct->setProductsId($allInfo['products_id']);
+
+					$OrderProduct->setPurchaseType('reservation');
+
+					$OrderProduct->setQuantity(1);
+					$OrderProduct->setPInfo($allInfo);
+
+					$this->add($OrderProduct);
+					$i1++;
+				}
+			}
+			//end of to be moved part
+
+		}
+		foreach($this->Contents as $id => $Product){
 			$OrderedProduct = new OrdersProducts();
 
 			$OrderedProduct->products_id = $Product->getProductsId();

@@ -130,6 +130,15 @@ $Orders = Doctrine_Core::getTable('Orders');
 			
 		$NewOrder->OrdersStatusHistory->add($StatusHistory);
 
+		$terms = '<p>Terms and conditions:</p><br/>';
+		if (sysConfig::get('EXTENSION_PAY_PER_RENTALS_SAVE_TERMS') == 'True'){
+			$infoPages = $appExtension->getExtension('infoPages');
+			$termInfoPage = $infoPages->getInfoPage('conditions');
+			$terms .= str_replace("\r",'',str_replace("\n",'',str_replace("\r\n",'',$termInfoPage['PagesDescription'][Session::get('languages_id')]['pages_html_text'])));
+		}
+
+		$NewOrder->terms = $terms;
+
 		$NewOrder->save();
 
 		if($Editor->hasData('store_id') && $appExtension->isInstalled('multiStore') && $appExtension->isEnabled('multiStore')){
@@ -142,10 +151,16 @@ $Orders = Doctrine_Core::getTable('Orders');
 		if (!isset($_GET['oID'])){
 			$NewOrder->Customers->customers_default_address_id = $NewOrder->Customers->AddressBook[0]->address_book_id;
 			$NewOrder->save();
-			if(!isset($_POST['estimateOrder'])){
-				$Editor->sendNewOrderEmail($NewOrder);
-			}else{
-				$Editor->sendNewEstimateEmail($NewOrder);
+			if(isset($_POST['notify'])){
+				if(!isset($_POST['estimateOrder'])){
+					$Editor->sendNewOrderEmail($NewOrder);
+				}else{
+					$Editor->sendNewEstimateEmail($NewOrder);
+				}
+			}
+		}else{
+			if(isset($_POST['notify'])){
+				$Editor->sendUpdateOrderEmail($NewOrder);
 			}
 		}
 		if(!isset($_POST['estimateOrder'])){

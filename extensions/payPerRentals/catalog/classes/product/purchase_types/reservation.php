@@ -242,6 +242,14 @@ class PurchaseType_reservation extends PurchaseTypeAbstract {
 			}
 
 			$return .= '<br /><small><i> - Events '.$eventb->draw().'</i></small>';//use gates too in OC
+			$htmlHasInsurance = htmlBase::newElement('input')
+			->setType('checkbox')
+			->setLabel('Has insurance')
+			->setLabelPosition('after')
+			->setName('eventInsurance')
+			->addClass('eventInsurance')
+			->setValue('1');
+			$return .= '<br/>'.$htmlHasInsurance->draw();
 			if (sysConfig::get('EXTENSION_PAY_PER_RENTALS_USE_GATES') == 'True'){
 				$return .= '<br /><small><i> - Gates '.$gateb->draw().'</i></small>';//use gates too in OC
 			}
@@ -541,7 +549,7 @@ class PurchaseType_reservation extends PurchaseTypeAbstract {
 						$datesArrb = Session::get('isppr_event_multiple_dates');
 
 
-						array_filter($datesArrb, array('this','isIn'));
+						array_filter($datesArrb, array($this,'isIn'));
 						Session::set('isppr_event_multiple_dates', $datesArrb);
 					}
 

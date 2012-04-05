@@ -152,6 +152,11 @@ $messageStack = new messageStack;
 
 require(sysConfig::getDirFsCatalog() . 'includes/classes/system_language.php');
 sysLanguage::init();
+//load language
+if(Session::exists('tplDir') && file_exists(sysConfig::getDirFsCatalog() .'templates/'.Session::get('tplDir') . '/language_defines/global.xml')){
+	sysLanguage::loadDefinitions(sysConfig::getDirFsCatalog() .'templates/'.Session::get('tplDir') . '/language_defines/global.xml');
+}
+
 	
 $appExtension->postSessionInit();
 $appExtension->loadExtensions();
