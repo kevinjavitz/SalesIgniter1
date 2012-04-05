@@ -259,7 +259,7 @@ $(document).ready(function () {
 								alert('Templates Imported');
 
 							}else{
-								alert('Template Folder already exists.')
+								alert(data.error);
 							}
 							js_redirect(js_app_link('appExt=templateManager&app=layout_manager&appPage=default'));
 

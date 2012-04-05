@@ -119,7 +119,7 @@ if(isset($_POST['template'])){
 }
 
 
-if(isset($_POST['templateZip'])){
+if(isset($_POST['templateZip']) && !empty($_POST['templateName'])){
 	$templateName = $_POST['templateName'];
 	if(!file_exists(sysConfig::getDirFsCatalog(). 'templates/' . $templateName)){
 			$Ftp->createDir('templates/' . $templateName);
