@@ -5,7 +5,7 @@
 	I.T. Web Experts
 	http://www.itwebexperts.com
 
-	Copyright (c) 2009 I.T. Web Experts
+	Copyright (c) 2012 I.T. Web Experts
 
 	This script and it's source is not redistributable
 */
@@ -87,22 +87,48 @@ class OrderPaymentPayflow extends CreditCardModule
 	}
 
 	public function refundPayment($requestData) {
+
 		$dataArray = array(
-			'USER' => $this->getConfigData('MODULE_PAYMENT_PAYPALWPP_API_USERNAME'),
-			'PWD' => $this->getConfigData('MODULE_PAYMENT_PAYPALWPP_API_PASSWORD'),
-			'SIGNATURE' => $this->getConfigData('MODULE_PAYMENT_PAYPALWPP_API_SIGNATURE'),
+			'USER' => $this->getConfigData('MODULE_PAYMENT_PAYFLOW_USER'),
+			'VENDOR' => $this->getConfigData('MODULE_PAYMENT_PAYFLOW_API_VENDOR'),
+			'PARTNER' => $this->getConfigData('MODULE_PAYMENT_PAYFLOW_PARTNER'),
+			'PWD' => $this->getConfigData('MODULE_PAYMENT_PAYFLOW_API_PASSWORD'),
 			'VERSION' => '64.0',
-			'METHOD' => 'RefundTransaction',
-			'PAYMENTACTION' => $this->getConfigData('MODULE_PAYMENT_PAYPALWPP_TRANSACTION_TYPE')
+			'TRXTYPE' => 'C', //C - Credit
+			'TENDER' => 'C', //C-CREDIT CARD P- PAYPAL
+			'VERBOSITY' => 'MEDIUM'
 		);
-		$dataArray['TRANSACTIONID'] = $requestData['transactionID'];
-		$dataArray['REFUNDTYPE'] = 'Full';
-		$dataArray['CURRENCYCODE'] = $this->currencyValue;
+		/*  another way to get pnref should transactionID not work
+		$Qorder = Doctrine_Query::create()
+			->from('Orders o')
+			->leftJoin('o.Customers c')
+			->leftJoin('o.OrdersAddresses oa')
+			->leftJoin('o.OrdersTotal ot')
+			->leftJoin('c.CustomersMembership m')
+			->leftJoin('o.OrdersPaymentsHistory h')
+			->where('o.orders_id = ?', $requestData['orderID'])
+			->andWhere('oa.address_type = ?', 'billing')
+			->andWhereIn('ot.module_type', array('total', 'ot_total'))
+			->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+
+		foreach($Qorder[0]['OrdersPaymentsHistory'] as $history) {
+			if ($history['orders_id'] == $requestData['orderID']) {
+				preg_match("/PNREF=(.*)&/U", $history['gateway_message'], $pnref);
+				break;
+			}
+		}
+		$dataArray['ORIGID']=$pnref[1];
+		*/
+
+	       preg_match("/PNREF=(.*)&/U", $requestData['transactionID'], $pnref);
+		$dataArray['ORIGID']=$pnref[1];
+
+
 		$CurlRequest = new CurlRequest($this->gatewayUrl);
 		$CurlRequest->setData($dataArray);
 		$CurlResponse = $CurlRequest->execute();
 		$response = $CurlResponse->getResponse();
-
+		
 		$httpResponseAr = explode("&", $response);
 		$httpParsedResponseAr = array();
 		foreach($httpResponseAr as $i => $value){
@@ -111,11 +137,12 @@ class OrderPaymentPayflow extends CreditCardModule
 				$httpParsedResponseAr[$tmpAr[0]] = $tmpAr[1];
 			}
 		}
+
 		$code = '';
-		if ((0 == sizeof($httpParsedResponseAr)) || !array_key_exists('ACK', $httpParsedResponseAr)){
+		if ((0 == sizeof($httpParsedResponseAr)) || !array_key_exists('RESPMSG', $httpParsedResponseAr)){
 			$code = 0;
 		}
-		if ("SUCCESS" == strtoupper($httpParsedResponseAr["ACK"]) || "SUCCESSWITHWARNING" == strtoupper($httpParsedResponseAr["ACK"])){
+		if ("APPROVED" == strtoupper($httpParsedResponseAr["RESPMSG"])){
 			$code = 1;
 		}
 		if ($code == 0){
@@ -300,6 +327,7 @@ class OrderPaymentPayflow extends CreditCardModule
 			$dataArray['CVV2'] = $requestParams['cardCvv'];
 		}
 		$this->details=$dataArray;
+
 		/*
 						$headers[] = "Content-Type: text/namevalue"; // either text/namevalue or text/xml
 						$headers[] = "X-VPS-Timeout: 45"; // timeout length - keep trying to access the page for this long (in seconds)
@@ -332,11 +360,12 @@ class OrderPaymentPayflow extends CreditCardModule
 				$httpParsedResponseAr[$tmpAr[0]] = $tmpAr[1];
 			}
 		}
+
 		$code = '';
-		if ((0 == sizeof($httpParsedResponseAr)) || !array_key_exists('ACK', $httpParsedResponseAr)){
+		if ((0 == sizeof($httpParsedResponseAr)) || !array_key_exists('RESPMSG', $httpParsedResponseAr)){
 			$code = '';
 		}
-		if ("SUCCESS" == strtoupper($httpParsedResponseAr["ACK"]) || "SUCCESSWITHWARNING" == strtoupper($httpParsedResponseAr["ACK"])){
+		if ("APPROVED" == strtoupper($httpParsedResponseAr["RESPMSG"])){
 			$code = '1';
 		}
 
@@ -354,8 +383,7 @@ class OrderPaymentPayflow extends CreditCardModule
 					break;
 			}
 		}
-foreach($httpResponseAr as $val)
-{ $errMsg .= $val; }
+
 		if ($isCron === true){
 			$this->cronMsg = $errMsg;
 		}
@@ -369,73 +397,13 @@ foreach($httpResponseAr as $val)
 		else {
 			$this->onFail(array(
 					'curlResponse' => $CurlResponse,
-					'message' => $errMsg
+					'message' => implode(';', $httpParsedResponseAr)
 				));
 		}
 		return $success;
 	}
 
-	/* private function onSuccess($info) {
-		global $order;
-		$ResponseData = explode('&', $info['curlResponse']->getResponse());
-		$httpParsedResponseAr = array();
-		foreach($ResponseData as $i => $value){
-			$tmpAr = explode("=", $value);
-			if (sizeof($tmpAr) > 1){
-				$httpParsedResponseAr[$tmpAr[0]] = $tmpAr[1];
-			}
-		}
-		$userAccount = OrderPaymentModules::getUserAccount();
-		$paymentInfo = OrderPaymentModules::getPaymentInfo();
-		$addressBook =& $userAccount->plugins['addressBook'];
-		$billingAddress = $addressBook->getAddress('billing');
 
-		$this->logPayment(array(
-				'orderID' => $order->newOrder['orderID'],
-				'amount' => $order->info['total'],
-				'message' => $httpParsedResponseAr['TRANSACTIONID'],
-				'success' => 1,
-				'cardDetails' => array(
-					'cardOwner' => $billingAddress['entry_firstname'] . ' ' . $billingAddress['entry_lastname'],
-					'cardNumber' => $paymentInfo['cardDetails']['cardNumber'],
-					'cardExpMonth' => $paymentInfo['cardDetails']['cardExpMonth'],
-					'cardExpYear' => $paymentInfo['cardDetails']['cardExpYear']
-				)
-			));
-	}
-
-	private function onFail($info) {
-		global $messageStack, $order;
-		$orderId = $order->newOrder['orderID'];
-		$this->setErrorMessage($this->getTitle() . ' : ' . $info['message']);
-		$messageStack->addSession('pageStack', $info['message'], 'error');
-		if ($this->removeOrderOnFail === true){
-			$Order = Doctrine_Core::getTable('Orders')->find($orderId);
-			if ($Order){
-				$Order->delete(); //this need revised. For failed transaction Add a button Pay Now in the orders history
-			}
-			//tep_redirect(itw_app_link('payment_error=1', 'checkout', 'default', 'SSL'));
-		}
-		else {
-			$userAccount = OrderPaymentModules::getUserAccount();
-			$paymentInfo = OrderPaymentModules::getPaymentInfo();
-			$addressBook =& $userAccount->plugins['addressBook'];
-			$billingAddress = $addressBook->getAddress('billing');
-
-			$this->logPayment(array(
-					'orderID' => $order->newOrder['orderID'],
-					'amount' => $order->info['total'],
-					'message' => '',
-					'success' => 01,
-					'cardDetails' => array(
-						'cardOwner' => $billingAddress['entry_firstname'] . ' ' . $billingAddress['entry_lastname'],
-						'cardNumber' => $paymentInfo['cardDetails']['cardNumber'],
-						'cardExpMonth' => $paymentInfo['cardDetails']['cardExpMonth'],
-						'cardExpYear' => $paymentInfo['cardDetails']['cardExpYear']
-					)
-				));
-		}
-	} */
 	private function onSuccess($info) {
 		global $order;
 		$response=$info['curlResponse']->getResponse();
@@ -480,7 +448,7 @@ foreach($httpResponseAr as $val)
 					'orderID' => $this->details['INVNUM'],
 					'amount' => $this->details['AMT'],
 					'message' => $response,
-					'success' => 1,
+					'success' => 0,
 					'cardDetails' => array(
 						'cardOwner' => $this->details['FIRSTNAME'] . " " . $this->details['LASTNAME'],
 						'cardNumber' => $this->details['ACCT'],
