@@ -14,7 +14,7 @@
 				</EXTENSION_INFO_PAGES_INSTALLED>
 				<EXTENSION_INFO_PAGES_ENABLED>
 					<title>Enable Info Pages</title>
-					<value>False</value>
+					<value>True</value>
 					<description>Enable Or Disable The Info Pages Extension</description>
 					<set_function>
 						<type>radio</type>

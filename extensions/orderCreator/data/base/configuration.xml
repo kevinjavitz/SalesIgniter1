@@ -14,7 +14,7 @@
 				</EXTENSION_ORDER_CREATOR_INSTALLED>
 				<EXTENSION_ORDER_CREATOR_ENABLED>
 					<title>Enable Order Creator</title>
-					<value>False</value>
+					<value>True</value>
 					<description>Enable Or Disable The Order Creator Extension</description>
 					<set_function>
 						<type>radio</type>

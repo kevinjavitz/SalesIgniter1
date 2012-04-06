@@ -14,7 +14,7 @@
 				</EXTENSION_TEMPLATEMANAGER_INSTALLED>
 				<EXTENSION_TEMPLATEMANAGER_ENABLED>
 					<title>Enable Template Manager</title>
-					<value>False</value>
+					<value>True</value>
 					<description>Enable Or Disable The Template Manager Extension</description>
 					<set_function>
 						<type>radio</type>

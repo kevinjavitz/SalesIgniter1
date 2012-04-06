@@ -14,7 +14,7 @@
 				</EXTENSION_SPECIALS_INSTALLED>
 				<EXTENSION_SPECIALS_ENABLED>
 					<title>Enable Product Specials</title>
-					<value>False</value>
+					<value>True</value>
 					<description>Enable Or Disable The Product Specials Extension</description>
 					<set_function>
 						<type>radio</type>

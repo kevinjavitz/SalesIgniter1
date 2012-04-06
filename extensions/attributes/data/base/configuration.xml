@@ -14,7 +14,7 @@
 				</EXTENSION_ATTRIBUTES_INSTALLED>
 				<EXTENSION_ATTRIBUTES_ENABLED>
 					<title>Enable Product Attributes</title>
-					<value>False</value>
+					<value>True</value>
 					<description>Enable Or Disable The Product Attributes Extension</description>
 					<set_function>
 						<type>radio</type>

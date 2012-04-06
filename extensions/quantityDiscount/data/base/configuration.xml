@@ -14,7 +14,7 @@
 				</EXTENSION_QUANTITY_DISCOUNT_INSTALLED>
 				<EXTENSION_QUANTITY_DISCOUNT_ENABLED>
 					<title>Enable Quantity Discount</title>
-					<value>False</value>
+					<value>True</value>
 					<description>Enable Or Disable The Quantity Discount Extension</description>
 					<set_function>
 						<type>radio</type>

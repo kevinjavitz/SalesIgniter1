@@ -14,7 +14,7 @@
 				</EXTENSION_RELATED_PRODUCTS_INSTALLED>
 				<EXTENSION_RELATED_PRODUCTS_ENABLED>
 					<title>Enable Related Products</title>
-					<value>False</value>
+					<value>True</value>
 					<description>Enable Or Disable The Related Products Extension</description>
 					<set_function>
 						<type>radio</type>

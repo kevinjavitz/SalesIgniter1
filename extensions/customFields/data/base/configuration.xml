@@ -14,7 +14,7 @@
 				</EXTENSION_CUSTOM_FIELDS_INSTALLED>
 				<EXTENSION_CUSTOM_FIELDS_ENABLED>
 					<title>Enable Product Custom Fields</title>
-					<value>False</value>
+					<value>True</value>
 					<description>Enable Or Disable The Product Custom Fields Extension</description>
 					<set_function>
 						<type>radio</type>

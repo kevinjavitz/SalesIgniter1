@@ -14,7 +14,7 @@
 				</EXTENSION_METATAGS_INSTALLED>
 				<EXTENSION_METATAGS_ENABLED>
 					<title>Enable Meta Tags</title>
-					<value>False</value>
+					<value>True</value>
 					<description>Enable Or Disable The Meta Tags Extension</description>
 					<set_function>
 						<type>radio</type>

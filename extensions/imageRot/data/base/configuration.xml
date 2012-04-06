@@ -14,7 +14,7 @@
 				</EXTENSION_BANNER_MANAGER_INSTALLED>
 				<EXTENSION_BANNER_MANAGER_ENABLED>
 					<title>Enable Banner Manager</title>
-					<value>False</value>
+					<value>True</value>
 					<description>Enable Or Disable The Banner Manager Extension</description>
 					<set_function>
 						<type>radio</type>

@@ -14,7 +14,7 @@
 				</EXTENSION_GOOGLE_ANALYTICS_INSTALLED>
 				<EXTENSION_GOOGLE_ANALYTICS_ENABLED>
 					<title>Enable Gooogle Analytics</title>
-					<value>False</value>
+					<value>True</value>
 					<description>Enable Or Disable The Google Analytics Extension</description>
 					<set_function>
 						<type>radio</type>

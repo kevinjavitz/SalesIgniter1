@@ -14,7 +14,7 @@
 				</EXTENSION_PAY_PER_RENTALS_INSTALLED>
 				<EXTENSION_PAY_PER_RENTALS_ENABLED>
 					<title>Enable Pay Per Rentals</title>
-					<value>False</value>
+					<value>True</value>
 					<description>Enable or disable the pay per rental extension</description>
 					<set_function>
 						<type>radio</type>
@@ -24,10 +24,6 @@
 						</values>
 					</set_function>
 				</EXTENSION_PAY_PER_RENTALS_ENABLED>
-		
-		
-		
-		
 		
         <EXTENSION_PAY_PER_RENTALS_SHOW_CALENDAR_PRODUCT_INFO>
 			<value>False</value>

@@ -14,7 +14,7 @@
 				</EXTENSION_REVIEWS_INSTALLED>
 				<EXTENSION_REVIEWS_ENABLED>
 					<title>Enable Reviews</title>
-					<value>False</value>
+					<value>True</value>
 					<description>Enable Or Disable The Reviews Extension</description>
 					<set_function>
 						<type>radio</type>

@@ -14,7 +14,7 @@
 				</EXTENSION_ADDTOANY_INSTALLED>
 				<EXTENSION_ADDTOANY_ENABLED>
 					<title>Enable Add-To-Any</title>
-					<value>False</value>
+					<value>True</value>
 					<description>Enable Or Disable The Add-To-Any Extension</description>
 					<set_function>
 						<type>radio</type>

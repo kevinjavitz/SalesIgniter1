@@ -14,7 +14,7 @@
 				</EXTENSION_BLOG_INSTALLED>
 				<EXTENSION_BLOG_ENABLED>
 					<title>Enable Blog</title>
-					<value>False</value>
+					<value>True</value>
 					<description>Enable Or Disable The Blog Extension</description>
 					<set_function>
 						<type>radio</type>

@@ -14,7 +14,7 @@
 				</EXTENSION_CATEGORIES_PAGES_INSTALLED>
 				<EXTENSION_CATEGORIES_PAGES_ENABLED>
 					<title>Enable Categories Pages</title>
-					<value>False</value>
+					<value>True</value>
 					<description>Enable Or Disable The Categories Pages Extension</description>
 					<set_function>
 						<type>radio</type>
