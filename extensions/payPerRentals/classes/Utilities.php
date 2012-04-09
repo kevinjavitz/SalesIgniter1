@@ -835,7 +835,7 @@ class ReservationUtilities {
 										$selfID.parent().find('.inCart').position({
 											my:        "left bottom",
 											at:        "left top",
-											offset:    "200, 26",
+											offset:    "200, 30",
 											of:        $selfID.find('.refreshCal'), // or $("#otherdiv)
 											collision: "fit"
 										});
@@ -1012,7 +1012,7 @@ class ReservationUtilities {
 								$selfID.parent().find('.inCart').position({
 									my:        "left bottom",
 									at:        "left top",
-									offset:    "200, 26",
+									offset:    "200, 30",
 									of:        $selfID.find('.refreshCal'), // or $("#otherdiv)
 									collision: "fit"
 								});
@@ -1174,7 +1174,7 @@ class ReservationUtilities {
 										$selfID.parent().find('.inCart').position({
 											my:        "left bottom",
 											at:        "left top",
-											offset:    "200, 26",
+											offset:    "200, 30",
 											of:        $selfID.find('.refreshCal'), // or $("#otherdiv)
 											collision: "fit"
 										});
@@ -1221,7 +1221,7 @@ class ReservationUtilities {
 								$selfID.parent().find('.inCart').position({
 									my:        "left bottom",
 									at:        "left top",
-									offset:    "200, 26",
+									offset:    "200, 30",
 									of:        $selfID.find('.refreshCal'), // or $("#otherdiv)
 									collision: "fit"
 								});
@@ -1263,7 +1263,7 @@ class ReservationUtilities {
 								$selfID.parent().find('.inCart').position({
 									my:        "left bottom",
 									at:        "left top",
-									offset:    "200, 26",
+									offset:    "200, 30",
 									of:        $selfID.find('.refreshCal'), // or $("#otherdiv)
 									collision: "fit"
 								});
@@ -1446,7 +1446,7 @@ class ReservationUtilities {
 	</script>
 	<style>
 		.ui-datepicker-group {
-			margin: .5em;
+			margin: .2em;
 		}
 
 		.ui-datepicker-header {
