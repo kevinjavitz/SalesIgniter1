@@ -298,6 +298,14 @@ class Extension
 		}
 	}
 
+	public function loadExtData(){
+		foreach($this->extensions as $extension => $extCls){
+			$extCls->setUpExtDoctrine();
+			$extCls->setUpAddColumns();
+			$extCls->setUpExtAddColumns();
+		}
+	}
+
 	public function bindMethods(&$class) {
 		foreach($this->extensions as $extension => $extCls){
 			if (method_exists($extCls, 'bindMethods')){
