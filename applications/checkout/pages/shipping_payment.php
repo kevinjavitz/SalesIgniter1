@@ -65,7 +65,7 @@
 		->select('plan_id')
 		->from('Membership')
 		->where('default_plan = ?','1')
-		->execute(array(0, Doctrine_Core::HYDRATE_ARRAY));
+		->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 
 
 		$hasDefault = false;
@@ -85,8 +85,6 @@
 	->orderBy('m.sort_order')
 	->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 
-
-
 	$i=1;
 	foreach($Qplan as $iPlan){
 		if(in_array($iPlan['plan_id'], $notEnabledMemberships)){
@@ -100,7 +98,7 @@
 
 		$tableColumns = array();
 		$tableColumns[] = array('addCls' => 'main', 'text' => tep_draw_radio_field('plan_id', $iPlan['plan_id'], $chk, 'class="rentalPlans"'), 'align' => 'center');
-		$tableColumns[] = array('addCls' => 'main', 'text' => $iPlan['MembershipPlanDescription'][0]['plan_name']);
+		$tableColumns[] = array('addCls' => 'main', 'text' => $iPlan['MembershipPlanDescription'][0]['name']);
 		if ($months > 0){
 			$tableColumns[] = array('addCls' => 'main', 'text' => $iPlan['membership_months'], 'align' => 'center');
 		}
