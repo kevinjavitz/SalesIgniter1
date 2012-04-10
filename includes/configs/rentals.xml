@@ -60,6 +60,12 @@
 					<description><![CDATA[Enable rental Memberships]]></description>
 					<set_function><![CDATA[tep_cfg_select_option(array('true', 'false'),]]></set_function>
 				</ALLOW_RENTALS>
+				<HIDE_SHIPPIMENT_ARRIVAL_DATES>
+					<title><![CDATA[Hide shipment and arrival dates on rental queue]]></title>
+					<value><![CDATA[false]]></value>
+					<description><![CDATA[Hide shipment and arrival dates on rental queue]]></description>
+					<set_function><![CDATA[tep_cfg_select_option(array('true', 'false'),]]></set_function>
+				</HIDE_SHIPPIMENT_ARRIVAL_DATES>
 				<RENTAL_DEFAULT_COUNTRY>
 					<title><![CDATA[Show only as unique Country]]></title>
 					<value><![CDATA[223]]></value>

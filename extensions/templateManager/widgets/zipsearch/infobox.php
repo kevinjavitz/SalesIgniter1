@@ -40,7 +40,7 @@ class InfoBoxZipSearch extends InfoBoxAbstract {
                     <div class="country">
 			<?php foreach ($stores as $current_store): ?>
 			    <?php if (!empty($current_store->stores_location)): ?>
-				<div class="item"><a href="http://<?php echo $current_store->stores_domain; ?>/products/all.php"><?php echo $current_store->stores_location; ?></a></div>
+				<div class="item"><a href="http://<?php echo $current_store->stores_domain; ?>/index/default.php"><?php echo $current_store->stores_location; ?></a></div>
 			    <?php endif; ?>
 			<?php endforeach ;?>
                     </div>

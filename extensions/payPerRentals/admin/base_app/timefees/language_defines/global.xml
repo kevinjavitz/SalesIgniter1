@@ -1,0 +1,11 @@
+<definitions>
+	<define key="HEADING_TITLE"><![CDATA[Time Fees]]></define>
+	<define key="TABLE_HEADING_TIME_FEES_NAME"><![CDATA[Time Fee Name]]></define>
+	<define key="TABLE_HEADING_ACTION"><![CDATA[Action]]></define>
+
+	<define key="TEXT_TIMEFEES"><![CDATA[Fee Name: ]]></define>
+	<define key="TEXT_TIMEFEES_FEE"><![CDATA[Fee: ]]></define>
+	<define key="TEXT_TIMEFEES_START"><![CDATA[Start Time: ]]></define>
+	<define key="TEXT_TIMEFEES_END"><![CDATA[End Time: ]]></define>
+
+</definitions>

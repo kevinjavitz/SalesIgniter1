@@ -1,0 +1,12 @@
+<definitions>
+	<define key="HEADING_TITLE"><![CDATA[Extra Fees]]></define>
+	<define key="TABLE_HEADING_TIME_FEES_NAME"><![CDATA[Extra Fee Name]]></define>
+	<define key="TABLE_HEADING_ACTION"><![CDATA[Action]]></define>
+
+	<define key="TEXT_TIMEFEES"><![CDATA[Extra Fee Name: ]]></define>
+	<define key="TEXT_TIMEFEES_DESCRIPTION"><![CDATA[Extra Fee Description: ]]></define>
+	<define key="TEXT_TIMEFEES_FEE"><![CDATA[Extra Fee: ]]></define>
+	<define key="TEXT_TIMEFEES_MANDATORY"><![CDATA[Is Mandatory: ]]></define>
+	<define key="TEXT_TIMEFEES_HOURS"><![CDATA[Within Time(hours): ]]></define>
+
+</definitions>
