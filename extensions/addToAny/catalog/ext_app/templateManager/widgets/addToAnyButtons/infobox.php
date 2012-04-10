@@ -17,11 +17,11 @@
  */
 
 
-class InfoBoxAddRoAnyButtons extends InfoBoxAbstract {
+class InfoBoxAddToAnyButtons extends InfoBoxAbstract {
 
 	public function __construct(){
 
-		$this->init('socialButtons', __DIR__);
+		$this->init('addToAnyButtons', __DIR__);
 		$this->enabled = true;
 
 		$this->setBoxHeading(sysLanguage::get('INFOBOX_HEADING_SOCIAL_BUTTONS'));

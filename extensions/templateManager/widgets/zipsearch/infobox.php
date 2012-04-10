@@ -8,11 +8,11 @@
 	This script and it's source is not redistributable
 */
 
-class InfoBoxZipSearch extends InfoBoxAbstract {
+class InfoBoxZipsearch extends InfoBoxAbstract {
 
 	public function __construct(){
 		global $App;
-		$this->init('zipSearch');
+		$this->init('zipsearch');
 
 	}
 
