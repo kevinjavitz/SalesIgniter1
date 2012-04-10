@@ -300,8 +300,8 @@ class Extension
 
 	public function loadExtData(){
 		foreach($this->extensions as $extension => $extCls){
-			$extCls->setUpExtDoctrine();
-			$extCls->setUpAddColumns();
+			//$extCls->setUpExtDoctrine();
+			//$extCls->setUpAddColumns();
 			$extCls->setUpExtAddColumns();
 		}
 	}
