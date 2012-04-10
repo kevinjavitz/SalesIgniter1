@@ -65,6 +65,7 @@ function uploadManagerField($el){
 			}
 		},
 		onComplete: function (event, queueID, fileObj, resp, data){
+			$('.uploadManagerInput').addClass('edited');
 			if ($('#turnOnDebugger').data('turnedOn') === true){
 				var curVal = $debugger.val();
 				$debugger.val(curVal + "\nUpload Completed\nJson Response: " + resp);

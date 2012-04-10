@@ -1406,7 +1406,7 @@ function tep_translate_order_statuses($value) {
 function itw_cfg_upload_field($value, $key = ''){
 	//$string = '<br><input type="file" name="configuration_value"><br>Local File:<input type="text" name="configuration_value_local" value="' . $value . '">';
 	$config_image = htmlBase::newElement('uploadManagerInput')
-		->setName('configuration_value')
+		->setName('configuration[' . $key . ']')
 		->setFileType('image')
 		->autoUpload(true)
 		->showPreview(true)
