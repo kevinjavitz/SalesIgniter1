@@ -28,18 +28,20 @@
 			'params' => 'class="ui-widget-header"',
 			'text' => sysLanguage::get('TABLE_HEADING_TITLE')
 		);
+		if(sysConfig::get('HIDE_SHIPPIMENT_ARRIVAL_DATES') == 'true'){
 
-		$info_box_contents[0][] = array(
-			'align' => 'left',
-			'params' => 'class="ui-widget-header"',
-			'text' => sysLanguage::get('TABLE_HEADING_SHIPMENT_DATE')
-		);
+			$info_box_contents[0][] = array(
+				'align' => 'left',
+				'params' => 'class="ui-widget-header"',
+				'text' => sysLanguage::get('TABLE_HEADING_SHIPMENT_DATE')
+			);
 
-		$info_box_contents[0][] = array(
-			'align' => 'left',
-			'params' => 'class="ui-widget-header"',
-			'text' => sysLanguage::get('TABLE_HEADING_ARRIVAL_DATE')
-		);
+			$info_box_contents[0][] = array(
+				'align' => 'left',
+				'params' => 'class="ui-widget-header"',
+				'text' => sysLanguage::get('TABLE_HEADING_ARRIVAL_DATE')
+			);
+		}
 
 	$QPickupRequests = Doctrine_Query::create()
 		->from('PickupRequests pr')
@@ -83,22 +85,23 @@
 			$arrivalDate = $sInfo['arrival_date'];
 			$arrivalDateString = date("m/d/Y", strtotime($arrivalDate));
 
-				$info_box_contents[$i][] = array(
+			$info_box_contents[$i][] = array(
 					'params' => 'class="productListing-data"',
 					'text' => $productsName
+			);
+			if(sysConfig::get('HIDE_SHIPPIMENT_ARRIVAL_DATES') == 'true'){
+				$info_box_contents[$i][] = array(
+						'align' => 'left',
+						'params' => 'class="productListing-data" valign="top"',
+						'text' => $shipDateString
 				);
 
 				$info_box_contents[$i][] = array(
 					'align' => 'left',
 					'params' => 'class="productListing-data" valign="top"',
-					'text' => $shipDateString
+					'text' => $arrivalDateString
 				);
-
-			$info_box_contents[$i][] = array(
-				'align' => 'left',
-				'params' => 'class="productListing-data" valign="top"',
-				'text' => $arrivalDateString
-			);
+			}
 
 			$keepCol = '';
 			if($Product->getKeepPrice() > 0){

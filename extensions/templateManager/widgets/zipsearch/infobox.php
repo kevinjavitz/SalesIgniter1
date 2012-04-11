@@ -8,11 +8,11 @@
 	This script and it's source is not redistributable
 */
 
-class InfoBoxZipSearch extends InfoBoxAbstract {
+class InfoBoxZipsearch extends InfoBoxAbstract {
 
 	public function __construct(){
 		global $App;
-		$this->init('zipSearch');
+		$this->init('zipsearch');
 
 	}
 
@@ -40,7 +40,7 @@ class InfoBoxZipSearch extends InfoBoxAbstract {
                     <div class="country">
 			<?php foreach ($stores as $current_store): ?>
 			    <?php if (!empty($current_store->stores_location)): ?>
-				<div class="item"><a href="http://<?php echo $current_store->stores_domain; ?>/products/all.php"><?php echo $current_store->stores_location; ?></a></div>
+				<div class="item"><a href="http://<?php echo $current_store->stores_domain; ?>/index/default.php"><?php echo $current_store->stores_location; ?></a></div>
 			    <?php endif; ?>
 			<?php endforeach ;?>
                     </div>

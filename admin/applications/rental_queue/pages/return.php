@@ -103,7 +103,7 @@
 				->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 			?>
 			<tr class="dataTableRow">
-				<td class="main"><?php echo $rented['ProductsDescription'][0]['products_name']; ?></td>
+				<td class="main"><?php echo $rented['Products']['ProductsDescription'][0]['products_name']; ?></td>
 				<td class="main"><?php echo $rented['full_name']; ?></td>
 				<td class="main"><?php echo $Qbarcode[0]['ProductsInventoryBarcodes'][0]['barcode']; ?></td>
 				<?php if (sysConfig::exists('EXTENSION_INVENTORY_CENTERS_ENABLED') && sysConfig::get('EXTENSION_INVENTORY_CENTERS_ENABLED') == 'True'){ ?>

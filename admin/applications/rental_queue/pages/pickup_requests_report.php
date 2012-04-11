@@ -9,7 +9,7 @@
 if (isset($_GET['start_date']) && !empty($_GET['start_date'])){
 	$Qorders->where('pr.start_date = ?', $_GET['start_date']);
 }else{
-	$Qorders->where('pr.start_date >= now()');
+	$Qorders->where('pr.start_date >= ?', date('Y-m-d'));
 }
 
 if(isset($_GET['sortDate'])){
