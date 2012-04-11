@@ -1,0 +1,6 @@
+<definitions>
+
+	<define key="VIEW_WISHLIST"><![CDATA[My Wishlist]]></define>
+	<define key="TEXT_BUTTON_ADD_TO_WISHLIST"><![CDATA[Add To Wishlist]]></define>
+
+</definitions>

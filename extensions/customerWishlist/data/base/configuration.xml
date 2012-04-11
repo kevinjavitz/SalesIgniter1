@@ -1,0 +1,14 @@
+<ConfigurationGroup>
+	<title>Customer Wishlist</title>
+	<key>customerWishlist</key>
+	<description>Configuration Settings For The Customer Wishlist Extension</description>
+	<Configuration>
+		<EXTENSION_CUSTOMER_WISHLIST_ENABLED>
+			<title>Enable Customer Wishlist</title>
+			<value>True</value>
+			<description>Enable Or Disable The Customer Wishlist Extension</description>
+			<sort_order>1</sort_order>
+			<set_function>tep_cfg_select_option(array('True','False'),</set_function>
+		</EXTENSION_CUSTOMER_WISHLIST_ENABLED>
+	</Configuration>
+</ConfigurationGroup>
