@@ -36,6 +36,17 @@ $Qpages = Doctrine_Manager::getInstance()
 	->fetchAssoc('select layout_id from template_pages where extension = "' . $thisExtension . '" and application = "' . $thisApp . '" and page = "' . $thisAppPage . '"');
 $Page = $Qpages[0];
 $pageLayouts = $Page['layout_id'];
+$layoutArr = explode(',', $Page['layout_id']);
+$pageTypeArr = explode(',', $Page['page_type']);
+$pageType = false;
+
+if($userAccount->isLoggedIn()){
+	if($userAccount->isRentalMember()){
+		$pageType = 'R';
+	} else {
+		$pageType = 'N';
+	}
+}
 
 $QtemplateId = Doctrine_Manager::getInstance()
 	->getCurrentConnection()
@@ -82,6 +93,11 @@ if(!isset($_GET['lID'])){
 	}
 
 	$layout_id = $PageLayoutId['layout_id'];
+	if($pageType !== false){
+		$layoutKey = array_search($pageType,$pageTypeArr);
+		if($layoutKey)
+			$layout_id =  $layoutArr[$layoutKey];
+	}
 }else{
 	$layout_id = $_GET['lID'];
 }
