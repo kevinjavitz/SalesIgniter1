@@ -210,5 +210,57 @@ $appExtension->initApplicationPlugins();
 		}
 	}
 
+class PagerLayoutWithArrows extends Doctrine_Pager_Layout {
+	private $myType = '';
+
+	public function setMyType($val){
+		$this->myType = $val;
+	}
+
+	public function getMyType(){
+		return $this->myType;
+	}
+
+
+	public function display($options = array(), $return = false){
+		if(empty($this->myType)){
+			$this->myType = sysLanguage::get('TEXT_PAGER_TYPE');
+		}
+		$pager = $this->getPager();
+		$str = '';
+
+		// First page
+		$this->addMaskReplacement('page', '&laquo;', true);
+		$options['page_number'] = $pager->getFirstPage();
+		$str .= $this->processPage($options);
+
+		// Previous page
+		$this->addMaskReplacement('page', '&lsaquo;', true);
+		$options['page_number'] = $pager->getPreviousPage();
+		$str .= $this->processPage($options);
+
+		// Pages listing
+		$this->removeMaskReplacement('page');
+		$str .= parent::display($options, true);
+
+		// Next page
+		$this->addMaskReplacement('page', '&rsaquo;', true);
+		$options['page_number'] = $pager->getNextPage();
+		$str .= $this->processPage($options);
+
+		// Last page
+		$this->addMaskReplacement('page', '&raquo;', true);
+		$options['page_number'] = $pager->getLastPage();
+		$str .= $this->processPage($options);
+
+		$str .= '&nbsp;&nbsp;<b>' . $pager->getFirstIndice() . ' - ' . $pager->getLastIndice() . ' ('.sysLanguage::get('TEXT_PAGER_OF').' ' . $pager->getNumResults() . ' ' . $this->myType. ')</b>';
+		// Possible wish to return value instead of print it on screen
+		if ($return) {
+			return $str;
+		}
+		echo $str;
+	}
+}
+
 	require(sysConfig::getDirFsCatalog() . 'includes/classes/ftp/base.php');
 ?>
