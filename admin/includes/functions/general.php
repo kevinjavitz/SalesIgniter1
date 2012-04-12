@@ -1537,6 +1537,21 @@ function tep_cfg_select_option($select_array, $key_value, $key = '') {
 	return $string;
 }
 
+
+function tep_cfg_textarea_element($key_value, $key = '') {
+	$string = '';
+
+
+	$name = ((tep_not_null($key)) ? 'configuration[' . $key . ']' : 'configuration_value');
+
+	$string .= '<textarea name="'.$name.'" cols="8" rows="4">'.$key_value.'</textarea>';
+
+
+
+	return $string;
+}
+
+
 function tep_cfg_select_option_elements($select_array, $key_value, $key = '') {
 	for ($i=0, $n=sizeof($select_array); $i<$n; $i++) {
 		$elArr[] = array(

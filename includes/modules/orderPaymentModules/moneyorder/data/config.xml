@@ -63,5 +63,6 @@
 		<key><![CDATA[MODULE_PAYMENT_MONEYORDER_PAYTO]]></key>
 		<value><![CDATA[]]></value>
 		<description><![CDATA[Who should payments be made payable to?]]></description>
+		<set_function><![CDATA[tep_cfg_textarea_element(]]></set_function>
 	</configuration>
 </configurations>
