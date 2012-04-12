@@ -164,9 +164,7 @@
 								}
 							}
 
-							$rowProducts[$line][0] = array('text' => $htmlCheckbox->draw() . ' '. $pibInfo['barcode']. $attributeV,'addCls' =>'b'.generateSlug($pibInfo['barcode']),'attr' =>array('product_id' =>$productId, 'type'=>'reservation', 'barcode_id'=>$pibInfo['barcode_id'],'barcode_name' =>'b'.generateSlug($pibInfo['barcode'])));
-							$barcodesArr[] = '"'.'b'.generateSlug($pibInfo['barcode']).'"';
-
+							$isFuture = false;
 							foreach($pibInfo['OrdersProductsReservation'] as $oprInfo){
 								$reserveStartDate = strtotime('-' . $oprInfo['shipping_days_before'] . ' days' ,strtotime($oprInfo['start_date'])); //+-ship_days
 								$reserveEndDate = strtotime('+' . $oprInfo['shipping_days_after'] . ' days' , strtotime($oprInfo['end_date']));
@@ -182,7 +180,10 @@
 									$opReservation->rental_status_id = $reservedStatus;
 									$opReservation->save();
 								}
-
+								if($reserveStartDate > time() && !$isFuture){
+									$nextRented = $reserveStartDate;
+									$isFuture = true;
+								}
 								//here I fill the Events Array
 									$timeDateParseStart = date_parse(date('Y-m-d H:i',$reserveStartDate));
 									$timeDateParseEnd = date_parse(date('Y-m-d H:i',$reserveEndDate));
@@ -193,6 +194,15 @@
 									$timeBooked[] = "{title:'Not Available',start:".$stringStart.",end:".$stringEnd.", className:'".'b'.generateSlug($pibInfo['barcode'])."', rid:'".$oprInfo['orders_products_reservations_id']."', rsid:'".getColor($oprInfo['rental_status_id'])."',type:'".'reservation'."',barcode_id:'".$pibInfo['barcode_id']."',barcode_name:'".'b'.generateSlug($pibInfo['barcode'])."',product_id:'".$productId."', allDay:false}";
 
 							}
+							$barcodeStatus = '(Current Status:'.$pibInfo['status'].')  ';
+							$barcodeStatusFuture = '';
+							if($isFuture){
+								$barcodeStatusFuture = '(Next Rented: '.date('Y-m-d H:i:s',$nextRented).')  ';
+							}
+
+							$rowProducts[$line][0] = array('text' => $htmlCheckbox->draw() . ' '. $pibInfo['barcode']. $attributeV.$barcodeStatus.$barcodeStatusFuture,'addCls' =>'b'.generateSlug($pibInfo['barcode']),'attr' =>array('product_id' =>$productId, 'type'=>'reservation', 'barcode_id'=>$pibInfo['barcode_id'],'barcode_name' =>'b'.generateSlug($pibInfo['barcode'])));
+							$barcodesArr[] = '"'.'b'.generateSlug($pibInfo['barcode']).'"';
+
 						}
 					}
 
@@ -206,9 +216,7 @@
 				                $htmlCheckbox = htmlBase::newElement('checkbox')
 				                ->setName('selectedBarcodes[]')
 				                ->setValue($pibInfo['barcode_id']);
-								$rowProducts[$line][0] = array('text' => $htmlCheckbox->draw() . ' ' . $pibInfo['barcode'],'addCls' =>'b'.generateSlug($pibInfo['barcode']),'attr' => array('product_id' =>$productId, 'type'=>'rental', 'barcode_id'=>$pibInfo['barcode_id'],'barcode_name'=>'b'.generateSlug($pibInfo['barcode'])));
-								$barcodesArr[] = '"'.'b'.generateSlug($pibInfo['barcode']).'"';
-
+								$isFuture = false;
 								foreach($pibInfo['RentedProducts'] as $rpInfo){
 
 									$reserveStartDate = strtotime($rpInfo['shipment_date']);
@@ -231,6 +239,11 @@
 										$rpRental->rental_status_id = $reservedStatus;
 										$rpRental->save();
 									}
+
+									if($reserveStartDate > time() && !$isFuture){
+										$nextRented = $reserveStartDate;
+										$isFuture = true;
+									}
 									$timeDateParseStart = date_parse(date('Y-m-d H:i',$reserveStartDate));
 									$timeDateParseEnd = date_parse(date('Y-m-d H:i',$reserveEndDate));
 
@@ -239,6 +252,13 @@
 
 									$timeBooked[] = "{title:'Not Available',start:".$stringStart.",end:".$stringEnd.", className:'".'b'.generateSlug($pibInfo['barcode'])."', rid:'".$rpInfo['rented_products_id']."', rsid:'".getColor($rpInfo['rental_status_id'])."',type:'".'rental'."',barcode_id:'".$pibInfo['barcode_id']."',barcode_name:'".'b'.generateSlug($pibInfo['barcode'])."',product_id:'".$productId."', allDay:false}";
 								}
+								$barcodeStatus = '(Current Status:'.$pibInfo['status'].')  ';
+								$barcodeStatusFuture = '';
+								if($isFuture){
+									$barcodeStatusFuture = '(Next Rented: '.date('Y-m-d H:i:s', $nextRented).')  ';
+								}
+								$rowProducts[$line][0] = array('text' => $htmlCheckbox->draw() . ' ' . $pibInfo['barcode'].$barcodeStatus.$barcodeStatusFuture,'addCls' =>'b'.generateSlug($pibInfo['barcode']),'attr' => array('product_id' =>$productId, 'type'=>'rental', 'barcode_id'=>$pibInfo['barcode_id'],'barcode_name'=>'b'.generateSlug($pibInfo['barcode'])));
+								$barcodesArr[] = '"'.'b'.generateSlug($pibInfo['barcode']).'"';
 							}
 						}
 					}
@@ -278,6 +298,10 @@
 
 	if (isset($_GET['productsID']) && !empty($_GET['productsID'])){
 		$Qproducts->andWhere('p.products_id = ?', $_GET['productsID']);		
+	}
+
+	if (isset($_GET['barcodeName']) && !empty($_GET['barcodeName'])){
+		$Qproducts->andWhere('pib.barcode LIKE ?','%'. $_GET['barcodeName'].'%');
 	}
 
 	if(isset($_GET['limitinventory']) && $_GET['limitinventory'] == 2){
@@ -361,7 +385,7 @@
 		foreach($products as $product){
 
 			$rowProducts[$line][] = array('addCls' => 'noHover',
-						'text' =>'<b>' . $product['ProductsDescription'][0]['products_name'] . '</b>'
+						'text' =>'<b>' . $product['ProductsDescription'][0]['products_name'] . '</b><a target="_blank" href="'.itw_app_link('pID='.$product['products_id'],'products','new_product').'"> Edit Product </a><a target="_blank" href="'.itw_catalog_app_link('products_id='.$product['products_id'],'product','info').'"> | View Product</a>'
 			);
 			$numBarcodes = 0;
 			addGridRow($product,
@@ -394,7 +418,7 @@
 	}
 
 ?>
- <div class="pageHeading"><?php echo sysLanguage::get('HEADING_TITLE');?></div>
+ <div class="pageHeading"><?php echo sysLanguage::get('HEADING_TITLE_REPORTS');?></div>
  <br />
  <table border="0" width="100%" cellspacing="0" cellpadding="3">
   <tr>
@@ -511,6 +535,17 @@
     if (isset($htmlProductsId)){
 	    $searchForm->append($htmlProductsId);
     }
+
+   $htmlBarcodeInput = htmlBase::newElement('input')
+	   ->setName('barcodeName')
+	   ->setLabel('Barcode: ')
+	   ->setLabelPosition('before')
+	   ->addClass('barcodeName');
+
+    if(isset($_GET['barcodeName']) && !empty($_GET['barcodeName'])){
+	    $htmlBarcodeInput->setValue($_GET['barcodeName']);
+    }
+
     $searchForm
     ->append($limitField)
     ->append($limitByInventory)
@@ -519,6 +554,7 @@
     ->append($nextArrow)
 	->append($numColsField)
 	->append($purchaseTypeField)
+    ->append($htmlBarcodeInput)
 	->append($changeButton);
 
     EventManager::notify('ProductsInventoryReportsDefaultAddFilterOptions', &$searchForm);
@@ -636,8 +672,8 @@ var startArray =[<?php echo implode(',', $timeBooked);?>];
 			startCal = $('#calendarTime').css('width');
 			startSec = $('#secWindow').css('width');
 			startHeight = -$('.adminHeader').height()-88;
-			$('.ui-grid-row').each(function(){
-				if( $(this).attr('class').indexOf('ui-grid-heading-row') >0){
+			$('.gridBodyRow').each(function(){
+				if( $(this).children(":first").attr('class').indexOf('noHover') >0){
 
 				}else{
 					barcode_name = $(this).find('td').attr('barcode_name');

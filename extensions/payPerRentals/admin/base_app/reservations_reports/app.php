@@ -10,6 +10,7 @@
 	$App->addJavascriptFile('ext/jQuery/external/transposetable/tabletranspose.js');
 	$App->addJavascriptFile('ext/jQuery/external/qTip/jquery.qtip.min.js');
 	$App->addStylesheetFile('ext/jQuery/external/qTip/jquery.qtip.min.css');
-
+	$App->addJavascriptFile('ext/jQuery/ui/jquery.ui.autocomplete.js');
+	$App->addStylesheetFile('ext/jQuery/themes/smoothness/ui.autocomplete.css');
 	//require('../includes/classes/product.php');
 ?>

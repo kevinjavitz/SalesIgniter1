@@ -475,7 +475,7 @@ $breadcrumb->add(sysLanguage::get('HEADER_TITLE_CATALOG') .' '. sysLanguage::get
 
 Session::set('current_category_id', '-1');
 //Session::remove('current_app_page');
-
+tep_update_whos_online();
 
 	// add the products model to the breadcrumb trail
 	if (isset($_GET['products_id'])){

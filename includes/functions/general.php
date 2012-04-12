@@ -1605,7 +1605,8 @@ function tep_update_whos_online() {
 
 	if (
 		basename($_SERVER['PHP_SELF']) == 'stylesheet.php' ||
-		basename($_SERVER['PHP_SELF']) == 'javascript.php'
+		basename($_SERVER['PHP_SELF']) == 'javascript.php' ||
+		isset($_GET['action'])
 	){
 		return;
 	}
