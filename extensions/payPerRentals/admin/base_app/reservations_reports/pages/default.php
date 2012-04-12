@@ -530,7 +530,7 @@
 
 	$changeButton = htmlBase::newElement('button')
 	->attr('id','changeView')
-    ->setText('Change View');
+    ->setText('Change Calendar View');
 
     if (isset($htmlProductsId)){
 	    $searchForm->append($htmlProductsId);
@@ -546,7 +546,14 @@
 	    $htmlBarcodeInput->setValue($_GET['barcodeName']);
     }
 
+    //$htmlBr = htmlBase::newElement('br');
+	$htmlBarcodeButton = htmlBase::newElement('button')
+	->setText('Check Barcode')
+	->addClass('checkBarcode');
+
     $searchForm
+	->append($htmlBarcodeInput)
+	->append($htmlBarcodeButton)
     ->append($limitField)
     ->append($limitByInventory)
     ->append($prevArrow)
@@ -554,7 +561,8 @@
     ->append($nextArrow)
 	->append($numColsField)
 	->append($purchaseTypeField)
-    ->append($htmlBarcodeInput)
+
+   // ->append($htmlBr)
 	->append($changeButton);
 
     EventManager::notify('ProductsInventoryReportsDefaultAddFilterOptions', &$searchForm);
