@@ -3020,13 +3020,7 @@ function AgendaEventRenderer() {
 									if (allDay) {
 										// convert event to temporary slot-event
 										eventElement.width(colWidth - 10); // don't use entire width
-										setOuterHeight(
-											eventElement,
-											slotHeight * Math.round(
-												(event.end ? ((event.end - event.start) / MINUTE_MS) : opt('defaultEventMinutes'))
-												/ opt('slotMinutes')
-											)
-										);
+										setOuterHeight(eventElement, slotHeight * Math.round((event.end ? ((event.end - event.start) / MINUTE_MS) : opt('defaultEventMinutes')) / opt('slotMinutes')));
 										eventElement.draggable('option', 'grid', [colWidth, 1]);
 										allDay = false;
 									}

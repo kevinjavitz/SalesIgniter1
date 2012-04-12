@@ -1747,8 +1747,11 @@ function bindHover(dpDiv) {
 		})
 		.bind('mouseover', function(event) {
 			var elem = $( event.target ).closest( selector );
-			if ($.datepicker._isDisabledDatepicker( instActive.inline ? dpDiv.parent()[0] : instActive.input[0]) ||
-					!elem.length ) {
+			var myElem = '';
+			if(instActive){
+				myElem = instActive.inline ? dpDiv.parent()[0] : instActive.input[0];
+			}
+			if ($.datepicker._isDisabledDatepicker( myElem) || !elem.length ) {
 				return;
 			}
 			elem.parents('.ui-datepicker-calendar').find('a').removeClass('ui-state-hover');
