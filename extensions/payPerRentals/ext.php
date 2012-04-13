@@ -445,7 +445,7 @@ class Extension_payPerRentals extends ExtensionBase {
 		if (sysPermissions::adminAccessAllowed('default', 'reservations_reports', 'payPerRentals') === true){
 			$contents['children'][] = array(
 				'link'       => itw_app_link('appExt=payPerRentals','reservations_reports','default','SSL'),
-				'text' => 'Barcode Report - Income Status'
+				'text' => 'Rental Inventory Report'
 			);
 		}
 	}
