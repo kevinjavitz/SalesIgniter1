@@ -1,6 +1,4 @@
-﻿/* English/UK Translations. */
-/* Written by Stuart. */
-jQuery(function($){
+﻿jQuery(function($){
 	var langCode = 'en';
 	var calSettings = {
 		closeText: 'Done',
