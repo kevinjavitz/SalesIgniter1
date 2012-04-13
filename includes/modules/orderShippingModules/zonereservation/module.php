@@ -8,7 +8,7 @@ class OrderShippingZonereservation extends OrderShippingModuleBase
 	private $quotes;
 
 	public function __construct() {
-		global $ShoppingCart;
+		global $ShoppingCart, $App;
 		/*
 		 * Default title and description for modules that are not yet installed
 		 */
@@ -17,17 +17,22 @@ class OrderShippingZonereservation extends OrderShippingModuleBase
 
 		$this->init('zonereservation');
 		$this->type = $this->getConfigData('MODULE_ORDER_SHIPPING_ZONE_RESERVATION_TYPE');
-
-		if(isset($_GET['app']) && $_GET['app'] != 'checkout'){
-			$this->setEnabled(true);		
-		}else{
+		if($this->isInstalled() == false){
 			$this->setEnabled(false);
 		}
-		if($this->type == 'Order' && Session::exists('onlyReservations') && (isset($_GET['app']) && $_GET['app'] == 'checkout')){
-			$this->setEnabled(true);
-		}
-		if(sysConfig::get('EXTENSION_PAY_PER_RENTALS_SHOW_SHIPPING') == 'False'){
-			$this->setEnabled(true);
+		if($App->getEnv() == 'catalog'){
+
+			if(isset($_GET['app']) && $_GET['app'] != 'checkout'){
+				$this->setEnabled(true);
+			}else{
+				$this->setEnabled(false);
+			}
+			if($this->type == 'Order' && Session::exists('onlyReservations') && (isset($_GET['app']) && $_GET['app'] == 'checkout')){
+				$this->setEnabled(true);
+			}
+			if(sysConfig::get('EXTENSION_PAY_PER_RENTALS_SHOW_SHIPPING') == 'False'){
+				$this->setEnabled(true);
+			}
 		}
 		/*if(sysConfig::get('EXTENSION_PAY_PER_RENTALS_SHOW_SHIPPING_ON_CALENDAR_IF_ORDER') == 'True' && (isset($_GET['app']) && $_GET['app'] == 'checkout')){
 			$this->setEnabled(false);

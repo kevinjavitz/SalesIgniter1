@@ -182,7 +182,6 @@ class InfoBoxPayPerRental extends InfoBoxAbstract {
 		if($showCategories){
 
 			$Qcategories = Doctrine_Query::create()
-			->select('c.categories_id, cd.categories_name, c.categories_seo_url, c.parent_id, c.ppr_show_in_menu')
 			->from('Categories c')
 			->leftJoin('c.CategoriesDescription cd')
 			->where('c.parent_id = ?', '0')

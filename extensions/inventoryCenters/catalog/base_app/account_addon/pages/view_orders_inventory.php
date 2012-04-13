@@ -5,7 +5,10 @@
 	->from('ProductsInventoryCenters')
 	->where('inventory_center_customer = ?', (int)$userAccount->getCustomerId())
 	->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
-
+	$invcent = array();
+	foreach($QcustomerCenter as $iCenter){
+		$invcent[] = $iCenter['inventory_center_id'];
+	}
 
 	$Qorders = Doctrine_Query::create()
 	->from('Orders o')
@@ -14,9 +17,10 @@
 	->leftJoin('o.OrdersTotal ot')
 	->leftJoin('o.OrdersStatus s')
 	->leftJoin('s.OrdersStatusDescription sd')
-	->where('ops.inventory_center_pickup = ?', $QcustomerCenter[0]['inventory_center_id'])
+	->whereIn('ops.inventory_center_pickup', $invcent)
 	->andWhereIn('ot.module_type', array('total', 'ot_total'))
-	->andWhere('sd.language_id = ?', Session::get('languages_id'));
+	->andWhere('sd.language_id = ?', Session::get('languages_id'))
+	->orderBy('o.date_purchased desc');
 
     EventManager::notify('OrdersListingBeforeExecute', &$Qorders);
 

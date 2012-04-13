@@ -393,6 +393,26 @@ Casa Grande, AZ  85122]]></value>
 					<value><![CDATA[]]></value>
 					<description><![CDATA[List of folders name to be included into htaccess separated by ;]]></description>
 				</HTACCESS_FOLDERS>
+				<EXTENSION_PAY_PER_RENTALS_GOOGLE_MAPS_API_KEY>
+					<value>ABQIAAAAJfeNSDfdlXtgf6gjHMTzDBT0_i__oM-cAYP-svDeQzBBv_RytBShCDbtJySULQi-i9FDwsHX8pK4aQ</value>
+					<title>Google Maps API Key</title>
+					<description>This is the key that google maps gives you for your domain.</description>
+					<sort_order>7</sort_order>
+				</EXTENSION_PAY_PER_RENTALS_GOOGLE_MAPS_API_KEY>
+				<EXTENSION_PAY_PER_RENTALS_GMT>
+					<value>GMT +0</value>
+					<title>Store Timezone</title>
+					<description>GMT Time zone for the store</description>
+					<sort_order>32</sort_order>
+					<set_function>tep_cfg_select_option(array('GMT -12','GMT -11', 'GMT -10', 'GMT -9', 'GMT -8', 'GMT -7', 'GMT -6', 'GMT -5', 'GMT -4', 'GMT -3','GMT -2', 'GMT -1', 'GMT +0','GMT +1', 'GMT +2', 'GMT +3', 'GMT +4', 'GMT +5', 'GMT +6', 'GMT +7', 'GMT +8', 'GMT +9', 'GMT +10', 'GMT +11', 'GMT +12'),</set_function>
+				</EXTENSION_PAY_PER_RENTALS_GMT>
+				<USE_WEIGHT>
+					<title><![CDATA[Use weight on all products]]></title>
+					<value><![CDATA[true]]></value>
+					<description><![CDATA[Use weight on all producst. If false it will ignore weight]]></description>
+					<set_function><![CDATA[tep_cfg_select_option(array('true', 'false'),]]></set_function>
+				</USE_WEIGHT>
+
 			</configurations>
 		</advanced>
 		<order_status>

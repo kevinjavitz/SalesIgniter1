@@ -303,9 +303,29 @@ class Extension_multiStore extends ExtensionBase {
 
 	}
 
+	function pc_array_power_set($array) {
+		// initialize by adding the empty set
+		$results = array(array( ));
+
+		foreach ($array as $element)
+			foreach ($results as $combination)
+				array_push($results, array_merge(array($element), $combination));
+
+		return $results;
+	}
+
 	public function AdminInventoryCentersListingQueryBeforeExecute(&$Qcenter) {
 		if (Session::exists('admin_showing_stores')){
-			$Qcenter->andWhereIn('inventory_center_stores', Session::get('admin_showing_stores'));
+			$power_set = $this->pc_array_power_set(Session::get('admin_showing_stores'));
+			$string = '';
+		    foreach($power_set as $set){
+				if(count($set) > 0){
+					$val = implode(';', array_reverse($set));
+					$string .= 'inventory_center_stores = "'.$val.'" OR ';
+				}
+		    }
+			$string = substr($string, 0, strlen($string) -3);
+			$Qcenter->andWhere($string);
 		}
 	}
 
@@ -516,7 +536,7 @@ class Extension_multiStore extends ExtensionBase {
 	public function CustomersListingQueryBeforeExecute(&$Qcustomers){
 		$Qcustomers
 			->leftJoin('c.CustomersToStores c2s')
-			->whereIn('stores_id', Session::get('admin_showing_stores'));
+			->andwhere('FIND_IN_SET(stores_id,"'. implode(',',Session::get('admin_showing_stores')).'") > 0 OR stores_id is null');
 	}
 	
 	public function MetaTagsAdminEditAddTabContents(&$layout){

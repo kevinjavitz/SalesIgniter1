@@ -10,6 +10,8 @@ class OrderShippingInventorycenter extends OrderShippingModuleBase
 
 	private $pricingMethod;
 
+	private $type;
+
 	public function __construct() {
 		/*
 		 * Default title and description for modules that are not yet installed
@@ -75,7 +77,6 @@ class OrderShippingInventorycenter extends OrderShippingModuleBase
 				$this->quotes['methods'][] = array(
 					'id' => 'method' . $methodId,
 					'title' => $mInfo['text'],
-					'cost' => $shippingCost,
 					'cost'    => $shippingCost,
 					'showCost' => $shippingCost,
 					'default' => $mInfo['default'],

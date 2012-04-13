@@ -56,6 +56,13 @@ foreach($extensions as $extCode => $extCls){
 	else {
 		$enabledIcon->setType('circleClose');
 	}
+	$addCls = '';
+	if(isset($_GET['ext']) && ($_GET['ext'] == $extCls->getExtensionKey())){
+		$addCls .= 'isSelected ';
+		if(isset($_GET['action']) && ($_GET['action'] == 'edit')){
+			$addCls .= 'isEdit ';
+		}
+	}
 
 	$tableGrid->addBodyRow(array(
 		'rowAttr' => array(
@@ -69,7 +76,8 @@ foreach($extensions as $extCode => $extCls){
 			array('align' => 'center', 'text' => $installedIcon->draw()),
 			array('align' => 'center', 'text' => $enabledIcon->draw()),
 			array('align' => 'center', 'text' => htmlBase::newElement('icon')->setType('info')->draw())
-		)
+		),
+		'addCls' => $addCls
 	));
 
 }

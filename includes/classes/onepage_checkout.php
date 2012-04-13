@@ -121,12 +121,7 @@ class osC_onePageCheckout {
 			return;
 		}
 
-		if ($ShoppingCart->showWeight() <= 0) {
-			$this->onePage['shippingEnabled'] = false;
-		}
-
-		if (in_array($ShoppingCart->getContentType(), array('virtual', 'virtual_weight'))) {
-			$this->onePage['info']['shipping'] = false;
+		if ($ShoppingCart->showWeight() <= 0 && sysConfig::get('USE_WEIGHT') == 'true') {
 			$this->onePage['shippingEnabled'] = false;
 		}
 

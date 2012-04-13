@@ -97,8 +97,7 @@
 						$reservationInfo = $cartProduct->getInfo('reservationInfo');
 						if(isset($reservationInfo['inventory_center_pickup'])){
 							$shippingMethods = $this->getShippingMethods($reservationInfo['inventory_center_pickup']);
-							if ($shippingMethods && ($ShoppingCart->showWeight() > 0)){
-								$onePageCheckout->onePage['info']['shipping'] = array();
+							if ($shippingMethods){								
 								$onePageCheckout->onePage['shippingEnabled'] = true;
 								break;
 							}else{

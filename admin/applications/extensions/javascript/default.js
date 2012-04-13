@@ -40,6 +40,14 @@ $(document).ready(function () {
 		});
 	});
 
+	$('.isSelected').each(function(){
+		$(this).trigger('click');
+	});
+
+	$('.isEdit').each(function(){
+		$('.editButton').trigger('click');
+	});
+
 	$('.installButton').click(function () {
 		var getVars = getLinkParams(['action=install']);
 		js_redirect(js_app_link(getVars));

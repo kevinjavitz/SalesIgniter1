@@ -67,7 +67,7 @@
   function getServiceAreas(){
 	$QserviceAreas = Doctrine_Manager::getInstance()
 		->getCurrentConnection()
-		->fetchAssoc('select * from ' . TABLE_PRODUCTS_INVENTORY_CENTERS);
+		->fetchAssoc('select * from products_inventory_centers');
       $serviceAreas = array();
       foreach($QserviceAreas as $serviceArea){
           $serviceAreas[] = array(
