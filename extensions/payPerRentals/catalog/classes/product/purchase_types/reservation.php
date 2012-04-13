@@ -1133,7 +1133,7 @@ class PurchaseType_reservation extends PurchaseTypeAbstract {
 		$return = null;
 		switch($key){
 			case 'product_info':
-			    if (sysConfig::get('EXTENSION_PAY_PER_RENTALS_SHOW_CALENDAR_PRODUCT_INFO') == 'False') {
+			    //if (sysConfig::get('EXTENSION_PAY_PER_RENTALS_SHOW_CALENDAR_PRODUCT_INFO') == 'False') {
 
 
 					$priceTableHtml = '';
@@ -1877,7 +1877,8 @@ class PurchaseType_reservation extends PurchaseTypeAbstract {
 						);
 					}
 				}
-			}else{
+			//}
+			/*else{
 					ob_start();
 					require(sysConfig::getDirFsCatalog() . 'extensions/payPerRentals/catalog/base_app/build_reservation/pages/default.php');
 				        echo '<script type="text/javascript" src="'.sysConfig::getDirWsCatalog() . 'extensions/payPerRentals/catalog/base_app/build_reservation/javascript/default.js'.'"></script>';
@@ -1892,7 +1893,7 @@ class PurchaseType_reservation extends PurchaseTypeAbstract {
 								'button'        => ''
 					);
 					//echo $pageHtml;
-			}
+			} */
 				break;
 		}
 		return $return;

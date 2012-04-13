@@ -99,7 +99,7 @@ if ($insurancePrice > 0){
 	   $pageTitle = '<span class="pprText">'.$product->getName().'</span>';
 
 	   $pageButtons = '';
-	   if (sysConfig::get('EXTENSION_PAY_PER_RENTALS_SHOW_CALENDAR_PRODUCT_INFO') == 'False' && is_object($pageContent)) {
+	   if (/*sysConfig::get('EXTENSION_PAY_PER_RENTALS_SHOW_CALENDAR_PRODUCT_INFO') == 'False' &&*/ is_object($pageContent)) {
 		    $pageButtons .= htmlBase::newElement('button')
 		    ->usePreset('back')
 		    ->addClass('pprBack')
@@ -117,7 +117,7 @@ if ($insurancePrice > 0){
 		   $pageContent->set('pageTitle', $pageTitle);
 		   $pageContent->set('pageContent', $pageContents);
 		   $pageContent->set('pageButtons', $pageButtons);
-	   }else{
+	   }/*else{
 		   $htmlForm = htmlBase::newElement('form')
 			->attr('name', 'build_reservation')
 			->attr('action', itw_app_link(tep_get_all_get_params(array('action'))))
@@ -125,4 +125,4 @@ if ($insurancePrice > 0){
 		   $htmlDiv = htmlBase::newElement('div')
 			->html($pageContents);
 		   echo $htmlForm->append($htmlDiv)->draw();
-	   }
+	   }*/
