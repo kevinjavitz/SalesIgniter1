@@ -17,6 +17,7 @@ $(document).ready(function (){
 			});
 
 		}
+		var $purchaseTypeSelected = $Row.find('.purchaseType option:selected');
 		showAjaxLoader($(mainField), 'small');
 		$.ajax({
 			cache: false,
@@ -52,7 +53,7 @@ $(document).ready(function (){
 								if($(self).find('.end_time').size() > 0){
 									myEndDate = myEndDate+' '+$(self).find('.end_time').val();
 								}
-								var postData1 = attrv + '&start_date='+myStartDate+'&end_date='+myEndDate+'&days_before='+$(self).find('input[name="rental_shipping"]:checked').attr('days_before')+'&days_after='+$(self).find('input[name="rental_shipping"]:checked').attr('days_after')+'&shipping='+$(self).find('input[name="rental_shipping"]:checked').val()+'&qty='+$(self).find('.rental_qty').val();
+								var postData1 = attrv + '&start_date='+myStartDate+'&end_date='+myEndDate+'&days_before='+$(self).find('input[name="rental_shipping"]:checked').attr('days_before')+'&days_after='+$(self).find('input[name="rental_shipping"]:checked').attr('days_after')+'&shipping='+$(self).find('input[name="rental_shipping"]:checked').val()+'&qty='+$(self).find('.rental_qty').val()+'&purchase_type='+$purchaseTypeSelected.val();
 								var addCartData = {};
 								var postData = $.extend(addCartData, {
 									start_date : myStartDate,

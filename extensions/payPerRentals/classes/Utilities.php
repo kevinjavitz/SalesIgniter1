@@ -1427,7 +1427,11 @@ class ReservationUtilities {
 		$divDate.insertBefore($('.wrapPrice'));
 		$dateText.insertBefore($('.dateQuotesWrap'));
 		$('.dateText, .dateQuotesWrap').wrapAll('<div class="wrapDates"></div>');
+		<?php if ($App->getEnv() == 'catalog'){?>
 		$('.shippingDiv').css('top','-'+($('.periodsInsurance').height()+12)+'px');
+		<?php }else{?>
+			//$('.shippingDiv').css('top','-'+($('.periodsInsurance').height()+12)+'px');
+		<?php }?>
 		$('.dateRow').css('top','-'+($('.periodsInsurance').height()+12-30-$('.maxPeriod').height()-$('.minPeriod').height())+'px');
 		$('.pprButttons').css('top','-'+($('.periodsInsurance').height()+12-45)+'px');
 		$('.pprButttons_wrapper').css('height',($('.pprButttons').height() - $('.periodsInsurance').height()+24)+'px');
@@ -1526,6 +1530,7 @@ class ReservationUtilities {
 			width:25%;
 			font-size:11px;
 		}
+		<?php if ($App->getEnv() == 'catalog'){?>
 		.shippingDiv{
 			width:50%;
 			position:relative;
@@ -1534,6 +1539,17 @@ class ReservationUtilities {
 			display: inline-block;
 
 		}
+	<?php }else{?>
+	.shippingDiv{
+		width:50%;
+		position:relative;
+		top:4%;
+		left:25%;
+		font-size:11px;
+		display: inline-block;
+
+	}
+	<?php }?>
 		.estimatedPricing{
 			display:none;
 		}
