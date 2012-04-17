@@ -1033,7 +1033,7 @@ Payment Method
 	add_extra_fields('modules_shipping_zone_reservation_methods','min_rental_type'," INT( 1 ) NOT NULL DEFAULT  '0'");
 	update_extra_fields('orders','terms','TEXT');
 	add_extra_fields('modules_shipping_zone_reservation_methods','method_zipcode','TEXT NULL');
-	add_extra_fields('modules_shipping_zone_reservation_methods','free_delivery_over'," FLOAT(15,2) NOT NULL DEFAULT  '0'");
+	add_extra_fields('modules_shipping_zone_reservation_methods','free_delivery_over'," FLOAT(15,2) NOT NULL DEFAULT  '-1'");
 }
 
 function updateTemplates(){
