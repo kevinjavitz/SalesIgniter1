@@ -1,450 +1,190 @@
-<?php
-/*
- * Sales Igniter E-Commerce System
- * 
- * I.T. Web Experts
- * http://www.itwebexperts.com
- * 
- * Copyright (c) 2010 I.T. Web Experts
- *
- * This script and it's source is not redistributable
-*/
-
-/**
- * Holds all configuration settings from the configuration table
- */
-	class sysConfig {
-		/*
-		 * @var array	Holder for all configuration settings
-		 */
-		private static $config = array();
-
-		/*
-		 * @var array	Holder for all protected keys, used to check if a key is protected
-		 */
-		private static $protectedKeys = array();
-
-		/*
-		 * @var array	Used to hold class references
-		 */
-		private static $classInstances = array();
-
-		/*
-		 * @var array	Used to store already exploded keys to prevent doing it more than once
-		 */
-		private static $exploded = array();
-		
-		/*
-		 * @TODO: Gotta have php 5.3+ for this to work...
-		 */
-		public static function __callStatic($function, $args){
-			if (strstr($function, 'DirFs') || strstr($function, 'DirWs')){
-				$define = '';
-				for($i=0, $n=sizeof($function); $i<$n; $i++){
-					if (isset($lastLetter) && ctype_upper($function[$i])){
-						$define .= '_' . $function[$i];
-					}else{
-						$define .= $function[$i];
-					}
-					$lastLetter = $function[$i];
-				}
-				return self::get(strtoupper($define));
-			}
-		}
-
-		public static function init(){
-			global $request_type;
-			self::$config = array();
-
-			$dirName = substr(dirname(__FILE__), 0, -7);
-
-			$xmlData = simplexml_load_file(
-				$dirName . 'configure.xml',
-				'SimpleXMLElement',
-				LIBXML_NOCDATA
-			);
-
-			foreach($xmlData->config as $cInfo){
-				self::set(
-					(string) $cInfo->key,
-					(string) $cInfo->value,
-					(isset($cInfo['protected']) && (string) $cInfo['protected'] == 'true')
-				);
-			}
-			$xmlData = null;
-			unset($xmlData);
-			if(isset($_SERVER['HTTP_X_FORWARDED_HOST'])){
-				self::set(
-					(string) 'HTTP_HOST',
-					(string) $_SERVER['HTTP_X_FORWARDED_HOST'],
-					'true'
-				);
-			} elseif( isset($_SERVER['HTTP_HOST'])){
-				self::set(
-					(string) 'HTTP_HOST',
-					(string) $_SERVER['HTTP_HOST'],
-					'true'
-				);
-			}
-
-			$httpDomainName = self::get('HTTP_DOMAIN_NAME');
-			if(self::exists('HTTP_HOST')){
-				if (substr(self::get('HTTP_HOST'), 0, 4) == 'www.' && substr($httpDomainName, 0, 4) != 'www.'){
-					$httpDomainName = 'www.' . $httpDomainName;
-				}elseif (substr(self::get('HTTP_HOST'), 0, 4) != 'www.' && substr($httpDomainName, 0, 4) == 'www.'){
-					$httpDomainName = substr($httpDomainName, 4);
-				}
-			}
-
-			$httpsDomainName = self::get('HTTPS_DOMAIN_NAME');
-			if(self::exists('HTTP_HOST')){
-				if (substr(self::get('HTTP_HOST'), 0, 4) == 'www.' && substr($httpsDomainName, 0, 4) != 'www.'){
-					$httpsDomainName = 'www.' . $httpsDomainName;
-				}elseif (substr(self::get('HTTP_HOST'), 0, 4) != 'www.' && substr($httpsDomainName, 0, 4) == 'www.'){
-					$httpsDomainName = substr($httpsDomainName, 4);
-				}
-			}
-			
-			self::setMultiple(array(
-				'HTTP_SERVER' => 'http://' . $httpDomainName,
-				'HTTP_CATALOG_SERVER' => 'http://' . $httpDomainName,
-				'HTTPS_SERVER' => 'https://' . $httpsDomainName,
-				'HTTPS_CATALOG_SERVER' => 'https://' . $httpsDomainName
-			), false);
-			
-			self::setMultiple(array(
-				'HTTP_COOKIE_PATH' => self::get('DIR_WS_CATALOG'),
-				'HTTPS_COOKIE_PATH' => self::get('DIR_WS_CATALOG'),
-				'HTTP_COOKIE_DOMAIN' => $httpDomainName,
-				'HTTPS_COOKIE_DOMAIN' => $httpsDomainName
-			), false);
-
-			self::setMultiple(array(
-				'DIR_WS_ADMIN' => self::get('DIR_WS_CATALOG') . 'admin/',
-				'DIR_FS_ADMIN' => self::get('DIR_FS_DOCUMENT_ROOT') . self::get('DIR_WS_CATALOG') . 'admin/',
-				'DIR_WS_HTTP_CATALOG'  => self::get('DIR_WS_CATALOG'),
-				'DIR_WS_HTTPS_CATALOG' => self::get('DIR_WS_CATALOG'),
-				'DIR_FS_CATALOG' => self::get('DIR_FS_DOCUMENT_ROOT') . self::get('DIR_WS_CATALOG'),
-				'DIR_WS_IMAGES' => 'images/',
-				'DIR_WS_INCLUDES' => 'includes/',
-				'DIR_WS_APP' => 'applications/',
-				'DIR_WS_ADMIN_TEMPLATES' => 'template/'
-			), true);
-
-			self::setMultiple(array(
-				'DIR_WS_ICONS' => self::get('DIR_WS_IMAGES') . 'icons/',
-				'DIR_WS_CATALOG_IMAGES' => self::get('DIR_WS_CATALOG') . 'images/',
-				'DIR_WS_BOXES' => self::get('DIR_WS_INCLUDES') . 'boxes/',
-				'DIR_WS_FUNCTIONS' => self::get('DIR_WS_INCLUDES') . 'functions/',
-				'DIR_WS_CLASSES' => self::get('DIR_WS_INCLUDES') . 'classes/',
-				'DIR_WS_MODULES' => self::get('DIR_WS_INCLUDES') . 'modules/',
-				'DIR_WS_LANGUAGES' => self::get('DIR_WS_INCLUDES') . 'languages/',
-				'DIR_WS_CATALOG_LANGUAGES' => self::get('DIR_WS_CATALOG') . 'includes/languages/',
-				'DIR_FS_CATALOG_LANGUAGES' => self::get('DIR_FS_CATALOG') . 'includes/languages/',
-				'DIR_FS_CATALOG_IMAGES' => self::get('DIR_FS_CATALOG') . 'images/',
-				'DIR_FS_CATALOG_MODULES' => self::get('DIR_FS_CATALOG') . 'includes/modules/',
-				'DIR_FS_BACKUP' => self::get('DIR_FS_ADMIN') . 'backups/',
-				'ADMIN_TEMPLATE_NAME' => 'fallback/',
-				'TEMPLATE_MAIN_PAGE' => 'main_page.tpl.php'
-			), true);
-
-			//Deprecated
-			self::setMultiple(array(
-				'USE_PCONNECT' => 'false',
-				'STORE_SESSIONS' => 'mysql'
-			), true);
-
-			//Deprecated
-			self::setMultiple(array(
-				'INVENTORY_CENTERS_ENABLED' => 'True'
-			), true);
-
-			self::set('DOCTRINE_CONN_STRING', 'mysql://' . self::get('DB_SERVER_USERNAME') . ':' . self::get('DB_SERVER_PASSWORD') . '@' . self::get('DB_SERVER') . '/' . self::get('DB_DATABASE'));
-			self::set('REQUEST_TYPE', (getenv('HTTPS') == 'on' ? 'SSL' : 'NONSSL'));
-			
-			$request_type = (getenv('HTTPS') == 'on') ? 'SSL' : 'NONSSL';
-
-			if ($request_type == 'NONSSL') {
-				self::set('DIR_WS_CATALOG', self::get('DIR_WS_HTTP_CATALOG', false));
-			}else{
-				self::set('DIR_WS_CATALOG', self::get('DIR_WS_HTTPS_CATALOG', false));
-			}
-		}
-
-		/**
-		 * getDirWsCatalog
-		public static function getAll(){
-			return self::$config;
-		}
-		 * returns the correct relative catalog path based on the request type
-		 *
-		 * @param string $forceType [optional] Used to force the request type, possible values ( SSL or NONSSL )
-		 * @return string
-		 */
-		public static function getDirWsCatalog($forceType = false){
-			if ($forceType == 'NONSSL' || ($forceType === false && getenv('HTTPS') != 'on')){
-				if (self::exists('DIR_WS_HTTP_CATALOG', false) === true){
-					$returnDir = self::get('DIR_WS_HTTP_CATALOG', false);
-				}else{
-					$returnDir = self::get('DIR_WS_CATALOG', false);
-				}
-			}elseif ($forceType == 'SSL' || ($forceType === false && getenv('HTTPS') == 'on')){
-				if (self::exists('DIR_WS_HTTPS_CATALOG', false) === true){
-					$returnDir = self::get('DIR_WS_HTTPS_CATALOG', false);
-				}else{
-					$returnDir = self::get('DIR_WS_CATALOG', false);
-				}
-			}else{
-				die('ERROR: Unable to determine connection type (' . __FILE__ . '::' . __LINE__ . ')');
-			}
-			return $returnDir;
-		}
-		
-		/**
-		 * getDirWsAdmin
-		 * returns the correct relative admin path based on the request type
-		 *
-		 * @param string $forceType [optional] Used to force the request type, possible values ( SSL or NONSSL )
-		 * @return string
-		 */
-		public static function getDirWsAdmin($forceType = false){
-			if ($forceType == 'NONSSL' || ($forceType === false && getenv('HTTPS') != 'on')){
-				if (self::exists('DIR_WS_HTTP_ADMIN', false) === true){
-					$returnDir = self::get('DIR_WS_HTTP_ADMIN', false);
-				}else{
-					$returnDir = self::get('DIR_WS_ADMIN', false);
-				}
-			}elseif ($forceType == 'SSL' || ($forceType === false && getenv('HTTPS') == 'on')){
-				if (self::exists('DIR_WS_HTTPS_ADMIN', false) === true){
-					$returnDir = self::get('DIR_WS_HTTPS_ADMIN', false);
-				}else{
-					$returnDir = self::get('DIR_WS_ADMIN', false);
-				}
-			}else{
-				die('ERROR: Unable to determine connection type (' . __FILE__ . '::' . __LINE__ . ')');
-			}
-			return $returnDir;
-		}
-	
-		/**
-		 * getDirFsAdmin
-		 * returns the correct absolute admin path based on the request type
-		 *
-		 * @param string $forceType [optional] Used to force the request type, possible values ( SSL or NONSSL )
-		 * @return string
-		 */
-		public static function getDirFsAdmin($forceType = false){
-			if ($forceType == 'NONSSL' || ($forceType === false && getenv('HTTPS') != 'on')){
-				if (self::exists('DIR_FS_HTTP_ADMIN', false) === true){
-					$returnDir = self::get('DIR_FS_HTTP_ADMIN', false);
-				}else{
-					$returnDir = self::get('DIR_FS_ADMIN', false);
-				}
-			}elseif ($forceType == 'SSL' || ($forceType === false && getenv('HTTPS') == 'on')){
-				if (self::exists('DIR_FS_HTTPS_ADMIN', false) === true){
-					$returnDir = self::get('DIR_FS_HTTPS_ADMIN', false);
-				}else{
-					$returnDir = self::get('DIR_FS_ADMIN', false);
-				}
-			}else{
-				die('ERROR: Unable to determine connection type (' . __FILE__ . '::' . __LINE__ . ')');
-			}
-			return $returnDir;
-		}
-	
-		/**
-		 * getDirFsCatalog
-		 * returns the correct absolute catalog path based on the request type
-		 *
-		 * @param string $forceType [optional] Used to force the request type, possible values ( SSL or NONSSL )
-		 * @return string
-		 */
-		public static function getDirFsCatalog($forceType = false){
-			if ($forceType == 'NONSSL' || ($forceType === false && getenv('HTTPS') != 'on')){
-				if (self::exists('DIR_FS_HTTP_CATALOG', false) === true){
-					$returnDir = self::get('DIR_FS_HTTP_CATALOG', false);
-				}else{
-					$returnDir = self::get('DIR_FS_CATALOG', false);
-				}
-			}elseif ($forceType == 'SSL' || ($forceType === false && getenv('HTTPS') == 'on')){
-				if (self::exists('DIR_FS_HTTPS_CATALOG', false) === true){
-					$returnDir = self::get('DIR_FS_HTTPS_CATALOG', false);
-				}else{
-					$returnDir = self::get('DIR_FS_CATALOG', false);
-				}
-			}else{
-				die('ERROR: Unable to determine connection type (' . __FILE__ . '::' . __LINE__ . ')');
-			}
-			return $returnDir;
-		}
-	
-		/**
-		 * load
-		 * Loads all the configuration settings from the configuration table
-		 *
-		 * @return void
-		 */
-		public static function load(){
-			$Directory = new DirectoryIterator(self::getDirFsCatalog() . 'includes/configs/');
-			foreach($Directory as $ConfigFile){
-				if ($ConfigFile->isDot() || $ConfigFile->isDir()) {
-					continue;
-				}
-
-				$Configuration = new MainConfigReader($ConfigFile->getBasename('.xml'));
-				$Configuration->loadToSystem();
-			}
-		}
-		
-		/**
-		 * set
-		 * Sets a configuration value
-		 *
-		 * @param string $k The key to be used when setting the configuration
-		 * @param string $v The value to be used when setting the configuration
-		 * @param bool $protected [optional] Sets the value to be protected
-		 * @return void
-		 */
-		public static function set($k, $v, $protected = false){
-			if (isset(self::$protectedKeys[$k])){
-				trigger_error('Key Already Defined As Protected. (' . $k . ')', E_USER_ERROR);
-//				throw new Exception('Key Already Defined As Protected. (' . $k . ')');
-				return;
-			}
-			
-			if ($protected === true){
-				self::$protectedKeys[$k] = true;
-			}
-			
-			/* 
-			 * @TODO: Remove when ALL defines are upgraded
-			 */
-			if (!defined($k)){
-				define($k, $v);
-			}
-			self::$config[$k] = $v;
-		}
-		
-		/**
-		 * setMultiple
-		 * Sets an array of configuration keys/values
-		 *
-		 * @param array $array Associative array of keys/values to be set
-		 * @param bool $protected [optional] Sets the values to be protected
-		 * @return void
-		 */
-		public static function setMultiple(array $array, $protected = false){
-			foreach($array as $k => $v){
-				self::set($k, $v, $protected);
-			}
-		}
-		
-		/**
-		 * get
-		 * Gets the configuration value based on the configuration key
-		 *
-		 * @param string $k The key to use to find the configuration value
-		 * @return string
-		 */
-		public static function get($k, $load = true){
-			$return = '';
-			if (isset(self::$config[$k])){
-				$return = self::$config[$k];
-			}elseif ($load === true){
-				$ResultSet = Doctrine_Manager::getInstance()
-					->getCurrentConnection()
-					->fetchAssoc('select configuration_value from configuration where configuration_key = "' . $k . '"');
-				if ($ResultSet && sizeof($ResultSet > 0)){
-					self::set($k, $ResultSet[0]['configuration_value']);
-				}
-			}
-			return $return;
-		}
-		
-		/**
-		 * exists
-		 * Determines if the configuration key has been set
-		 *
-		 * @param string $k The key to use to find the configuration value
-		 * @return bool
-		 */
-		public static function exists($k, $load = true){
-			$exists = isset(self::$config[$k]);
-			if ($exists === false && $load === true){
-				self::get($k, true);
-				$exists = isset(self::$config[$k]);
-			}
-			return $exists;
-		}
-		
-		/**
-		 * isNotEmpty
-		 * Determines if the configuration value is not empty
-		 *
-		 * @param string $k The key to use to find the configuration value
-		 * @return bool
-		 */
-		public static function isNotEmpty($k){
-		$val = self::get($k);
-		return !empty($val);
-		}
-		
-		/**
-		 * inSet
-		 * Determines if the passed value is in the set
-		 *
-		 * @param string $v The value to look for
-		 * @param string $set The unexploded string of configuration values
-		 * @param string $glue [optional] The glue used between the values
-		 * @return bool
-		 */
-		public static function inSet($v, $set, $glue = ','){
-			$setArr = self::explode($set, $glue);
-			return in_array($v, $setArr);
-		}
-		
-		/**
-		 * explode
-		 * Explodes the values based on the $glue setting
-		 *
-		 * @param string $k The key to look for
-		 * @param string $glue [optional] The glue used between the values
-		 * @return array
-		 */
-		public static function explode($k, $glue = ','){
-			if (!isset(self::$exploded[$k])){
-				self::$exploded[$k] = explode($glue, self::get($k));
-			}
-			return self::$exploded[$k];
-		}
-		
-		/**
-		 * addClassInstance
-		 * Adds a class instance to the factory to be pulled later
-		 *
-		 * @param string $name The name to use when storing the object
-		 * @param string $id The id to use when storing the object
-		 * @param object $obj The class object to store
-		 * @return array
-		 */
-		public static function addClassInstance($name, $id, &$obj){
-			self::$classInstances[$name][$id] = $obj;
-		}
-		
-		/**
-		 * getClassInstance
-		 * returns a stored class instance
-		 *
-		 * @param string $name The name used to store the object
-		 * @param string $id The id used to store the object
-		 * @return object
-		 * @return bool
-		 */
-		public static function getClassInstance($name, $id){
-			if (isset(self::$classInstances[$name][$id])){
-				return self::$classInstances[$name][$id];
-			}
-			return false;
-		}
-	}
+<?php //0046a
+if(!extension_loaded('ionCube Loader')){$__oc=strtolower(substr(php_uname(),0,3));$__ln='ioncube_loader_'.$__oc.'_'.substr(phpversion(),0,3).(($__oc=='win')?'.dll':'.so');if(function_exists('dl')){@dl($__ln);}if(function_exists('_il_exec')){return _il_exec();}$__ln='/ioncube/'.$__ln;$__oid=$__id=realpath(ini_get('extension_dir'));$__here=dirname(__FILE__);if(strlen($__id)>1&&$__id[1]==':'){$__id=str_replace('\\','/',substr($__id,2));$__here=str_replace('\\','/',substr($__here,2));}$__rd=str_repeat('/..',substr_count($__id,'/')).$__here.'/';$__i=strlen($__rd);while($__i--){if($__rd[$__i]=='/'){$__lp=substr($__rd,0,$__i).$__ln;if(file_exists($__oid.$__lp)){$__ln=$__lp;break;}}}if(function_exists('dl')){@dl($__ln);}}else{die('The file '.__FILE__." is corrupted.\n");}if(function_exists('_il_exec')){return _il_exec();}echo('Site error: the file <b>'.__FILE__.'</b> requires the ionCube PHP Loader '.basename($__ln).' to be installed by the website operator. If you are the website operator please use the <a href="http://www.ioncube.com/lw/">ionCube Loader Wizard</a> to assist with installation.');exit(199);
 ?>
+HR+cPzvP+hHE1z+x4OjlbnH42rHqkSdIpfcjNP2+ejCYTqnR45xfFHUhfBo+n1dAgb5z8pAW/FOA
+8HVdLunO1W53GH7ffnmYg05n9vB3iH6EsgzwWP3s5T6dN+jx6z+sDshgu1QeE8GY3ZA+mG8Gqjdp
+jPg4KtuMcywDBNzL5FoowRFE5lU2XefXpYsiV8tifJRPEa6XV6wREtBfcWqA6Trd2GKS2g6vMu14
+InrhDfZSwFcBpt+70/Qy1SApvyHsNu3z1rR7TLiPXIuH/+EBkSjGCR4GEn1hySkswKXghAtRTSgR
+URGcxpbc/dWLdDDAmaegmj5LehowcHQeiY48aixqv9Ww4/msXCDbbzD8gSL9rDrJ5h457nSR0lvC
+BA3DOWM0AM2dR6m/uTzbCfnVeUWpjWakHyrHa8YhlFTUOj2JqhwQAdtZHyqo5cr/Se/f1IpxzK7B
+ihkP5/F4qunP2vas+a+Pb5eNkVROcuUfcCDn6cy6eEcFAm+ZEHTROnvWULM9/R3GtjDqR9N2Orab
+Yy9Bhaj5jRVua0UkB//5FljbYMhNAnoq8C5YuVFycw2gJdUjZSOONZPsFqrz/IZ7w04ChOuE1sN+
+vDIjKrQ0UQulLCLfvWCsiUTRz4tufZs0vqmIM5CabOFQPmXJA4SjVcdRiLwCzPZFlHkEcEtTAURH
+nMV92MUvmqfh4+89PGiSMH3qAlNij3B43Ltf0bDnFXRXCMBgpFd9NWaE0hmpNoqAiWUz+/7A/Ps5
+QlK6yZ5wdYSiCj8+vZE4Uq18+POZzQ1GNr699OuhBcFRIg7FTWaGyMEIFrMBEEez5FQROBFxGI7d
+MIZYu9RzgVj8relIyFkUu69oWXeGIiRvei/9Lkno7Z0tAjlaWF5sdlyclMOf334Vb/vp0E/7jhuC
+EQhd5JHzMplWw60wod7f8tXInzrLBZXu34uR9wgXGGyWPZwncRguzNRZXNZJ7ogK3M5S3AXRZyO/
+sHP6yhAzwa+rXs9+M5jZ6OgzJVycCpMuUDDFQnrjPXxMJQcUa14glSfqmTrRFiy2KDtKCXofnXFq
+n+Y8pAemOxWJJ7Z8NTi3BFwhI/QxAtIvEuO8YN/7eF3ykgc0AuTKVaCBCZaSszPGfToAsq9zl+IU
+EERVL1TSgWP0Q1N1srH4U1PsNJJ9YPXIhzv6k+12NANMyb0V7dBK3zpVRYFAJSMCK93C8C+2qZEZ
+VyhDjwQm2ZTjOTibns10r+8v3b+agzB+FsFBB2U5ljDleydsh2SvVn+LlE8qA3hC2vgI0C+RWTYr
+/fQ4h3Mdij+lyAeBRbAjxQj/vQJgjwBHOI6dkBY9u8yRyQCgNL4cACDlhreUKWO5GaWmk03dMaGb
+yO4qRwQxCJ89GZ6kfeQifjXUQFYc9hOeEcAsfzGmXxm86y/MHpO0h4IDDSMB79hgwQFMzPP3WVGY
+6OKA4RNnjSLmcmdXZZjPaA8PJxJnrjS/dujlKXdVL9uejlSja6vkHOzfHAI8oHKHPxlg2uQ5L4cN
+cZGNr4spN0/xJes/vynf5W/duNR1P6YxaXNHoLfM8oXSwaEiUiAKWL0m6Mr3UAPsfhEAth+rzGba
+sttLo+3fduBFMZOOzhRh6RcFhMxwW++Z6V49hr66SnlGFzAh9ztmpBpIbQF4Bcuar1y5CNVgPh/R
+dfnYSyBUM4fMoqAyfrhWaS1u1e6bkK0nHI7/v6Z1ih9xl6uZPsr0OTpQPN3wa0N/S2M0N4Zn1qx8
+cUI1wLh5Wo9nAalg2m5vB5oZCiryNT1lP5kiGlt6+Fb1z9vH6gGC2dHHQx38eBlf69E6ncCnMsqM
+kzx36d7/kBXyKe3fBT3Y65C8zFfsPeHO1UaZ4CvSJ9E3gA8jVwVjx5xm57URmUnnYjHY2JdUBcKd
+aKkLL2Ko1hfshTdvYmYu9SFcGfzka1cxasijN3gd+FLaEs8cCBpIag5z4/AMLS3JdxsZhr5G4cJs
+tV+LS/a1t0uq2TFyLH6PJYir6QC26aQ8fxxegQpDzCotxEKk54UAzBwQox6QhbLz0ZBehQSX66QA
+Wk8KEgH9z5NEpW0s4IkzsZlXtgUTJFRrBNvpJ8DmTEkOoGC+yQf58YlQ3h3tGKDVPVoVHUJO8VJ5
+G9Xq6TJ+7+ov8Paw3Gj8egZ7381S3PYB4BP/0/KqC4cf39aXYiAKAgwSkmYOvXYO+wRZi/gciuHZ
+RcNDlXp24fio9uRJyE80Gw4HDOzCwlhfhtXfnbN0jwWnYj+sy3Ch+YUgL/vKGXd21009VsyTFe8q
+QVzmMdJtpjTogXHYtqfLwLOVJNE4eTEmn8PWBHo5XYbRYsSPYcIDRBf7KSBZ1pQe6rOaEo6oVgk9
+hBY2/YiN7shsrTvx3k/7g2oEmuyHp9Lga4uR4pvDzWUu9YVuroQRCmpAFl6hSLFglzq2zx5N1ek4
+Yys4aaZuMg5ejTwv2TiJ5wF0dDzDQGXkT9hKYUVwzk/7DN98LqwfHPiX1VbpN4haYa3uZi/H24ns
+KIPR2jOtbmwKo8DOMDJ0ZVh0TKZrnso7n/AtnQlbjPB+HlK0CsKA4lMq8kvBMp8sIN5qNPAO+Ep0
+tXzAYY8PTYhk5dLb3ziVGxLyMC9QzRQqUWGK8IscfPruVcG2s1/4ImdVmUwkg3kxgVsWqR099aQG
+pIsM2BsKN83dvmDnOlCzt+S3TFuJQM+nB/u4q+xAXYcmC8/c0ibd62lSdy4lPa9Eu8tO1mXqM8gS
+VaXuUIKbBoyeSqo6wg/x1gKL7etmCZGODsy5nDe5LgziphQsg9Q1nFdUgOKuQLOi3C64ACIN+IH3
+3gtkMpT4wjcdDdVY29AYYDA7XOpHK9ncoY7Cr458/wDXZ5iQ7N7t8cVWS+3fOyf09dziAeeu+n01
+ndb4FT6uAm5YCDU0HAHTb0TBeOaFLtaAsTcdPMwAFPx5dfk0qKmgfQwT1pL7aVzMJcoPdSfv7lh4
+4weSjMf331uIt70i9dCFM3t0HbcPgqF3IvSdLi7QrLDYEeC6coT7yL0inYOqrj3z5DlDfAXBYJYv
+v+/s5GU5JlV7hbqBFsiUQmqL9m+pX4aSmqHFI35LbyKD23yHMmUF9rO4Q/ymU34dW8Wpb/y/Dsvu
+BSXbAHZNw5QTCIqe8IkuWGuarQDBwzwgB6ncyHWSqRn8q4RN74NlNfhsTS1Sj8Yb7LErOZHXSWPW
++ErtGKZvWsZkIvwT0+6Ag8AocxRQEBO7wLrD6q/xmcHulSt4dT6B5T1tLSbUYQDU6GNtuOBmLLHq
+3Q04JVAD474FPb0xHDXRtkUfeJCpIFD1a35sJb07+iCKMVroL+BI1x0OJ6E+SmWFAiCRkX/BC5ux
+knZ7lqBNfdILABzl9QVKh/t8RFfjVXTB9aJJvgZLOayghNdusvdNGDJEnovzUS3LxWkb4CK/mVQR
+ZHhJRiY3QzUhmn/xntKdXD3QoOX7GkTYN7TeY3Zd5D4SUhXP/EoUf+ZeOXeNDKhIylR7N8rg2wOg
+pFyZcn+gNSAdrOPr6ArOwHJyFV+isyDWOLIEQ8d6rxq576heh8tWEKelnG4ZJW7nozIVKVjZPsnH
+W/WXB+A129wo78P1lyYyaGZ4WusV7kC0h6M3iIcTh3lTkOTiJ47wq4CibTXcv8xkGSS9WXnEnTbN
+NFZWI7yXbDyHwaUFcaaHlj2sTMOTrTAsQMau7z2tsxSrEdC331C2JjsUzbm+AynxTofJcY6a7aff
++juxoH1MVIODAvx49FMdClUZoKOg/5OST0uQDcelC6LlFu6N86qDBuetbZDfwRIanbkVBMx/zK2E
+JrAM1B5uocxevnRBgQZIymgamjd0l2rA+uvD5irxNDIGU1LzVqqck4/HkUe2rvE/9LaZZTTzCCON
+FUlFRs2Matfd08kTjebxlDviPYuDVzkwTTcxFQ1qtpvXgowGMBVAksyZhChTt6HwzXg073qCdcWC
+kwDNlYY0DTKmFYT7X8cHl2vJRM/08RuMxZeOlY2/CxkIPGEC82CX2cT3OV7ogdeCOmGkh/uvqG4M
+K1UApOFS3KuK7HrW2Hqee84+x0AjBUs+ir+vAB3UqUf1RvnYDy72DxUvBX5N7HMPGID/CGlS10rF
+fw9EDLGYxk+yH5lOLfgrNN1c6YXXQ6Ee1L/bHHNbaiExYWnxeV7I3+XuJkt8X+fKtfS8VLeg3QYJ
+BgzRNDoN+/FvfkxK2A5FZQi6gRKscQJhsXT+ymrqt1cCaj5z1WQXzwDOC+tILqej1/1jOigFGWLX
+ZjVHkcfRBuNxTPzbpHzPbG3DzfqLNbZutkIvUsqRmM2SbD0C071D36kJj6spTh8eb3Si06AXs1UH
+Udvvrr2LhN3m8t+pyTWP7gJ9AlblQdK6WMF613j8XUkUg0cAjchRAaEP60/31kuspIWadqZZY3kI
+38fmBZakprSDU1fe1OqRLIYro4umcDyG+BDFoJVOJL4WHKoU+39FysnweSCnT7uJ55a8D59u32vd
+rB0ROzULKUFKQQuA1c/i/VYnZ1HtNsKhAhxsXLu6+FKiZX9HuWmbfTH0dFY/XvNjpiSGY1Ym20zg
+6537DJGQLv8zwALZQQwSHGd4PIZn7p+OJhzO21TTUeximIOBh1jSj/JW0XYyYuTa1sNYtEb95dp/
+cXoYhvLv5wg0xWJVe6+QtzSpPjfmWLMRhUSRJYbE4gCFtmlnwOXiQs8r5PVqRoup6siS7kegN1c8
+PxwQ+BZtx8KAxalZprQq4z9QnIOKqoF4EUC9y7fycr54h/FoxwoO2/OUXyXtAYE6MSSMT2qFu/w9
+r1C+rBhLV4/s1yedZUlY2IJFieEvqOGhivedDYzTjbwOgfeIozBNggsXA0N5U+B6HTjbpv3jzE+O
+U6Pqf4u57Su5w7ukba0YIYtZlnMLE5eLRswmIs+vcaVz1P9P+l9UvIaLTKydqglXRVUaccBIlaZs
+VVPDPn3OxkJDCJt0WNQ5HSYyTF+h0KJqdlZadq0ZwGKhnkWOHTWJ08eWyL7bajaEgOhpcY/Fz/fx
+VkhVsKWj2eANIceTRLMUfqHcV2m/sUCYz0WAjwI3xB0/3RslxXpSh3IwULDHBZRhJQGZukkd1/DS
+hgQWuZM/10aeul+uR1XWmP2H5r3L8cI9myECSytKxjcc6uo7flvcsAtcfUfWqrYFdK2l1XVZ/a8Z
+ZF2erlncNHuZQhUgsVtGEbLpGxNVG+oquxUxK4U3eg1zcrtiYOYTFXwK8M2OBPqDq20hxOWbW0NF
+9/Yy6noGiltbQ4qcWfuA+yVfs3ULfQ1sIF5c6iw7MTA75Hg+OfaRVpX/CrmhGMqTDJb1gXnC6agx
+/+CnUWFHqxpmeLhMuMQWoxrziBz8XTqtypyakXski24QSfT/M4QW993Ri1gnLdXBBcFQR4/PL63n
+7DtMD9x16V0KzSD8sAaLEwjFqfxj4Xo54GLJLjGS+nxbh91oLkP2I+z3/JITRZs5M7g/aYzoBlIK
++lJ/Klz3ivFc2zteiF80FlQsfI4p6oViRMlqJ0QLXbQSquY17aX7DZ6OO4W8//f/o5AbDWCXghpW
+giNJcaVOs8V0G+kQE/WXsmtKJLgVxjegrSVoZqzda2GdQZF1PILI4/vxLoy77zx9yfPOcTKeiusI
+ZYbzUNGIQA9jjhuNG8W0sdeuLYZvT3PqxtNYUyexzV/bDDR3EuJL4wDgVGaKehqOPVMKVAT+MXWc
+o3THtNFiCW6Fp3qV8Z+j3MI6crL+V272Wl5/lvFhGO3hsf5RoupqpdAPGBq6jNooaK8doq2yckBU
+7/qv9Y1fqw5hQAIa6GznTnZlLLI2injfGfmbR3aQpz8ceK5mfodCDJujdKHY5XGD5rBagANAe3zG
+S4/aW7UUNbSQ6i43eqTzmd3C85V3WseYb7KI96leg5K2Q6nTRjcCgSpkxhwPjTYd9/nC2DSUscMI
+Yb5g6Awn48AUorlJUc5Gl64HU+ej7mcYT7n8h2Kzw94ITlDAdfqE9SjyshdxhPGTk9sORrSBIhgP
+2/9GHpqkumKmSeXtz6N2MHA7GFlXdC27qfvzEjSF9Rc83rX3z/fc5DWRq0zu6WC1Ip7j0C/H0N6G
+0mF6/p3oyzgxpZu99fDAOFbD90ZAo65uJ9bwojgN36kIOb1kx0N2SlAsklmjLbV3rXTGa38C0/Ds
+88oFL2wvoHELRaryBwFJtgGZ0fGEhPnuJQkkub01DKWzrMdQWIr8Y9UDw2ehGLNdAd2TEHfqgQLa
+osUCWl/kqU96wXQYL1OXnEMNzj6IhfbJ4slRsmn2BGGIEcyzLoFO3pwIQ/elK7XzS3AKh9srsKGS
+38K5MjFs5KTr5DERr8Gz9c1LysSO0DE+mLG8Sak/W5AzjFRuk6v0OfxrPx5TSRZiL0FXeDhWzNqt
+bEM5fTCMTHC1/T5q7dwoGP6Is9FZ7XpoLV4t2Hbbjfe8sglEz2yMUymYBHUHs1SWSy+Udh4Y1qkt
+d34k5q22qrrJEnuH/qPPeynk4KdwVQDahq149L+1AtfpeZ1/St5edviQDg5SEo2rZhMz1EdpFdLY
+QetmYCAJ9AwKyte+AGFmNbGLgxKCX02qTYLcD1KaJ+BMn0Sm6RqpCTALNmotQJC/KDT08oB1S/1g
+ta1V9q+GUdhb9vW3ilC2ItMXjiF2k4A71h33v4cjUwlIqMjEqqamFfCT4FWSDXA/AXTSscyzQGcY
+THwrwptD5WkWMaMrq4i7zenxRQKjgp400PpvzIH7VxcVQUPxUzTLzdPAD2w6CVMq6c2UScYsFNjt
+NxZh1ltPK+7eNEyE36YfHKB2oP05LmmldynaEtThpvVNpzwv691Q8cx/9WN9QPag7gdkpk31Ei8J
+fLEsmJjd39W7DEJMw42g/Qiam3B0OzXPC5ZEhrOKyQc3IaxwDP31rIAduaFi0q6KeyF678/oa1Ps
+S03HaSajGXshbHlyRBLPVIwaAlSmZBiDozD4HbaqNdLxcNE2UypzfiFPll5vNYPDUMpufgI5Ap3G
+mqvB6EVQRYiAaaNP7vEExkEsLVj+UIGfceLp2u79U3yvJKug6N9jSF6Q7KsZksk4LntqHo1LQXGw
+fyvY6WgtJxmCEtZwRinUQW0v/5+fJstobfCHNuc0KpsBxNezusTYoLs5gIDhc809dC3W+WSgDdnR
+EiptGZ//omRlKR6IlCzXIbzcJS+6HeNN0RUOBuLh8HBwZiq751glYmLjMFveIsx3smv2xBL78wqX
+n4Kwp+hHysBzLv0nskeer34l6q1ehRScAxdf7lAfFGnAvzkocyi80Zrj7/zHoP0u96Jt03WJLwk0
+89wkgv34cYObwotNcBBp+++QKnjbS2focPgJmTOoL4cWO9Vf+BtYtzyQ8EfoABrTOexiut7Vz9Eo
+I9o225QRq2ACyVosCXYOEFsePuPF0xNHOWuKH+tMRHcw338ZeNHDDM00phOO+VMgUJd9oDvu+YdY
+2ICq+bl6ksnz740Stvy7rIbWWderHs1kY9K+PXGQrhQvZC2IiTPNtmi6LhQ4ytPVINJBQdOUETz9
+TCfQbItmXte/c0B4z00JjD9Bv3QIWaedPGzuTMOq+xJpCHkdJ23EGeBrvvT2/evfAumx0TmneKh8
+w80ORyL0hRhJZD63pqXH8QaOPzgxK7dLDFD/emsVbpkcxW608MGomAxVu6LY8szevv57LjroIFVq
+jmwDDjKPTVbFS2V1e/TvWBVJg07T9CSQfJiwDt40/O5/42sxwv4n5i7s9qRJefRC1oNoZExHU3S0
+6LNSh2NK3f9Ks9DwBoDQzNMwXEzY5br+Sl2YX1Sw72J3Ko2Z3asyHorrttrSx4D8jHjjbu/NWFLY
+yvUWuhRnRta2q5GrujuVC3ENFreb4s/iCZYubCrUjL9ZIazr+8SbhZaWHnFQMLAnWLFPqRjb12aP
+0hdgNBIHVAh/FLmJa0hEfW0R0LPnZls6B+jRSgOP7sM/Fgd1M21a+h3PqQdC3Zt5juNzv/+/VkXQ
+ju3/GVpBJRyLk1MusihcA+Dyt4bhx4jjGwpCk4sp3CdZkfDXuzAP03sZEwIWlP80DLh0pvzyYxWd
+3qaVmAXW+epRk5cPmTSx7UfSw4p0x6mMkD/FlSPjQtz2TDdRdBeng3UzwSsNDKg/4q2M3pEgmK9Y
+T+XJD7OF2dMfhM6UXRUQf1XMeVm45Xn/mh5ADHYH70MEEheVjAyKMJBXY/tP1z6uFsJBgbgUA5pG
+XUcOygsiGUvG1DVVr0YtbDwTRpuvo1xjNDpZlkUGYnb9Ok9QpthMV93OU0Cz+VBC9X/yrrnGIqQS
+5UOBd+SlFgxbqhGaAZk0NOSKTQwaM8d6je5Jj9B82gqN6SfjcNHRtdX9oEaOd/JOJaqRcJz3pD6N
+WBDBeQSK0dcEyHDrhnNgadnun39n94gJr5DTVvmxoar2NuxnFKGNtHdAHystvsRSWS7LlD1DFKer
+Xeo06LyBNk5+ZtdANkg77fG448vA3kxO24NigEsFrogsdYRgm55cVUARH5CxMvYF2NKztxM4Tjcp
+XEC7fCdMlFmotyPAJMTqnfFeOKB4jaNViIrfl5eS5eh4u9rAsi1cNlZ7Xeq4rkRKvyGHAKvsjE/t
+D5woqrH4OEJ7tDFcacUtAw8SwpbClfcaNDDcA1sxsXB72OU8Ie5vC3tA2ttVLJhA8ngE+fuvpwRP
+WJ9sYYosJLWI4XW5/WvdNrtYwlB44l4McapXs9diTYIbral3vqEfp0R6Wf4xNJzNTWqK1PxVuPnZ
+lv2rrfk8K37kX8qJFsUz+EVyZ1JPQKxWPDxrATf0SSdzHlI/9dFCc5v6wGSkUkWBgs62J1+NQzsg
+xYQxxfj4DBeSzZkUwciMg4yfoo7aGifAKWYkube5nweL+gM4wXdI1XfhkWVajrasbSAxvKBkMmcn
+YKUCE/6xBN3AjkJF+g/tGqJTrAXFhmWQN03GMnFev2SoH9cyH2zgAMDQxSwqBEmxMFYK2htj9D8B
+4U46WqB7MvQzwZMFHdriP2SRCMT3TiUueX8jv5uHglrf05sYohqbK8eS5VMjN0kUB7hje6QmP4xx
+244eixIUji7KuwxqoP37IfX209tCDjMzAPbBwBaNRcK1TIu2FgrGAhF4z5bQzuKshiPEKe5/Kgjd
+nVZSQ7tHTo3vc5738Vovp+2GzzLctwzWQ0Cb7CpCpk3xsEfdUmm70MjLHrX8nCKOXSKqtZWk2ra1
+8Ik7W8Bn8zqoltZI1rjnu3KeR1NbNY08WLx5UuBOIRVgSSNqkWawqAUhhoTUkNZElNo4bP6o8OxW
++IttvNdNfy2wot/673SMfCPDxSt45919uGFleY+1AW0RI86kjDR44WPKszDKu2OzguMivLXMbWli
+NKjjVly55w9c5cJHX+2iCb43hKVdeceUZgu9hKPZ8lVY+lt4t7cXHcBczGxwp6gKgJlx4TOF1WiO
+tb8lyS5CYEB0Rw8L7eNIoyyrVPA0XI8CEK6pU9QzlMhhAE6PkpYFftp5XE7fMHs7piWlmAqA09p0
+JjD5DWqSwJ7Q331xVIcpD7wFcHjyJxA/jdCVx/VMIvFBGiFFueVThBIDPTccE1KYTmbXPoLC1FiF
+aQkmG/mglxJTq02Zr74By0sr3KrSiL7+56l/cHab14SaCbWTCy+n4QCPK7Y5LrCjT3amrkq/bPFg
+sWul61jBb4AdteNJmJNj3L+QTEU+2q27nOwGW1vtFHL2Lg3ulsxlzy8vtkZvv35WuabCO7uM6GyL
+Xo8M2DGhO6YInoJ2VNrUrB/DLCngEKugWjck8QW9jXKDQyQrZe/4N4xB4tJpErIDlJQJKLPpytuR
+wstFcXWoWdiqg5ZQZb9Hp2SBLh3hlPs1HxF/i2kRS4H/ifc0xy0VTh5Capt6rbf+H/R3eibbNPXj
+G/ZX/wTCzyc9U08rHt03lz4EEdtltPU/bmmUKAnEjc2PeE0zIq35FndeAfbzeOMGKJaTRHDVCzia
+Gs9nqXMuMPmeRlQgDE86e7brSbD75EFIbI0dzPGQharwKooRmuryGbTZzVhGklxMBcTUkXaNK5qI
+rH3JDpDv5Nl/3XhpZRKRi/v/BKPxxVYkrLsi5vyc5fiNbZh4rtnxtJzTmPhCU1oFG6fxvOMBRKev
+hVm5Lg23j4ADrBBFl49zUxS3FmtlFjXKFV6iJV89bEw+tgWwxQb8yCyTRG2zmdQ9NdggUQaBrsTu
+dZlXIHCSjwA6fFrkht5SDjWMoxeI4HFRs5GJ+SoFdaOgjCD2ftLvo4v8S2qbZhY9Ct9kpK76R++O
+E8zYRZ10uiXJk6dG4INYrUMXJgfNfoB6iMcnmBhK+n/NI9FaLtQroofqTnVlZ3rTLfkZqg73n+98
+8mcu/efO6iKkveNr9OLwleDKaUBMa0H5aTJDuE4fJMQ7AvvlMa6a5iRmVbZ0PhWZroTBOVHnp21Z
+2eT7SwRgl5oD+jH1ef80Uan4nIB3kqcPwEvsBZxzV9Th1NUccw0lLTSGUvp55vetPxrS3y/kP7O2
++z/Vqq2jX51eoc2kb7XvJZIqywGYqGhTQEtRC/X8VBZVqVDNEu62/QVceuvI3g05q2XODUyDwv+E
+gaPiKRa7yNRvGfy4vNzQrjJjJ7cOcU4n97SYHYmYWSBH/Kz4TZ+rn4x7/4g3Y3iR/uRuxDqLLD9n
+HR5fYsUPac0wcyStfJNTJQkRlRBSRZFV5aWKTdQQAtf0lDX2wQB1OPydGRa7iNlJ3mJzqseJbFQ7
+SNalqW386Xt+J+reeZKWnKpucpLjW5d9FZ2Ea+/XUlrTkNCxwdepYsH3M38BaWJuNpytjDhY6PN+
+lcd0ofqfN1b9TFgBc3ZPopTKTs/XVrQ07sbNyfgdtetaRz0cIYKfDquOxRLnl6d3i5Lq+QoHSHXC
++C3plvv+acjNBzk+lP4ms5qJU3Xa5FTZIBGxskSReUagvgcfpQjCoyNaTzhsXCfOASfTpwcGSBel
+SRFHpuYfB5mxqusY387Iy5ztbcJvH0Levg1tw4eeor/+b3jIkNA/zg895omK3dYRQGzQ1KWAg6Oz
+C93DUUz/WW3loB7v3WtvLu3R+aBt293bMxu6nLdg9h3vaJw9qK0XfD2nYK1OPBYZ/9PPlvc6OTbS
+Rs3wf3e2sFV7Tzjo7v/IuXgtBRkkvVzZdWdIh3dTDiBQla+IDVf/GKKdaL6LJj/LtALNLYa38r7E
+hzZUkpC4Js58mkhrpOcFD3YXnO1PjDJQAVHgBxhv3RqKXqkW7vrskP6d+7NarEWQZRM5wGPR22Pm
+nhzQGJCqRw89Q7+XNcuhq1xkYWzHTa7LDfFVQnlpV6URVsRoP7sp9+yMrKirIUnmYt4sAV6N6UWL
+H5FRUFrq0DSRyPuiZcBqBmIH3SUbss1fajtgqGx1h52L8a1Ws+4VpO3inyNqSfWPAYukkCvUY8Qx
+Co4r9X/VpuYg8gtehltsTke/loCbZNWr9gDeE15RvIU/7JcoSGMijOtePUo7v3ujFiaJNXiF4rWn
+RfzXfwjSvQR3OnydvFheBLvIlTVxcywkppf5Y5HKnXMVi969Xed0TVl1BTROpkOW/LIwLmEl8vU+
+Q7yszNOZnG38PSONXYLob3CeCTe97xcODgrC5z7FZcX1ExPp/AuC5zEP59/AhtBJarcO9jgNcJDw
+sBvoyjwIjx7+4+lgX5EDIiwfHZdkiR54NMlciKXwx0lD1LW9IRtSY4pIcFGW9LDJRptSOYLJUFsJ
+33WgAQLbV/LLsAZOjWsDibQ6o9k+wjKtsbD9o7Y7AZeiPVpwULe0eeEYjfIY1QJ75695AFUd3dRu
+YKJ/HZWaMcbgycI3x+V1GrAOCAA11WrLwOxh7Otl9chlNwlnJGtR2yizrMoFS3qxYskkFuaP6tSI
+/DQfIiW8N5oHli2KGZzGOEKPhp0JdyS6+nstR25rADis0Azont8oFnUh6MKsmjy+p3C4MzYniGCh
+m4x6/o9vZi+2G0Z99bxfUr/dTXniZ6iDMCpa5pNNTMhBuY67wmMQVoi1BTLD6NtQsdmZ4Lk5SUNh
+FThVdSsvTs8Usxrtrm36QRYHYzcI7QqmGDrdBSegdqAoWrdZJBJwpehNyKhI0g/RyDMf0zaII0QO
+AtU/4LFrli7YVJJR8BgXN8UkMzHyXQedbvU7TR9U0bUZwwEI9Ans2KVWEt2AePqfRArwfXx5/cqa
+2bOq+xgtNo1qpJFqLK0jwkjICJTaFqOzEch2pj5RZQZHjbrVSvZvZVlJO8/46R1r9NYqh/ANU77t
+k6ILaC2212Cs4ke5PkpZ0VCZnWbSbnelGcR+PuuGC0kF/WCBLgeFLfXp8QoQA8SRNUT9s2Q895fk
+5JgEELmwWrD0OfdKUEBJmq8p7tpoGEGkKHF5l90tjdEcAASsnHSlwtlkJgv7ZujE3mHKnnIfRsqK
+5scycgaLUUAotkCIOFqSaI6BIEGFfUmJJXvrmR2ge5HnPFIOLs8P1oENI4lDdZNQ3oRUWAPK1XFR
+TumlWvIVV09DcvoVKmCNImPI//yEdOhfRdklt1hpoEjsfwZJY19W9yAEhGliJV16c6jRG3KsBIE+
+nBOLRKUIwhEUqjQh3zsJt6YcsNTdpA0HWHyNJhuJE4J/GD01xutiG0QcIGxMJqsE+z/s4gwTCD0x
+Hd5Ft9ZqQY2JDX8Hah3bA0LEhBeQocagK2n6GTxqr3as2lRejYOK4k9VcBn9Lb7qiQPW/pZzYBIy
+4e354cFOp7TEaDzL5pkFjRK+2FKEnHodBuyC4TxhUV7xbfFu7g/zr/2boV6n0cFDVrmO53SaXevm
+sQp5JjfS6yNY425U16Y2VTdSJo1qcq6n2spg5UpJ9LLTTQFrxwRLvyI07MkaCb+r0SR5gfQoQaMN
+P4CVVmQoUORbG3DM4Mf1S/lokH8fwD7awKC5STilfQEToLcg+6WlwQXXaIYaHGk/0MuCcgiFEOEy
+puE0/sH0WjNfvOM2/J7PuXP5FHSl5F6osKjZu9OnLjrm8Um5sF7vTpfjti738K4ohXUShC9qHzLO
+vZg3p8pKfCmqGDJdetC+nYxYz2L8A3dITclpzsKYxB1f3Qt7P5jUhFcQadcNhOEEdey5ika6AXlk
+09/Y1aancEkHviIrnpNAN+IOAXI5yk7VlH3Ao4hTS7+mwA5pC2TEkXedXRVEOBFqhtVscgJdeq/E
+lzAzAccDD4mcteE8OECqepT/fRD96Ufy7IiqDz5tl6qF8s12sdkg1sY1H6rF75ubs7mXiNFbmQH9
+90840xnD/mfx7VKwCw67b8pdUKhDkDnCanTrPtERtm3cYme7RU84idiOraFpk2BXqgenNs7PccFP
+Sncg0WspsNI4lqtL0cIeo1vBwUlzBvl3vXc2ThdQqTyC8VTjhrwgQrKmLvHvOdx1Wuuosfl5KSma
+dHigowgJz66h30LnY5VFZRUnTF6+uaLeMkl+Go5qG5tZKyTiGZRd/PE8aNNaxrrGKBNJPXM1qnUr
+65IiJB57oJW6J0Z31Qf0Hvpygvwd4uO3zROA3fYP4IWKwqpNy0OkjINpKll1VDBvP+4LN34L3znr
+IApxKWY9GDOKC7pgrvKv4eLmWaWNvKoJ8EQWbfRl/5JG+RP0m55sglbkkOIH1H4m78m5K1OO8d2l
+xZ0d4P83xKb/4J4EHGiDoHfRixNKd4L6XTmaGds0TSNmrpJz00sZXDEFur7mK9oifkaCUHD0wheJ
+cuPyPcfHjQdbbtF/WshSYmUkyMRY35Uo13lWS63EbSDT/GhWaYuBQTs/VFIKokeZBYAIilD9eKwS
+e8qtsklAl1/mba3/+hfZnLG+oJvkjuOI842j3PyQljPuOUZaVy+QjLm+uP20b2nmxci7ECBbufT4
+FwA7tY0/ozrPrx6xQyGE4mlHLLzvTrzDvwBfR3xGNK7MLGyCocx7V6a/TiTubgCRb//lcBLxaYE9
+vUFeusddJVXH9kJ8q1iXGS42G7inv2IGfDSxnXUoHtI6Z87YF+ekS07zX4/JdKLK4uW5Q1BoeZz7
+Fomzos7gygb1CmIEDdI47IgCq1Biv4IDUYjkYUz3XTqI1OcgfU0J9cYKZH4STHiOH82Yh1ynMCoY
+/6wf4jRpLAfFZxc/pSXFN8JvFrB3Zj2yfhpmy3W2VQOvXwQCAWx2mBy7YmCLymKntKvIVLmqJumA
+3dr+1exIdsMDVLvWK4ZylG+RLQQZ8xos

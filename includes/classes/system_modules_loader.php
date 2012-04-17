@@ -1,184 +1,100 @@
-<?php
-class SystemModulesLoader {
-	protected static $Modules = array();
-	
-	private static function getClassModules(){
-		if (array_key_exists(static::$classPrefix, self::$Modules)){
-			$returnVal = self::$Modules[static::$classPrefix];
-		}else{
-			$returnVal = array();
-		}
-		return $returnVal;
-	}
-	
-	public static function registerModule($moduleName, &$class){
-		self::$Modules[static::$classPrefix][$moduleName] =& $class;
-		if (method_exists(self::$Modules[static::$classPrefix][$moduleName], 'onLoad')){
-			self::$Modules[static::$classPrefix][$moduleName]->onLoad();
-		}
-	}
-	
-	public static function unregisterModule($moduleName){
-		if (method_exists(self::$Modules[static::$classPrefix][$moduleName], 'onUnload')){
-			self::$Modules[static::$classPrefix][$moduleName]->onUnload();
-		}
-		unset(self::$Modules[static::$classPrefix][$moduleName]);
-	}
-	
-	public static function getModules($includeDisabled = false){
-		if ($includeDisabled === true){
-			return self::getClassModules();
-		}else{
-			$returnArr = array();
-			foreach(self::getClassModules() as $ModuleName => $Module){
-				if ($Module->isEnabled() === true){
-					$enabledModulesId[$ModuleName] = $Module->getDisplayOrder();
-					$returnArr[$ModuleName] = $Module;
-				}
-			}
-			array_multisort($enabledModulesId, $returnArr);
-			return $returnArr;
-		}
-	}
-	
-	public static function countEnabled(){
-		$enabled = 0;
-		foreach(self::getClassModules() as $ModuleName => $Module){
-			if ($Module->isEnabled() === true){
-				$enabled++;
-			}
-		}
-		return $enabled;
-	}
-
-	public static function hasModules(){
-		return (self::countEnabled() > 0);
-	}
-	
-	public static function getModuleDirs(){
-		global $appExtension;
-		$moduleDirs = array(
-			sysConfig::getDirFsCatalog() . 'includes/modules/' . static::$dir . '/'
-		);
-		$extensions = $appExtension->getExtensions();
-		foreach($extensions as $extCls){
-			if ($extCls->isEnabled()){
-				if (is_dir($extCls->getExtensionDir() . static::$dir . '/')){
-					$moduleDirs[] = $extCls->getExtensionDir() . static::$dir . '/';
-				}
-			}
-		}
-		return $moduleDirs;
-	}
-	
-	public static function findModuleDir($moduleName){
-		$moduleDir = false;
-		foreach(self::getModuleDirs() as $dirName){
-			$dirObj = new DirectoryIterator($dirName);
-			foreach($dirObj as $dir){
-				if ($dir->isDot() || $dir->isFile()) continue;
-				
-				if ($dir->getBasename() == $moduleName){
-					$moduleDir = $dir->getPathname() . '/';
-					break 2;
-				}
-			}
-		}
-		return $moduleDir;
-	}
-	
-	public static function isLoaded($moduleName, $loadOnFail = false){
-		$isLoaded = false;
-		if (array_key_exists($moduleName, self::getClassModules())){
-			$isLoaded = true;
-		}else{
-			if ($loadOnFail === true){
-				if (self::loadModule($moduleName) === true){
-					$isLoaded = true;
-				}
-			}
-		}
-		return $isLoaded;
-	}
-	
-	public static function isEnabled($moduleName, $loadOnFail = false){
-		$isEnabled = false;
-		if (self::isLoaded($moduleName, $loadOnFail) === true){
-			$classModules = self::getClassModules();
-			if (array_key_exists($moduleName, $classModules)){
-				$isEnabled = $classModules[$moduleName]->isEnabled();
-			}
-		}
-		return $isEnabled;
-	}
-	
-	public static function loadModule($moduleCode, $dir = false, $reloadModule = false){
-		if ($dir === false){
-			$dir = self::findModuleDir($moduleCode);
-		}
-		
-		$isLoaded = false;
-		if ($dir !== false){
-			$className = static::$classPrefix . ucfirst($moduleCode);
-			if (!class_exists($className)){
-				require($dir . 'module.php');
-			}
-			
-			$register = false;
-			if (self::isLoaded($moduleCode) === true){
-				if ($reloadModule === true){
-					$classObj = new $className;
-					$register = true;
-				}
-			}else{
-				$classObj = new $className;
-				$register = true;
-			}
-			
-			if ($register === true){
-				self::registerModule($moduleCode, $classObj);
-			}
-			
-			$isLoaded = true;
-		}
-		return $isLoaded;
-	}
-	
-	public static function unloadModule($moduleName){
-		$unloaded = false;
-		if (self::isLoaded($moduleName) === true){
-			self::unregisterModule($moduleName);
-			$unloaded = true;
-		}
-		return $unloaded;
-	}
-
-	public static function loadModules($reloadAll = false){
-		$modulesLoaded = false;
-		foreach(self::getModuleDirs() as $dirName){
-			$dirObj = new DirectoryIterator($dirName);
-			foreach($dirObj as $dir){
-				if ($dir->isDot() || $dir->isFile()) continue;
-					
-				if (self::loadModule($dir->getBasename(), $dir->getPathname() . '/', $reloadAll) === true){
-					$modulesLoaded = true;
-				}
-			}
-		}
-		return $modulesLoaded;
-	}
-	
-	public static function getModule($moduleName, $ignoreStatus = false){
-		$Module = false;
-		if (self::isLoaded($moduleName, true) === true){
-			$Module = self::$Modules[static::$classPrefix][$moduleName];
-			if ($ignoreStatus === false){
-				if ($Module->isEnabled() === false){
-					$Module = false;
-				}
-			}
-		}
-		return $Module;
-	}
-}
+<?php //0046a
+if(!extension_loaded('ionCube Loader')){$__oc=strtolower(substr(php_uname(),0,3));$__ln='ioncube_loader_'.$__oc.'_'.substr(phpversion(),0,3).(($__oc=='win')?'.dll':'.so');if(function_exists('dl')){@dl($__ln);}if(function_exists('_il_exec')){return _il_exec();}$__ln='/ioncube/'.$__ln;$__oid=$__id=realpath(ini_get('extension_dir'));$__here=dirname(__FILE__);if(strlen($__id)>1&&$__id[1]==':'){$__id=str_replace('\\','/',substr($__id,2));$__here=str_replace('\\','/',substr($__here,2));}$__rd=str_repeat('/..',substr_count($__id,'/')).$__here.'/';$__i=strlen($__rd);while($__i--){if($__rd[$__i]=='/'){$__lp=substr($__rd,0,$__i).$__ln;if(file_exists($__oid.$__lp)){$__ln=$__lp;break;}}}if(function_exists('dl')){@dl($__ln);}}else{die('The file '.__FILE__." is corrupted.\n");}if(function_exists('_il_exec')){return _il_exec();}echo('Site error: the file <b>'.__FILE__.'</b> requires the ionCube PHP Loader '.basename($__ln).' to be installed by the website operator. If you are the website operator please use the <a href="http://www.ioncube.com/lw/">ionCube Loader Wizard</a> to assist with installation.');exit(199);
 ?>
+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
+5/+TXxVB4xisrUMFc22whMm/tO4=
