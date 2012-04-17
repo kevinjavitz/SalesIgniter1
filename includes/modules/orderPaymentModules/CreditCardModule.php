@@ -118,7 +118,7 @@ class CreditCardModule extends PaymentModuleBase
 			for ($i = 1; $i < 13; $i++){
 				$expires_month[] = array(
 					'id'   => sprintf('%02d', $i),
-					'text' => strftime('%B', mktime(0, 0, 0, $i, 1, 2000))
+					'text' => sysLanguage::get('TEXT_'.strftime('%B', mktime(0, 0, 0, $i, 1, 2000)) )
 				);
 			}
 			return $expires_month;

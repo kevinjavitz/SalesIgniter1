@@ -1419,7 +1419,7 @@ class ReservationUtilities {
 		$priceText.insertBefore($divPrice);
 		$('.divPriceWrap, .priceText').wrapAll('<div class="wrapPrice"></div>');
 
-		var $dateText = $('<div class="dateText">Dates Selected: </div>');
+		var $dateText = $('<div class="dateText"><?php echo sysLanguage::get('TEXT_DATES_SELECTED');?> </div>');
 		var $divDate = $('<div class="dateQuotesWrap"></div>');
 		var $dateQuotes = $('<span class="dateQuotes"></span>');
 		$divDate.addClass('ui-widget ui-widget-content ui-corner-all ui-state-error');
@@ -1660,17 +1660,17 @@ class ReservationUtilities {
 				<table cellpadding="0" cellspacing="3" border="0" width="100%">
 				<tr>
 				<td style="width:10px;height:10px;" class="ui-datepicker-reserved ui-state-disabled">&nbsp;</td>
-				<td style="font-size:.8em"> - Unavailable Days.</td>
+				<td style="font-size:.8em"> - <?php echo sysLanguage::get('PPR_INFO_UNAVAILABLE_DAYS')?></td>
 				</tr>
 			    <tr>
 				<td style="width:10px;height:10px;" class="ui-datepicker-start_date_info">&nbsp;</td>
-				<td style="font-size:.8em"> - Selected Days.</td>
+				<td style="font-size:.8em"> - <?php echo sysLanguage::get('PPR_INFO_SELECTED_DAYS')?></td>
 			    </tr>
 
 			<?php if ($purchaseTypeClass->shippingIsNone() === false && $purchaseTypeClass->shippingIsStore() === false){ ?>
 				<tr>
 				<td style="width:10px;height:10px;" class="ui-datepicker-shipping-day-hover-info">&nbsp;</td>
-				<td style="font-size:.8em"> - Shipping Days.</td>
+				<td style="font-size:.8em"> - <?php echo sysLanguage::get('PPR_INFO_SHIPPING_DAYS')?></td>
 		        </tr>
 			<?php } ?>
 

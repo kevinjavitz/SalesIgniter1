@@ -49,7 +49,7 @@
 		array('addCls' => 'ui-widget-header', 'align' => 'left', 'css' => array('border-left' => 'none'), 'text' => '<b>' . sysLanguage::get('TABLE_HEADING_PRODUCTS_QTY') . '</b>'),
 		array('addCls' => 'ui-widget-header', 'align' => 'right', 'css' => array('border-left' => 'none'), 'text' => '<b>' . sysLanguage::get('TABLE_HEADING_PRODUCTS_PRICE') . '</b>'),
 		array('addCls' => 'ui-widget-header', 'align' => 'right', 'css' => array('border-left' => 'none'), 'text' => '<b>' . sysLanguage::get('TABLE_HEADING_PRODUCTS_FINAL_PRICE') . '</b>'),
-		array('addCls' => 'ui-widget-header', 'align' => 'right','css' => array('border-left' => 'none'), 'text' => 'Click X to remove item from cart')
+		array('addCls' => 'ui-widget-header', 'align' => 'right','css' => array('border-left' => 'none'), 'text' => sysLanguage::get('TEXT_REMOVE_ITEM_CART'))
 	);
 
 	EventManager::notify('ShoppingCartListingAddHeaderColumn', &$shoppingCartHeader);

@@ -162,5 +162,6 @@
 	<define key="HEADING_PICKUP_ADDRESS"><![CDATA[Pickup Address]]></define>
 	<define key="TEXT_PRINT_ORDER"><![CDATA[Print Order]]></define>
 	<define key="TEXT_CONTINUE_TO_HOMEPAGE"><![CDATA[Continue to homepage]]></define>
+	<define key="TEXT_REMOVE_ITEM_CART"><![CDATA[Click X to remove item from cart]]></define>
 
 </definitions>

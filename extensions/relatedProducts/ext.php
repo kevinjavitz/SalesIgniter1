@@ -84,7 +84,7 @@ class Extension_relatedProducts extends ExtensionBase {
 
 				$boxTemplate->setVars(array(
 					'box_id'     => 'relatedProducts',
-					'boxHeading' => 'Related Products',
+					'boxHeading' => sysLanguage::get('PRODUCT_LISTING_RELATED'),
 					'boxContent' => $contentRelated
 				));
 
@@ -111,7 +111,7 @@ class Extension_relatedProducts extends ExtensionBase {
 
 			$boxTemplate->setVars(array(
 				'box_id'     => 'relatedProducts',
-				'boxHeading' => 'Related Products',
+				'boxHeading' => sysLanguage::get('PRODUCT_LISTING_RELATED'),
 				'boxContent' => $contentRelated
 			));
 
@@ -243,7 +243,7 @@ class Extension_relatedProducts extends ExtensionBase {
 
 			$boxTemplate->setVars(array(
 					'box_id'     => 'relatedProducts',
-					'boxHeading' => 'Related Products',
+					'boxHeading' => sysLanguage::get('PRODUCT_LISTING_RELATED'),
 					'boxContent' => $listing->draw()
 				));
 

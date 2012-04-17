@@ -51,6 +51,7 @@
 			echo htmlBase::newElement('button')
 			->setType('submit')
 			->usePreset('continue')
+			->setText('TEXT_CONTINUE')
 			->setId('continueButton')
 			->setName('continueButton')
 			->draw();
