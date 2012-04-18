@@ -333,7 +333,7 @@
 					<set_function>tep_cfg_select_option(array('True','False'),</set_function>
 				</EXTENSION_PAY_PER_RENTALS_SHOW_TERMS_EMAIL>
 				<EXTENSION_PAY_PER_RENTALS_ENABLE_REMINDERS>
-					<value>True</value>
+					<value>False</value>
 					<title>Enable sending reminders about items which needs returning</title>
 					<description>If "True" it will send a reminder every period of time setup in cron about items which needs returning</description>
 					<sort_order>32</sort_order>
@@ -346,7 +346,7 @@
 					<sort_order>32</sort_order>
 				</EXTENSION_PAY_PER_RENTALS_REMINDERS_DAYS>
 				<EXTENSION_PAY_PER_RENTALS_SEND_EMAIL_RETURN>
-					<value>True</value>
+					<value>False</value>
 					<title>Do you want to send email on return reservation?</title>
 					<description>Send email on return reservation</description>
 					<sort_order>31</sort_order>
@@ -354,7 +354,7 @@
 				</EXTENSION_PAY_PER_RENTALS_SEND_EMAIL_RETURN>
 
 				<EXTENSION_PAY_PER_RENTALS_SEND_EMAIL_SEND>
-					<value>True</value>
+					<value>False</value>
 					<title>Do you want to send email on send reservation?</title>
 					<description>Send email on send reservation</description>
 					<sort_order>31</sort_order>
