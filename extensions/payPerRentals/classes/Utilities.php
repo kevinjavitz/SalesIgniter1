@@ -835,7 +835,7 @@ class ReservationUtilities {
 										$selfID.parent().find('.inCart').position({
 											my:        "left bottom",
 											at:        "left top",
-											offset:    "200, 30",
+											offset:    "200, 28",
 											of:        $selfID.find('.refreshCal'), // or $("#otherdiv)
 											collision: "fit"
 										});
@@ -1012,7 +1012,7 @@ class ReservationUtilities {
 								$selfID.parent().find('.inCart').position({
 									my:        "left bottom",
 									at:        "left top",
-									offset:    "200, 30",
+									offset:    "200, 28",
 									of:        $selfID.find('.refreshCal'), // or $("#otherdiv)
 									collision: "fit"
 								});
@@ -1174,7 +1174,7 @@ class ReservationUtilities {
 										$selfID.parent().find('.inCart').position({
 											my:        "left bottom",
 											at:        "left top",
-											offset:    "200, 30",
+											offset:    "200, 28",
 											of:        $selfID.find('.refreshCal'), // or $("#otherdiv)
 											collision: "fit"
 										});
@@ -1221,7 +1221,7 @@ class ReservationUtilities {
 								$selfID.parent().find('.inCart').position({
 									my:        "left bottom",
 									at:        "left top",
-									offset:    "200, 30",
+									offset:    "200, 28",
 									of:        $selfID.find('.refreshCal'), // or $("#otherdiv)
 									collision: "fit"
 								});
@@ -1263,7 +1263,7 @@ class ReservationUtilities {
 								$selfID.parent().find('.inCart').position({
 									my:        "left bottom",
 									at:        "left top",
-									offset:    "200, 30",
+									offset:    "200, 28",
 									of:        $selfID.find('.refreshCal'), // or $("#otherdiv)
 									collision: "fit"
 								});
@@ -1405,9 +1405,6 @@ class ReservationUtilities {
 				}else{
 					dd2_day = dd2.getDate();
 				}
-
-				var m_names = new Array("January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December");
-
 				$('.dateQuotes').html(m_names[dd1.getMonth()] + ' ' +dd1_day + ', ' +dd1.getFullYear() + '&nbsp;&nbsp;&nbsp;To&nbsp;&nbsp;&nbsp;' + m_names[dd2.getMonth()] + ' ' +dd2_day + ', ' +dd2.getFullYear());
 			}
 		});
@@ -1445,7 +1442,7 @@ class ReservationUtilities {
 
 		$('.pprButttons').css('left',firstColumnWidth+'px');
 		$('.refreshCal').css('left',(1.4*firstColumnWidth)+'px');
-		$('.calendarTable').css('padding-bottom', '20px');
+		$('.calendarTable').css('padding-bottom', '40px');
 	});
 	</script>
 	<style>

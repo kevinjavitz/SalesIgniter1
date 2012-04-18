@@ -28,14 +28,14 @@
 			<title>Gooogle Analytics Tracking Code</title>
 			<description>Google Analytics tracking code.</description>
 			<sort_order>2</sort_order>
-			<set_function>isArea</set_function>
+			<set_function><![CDATA[tep_cfg_textarea_element(]]></set_function>
 		</EXTENSION_GOOGLE_ANALYTICS_TRACKING_GENERAL>
         <EXTENSION_GOOGLE_ANALYTICS_META_VERIFICATION>
 			<title>Gooogle Webmaster Tools Code</title>
 			<description>google-site-verification code</description>
 			<sort_order>2</sort_order>
+	        <set_function><![CDATA[tep_cfg_textarea_element(]]></set_function>
 		</EXTENSION_GOOGLE_ANALYTICS_META_VERIFICATION>
-
 		<EXTENSION_GOOGLE_ANALYTICS_TRACKING_ID>
 			<title>Gooogle analytics tracking id</title>
 			<description>UA-xxxxx-x</description>

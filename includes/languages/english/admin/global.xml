@@ -464,5 +464,21 @@
 	<define javascript="true" php="false" key="TEXT_VALIDATING_OVERRIDE"><![CDATA[Validating Override]]></define>
 	<define javascript="true" php="false" key="TEXT_OVERRIDE_VALIDATED"><![CDATA[Override Validated]]></define>
 	<define javascript="true" php="false" key="TEXT_OVERRIDE_NOT_VALIDATED"><![CDATA[Override not validated]]></define>
+	<define key="PPR_INFO_UNAVAILABLE_DAYS"><![CDATA[Unavailable Days.]]></define>
+	<define key="PPR_INFO_SELECTED_DAYS"><![CDATA[Selected Days.]]></define>
+	<define key="PPR_INFO_SHIPPING_DAYS"><![CDATA[Shipping Days.]]></define>
+	<define key="TEXT_DATES_SELECTED"><![CDATA[Dates Selected:]]></define>
 
+	<define key="TEXT_January"><![CDATA[January]]></define>
+	<define key="TEXT_February"><![CDATA[February]]></define>
+	<define key="TEXT_March"><![CDATA[March]]></define>
+	<define key="TEXT_April"><![CDATA[April]]></define>
+	<define key="TEXT_May"><![CDATA[May]]></define>
+	<define key="TEXT_June"><![CDATA[June]]></define>
+	<define key="TEXT_July"><![CDATA[July]]></define>
+	<define key="TEXT_August"><![CDATA[August]]></define>
+	<define key="TEXT_September"><![CDATA[September]]></define>
+	<define key="TEXT_October"><![CDATA[October]]></define>
+	<define key="TEXT_November"><![CDATA[November]]></define>
+	<define key="TEXT_December"><![CDATA[December]]></define>
 </definitions>
