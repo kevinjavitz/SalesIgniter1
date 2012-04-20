@@ -3,27 +3,29 @@
 	$deliveryAddress = $addressBook->getAddress('delivery');
 
 	$order->loadProducts();
-	if (sysConfig::get('MODULE_ORDER_TOTAL_SHIPPING_FREE_SHIPPING') == 'true') {
+	$moduleShipping = OrderTotalModules::getModule('shipping');
+
+	if ($moduleShipping->allowFreeShipping == 'True') {
 		$pass = false;
 
-		switch (sysConfig::get('MODULE_ORDER_TOTAL_SHIPPING_DESTINATION')) {
-			case 'national':
+		switch ($moduleShipping->freeShipDestination) {
+			case 'National':
 				if ($deliveryAddress['entry_country_id'] == sysConfig::get('STORE_COUNTRY')) {
 					$pass = true;
 				}
 				break;
-			case 'international':
+			case 'International':
 				if ($deliveryAddress['entry_country_id'] != sysConfig::get('STORE_COUNTRY')) {
 					$pass = true;
 				}
 				break;
-			case 'both':
+			case 'Both':
 				$pass = true;
 				break;
 		}
 
 		$free_shipping = false;
-		if ($pass == true && $order->info['total'] >= sysConfig::get('MODULE_ORDER_TOTAL_SHIPPING_FREE_SHIPPING_OVER')) {
+		if ($pass == true && $order->info['total'] >= $moduleShipping->freeShipAmount) {
 			$free_shipping = true;
 			sysLanguage::loadDefinitions(sysConfig::getDirFsCatalog() . 'includes/languages/' . Session::get('language') . '/modules/order_total/ot_shipping.xml');
 		}
@@ -39,7 +41,7 @@
 			$Module = OrderShippingModules::getModule($module);
 			if ($Module->isEnabled() || $free_shipping == true) {
 				if ($free_shipping == true) {
-					$quote[0]['methods'][0] = array(
+					$quote['methods'][0] = array(
 						'id'    => 'free_free',
 						'title' => sysLanguage::get('FREE_SHIPPING_TITLE'),
 						'cost'  => '0'

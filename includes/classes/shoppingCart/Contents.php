@@ -91,15 +91,17 @@
 		
 		private function removeKey($key){
 			$cartProduct = $this->contents[$key];
-			$pID_string = $cartProduct->getIdString();
-			$purchaseType = $cartProduct->getPurchaseType();
-			
-			$cartProduct->purchaseTypeClass->processRemoveFromCart();
+			if(is_object($cartProduct)){
+				$pID_string = $cartProduct->getIdString();
+				$purchaseType = $cartProduct->getPurchaseType();
 
-			unset($this->contents[$key]);
-			$this->contents = array_values($this->contents);
-			
-			$this->dbUtil->runAction('delete', $cartProduct);
+				$cartProduct->purchaseTypeClass->processRemoveFromCart();
+
+				unset($this->contents[$key]);
+				$this->contents = array_values($this->contents);
+
+				$this->dbUtil->runAction('delete', $cartProduct);
+			}
 		}
 		
 		private function cleanUp(){

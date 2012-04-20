@@ -1,7 +1,9 @@
 <?php
 class OrderTotalShipping extends OrderTotalModuleBase
 {
-
+	public $allowFreeShipping;
+	public $freeShipDestination;
+	public $freeShipAmount;
 	public function __construct() {
 		/*
 		 * Default title and description for modules that are not yet installed
