@@ -11,6 +11,7 @@
 */
 
 	$Store->invoice_layout = $_POST['invoice_layout'];
+	$Store->estimate_layout = $_POST['estimate_layout'];
 	$Store->save();
 
 ?>

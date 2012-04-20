@@ -10,17 +10,21 @@
 	$customerID = (int)$textArr[1];
     $account_action = $textArr[3];
 
-	$order_query = tep_db_query("select currency, currency_value from orders where orders_id = " . $orderID . " and customers_id = " . $customerID . "");
+	$order_query = Doctrine_Manager::getInstance()
+		->getCurrentConnection()
+		->fetchAssoc("select currency, currency_value from orders where orders_id = " . $orderID . " and customers_id = " . $customerID . "");
 
-	if (tep_db_num_rows($order_query) > 0 && $_POST['ResultNum'] == '0'){
-		$order_db = tep_db_fetch_array($order_query);
+	if (sizeof($order_query) > 0 && $_POST['ResultNum'] == '0'){
+		$order_db = $order_query[0];
 		$userAccount = new rentalStoreUser($customerID);
 		$userAccount->loadPlugins();
 		require('includes/classes/order.php');
 		$order = new OrderProcessor($orderID);
 
-		$total_query = tep_db_query("select value from orders_total where orders_id = '" . $orderID . "' and (module_type = 'ot_total' OR module_type = 'total') limit 1");
-		$total = tep_db_fetch_array($total_query);
+		$total_query =  Doctrine_Manager::getInstance()
+			->getCurrentConnection()
+			->fetchAssoc("select value from orders_total where orders_id = '" . $orderID . "' and (module_type = 'ot_total' OR module_type = 'total') limit 1");
+		$total = $total_query[0];
 
 		//$comment_status = $paymentStatus . ' (' . ucfirst($_POST['payer_status']) . '; ' . $currencies->format($_POST['amount'], false, $_POST['mc_currency']) . ')';
 		$comment_status = '';
@@ -31,10 +35,12 @@
 
 			if (((int)OrderPaymentModules::getModule('heartland')->getConfigData('MODULE_PAYMENT_HEARTLAND_COMP_ORDER_STATUS_ID') > 0)){
 				if(!empty($account_action)){
-					$updateArray = array(
-						'activate' => 'Y'
-					);
-					tep_db_perform('customers_membership', $updateArray, 'update', 'customers_id = "' . $customerID . '"');
+					$QUpdateCustomerMemberShip = Doctrine_Query::create()
+						->update('CustomersMembership')
+						->set('activate', '?', 'Y')
+						->where('customers_id=?',$customerID)
+						->execute();
+
 				}
 				$order_status_id = OrderPaymentModules::getModule('heartland')->getConfigData('MODULE_PAYMENT_HEARTLAND_COMP_ORDER_STATUS_ID');
 				$newStatus = new OrdersPaymentsHistory();
@@ -51,16 +57,18 @@
 			}
 		}
 		$customer_notified = '1';
-		tep_db_query("update orders set orders_status = '" . $order_status_id . "', last_modified = now() where orders_id = '" . $orderID . "'");
+		Doctrine_Manager::getInstance()
+		->getCurrentConnection()
+		->fetchAssoc("update orders set orders_status = '" . $order_status_id . "', last_modified = now() where orders_id = '" . $orderID . "'");
 
-		$sql_data_array = array(
-			'orders_id' => $orderID,
-			'orders_status_id' => $order_status_id,
-			'date_added' => 'now()',
-			'customer_notified' => $customer_notified,
-			'comments' => 'Heartland Verified [' . $comment_status . ']'
-		);
-		tep_db_perform(TABLE_ORDERS_STATUS_HISTORY, $sql_data_array);
+		$OrdersStatusHistory = new OrdersStatusHistory();
+		$OrdersStatusHistory->orders_id = $orderID;
+		$OrdersStatusHistory->orders_status_id = $order_status_id;
+		$OrdersStatusHistory->date_added = date('Y-m-d H:i:s');
+		$OrdersStatusHistory->customer_notified = $customer_notified;
+		$OrdersStatusHistory->comments = 'Heartland Verified [' . $comment_status . ']';
+		$OrdersStatusHistory->save();
+
 	}else{
 		switch($_POST['ResultNum']){
 			case '0':

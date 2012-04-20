@@ -182,7 +182,12 @@ $Orders = Doctrine_Core::getTable('Orders');
 			$startDate = date('Y-m-d H:i:s', $startDate);
 			$endDate = date('Y-m-d H:i:s', $endDate);
 			if(sysConfig::get('EXTENSION_ORDER_CREATOR_MESSAGE_ON_SAVE') == 'True'){
-				$messageStack->addSession('pageStack','Order successfully saved.<a style="font-size:14px;color:red" target="_blank" href="'.itw_catalog_app_link('appExt=pdfPrinter&oID=' . $NewOrder->orders_id, 'generate_pdf', 'default').'">Print Invoice</a><br/>'.(($hasRes)?'<a style="font-size:14px;color:red" href="'.itw_app_link('appExt=payPerRentals&start_date='.$startDate.'&end_date='.$endDate.'&highlightOID='.$NewOrder->orders_id, 'send', 'default').'">Checkout Reservation</a>':''), 'success');
+				if(isset($_POST['estimateOrder'])){
+					$estpdf = '&isEstimate=1';
+				}else{
+					$estpdf = '';
+				}
+				$messageStack->addSession('pageStack','Order successfully saved.<a style="font-size:14px;color:red" target="_blank" href="'.itw_catalog_app_link('appExt=pdfPrinter'.$estpdf.'&oID=' . $NewOrder->orders_id, 'generate_pdf', 'default').'">Print Invoice</a><br/>'.(($hasRes)?'<a style="font-size:14px;color:red" href="'.itw_app_link('appExt=payPerRentals&start_date='.$startDate.'&end_date='.$endDate.'&highlightOID='.$NewOrder->orders_id, 'send', 'default').'">Checkout Reservation</a>':''), 'success');
 			}
 
 			EventManager::attachActionResponse(itw_app_link('oID=' . $NewOrder->orders_id, 'orders', 'details'), 'redirect');

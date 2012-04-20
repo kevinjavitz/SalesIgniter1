@@ -562,7 +562,8 @@ class OrderCreator extends Order implements Serializable {
 		}
 		$emailEvent->setVar('orderTotals', $orderTotals);
 		$sendVariables = array();
-		EventManager::notify('OrderCreatorBeforeSendNewEmail', $CollectionObj, $emailEvent, &$products_ordered, &$sendVariables);
+		$isEstimate = 1;
+		EventManager::notify('OrderCreatorBeforeSendNewEmail', $CollectionObj, $emailEvent, &$products_ordered, &$sendVariables, $isEstimate);
 		if($emailAddress == ''){
 			$email = $CollectionObj->customers_email_address;
 		}else{

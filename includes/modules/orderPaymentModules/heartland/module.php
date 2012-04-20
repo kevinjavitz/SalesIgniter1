@@ -149,7 +149,7 @@ class OrderPaymentHeartland extends StandardPaymentModule {
                                tep_draw_hidden_field('CustomerStreet2', $billingAddress['entry_street_address']) .
                                tep_draw_hidden_field('CustomerDayPhone', (isset($onePageCheckout->onePage['info']['telephone'])?$onePageCheckout->onePage['info']['telephone']:'')) .
                                tep_draw_hidden_field('CustomerEmail', $onePageCheckout->onePage['info']['email_address']) .
-			       			   tep_draw_hidden_field('ReturnURL', tep_href_link('ext/modules/payment/heartland/heartland.php'));
+			       			   tep_draw_hidden_field('ReturnURL', tep_href_link('ext/modules/payment/heartland/heartland.php','','SSL'));
 
 		return $process_button_string;
 	}

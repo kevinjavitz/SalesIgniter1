@@ -17,17 +17,23 @@ if(isset($_GET['oID']) && !isset($_GET['type'])){
 		->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 	    $orderStore = (isset($QordersStore[0]['stores_id'])?$QordersStore[0]['stores_id']:0);
 		$QInvLayouts = Doctrine_Query::create()
-			->select('invoice_layout')
+			->select('invoice_layout, estimate_layout')
 			->from('Stores')
 			->where('stores_id=?', $orderStore)
 			->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 		$invLayout = $QInvLayouts[0]['invoice_layout'];
+		$estLayout = $QInvLayouts[0]['estimate_layout'];
+
 	}else{
 		$invLayout = sysConfig::get('EXTENSION_PDF_PRINTER_INVOICE_LAYOUT');
+		$estLayout = sysConfig::get('EXTENSION_PDF_PRINTER_ESTIMATE_LAYOUT');
 	}
 }else{
 	$invLayout = sysConfig::get('EXTENSION_PDF_PRINTER_AGREEMENT_LAYOUT');
 	$iName = 'agreement';
+}
+if(isset($_GET['isEstimate'])){
+	$invLayout = $estLayout;
 }
 
 $layout_id = $invLayout;

@@ -8,5 +8,13 @@
 			<default>0</default>
 			<notnull>true</notnull>
 		</invoice_layout>
+		<estimate_layout>
+			<type>integer</type>
+			<length>4</length>
+			<unsigned>0</unsigned>
+			<primary>false</primary>
+			<default>0</default>
+			<notnull>true</notnull>
+		</estimate_layout>
 	</Stores>
 </data>

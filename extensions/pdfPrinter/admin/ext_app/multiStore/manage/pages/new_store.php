@@ -27,13 +27,16 @@ class pdfPrinter_admin_multiStore_manage_new_store extends Extension_pdfPrinter 
 	public function NewStoreAddTab(&$tabsObj){
 		if(isset($_GET['sID'])){
 			$QInvLayouts = Doctrine_Query::create()
-				->select('invoice_layout')
+				->select('invoice_layout, estimate_layout')
 				->from('Stores')
 				->where('stores_id=?', $_GET['sID'])
 				->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 			$invLayout = $QInvLayouts[0]['invoice_layout'];
+			$estLayout = $QInvLayouts[0]['estimate_layout'];
+
 		}else{
 			$invLayout = 0;
+			$estLayout = 0;
 		}
 		$switcher = htmlBase::newElement('selectbox')
 			->setName('invoice_layout')
@@ -47,6 +50,16 @@ class pdfPrinter_admin_multiStore_manage_new_store extends Extension_pdfPrinter 
 				$switcher->addOption($lInfo['layout_id'], ucfirst($lInfo['layout_name']));
 			}
 		}
+
+		$switcherEstimate = htmlBase::newElement('selectbox')
+			->setName('estimate_layout')
+			->selectOptionByValue($estLayout);
+		if ($QLayouts){
+			foreach($QLayouts as $lInfo){
+				$switcherEstimate->addOption($lInfo['layout_id'], ucfirst($lInfo['layout_name']));
+			}
+		}
+
 		$mainTable = htmlBase::newElement('table')->setCellPadding(3)->setCellSpacing(0);
 		
 		$mainTable->addBodyRow(array(
@@ -61,6 +74,13 @@ class pdfPrinter_admin_multiStore_manage_new_store extends Extension_pdfPrinter 
 				array('addCls' => 'main', 'text' => $switcher->draw()),
 			)
 		));
+
+		$mainTable->addBodyRow(array(
+				'columns' => array(
+					array('addCls' => 'main', 'text' => 'Estimate Layout:'),
+					array('addCls' => 'main', 'text' => $switcherEstimate->draw()),
+				)
+			));
 
 		
 		$tabsObj->addTabHeader('tab_' . $this->getExtensionKey(), array('text' => sysLanguage::get('TAB_PDF_PRINTER')))

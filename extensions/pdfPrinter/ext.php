@@ -35,10 +35,10 @@ class Extension_pdfPrinter extends ExtensionBase {
 		$oID = $order['orderID'];
 		$file = '';
 		if(sysConfig::get('EXTENSION_PDF_INVOICE_ATTACH_TO_ORDER_EMAIL') == 'True'){
-			$file = (itw_catalog_app_link('appExt=pdfPrinter&suffix='.$oID.'&oID=' . $oID, 'generate_pdf', 'default'));
+			$file = (itw_catalog_app_link('appExt=pdfPrinter&suffix='.$oID.'&oID=' . $oID, 'generate_pdf', 'default','NONSSL'));
 			$sendVariables['attach'] = 'temp/pdf/invoice_'.$oID.'.pdf';
 		}elseif(sysConfig::get('EXTENSION_PDF_AGREEMENT_ATTACH_TO_ORDER_EMAIL') == 'True'){
-			$file = (itw_catalog_app_link('appExt=pdfPrinter&type=a&suffix='.$oID.'&oID=' . $oID, 'generate_pdf', 'default'));
+			$file = (itw_catalog_app_link('appExt=pdfPrinter&type=a&suffix='.$oID.'&oID=' . $oID, 'generate_pdf', 'default','NONSSL'));
 			$sendVariables['attach'] = 'temp/pdf/agreement_'.$oID.'.pdf';
 		}
 		if(!empty($file)){
@@ -50,15 +50,19 @@ class Extension_pdfPrinter extends ExtensionBase {
 
 	}
 
-	public function OrderCreatorBeforeSendNewEmail(&$order, &$emailEvent, &$products_ordered, &$sendVariables){
+	public function OrderCreatorBeforeSendNewEmail(&$order, &$emailEvent, &$products_ordered, &$sendVariables, $isEstimate = 0){
 		$oID =  $order->orders_id;
 		$file = '';
+		$est = '';
+		if($isEstimate == 1){
+			$est = '&isEstimate=1';
+		}
 		if(sysConfig::get('EXTENSION_PDF_INVOICE_ATTACH_TO_ORDER_EMAIL') == 'True'){
-			$file = (itw_catalog_app_link('appExt=pdfPrinter&suffix='.$oID.'&oID=' . $oID, 'generate_pdf', 'default'));
-			$sendVariables['attach'] = 'temp/pdf/saved_pdf'.$oID.'.pdf';
+			$file = (itw_catalog_app_link('appExt=pdfPrinter&suffix='.$oID.'&oID=' . $oID.$est, 'generate_pdf', 'default','NONSSL'));
+			$sendVariables['attach'] = 'temp/pdf/invoice_'.$oID.'.pdf';
 		}elseif(sysConfig::get('EXTENSION_PDF_AGREEMENT_ATTACH_TO_ORDER_EMAIL') == 'True'){
-			$file = (itw_catalog_app_link('appExt=pdfPrinter&type=a&suffix='.$oID.'&oID=' . $oID, 'generate_pdf', 'default'));
-			$sendVariables['attach'] = 'temp/pdf/saved_apdf'.$oID.'.pdf';
+			$file = (itw_catalog_app_link('appExt=pdfPrinter&type=a&suffix='.$oID.'&oID=' . $oID.$est, 'generate_pdf', 'default','NONSSL'));
+			$sendVariables['attach'] = 'temp/pdf/agreement_'.$oID.'.pdf';
 		}
 
 		if(!empty($file)){
@@ -71,16 +75,24 @@ class Extension_pdfPrinter extends ExtensionBase {
 	}
 	
 	public function AdminOrderDefaultInfoBoxAddButton(&$oInfo, &$infoBox){
-
+		if(isset($_GET['isEstimate'])){
+			$est = '&isEstimate=1';
+		}else{
+			$est = '';
+		}
 		$pdfinvoiceButton = htmlBase::newElement('button')->setText(sysLanguage::get('TEXT_BUTTON_INVOICE_PDF'))
-		->setHref(itw_catalog_app_link('appExt=pdfPrinter&oID=' . $oInfo->orders_id, 'generate_pdf', 'default'));
+		->setHref(itw_catalog_app_link('appExt=pdfPrinter&oID=' . $oInfo->orders_id.$est, 'generate_pdf', 'default'));
 
 		$infoBox->addButton($pdfinvoiceButton);
 
 	}
 
 	public function OrdersGridButtonsBeforeAdd(&$gridButtons){
-		$gridButtons[] = htmlBase::newElement('button')->setText('PDF Invoice')->addClass('pdfinvoiceButton')->disable();
+		$sClass = '';
+		if(isset($_GET['isEstimate'])){
+			$sClass = ' isEstimate';
+		}
+		$gridButtons[] = htmlBase::newElement('button')->setText('PDF Invoice')->addClass('pdfinvoiceButton'.$sClass)->disable();
 	}
 
 	public function AdminOrderDetailsAddButton($oID, &$infoBox){
