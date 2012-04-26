@@ -52,7 +52,12 @@
 			$navigation->clear_snapshot();
 			$redirectUrl = $origin_href;
 		} else { */
+		if(Session::exists('redirectToUrl')){
+			$redirectUrl = Session::get('redirectToUrl');
+			Session::remove('redirectToUrl');
+		}else{
 			$redirectUrl = itw_app_link(null, 'account', 'default', 'SSL');
+		}
 		//}
 	}
 	

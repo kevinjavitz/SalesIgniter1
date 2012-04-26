@@ -5,20 +5,11 @@
 	require(sysConfig::getDirFsCatalog() . 'applications/checkout/pages/cart.php');
 	$pageHtml = ob_get_contents();
 	ob_end_clean();
-
-	$shoppingProducts = $ShoppingCart->getProducts()->getContents();
-	$reservationProducts = 0;
-	for ($i = 0; $i < count($shoppingProducts); $i++) {
-		//if ($shoppingProducts[$i]->getPurchaseType() == 'reservation') {
-		$reservationProducts++;
-		//		}
+	if ($ShoppingCart->countContents() > 0) {
+		$empty = false;
+	}else{
+		$empty = true;
 	}
-
- 	if ($reservationProducts == 0){
-		 $empty = true;
-	 }else{
-		 $empty = false;
-	 }
 
 if ($onePageCheckout->onePage['shippingEnabled'] === true){
 	if ($onePageCheckout->isNormalCheckout() === true){

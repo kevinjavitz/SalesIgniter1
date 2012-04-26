@@ -460,7 +460,8 @@ class productListing_productsPricePayPerRental {
 					$purchaseTypesCol = '';
 					if(Session::exists('isppr_selected') == false || Session::get('isppr_selected') == false){
 						$payPerRentalButton
-						->setName('no_dates_selected');
+						->setName('no_dates_selected')
+						->addClass('no_dates_selected');
 					}else{
 						$payPerRentalButton
 						->setName('no_inventory');

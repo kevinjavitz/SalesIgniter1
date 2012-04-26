@@ -62,6 +62,9 @@ $(document).ready(function (){
 					$('.emailAtt').val(data.emailFile);
 					$('#emailEvent').val(data.emailEvent);
 					$('#emailTemplate').val(data.emailTemplate);
+
+					$('#isDisabled').attr('checked',data.isDisabled);
+
 					$('#emailTemplateOriginal').removeAttr('disabled').val(data.emailTemplate);
 					
 					//$('.globalVars').html(data.globalVars.join('<br />'));

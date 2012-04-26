@@ -1067,7 +1067,7 @@ class InfoBoxPayPerRental extends InfoBoxAbstract {
 	});
 
 
-	$('button[name="no_dates_selected"]').each(function(){$(this).click(function(){
+	$('.no_dates_selected').each(function(){$(this).click(function(){
 	    $( '<div id="dialog-mesage" title="Choose Dates"><input class="tField" name="tField" ><div class="destBD"><span class="start_text">Start: </span><input class="picker dstart" name="dstart" ></div><div class="destBD"><span class="end_text">End: </span><input class="picker dend" name="dend" ></div><?php echo sysConfig::get('EXTENSION_PAY_PER_RENTALS_INFOBOX_CONTENT');?></div>' ).dialog({
 			modal: false,
 			autoOpen: true,

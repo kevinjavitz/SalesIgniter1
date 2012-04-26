@@ -29,6 +29,7 @@ $(document).ready(function (){
 			}
 		});
 	}); */
+	var getVars = getUrlVars();
 	$('.resReports').click(function(){
 		var newwindow=window.open(js_app_link('appExt=payPerRentals&app=reservations_reports&appPage=default'),'name','height=700,width=960');
 		if (window.focus) {newwindow.focus()}
@@ -51,6 +52,23 @@ $(document).ready(function (){
 		});
 		return false;
 	});
+
+	$('#resendEmail').click(function(){
+		$.ajax({
+			url: js_app_link('appExt=orderCreator&app=default&appPage=new&action=resendEmail'),
+			cache: false,
+			dataType: 'json',
+			data: 'oID='+getVars['oID']+'&isEstimate='+getVars['isEstimate'],
+			type: 'post',
+			success: function (data){
+				if(data.success == true){
+					alert('Confirmation email resent');
+				}
+			}
+		});
+		return false;
+	});
+
 
 	$('input[name=customer_search]').autocomplete({
 		html: true,
@@ -160,6 +178,9 @@ $(document).ready(function (){
 					}
 					if(prType == 'reservation' && isEvent == false){
 						$('.productQty').attr('readonly','readonly');
+						if(!getVars['oID']){
+							$Row.addClass('nodatesSelected');
+						}
 					}
 					if(isEvent && $Row.find('.eventf').val() != '0'){
 						$('.reservationShipping').trigger('change');
@@ -196,6 +217,9 @@ $(document).ready(function (){
 					}
 					if(prType == 'reservation' && isEvent == false){
 						$('.productQty').attr('readonly','readonly');
+						if(!getVars['oID']){
+							$Row.addClass('nodatesSelected');
+						}
 					}
 					if(isEvent && $Row.find('.eventf').val() != '0'){
 						$('.reservationShipping').trigger('change');
@@ -266,23 +290,31 @@ $(document).ready(function (){
 		$('.orderTotalTable > tbody > tr').each(function (){
 			var $Row = $(this);
 			if ($Row.data('code') == 'subtotal'){
+				$Row.find('.orderTotalValue').attr('readonly','readonly');
 				$Row.find('.orderTotalValue').val(number_format(subtotal));
 				total += subtotal;
 			}else if ($Row.data('code') == 'tax'){
+				$Row.find('.orderTotalValue').attr('readonly','readonly');
 				$Row.find('.orderTotalValue').val(number_format(tax));
 				total += tax;
-			}else if ($Row.data('code') == 'shipping'){
-				total += parseFloat($Row.find('.orderTotalValue').val());
 			}else if ($Row.data('code') == 'total'){
+				$Row.find('.orderTotalValue').attr('readonly','readonly');
 				$TotalRow = $(this);
+			}else{
+				total += parseFloat($Row.find('.orderTotalValue').val());
 			}
 		});
 		
 		if ($TotalRow){
 			$TotalRow.find('.orderTotalValue span').html(number_format(total));
 			$TotalRow.find('.orderTotalValue input').val(number_format(total));
+			$TotalRow.find('.orderTotalValue').val(number_format(total));
 		}
-	})
+	});
+
+	$('.orderTotalTable > tbody > tr input').live('keyup', function(){
+		$('.taxRate').trigger('keyup');
+	});
 
 	$('.priceEx').live('keyup', function (){
 		var $Row = $(this).parent().parent();
@@ -469,7 +501,7 @@ $(document).ready(function (){
 		});
 	});
 	$('select[name="payment_method"]').trigger('change');
-
+	$('select.country').trigger('change');
 	//$('.purchaseType').trigger('change');
 	$('.purchaseType').trigger('updateInfo');
 
@@ -639,7 +671,7 @@ $(document).ready(function (){
 		}
 	});
 	
-	var getVars = getUrlVars();
+
 	if (!getVars['error'] && !getVars['oID']){
 		$('.productSection, .totalSection, .paymentSection, .commentSection').hide();
 	}

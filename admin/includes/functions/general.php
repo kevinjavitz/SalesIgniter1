@@ -574,7 +574,7 @@ function tep_get_products_name($product_id, $language_id = 0) {
 	if ($language_id == 0) $language_id = Session::get('languages_id');
 	$ResultSet = Doctrine_Manager::getInstance()
 		->getCurrentConnection()
-		->fetchArray("select products_name from products_description where products_id = '" . (int)$product_id . "' and language_id = '" . (int)$language_id . "'");
+		->fetchAssoc("select products_name from products_description where products_id = '" . (int)$product_id . "' and language_id = '" . (int)$language_id . "'");
 
 	return $ResultSet[0]['products_name'];
 }

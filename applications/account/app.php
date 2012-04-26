@@ -1,4 +1,5 @@
 <?php
+require(sysConfig::getDirFsAdmin() . 'includes/classes/upload.php');
 if ($session_started == false) {
 		tep_redirect(itw_app_link('appExt=infoPages', 'show_page', 'cookie_usage'));
 	}
@@ -14,6 +15,11 @@ if ($session_started == false) {
 	$addressBook = $userAccount->plugins['addressBook'];
 
 	$App->addJavascriptFile('ext/jQuery/ui/jquery.ui.tabs.js');
+	$App->addStylesheetFile('ext/jQuery/themes/smoothness/ui.tabs.css');
+
+$App->addJavascriptFile('ext/jQuery/external/uploadify/swfobject.js');
+$App->addJavascriptFile('ext/jQuery/external/uploadify/jquery.uploadify.js');
+$App->addStylesheetFile('ext/jQuery/external/uploadify/jquery.uploadify.css');
 
 	$breadcrumb->add(sysLanguage::get('NAVBAR_TITLE_DEFAULT'), itw_app_link(null, 'account', 'default', 'SSL'));
 	if ($App->getPageName() != 'default' && $App->getPageName() != 'history_info' && defined('NAVBAR_TITLE_' . strtoupper($App->getPageName()))){

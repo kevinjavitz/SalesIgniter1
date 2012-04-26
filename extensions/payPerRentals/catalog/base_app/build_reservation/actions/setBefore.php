@@ -56,7 +56,11 @@
 			$end_date_compare = date("Y-m-d",mktime(0,0,0,date("m",$_POST['dend']), date("d",$_POST['dend']), date("Y",$_POST['dend'])));
 			if (strtotime($startPadding) < strtotime($todayPadding) || strtotime($end_date_compare) < strtotime($min_end_date)){
 				$messageStack->addSession('pageStack','Dates were not selected because miniumum rental days was not selected','error');
-				EventManager::attachActionResponse( itw_app_link(tep_get_all_get_params()), 'redirect');
+				if (isset($_POST['url']) && (strpos($_POST['url'],'index/default') === false)){
+					tep_redirect($_POST['url']);
+				}else{
+					tep_redirect(itw_app_link(tep_get_all_get_params()));
+				}
 			}
 
 			Session::set('isppr_date_start', $start_date);
@@ -198,19 +202,11 @@ else {
 }
 
 	if(!isset($_POST['rType']) && !isset($_POST['fromInfobox'])){
-			if(isset($_POST['cPath']) && ($_POST['cPath'] != '-1')){
-				$redirectLink = itw_app_link(null, 'index', $_POST['cPath']);
-				$redirectCat = $_POST['cPath'];
-			}else if(isset($_GET['cPath']) && ($_POST['cPath'] != '-1')){
-				$redirectLink = itw_app_link(null, 'index', $_GET['cPath']);
-				$redirectCat = $_GET['cPath'];
+			if (isset($_POST['url']) && (strpos($_POST['url'],'index/default') === false)){
+				$redirectLink = $_POST['url'];
 			}else{
-				if (isset($_POST['url']) && (strpos($_POST['url'],'index/default') < 0) && $_POST['cPath'] != '-1' && $_GET['cPath'] != '-1'){
-					$redirectLink = $_POST['url'];
-				}else{ 
-					$redirectLink = itw_app_link(null,'products','all');
-				}
-		    }
+				$redirectLink = itw_app_link(null,'products','all');
+			}
 			if(isset($redirectLink)){
 				if(sysConfig::get('EXTENSION_INVENTORY_CENTERS_INTERMEDIARY_PAGE') == 'True'){
 					Session::set('redirectLinkBefore', $redirectLink);
@@ -219,7 +215,7 @@ else {
 					}
 					EventManager::attachActionResponse(itw_app_link('appExt=inventoryCenters','show_inventory','list_select'), 'redirect');
 				}else{
-					EventManager::attachActionResponse($redirectLink, 'redirect');
+					tep_redirect($redirectLink);
 				}
 		    }
 	}else{
@@ -511,19 +507,13 @@ else {
 					'goodDates' => $goodDates
 				), 'json');
 			}else{
-				if(isset($_POST['cPath']) && ($_POST['cPath'] != '-1')){
-					$redirectLink = itw_app_link(null, 'index', $_POST['cPath']);
-					$redirectCat = $_POST['cPath'];
-				}else if(isset($_GET['cPath']) && ($_POST['cPath'] != '-1')){
-					$redirectLink = itw_app_link(null, 'index', $_GET['cPath']);
-					$redirectCat = $_GET['cPath'];
+
+				if (isset($_POST['url']) && (strpos($_POST['url'],'index/default') === false)){
+					$redirectLink = $_POST['url'];
 				}else{
-					if (isset($_POST['url']) && (strpos($_POST['url'],'index/default') < 0) && $_POST['cPath'] != '-1' && $_GET['cPath'] != '-1'){
-						$redirectLink = $_POST['url'];
-					}else{
-						$redirectLink = itw_app_link(null,'products','all');
-					}
+					$redirectLink = itw_app_link(null,'products','all');
 				}
+
 				if(isset($redirectLink)){
 					if(sysConfig::get('EXTENSION_INVENTORY_CENTERS_INTERMEDIARY_PAGE') == 'True'){
 						Session::set('redirectLinkBefore', $redirectLink);
@@ -532,7 +522,7 @@ else {
 						}
 						EventManager::attachActionResponse(itw_app_link('appExt=inventoryCenters','show_inventory','list_select'), 'redirect');
 					}else{
-						EventManager::attachActionResponse($redirectLink, 'redirect');
+						tep_redirect($redirectLink);
 					}
 				}
 			}

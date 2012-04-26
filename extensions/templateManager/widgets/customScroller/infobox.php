@@ -140,7 +140,7 @@ abstract class InfoBoxCustomScrollerAbstract
 				$Query->andWhere('p.products_ordered > ?', '0')
 					->orderBy('p.products_ordered desc, pd.products_name asc');
 
-				EventManager::notify('ScrollerBestSellersQueryBeforeExecute', &$Query);
+				EventManager::notify('ScrollerFeaturedQueryBeforeExecute', &$Query);
 				break;
 			case 'featured':
 				$Query->andWhere('p.products_featured = ?', '1');
@@ -161,13 +161,13 @@ abstract class InfoBoxCustomScrollerAbstract
 			case 'new_products':
 				$Query->orderBy('p.products_date_added desc, pd.products_name asc');
 
-				EventManager::notify('ScrollerNewProductsQueryBeforeExecute', &$Query);
+				EventManager::notify('ScrollerFeaturedQueryBeforeExecute', &$Query);
 				break;
 			case 'top_rentals':
-				EventManager::notify('ScrollerTopRentalsQueryBeforeExecute', &$Query);
+				EventManager::notify('ScrollerFeaturedQueryBeforeExecute', &$Query);
 				break;
 			case 'specials':
-				EventManager::notify('ScrollerSpecialsQueryBeforeExecute', &$Query);
+				EventManager::notify('ScrollerFeaturedQueryBeforeExecute', &$Query);
 				break;
 			case 'related':
 				global $current_product_id;				

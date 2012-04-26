@@ -46,6 +46,8 @@ class currencies {
 			if (isset($_GET['currency'])) {
 				if ($this->is_set($_GET['currency']) === false){
 					$currency = ($useLanguageCurrency == 'true') ? $languageDefaultCurrency : $systemDefaultCurrency;
+				}else{
+					$currency = $_GET['currency'];
 				}
 			} else {
 				$currency = ($useLanguageCurrency == 'true') ? $languageDefaultCurrency : $systemDefaultCurrency;
@@ -73,6 +75,16 @@ class currencies {
 				}
 			}else{
 				$currency_type = Session::get('currency');
+			}
+		}else{
+			if(Session::exists('current_store_id') == true){
+					if( Session::exists('mainCurrencyStore'.Session::get('current_store_id'))&& Session::get('mainCurrencyStore'.Session::get('current_store_id')) == $currency_type){
+						$calculate_currency_value = false;
+					}else{
+						if(Session::exists('mainCurrencyStore'.Session::get('current_store_id'))){
+							$currency_value = $this->currencies[$currency_type]['value']/$this->currencies[Session::get('mainCurrencyStore'.Session::get('current_store_id'))]['value'];
+						}
+					}
 			}
 		}
 

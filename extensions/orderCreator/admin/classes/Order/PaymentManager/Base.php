@@ -109,7 +109,7 @@ class OrderCreatorPaymentManager extends OrderPaymentManager implements Serializ
 		$paymentHistory = $Qhistory[0];
 
 		$requestData = array(
-			'amount' => (isset($amount)?$amount:$paymentHistory['payment_amount']),
+			'amount' => -((isset($amount)?$amount:$paymentHistory['payment_amount'])),
 			'orderID' => $paymentHistory['orders_id'],
 			'transactionID' => $paymentHistory['gateway_message'],
 			'cardDetails' => unserialize(cc_decrypt($paymentHistory['card_details']))

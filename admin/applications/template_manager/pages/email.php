@@ -47,6 +47,10 @@ echo sysLanguage::get('HEADING_TITLE');
 						<td class="main"><input type="text" name="email_event" id="emailEvent" style="width:80%"></td>
 					</tr>
 					<tr>
+						<td class="main"><b>Is Disabled:</b></td>
+						<td class="main"><input type="checkbox" name="is_disabled" id="isDisabled"></td>
+					</tr>
+					<tr>
 						<td class="main"><b>Attached File:</b></td>
 						<td class="main"><input type="text" id="emailAtt" class="emailAtt" name="email_att" style="width:80%"><br><input type="file" id="emailFile" class="emailFile" name="email_file" value="" style="width:80%"></td>
 					</tr>

@@ -27,6 +27,7 @@ class Extension_pdfPrinter extends ExtensionBase {
 			'AdminOrderCreatorAddButton',
 			'OrdersGridButtonsBeforeAdd',
 			'OrderCreatorBeforeSendNewEmail',
+			'OrderCreatorBeforeSendUpdateEmail',
 			'OrderBeforeSendEmail'
 			), null, $this);
 	}
@@ -73,6 +74,28 @@ class Extension_pdfPrinter extends ExtensionBase {
 		}
 
 	}
+
+	public function OrderCreatorBeforeSendUpdateEmail(&$order, &$emailEvent, &$products_ordered, &$sendVariables){
+		$oID =  $order->orders_id;
+		$file = '';
+		if(sysConfig::get('EXTENSION_PDF_INVOICE_ATTACH_TO_ORDER_EMAIL') == 'True'){
+			$file = (itw_catalog_app_link('appExt=pdfPrinter&suffix='.$oID.'&oID=' . $oID, 'generate_pdf', 'default','NONSSL'));
+			$sendVariables['attach'] = 'temp/pdf/invoice_'.$oID.'.pdf';
+		}elseif(sysConfig::get('EXTENSION_PDF_AGREEMENT_ATTACH_TO_ORDER_EMAIL') == 'True'){
+			$file = (itw_catalog_app_link('appExt=pdfPrinter&type=a&suffix='.$oID.'&oID=' . $oID, 'generate_pdf', 'default','NONSSL'));
+			$sendVariables['attach'] = 'temp/pdf/agreement_'.$oID.'.pdf';
+		}
+
+		if(!empty($file)){
+			$ch=curl_init();
+			curl_setopt($ch,CURLOPT_URL, $file);
+			curl_exec($ch);
+			curl_close($ch);
+		}
+
+	}
+
+
 	
 	public function AdminOrderDefaultInfoBoxAddButton(&$oInfo, &$infoBox){
 		if(isset($_GET['isEstimate'])){

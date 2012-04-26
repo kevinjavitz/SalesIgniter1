@@ -62,5 +62,14 @@ class EmailTemplates extends Doctrine_Record {
 		'notnull' => false,
 		'autoincrement' => false,
 		));
+		$this->hasColumn('is_disabled', 'integer', 1, array(
+				'type' => 'integer',
+				'length' => 1,
+				'unsigned' => 0,
+				'primary' => false,
+				'default' => '0',
+				'notnull' => true,
+				'autoincrement' => false,
+		));
 	}
 }

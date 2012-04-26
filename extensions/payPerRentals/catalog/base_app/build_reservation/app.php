@@ -20,6 +20,8 @@
 	$App->addStylesheetFile('ext/jQuery/external/fullcalendar/fullcalendar.css');
 	$App->addStylesheetFile('ext/jQuery/external/datepick/css/jquery.datepick.css');
 
+	$App->addJavascriptFile('ext/jQuery/ui/minified/jquery.ui.position.min.js');
+
 	if (isset($_POST['action']) && ($_POST['action'] == 'checkRes' || $_POST['action'] == 'getReservedDates')){
 		$action = $_POST['action'];
 	}elseif (isset($_GET['action']) && ($_GET['action'] == 'checkRes' || $_GET['action'] == 'getReservedDates')){

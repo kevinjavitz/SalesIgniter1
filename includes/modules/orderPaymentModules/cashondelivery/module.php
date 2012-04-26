@@ -70,6 +70,12 @@ class OrderPaymentCashondelivery extends StandardPaymentModule
 
 		$headerPaymentCols[] = '<td class="ui-widget-content ui-state-hover" align="left" style="border-top:none;border-left:none;">'.($Editor->getOrderId() ? htmlBase::newElement('button')->addClass('paymentProcessButton')->setText('Process')->draw() : 'Will process on save').'</td>';
 	}
+
+	public function refundPayment($requestData){
+		$requestData['message'] = 'Refunded Transaction';
+		$requestData['success'] = 1;
+		return $this->onResponse($requestData);
+	}
 		
 	private function onResponse($logData){
 		$this->onSuccess($logData);

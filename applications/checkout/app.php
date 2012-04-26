@@ -6,11 +6,10 @@
 
 	require('includes/classes/http_client.php');
 	include('includes/functions/crypt.php');
-    $navigation->set_snapshot();
 	if (sysConfig::get('ONEPAGE_LOGIN_REQUIRED') == 'true'){
 		if ($userAccount->isLoggedIn() === false){
 			if (!isset($_GET['checkoutType']) || (isset($_GET['checkoutType']) && $_GET['checkoutType'] == 'default')){
-				$navigation->set_snapshot(array('mode' => 'SSL', 'page' => 'application.php', 'get' => 'app=checkout&appPage=default'));
+				Session::set('redirectToUrl',itw_app_link(null,'checkout','default'));
 				tep_redirect(itw_app_link(null, 'account', 'login', 'SSL'));
 			}
 		}

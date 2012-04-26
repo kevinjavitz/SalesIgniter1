@@ -7,6 +7,7 @@
 	}
 	
 	$Template->email_templates_name = $_POST['email_template'];
+	$Template->is_disabled = (isset($_POST['is_disabled'])?'1':'0');
 	$Template->email_templates_event = $_POST['email_event'];
 	$attach_file = new upload('email_file', sysConfig::getDirFsCatalog() . 'images/upload');
 	if ($attach_file && !empty($attach_file->filename)){

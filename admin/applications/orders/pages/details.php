@@ -8,13 +8,18 @@
 
 	$packingSlipButton = htmlBase::newElement('button')->setText(sysLanguage::get('TEXT_BUTTON_PACKINGSLIP'))
 	->setHref(itw_app_link('oID=' . $oID, 'orders', 'packingslip'));
-	
+
+	$resendButton = htmlBase::newElement('button')->usePreset('save')
+	->setName('resendEmail')->setId('resendEmail')->setText('Resend Confirmation');
+
+
 	$backButton = htmlBase::newElement('button')->usePreset('back')
 	->setHref(itw_app_link(tep_get_all_get_params(array('action')), null, 'default'));
 
 	$infobox = htmlBase::newElement('div');
 
 	$infobox->append($invoiceButton);
+	$infobox->append($resendButton);
 	if(sysConfig::get('SHOW_PACKING_SLIP_BUTTONS') == 'true'){
 		$infobox->append($packingSlipButton);
 	}
@@ -222,6 +227,7 @@
 <br />
 <div style="text-align:right"><?php
 	echo $invoiceButton->draw();
+	echo $resendButton->draw();
 	if(sysConfig::get('SHOW_PACKING_SLIP_BUTTONS') == 'true'){
 		echo $packingSlipButton->draw();
 	}

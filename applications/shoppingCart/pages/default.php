@@ -137,6 +137,7 @@ if ($ShoppingCart->countContents() > 0) {
 		->setText(sysLanguage::get('TEXT_BUTTON_CHANGE_DATES'))
 		->addClass('changeDatesButton');
 		ob_start();
+		$datePadding = sysConfig::get('EXTENSION_PAY_PER_RENTALS_DATE_PADDING');
 		?>
 	<script type="text/javascript">
 		function nobeforeDays(date){

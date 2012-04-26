@@ -202,7 +202,9 @@ class emailEvent {
 		}
 
 		//echo 'tep_mail(' . $sendTo['name'] . ', ' . $sendTo['email'] . ', ' . $this->templateSubjectParsed . ', ' . $this->templateParsed . ', ' . STORE_OWNER . ', ' . STORE_OWNER_EMAIL_ADDRESS . ')';
-		tep_mail($sendTo['name'], $sendTo['email'], $this->templateSubjectParsed, $this->templateParsed, $sendFrom, $sendFromEmail, $this->templateFileParsed);
+		if($this->templateData[0]['is_disabled'] == '0'){
+			tep_mail($sendTo['name'], $sendTo['email'], $this->templateSubjectParsed, $this->templateParsed, $sendFrom, $sendFromEmail, $this->templateFileParsed);
+		}
 	}
 
 	public function setVar($varName, $varValue){

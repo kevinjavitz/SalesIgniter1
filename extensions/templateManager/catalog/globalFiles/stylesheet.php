@@ -77,20 +77,23 @@ p *{ line-height:100%;}
  /* Overwrites for the core css framework --END-- */
 
 	$sources = array(
+		sysConfig::getDirFsCatalog() . 'ext/jQuery/themes/smoothness/ui.button.css',
 		sysConfig::getDirFsCatalog() . 'ext/jQuery/themes/smoothness/ui.accordion.css',
 		sysConfig::getDirFsCatalog() . 'ext/jQuery/themes/smoothness/ui.datepicker.css',
-		sysConfig::getDirFsCatalog() . 'ext/jQuery/themes/smoothness/ui.dialog.css',
-		sysConfig::getDirFsCatalog() . 'ext/jQuery/themes/smoothness/ui.progressbar.css',
-		sysConfig::getDirFsCatalog() . 'ext/jQuery/themes/smoothness/ui.resizable.css',
-		sysConfig::getDirFsCatalog() . 'ext/jQuery/themes/smoothness/ui.slider.css',
-		sysConfig::getDirFsCatalog() . 'ext/jQuery/themes/smoothness/ui.tabs.css',
-		sysConfig::getDirFsCatalog() . 'ext/jQuery/themes/smoothness/ui.tooltip.css',
-		sysConfig::getDirFsCatalog() . 'ext/jQuery/themes/smoothness/ui.autocomplete.css',
-		sysConfig::getDirFsCatalog() . 'ext/jQuery/themes/smoothness/ui.button.css',
 		sysConfig::getDirFsCatalog() . 'ext/jQuery/themes/smoothness/ui.stars.css',
-		sysConfig::getDirFsCatalog() . 'ext/jQuery/themes/smoothness/ui.menu.css',
-		sysConfig::getDirFsCatalog() . 'ext/jQuery/external/virtualKeyboard/jquery.keyboard.css'
+		sysConfig::getDirFsCatalog() . 'ext/jQuery/themes/smoothness/ui.dialog.css'
 	);
+
+	if ($env == 'admin'){
+		$sources[] = sysConfig::getDirFsCatalog() . 'ext/jQuery/themes/smoothness/ui.progressbar.css';
+		$sources[] = sysConfig::getDirFsCatalog() . 'ext/jQuery/themes/smoothness/ui.resizable.css';
+		$sources[] = sysConfig::getDirFsCatalog() . 'ext/jQuery/themes/smoothness/ui.slider.css';
+		$sources[] = sysConfig::getDirFsCatalog() . 'ext/jQuery/themes/smoothness/ui.tabs.css';
+		$sources[] = sysConfig::getDirFsCatalog() . 'ext/jQuery/themes/smoothness/ui.tooltip.css';
+		$sources[] = sysConfig::getDirFsCatalog() . 'ext/jQuery/themes/smoothness/ui.autocomplete.css';
+		$sources[] = sysConfig::getDirFsCatalog() . 'ext/jQuery/themes/smoothness/ui.menu.css';
+		$sources[] = sysConfig::getDirFsCatalog() . 'ext/jQuery/external/virtualKeyboard/jquery.keyboard.css';
+	}
 
 	foreach($sources as $filePath){
 		if (file_exists($filePath)){

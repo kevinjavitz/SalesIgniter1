@@ -58,7 +58,7 @@ class inventoryCenters_admin_products_default extends Extension_inventoryCenters
 				->leftJoin('pi.ProductsInventoryBarcodes pib')
 				->leftJoin('pib.ProductsInventoryBarcodesToInventoryCenters piq')
 				->leftJoin('piq.ProductsInventoryCenters pic')
-				->andWhere('pic.inventory_center_id = ?', $search)
+				->where('pic.inventory_center_id = ?', $search)
 				->andWhere('pi.use_center = ?', '1');
 			}
 			//add a new condition to see if inventory center has inventory?

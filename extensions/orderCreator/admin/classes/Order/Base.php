@@ -488,15 +488,9 @@ class OrderCreator extends Order implements Serializable {
 		}
 		$emailEvent->setVar('orderTotals', $orderTotals);
 
-		/*
-		 * @TODO: Why is ['payment_module'] == payment method title, it should be ['payment_method'] == payment method title
-		 */
-		if (!empty($CollectionObj->payment_module)){
-			$Module = OrderPaymentModules::getModule($CollectionObj->payment_module);
+		if (isset($CollectionObj->OrdersPaymentsHistory[0]->payment_module) && !empty($CollectionObj->OrdersPaymentsHistory[0]->payment_module)){
+			$Module = OrderPaymentModules::getModule($CollectionObj->OrdersPaymentsHistory[0]->payment_module);
 			$emailEvent->setVar('paymentTitle', $Module->getTitle());
-			if ($CollectionObj->payment_module == 'po'){
-				$emailEvent->setVar('po_number', 'P.O. Number: ' . $CollectionObj->po_number);
-			}
 		}
 		$sendVariables = array();
 		EventManager::notify('OrderCreatorBeforeSendUpdateEmail', $CollectionObj, $emailEvent, &$products_ordered, &$sendVariables);

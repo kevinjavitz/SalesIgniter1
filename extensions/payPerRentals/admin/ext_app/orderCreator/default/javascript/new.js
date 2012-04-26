@@ -76,7 +76,10 @@ $(document).ready(function (){
 									url: js_app_link('appExt=orderCreator&app=default&appPage=new&action=saveResInfo'),
 									success: function (postResp) {
 										//update priceEx
-
+										if($Row.hasClass('datesSelected') == false){
+											$Row.removeClass('nodatesSelected');
+											$Row.addClass('datesSelected');
+										}
 										$Row.find('.resDateHidden').val(postData.start_date + ',' + postData.end_date);
 										$Row.find('.res_start_date').html(postData.start_date);
 										$Row.find('.res_end_date').html(postData.end_date);
@@ -144,6 +147,10 @@ $(document).ready(function (){
 				removeAjaxLoader($self);
 				if(data.success == true){
 					$Row.find('.priceEx').val(data.price).trigger('keyup');
+					if($Row.hasClass('datesSelected') == false){
+						$Row.removeClass('nodatesSelected');
+						$Row.addClass('datesSelected');
+					}
 				}else{
 					$Row.find('.eventf').val('0');
 					alert('There is no available item for the selected event. Make your Selection again.');
@@ -183,7 +190,10 @@ $(document).ready(function (){
 				removeAjaxLoader($self);
 				if(data.success == true){
 					$Row.find('.priceEx').val(data.price).trigger('keyup');
-
+					if($Row.hasClass('datesSelected') == false){
+						$Row.removeClass('nodatesSelected');
+						$Row.addClass('datesSelected');
+					}
 					if(typeof data.calendar != ''){
 						$('.myCalendar').remove();
 						$('.myTextCalendar').remove();
@@ -236,6 +246,10 @@ $(document).ready(function (){
 
 									if(data.success == true){
 										$Row.find('.priceEx').val(data.price).trigger('keyup');
+										if($Row.hasClass('datesSelected') == false){
+											$Row.removeClass('nodatesSelected');
+											$Row.addClass('datesSelected');
+										}
 									}else{
 										$Row.find('.eventf').val('0');
 										alert('There is no available item for the selected event. Make your Selection again.');
@@ -313,5 +327,18 @@ $(document).ready(function (){
 			}
 		});
 	});
+	$('.saveOrder').click(function(){
+		var canpass = true;
+		if($('.productTable tbody tr').size() == 0){
+			canpass = false;
+		}
+		$('.productTable tbody tr').each(function(){
+			if($(this).hasClass('nodatesSelected')){
+				alert('You have to select dates for all reservation products on the order');
+				canpass = false;
+			}
 
+		});
+		return canpass;
+	});
 });

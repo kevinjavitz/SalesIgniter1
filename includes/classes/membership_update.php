@@ -208,23 +208,25 @@ class membershipUpdate_cron {
 	}
 
 	public function sendAdminEmail(){
-		$subject = 'Billing Notification';
-		$body = 'Dear Admin,' . "\n" .
-		'The following members should be billed today. Their billing info on the web site has been automatically renewed.' . "\n" .
-		'If you need to process their payment through your payment gateway please do so.' . "\n" .
-		'Member /  Plan  /  Plan Amount  /  Plan Amount With Tax  /  Date Billed  /  Next Bill Date' . "\n" .
-		'------------------------------------------------------------------------------------------' . "\n";
+		if(sizeof($this->adminEmailContent) > 0){
+			$subject = 'Billing Notification';
+			$body = 'Dear Admin,' . "\n" .
+			'The following members should be billed today. Their billing info on the web site has been automatically renewed.' . "\n" .
+			'If you need to process their payment through your payment gateway please do so.' . "\n" .
+			'Member /  Plan  /  Plan Amount  /  Plan Amount With Tax  /  Date Billed  /  Next Bill Date' . "\n" .
+			'------------------------------------------------------------------------------------------' . "\n";
 
-		foreach($this->adminEmailContent as $i => $lineItems){
-			$body .= implode(' / ', $lineItems) . "\n";
+			foreach($this->adminEmailContent as $i => $lineItems){
+				$body .= implode(' / ', $lineItems) . "\n";
+			}
+
+			mail(
+				sysConfig::get('STORE_OWNER_EMAIL_ADDRESS'),
+				$subject,
+				$body,
+				"From:" . sysConfig::get('EMAIL_FROM')
+			);
 		}
-
-		mail(
-			sysConfig::get('STORE_OWNER_EMAIL_ADDRESS'),
-			$subject,
-			$body,
-			"From:" . sysConfig::get('EMAIL_FROM')
-		);
 		//mail(/*STORE_OWNER_EMAIL_ADDRESS*/'sw45859@centurytel.net',$subject,$body,"From:".EMAIL_FROM);
 	}
 

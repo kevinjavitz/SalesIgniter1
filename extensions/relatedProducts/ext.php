@@ -35,7 +35,7 @@ class Extension_relatedProducts extends ExtensionBase {
 		
 		if ($product!==null) {			
 			$productsArr = explode(',', $product->productInfo['related_products']);
-			$Query->where('products_status=1')
+			$Query->where('products_status = ?','1')
 				->andWhereIn('products_id', $productsArr)
 				->limit((int)sysConfig::get('EXTENSION_RELATED_PRODUCTS_DISPLAY_NUMBER'));
 		} else {

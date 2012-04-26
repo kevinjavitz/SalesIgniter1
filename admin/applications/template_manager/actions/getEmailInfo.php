@@ -49,6 +49,7 @@
 	EventManager::attachActionResponse(array(
 		'templateId'      => (int) $_GET['tID'],
 		'emailTemplate'   => $Qtemplate[0]['email_templates_name'],
+		'isDisabled'	  => (($Qtemplate[0]['is_disabled'] == '1')?true:false),
 		'emailEvent'      => $Qtemplate[0]['email_templates_event'],
 		'emailFile'       => $Qtemplate[0]['email_templates_attach'],
 		'emailSubject'    => (!empty($email_subject) ? $email_subject : 'false'),

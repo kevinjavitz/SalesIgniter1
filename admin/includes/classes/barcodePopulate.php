@@ -882,9 +882,9 @@ class barcodePopulate{
 							->select('products_id')
 							->from('Products')
 							->where('products_model = ?', $productsModel)
-							->execute();
+							->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 
-				if($Qproduct){
+				if(count($Qproduct) > 0){
 					$productID = $Qproduct[0]['products_id'];
 					$foundID[$productsModel] = $productID;
 				}else{
@@ -902,6 +902,7 @@ class barcodePopulate{
 			if($useCenter){
 				if(isset($inventoryCenterArray[$inventoryCenter])){
 					$inventory_store_center_id = $inventoryCenterArray[$inventoryCenter];
+					$useCenter = 1;
 				}else{
 					$inventory_store_center_id = 0;
 					$useCenter = 0;
@@ -1281,7 +1282,7 @@ class barcodePopulate{
 				}
 
 				$track_method = 'barcode';
-
+				$barcode_id = array();
 				$Qinv = Doctrine_Query::create()
 						->from('ProductsInventory')
 						->where('products_id = ?',$productID)
@@ -1333,7 +1334,7 @@ class barcodePopulate{
 				$ist = true;
 				if ($Qinvq){
 					foreach($Qinvq as $qi){
-						$barcode_id = $qi->barcode_id;
+						$barcode_id[] = $qi->barcode_id;
 						$qi->status = $barcodeStatus;
 						if($controller == 'attribute'){
 
@@ -1484,9 +1485,10 @@ class barcodePopulate{
 									$myInvbc->inventory_center_id = $inventory_store_center_id;
 									$myInvbc->save();
 								}
+								$vg = print_r($barcode_id, true);
 								logNew('product_barcode', array_merge($commonLog, array(
 								'Products ID'      => $productID,
-								'Message'          => 'Updating existing Inventory'
+								'Message'          => 'New existing Inventory Inventory center'.$vg.'-'.$inventory_store_center_id
 							)));
 							}else{
 								logUpdate('product_barcode', array_merge($commonLog, array(

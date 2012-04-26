@@ -64,7 +64,7 @@ class Extension_infoPages extends ExtensionBase {
 			->leftJoin('sp.StoresPagesDescription spd')
 			->where('pd.language_id = ?', (int)Session::get('languages_id'))
 			->andWhere('sp.stores_id = ?', (int)Session::get('current_store_id'))
-			->andWhere('p.page_key = ?', $_GET['appPage']);
+			->andWhere('p.page_key = ?', $_GET['actualPage']);
 
 		$Result = $Query->fetchArray();
 		if(count($Result)){
@@ -86,7 +86,7 @@ class Extension_infoPages extends ExtensionBase {
 			->leftJoin('sp.StoresPagesDescription spd')
 			->where('pd.language_id = ?', (int)Session::get('languages_id'))
 			->andWhere('sp.stores_id = ?', (int)Session::get('current_store_id'))
-			->andWhere('p.page_key = ?', $_GET['appPage']);
+			->andWhere('p.page_key = ?', $_GET['actualPage']);
 
 		$Result = $Query->fetchArray();
 		if(count($Result)){
@@ -109,7 +109,7 @@ class Extension_infoPages extends ExtensionBase {
 			->leftJoin('sp.StoresPagesDescription spd')
 			->where('pd.language_id = ?', (int)Session::get('languages_id'))
 			->andWhere('sp.stores_id = ?', (int)Session::get('current_store_id'))
-			->andWhere('p.page_key = ?', $_GET['appPage']);
+			->andWhere('p.page_key = ?', $_GET['actualPage']);
 
 		$Result = $Query->fetchArray();
 		if(count($Result)){

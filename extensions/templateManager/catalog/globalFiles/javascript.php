@@ -195,25 +195,26 @@ else {
 		sysConfig::getDirFsCatalog() . 'ext/jQuery/jQuery-min.js',
 		sysConfig::getDirFsCatalog() . 'ext/jQuery/ui/minified/jquery.ui.core.min.js',
 		sysConfig::getDirFsCatalog() . 'ext/jQuery/ui/minified/jquery.ui.widget.min.js',
-		sysConfig::getDirFsCatalog() . 'ext/jQuery/ui/minified/jquery.effects.core.min.js',
-		sysConfig::getDirFsCatalog() . 'ext/jQuery/ui/jquery.ui.mouse.js',
-		sysConfig::getDirFsCatalog() . 'ext/jQuery/ui/minified/jquery.ui.position.min.js',
-		sysConfig::getDirFsCatalog() . 'ext/jQuery/ui/minified/jquery.ui.draggable.min.js',
-		sysConfig::getDirFsCatalog() . 'ext/jQuery/ui/minified/jquery.ui.droppable.min.js',
-		sysConfig::getDirFsCatalog() . 'ext/jQuery/ui/minified/jquery.ui.sortable.min.js',
-		sysConfig::getDirFsCatalog() . 'ext/jQuery/ui/minified/jquery.ui.resizable.min.js',
 		sysConfig::getDirFsCatalog() . 'ext/jQuery/ui/jquery.ui.button.js',
 		sysConfig::getDirFsCatalog() . 'ext/jQuery/ui/jquery.ui.dialog.js',
 		sysConfig::getDirFsCatalog() . 'ext/jQuery/ui/jquery.ui.datepicker.js',
 		sysConfig::getDirFsCatalog() . 'ext/jQuery/ui/jquery.ui.accordion.js',
-		sysConfig::getDirFsCatalog() . 'ext/jQuery/ui/jquery.ui.stars.js',
-		sysConfig::getDirFsCatalog() . 'ext/jQuery/ui/jquery.ui.progressbar.js',
-		sysConfig::getDirFsCatalog() . 'ext/jQuery/ui/jquery.ui.newGrid.js',
-		sysConfig::getDirFsCatalog() . 'ext/jQuery/ui/jquery.effects.fade.js',
+		sysConfig::getDirFsCatalog() . 'ext/jQuery/ui/jquery.ui.stars.js',//can be removed too
 		sysConfig::getDirFsCatalog() . 'ext/jQuery/external/virtualKeyboard/jquery.keyboard.js'
 	);
 
 	if ($env == 'admin'){
+		$sources[] = sysConfig::getDirFsCatalog() . 'ext/jQuery/ui/minified/jquery.effects.core.min.js';
+		$sources[] = sysConfig::getDirFsCatalog() . 'ext/jQuery/ui/jquery.ui.mouse.js';
+		$sources[] = sysConfig::getDirFsCatalog() . 'ext/jQuery/ui/minified/jquery.ui.position.min.js';
+		$sources[] = sysConfig::getDirFsCatalog() . 'ext/jQuery/ui/minified/jquery.ui.draggable.min.js';
+		$sources[] = sysConfig::getDirFsCatalog() . 'ext/jQuery/ui/minified/jquery.ui.droppable.min.js';
+		$sources[] = sysConfig::getDirFsCatalog() . 'ext/jQuery/ui/minified/jquery.ui.sortable.min.js';
+		$sources[] = sysConfig::getDirFsCatalog() . 'ext/jQuery/ui/minified/jquery.ui.resizable.min.js';
+		$sources[] = sysConfig::getDirFsCatalog() . 'ext/jQuery/ui/jquery.ui.progressbar.js';
+		$sources[] = sysConfig::getDirFsCatalog() . 'ext/jQuery/ui/jquery.ui.newGrid.js';
+		$sources[] = sysConfig::getDirFsCatalog() . 'ext/jQuery/ui/jquery.effects.fade.js';
+		$sources[] = sysConfig::getDirFsCatalog() . 'ext/jQuery/external/virtualKeyboard/jquery.keyboard.js';
 		$sources[] = sysConfig::getDirFsAdmin() . 'includes/javascript/main.js';
 		$sources[] = sysConfig::getDirFsAdmin() . 'includes/general.js';
 	}
@@ -256,7 +257,7 @@ else {
 
 	foreach($sources as $source){
 		//$minified .= JSMinPlus::minify($source);
-		$minified .= JSMin::minify(file_get_contents($source)).';';
+		$minified .= JSMin::minify(file_get_contents($source))."\n";
 
 		//$minified .= file_get_contents($source);
 	}

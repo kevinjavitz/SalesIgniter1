@@ -1668,7 +1668,9 @@ class PurchaseType_reservation extends PurchaseTypeAbstract {
 							}
 							$(document).ready(function (){
 								$('.no_dates_selected').each(function(){$(this).click(function(){
-
+							<?php
+	   		                    if(sysConfig::get('EXTENSION_PAY_PER_RENTALS_PRODUCT_INFO_DATES') == 'True'){
+								?>
 									$( '<div id="dialog-mesage" title="Choose Dates"><input class="tField" name="tField" ><div class="destBD"><span class="start_text">Start: </span><input class="picker dstart" name="dstart" ></div><div class="destBD"><span class="end_text">End: </span><input class="picker dend" name="dend" ></div><?php echo sysConfig::get('EXTENSION_PAY_PER_RENTALS_INFOBOX_CONTENT');?></div>' ).dialog({
 										modal: false,
 										autoOpen: true,
@@ -1686,7 +1688,9 @@ class PurchaseType_reservation extends PurchaseTypeAbstract {
 											}
 										}
 									});
-
+							    <?php }else{?>
+									alert('No dates selected');
+									<?php } ?>
 									return false;
 								})});
 								$('.no_inventory').each(function(){$(this).click(function(){
@@ -1828,6 +1832,9 @@ class PurchaseType_reservation extends PurchaseTypeAbstract {
 					}
 					$(document).ready(function (){
 						$('.no_dates_selected').each(function(){$(this).click(function(){
+						<?php
+	  		if(sysConfig::get('EXTENSION_PAY_PER_RENTALS_PRODUCT_INFO_DATES') == 'True'){
+							?>
 							$( '<div id="dialog-mesage" title="Choose Dates"><input class="tField" name="tField" ><div class="destBD"><span class="start_text">Start: </span><input class="picker dstart" name="dstart" ></div><div class="destBD"><span class="end_text">End: </span><input class="picker dend" name="dend" ></div><?php echo sysConfig::get('EXTENSION_PAY_PER_RENTALS_INFOBOX_CONTENT');?></div>' ).dialog({
 								modal: false,
 								autoOpen: true,
@@ -1845,7 +1852,9 @@ class PurchaseType_reservation extends PurchaseTypeAbstract {
 									}
 								}
 							});
-
+						    <?php }else{?>
+								alert('No dates selected');
+							<?php }?>
 							return false;
 						})});
 						$('.no_inventory').each(function(){$(this).click(function(){
@@ -2789,12 +2798,8 @@ class PurchaseType_reservation extends PurchaseTypeAbstract {
 		for ($i = 0; $i < count($myKeys); $i++) {
 			if ($myKeys[$i] > $nMinutes) {
 				$biggerPrice = $minutesArray[$myKeys[$i]];
-				if ($i > 0) {
-					if(sysConfig::get('EXTENSION_PAY_PER_RENTALS_USE_PRO_RATED') == 'True'){
-						$normalPrice = (float)($minutesArray[$myKeys[$i - 1]] / $myKeys[$i - 1]) * $nMinutes;
-					}else{
-						$normalPrice = ceil($minutesArray[$myKeys[$i - 1]] / $myKeys[$i - 1]) * $nMinutes;
-					}
+				if ($i > 0) {				
+						$normalPrice = (float)($minutesArray[$myKeys[$i - 1]] / $myKeys[$i - 1]) * $nMinutes;				
 				} else {
 					$normalPrice = -1;
 				}
@@ -2817,12 +2822,8 @@ class PurchaseType_reservation extends PurchaseTypeAbstract {
 			}
 		}
 		if ($is_bigger) {
-			$i = count($myKeys) - 1;
-			if(sysConfig::get('EXTENSION_PAY_PER_RENTALS_USE_PRO_RATED') == 'True'){
-				$normalPrice = (float)($minutesArray[$myKeys[$i]] / $myKeys[$i]) * $nMinutes;
-			}else{
-				$normalPrice = ceil($minutesArray[$myKeys[$i]] / $myKeys[$i]) * $nMinutes;
-			}
+			$i = count($myKeys) - 1;			
+				$normalPrice = (float)($minutesArray[$myKeys[$i]] / $myKeys[$i]) * $nMinutes;			
 			$price = $normalPrice;
 			if(sysConfig::get('EXTENSION_PAY_PER_RENTALS_USE_PRO_RATED') == 'True'){
 				$message .= (int)($nMinutes / $myKeys[$i]) . 'X' . $messArr[$myKeys[$i]] . '@' . $currencies->format($minutesArray[$myKeys[$i]]) . '/' . substr($messArr[$myKeys[$i]], 0, strlen($messArr[$myKeys[$i]]) - 1);

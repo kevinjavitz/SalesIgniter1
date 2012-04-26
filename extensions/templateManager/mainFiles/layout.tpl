@@ -27,7 +27,7 @@ echo '		' . $html . "\n";
 	<script type="text/javascript">
 		var thisFile = '<?php echo basename($_SERVER['PHP_SELF']);?>';
 		var serverName = '<?php echo sysConfig::get('HTTP_HOST');?>';
-		var DIR_WS_CATALOG = '<?php echo DIR_WS_CATALOG;?>';
+		var DIR_WS_CATALOG = '<?php echo sysConfig::getDirWsCatalog();?>';
 		var ENABLE_SSL = '<?php echo sysConfig::get('ENABLE_SSL');?>';
 		var SID = '<?php echo SID;?>';
 		var sessionId = '<?php echo Session::getSessionId();?>';

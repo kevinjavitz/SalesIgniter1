@@ -17,6 +17,7 @@
 
 	$App->addStylesheetFile('ext/jQuery/external/fullcalendar/fullcalendar.css');
 	$App->addStylesheetFile('ext/jQuery/external/datepick/css/jquery.datepick.css');
+	$App->addStylesheetFile('ext/jQuery/themes/smoothness/ui.tabs.css');
 
 	if (isset($_POST['action']) && ($_POST['action'] == 'checkRes' || $_POST['action'] == 'getReservedDates')){
 		$action = $_POST['action'];

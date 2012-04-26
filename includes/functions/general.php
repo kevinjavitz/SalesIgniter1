@@ -1253,7 +1253,7 @@ function tep_currency_exists($code) {
 	$ResultSet = Doctrine_Manager::getInstance()
 		->getCurrentConnection()
 		->fetchAssoc("select currencies_id from currencies where code = '" . $code . "'");
-	if (sizeof($currency_code) > 0){
+	if (sizeof($ResultSet) > 0){
 		return $code;
 	}
 	else {

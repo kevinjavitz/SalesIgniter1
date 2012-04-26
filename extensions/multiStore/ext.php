@@ -50,6 +50,7 @@ class Extension_multiStore extends ExtensionBase {
 				'SetTemplateName',
 				'SeoUrlsInit',
 				'CheckoutAddNewCustomer',
+				'ScrollerFeaturedQueryBeforeExecute',
 				'ProductQueryAfterExecute',
 				'ReviewsQueryBeforeExecute'
 			), null, $this);
@@ -433,7 +434,7 @@ class Extension_multiStore extends ExtensionBase {
 	
 	public function CustomerQueryBeforeExecute(&$customerQuery){
 		$customerQuery->leftJoin('c.CustomersToStores c2s')
-		->andWhere('c2s.stores_id = ?', $this->storeInfo['stores_id']);
+		->andWhere('c2s.stores_id = '. $this->storeInfo['stores_id'].' OR c2s.stores_id is null');
 	}
 	
 	public function OrderQueryBeforeExecute(&$orderQuery){
@@ -457,6 +458,11 @@ class Extension_multiStore extends ExtensionBase {
 	}
 	
 	public function FeaturedQueryBeforeExecute(&$productQuery){
+		$productQuery->leftJoin('p.ProductsToStores p2s')
+		->andWhere('p2s.stores_id = ?', $this->storeInfo['stores_id']);
+	}
+
+	public function ScrollerFeaturedQueryBeforeExecute(&$productQuery){
 		$productQuery->leftJoin('p.ProductsToStores p2s')
 		->andWhere('p2s.stores_id = ?', $this->storeInfo['stores_id']);
 	}
@@ -612,7 +618,11 @@ class Extension_multiStore extends ExtensionBase {
 				$Qcheck->andWhereIn('ib2s.inventory_store_id', Session::get('admin_showing_stores'));
 			}
 		}else{
-			$Qcheck->andWhere('ib2s.inventory_store_id = ?', Session::get('current_store_id'));
+			$isInventory = $appExtension->isInstalled('inventoryCenters') && $appExtension->isEnabled('inventoryCenters');
+			$extInventoryCenters = $appExtension->getExtension('inventoryCenters');
+			if ($isInventory && $extInventoryCenters->stockMethod == 'Store'){
+				$Qcheck->andWhere('ib2s.inventory_store_id = ?', Session::get('current_store_id'));
+			}
 		}
 
 	}

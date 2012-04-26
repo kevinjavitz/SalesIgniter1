@@ -19,7 +19,7 @@
 	->setHref(itw_app_link(null, 'index', 'default'))
 	->draw();
 
-	$pageContent->set('pageTitle', $pageTitle);
+	$pageContent->set('pageTitle', '');
 	$pageContent->set('pageContent', $pageContents);
 	$pageContent->set('pageButtons', $pageButtons);
 

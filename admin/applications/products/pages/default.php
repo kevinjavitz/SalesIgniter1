@@ -159,7 +159,7 @@
 	$lID = (int)Session::get('languages_id');
 
 	$Qproducts = Doctrine_Query::create()
-	->select('p.products_id, pd.products_name, p2c.categories_id')
+	->select('p.products_id, pd.products_name, p2c.categories_id, p.products_model')
 	->from('Products p')
 	->leftJoin('p.ProductsDescription pd')
 	->leftJoin('p.ProductsToCategories p2c')
@@ -168,7 +168,8 @@
 	->orderBy('p.products_featured desc, pd.products_name asc, p.products_id desc');
 	if (isset($_GET['search'])) {
 		$search = $_GET['search'];
-		$Qproducts->andWhere('pd.products_name LIKE ?', '%' . $search . '%');
+		$Qproducts->andWhere('p.products_model LIKE ?', '%'.$search.'%');
+		$Qproducts->orWhere('pd.products_name LIKE ?', '%'.$search.'%');
 	}
 
 	if(isset($_GET['categorySelect']) && $_GET['categorySelect'] != -1){

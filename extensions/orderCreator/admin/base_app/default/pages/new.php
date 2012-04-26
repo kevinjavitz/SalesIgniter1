@@ -17,10 +17,14 @@
 <form name="new_order" action="<?php echo itw_app_link(tep_get_all_get_params(array('action')) . 'action=saveOrder');?>" method="post">
 <div style="text-align:right"><?php
 	$saveButton = htmlBase::newElement('button')->usePreset('save')
-	->setType('submit')->setName('saveOrder');
+	->setType('submit')->addClass('saveOrder')->setName('saveOrder');
 	$estimateButton = htmlBase::newElement('button')->usePreset('save')
-	->setType('submit')->setName('estimateOrder')
+	->setType('submit')->addClass('saveOrder')->setName('estimateOrder')
 	->attr('toolTip', 'This saves the enquiry details <br>but does NOT reserve any bikes.<br>You can change this later');
+
+	$resendButton = htmlBase::newElement('button')->usePreset('save')
+	->setName('resendEmail')->setId('resendEmail')->setText('Resend Confirmation');
+
 	$emailButton = htmlBase::newElement('button')->usePreset('save')
 	->setType('submit')->setName('emailEstimate')->setId('emailEstimate');
 	$EmailInput = htmlBase::newElement('input')
@@ -376,7 +380,7 @@
 </div>
 <br />
 <div style="text-align:right"><?php
-	echo $saveButton->draw() . $estimateButton->draw() . $cancelButton->draw() . '<br>';
+	echo $saveButton->draw() . $estimateButton->draw() . $resendButton->draw() . $cancelButton->draw() . '<br>';
 ?></div>
 </form>
 
