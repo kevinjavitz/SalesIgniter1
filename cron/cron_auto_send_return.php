@@ -12,8 +12,9 @@ if(sysConfig::get('EXTENSION_PAY_PER_RENTALS_AUTO_SEND') == 'True'){
 	->leftJoin('opr.ProductsInventoryQuantity iq')
 	->leftJoin('iq.ProductsInventory i2')
 	//->whereIn('opr.orders_products_reservations_id', $_GET['sendRes'])
-	->where('opr.start_date <= ?', date('Y-m-d H:i:s'))//substract shipping days before
+	->where('DATE_SUB(opr.start_date, INTERVAL opr.shipping_days_before DAY) <= ?', date('Y-m-d H:i:s'))//substract shipping days before
 	->andWhere('oa.address_type = ?', 'customer')
+	->andWhere('opr.rental_state = ?','reserved')
 	->andWhere('opr.parent_id IS NULL');
 
 	EventManager::notify('OrdersListingBeforeExecute', &$Qreservations);
@@ -77,8 +78,10 @@ if(sysConfig::get('EXTENSION_PAY_PER_RENTALS_AUTO_RETURN') == 'True'){
 		->leftJoin('opr.ProductsInventoryQuantity iq')
 		->leftJoin('iq.ProductsInventory iqi')
 		//->where('opr.orders_products_reservations_id = ?', $bID)
-		->where('opr.end_date <= ?', date('Y-m-d H:i:s')) //addshipping_day_after
+		->where('DATE_ADD(opr.end_date, INTERVAL opr.shipping_days_after DAY) <= ?', date('Y-m-d H:i:s')) //addshipping_day_after
+		->andWhere('opr.rental_state = ?', 'out')
 		->andWhere('oa.address_type = ?', 'customer')
+
 		->andWhere('parent_id IS NULL');
 
 		if ($appExtension->isInstalled('inventoryCenters') && $appExtension->isEnabled('inventoryCenters')){
