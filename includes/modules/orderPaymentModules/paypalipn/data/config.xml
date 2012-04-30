@@ -23,6 +23,7 @@
 		<description><![CDATA[Display Order. Lowest is displayed first.]]></description>
 	</configuration>
 	<configuration>
+		<tab><![CDATA[General]]></tab>
 		<title><![CDATA[Payment method visible]]></title>
 		<key><![CDATA[VISIBLE]]></key>
 		<value><![CDATA[Both]]></value>
