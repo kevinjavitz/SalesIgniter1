@@ -59,7 +59,7 @@
 		$customer_notified = '1';
 		Doctrine_Manager::getInstance()
 		->getCurrentConnection()
-		->fetchAssoc("update orders set orders_status = '" . $order_status_id . "', last_modified = now() where orders_id = '" . $orderID . "'");
+		->exec("update orders set orders_status = '" . $order_status_id . "', last_modified = now() where orders_id = '" . $orderID . "'");
 
 		$OrdersStatusHistory = new OrdersStatusHistory();
 		$OrdersStatusHistory->orders_id = $orderID;

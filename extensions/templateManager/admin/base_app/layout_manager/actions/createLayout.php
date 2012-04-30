@@ -21,8 +21,8 @@
 		$Container->Configuration->clear();
 	}
 	$Container->sort_order = (int)$el->attr('data-sort_order');
-	$Container->is_anchor = (int)$el->attr('data-is_anchor');
-	$Container->anchor_id = (int)$el->attr('data-anchor_id');
+	//$Container->is_anchor = (int)$el->attr('data-is_anchor');
+	//$Container->anchor_id = (int)$el->attr('data-anchor_id');
 
 	if(!empty($Container->anchor_id) && (int)$Container->anchor_id > 0){
 
