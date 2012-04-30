@@ -59,8 +59,10 @@
 						'margin' => '1em',
 						'padding' => 0
 					))
-					->addItem('', $links)
-					->addItem('', $links1);
+					->addItem('', $links);
+					if(sysConfig::get('EXTENSION_PAP_CHANGE_USERNAMES') == 'True'){
+						$linkList->addItem('', $links1);
+					}
 
 					$headingDiv = htmlBase::newElement('div')
 					->addClass('main')
@@ -77,7 +79,7 @@
 					$html = $headingDiv->draw() . $contentDiv->draw();
 
 					$QUsernameIds = Doctrine_Core::getTable('UsernamesToIds')->find($affiliate->getRefid());
-					$link = sysConfig::get('HTTP_SERVER').'/pap/'.$QUsernameIds->username;
+					$link = sysConfig::get('HTTP_SERVER').'/'.sysConfig::get('EXTENSION_PAP_SUFFIX').'/'.$QUsernameIds->username;
 					$pageContents .= sprintf(sysLanguage::get('TEXT_GO_AFFILIATE'),$link, $link).'<br/>'.$html;
 				}else{
 					$pageContents .= '';

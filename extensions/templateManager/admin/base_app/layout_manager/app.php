@@ -27,6 +27,8 @@ elseif (isset($_GET['lID'])){
 }
 
 if ($App->getPageName() == 'editLayout'){
+	$App->addJavascriptFile('admin/rental_wysiwyg/ckeditor.js');
+	$App->addJavascriptFile('admin/rental_wysiwyg/adapters/jquery.js');
 	$App->addJavascriptFile('ext/jQuery/ui/jquery.effects.highlight.js');
 	$App->addJavascriptFile('ext/jQuery/external/stickyBar/jquery.stickyBar.js');
 	$App->addJavascriptFile('ext/jQuery/ui/jquery.ui.slider.js');

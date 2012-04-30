@@ -135,6 +135,7 @@ RewriteRule ^admin/showBarcode_(.*).png$ admin/showBarcode.php?code=$1&%{QUERY_S
 
 RewriteRule ^admin/rental_wysiwyg/(.*)$ admin/rental_wysiwyg/$1?%{QUERY_STRING} [L]
 RewriteRule ^extensions/templateManager/catalog/globalFiles/IE9_gradient.php$ extensions/templateManager/catalog/globalFiles/IE9_gradient.php?%{QUERY_STRING} [L]
+RewriteRule ^pap/([^/]+)$ application.php?app=index&appPage=default&a_aid=$1
 
 RewriteRule ^pullStream/(.*)/(.*)$ pullStream.php?pID=$1&file=$2
 RewriteRule ^pullStream/(.*)/(.*)/(.*)/(.*)$ pullStream.php?pID=$1&oID=$2&opID=$3&file=$4

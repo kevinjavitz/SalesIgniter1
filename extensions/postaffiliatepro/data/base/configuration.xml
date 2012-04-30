@@ -38,6 +38,19 @@
 			<description>The API password, usually the same as your merchant password</description>
 			<sort_order>3</sort_order>
 		</EXTENSION_PAP_PASS>
+		<EXTENSION_PAP_SUFFIX>
+			<title>PAP suffix to add to url of affiliate</title>
+			<value>pap</value>
+			<description>PAP suffix to add to url of affiliate</description>
+			<sort_order>3</sort_order>
+		</EXTENSION_PAP_SUFFIX>
+		<EXTENSION_PAP_CHANGE_USERNAMES>
+			<title>Allow change usernames</title>
+			<value>True</value>
+			<description>Enable Or Disable change usernames</description>
+			<sort_order>1</sort_order>
+			<set_function>tep_cfg_select_option(array('True','False'),</set_function>
+		</EXTENSION_PAP_CHANGE_USERNAMES>
 	</configurations>
 	</general>
 	</tabs>

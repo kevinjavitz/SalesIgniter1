@@ -878,9 +878,9 @@ function configurationGridWindow(options) {
 
 				var clickFnc = false;
 				if ($(this).attr('type') == 'checkbox'){
-					if (this.checked){
-						origValues[inputName].push($(this).val());
-					}
+					//if (this.checked){
+					origValues[inputName].push($(this).val());
+					//}
 					clickFnc = true;
 				} else if ($(this).attr('type') == 'radio'){
 					if (this.checked){
@@ -894,10 +894,18 @@ function configurationGridWindow(options) {
 
 				var processChange = function () {
 					var edited = false;
+
 					if (typeof origValues[inputName] == 'object'){
-						if ($.inArray($(this).val(), origValues[inputName]) == -1){
-							edited = true;
+						//if ($.inArray($(this).val(), origValues[inputName]) == -1){
+						edited = true;
+						if($('[name="' + inputName + '"]:checked').size() == 0){
+							var $elem = $('[name="' + inputName + '"]').first().clone();
+							$elem.val('NoneCheckbox');
+							$elem.css('display','none');
+							$elem.attr('checked',true);
+							$elem.insertAfter($('[name="' + inputName + '"]').first());
 						}
+						//}
 					} else if (origValues[inputName] != $(this).val()){
 						edited = true;
 					}

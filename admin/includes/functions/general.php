@@ -1418,8 +1418,8 @@ function itw_cfg_upload_field($value, $key = ''){
 }
 ////
 // Alias function for Store configuration values in the Administration Tool
-function tep_cfg_pull_down_country_list($country_id) {
-	return tep_draw_pull_down_menu('configuration_value', tep_get_countries(), $country_id);
+function tep_cfg_pull_down_country_list($country_id, $key = '') {
+	return tep_draw_pull_down_menu('configuration[' . $key . ']', tep_get_countries(), $country_id);
 }
 
 function tep_cfg_pull_down_order_status_list($status_id, $key = '') {
@@ -1482,8 +1482,8 @@ function tep_cfg_pull_down_template_list($templateName){
 	return $switcher->draw();
 }
 
-function tep_cfg_pull_down_zone_list($zone_id) {
-	return tep_draw_pull_down_menu('configuration_value', tep_get_country_zones(STORE_COUNTRY), $zone_id);
+function tep_cfg_pull_down_zone_list($zone_id, $key = '') {
+	return tep_draw_pull_down_menu('configuration[' . $key . ']', tep_get_country_zones(sysConfig::get('STORE_COUNTRY')), $zone_id);
 }
 
 function tep_cfg_pull_down_tax_classes($tax_class_id, $key = '') {

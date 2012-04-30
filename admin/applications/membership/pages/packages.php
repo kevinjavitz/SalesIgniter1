@@ -64,7 +64,7 @@
 	echo sysLanguage::get('TEXT_INFO_EDIT_DELETE');
 ?></div>
 <br />
-<div class="gridContainer">
+<div class="gridContainerElem">
 	<div style="width:100%;float:left;">
 		<div class="ui-widget ui-widget-content ui-corner-all" style="width:99%;margin-right:5px;margin-left:5px;">
 			<div style="width:99%;margin:5px;"><?php echo $tableGrid->draw();?></div>

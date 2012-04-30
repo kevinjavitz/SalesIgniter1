@@ -32,6 +32,7 @@ class ModuleBase extends MI_Base
 	private $path = '';
 
 	public function init($code, $forceEnable = false, $moduleDir = false) {
+		global $App;
 		$this->setCode($code);
 
 		if ($moduleDir === false){
@@ -69,6 +70,15 @@ class ModuleBase extends MI_Base
 		if (array_key_exists((string)$this->moduleInfo->status_key, $this->configData)){
 			$this->setEnabled(($this->getConfigData((string)$this->moduleInfo->status_key) == 'True' ? true : false));
 		}
+
+		if (array_key_exists((string)$this->moduleInfo->visible_key, $this->configData)){
+			if ($App->getEnv() == 'admin' && $this->getConfigData((string)$this->moduleInfo->visible_key) == 'Catalog'){
+				$this->setEnabled(false);
+			}elseif ($App->getEnv() == 'catalog' && $this->getConfigData((string)$this->moduleInfo->visible_key) == 'Admin'){
+				$this->setEnabled(false);
+			}
+		}
+
 
 		if ($forceEnable === true){
 			$this->setEnabled(true);
