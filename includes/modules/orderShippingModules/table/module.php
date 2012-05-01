@@ -24,6 +24,9 @@ class OrderShippingTable extends OrderShippingModuleBase
 			$this->tableCost = $this->getConfigData('MODULE_ORDER_SHIPPING_TABLE_COST');
 			$this->handlingCost = $this->getConfigData('MODULE_ORDER_SHIPPING_TABLE_HANDLING');
 		}
+		$isEnabled = true;
+		EventManager::notify('ShippingMethodCheckBeforeConstruct', &$isEnabled);
+		$this->setEnabled($isEnabled);
 	}
 
 	public function quote($method = '') {

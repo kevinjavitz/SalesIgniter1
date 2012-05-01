@@ -43,6 +43,7 @@ class Extension_payPerRentals extends ExtensionBase {
 			'UpdateTotalsCheckout',
 			'BeforeShowShippingOrderTotals',
 			'OrderTotalShippingProcess',
+			'ShippingMethodCheckBeforeConstruct',
 			'CouponsPurchaseTypeRestrictionCheck'
 		), null, $this);
 
@@ -117,6 +118,19 @@ class Extension_payPerRentals extends ExtensionBase {
 									'title'  => isset($quotes[0]['methods'][0]['title'])?$quotes[0]['methods'][0]['title']:'',
 									'cost'   => isset($quotes[0]['methods'][0]['cost'])?$quotes[0]['methods'][0]['cost']:''
 			);
+		}
+	}
+
+	public function ShippingMethodCheckBeforeConstruct(&$isEnabled){
+		global $ShoppingCart, $App;
+		if(isset($ShoppingCart) && is_object($ShoppingCart) && $App->getAppName() == 'checkout'){
+			$isEnabled = false;
+			foreach($ShoppingCart->getProducts() as $cartProduct){
+				if($cartProduct->hasInfo('reservationInfo') == false){
+					$isEnabled = true;
+					break;
+				}
+			}
 		}
 	}
 

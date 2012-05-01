@@ -1766,6 +1766,15 @@ function tep_validate_password($plain, $encrypted) {
 	return false;
 }
 
+function tep_get_tax_rate_from_desc($tax_desc) {
+	$tax_query = Doctrine_Manager::getInstance()
+		->getCurrentConnection()
+		->fetchAssoc("select tax_rate from tax_rates where tax_description = '" . $tax_desc . "'");
+	$tax = $tax_query[0];
+	return $tax['tax_rate'];
+}
+
+
 ////
 // This function makes a new password from a plaintext password.
 function tep_encrypt_password($plain) {

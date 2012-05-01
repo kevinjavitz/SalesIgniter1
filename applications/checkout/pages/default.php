@@ -90,21 +90,18 @@
 	<style type="text/css">
 		.bar1{
 			background-image:url(<?php echo sysConfig::getDirWsCatalog();?>images/b1.png);
-			width:388px;
 			height:43px;
 			background-repeat: no-repeat;
 		}
 
 		.bar2{
 			background-image:url(<?php echo sysConfig::getDirWsCatalog();?>images/b2.png);
-			width:388px;
 			height:43px;
 			background-repeat: no-repeat;
 		}
 
 		.bar3{
 			background-image:url(<?php echo sysConfig::getDirWsCatalog();?>images/b3.png);
-			width:388px;
 			height:43px;
 			background-repeat: no-repeat;
 		}
@@ -119,7 +116,7 @@
 		}
 		.text2{
 			margin-top:13px;
-			margin-left:30px;
+			margin-left:20px;
 			margin-right:40px;
 			font-weight: bold;
 			color:#7b7b7b;
@@ -127,7 +124,7 @@
 		}
 		.text3{
 			margin-top:13px;
-			margin-left:20px;
+			margin-left:10px;
 			margin-right:20px;
 			font-weight: bold;
 			color:#7b7b7b;
@@ -145,6 +142,10 @@
 		.bar_step3 .text3{
 			color:#ffffff;
 			font-weight: bold;
+		}
+		.paymentTableDiv .ui-widget-header, .shippingTableDiv .ui-widget-header{
+			line-height:14px !important;
+			padding:5px;
 		}
 	</style>
 <?php

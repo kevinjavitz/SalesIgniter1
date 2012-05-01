@@ -86,6 +86,9 @@ class OrderShippingUsps extends OrderShippingModuleBase
 
 			$this->countries = $this->country_list();
 		}
+		$isEnabled = true;
+		EventManager::notify('ShippingMethodCheckBeforeConstruct', &$isEnabled);
+		$this->setEnabled($isEnabled);
 	}
 	
 	public function quote($method = ''){
