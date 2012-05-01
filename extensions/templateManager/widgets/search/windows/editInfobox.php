@@ -364,7 +364,8 @@
 		)
 	));
 
-	require(sysConfig::getDirFsCatalog() . 'includes/modules/infoboxes/search/infobox.php');
+	if(!class_exists('InfoBoxSearch'))
+		require(sysConfig::getDirFsCatalog() . 'extensions/templateManager/widgets/search/infobox.php');
 	$classObj = new InfoBoxSearch();
 	
 	$liItems = '';
