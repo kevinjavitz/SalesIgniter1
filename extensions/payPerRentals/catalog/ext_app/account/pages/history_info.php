@@ -40,7 +40,7 @@ class payPerRentals_catalog_account_history_info extends Extension_payPerRentals
 			->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 
 			foreach($Qreservations as $iReservation){
-				echo '            <td class="main" align="right" valign="top"><a href="' . (isset($trackingCompanies[strtolower($iReservation['OrdersProducts'][0]['OrdersProductsReservation'][0]['tracking_type'])]['url'])?($trackingCompanies[strtolower($iReservation['OrdersProducts'][0]['OrdersProductsReservation'][0]['tracking_type'])]['url'] . $iReservation['OrdersProducts'][0]['OrdersProductsReservation'][0]['tracking_number']):'#')  . '">'.(isset($trackingCompanies[strtolower($iReservation['OrdersProducts'][0]['OrdersProductsReservation'][0]['tracking_type'])]['url'])?'Track Order':'Not Shipped').'</a></td>' . "\n";
+				echo '            <td class="main" align="right" valign="top"><a href="' . (isset($trackingCompanies[strtolower($iReservation['OrdersProducts'][0]['OrdersProductsReservation'][0]['tracking_type'])]['url'])?($trackingCompanies[strtolower($iReservation['OrdersProducts'][0]['OrdersProductsReservation'][0]['tracking_type'])]['url'] . $iReservation['OrdersProducts'][0]['OrdersProductsReservation'][0]['tracking_number']):'#')  . '">'.(isset($trackingCompanies[strtolower($iReservation['OrdersProducts'][0]['OrdersProductsReservation'][0]['tracking_type'])]['url'])?'Track Order':($iReservation['OrdersProducts'][0]['OrdersProductsReservation'][0]['rental_state'] == 'out'?'Shipped':'Not Shipped')).'</a></td>' . "\n";
 				break;
 			}
 			if(count($Qreservations) <= 0){

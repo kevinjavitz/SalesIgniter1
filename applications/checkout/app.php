@@ -9,7 +9,6 @@
 	if (sysConfig::get('ONEPAGE_LOGIN_REQUIRED') == 'true'){
 		if ($userAccount->isLoggedIn() === false){
 			if (!isset($_GET['checkoutType']) || (isset($_GET['checkoutType']) && $_GET['checkoutType'] == 'default')){
-				Session::set('redirectToUrl',itw_app_link(null,'checkout','default'));
 				tep_redirect(itw_app_link(null, 'account', 'login', 'SSL'));
 			}
 		}
@@ -57,6 +56,9 @@
                 }
                 break;
         }
+        Session::set('redirectToUrl',itw_app_link('checkoutType='.$_GET['checkoutType'],'checkout','default'));
+    }else{
+	    Session::set('redirectToUrl',itw_app_link(null,'checkout','default'));
     }
     /*
 	if (isset($_GET['checkoutType']) && $_GET['checkoutType'] == 'rental'){

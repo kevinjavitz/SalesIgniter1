@@ -175,7 +175,7 @@
 	
 	$totalModules = OrderPaymentModules::countEnabled();
 ?>
-<div class="ui-widget">
+<div class="ui-widget paymentTableDiv">
 	<div class="ui-widget-content ui-corner-all">
 		<div class="ui-widget-header ui-corner-all">
 			<span class="ui-widget-header-text">&nbsp;<?php

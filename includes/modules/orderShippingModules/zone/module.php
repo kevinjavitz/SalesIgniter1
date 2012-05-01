@@ -35,6 +35,9 @@ class OrderShippingZone extends OrderShippingModuleBase
 
 			}
 		}
+		$isEnabled = true;
+		EventManager::notify('ShippingMethodCheckBeforeConstruct', &$isEnabled);
+		$this->setEnabled($isEnabled);
 	}
 
 	public function getMethods() {

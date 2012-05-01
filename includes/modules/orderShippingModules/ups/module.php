@@ -53,6 +53,9 @@ class OrderShippingUps extends OrderShippingModuleBase
 			$this->addressType = $this->getConfigData('MODULE_ORDER_SHIPPING_UPS_RES');
 			$this->handlingCost = $this->getConfigData('MODULE_SHIPPING_UPS_HANDLING');
 		}
+		$isEnabled = true;
+		EventManager::notify('ShippingMethodCheckBeforeConstruct', &$isEnabled);
+		$this->setEnabled($isEnabled);
 	}
 	
 	public function getType(){
