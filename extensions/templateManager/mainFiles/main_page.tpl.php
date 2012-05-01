@@ -33,7 +33,7 @@ $Template->setVars(array(
 
 $Qpages = Doctrine_Manager::getInstance()
 	->getCurrentConnection()
-	->fetchAssoc('select layout_id from template_pages where extension = "' . $thisExtension . '" and application = "' . $thisApp . '" and page = "' . $thisAppPage . '"');
+	->fetchAssoc('select layout_id, page_type from template_pages where extension = "' . $thisExtension . '" and application = "' . $thisApp . '" and page = "' . $thisAppPage . '"');
 $Page = $Qpages[0];
 $pageLayouts = $Page['layout_id'];
 $layoutArr = explode(',', $Page['layout_id']);
