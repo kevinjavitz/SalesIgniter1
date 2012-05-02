@@ -95,7 +95,7 @@ class Categories extends Doctrine_Record {
 		$Query = Doctrine_Query::create()
 		->select('parent_id')
 		->from('Categories')
-		->where('categories_id = ?', (int)$cPath_array[(sizeof($cPath_array)-1)])
+		->where('categories_id = ?', $categoryId)
 		->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 		return $Query[0]['parent_id'];
 	}
