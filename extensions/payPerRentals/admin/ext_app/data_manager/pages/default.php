@@ -364,6 +364,8 @@ class payPerRentals_admin_data_manager_default extends Extension_payPerRentals {
 					$PricePerProduct->pay_per_rental_types_id = $type;
 					$PricePerProduct->pay_per_rental_id = $PayPerRental->pay_per_rental_id;
 					$PricePerProduct->save();
+					$PricePerProduct->free();
+					unset($PricePerProduct);
 				}
 			} else {
 				break;

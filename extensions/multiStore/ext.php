@@ -292,6 +292,11 @@ class Extension_multiStore extends ExtensionBase {
 				->andWhere('FIND_IN_SET(p2s.stores_id,"'.implode(',',Session::get('admin_showing_stores')).'") > 0 OR p2s.stores_id is null' );
 		}
 	}
+	public function OrderBeforeSendEmail(&$order, &$emailEvent, &$products_ordered, &$sendVariables){
+		if(isset($this->storeInfo['stores_email']) && !empty($this->storeInfo['stores_email'])){
+			$sendVariables['emails'][] = $this->storeInfo['stores_email'];
+		}
+	}
 
 	public function AdminProductListingTemplateQueryBeforeExecute(&$Qproducts){
 		$storesArr = array();

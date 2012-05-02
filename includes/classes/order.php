@@ -661,18 +661,25 @@ class OrderProcessor {
 		$sendVariables = array();
 		EventManager::notify('OrderBeforeSendEmail', &$currentOrder, &$emailEvent, &$products_ordered, &$sendVariables);
 
-		$sendVariables['email'] = $userAccount->getEmailAddress();
+		$sendVariables['emails'][] = $userAccount->getEmailAddress();
+		if (sysConfig::get('SEND_EXTRA_ORDER_EMAILS_TO') != '') {
+			$sendVariables['emails'][] = sysConfig::get('SEND_EXTRA_ORDER_EMAILS_TO');
+		}
 		$sendVariables['name'] = $userAccount->getFullName();
 
-		$emailEvent->sendEmail($sendVariables);
+		foreach($sendVariables['emails'] as $emalAdd){
+			$sendVariables['email'] = $emalAdd;
+			$emailEvent->sendEmail($sendVariables);
+		}
 
-		// send emails to other people
+		/*
 		if (sysConfig::get('SEND_EXTRA_ORDER_EMAILS_TO') != '') {
 			$emailEvent->sendEmail(array(
 					'email' => sysConfig::get('SEND_EXTRA_ORDER_EMAILS_TO'),
 					'name'  => ''
 				));
-		}
+		} */
+
 	}
 }
 ?>
