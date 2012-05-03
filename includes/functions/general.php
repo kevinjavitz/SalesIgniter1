@@ -1261,6 +1261,22 @@ function tep_currency_exists($code) {
 	}
 }
 
+function tep_language_exists($code) {
+	$code = addslashes($code);
+
+	$ResultSet = Doctrine_Manager::getInstance()
+		->getCurrentConnection()
+		->fetchAssoc("select languages_id from languages where code = '" . $code . "'");
+	if (sizeof($ResultSet) > 0){
+		return $code;
+	}
+	else {
+		return false;
+	}
+}
+
+
+
   function tep_string_to_int($string) {
     return (int)$string;
   }
@@ -1789,6 +1805,35 @@ function tep_encrypt_password($plain) {
 	$password = md5($salt . $plain) . ':' . $salt;
 
 	return $password;
+}
+
+function tep_get_category_tree($parent_id = '0', $spacing = '', $exclude = '', $category_tree_array = '', $include_itself = false) {
+	if (!is_array($category_tree_array)) $category_tree_array = array();
+
+	$Categories = Doctrine_Core::getTable('Categories')->getRecordInstance();
+	if ($include_itself) {
+		$category_tree_array[] = array(
+			'id'   => $parent_id
+		);
+	}
+
+	$CategoryParent = $Categories->getParentId((int) $parent_id);
+	if($CategoryParent > 0){
+		if ($exclude != $CategoryParent){
+			$category_tree_array[] = array(
+				'id'   => $CategoryParent
+			);
+		}
+		$category_tree_array = tep_get_category_tree(
+			$CategoryParent,
+			$spacing . '&nbsp;&nbsp;&nbsp;',
+			$exclude,
+			$category_tree_array
+		);
+
+	}
+
+	return $category_tree_array;
 }
 
 ?>

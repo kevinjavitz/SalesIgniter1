@@ -231,6 +231,22 @@ class Extension_multiStore extends ExtensionBase {
 				Session::set('currency', Session::get('currencyStore'.$this->storeInfo['stores_id']));
 			}
 
+			$defaultLanguage = $this->storeInfo['default_language'];
+			Session::set('mainLanguageStore'.$this->storeInfo['stores_id'], $defaultLanguage);
+			if (Session::exists('languageStore'.$this->storeInfo['stores_id']) === false || isset($_GET['language']) ) {
+				if (isset($_GET['language'])) {
+					if (!$language = tep_language_exists($_GET['language'])) $language = $defaultLanguage;
+				} else {
+					$language = $defaultLanguage;
+				}
+				Session::set('language', $language);
+				Session::set('languageStore'.$this->storeInfo['stores_id'], $language);
+			}else{
+				Session::set('language', Session::get('languageStore'.$this->storeInfo['stores_id']));
+				$language = Session::get('languageStore'.$this->storeInfo['stores_id']);
+			}
+			sysLanguage::init($language);
+
 			if(sysConfig::get('EXTENSION_MULTI_STORE_REDIRECT_BY_COUNTRY') == 'True'){
 				include(sysConfig::getDirFsCatalog().'extensions/multiStore/geoip/geoip.php');
 				$storeCountries = explode(',', $this->storeInfo['stores_countries']);

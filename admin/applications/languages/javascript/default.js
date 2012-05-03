@@ -116,7 +116,7 @@ $(document).ready(function (){
 						}
 					});
 					
-					updateNewLanguageStatus();
+					//updateNewLanguageStatus();
 				}
 			}
 		});

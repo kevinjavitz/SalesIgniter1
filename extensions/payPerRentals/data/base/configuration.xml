@@ -558,6 +558,14 @@
 			<sort_order>31</sort_order>
 			<set_function>tep_cfg_select_option(array('True','False'),</set_function>
 		</EXTENSION_PAY_PER_RENTALS_SHOW_TRACKING_NUMBER_COLUMN>
+		<EXTENSION_PAY_PER_RENTALS_SHOW_CALENDAR_PRODUCT_INFO>
+					<value>False</value>
+					<title>Do you want to enabled calendar on product info?</title>
+					<description>Enable Calendar on product info</description>
+					<sort_order>31</sort_order>
+					<set_function>tep_cfg_select_option(array('True','False'),</set_function>
+		</EXTENSION_PAY_PER_RENTALS_SHOW_CALENDAR_PRODUCT_INFO>
+
 
 		<EXTENSION_PAY_PER_RENTALS_SHOW_RESERVATION_STATUS_COLUMN>
 			<value>True</value>

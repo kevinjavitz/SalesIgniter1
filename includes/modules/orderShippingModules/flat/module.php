@@ -17,10 +17,11 @@ class OrderShippingFlat extends OrderShippingModuleBase
 
 		if ($this->isEnabled() === true){
 			$this->shipCost = $this->getConfigData('MODULE_ORDER_SHIPPING_FLAT_COST');
+			$isEnabled = true;
+			EventManager::notify('ShippingMethodCheckBeforeConstruct', &$isEnabled);
+			$this->setEnabled($isEnabled);
 		}
-		$isEnabled = true;
-		EventManager::notify('ShippingMethodCheckBeforeConstruct', &$isEnabled);
-		$this->setEnabled($isEnabled);
+
 	}
 
 	public function quote($method = '') {

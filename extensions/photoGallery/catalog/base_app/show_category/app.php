@@ -11,6 +11,14 @@
 */
 	$appContent = $App->getAppContentFile();
 
+$App->addJavascriptFile('ext/jQuery/ui/jquery.effects.core.js');
+$App->addJavascriptFile('ext/jQuery/ui/jquery.ui.mouse.js');
+$App->addJavascriptFile('ext/jQuery/ui/jquery.effects.fade.js');
+$App->addJavascriptFile('ext/jQuery/ui/jquery.ui.position.js');
+$App->addJavascriptFile('ext/jQuery/ui/jquery.ui.draggable.js');
+$App->addJavascriptFile('ext/jQuery/ui/jquery.ui.sortable.js');
+$App->addJavascriptFile('ext/jQuery/ui/jquery.ui.resizable.js');
+
 if(sysConfig::get('EXTENSION_PHOTO_GALLERY_DISPLAY_TYPE') == 'Slideshow'){
 	$App->addJavascriptFile('ext/jQuery/external/jquery.bxSlider/jquery.bxSlider.min.js');
 	$App->addStylesheetFile('ext/jQuery/external/jquery.bxSlider/jquery.easing.1.3.js');

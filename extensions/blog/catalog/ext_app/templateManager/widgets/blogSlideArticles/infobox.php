@@ -69,6 +69,14 @@ class InfoBoxBlogSlideArticles extends InfoBoxAbstract {
 		$easing = $boxWidgetProperties->easing;
 		$javascript = '';
 		ob_start();
+
+		/*readfile(sysConfig::getDirFsCatalog().'ext/jQuery/ui/jquery.effects.core.js');
+		readfile(sysConfig::getDirFsCatalog().'ext/jQuery/ui/jquery.ui.mouse.js');
+		readfile(sysConfig::getDirFsCatalog().'ext/jQuery/ui/jquery.effects.fade.js');
+		readfile(sysConfig::getDirFsCatalog().'ext/jQuery/ui/jquery.ui.position.js');
+		readfile(sysConfig::getDirFsCatalog().'ext/jQuery/ui/jquery.ui.draggable.js');
+		readfile(sysConfig::getDirFsCatalog().'ext/jQuery/ui/jquery.ui.sortable.js');
+		readfile(sysConfig::getDirFsCatalog().'ext/jQuery/ui/jquery.ui.resizable.js');*/
 		readfile(sysConfig::getDirFsCatalog().'ext/jQuery/external/jquery.bxSlider/jquery.bxSlider.min.js');
 		readfile(sysConfig::getDirFsCatalog().'ext/jQuery/external/jquery.bxSlider/jquery.easing.1.3.js');
 		?>

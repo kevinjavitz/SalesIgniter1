@@ -137,7 +137,7 @@ class OrderPaymentHeartland extends StandardPaymentModule {
 
  	      //Session::set('TxnsVFNumb', 'I'.'-'.$userAccount->getCustomerId() . '-'.$order->newOrder['orderID'] .'-'.($onePageCheckout->isMembershipCheckout()?'M':''));
 
-          $process_button_string = tep_draw_hidden_field('ClientSessionID', 'I'.'-'.$userAccount->getCustomerId() . '-'.$order->newOrder['orderID'] .'-'.($onePageCheckout->isMembershipCheckout()?'M':'') ) .
+          $process_button_string = tep_draw_hidden_field('ClientSessionID', 'I'.'-'.$userAccount->getCustomerId() . '-'.$order->newOrder['orderID'] .'-'.($onePageCheckout->isMembershipCheckout()?'M':'N') ) .
                                tep_draw_hidden_field('ProcessType', 'CreditCard') .
                                tep_draw_hidden_field('TransType', 'Sale') .
 	                            tep_draw_hidden_field('TransNum', $order->newOrder['orderID']) .

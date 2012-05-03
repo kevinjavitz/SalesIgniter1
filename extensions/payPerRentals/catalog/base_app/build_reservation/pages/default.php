@@ -99,25 +99,27 @@ if ($insurancePrice > 0){
 	   $pageTitle = '<span class="pprText">'.$product->getName().'</span>';
 
 	   $pageButtons = '';
-	   if (/*sysConfig::get('EXTENSION_PAY_PER_RENTALS_SHOW_CALENDAR_PRODUCT_INFO') == 'False' &&*/ is_object($pageContent)) {
-		    $pageButtons .= htmlBase::newElement('button')
-		    ->usePreset('back')
-		    ->addClass('pprBack')
-		    ->setHref(itw_app_link('products_id=' . $pID_string, 'product', 'info'))
-		    ->draw();
+	   if (sysConfig::get('EXTENSION_PAY_PER_RENTALS_SHOW_CALENDAR_PRODUCT_INFO') == 'False') {
+		   if(is_object($pageContent)){
+				$pageButtons .= htmlBase::newElement('button')
+				->usePreset('back')
+				->addClass('pprBack')
+				->setHref(itw_app_link('products_id=' . $pID_string, 'product', 'info'))
+				->draw();
 
 
 
-		   $pageContent->set('pageForm', array(
-			   'name' => 'build_reservation',
-			   'action' => itw_app_link(tep_get_all_get_params(array('action'))),
-			   'method' => 'post'
-		   ));
+			   $pageContent->set('pageForm', array(
+				   'name' => 'build_reservation',
+				   'action' => itw_app_link(tep_get_all_get_params(array('action'))),
+				   'method' => 'post'
+			   ));
 
-		   $pageContent->set('pageTitle', $pageTitle);
-		   $pageContent->set('pageContent', $pageContents);
-		   $pageContent->set('pageButtons', $pageButtons);
-	   }/*else{
+			   $pageContent->set('pageTitle', $pageTitle);
+			   $pageContent->set('pageContent', $pageContents);
+			   $pageContent->set('pageButtons', $pageButtons);
+		   }
+	   }else{
 		   $htmlForm = htmlBase::newElement('form')
 			->attr('name', 'build_reservation')
 			->attr('action', itw_app_link(tep_get_all_get_params(array('action'))))
@@ -125,4 +127,4 @@ if ($insurancePrice > 0){
 		   $htmlDiv = htmlBase::newElement('div')
 			->html($pageContents);
 		   echo $htmlForm->append($htmlDiv)->draw();
-	   }*/
+	   }

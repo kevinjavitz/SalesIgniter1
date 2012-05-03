@@ -18,6 +18,7 @@ class InfoBoxReservationCalendar extends InfoBoxAbstract {
 	public function show(){
 			global $appExtension;
 			ob_start();
+			echo '<script type="text/javascript" src="'.sysConfig::getDirWsCatalog() . 'ext/jQuery/ui/jquery.ui.position.js'.'"></script>';
 			echo '<script type="text/javascript" src="'.sysConfig::getDirWsCatalog() . 'ext/jQuery/external/fullcalendar/fullcalendar.js'.'"></script>';
 			echo '<script type="text/javascript" src="'.sysConfig::getDirWsCatalog() . 'ext/jQuery/external/datepick/jquery.datepick.js'.'"></script>';
 			echo '<link rel="stylesheet" type="text/css" href="'.sysConfig::getDirWsCatalog() . 'ext/jQuery/external/fullcalendar/fullcalendar.css'.'">';

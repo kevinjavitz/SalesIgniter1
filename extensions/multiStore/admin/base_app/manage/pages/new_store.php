@@ -70,6 +70,7 @@ $GEOIP_COUNTRY_NAMES = array(
 	$isDefault = htmlBase::newElement('checkbox')->setName('is_default');
 	$homeRedirect = htmlBase::newElement('checkbox')->setName('home_redirect_store_info');
 	$defaultCurrency = htmlBase::newElement('selectbox')->setName('default_currency');
+	$defaultLanguage = htmlBase::newElement('selectbox')->setName('default_language');
 	$storeInfo = htmlBase::newElement('ck_editor')->setName('stores_info')->attr('rows','20')->attr('cols','90');
 
 $table = htmlBase::newElement('table')
@@ -140,6 +141,7 @@ $table->addBodyRow(array(
 		$homeRedirect->setChecked($Qstore['home_redirect_store_info'] == '1'?true:false);
 
 		$defaultCurrency->selectOptionByValue($Qstore['default_currency']);
+		$defaultLanguage->selectOptionByValue($Qstore['default_language']);
 	}
 
 	$QCurrencies = Doctrine_Query::create()
@@ -148,6 +150,14 @@ $table->addBodyRow(array(
 
 	foreach($QCurrencies as $currency){
 		$defaultCurrency->addOption($currency['code'], $currency['title']);
+	}
+
+	$QLanguages = Doctrine_Query::create()
+		->from('Languages')
+		->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+
+	foreach($QLanguages as $language){
+		$defaultLanguage->addOption($language['code'], $language['name']);
 	}
 
 	$templatesSet = htmlBase::newElement('selectbox')->setName('stores_template');
@@ -265,6 +275,12 @@ $table->addBodyRow(array(
 		'columns' => array(
 			array('addCls' => 'main','text' => sysLanguage::get('TEXT_STORES_DEFAULT_CURRENCY')),
 			array('addCls' => 'main','text' => $defaultCurrency->draw())
+		)
+	));
+	$storeInfoTable->addBodyRow(array(
+		'columns' => array(
+			array('addCls' => 'main','text' => sysLanguage::get('TEXT_STORES_DEFAULT_LANGUAGE')),
+			array('addCls' => 'main','text' => $defaultLanguage->draw())
 		)
 	));
 	$storeInfoTable->addBodyRow(array(

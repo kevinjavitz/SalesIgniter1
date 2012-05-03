@@ -39,8 +39,7 @@
 	$gridButtons = array(
 		htmlBase::newElement('button')->setText('Details')->addClass('detailsButton')->disable(),
 		htmlBase::newElement('button')->setText('Delete')->addClass('deleteButton')->disable(),
-		htmlBase::newElement('button')->setText('Cancel')->addClass('cancelButton')->disable(),
-		htmlBase::newElement('button')->setText('Invoice')->addClass('invoiceButton')->disable()
+		htmlBase::newElement('button')->setText('Cancel')->addClass('cancelButton')->disable()
 	);
 	if(sysConfig::get('SHOW_PACKING_SLIP_BUTTONS') == 'true'){
 		$gridButtons[] = htmlBase::newElement('button')->setText('Packing Slip')->addClass('packingSlipButton')->disable();

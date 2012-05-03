@@ -105,8 +105,18 @@ class Extension_pdfPrinter extends ExtensionBase {
 		}
 		$pdfinvoiceButton = htmlBase::newElement('button')->setText(sysLanguage::get('TEXT_BUTTON_INVOICE_PDF'))
 		->setHref(itw_catalog_app_link('appExt=pdfPrinter&oID=' . $oInfo->orders_id.$est, 'generate_pdf', 'default'));
-
 		$infoBox->addButton($pdfinvoiceButton);
+		if(sysConfig::get('EXTENSION_PDF_ESTIMATE_BUTTON_NORMAL_ORDER') == 'True'){
+				$pdfinvoiceButton = htmlBase::newElement('button')->setText(sysLanguage::get('TEXT_BUTTON_ESTIMATE_INVOICE_PDF'))
+				->setHref(itw_catalog_app_link('appExt=pdfPrinter&oID=' . $oInfo->orders_id.'&isEstimate=1', 'generate_pdf', 'default'));
+				$infoBox->addButton($pdfinvoiceButton);
+		}
+
+		if(sysConfig::get('EXTENSION_PDF_AGREEMENT_BUTTON_NORMAL_ORDER') == 'True'){
+			$pdfinvoiceButton = htmlBase::newElement('button')->setText(sysLanguage::get('TEXT_BUTTON_AGREEMENT_INVOICE_PDF'))
+				->setHref(itw_catalog_app_link('appExt=pdfPrinter&type=agreement&oID=' . $oInfo->orders_id.$est, 'generate_pdf', 'default'));
+			$infoBox->addButton($pdfinvoiceButton);
+		}
 
 	}
 
@@ -116,6 +126,12 @@ class Extension_pdfPrinter extends ExtensionBase {
 			$sClass = ' isEstimate';
 		}
 		$gridButtons[] = htmlBase::newElement('button')->setText('PDF Invoice')->addClass('pdfinvoiceButton'.$sClass)->disable();
+		if(sysConfig::get('EXTENSION_PDF_ESTIMATE_BUTTON_NORMAL_ORDER') == 'True'){
+			$gridButtons[] = htmlBase::newElement('button')->setText('Estimate Invoice')->addClass('estimateinvoiceButton')->disable();
+		}
+		if(sysConfig::get('EXTENSION_PDF_AGREEMENT_BUTTON_NORMAL_ORDER') == 'True'){
+			$gridButtons[] = htmlBase::newElement('button')->setText('Agreement')->addClass('agreementinvoiceButton')->disable();
+		}
 	}
 
 	public function AdminOrderDetailsAddButton($oID, &$infoBox){

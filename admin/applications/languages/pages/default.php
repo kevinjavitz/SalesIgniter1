@@ -138,13 +138,15 @@
  				}
  			}
  		}
- 	
- 		$loadedModels = Doctrine_Core::getLoadedModelFiles();
- 		foreach($loadedModels as $modelName => $modelPath){
+ 		$loadedModels = Doctrine_Core::getLoadedModels();
+ 		foreach($loadedModels as $modelName){
  			$Model = Doctrine_Core::getTable($modelName);
  			$RecordInst = $Model->getRecordInstance();
  			if (method_exists($RecordInst, 'newLanguageProcess')){
- 				$modelPath = str_replace(sysConfig::getDirFsCatalog(), '', $modelPath);
+ 				//$modelPath = str_replace(sysConfig::getDirFsCatalog(), '', $modelPath);
+				 $reflector = new ReflectionClass($modelName);
+				 $fn = $reflector->getFileName();
+				 $modelPath = dirname($fn);
  				$extName = null;
  				if (substr($modelPath, 0, 10) == 'extensions'){
  					$pathArr = explode('/', $modelPath);

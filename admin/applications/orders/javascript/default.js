@@ -49,11 +49,6 @@ $(document).ready(function (){
 			}
 		});
 	});
-	
-	$('.gridButtonBar').find('.invoiceButton').click(function (){
-		var orderId = $('.gridBodyRow.state-active').attr('data-order_id');
-		js_redirect(js_app_link('app=orders&appPage=invoice&oID=' + orderId));
-	});
 
 	$('.gridButtonBar').find('.pdfinvoiceButton').click(function (){
 		var est = '';
@@ -62,6 +57,17 @@ $(document).ready(function (){
 		}
 		var orderId = $('.gridBodyRow.state-active').attr('data-order_id');
 		window.open(js_catalog_app_link('appExt=pdfPrinter&app=generate_pdf&appPage=default&oID=' + orderId+est));
+	});
+
+	$('.gridButtonBar').find('.estimateinvoiceButton').click(function (){
+		var est = '&isEstimate=1';
+		var orderId = $('.gridBodyRow.state-active').attr('data-order_id');
+		window.open(js_catalog_app_link('appExt=pdfPrinter&app=generate_pdf&appPage=default&oID=' + orderId+est));
+	});
+
+	$('.gridButtonBar').find('.agreementinvoiceButton').click(function (){
+		var orderId = $('.gridBodyRow.state-active').attr('data-order_id');
+		window.open(js_catalog_app_link('appExt=pdfPrinter&app=generate_pdf&appPage=default&type=agreement&oID=' + orderId));
 	});
 	
 	$('.gridButtonBar').find('.packingSlipButton').click(function (){
