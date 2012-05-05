@@ -231,6 +231,22 @@ class Extension_multiStore extends ExtensionBase {
 				Session::set('currency', Session::get('currencyStore'.$this->storeInfo['stores_id']));
 			}
 
+			$defaultLanguage = $this->storeInfo['default_language'];
+			Session::set('mainLanguageStore'.$this->storeInfo['stores_id'], $defaultLanguage);
+			if (Session::exists('languageStore'.$this->storeInfo['stores_id']) === false || isset($_GET['language']) ) {
+				if (isset($_GET['language'])) {
+					if (!$language = tep_language_exists($_GET['language'])) $language = $defaultLanguage;
+				} else {
+					$language = $defaultLanguage;
+				}
+				Session::set('language', $language);
+				Session::set('languageStore'.$this->storeInfo['stores_id'], $language);
+			}else{
+				Session::set('language', Session::get('languageStore'.$this->storeInfo['stores_id']));
+				$language = Session::get('languageStore'.$this->storeInfo['stores_id']);
+			}
+			sysLanguage::init($language);
+
 			if(sysConfig::get('EXTENSION_MULTI_STORE_REDIRECT_BY_COUNTRY') == 'True'){
 				include(sysConfig::getDirFsCatalog().'extensions/multiStore/geoip/geoip.php');
 				$storeCountries = explode(',', $this->storeInfo['stores_countries']);
@@ -290,6 +306,11 @@ class Extension_multiStore extends ExtensionBase {
 		if(Session::exists('admin_showing_stores')){
 			$Qproducts->leftJoin('p.ProductsToStores p2s')
 				->andWhere('FIND_IN_SET(p2s.stores_id,"'.implode(',',Session::get('admin_showing_stores')).'") > 0 OR p2s.stores_id is null' );
+		}
+	}
+	public function OrderBeforeSendEmail(&$order, &$emailEvent, &$products_ordered, &$sendVariables){
+		if(isset($this->storeInfo['stores_email']) && !empty($this->storeInfo['stores_email'])){
+			$sendVariables['emails'][] = $this->storeInfo['stores_email'];
 		}
 	}
 

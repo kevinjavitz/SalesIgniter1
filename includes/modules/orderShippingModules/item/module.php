@@ -20,10 +20,11 @@ class OrderShippingItem extends OrderShippingModuleBase
 		if ($this->isEnabled() === true){
 			$this->perItemCost = $this->getConfigData('MODULE_ORDER_SHIPPING_ITEM_COST');
 			$this->handelingFee = $this->getConfigData('MODULE_ORDER_SHIPPING_ITEM_HANDLING');
+			$isEnabled = true;
+			EventManager::notify('ShippingMethodCheckBeforeConstruct', &$isEnabled);
+			$this->setEnabled($isEnabled);
 		}
-		$isEnabled = true;
-		EventManager::notify('ShippingMethodCheckBeforeConstruct', &$isEnabled);
-		$this->setEnabled($isEnabled);
+
 	}
 
 	public function quote($method = '') {

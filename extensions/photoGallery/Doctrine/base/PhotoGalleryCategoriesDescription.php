@@ -88,7 +88,7 @@ class PhotoGalleryCategoriesDescription extends Doctrine_Record {
 
 			$translated = sysLanguage::translateText($toTranslate, (int) $toLangId, (int) $fromLangId);
 
-			$newDesc = new BlogCategoriesDescription();
+			$newDesc = new PhotoGalleryCategoriesDescription();
 			$newDesc->categories_id = $Record['categories_id'];
 			$newDesc->language_id = (int) $toLangId;
 			$newDesc->categories_title = $translated['categories_title'];

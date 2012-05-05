@@ -524,10 +524,6 @@ class sysLanguage
 			'SimpleXMLExtended'
 		);
 
-		/*
-		 * If this is a settings file, just update the information.
-		 * no need for a translation request
-		 */
 		if (basename($filePath) == 'settings.xml'){
 			$htmlParams = (string)$langData->html_params;
 			$htmlParams = str_replace('"en"', '"' . $toLangCode . '"', $htmlParams);
@@ -548,7 +544,7 @@ class sysLanguage
 				$requests[$reqNum][] = 'q=' . urlencode((string)$define[0]);
 				$keys[$reqNum][] = (string)$define['key'];
 				$i++;
-				if ($i > 10){
+				if ($i > 1){
 					$reqNum++;
 					$i = 0;
 				}
@@ -560,8 +556,13 @@ class sysLanguage
 			 */
 			$translated = array();
 			$errorReport = '';
+			$p = 0;
 			foreach($requests as $reqNum => $reqQueries){
 				self::sendRequestToGoogle($reqQueries, 'en', $toLangCode, $keys[$reqNum], $translated);
+				$p++;
+				if($p % 99 == 0){
+					sleep(1);
+				}
 			}
 
 			foreach($langData->define as $define){
@@ -585,6 +586,99 @@ class sysLanguage
 		}
 	}
 
+
+	public static function translateFileUpdate($filePath, $updateFile, $toLangCode, $langName, $returnXml = false) {
+		$langData = simplexml_load_file(
+			$filePath,
+			'SimpleXMLExtended'
+		);
+
+
+		$newLangData = simplexml_load_file(
+			$updateFile,
+				'SimpleXMLExtended'
+		);
+
+		if (basename($filePath) == 'settings.xml'){
+			$htmlParams = (string)$langData->html_params;
+			$htmlParams = str_replace('"en"', '"' . $toLangCode . '"', $htmlParams);
+			$langData->html_params->setCData($htmlParams);
+			$langData->name->setCData($langName);
+			$langData->code->setCData($toLangCode);
+		}
+		elseif (sysConfig::exists('GOOGLE_API_SERVER_KEY') && sysConfig::get('GOOGLE_API_SERVER_KEY') != ''){
+			/*
+			 * Builds an array to help throttle the translations per request and an array of the keys per request
+			 * It was timing out at 25 so 10 seems to be a safe max per request
+			 */
+			$keysNew = array();
+
+
+				foreach($newLangData->define as $define){
+					$keysNew[] = (string)$define['key'];
+
+				}
+
+
+			$requests = array();
+			$keys = array();
+			$reqNum = 0;
+			$i = 0;
+
+			foreach($langData->define as $define){
+				if(!in_array((string)$define['key'], $keysNew)){
+					$requests[$reqNum][] = 'q=' . urlencode((string)$define[0]);
+					$keys[$reqNum][] = (string)$define['key'];
+					$i++;
+					if ($i > 1){
+						$reqNum++;
+						$i = 0;
+					}
+				}
+			}
+
+			/*
+			 * Send the requests to google for translation and build an array of the returns indexed by the
+			 * define key set in the $keys array above, to make it easier to add them back to the xml file
+			 */
+			$translated = array();
+			$errorReport = '';
+			$p = 0;
+			foreach($requests as $reqNum => $reqQueries){
+				self::sendRequestToGoogle($reqQueries, 'en', $toLangCode, $keys[$reqNum], $translated);
+				$p++;
+				if($p % 99 == 0){
+					sleep(1);
+				}
+			}
+
+			foreach($langData->define as $define){
+				if(isset($translated[(string)$define['key']])){
+				    $newDefine = $newLangData->addChild('define', $define);
+					$newDefine->addAttribute('key',(string)$define['key']);
+					$newDefine->setCData($translated[(string)$define['key']]);
+				}
+			}
+
+		}
+
+		if ($returnXml === true){
+			return $newLangData->asPrettyXML();
+		}else{
+			$fileObj = fopen($filePath, 'w+');
+			if ($fileObj){
+				ftruncate($fileObj, -1);
+				fwrite($fileObj, $newLangData->asPrettyXML());
+				fclose($fileObj);
+			}
+		}
+
+		if (empty($errorReport) === false){
+			die($errorReport);
+		}
+	}
+
+
 	/**
 	 * @static
 	 * @param string $text
@@ -592,7 +686,7 @@ class sysLanguage
 	 * @param string|int $toLangCode
 	 * @return array
 	 */
-	public static function translateText($text, $fromLangCode, $toLangCode = 1) {
+	public static function translateText($text, $toLangCode = 1, $fromLangCode) {
 		if (is_numeric($toLangCode)){
 			$toLangCode = self::getCode($toLangCode);
 		}
@@ -608,18 +702,18 @@ class sysLanguage
 		$keys = array();
 		$untranslated = array();
 		$reqNum = 0;
-		$requestLength = 300;
+		$requestLength = 100;
 		if (is_array($text)){
 			foreach($text as $key => $str){
 				if (!empty($str)){
 					$textLength = strlen($str) + 2;
-					if ($textLength > 5000){
+					if ($textLength > 950){
 						$untranslated[$key] = $str;
 					}
 					else {
-						if (($requestLength + $textLength) > 5000){
+						if (($requestLength + $textLength) > 950){
 							$reqNum++;
-							$requestLength = 300;
+							$requestLength = 100;
 						}
 						else {
 							$requestLength += $textLength;
@@ -694,8 +788,8 @@ class sysLanguage
 			$existsDir[] = $lInfo['directory'];
 		}
 
-		$loadedModels = Doctrine_Core::getLoadedModelFiles();
-		foreach($loadedModels as $modelName => $modelPath){
+		$loadedModels = Doctrine_Core::getLoadedModels();
+		foreach($loadedModels as $modelName){
 			$Model = Doctrine_Core::getTable($modelName);
 			$RecordInst = $Model->getRecordInstance();
 			if (method_exists($RecordInst, 'cleanLanguageProcess')){

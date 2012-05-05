@@ -34,10 +34,10 @@ class OrderShippingZone extends OrderShippingModuleBase
 			}catch(Doctrine_Connection_Exception $e){
 
 			}
+			$isEnabled = true;
+			EventManager::notify('ShippingMethodCheckBeforeConstruct', &$isEnabled);
+			$this->setEnabled($isEnabled);
 		}
-		$isEnabled = true;
-		EventManager::notify('ShippingMethodCheckBeforeConstruct', &$isEnabled);
-		$this->setEnabled($isEnabled);
 	}
 
 	public function getMethods() {

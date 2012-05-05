@@ -38,28 +38,19 @@ $langCode = (isset($languages) ? $_POST['toLanguage'] : $_POST['toLangCode']);
 $langName = (isset($languages) ? $languages[$langCode] : $_POST['toLanguage']);
 
 $catalogAbsPath = sysConfig::getDirFsCatalog();
-$newLangPath = $catalogAbsPath . 'includes/languages/' . strtolower($langCode) . '/';
+$newLangPath = $catalogAbsPath . 'includes/languages/' . strtolower($langName) . '/';
 $globalLangPath = $catalogAbsPath . 'includes/languages/english/';
 
 $exclude = array($catalogAbsPath . 'includes/languages');
 
-/*
- * Search all folders for global.xml files
- *
- * @TODO: Update when application page specific language files are created
- */
 $Directory = new RecursiveDirectoryIterator($catalogAbsPath);
 $Iterator = new RecursiveIteratorIterator($Directory);
 $Regex = new RegexIterator($Iterator, '/^.+global\.xml$/i', RegexIterator::GET_MATCH);
 
-updateProgressBar($progressBarName, 'Copying All Language Files');
 
 $files = array();
 foreach($Regex as $arr){
 	$skipFile = false;
-	/*
-	 * Exclude any files inside the folders specified in the exclude array
-	 */
 	foreach($exclude as $excludeDir){
 		if (stristr($arr[0], $excludeDir)){
 			$skipFile = true;
@@ -67,37 +58,57 @@ foreach($Regex as $arr){
 		}
 	}
 
+
 	if ($skipFile === false){
-		$Ftp->updateFileFromString(
-			$newLangPath . str_replace(array($catalogAbsPath, 'language_defines/'), '', $arr[0]),
-			sysLanguage::translateFile($arr[0], $langCode, $langName, true)
-		);
+		$newLangNewPath = $newLangPath . str_replace(array($catalogAbsPath, 'language_defines/'), '', $arr[0]);
+		if(strpos($arr[0],sysConfig::getDirFsAdmin()) === false){
+			$newLangNewPath = $newLangPath .'catalog/'.str_replace(array($catalogAbsPath, 'language_defines/'), '', $arr[0]);
+
+		}
+		if(file_exists($newLangNewPath)){
+			$Ftp->updateFileFromString(
+				$newLangNewPath,
+				sysLanguage::translateFileUpdate($arr[0],$newLangNewPath, $langCode, $langName, true)
+			);
+		}else{
+			$Ftp->updateFileFromString(
+				$newLangNewPath,
+				sysLanguage::translateFile($arr[0], $langCode, $langName, true)
+			);
+		}
 	}
 }
+if(file_exists($newLangPath . 'admin/global.xml')){
+	$Ftp->updateFileFromString(
+		$newLangPath . 'admin/global.xml',
+		sysLanguage::translateFileUpdate($globalLangPath . 'admin/global.xml', $newLangPath . 'admin/global.xml', $langCode, $langName, true)
+	);
+}else{
+	$Ftp->updateFileFromString(
+		$newLangPath . 'admin/global.xml',
+		sysLanguage::translateFile($globalLangPath . 'admin/global.xml', $langCode, $langName, true)
+	);
 
-/*
- * Copy the global file for the admin and set the permissions
- */
-updateProgressBar($progressBarName, 'Translating File: ' . $newLangPath . 'admin/global.xml');
-$Ftp->updateFileFromString(
-	$newLangPath . 'admin/global.xml',
-	sysLanguage::translateFile($globalLangPath . 'admin/global.xml', $langCode, $langName, true)
-);
+}
 
-/*
- * Copy the global file for the catalog and set the permissions
- */
-updateProgressBar($progressBarName, 'Translating File: ' . $newLangPath . 'catalog/global.xml');
-$Ftp->updateFileFromString(
-	$newLangPath . 'catalog/global.xml',
-	sysLanguage::translateFile($globalLangPath . 'catalog/global.xml', $langCode, $langName, true)
-);
+$isUpdate = false;
+if(file_exists($newLangPath . 'catalog/global.xml')){
+	$Ftp->updateFileFromString(
+		$newLangPath . 'catalog/global.xml',
+		sysLanguage::translateFileUpdate($globalLangPath . 'catalog/global.xml',$newLangPath . 'catalog/global.xml', $langCode, $langName, true)
+	);
+	$isUpdate = true;
+}else{
+	$Ftp->updateFileFromString(
+		$newLangPath . 'catalog/global.xml',
+		sysLanguage::translateFile($globalLangPath . 'catalog/global.xml', $langCode, $langName, true)
+	);
+}
 
 $success = false;
 if (is_dir($newLangPath)){
 	$success = true;
 
-	updateProgressBar($progressBarName, 'Copying settings file and applying changes');
 	$langData = simplexml_load_file(
 		$globalLangPath . 'settings.xml',
 		'SimpleXMLExtended'
@@ -112,24 +123,24 @@ if (is_dir($newLangPath)){
 	$newLang = new Languages();
 	$newLang->code = $langCode;
 	$newLang->name = $langName;
-	$newLang->directory = strtolower($langCode);
+	$newLang->directory = strtolower($langName);
 
 	$newLang->save();
 
 	if (sysConfig::exists('GOOGLE_API_SERVER_KEY') && sysConfig::get('GOOGLE_API_SERVER_KEY') != ''){
-		$Translated = sysLanguage::translateText($langName, $newLang->languages_id);
+		$Translated = sysLanguage::translateText($langName, Session::get('languages_id'), $newLang->languages_id);
 		$newLang->name_real = $Translated[0];
 	}else{
 		$newLang->name_real = $langName;
 	}
 	$newLang->save();
 
-	if (isset($_POST['translate_model'])){
+	if (isset($_POST['translate_model']) && $isUpdate == false){
 		foreach($_POST['translate_model'] as $modelName){
 			$Model = Doctrine_Core::getTable($modelName);
 			$RecordInst = $Model->getRecordInstance();
 			if (method_exists($RecordInst, 'newLanguageProcess')){
-				updateProgressBar($progressBarName, 'Translating Description Table: ' . $modelName);
+				//updateProgressBar($progressBarName, 'Translating Description Table: ' . $modelName);
 				$RecordInst->newLanguageProcess(Session::get('languages_id'), $newLang->languages_id);
 			}
 		}

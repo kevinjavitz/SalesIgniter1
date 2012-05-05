@@ -35,6 +35,7 @@
 	$Store->stores_group = $_POST['stores_group'];
 	$Store->stores_info = $_POST['stores_info'];
 	$Store->default_currency = $_POST['default_currency'];
+	$Store->default_language = $_POST['default_language'];
 	$Store->is_default = $isDefault;
 	$Store->home_redirect_store_info = (isset($_POST['home_redirect_store_info'])?1:0);
 	if(isset($_POST['stores_countries'])){

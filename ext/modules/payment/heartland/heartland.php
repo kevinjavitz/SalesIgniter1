@@ -34,7 +34,7 @@
 		if ($pricing <= 0.05 && $pricing >= -0.05){
 
 			if (((int)OrderPaymentModules::getModule('heartland')->getConfigData('MODULE_PAYMENT_HEARTLAND_COMP_ORDER_STATUS_ID') > 0)){
-				if(!empty($account_action)){
+				if($account_action == 'M'){
 					$QUpdateCustomerMemberShip = Doctrine_Query::create()
 						->update('CustomersMembership')
 						->set('activate', '?', 'Y')

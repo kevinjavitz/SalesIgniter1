@@ -33,6 +33,20 @@
 			<sort_order>1</sort_order>
 			<set_function>tep_cfg_select_option(array('True','False'),</set_function>
 		</EXTENSION_PDF_AGREEMENT_ATTACH_TO_ORDER_EMAIL>
+		<EXTENSION_PDF_ESTIMATE_BUTTON_NORMAL_ORDER>
+			<title>Can print normal orders with estimate layout</title>
+			<value>False</value>
+			<description>Can print normal orders with estimate layout</description>
+			<sort_order>1</sort_order>
+			<set_function>tep_cfg_select_option(array('True','False'),</set_function>
+		</EXTENSION_PDF_ESTIMATE_BUTTON_NORMAL_ORDER>
+		<EXTENSION_PDF_AGREEMENT_BUTTON_NORMAL_ORDER>
+			<title>Can print normal orders with agreement layout</title>
+			<value>False</value>
+			<description>Can print normal orders with agreement layout</description>
+			<sort_order>1</sort_order>
+			<set_function>tep_cfg_select_option(array('True','False'),</set_function>
+		</EXTENSION_PDF_AGREEMENT_BUTTON_NORMAL_ORDER>
 		<EXTENSION_PDF_PRINTER_INVOICE_LAYOUT>
 			<title>Select Invoice Layout</title>
 			<value>1</value>

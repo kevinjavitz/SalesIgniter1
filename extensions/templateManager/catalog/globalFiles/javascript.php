@@ -193,8 +193,8 @@ else {
 	// setup sources
 	$sources = array(
 		sysConfig::getDirFsCatalog() . 'ext/jQuery/jQuery-min.js',
-		sysConfig::getDirFsCatalog() . 'ext/jQuery/ui/minified/jquery.ui.core.min.js',
-		sysConfig::getDirFsCatalog() . 'ext/jQuery/ui/minified/jquery.ui.widget.min.js',
+		sysConfig::getDirFsCatalog() . 'ext/jQuery/ui/jquery.ui.core.js',
+		sysConfig::getDirFsCatalog() . 'ext/jQuery/ui/jquery.ui.widget.js',
 		sysConfig::getDirFsCatalog() . 'ext/jQuery/ui/jquery.ui.button.js',
 		sysConfig::getDirFsCatalog() . 'ext/jQuery/ui/jquery.ui.dialog.js',
 		sysConfig::getDirFsCatalog() . 'ext/jQuery/ui/jquery.ui.datepicker.js',
@@ -204,13 +204,13 @@ else {
 	);
 
 	if ($env == 'admin'){
-		$sources[] = sysConfig::getDirFsCatalog() . 'ext/jQuery/ui/minified/jquery.effects.core.min.js';
+		$sources[] = sysConfig::getDirFsCatalog() . 'ext/jQuery/ui/jquery.effects.core.js';
 		$sources[] = sysConfig::getDirFsCatalog() . 'ext/jQuery/ui/jquery.ui.mouse.js';
-		$sources[] = sysConfig::getDirFsCatalog() . 'ext/jQuery/ui/minified/jquery.ui.position.min.js';
-		$sources[] = sysConfig::getDirFsCatalog() . 'ext/jQuery/ui/minified/jquery.ui.draggable.min.js';
-		$sources[] = sysConfig::getDirFsCatalog() . 'ext/jQuery/ui/minified/jquery.ui.droppable.min.js';
-		$sources[] = sysConfig::getDirFsCatalog() . 'ext/jQuery/ui/minified/jquery.ui.sortable.min.js';
-		$sources[] = sysConfig::getDirFsCatalog() . 'ext/jQuery/ui/minified/jquery.ui.resizable.min.js';
+		$sources[] = sysConfig::getDirFsCatalog() . 'ext/jQuery/ui/jquery.ui.position.js';
+		$sources[] = sysConfig::getDirFsCatalog() . 'ext/jQuery/ui/jquery.ui.draggable.js';
+		$sources[] = sysConfig::getDirFsCatalog() . 'ext/jQuery/ui/jquery.ui.droppable.js';
+		$sources[] = sysConfig::getDirFsCatalog() . 'ext/jQuery/ui/jquery.ui.sortable.js';
+		$sources[] = sysConfig::getDirFsCatalog() . 'ext/jQuery/ui/jquery.ui.resizable.js';
 		$sources[] = sysConfig::getDirFsCatalog() . 'ext/jQuery/ui/jquery.ui.progressbar.js';
 		$sources[] = sysConfig::getDirFsCatalog() . 'ext/jQuery/ui/jquery.ui.newGrid.js';
 		$sources[] = sysConfig::getDirFsCatalog() . 'ext/jQuery/ui/jquery.effects.fade.js';
@@ -246,9 +246,9 @@ else {
 		}
 	}
 
-	if (file_exists(sysConfig::getDirFsCatalog() . 'ext/jQuery/ui/i18n/' . Session::get('languages_code') . '.js')){
+	/*if (file_exists(sysConfig::getDirFsCatalog() . 'ext/jQuery/ui/i18n/' . Session::get('languages_code') . '.js')){
 		$sources[] = sysConfig::getDirFsCatalog() . 'ext/jQuery/ui/i18n/' . Session::get('languages_code') . '.js';
-	}
+	} */
 
 	//include('includes/classes/minifier/JSMinPlus.php');
 	include('includes/classes/minifier/JSMin.php');

@@ -156,12 +156,19 @@ class Stores extends Doctrine_Record {
 		));
 
 		$this->hasColumn('default_currency', 'string', 3, array(
-				'type' => 'integer',
+				'type' => 'string',
 				'length' => 3,
 				'default' => 'USD',
 				'primary' => false,
 				'autoincrement' => false
 		));
+		$this->hasColumn('default_language', 'string', 100, array(
+				'type' => 'string',
+				'length' => 100,
+				'default' => 'en',
+				'primary' => false,
+				'autoincrement' => false
+			));
 
 	}
 	

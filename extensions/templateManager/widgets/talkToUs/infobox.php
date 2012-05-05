@@ -17,7 +17,7 @@ class InfoBoxTalkToUs extends InfoBoxAbstract {
 			$htmlForm = htmlBase::newElement('form')
 			->attr('name','talkToUs')
 			->attr('method','post')
-			->attr('action', tep_href_link('includes/modules/infoboxes/talkToUs/formResponse.php'));
+			->attr('action', tep_href_link('extensions/templateManager/widgets/talkToUs/formResponse.php'));
 
 			$url = (!empty($_SERVER['HTTPS'])) ? "https://".$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'] : "http://".$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'];
 

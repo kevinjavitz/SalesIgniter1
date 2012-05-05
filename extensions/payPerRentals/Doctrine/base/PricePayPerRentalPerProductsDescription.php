@@ -59,7 +59,7 @@ class PricePayPerRentalPerProductsDescription extends Doctrine_Record {
 			
 			$translated = sysLanguage::translateText($toTranslate, (int) $toLangId, (int) $fromLangId);
 			
-			$newDesc = new PayPerRentalTypesDescription();
+			$newDesc = new PricePayPerRentalPerProductsDescription();
 			$newDesc->price_per_rental_per_products_id = $Record['price_per_rental_per_products_id'];
 			$newDesc->language_id = (int) $toLangId;
 			$newDesc->price_per_rental_per_products_name = $translated['name'];
