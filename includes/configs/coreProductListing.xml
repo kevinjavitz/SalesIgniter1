@@ -95,6 +95,11 @@
 					<description><![CDATA[Number of products to list per page (max 25)]]></description>
 
 				</PRODUCT_LISTING_PRODUCTS_LIMIT>
+				<PRODUCT_LISTING_SHOW_TOTAL_PRODUCTS_TEXT>
+					<title><![CDATA[Show total number of products with result pages links]]></title>
+					<value><![CDATA[True]]></value>
+					<set_function><![CDATA[tep_cfg_select_option(array('True', 'False'),]]></set_function>
+				</PRODUCT_LISTING_SHOW_TOTAL_PRODUCTS_TEXT>
 				<PRODUCT_LISTING_SELECT_MULTIPLES>
 					<title><![CDATA[Can add to cart multiple items]]></title>
 					<value><![CDATA[false]]></value>
