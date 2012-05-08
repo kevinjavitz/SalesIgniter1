@@ -20,6 +20,13 @@ $(document).ready(function (){
 			}
 		});
 	});
+
+	$('.gridButtonBar').find('.updateButton').click(function (){
+		var languageId = $('.gridBodyRow.state-active').attr('data-language_id');
+
+		 js_redirect(js_app_link('app=languages&appPage=default&action=newLanguage&lID=' + languageId));
+
+	});
 	
 	$('.gridButtonBar').find('.defineButton').click(function (){
 		var langDir = $('.gridBodyRow.state-active').attr('data-language_dir');

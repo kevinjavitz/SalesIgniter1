@@ -33,7 +33,8 @@ if(!empty($store) && Session::get('current_store_id') == $store->stores_id){
 	Session::set('zipClient', ltrim(rtrim(urldecode($zip))));
 	$url .= '/products/all.php';
 }else{
-	$url .= '/multiStore/zip/default.php?zip='.$zip;
+	//$messageStack->addSession('pageStack','We do not serve that location. Please choose a different one');
+	//$url = '';
 }
 
 

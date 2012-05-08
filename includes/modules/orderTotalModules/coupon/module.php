@@ -23,7 +23,7 @@ class OrderTotalCoupon extends OrderTotalModuleBase
 	}
 
 	public function process() {
-		global $order;
+		global $order, $onePageCheckout;
 
 		$order_total = $this->get_order_total();
 		$discountAmount = $this->calculate_credit($order_total);
@@ -34,17 +34,28 @@ class OrderTotalCoupon extends OrderTotalModuleBase
 		}
 
 		if ($discountAmount > 0){
-			$order->info['tax'] -= $taxDiscountAmount;
-			if($order->info['total'] - $discountAmount > 0){
-				$order->info['total'] -= $discountAmount;
-			}else{
-				$order->info['total'] = 0;
-			}
-			$this->addOutput(array(
-					'title' => $this->getTitle() . ':' . $this->coupon_code . ':',
-					'text' => '<b>-' . $this->formatAmount($discountAmount + $taxDiscountAmount) . '</b>',
-					'value' => -($discountAmount + $taxDiscountAmount)
+
+			if(Session::exists('cc_id_trial_days') && Session::get('cc_id_trial_days') > 0 && $onePageCheckout->isMembershipCheckout()){
+				Session::set('cc_id_trial', $discountAmount + $taxDiscountAmount);
+				$this->addOutput(array(
+						'title' => $this->getTitle() . ':' . $this->coupon_code . ':',
+						'text' => '<b>-' . $this->formatAmount($discountAmount + $taxDiscountAmount) . ' for '.Session::get('cc_id_trial_days').' days</b>',
+						'value' => 0
 				));
+			}else{
+				$order->info['tax'] -= $taxDiscountAmount;
+				if($order->info['total'] - $discountAmount > 0){
+					$order->info['total'] -= $discountAmount;
+				}else{
+					$order->info['total'] = 0;
+				}
+				$this->addOutput(array(
+						'title' => $this->getTitle() . ':' . $this->coupon_code . ':',
+						'text' => '<b>-' . $this->formatAmount($discountAmount + $taxDiscountAmount) . '</b>',
+						'value' => -($discountAmount + $taxDiscountAmount)
+					));
+			}
+
 		}
 	}
 
@@ -117,6 +128,9 @@ class OrderTotalCoupon extends OrderTotalModuleBase
 								$totalDiscount = $priceDiscount;
 							}else{
 								$totalDiscount = $couponAmount;
+							}
+							if($Coupon['number_days_membership'] > 0){
+								Session::set('cc_id_trial_days', $Coupon['number_days_membership']);
 							}
 						} else {
 							foreach($ShoppingCart->getProducts() as $cartProduct){

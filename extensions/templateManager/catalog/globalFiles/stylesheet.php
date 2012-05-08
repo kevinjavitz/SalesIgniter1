@@ -525,17 +525,19 @@ a.readMore:hover{color: black;}
 
 	foreach($sources as $source){
 		//$minified .= JSMinPlus::minify($source);
-		$minified .= CssMin::minify(file_get_contents($source));
+		//$minified .= CssMin::minify(file_get_contents($source)) ."\n";
 
-		//$minified .= file_get_contents($source);
+		$minified .= file_get_contents($source);
 	}
-	//$minified .= src1_fetch();
-	$minified .= CssMin::minify(src1_fetch());
-
-
+	$minified .= src1_fetch();
+	//$minified .= CssMin::minify(src1_fetch());
+	ob_start();
+	echo eval(' ?>'.$minified.'<?php ');
+	$minified = ob_get_contents();
+	ob_end_clean();
 	//$StylesheetCache->setAddedHeaders($Result['headers']);
 	$StylesheetCache->setContentType('text/css');
-	$StylesheetCache->setContent($minified);
+	$StylesheetCache->setContent(CssMin::minify($minified));
 	$StylesheetCache->setExpires(time() + (60 * 60 * 24 * 2));
 	$StylesheetCache->setLastModified(gmdate("D, d M Y H:i:s"));
 	$StylesheetCache->store();

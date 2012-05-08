@@ -57,6 +57,7 @@
 	$tableGrid->addButtons(array(
 		htmlBase::newElement('button')->usePreset('edit')->addClass('editButton')->disable(),
 		htmlBase::newElement('button')->usePreset('delete')->addClass('deleteButton')->disable(),
+		htmlBase::newElement('button')->setText('Update Definitions')->addClass('updateButton')->disable(),
 		htmlBase::newElement('button')->usePreset('edit')->setText('Definitions')->addClass('defineButton')->disable(),
 		htmlBase::newElement('button')->usePreset('new')->setText('Create New')->addClass('newLanguageButton')/*,
 		htmlBase::newElement('button')->setText('Clean')->addClass('cleanButton')*/

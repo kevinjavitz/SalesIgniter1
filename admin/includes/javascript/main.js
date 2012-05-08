@@ -1,3 +1,4 @@
+var m_names = new Array("January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December");
 if (thisApp != 'login'){
 	var sessionTimeout = setTimeout("expiredSessionWindow()", (60*1000)*60*12);
 }

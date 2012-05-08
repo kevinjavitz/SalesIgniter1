@@ -28,8 +28,21 @@ class Extension_ordersCustomFields extends ExtensionBase {
 			'OrderQueryBeforeExecute',
 			'CheckoutProcessPostProcess',
 			'CheckoutProcessPreProcess',
+			'OrderBeforeSendEmail',
 			'OnepageCheckoutProcessCheckout'
 		), null, $this);
+	}
+
+	public function OrderBeforeSendEmail(&$order, &$emailEvent, &$products_ordered, &$sendVariables){
+		$QCustomFields = Doctrine_Query::create()
+		->from('OrdersCustomFieldsToOrders')
+		->where('orders_id =?',$order['orderID'])
+		->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+		$additionalDetails = '';
+		foreach($QCustomFields as $customFields){
+			$additionalDetails .= '<b>'.$customFields['field_label'] .'</b>:'.$customFields['value'];
+		}
+		$emailEvent->setVar('additional_information', $additionalDetails);
 	}
 	
 	public function OrderInfoAddBlock($orderId){

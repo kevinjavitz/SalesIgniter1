@@ -130,6 +130,16 @@ class Coupons extends Doctrine_Record {
 			'notnull' => true,
 			'autoincrement' => false,
 		));
+
+		$this->hasColumn('number_days_membership', 'integer', 4, array(
+				'type' => 'integer',
+				'length' => 4,
+				'unsigned' => 0,
+				'primary' => false,
+				'default' => '0',
+				'notnull' => true,
+				'autoincrement' => false,
+			));
 		
 		$this->hasColumn('restrict_to_purchase_type', 'string', 255, array(
 			'type' => 'string',

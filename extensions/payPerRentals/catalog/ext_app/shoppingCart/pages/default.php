@@ -26,11 +26,21 @@ class payPerRentals_catalog_shoppingCart_default extends Extension_payPerRentals
 	}
 
 	public function ShoppingCartListingBeforeSubtotal(&$div){
-		global $currencies;
+		global $currencies, $appExtension;
 		if(sysConfig::get('EXTENSION_PAY_PER_RENTALS_ENABLE_TIME_FEES') == 'True'){
-			$QTimeFees = Doctrine_Query::create()
-			->from('PayPerRentalTimeFees')
-			->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+			$multiStore = $appExtension->getExtension('multiStore');
+			if ($multiStore !== false && $multiStore->isEnabled() === true){
+				$QTimeFees = Doctrine_Query::create()
+					->from('StoresTimeFees')
+					->where('stores_id = ?', Session::get('current_store_id'))
+					->orderBy('timefees_id')
+					->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+			}else{
+				$QTimeFees = Doctrine_Query::create()
+					->from('PayPerRentalTimeFees')
+					->orderBy('timefees_id')
+					->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+			}
 			$dataArr = array();
 			foreach($QTimeFees as $timeFee){
 				$dataArr[] = array(
@@ -104,10 +114,21 @@ class payPerRentals_catalog_shoppingCart_default extends Extension_payPerRentals
 		}
 
 		if(sysConfig::get('EXTENSION_PAY_PER_RENTALS_ENABLE_EXTRA_FEES') == 'True'){
-			$QTimeFees = Doctrine_Query::create()
-			->from('PayPerRentalExtraFees')
-			->where('timefees_mandatory = ?', '0')
-			->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+			$multiStore = $appExtension->getExtension('multiStore');
+			if ($multiStore !== false && $multiStore->isEnabled() === true){
+				$QTimeFees = Doctrine_Query::create()
+					->from('StoresExtraFees')
+					->where('timefees_mandatory = ?', '0')
+					->andWhere('stores_id = ?', Session::get('current_store_id'))
+					->orderBy('timefees_id')
+					->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+			}else{
+				$QTimeFees = Doctrine_Query::create()
+				->from('PayPerRentalExtraFees')
+				->where('timefees_mandatory = ?', '0')
+				->orderBy('timefees_id')
+				->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+			}
 
 			$dataArr = array();
 			$dataArr[] = array(

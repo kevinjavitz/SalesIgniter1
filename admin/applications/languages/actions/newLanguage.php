@@ -27,6 +27,12 @@ function updateProgressBar($name, $message) {
 }
 
 $progressBarName = 'newLanguage';
+$isUpdateDef = false;
+ if(!isset($_POST['toLanguage'])){
+	 $_POST['toLanguage'] = sysLanguage::getName((int) $_GET['lID']);
+	 $_POST['toLangCode'] = sysLanguage::getCode((int) $_GET['lID']);
+	 $isUpdateDef = true;
+ }
 
 $Ftp = new SystemFTP();
 $Ftp->connect();
@@ -34,8 +40,8 @@ $Ftp->connect();
 if (sysConfig::exists('GOOGLE_API_SERVER_KEY') && sysConfig::get('GOOGLE_API_SERVER_KEY') != ''){
 	$languages = sysLanguage::getGoogleLanguages();
 }
-$langCode = (isset($languages) ? $_POST['toLanguage'] : $_POST['toLangCode']);
-$langName = (isset($languages) ? $languages[$langCode] : $_POST['toLanguage']);
+$langCode = (isset($languages)&&($isUpdateDef == false) ? $_POST['toLanguage'] : $_POST['toLangCode']);
+$langName = (isset($languages)&&($isUpdateDef == false) ? $languages[$langCode] : $_POST['toLanguage']);
 
 $catalogAbsPath = sysConfig::getDirFsCatalog();
 $newLangPath = $catalogAbsPath . 'includes/languages/' . strtolower($langName) . '/';
@@ -108,32 +114,34 @@ if(file_exists($newLangPath . 'catalog/global.xml')){
 $success = false;
 if (is_dir($newLangPath)){
 	$success = true;
+	if($isUpdate == false){
+		$langData = simplexml_load_file(
+			$globalLangPath . 'settings.xml',
+			'SimpleXMLExtended'
+		);
 
-	$langData = simplexml_load_file(
-		$globalLangPath . 'settings.xml',
-		'SimpleXMLExtended'
-	);
+		$langData->name->setCData($langName);
+		$langData->code->setCData($langCode);
+		$langData->html_params->setCData('dir=ltr lang=' . $langCode);
 
-	$langData->name->setCData($langName);
-	$langData->code->setCData($langCode);
-	$langData->html_params->setCData('dir=ltr lang=' . $langCode);
+		$Ftp->updateFileFromString($newLangPath . 'settings.xml', $langData->asXML());
 
-	$Ftp->updateFileFromString($newLangPath . 'settings.xml', $langData->asXML());
+		$newLang = new Languages();
+		$newLang->code = $langCode;
+		$newLang->name = $langName;
+		$newLang->directory = strtolower($langName);
 
-	$newLang = new Languages();
-	$newLang->code = $langCode;
-	$newLang->name = $langName;
-	$newLang->directory = strtolower($langName);
+		$newLang->save();
 
-	$newLang->save();
 
-	if (sysConfig::exists('GOOGLE_API_SERVER_KEY') && sysConfig::get('GOOGLE_API_SERVER_KEY') != ''){
-		$Translated = sysLanguage::translateText($langName, Session::get('languages_id'), $newLang->languages_id);
-		$newLang->name_real = $Translated[0];
-	}else{
-		$newLang->name_real = $langName;
+		if (sysConfig::exists('GOOGLE_API_SERVER_KEY') && sysConfig::get('GOOGLE_API_SERVER_KEY') != ''){
+			$Translated = sysLanguage::translateText($langName, Session::get('languages_id'), $newLang->languages_id);
+			$newLang->name_real = $Translated[0];
+		}else{
+			$newLang->name_real = $langName;
+		}
+		$newLang->save();
 	}
-	$newLang->save();
 
 	if (isset($_POST['translate_model']) && $isUpdate == false){
 		foreach($_POST['translate_model'] as $modelName){
@@ -146,10 +154,13 @@ if (is_dir($newLangPath)){
 		}
 	}
 }
-
-EventManager::attachActionResponse(array(
-	'success'  => $success,
-	'langCode' => $langCode,
-	'langDir'  => $newLangPath
-), 'json');
+if($isUpdateDef == false){
+	EventManager::attachActionResponse(array(
+		'success'  => $success,
+		'langCode' => $langCode,
+		'langDir'  => $newLangPath
+	), 'json');
+}else{
+	EventManager::attachActionResponse(itw_app_link(null, 'languages', 'default'), 'redirect');
+}
 ?>

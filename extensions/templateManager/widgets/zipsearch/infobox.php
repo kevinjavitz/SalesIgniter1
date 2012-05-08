@@ -31,7 +31,7 @@ class InfoBoxZipsearch extends InfoBoxAbstract {
                     	Please enter the delivery zip code or select a city from the list below
                     </div>
                     <div class="zip-code bcont">
-                       <form action="/multiStore/zip/default.php" method="get">
+                       <form action="<?php echo itw_app_link('appExt=multiStore','zip','default');?>" method="get">
                     	<em><input type="text" name="zip" class="input" value=""></em>
                         <input type="submit" value="Search" class="submit">
                         </form>

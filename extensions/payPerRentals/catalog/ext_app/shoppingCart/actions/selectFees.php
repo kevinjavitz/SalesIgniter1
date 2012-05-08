@@ -6,10 +6,20 @@ $totals = '';
 $totalPrice = $ShoppingCart->showTotal();
 if(isset($_POST['pickup_time'])){
 	$pickupTime = $_POST['pickup_time'];
-	$QTimeFees = Doctrine_Query::create()
+	$multiStore = $appExtension->getExtension('multiStore');
+	if ($multiStore !== false && $multiStore->isEnabled() === true){
+		$QTimeFees = Doctrine_Query::create()
+			->from('StoresTimeFees')
+			->where('stores_id = ?', Session::get('current_store_id'))
+			->andWhere('timefees_id = ?', $pickupTime)
+			->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+	}else{
+		$QTimeFees = Doctrine_Query::create()
 		->from('PayPerRentalTimeFees')
 		->where('timefees_id = ?', $pickupTime)
 		->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+	}
+
 	$totalPrice += $QTimeFees[0]['timefees_fee'];
 	$totals .= '<b>Pickup Time - '.$QTimeFees[0]['timefees_name'].': '.$currencies->format($QTimeFees[0]['timefees_fee']).'</b><br/>';
 	Session::set('pickupFees_time', $pickupTime);
@@ -18,10 +28,19 @@ if(isset($_POST['pickup_time'])){
 }
 if(isset($_POST['delivery_time'])){
 	$deliveryTime  = $_POST['delivery_time'];
-	$QTimeFees = Doctrine_Query::create()
+	$multiStore = $appExtension->getExtension('multiStore');
+	if ($multiStore !== false && $multiStore->isEnabled() === true){
+		$QTimeFees = Doctrine_Query::create()
+			->from('StoresTimeFees')
+			->where('stores_id = ?', Session::get('current_store_id'))
+			->andWhere('timefees_id = ?', $deliveryTime)
+			->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+	}else{
+		$QTimeFees = Doctrine_Query::create()
 		->from('PayPerRentalTimeFees')
 		->where('timefees_id = ?', $deliveryTime)
 		->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+	}
 	$totalPrice += $QTimeFees[0]['timefees_fee'];
 	$totals .= '<b>Delivery Time - '.$QTimeFees[0]['timefees_name'].': '.$currencies->format($QTimeFees[0]['timefees_fee']).'</b><br/>';
 	Session::set('deliveryFees_time', $deliveryTime);
@@ -31,10 +50,19 @@ if(isset($_POST['delivery_time'])){
 
 if(isset($_POST['extrafees_time']) && $_POST['extrafees_time'] > 0){
 	$extrafeesTime  = $_POST['extrafees_time'];
-	$QTimeFees = Doctrine_Query::create()
+	$multiStore = $appExtension->getExtension('multiStore');
+	if ($multiStore !== false && $multiStore->isEnabled() === true){
+		$QTimeFees = Doctrine_Query::create()
+			->from('StoresExtraFees')
+			->where('timefees_id = ?', $extrafeesTime)
+			->andWhere('stores_id = ?', Session::get('current_store_id'))
+			->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+	}else{
+		$QTimeFees = Doctrine_Query::create()
 		->from('PayPerRentalExtraFees')
 		->where('timefees_id = ?', $extrafeesTime)
 		->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+	}
 	if(isset($QTimeFees[0])){
 		$totalPrice += $QTimeFees[0]['timefees_fee'];
 		$totals .= '<b>Extra Fee - '.$QTimeFees[0]['timefees_name'].': '.$currencies->format($QTimeFees[0]['timefees_fee']).'</b><br/>';
@@ -45,11 +73,19 @@ if(isset($_POST['extrafees_time']) && $_POST['extrafees_time'] > 0){
 }elseif(isset($_POST['extrafees_time']) && $_POST['extrafees_time'] <= 0){
 	Session::remove('extraFees_time');
 }
-
-$QExtraFees = Doctrine_Query::create()
-	->from('PayPerRentalExtraFees')
-	->where('timefees_mandatory = ?', '1')
-	->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+	$multiStore = $appExtension->getExtension('multiStore');
+	if ($multiStore !== false && $multiStore->isEnabled() === true){
+		$QExtraFees = Doctrine_Query::create()
+			->from('StoresExtraFees')
+			->where('timefees_mandatory = ?', '1')
+			->andWhere('stores_id = ?', Session::get('current_store_id'))
+			->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+	}else{
+		$QExtraFees = Doctrine_Query::create()
+		->from('PayPerRentalExtraFees')
+		->where('timefees_mandatory = ?', '1')
+		->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+	}
 if(count($QExtraFees) > 0){
 	foreach($QExtraFees as $extraFee){
 		if($extraFee['timefees_hours'] == 0){

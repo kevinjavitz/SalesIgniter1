@@ -60,8 +60,8 @@ class RoyaltiesSystemProductsRoyalties extends Doctrine_Record {
 		$Customers = Doctrine::getTable('Customers')->getRecordInstance();
 
 		$Customers->hasMany('RoyaltiesSystemProductsRoyalties', array(
-		                                                             'local' => 'content_provider_id',
-		                                                             'foreign' => 'customers_id',
+		                                                             'local' => 'customers_id',
+		                                                             'foreign' => 'content_provider_id',
 		                                                             'cascade' => array('delete')
 		                                                        ));
 	}

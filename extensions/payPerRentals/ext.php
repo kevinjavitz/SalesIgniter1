@@ -595,14 +595,14 @@ class Extension_payPerRentals extends ExtensionBase {
         }
     }
 	public function OrderBeforeSendEmail(&$order, &$emailEvent, &$products_ordered, &$sendVaribles){
-
+			global $currencies;
 			$Qorders = Doctrine_Query::create()
 			->from('Orders o')
 			->leftJoin('o.OrdersProducts op')
 			->leftJoin('op.OrdersProductsReservation ops')
 			->where('o.orders_id =?', $order['orderID'])
 			->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
-
+		    	$order_products_arranged = '';
 			if(count($Qorders) > 0){
 				if (sysConfig::get('EXTENSION_PAY_PER_RENTALS_USE_EVENTS') == 'True' && sysConfig::get('EXTENSION_PAY_PER_RENTALS_SHOW_EVENT_EMAIL') == 'True'){
 					if (isset($Qorders[0]['OrdersProducts'][0]['OrdersProductsReservation'][0]['event_name'])){
@@ -617,7 +617,24 @@ class Extension_payPerRentals extends ExtensionBase {
 				if (sysConfig::get('EXTENSION_PAY_PER_RENTALS_SHOW_TERMS_EMAIL') == 'True'){
 					$emailEvent->setVar('terms', $Qorders[0]['terms']);
 				}
+				$table = '<table><tr><td>item</td><td>qty</td><td>arrival</td><td>departure</td><td>total</td></tr>';
+				foreach($Qorders as $iOrder){
+					foreach($iOrder['OrdersProducts'] as $iOrderProducts){
+						foreach($iOrderProducts['OrdersProductsReservation'] as $iReservation){
+							$table .= '<tr>';
+							$table .= '<td>'.$iOrderProducts['products_name'].'</td>';
+							$table .= '<td>'.$iOrderProducts['products_quantity'].'</td>';
+							$table .= '<td>'.$iReservation['end_date'].'</td>';
+							$table .= '<td>'.$iReservation['start_date'].'</td>';
+							$table .= '<td>'.$currencies->format(($iOrderProducts['final_price']*$iOrderProducts['products_quantity'])).'</td>';
+							$table .= '</tr>';
+						}
+					}
+				}
+				$table .= '</table>';
+				$order_products_arranged = $table;
 			}
+			$emailEvent->setVar('order_products_arranged', $order_products_arranged);
 
 		}
 
