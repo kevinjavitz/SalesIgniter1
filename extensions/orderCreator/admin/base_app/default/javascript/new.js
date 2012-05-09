@@ -447,7 +447,7 @@ $(document).ready(function (){
 		var $self = $(this);
 		showAjaxLoader($self, 'small');
 		$.ajax({
-			url: js_app_link('appExt=orderCreator&app=default&appPage=new&action=getCountryZones&addressType=' + $self.attr('data-address_type') + '&country=' + $self.val()),
+			url: js_app_link('appExt=orderCreator&app=default&appPage=new&action=getCountryZones&addressType=' + $self.attr('data-address_type') + '&country=' + $self.val()+'&state='+$('.stateCol select option:selected').val()),
 			cache: false,
 			dataType: 'html',
 			success: function (html){

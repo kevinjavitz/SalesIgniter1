@@ -1,7 +1,7 @@
-/*
- * jQuery UI Autocomplete 1.8.14
+/*!
+ * jQuery UI Autocomplete @VERSION
  *
- * Copyright 2011, AUTHORS.txt (http://jqueryui.com/about)
+ * Copyright 2012, AUTHORS.txt (http://jqueryui.com/about)
  * Dual licensed under the MIT or GPL Version 2 licenses.
  * http://jquery.org/license
  *
@@ -37,6 +37,7 @@ $.widget( "ui.autocomplete", {
 		var self = this,
 			doc = this.element[ 0 ].ownerDocument,
 			suppressKeyPress;
+		this.isMultiLine = this.element.is( "textarea" );
 
 		this.element
 			.addClass( "ui-autocomplete-input" )
@@ -48,7 +49,7 @@ $.widget( "ui.autocomplete", {
 				"aria-haspopup": "true"
 			})
 			.bind( "keydown.autocomplete", function( event ) {
-				if ( self.options.disabled || self.element.attr( "readonly" ) ) {
+				if ( self.options.disabled || self.element.propAttr( "readOnly" ) ) {
 					return;
 				}
 
@@ -62,14 +63,10 @@ $.widget( "ui.autocomplete", {
 					self._move( "nextPage", event );
 					break;
 				case keyCode.UP:
-					self._move( "previous", event );
-					// prevent moving cursor to beginning of text field in some browsers
-					event.preventDefault();
+					self._keyEvent( "previous", event );
 					break;
 				case keyCode.DOWN:
-					self._move( "next", event );
-					// prevent moving cursor to end of text field in some browsers
-					event.preventDefault();
+					self._keyEvent( "next", event );
 					break;
 				case keyCode.ENTER:
 				case keyCode.NUMPAD_ENTER:
@@ -131,9 +128,6 @@ $.widget( "ui.autocomplete", {
 				}, 150 );
 			});
 		this._initSource();
-		this.response = function() {
-			return self._response.apply( self, arguments );
-		};
 		this.menu = $( "<ul></ul>" )
 			.addClass( "ui-autocomplete" )
 			.appendTo( $( this.options.appendTo || "body", doc )[0] )
@@ -144,7 +138,7 @@ $.widget( "ui.autocomplete", {
 				// so we have to track the next mousedown and close the menu if
 				// the user clicks somewhere outside of the autocomplete
 				var menuElement = self.menu.element[ 0 ];
-				if ( !$( event.target ).closest( ".ui-autocomplete-menu-item" ).length ) {
+				if ( !$( event.target ).closest( ".ui-menu-item" ).length ) {
 					setTimeout(function() {
 						$( document ).one( 'mousedown', function( event ) {
 							if ( event.target !== self.element[ 0 ] &&
@@ -190,13 +184,13 @@ $.widget( "ui.autocomplete", {
 
 					if ( false !== self._trigger( "select", event, { item: item } ) ) {
 						self.element.val( item.value );
-						// reset the term after the select event
-						// this allows custom select handling to work properly
-						self.term = self.element.val();
-
-						self.close( event );
-						self.selectedItem = item;
 					}
+					// reset the term after the select event
+					// this allows custom select handling to work properly
+					self.term = self.element.val();
+
+					self.close( event );
+					self.selectedItem = item;
 				},
 				blur: function( event, ui ) {
 					// don't set the value of the text field if it's already correct
@@ -215,6 +209,13 @@ $.widget( "ui.autocomplete", {
 		if ( $.fn.bgiframe ) {
 			 this.menu.element.bgiframe();
 		}
+		// turning off autocomplete prevents the browser from remembering the
+		// value when navigating through history, so we re-enable autocomplete
+		// if the page is unloaded before the widget is destroyed. #7790
+		self.beforeunloadHandler = function() {
+			self.element.removeAttr( "autocomplete" );
+		};
+		$( window ).bind( "beforeunload", self.beforeunloadHandler );
 	},
 
 	destroy: function() {
@@ -225,6 +226,7 @@ $.widget( "ui.autocomplete", {
 			.removeAttr( "aria-autocomplete" )
 			.removeAttr( "aria-haspopup" );
 		this.menu.element.remove();
+		$( window ).unbind( "beforeunload", this.beforeunloadHandler );
 		$.Widget.prototype.destroy.call( this );
 	},
 
@@ -260,16 +262,11 @@ $.widget( "ui.autocomplete", {
 					url: url,
 					data: request,
 					dataType: "json",
-					autocompleteRequest: ++requestIndex,
 					success: function( data, status ) {
-						if ( this.autocompleteRequest === requestIndex ) {
-							response( data );
-						}
+						response( data );
 					},
 					error: function() {
-						if ( this.autocompleteRequest === requestIndex ) {
-							response( [] );
-						}
+						response( [] );
 					}
 				});
 			};
@@ -300,20 +297,32 @@ $.widget( "ui.autocomplete", {
 		this.pending++;
 		this.element.addClass( "ui-autocomplete-loading" );
 
-		this.source( { term: value }, this.response );
+		this.source( { term: value }, this._response() );
 	},
 
-	_response: function( content ) {
+	_response: function() {
+		var that = this,
+			index = ++requestIndex;
+
+		return function( content ) {
+			if ( index === requestIndex ) {
+				that.__response( content );
+			}
+
+			that.pending--;
+			if ( !that.pending ) {
+				that.element.removeClass( "ui-autocomplete-loading" );
+			}
+		};
+	},
+
+	__response: function( content ) {
 		if ( !this.options.disabled && content && content.length ) {
 			content = this._normalize( content );
 			this._suggest( content );
 			this._trigger( "open" );
 		} else {
 			this.close();
-		}
-		this.pending--;
-		if ( !this.pending ) {
-			this.element.removeClass( "ui-autocomplete-loading" );
 		}
 	},
 
@@ -375,7 +384,9 @@ $.widget( "ui.autocomplete", {
 	_resizeMenu: function() {
 		var ul = this.menu.element;
 		ul.outerWidth( Math.max(
-			ul.width( "" ).outerWidth(),
+			// Firefox wraps long text (possibly a rounding bug)
+			// so we add 1px to avoid the wrapping (#7513)
+			ul.width( "" ).outerWidth() + 1,
 			this.element.outerWidth()
 		) );
 	},
@@ -410,6 +421,14 @@ $.widget( "ui.autocomplete", {
 
 	widget: function() {
 		return this.menu.element;
+	},
+	_keyEvent: function( keyEvent, event ) {
+		if ( !this.isMultiLine || this.menu.element.is( ":visible" ) ) {
+			this._move( keyEvent, event );
+
+			// prevents moving cursor to beginning/end of the text field in some browsers
+			event.preventDefault();
+		}
 	}
 });
 
@@ -450,13 +469,13 @@ $.widget("ui.menu", {
 	_create: function() {
 		var self = this;
 		this.element
-			.addClass("ui-autocomplete-menu ui-widget ui-widget-content ui-corner-all")
+			.addClass("ui-menu ui-widget ui-widget-content ui-corner-all")
 			.attr({
 				role: "listbox",
 				"aria-activedescendant": "ui-active-menuitem"
 			})
 			.click(function( event ) {
-				if ( !$( event.target ).closest( ".ui-autocomplete-menu-item a" ).length ) {
+				if ( !$( event.target ).closest( ".ui-menu-item a" ).length ) {
 					return;
 				}
 				// temporary
@@ -470,8 +489,8 @@ $.widget("ui.menu", {
 		var self = this;
 
 		// don't refresh list items that are already adapted
-		var items = this.element.children("li:not(.ui-autocomplete-menu-item):has(a)")
-			.addClass("ui-autocomplete-menu-item")
+		var items = this.element.children("li:not(.ui-menu-item):has(a)")
+			.addClass("ui-menu-item")
 			.attr("role", "menuitem");
 		
 		items.children("a")
@@ -517,19 +536,19 @@ $.widget("ui.menu", {
 	},
 
 	next: function(event) {
-		this.move("next", ".ui-autocomplete-menu-item:first", event);
+		this.move("next", ".ui-menu-item:first", event);
 	},
 
 	previous: function(event) {
-		this.move("prev", ".ui-autocomplete-menu-item:last", event);
+		this.move("prev", ".ui-menu-item:last", event);
 	},
 
 	first: function() {
-		return this.active && !this.active.prevAll(".ui-autocomplete-menu-item").length;
+		return this.active && !this.active.prevAll(".ui-menu-item").length;
 	},
 
 	last: function() {
-		return this.active && !this.active.nextAll(".ui-autocomplete-menu-item").length;
+		return this.active && !this.active.nextAll(".ui-menu-item").length;
 	},
 
 	move: function(direction, edge, event) {
@@ -537,7 +556,7 @@ $.widget("ui.menu", {
 			this.activate(event, this.element.children(edge));
 			return;
 		}
-		var next = this.active[direction + "All"](".ui-autocomplete-menu-item").eq(0);
+		var next = this.active[direction + "All"](".ui-menu-item").eq(0);
 		if (next.length) {
 			this.activate(event, next);
 		} else {
@@ -550,12 +569,12 @@ $.widget("ui.menu", {
 		if (this.hasScroll()) {
 			// TODO merge with no-scroll-else
 			if (!this.active || this.last()) {
-				this.activate(event, this.element.children(".ui-autocomplete-menu-item:first"));
+				this.activate(event, this.element.children(".ui-menu-item:first"));
 				return;
 			}
 			var base = this.active.offset().top,
 				height = this.element.height(),
-				result = this.element.children(".ui-autocomplete-menu-item").filter(function() {
+				result = this.element.children(".ui-menu-item").filter(function() {
 					var close = $(this).offset().top - base - height + $(this).height();
 					// TODO improve approximation
 					return close < 10 && close > -10;
@@ -563,11 +582,11 @@ $.widget("ui.menu", {
 
 			// TODO try to catch this earlier when scrollTop indicates the last page anyway
 			if (!result.length) {
-				result = this.element.children(".ui-autocomplete-menu-item:last");
+				result = this.element.children(".ui-menu-item:last");
 			}
 			this.activate(event, result);
 		} else {
-			this.activate(event, this.element.children(".ui-autocomplete-menu-item")
+			this.activate(event, this.element.children(".ui-menu-item")
 				.filter(!this.active || this.last() ? ":first" : ":last"));
 		}
 	},
@@ -577,13 +596,13 @@ $.widget("ui.menu", {
 		if (this.hasScroll()) {
 			// TODO merge with no-scroll-else
 			if (!this.active || this.first()) {
-				this.activate(event, this.element.children(".ui-autocomplete-menu-item:last"));
+				this.activate(event, this.element.children(".ui-menu-item:last"));
 				return;
 			}
 
 			var base = this.active.offset().top,
-				height = this.element.height();
-				result = this.element.children(".ui-autocomplete-menu-item").filter(function() {
+				height = this.element.height(),
+				result = this.element.children(".ui-menu-item").filter(function() {
 					var close = $(this).offset().top - base + height - $(this).height();
 					// TODO improve approximation
 					return close < 10 && close > -10;
@@ -591,17 +610,17 @@ $.widget("ui.menu", {
 
 			// TODO try to catch this earlier when scrollTop indicates the last page anyway
 			if (!result.length) {
-				result = this.element.children(".ui-autocomplete-menu-item:first");
+				result = this.element.children(".ui-menu-item:first");
 			}
 			this.activate(event, result);
 		} else {
-			this.activate(event, this.element.children(".ui-autocomplete-menu-item")
+			this.activate(event, this.element.children(".ui-menu-item")
 				.filter(!this.active || this.first() ? ":last" : ":first"));
 		}
 	},
 
 	hasScroll: function() {
-		return this.element.height() < this.element.attr("scrollHeight");
+		return this.element.height() < this.element[ $.fn.prop ? "prop" : "attr" ]("scrollHeight");
 	},
 
 	select: function( event ) {
@@ -610,170 +629,3 @@ $.widget("ui.menu", {
 });
 
 }(jQuery));
-
-/*
- * jQuery UI Autocomplete HTML Extension
- *
- * Copyright 2010, Scott González (http://scottgonzalez.com)
- * Dual licensed under the MIT or GPL Version 2 licenses.
- *
- * http://github.com/scottgonzalez/jquery-ui-extensions
- */
-(function( $ ) {
-
-	var proto = $.ui.autocomplete.prototype,
-		initSource = proto._initSource;
-
-	function filter( array, term ) {
-		var matcher = new RegExp( $.ui.autocomplete.escapeRegex(term), "i" );
-		return $.grep( array, function(value) {
-			return matcher.test( $( "<div>" ).html( value.label || value.value || value ).text() );
-		});
-	}
-
-	$.extend( proto, {
-		_initSource: function() {
-			if ( this.options.html && $.isArray(this.options.source) ) {
-				this.source = function( request, response ) {
-					response( filter( this.options.source, request.term ) );
-				};
-			} else {
-				initSource.call( this );
-			}
-		},
-
-		_renderItem: function( ul, item) {
-			return $( "<li></li>" )
-				.data( "item.autocomplete", item )
-				.append( $( "<a></a>" )[ this.options.html ? "html" : "text" ]( item.label ) )
-				.appendTo( ul );
-		}
-	});
-
-})( jQuery );
-
-(function( $ ) {
-	$.widget( "ui.combobox", {
-		_create: function() {
-			var self = this,
-				select = this.element.hide(),
-				selected = select.children( ":selected" ),
-				value = selected.val() ? selected.text() : "";
-			var input = this.input = $( "<input>" )
-				.insertAfter( select )
-				.val( value )
-				.autocomplete({
-					delay: 0,
-					minLength: 0,
-					source: function( request, response ) {
-						var matcher = new RegExp( $.ui.autocomplete.escapeRegex(request.term), "i" );
-						response( select.children( "option" ).map(function() {
-							var text = $( this ).text();
-							if ( this.value && ( !request.term || matcher.test(text) ) )
-								return {
-									label: text.replace(
-										new RegExp(
-											"(?![^&;]+;)(?!<[^<>]*)(" +
-												$.ui.autocomplete.escapeRegex(request.term) +
-												")(?![^<>]*>)(?![^&;]+;)", "gi"
-										), "<strong>$1</strong>" ),
-									value: text,
-									option: this
-								};
-						}) );
-					},
-					select: function( event, ui ) {
-						ui.item.option.selected = true;
-						self._trigger( "selected", event, {
-							item: ui.item.option
-						});
-					},
-					change: function( event, ui ) {
-						if ( !ui.item ) {
-							var matcher = new RegExp( "^" + $.ui.autocomplete.escapeRegex( $(this).val() ) + "$", "i" ),
-								valid = false;
-							select.children( "option" ).each(function() {
-								if ( $( this ).text().match( matcher ) ) {
-									this.selected = valid = true;
-									return false;
-								}
-							});
-							if ( !valid ) {
-								// remove invalid value, as it didn't match anything
-								$( this ).val( "" );
-								select.val( "" );
-								input.data( "autocomplete" ).term = "";
-								return false;
-							}
-						}
-					}
-				})
-				.addClass( "ui-widget ui-widget-content ui-corner-left" );
-
-			input.data( "autocomplete" )._renderItem = function( ul, item ) {
-				return $( "<li></li>" )
-					.data( "item.autocomplete", item )
-					.append( "<a>" + item.label + "</a>" )
-					.appendTo( ul );
-			};
-
-			this.button = $( "<button type='button'>&nbsp;</button>" )
-				.attr( "tabIndex", -1 )
-				.attr( "title", "Show All Items" )
-				.insertAfter( input )
-				.button({
-					icons: {
-						primary: "ui-icon-triangle-1-s"
-					},
-					text: false
-				})
-				.removeClass( "ui-corner-all" )
-				.addClass( "ui-corner-right ui-button-icon" )
-				.click(function() {
-					// close if already visible
-					if ( input.autocomplete( "widget" ).is( ":visible" ) ) {
-						input.autocomplete( "close" );
-						return;
-					}
-
-					// work around a bug (likely same cause as #5265)
-					$( this ).blur();
-
-					// pass empty string as value to search for, displaying all results
-					input.autocomplete( "search", "" );
-					input.focus();
-				});
-
-			this.button.find('.ui-button-text').remove();
-
-			input.css({
-				marginRight: 0,
-				verticalAlign: 'middle',
-				borderRight: 0
-			});
-			
-			this.button.css({
-				height: input.outerHeight(),
-				width: input.outerHeight(),
-				verticalAlign: 'middle',
-				borderColor: '#AAA'
-			});
-
-			this.button.find('.ui-button-icon-primary').css({
-				display: 'block',
-				position: 'relative',
-				float: 'none',
-				top: 0,
-				left: 0,
-				marginLeft: 0
-			});
-		},
-
-		destroy: function() {
-			this.input.remove();
-			this.button.remove();
-			this.element.show();
-			$.Widget.prototype.destroy.call( this );
-		}
-	});
-})( jQuery );

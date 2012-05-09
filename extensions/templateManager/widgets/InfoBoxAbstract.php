@@ -45,7 +45,10 @@ abstract class InfoBoxAbstract {
 
 		sysLanguage::loadDefinitions($langPath);
 		sysLanguage::loadDefinitions($overwritePath);
-			
+		//load language
+		if(Session::exists('tplDir') && file_exists(sysConfig::getDirFsCatalog() .'templates/'.Session::get('tplDir') . '/language_defines/global.xml')){
+			sysLanguage::loadDefinitions(sysConfig::getDirFsCatalog() .'templates/'.Session::get('tplDir') . '/language_defines/global.xml');
+		}
 		if (is_dir($DoctPath)){
 			Doctrine_Core::loadModels($DoctPath, Doctrine_Core::MODEL_LOADING_AGGRESSIVE);
 		}

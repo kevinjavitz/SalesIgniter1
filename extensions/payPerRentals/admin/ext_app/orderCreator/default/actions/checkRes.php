@@ -61,12 +61,13 @@
 
 		$weight += $prod_weight;
 	    	$totalPrice1 += $pricing['price'];
+	    if(is_object($Module)){
+			$quotes = array($Module->quote($selectedMethod, $weight, $totalPrice1));
 
-		$quotes = array($Module->quote($selectedMethod, $weight, $totalPrice1));
-
-		if (sizeof($quotes[0]['methods']) > 0 && ($Module->getType() == 'Product' || sysConfig::get('EXTENSION_PAY_PER_RENTALS_SHOW_SHIPPING_ON_CALENDAR_IF_ORDER') == 'True')){
-			$htmlShipping .=  $purchaseTypeClass->parseQuotes($quotes) ;
-		}
+			if (sizeof($quotes[0]['methods']) > 0 && ($Module->getType() == 'Product' || sysConfig::get('EXTENSION_PAY_PER_RENTALS_SHOW_SHIPPING_ON_CALENDAR_IF_ORDER') == 'True')){
+				$htmlShipping .=  $purchaseTypeClass->parseQuotes($quotes) ;
+			}
+	    }
 	    if (is_array($pricing) && is_numeric($pricing['price'])){
 		    $price += $pricing['price'];
 		    $totalPrice += $pricing['totalPrice'];

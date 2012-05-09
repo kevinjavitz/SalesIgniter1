@@ -4,7 +4,7 @@
 
 	$storeList = Doctrine_Query::create()
 	->from('Stores')
-	->orderBy('is_default DESC, stores_group, stores_name')
+	->orderBy('is_default ASC, stores_group, stores_name')
 	->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 
 	$contentHtml = '<div class="main_list" style="padding: 10px;">';

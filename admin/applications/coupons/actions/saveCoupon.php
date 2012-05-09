@@ -21,6 +21,7 @@
 	$Coupon->coupon_code = $_POST['coupon_code'];
 	$Coupon->uses_per_coupon = (int) $_POST['uses_per_coupon'];
 	$Coupon->uses_per_user = (int) $_POST['uses_per_user'];
+	$Coupon->number_days_membership = $_POST['number_days_membership'];
 	$Coupon->coupon_minimum_order = (float) $_POST['coupon_minimum_order'];
 	if (isset($_POST['restrict_to_purchase_type'])){
 		$Coupon->restrict_to_purchase_type = implode(',', $_POST['restrict_to_purchase_type']);

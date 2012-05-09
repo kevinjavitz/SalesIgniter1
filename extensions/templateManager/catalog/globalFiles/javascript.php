@@ -199,8 +199,8 @@ else {
 		sysConfig::getDirFsCatalog() . 'ext/jQuery/ui/jquery.ui.dialog.js',
 		sysConfig::getDirFsCatalog() . 'ext/jQuery/ui/jquery.ui.datepicker.js',
 		sysConfig::getDirFsCatalog() . 'ext/jQuery/ui/jquery.ui.accordion.js',
-		sysConfig::getDirFsCatalog() . 'ext/jQuery/ui/jquery.ui.stars.js',//can be removed too
-		sysConfig::getDirFsCatalog() . 'ext/jQuery/external/virtualKeyboard/jquery.keyboard.js'
+		sysConfig::getDirFsCatalog() . 'ext/jQuery/ui/jquery.ui.stars.js'//,can be removed too
+		//sysConfig::getDirFsCatalog() . 'ext/jQuery/external/virtualKeyboard/jquery.keyboard.js'
 	);
 
 	if ($env == 'admin'){

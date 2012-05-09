@@ -46,6 +46,7 @@ require(sysConfig::getDirFsAdmin() . 'includes/classes/upload.php');
 $templateZip = htmlBase::newElement('uploadManagerInput')
 	->setName('templateZip')
 	->autoUpload(true)
+	->setFileType('media')
 	->showPreview(true)
 	->showMaxUploadSize(true)
 	->allowMultipleUploads(false);
