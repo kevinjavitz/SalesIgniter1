@@ -522,7 +522,7 @@ function tep_get_zone_code($country, $zone, $def_state) {
 
 	$ResultSet = Doctrine_Manager::getInstance()
 		->getCurrentConnection()
-		->fetchArray("select zone_code from zones where zone_country_id = '" . (int)$country . "' and zone_id = '" . (int)$zone . "'");
+		->fetchAssoc("select zone_code from zones where zone_country_id = '" . (int)$country . "' and zone_id = '" . (int)$zone . "'");
 
 	if (sizeof($ResultSet) <= 0) {
 		$state_prov_code = $def_state;
