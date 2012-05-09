@@ -382,7 +382,7 @@ function tep_get_zone_name($country_id, $zone_id, $default_zone) {
 function tep_get_zone_code($country_id, $zone_id, $default_zone) {
 	$ResultSet = Doctrine_Manager::getInstance()
 		->getCurrentConnection()
-		->fetchArray("select zone_code from zones where zone_country_id = '" . (int)$country_id . "' and zone_id = '" . (int)$zone_id . "'");
+		->fetchAssoc("select zone_code from zones where zone_country_id = '" . (int)$country_id . "' and zone_id = '" . (int)$zone_id . "'");
 
 	if (sizeof($ResultSet) <= 0){
 		$state_prov_code = $default_zone;
