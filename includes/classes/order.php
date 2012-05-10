@@ -656,10 +656,10 @@ class OrderProcessor {
 
 		EventManager::notify('OrderBeforeSendEmail', &$currentOrder, &$emailEvent, &$products_ordered, &$sendVariables);
 
-		$emailEvent->sendEmail(array(
-			'email' => $userAccount->getEmailAddress(),
-			'name'  => $userAccount->getFullName()
-		));
+		$sendVariables['email'] = $userAccount->getEmailAddress();
+		$sendVariables['name'] = $userAccount->getFullName();
+
+		$emailEvent->sendEmail($sendVariables);
 
 		if (sysConfig::get('SEND_EXTRA_ORDER_EMAILS_TO') != '') {
 			$extraEmails = sysConfig::get('SEND_EXTRA_ORDER_EMAILS_TO');
