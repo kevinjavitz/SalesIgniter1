@@ -1,5 +1,6 @@
 <?php
-	require(sysConfig::getDirFsAdmin() . 'includes/classes/pdf_labels.php');
+set_time_limit(60);
+require(sysConfig::getDirFsAdmin() . 'includes/classes/pdf_labels.php');
 
 	$PDF_Labels = new PDF_Labels();
 	$PDF_Labels->setStartDate($_GET['start_date']);
