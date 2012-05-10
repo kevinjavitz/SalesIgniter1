@@ -653,7 +653,7 @@ class OrderProcessor {
 		}
 
 		$sendVariables = array();
-		
+
 		EventManager::notify('OrderBeforeSendEmail', &$currentOrder, &$emailEvent, &$products_ordered, &$sendVariables);
 
 		$emailEvent->sendEmail(array(

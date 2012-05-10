@@ -25,7 +25,7 @@ if ($_GET['printMethod'] == 'dymo'){
 		elseif ($labelType == '8160-s') {
 			$Address = $rInfo['customers_address'];
 			$labelInfo['data'][] = array(
-				'Address' => strip_tags(str_replace('&nbsp;', ' ', tep_address_format(tep_get_address_format_id($Address['entry_country_id']), $Address, false,'','')))
+				'Address' => $rInfo['barcode'] . "\n" . strip_tags(str_replace('&nbsp;', ' ', tep_address_format(tep_get_address_format_id($Address['entry_country_id']), $Address, false,'','')))
 			);
 		}
 		elseif ($labelType == '8164') {
