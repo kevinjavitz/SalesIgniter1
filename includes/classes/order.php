@@ -653,27 +653,36 @@ class OrderProcessor {
 		}
 
 		$sendVariables = array();
+		
 		EventManager::notify('OrderBeforeSendEmail', &$currentOrder, &$emailEvent, &$products_ordered, &$sendVariables);
 
-		$sendVariables['emails'][] = $userAccount->getEmailAddress();
+		$emailEvent->sendEmail(array(
+			'email' => $userAccount->getEmailAddress(),
+			'name'  => $userAccount->getFullName()
+		));
+
 		if (sysConfig::get('SEND_EXTRA_ORDER_EMAILS_TO') != '') {
-			$sendVariables['emails'][] = sysConfig::get('SEND_EXTRA_ORDER_EMAILS_TO');
+			$extraEmails = sysConfig::get('SEND_EXTRA_ORDER_EMAILS_TO');
+			foreach(explode(',', $extraEmails) as $email){
+				$email = trim($email);
+				$matches = array();
+				if (strstr($email, '<')){
+					preg_match('/([a-zA-Z 0-9]+)\<(.*)\>/', $email, &$matches);
+				}elseif (strstr($email, '@')){
+					$matches = array(
+						$userAccount->getFullName(),
+						$email
+					);
+				}
+
+				if (!empty($matches)){
+					$emailEvent->sendEmail(array(
+						'email' => $matches[2],
+						'name'  => $matches[1]
+					));
+				}
+			}
 		}
-		$sendVariables['name'] = $userAccount->getFullName();
-
-		foreach($sendVariables['emails'] as $emalAdd){
-			$sendVariables['email'] = $emalAdd;
-			$emailEvent->sendEmail($sendVariables);
-		}
-
-		/*
-		if (sysConfig::get('SEND_EXTRA_ORDER_EMAILS_TO') != '') {
-			$emailEvent->sendEmail(array(
-					'email' => sysConfig::get('SEND_EXTRA_ORDER_EMAILS_TO'),
-					'name'  => ''
-				));
-		} */
-
 	}
 }
 ?>
