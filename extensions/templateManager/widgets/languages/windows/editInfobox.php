@@ -1,4 +1,5 @@
 <?php
+/*
 $imageSource1 = htmlBase::newElement('input')
 	->setName('image_source1')
 	->addClass('BrowseServerField')
@@ -16,6 +17,7 @@ $imageSource2 = htmlBase::newElement('input')
 $imageLink2 = htmlBase::newElement('input')
 	->setName('image_link2')
 	->setValue((isset($WidgetSettings->image_link2) ? $WidgetSettings->image_link2 : ''));
+*/
 
 
 $WidgetSettingsTable->addBodyRow(array(
@@ -24,30 +26,20 @@ $WidgetSettingsTable->addBodyRow(array(
 	)
 ));
 
-$WidgetSettingsTable->addBodyRow(array(
-	'columns' => array(
-		array('text' => 'Image Source: '),
-		array('text' => $imageSource1->draw())
-	)
-));
+foreach(sysLanguage::getLanguages() as $lInfo) {
 
-$WidgetSettingsTable->addBodyRow(array(
-	'columns' => array(
-		array('text' => 'Image Link: '),
-		array('text' => $imageLink1->draw())
-	)
-));
+	//$boxContent .= ' <a href="' . itw_app_link(tep_get_all_get_params(array('language', 'currency')) . 'language=' . $lInfo['code']) . '">' . $lInfo['showName']('&nbsp;') . '</a><br>';
+	$image_link = 'image_link_' . $lInfo['code'];
+	$image_source = 'image_source_' . $lInfo['code'];
 
-$WidgetSettingsTable->addBodyRow(array(
-	'columns' => array(
-		array('text' => 'Image Source: '),
-		array('text' => $imageSource2->draw())
-	)
-));
-
-$WidgetSettingsTable->addBodyRow(array(
-	'columns' => array(
-		array('text' => 'Image Link: '),
-		array('text' => $imageLink2->draw())
-	)
-));
+	$WidgetSettingsTable->addBodyRow(array(
+		'columns' => array(
+			array('text' => 'Image Source For ' . $lInfo['name'] . ': '),
+			array('text' => htmlBase::newElement('input')
+				->setName('image_source_' . $lInfo['code'])
+				->addClass('BrowseServerField')
+				->setValue((isset($WidgetSettings->$image_source) ? $WidgetSettings->$image_source : ''))
+				->draw())
+		)
+	));
+}

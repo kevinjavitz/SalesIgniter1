@@ -17,7 +17,18 @@ class InfoBoxLanguages extends InfoBoxAbstract {
 		$this->setBoxHeading(sysLanguage::get('INFOBOX_HEADING_LANGUAGES'));
 	}
 	public function showLayoutPreview($WidgetSettings){
-		return '<img src="' . $WidgetSettings->image_source . '" />';
+		$boxWidgetProperties = $this->getWidgetProperties();
+		$return = '';
+		foreach(sysLanguage::getLanguages() as $lInfo) {
+			$source = 'image_source_' . $lInfo['code'];
+
+			if(!empty($boxWidgetProperties->$source))
+				$return .= '<a href="' . itw_app_link(tep_get_all_get_params(array('language', 'currency')) . 'language=' .$lInfo['code']).'">' . '<img src="'.$boxWidgetProperties->$source.'"/></a>';
+			else
+				$return .= ' <a href="' . itw_app_link(tep_get_all_get_params(array('language', 'currency')) . 'language=' . $lInfo['code']) . '">' . $lInfo['showName']('&nbsp;') . '</a><br>';
+
+		}
+		return $return;
 	}
 
 	public function show(){
@@ -26,18 +37,23 @@ class InfoBoxLanguages extends InfoBoxAbstract {
 		
 		$boxWidgetProperties = $this->getWidgetProperties();
 
-		$htmlText = '<a href="'.itw_app_link(tep_get_all_get_params(array('language', 'currency')) . 'language=' .$boxWidgetProperties->image_link1).'">'. '<img src="'.$boxWidgetProperties->image_source1.'"/></a>';
-		$htmlText .= '<a href="'.itw_app_link(tep_get_all_get_params(array('language', 'currency')) . 'language='.$boxWidgetProperties->image_link2).'">'. '<img src="'.$boxWidgetProperties->image_source2.'"/></a>';
+		//$htmlText = '<a href="'.itw_app_link(tep_get_all_get_params(array('language', 'currency')) . 'language=' .$boxWidgetProperties->image_link1).'">'. '<img src="'.$boxWidgetProperties->image_source1.'"/></a>';
+		//$htmlText .= '<a href="'.itw_app_link(tep_get_all_get_params(array('language', 'currency')) . 'language='.$boxWidgetProperties->image_link2).'">'. '<img src="'.$boxWidgetProperties->image_source2.'"/></a>';
 
 
-		$this->setBoxContent($htmlText);
+		//$this->setBoxContent($htmlText);
 
-		//foreach(sysLanguage::getLanguages() as $lInfo) {
+		foreach(sysLanguage::getLanguages() as $lInfo) {
+			$source = 'image_source_' . $lInfo['code'];
 
-		//	$boxContent .= ' <a href="' . itw_app_link(tep_get_all_get_params(array('language', 'currency')) . 'language=' . $lInfo['code']) . '">' . $lInfo['showName']('&nbsp;') . '</a><br>';
-		//}
+			if(!empty($boxWidgetProperties->$source))
+				$boxContent .= '<a href="'.itw_app_link(tep_get_all_get_params(array('language', 'currency')) . 'language=' .$lInfo['code']).'">'. '<img src="'.$boxWidgetProperties->$source.'"/></a>';
+			else
+				$boxContent .= ' <a href="' . itw_app_link(tep_get_all_get_params(array('language', 'currency')) . 'language=' . $lInfo['code']) . '">' . $lInfo['showName']('&nbsp;') . '</a><br>';
+
+		}
 		
-		//$this->setBoxContent($boxContent);
+		$this->setBoxContent($boxContent);
 
 		return $this->draw();
 	}
