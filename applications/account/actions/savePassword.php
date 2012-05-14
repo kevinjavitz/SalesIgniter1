@@ -36,7 +36,7 @@
 
 			$messageStack->addSession('pageStack', sysLanguage::get('SUCCESS_PASSWORD_UPDATED'), 'success');
 
-			EventManager::attachActionResponse(itw_app_link(null, 'account', 'default', 'SSL'));
+			EventManager::attachActionResponse(itw_app_link(null, 'account', 'default', 'SSL'), 'redirect');
 		} else {
 			$error = true;
 
