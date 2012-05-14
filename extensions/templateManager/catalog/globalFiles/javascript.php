@@ -12,7 +12,7 @@ else {
 }
 $import = '';
 if (isset($_GET['import']) && !empty($_GET['import'])){
-	$import = $_GET['import'];
+	$import = implode(',', $_GET['import']);
 }
 $cacheKey = $env . '-javascript-' . $templateDir . '-' . md5($layoutId . '-' . $import);
 
@@ -225,8 +225,8 @@ else {
 		}
 	}
 
-	if (isset($_GET['import']) && !empty($_GET['import'])){
-		foreach(explode(',', $_GET['import']) as $filePath){
+	if (!empty($import)){
+		foreach(explode(',', $import) as $filePath){
 			if (substr($filePath, -3) != '.js'){
 				continue;
 			}

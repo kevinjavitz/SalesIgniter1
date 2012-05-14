@@ -12,7 +12,7 @@ else {
 }
 $import = 'noimport';
 if (isset($_GET['import']) && !empty($_GET['import'])){
-	$import = $_GET['import'];
+	$import = implode(',', $_GET['import']);
 }
 $cacheKey = $env . '-stylesheet-' . $templateDir . '-' . md5($_SERVER['HTTP_USER_AGENT'] . '-' . $layoutId . '-' . $import);
 
@@ -263,8 +263,8 @@ a.readMore:hover{color: black;}
 	}
 	/* Our core managed css --END-- */
 
-	if (isset($_GET['import']) && !empty($_GET['import'])){
-		foreach(explode(',', $_GET['import']) as $filePath){
+	if (!empty($import)){
+		foreach(explode(',', $import) as $filePath){
 			if (substr($filePath, -4) != '.css'){
 				continue;
 			}
