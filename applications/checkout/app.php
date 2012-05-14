@@ -3,7 +3,11 @@
 	$appContent = $App->getAppContentFile();
 
 	$App->addJavascriptFile('ext/jQuery/external/pass_strength/jQuery.pstrength.js');
-
+	$App->addJavascriptFile('ext/jQuery/ui/jquery.effects.core.js');
+	$App->addJavascriptFile('ext/jQuery/ui/jquery.ui.mouse.js');
+	$App->addJavascriptFile('ext/jQuery/ui/jquery.ui.position.js');
+	$App->addJavascriptFile('ext/jQuery/ui/jquery.ui.draggable.js');
+	$App->addJavascriptFile('ext/jQuery/ui/jquery.ui.resizable.js');
 	require('includes/classes/http_client.php');
 	include('includes/functions/crypt.php');
 	if (sysConfig::get('ONEPAGE_LOGIN_REQUIRED') == 'true'){

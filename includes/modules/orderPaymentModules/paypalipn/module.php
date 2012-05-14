@@ -488,6 +488,7 @@ class OrderPaymentPaypalipn extends StandardPaymentModule
 
 	function processPaymentCron($orderID) {
 		global $order;
+		OrderPaymentModules::loadModules();
 		$order_status_id = OrderPaymentModules::getModule('paypalipn')->getConfigData('MODULE_PAYMENT_PAYPALIPN_COMP_ORDER_STATUS_ID');
 		$newStatus = new OrdersPaymentsHistory();
 		$newStatus->orders_id = $orderID;

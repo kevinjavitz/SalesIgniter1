@@ -32,6 +32,11 @@
 		if (!empty($_POST['cc_number']) && !empty($_POST['cc_expires_month']) && !empty($_POST['cc_expires_year'])){
 			$membership->updateCreditCard($_POST['cc_number'], $_POST['cc_expires_month'] . $_POST['cc_expires_year'], (isset($_POST['card_cvv']) ? $_POST['card_cvv'] : false));
 		}
+
+		$_GET['custID'] = $userAccount->getCustomerId();
+		require('cron/membership_update.php');
+		unset($_GET['custID']);
+
 		################################ Update Credit Card Info End ###################################
 		EventManager::attachActionResponse(itw_app_link(null, 'account', 'default', 'SSL'), 'redirect');
 	}

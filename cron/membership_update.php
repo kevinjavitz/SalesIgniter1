@@ -1,6 +1,6 @@
 <?php
 
-define('CRON_BILL_METHOD', 'original'); /* Options: original, current */
+sysConfig::set('CRON_BILL_METHOD', 'current'); /* Options: original, current */
 
 include(sysConfig::getDirFsCatalog() . 'includes/classes/order.php');
 
@@ -9,9 +9,12 @@ $membershipUpdate = new membershipUpdate_cron();
 
 if (sysConfig::get('RENTAL_UPGRADE_CYCLE') == 'true'){
 	$Qupdates = Doctrine_Query::create()
-		->select('upgrade_date, customers_id, plan_id')
-		->from('MembershipUpdate')
-		->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+	->select('upgrade_date, customers_id, plan_id')
+	->from('MembershipUpdate');
+	if(isset($_GET['custID'])){
+		$Qupdates->where('customers_id = ?', $_GET['custID']);
+	}
+	$Qupdates = $Qupdates->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 	foreach($Qupdates as $uInfo){
 		if ($membershipUpdate->timeToBill($uInfo['upgrade_date']) === true){
 			$userAccount = new rentalStoreUser($uInfo['customers_id']);
@@ -26,8 +29,11 @@ if (sysConfig::get('RENTAL_UPGRADE_CYCLE') == 'true'){
   	$Qcustomer = Doctrine_Query::create()
   	->select('c.customers_id, cm.next_bill_date as billDate, cm.free_trial_flag as isTrial, cm.free_trial_ends as trialEnds')
   	->from('Customers c')
-  	->leftJoin('c.CustomersMembership cm')
-  	->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+  	->leftJoin('c.CustomersMembership cm');
+	if(isset($_GET['custID'])){
+		$Qcustomer->where('customers_id = ?', $_GET['custID']);
+	}
+	$Qcustomer = $Qcustomer->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 
 
       foreach($Qcustomer as $cInfo){
@@ -38,13 +44,17 @@ if (sysConfig::get('RENTAL_UPGRADE_CYCLE') == 'true'){
                   $membershipUpdate->setAction('trial');
               }
           }elseif ($membershipUpdate->timeToBill($cInfo['billDate']) === true){
-              $membershipUpdate->setAction('initial');
+              if ($membershipUpdate->needsRetry($cInfo['customers_id']) === true){
+	              $membershipUpdate->setAction('retry');
+              }else{
+	              $membershipUpdate->setAction('initial');
+              }
           }elseif ($membershipUpdate->needsRetry($cInfo['customers_id']) === true){
               $membershipUpdate->setAction('retry');
           }else{
               continue;
           }
-          
+
           $userAccount = new rentalStoreUser($cInfo['customers_id']);
           $userAccount->loadPlugins();
           $membershipUpdate->setCurrentCustomer($userAccount);
@@ -53,6 +63,7 @@ if (sysConfig::get('RENTAL_UPGRADE_CYCLE') == 'true'){
           }elseif($membershipUpdate->isMember() && ($membershipUpdate->isActivated() || $membershipUpdate->isRetry())){
 
               $paymentMethod = $membershipUpdate->paymentMethod();
+              OrderPaymentModules::loadModules();
               $Module = OrderPaymentModules::getModule($paymentMethod);
               $membershipUpdate->setPaymentObj($Module);
 

@@ -11,7 +11,7 @@
 		<tab><![CDATA[General]]></tab>
 		<title><![CDATA[Display Total]]></title>
 		<key><![CDATA[STATUS]]></key>
-		<value><![CDATA[True]]></value>
+		<value><![CDATA[False]]></value>
 		<description><![CDATA[Do you want to display the total order value?]]></description>
 		<set_function><![CDATA[tep_cfg_select_option(array('True', 'False'),]]></set_function>
 	</configuration>

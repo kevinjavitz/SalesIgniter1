@@ -83,9 +83,9 @@ class Extension_inventoryCenters extends ExtensionBase {
             $Qproducts->leftJoin('p.ProductsDownloads pdl')
                 ->orwhere('p.products_id = pdl.products_id');
         }
-		if (Session::exists('isppr_inventory_pickup') === true && Session::get('isppr_inventory_pickup') != ''){
+		/*if (Session::exists('isppr_inventory_pickup') === true && Session::get('isppr_inventory_pickup') != ''){
 			$Qproducts->andWhere('ic.inventory_center_id = ?', Session::get('isppr_inventory_pickup'));
-		}
+		} */ //todo check this part might need improvement
 		if($this->ignoreCenter == false){
 			$Qproducts->andWhere('i.use_center = ?', '1');
 		}

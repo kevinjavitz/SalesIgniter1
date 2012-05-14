@@ -59,7 +59,12 @@ $productsBoxQueryTypes = array(
 			$categorySelected = $WidgetSettings->config->selected_category;
 		}
 	}
-	
+
+$speed = isset($WidgetSettings->speed) ? $WidgetSettings->speed : '500';
+$duration = isset($WidgetSettings->duration) ? $WidgetSettings->duration : '3000';
+$displayQty = isset($WidgetSettings->displayQty) ? $WidgetSettings->displayQty : '3';
+$moveQty = isset($WidgetSettings->moveQty) ? $WidgetSettings->moveQty : '3';
+$easing = '<select name="easing"><option value="swing">swing</option><option value="easeInQuad">easeInQuad</option><option value="easeOutQuad">easeOutQuad</option><option value="easeInOutQuad">easeInOutQuad</option><option value="easeInCubic">easeInCubic</option><option value="easeOutCubic">easeOutCubic</option><option value="easeInOutCubic">easeInOutCubic</option><option value="easeInQuart">easeInQuart</option><option value="easeOutQuart">easeOutQuart</option><option value="easeInOutQuart">easeInOutQuart</option><option value="easeInQuint">easeInQuint</option><option value="easeOutQuint">easeOutQuint</option><option value="easeInOutQuint">easeInOutQuint</option><option value="easeInSine">easeInSine</option><option value="easeOutSine">easeOutSine</option><option value="easeInOutSine">easeInOutSine</option><option value="easeInExpo">easeInExpo</option><option value="easeOutExpo">easeOutExpo</option><option value="easeInOutExpo">easeInOutExpo</option><option value="easeInCirc">easeInCirc</option><option value="easeOutCirc">easeOutCirc</option><option value="easeInOutCirc">easeInOutCirc</option><option value="easeInElastic">easeInElastic</option><option value="easeOutElastic">easeOutElastic</option><option value="easeInOutElastic">easeInOutElastic</option><option value="easeInBack">easeInBack</option><option value="easeOutBack">easeOutBack</option><option value="easeInOutBack">easeInOutBack</option><option value="easeInBounce">easeInBounce</option><option value="easeOutBounce">easeOutBounce</option><option value="easeInOutBounce">easeInOutBounce</option></select>';
 	$productsBoxQueryOptions = '';
 	foreach($productsBoxQueryTypes as $k => $v){
 		$productsBoxQueryOptions .= '<option value="' . $k . '"' . ($productsBoxQuery == $k ? ' selected' : '') . '>' . $v . '</option>';
@@ -128,6 +133,26 @@ if(isset($categorySelected)){
                 echo $categoryTreeNew->draw();
 				?>
 			</td>
+		</tr>
+		<tr>
+			<td>Display Items:</td>
+			<td><input type="text" name="displayQty" value="<?php echo $displayQty;?>"></td>
+		</tr>
+		<tr>
+			<td>Move Items:</td>
+			<td><input type="text" name="moveQty" value="<?php echo $moveQty;?>"></td>
+		</tr>
+		<tr>
+			<td>Speed:</td>
+			<td><input type="text" name="speed" value="<?php echo $speed;?>"></td>
+		</tr>
+		<tr>
+			<td>Duration:</td>
+			<td><input type="text" name="duration" value="<?php echo $duration;?>"></td>
+		</tr>
+		<tr>
+			<td>Easing:</td>
+			<td><?php echo $easing;?></td>
 		</tr>
 	</table>
 </fieldset>

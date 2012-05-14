@@ -1386,11 +1386,13 @@ class InfoBoxPayPerRental extends InfoBoxAbstract {
 				}
 
 					$ellem = $(this).closest('form');
+					var sendValues = $ellem.serialize();
+					sendValues = sendValues.replace(/&pickup=.*&/i,'&');
 					showAjaxLoader($ellem,'xlarge');
 							$.ajax({
 								type: "post",
 								url: js_app_link('appExt=payPerRentals&app=build_reservation&appPage=default&action=setBefore'),
-								data: $ellem.serialize()+"&rType=ajax&pick="+pick+'&isContinent='+continent,
+								data: sendValues+"&rType=ajax&pick="+pick+'&isContinent='+continent,
 								success: function(data) {
 									$ellem.find('.invCenter').replaceWith(data.data);
 									$ellem.find('.rentbbut').button();
@@ -1408,7 +1410,7 @@ class InfoBoxPayPerRental extends InfoBoxAbstract {
 										 $.ajax({
 											 type: "post",
 											 url: js_app_link('appExt=inventoryCenters&app=show_inventory&appPage=list&action=getAjaxList'),
-											 data: $ellem.serialize() + "",
+											 data: sendValues + "",
 											 success: function(data) {
 												 hideAjaxLoader($ellem1);
 												 $ellem1.replaceWith(data.data);

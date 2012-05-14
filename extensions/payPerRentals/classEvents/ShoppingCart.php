@@ -213,12 +213,10 @@
 			global $order;
 			if (is_object($order)){
 				$reservationProducts = 0;
-				if ($order->hasReservation() === true){
-					$products = $order->products;
-					for ($i=0, $n=sizeof($products); $i<$n; $i++) {
-						if ($products[$i]['purchase_type'] == 'reservation'){
-							$reservationProducts++;
-						}
+				$products = $order->products;
+				for ($i=0, $n=sizeof($products); $i<$n; $i++) {
+					if ($products[$i]['purchase_type'] == 'reservation'){
+						$reservationProducts++;
 					}
 				}
 

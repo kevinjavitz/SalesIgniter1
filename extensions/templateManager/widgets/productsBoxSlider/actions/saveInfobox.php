@@ -13,5 +13,40 @@ if (isset($_POST['products_box_query']) && !empty($_POST['products_box_query']))
 	}
 }
 
+if (isset($_POST['displayQty'])){
+	$WidgetProperties['displayQty'] = $_POST['displayQty'];
+}
+else {
+	$WidgetProperties['displayQty'] = '3';
+}
+
+if (isset($_POST['moveQty'])){
+	$WidgetProperties['moveQty'] = $_POST['moveQty'];
+}
+else {
+	$WidgetProperties['moveQty'] = '3';
+}
+
+if (isset($_POST['speed'])){
+	$WidgetProperties['speed'] = $_POST['speed'];
+}
+else {
+	$WidgetProperties['speed'] = '5000';
+}
+
+if (isset($_POST['duration'])){
+	$WidgetProperties['duration'] = $_POST['duration'];
+}
+else {
+	$WidgetProperties['duration'] = '3000';
+}
+
+if (isset($_POST['easing'])){
+	$WidgetProperties['easing'] = $_POST['easing'];
+}
+else {
+	$WidgetProperties['easing'] = 'swing';
+}
+
 $WidgetProperties['id'] = $_POST['products_box_id'];
 $WidgetProperties['config'] = $config;

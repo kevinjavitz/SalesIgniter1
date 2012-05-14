@@ -12,7 +12,11 @@ else {
 }
 $import = 'noimport';
 if (isset($_GET['import']) && !empty($_GET['import'])){
-	$import = implode(',', $_GET['import']);
+	if(is_array($_GET['import'])){
+		$import = implode(',', $_GET['import']);
+	}else{
+		$import = $_GET['import'];
+	}
 }
 $cacheKey = $env . '-stylesheet-' . $templateDir . '-' . md5($_SERVER['HTTP_USER_AGENT'] . '-' . $layoutId . '-' . $import);
 

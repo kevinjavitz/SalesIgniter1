@@ -30,6 +30,12 @@
 			if (!empty($_POST['cc_number']) && !empty($_POST['cc_expires_month']) && !empty($_POST['cc_expires_year'])){
 				$membership =& $userAccount->plugins['membership'];
 				$membership->updateCreditCard($_POST['cc_number'], $_POST['cc_expires_month'] . $_POST['cc_expires_year'], (isset($_POST['cc_cvv']) ? $_POST['cc_cvv'] : false));
+				$_GET['custID'] = $userAccount->getCustomerId();
+				require('cron/membership_update.php');
+				unset($_GET['custID']);
+				$membership =& $userAccount->plugins['membership'];
+				$membership->loadMembershipInfo();
+				$membership->loadPlanInfo();
 				$link = itw_app_link('edit='.$membership->getRentalAddressId(), 'account', 'billing_address_book', 'SSL');
 			}
 		}

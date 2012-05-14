@@ -8,14 +8,14 @@
 	This script and it's source is not redistributable
 */
 
-class InfoBoxProductsBox extends InfoBoxAbstract {
+class InfoBoxProductsBoxSlider extends InfoBoxAbstract {
 
 	public function __construct(){
 		global $App;
-		$this->init('productsBox');
+		$this->init('productsBoxSlider');
 		$this->firstAdded = false;
 		$this->buildStylesheetMultiple = false;
-		$this->buildJavascriptMultiple = false;
+		$this->buildJavascriptMultiple = true;
 	}
 
 	public function getAllSubCategories($categoriesId, &$categoriesArray){
@@ -32,11 +32,54 @@ class InfoBoxProductsBox extends InfoBoxAbstract {
 		}
 	}
 
+	public function buildJavascript() {
+		$boxWidgetProperties = $this->getWidgetProperties();
+		$id = $boxWidgetProperties->id;
+		$displaySlideQty = $boxWidgetProperties->displayQty;
+		$moveSlideQty = $boxWidgetProperties->moveQty;
+		$speed = $boxWidgetProperties->speed;
+		$duration = $boxWidgetProperties->duration;
+		$easing = $boxWidgetProperties->easing;
+		$javascript = '';
+		ob_start();
+
+		readfile(sysConfig::getDirFsCatalog().'ext/jQuery/ui/jquery.effects.core.js');
+		readfile(sysConfig::getDirFsCatalog().'ext/jQuery/ui/jquery.ui.mouse.js');
+		readfile(sysConfig::getDirFsCatalog().'ext/jQuery/ui/jquery.effects.fade.js');
+		readfile(sysConfig::getDirFsCatalog().'ext/jQuery/ui/jquery.ui.position.js');
+		readfile(sysConfig::getDirFsCatalog().'ext/jQuery/ui/jquery.ui.draggable.js');
+		readfile(sysConfig::getDirFsCatalog().'ext/jQuery/ui/jquery.ui.sortable.js');
+		readfile(sysConfig::getDirFsCatalog().'ext/jQuery/ui/jquery.ui.resizable.js');
+		readfile(sysConfig::getDirFsCatalog().'ext/jQuery/external/jquery.bxSlider/jquery.bxSlider.min.js');
+		readfile(sysConfig::getDirFsCatalog().'ext/jQuery/external/jquery.bxSlider/jquery.easing.1.3.js');
+		?>
+	$('#<?php echo $id;?>').bxSlider({
+	displaySlideQty: <?php echo $displaySlideQty;?>,
+	moveSlideQty: <?php echo $moveSlideQty;?>,
+	speed:<?php echo $speed;?>,
+	easing:'<?php echo $easing;?>',
+	prevSelector:'#prev<?php echo $id;?>',
+	nextSelector:'#next<?php echo $id;?>',
+	pause:<?php echo $duration;?>
+	});
+
+
+	<?php
+ 		$javascriptSource = ob_get_contents();
+		ob_end_clean();
+
+		$javascript .= '/* BlogSlider --BEGIN-- */' . "\n" .
+			$javascriptSource .
+			'/* BlogSlider --END-- */' . "\n";
+
+		return $javascript;
+	}
+
 	public function show(){
 		$boxWidgetProperties = $this->getWidgetProperties();
 
-		$this->setBoxId($boxWidgetProperties->id);
-
+		//$this->setBoxId($boxWidgetProperties->id);
+		$id = $boxWidgetProperties->id;
 		$cInfo = $boxWidgetProperties->config;
 		$Results = $this->getQueryResults($cInfo->query, $cInfo->query_limit, (isset($cInfo->selected_category)?$cInfo->selected_category:''));
 		
@@ -54,17 +97,23 @@ class InfoBoxProductsBox extends InfoBoxAbstract {
 				}
 			}
 
-			$ProductsList = $this->buildList($Results, $cInfo, $selectedCatName);
-			$this->setBoxContent($ProductsList->draw());
+			$ProductsList = $this->buildList($Results, $cInfo, $selectedCatName, $id);
+			$nextArrow = htmlBase::newElement('div')
+				->attr('id','next'.$id);
+			$prevArrow = htmlBase::newElement('div')
+				->attr('id','prev'.$id);
+			$this->setBoxContent($ProductsList->draw().$prevArrow->draw().$nextArrow->draw());
 			return $this->draw();
 		} else {
 			return '';
 		}
 	}
 	
-	public function buildList($products, $cInfo, $selectedCategoryName = ''){
+	public function buildList($products, $cInfo, $selectedCategoryName = '', $id=''){
 		$List = htmlBase::newElement('ul')->addClass('productsBoxList');
-		
+		if(!empty($id)){
+			$List->attr('id',$id);
+		}
 		foreach($products as $pInfo){
 			$ListItemImage = htmlBase::newElement('image')
 			->setSource(sysConfig::getDirWsCatalog().'images/' . $pInfo['products_image'])
@@ -80,7 +129,16 @@ class InfoBoxProductsBox extends InfoBoxAbstract {
 			
 			$Block = htmlBase::newElement('div')
 			->addClass('productsBoxBlock');
-			
+
+			$ListItemNameLink = htmlBase::newElement('a')
+				->setHref($productLink)
+				->html($pInfo['ProductsDescription'][0]['products_name']);
+			$NameBlock = htmlBase::newElement('div')
+				->addClass('productsBoxBlockName')
+				->append($ListItemNameLink);
+
+			$Block->append($NameBlock);
+
 			$ListItemImageLink = htmlBase::newElement('a')
 			->setHref($productLink)
 			->append($ListItemImage);
@@ -92,20 +150,11 @@ class InfoBoxProductsBox extends InfoBoxAbstract {
 			$Block->append($ImageBlock);
 			
 			if ($cInfo->reflect_blocks === false){
-				$ListItemNameLink = htmlBase::newElement('a')
-				->setHref($productLink)
-				->html($pInfo['ProductsDescription'][0]['products_name']);
 
 				if($selectedCategoryName != ''){
 					$ListItemCategoryName= htmlBase::newElement('span')
-					->html($selectedCategoryName);
+					->html('Featured '.$selectedCategoryName);
 				}
-			
-				$NameBlock = htmlBase::newElement('div')
-				->addClass('productsBoxBlockName')
-				->append($ListItemNameLink);
-
-				$Block->append($NameBlock);
 
 				if(isset($ListItemCategoryName)){
 					$CategoryNameBlock = htmlBase::newElement('div')
@@ -127,6 +176,7 @@ class InfoBoxProductsBox extends InfoBoxAbstract {
 			
 			$List->append($ListItem);
 		}
+
 		
 		$ListContainer = htmlBase::newElement('div')
 		->addClass('productsBoxListContainer')
