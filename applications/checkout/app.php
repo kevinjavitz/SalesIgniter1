@@ -48,6 +48,11 @@
                 if ($onePageCheckout->getMode() == ''){
                     $onePageCheckout->setMode('membership');
                 }
+                if(isset($_POST['email_address1']) && !empty($_POST['email_address1'])){
+	                $onePageCheckout->onePage['info']['email_address'] = $_POST['email_address1'];
+	                $onePageCheckout->onePage['info']['password'] = $_POST['password1'];
+	                $onePageCheckout->onePage['info']['confirmation'] = $_POST['password2'];
+                }
                 break;
             case 'giftCertificate':
                 if ($onePageCheckout->getMode() == ''){
