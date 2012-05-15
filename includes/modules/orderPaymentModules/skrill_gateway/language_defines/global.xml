@@ -1,0 +1,23 @@
+<definitions>
+	<define key="MODULE_PAYMENT_MONEYBOOKERSGATEWAY_TEXT_TITLE"><![CDATA[MoneyBookers Gateway]]></define>
+	<define key="MODULE_PAYMENT_MONEYBOOKERSGATEWAY_TEXT_DESCRIPTION"><![CDATA[MoneyBookers Gateway]]></define>
+	<define key="CONFIRMATION_BUTTON_TEXT"><![CDATA[Complete your Order Confirmation]]></define>
+	<define key="MODULE_PAYMENT_MONEYBOOKERSGATEWAY_TEXT_EMAIL_FOOTER"><![CDATA[]]></define>
+	<define key="EMAIL_MONEYBOOKERS_PENDING_NOTICE"><![CDATA[Your payment is currently pending. We will send you a copy of your order once the payment has cleared.]]></define>
+	<define key="EMAIL_TEXT_SUBJECT"><![CDATA[Order Process]]></define>
+	<define key="EMAIL_TEXT_ORDER_NUMBER"><![CDATA[Order Number:]]></define>
+	<define key="EMAIL_TEXT_INVOICE_URL"><![CDATA[Detailed Invoice:]]></define>
+	<define key="EMAIL_TEXT_DATE_ORDERED"><![CDATA[Date Ordered:]]></define>
+	<define key="EMAIL_TEXT_PRODUCTS"><![CDATA[Products]]></define>
+	<define key="EMAIL_TEXT_SUBTOTAL"><![CDATA[Sub-Total:]]></define>
+	<define key="EMAIL_TEXT_TAX"><![CDATA[Tax:        ]]></define>
+	<define key="EMAIL_TEXT_SHIPPING"><![CDATA[Shipping: ]]></define>
+	<define key="EMAIL_TEXT_TOTAL"><![CDATA[Total:    ]]></define>
+	<define key="EMAIL_TEXT_DELIVERY_ADDRESS"><![CDATA[Delivery Address]]></define>
+	<define key="EMAIL_TEXT_BILLING_ADDRESS"><![CDATA[Billing Address]]></define>
+	<define key="EMAIL_TEXT_PAYMENT_METHOD"><![CDATA[Payment Method]]></define>
+	<define key="EMAIL_SEPARATOR"><![CDATA[------------------------------------------------------]]></define>
+	<define key="TEXT_EMAIL_VIA"><![CDATA[via]]></define> 
+        <define key="TEXT_RETURN_MERCHANT"><![CDATA[Return to ]]></define>
+	<define key="MONEYBOOKERS_ADDRESS"><![CDATA[Customer MoneyBookers address]]></define>
+</definitions>
