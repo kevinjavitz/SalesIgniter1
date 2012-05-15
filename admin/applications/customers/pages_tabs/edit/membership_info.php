@@ -115,6 +115,7 @@
 						->addOption('paypalipn', 'Paypal')
 						->addOption('usaepay', 'USAePay')
 						->addOption('cc', 'Credit Card')
+                                                ->addOption('skrill', 'Money Bookers')
 						->addOption('cashondelivery', 'Cash On Delivery')
 						->addOption('moneyorder', 'Money Order');
 						

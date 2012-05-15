@@ -8,9 +8,10 @@ $(document).ready(function (){
 </script>
 <?php
 	$inventoryTypes = array(
-		'new'         => 'New',
-		'used'        => 'Used',
-		'rental'      => 'Member Rental'
+		'new'                 => 'New',
+		'used'                => 'Used',
+		'rental'              => 'Member Rental'
+                
 	);
 
 	if ($appExtension->isInstalled('payPerRentals')){

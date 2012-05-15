@@ -41,7 +41,7 @@ if (isset($_GET['dID'])){
 	}
 }
 
-if (isset($success) && ){
+if (isset($success)){
 	if ($success === true){
 		echo 'Your Download Should Begin Shortly.';
 	}elseif (is_array($success)){

@@ -49,7 +49,7 @@ class dataAccessQueryBuilder {
 	}
 }
 
-abstract dataAccessRecord {
+abstract class dataAccessRecord {
 
 	public function getProps(){
 		$Reflection = new ReflectionClass($this);

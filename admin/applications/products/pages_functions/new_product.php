@@ -110,6 +110,8 @@
 			array('addCls' => 'main', 'text' => 'Barcode'),
 			array('addCls' => 'main', 'text' => 'Type'),
 			array('addCls' => 'main', 'text' => 'Status'),
+                        array('addCls' => 'main', 'text' => 'Supplier'),
+                        array('addCls' => 'main', 'text' => 'Acquisition Cost')
 		);
 
 		EventManager::notify('NewProductAddBarcodeOptionsHeader', &$barcodeTableHeaders);
@@ -132,6 +134,10 @@
 		->setLabel('Auto Generate')
 		->setLabelPosition('after')
 		->setLabelSeparator('&nbsp;');
+                
+                $costInput = htmlBase::newElement('input')
+		->setName('adquisitionCost')
+		->addClass('adquisitionCost');
 
 		$barcodeTableBody = array(
 			array(
@@ -145,6 +151,14 @@
 			array(
 				'addCls' => 'centerAlign main',
 				'text' => $barcodeStatuses['A']
+			),
+                        array(
+				'addCls' => 'centerAlign main',
+				'text' => $barcodeStatuses['A']
+			),                        
+                        array(
+				'addCls' => 'centerAlign main',
+				'text' => $costInput->draw() 
 			)
 		);
 
@@ -199,6 +213,14 @@
 			array(
 				'addCls' => 'ui-widget-content ui-state-default ui-grid-cell',
 				'text' => 'Status'
+			),
+                        array(
+				'addCls' => 'ui-widget-content ui-state-default ui-grid-cell',
+				'text' => 'Supplier'
+			),
+                        array(
+				'addCls' => 'ui-widget-content ui-state-default ui-grid-cell',
+				'text' => 'Acquisition Cost'
 			)
 		);
 
@@ -241,6 +263,14 @@
 					array(
 						'addCls' => 'ui-widget-content ui-grid-cell',
 						'text' => $barcodeStatuses[$bInfo['status']]
+					),
+                                        array(
+						'addCls' => 'ui-widget-content ui-grid-cell',
+						'text' => $bInfo['suppliers_id']
+					),
+                                        array(
+						'addCls' => 'ui-widget-content ui-grid-cell',
+						'text' => $bInfo['acquisition_cost']
 					)
 				);
 

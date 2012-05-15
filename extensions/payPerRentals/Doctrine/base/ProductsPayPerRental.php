@@ -189,6 +189,16 @@ class ProductsPayPerRental extends Doctrine_Record {
 			'notnull' => true,
 			'autoincrement' => false,
 		));
+                
+                $this->hasColumn('consumption', 'integer', 1, array(
+			'type' => 'integer',
+			'length' => 1,
+			'unsigned' => 0,
+			'primary' => false,
+			'default' => '0',
+			'notnull' => true,
+			'autoincrement' => false,
+		));
 		
 		$this->hasColumn('deposit_amount', 'decimal', 15, array(
 			'type' => 'decimal',

@@ -38,6 +38,7 @@ class PurchaseType_reservation extends PurchaseTypeAbstract {
 			if ($Qproduct){
 				$this->payperrental = $Qproduct[0];
 				$this->productInfo['overbooking'] = $this->payperrental['overbooking'];
+                                $this->productInfo['consumption'] = $this->payperrental['consumption'];
 				//modify here
 				if (sysConfig::get('EXTENSION_PAY_PER_RENTALS_USE_UPS_RESERVATION') == 'False'){
 					$Module = OrderShippingModules::getModule('zonereservation');
@@ -168,6 +169,11 @@ class PurchaseType_reservation extends PurchaseTypeAbstract {
 		}
 		$id = $orderedProduct->getId();
 
+                $PayPerRental = Doctrine_Query::create()
+					->from('ProductsPayPerRental')
+					->where('products_id = ?', $id)
+					->fetchOne();;
+                
 		$return .= '<br /><small><b><i><u>' . sysLanguage::get('TEXT_INFO_RESERVATION_INFO') . '</u></i></b>&nbsp;' . '</small>';
 		/*This part will have to be changed for events*/
 
@@ -183,14 +189,21 @@ class PurchaseType_reservation extends PurchaseTypeAbstract {
 				$start = date_parse(date('m/d/Y H:i:s'));
 				$end = date_parse(date('m/d/Y H:i:s'));
 			}
-			$startTime = mktime($start['hour'], $start['minute'], $start['second'], $start['month'], $start['day'], $start['year']);
-			$endTime = mktime($end['hour'], $end['minute'], $end['second'], $end['month'], $end['day'], $end['year']);
-			$changeButton = htmlBase::newElement('button')
-				->setText('Select Dates')
-				->addClass('reservationDates');
-			$return .= '<br /><small><i> - Start Date: <span class="res_start_date">'.date('m/d/Y H:i:s', $startTime).'</span><br/>- End Date: <span class="res_end_date">'.date('m/d/Y H:i:s', $endTime).'</span>'.$changeButton->draw(). '<input type="hidden" class="ui-widget-content resDateHidden" name="product[' . $id . '][reservation][dates]" value="' . date('m/d/Y H:i:s', $startTime) . ',' . date('m/d/Y H:i:s', $endTime) . '"></i></small><div class="selectDialog"></div>';
-
-			}else{
+			
+                        if($this->consumptionAllowed() == '1'){
+                            $startTime = mktime($start['hour'], $start['minute'], $start['second'], $start['month'], $start['day'], $start['year']);
+                            $endTime = mktime($end['hour'], $end['minute'], $end['second'], $end['month'], $end['day'], $end['year']);
+                            $return .= '<br /><small><i><input type="hidden" class="ui-widget-content resDateHidden" name="product[' . $id . '][reservation][dates]" value="' . date('m/d/Y H:i:s', $startTime) . ',' . date('m/d/Y H:i:s', $endTime) . '"></i></small><div class="selectDialog"></div>';
+                        
+                        }else{
+                            $startTime = mktime($start['hour'], $start['minute'], $start['second'], $start['month'], $start['day'], $start['year']);
+                            $endTime = mktime($end['hour'], $end['minute'], $end['second'], $end['month'], $end['day'], $end['year']);
+                            $changeButton = htmlBase::newElement('button')
+                                    ->setText('Select  ')
+                                    ->addClass('reservationDates');
+                            $return .= '<br /><small><i> - '. $this->consumptionAllowed() .'- Start Date: <span class="res_start_date">'.date('m/d/Y H:i:s', $startTime).'</span><br/>- End Date: <span class="res_end_date">'.date('m/d/Y H:i:s', $endTime).'</span>'.$changeButton->draw(). '<input type="hidden" class="ui-widget-content resDateHidden" name="product[' . $id . '][reservation][dates]" value="' . date('m/d/Y H:i:s', $startTime) . ',' . date('m/d/Y H:i:s', $endTime) . '"></i></small><div class="selectDialog"></div>';
+                        }
+		}else{
 			$Qevent = Doctrine_Query::create()
 			->from('PayPerRentalEvents')
 			->orderBy('events_date')
@@ -2481,6 +2494,10 @@ class PurchaseType_reservation extends PurchaseTypeAbstract {
 
 	public function overBookingAllowed(){
 		return ($this->productInfo['overbooking'] == '1');
+	}
+        
+        public function consumptionAllowed(){
+		return ($this->productInfo['consumption'] == '1');
 	}
 
 	public function getProductsBarcodes(){

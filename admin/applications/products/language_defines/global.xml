@@ -54,7 +54,8 @@
 	<define key="TEXT_PRODUCTS_IMAGE"><![CDATA[Products Image:]]></define>
 	<define key="TEXT_PRODUCTS_URL"><![CDATA[Products URL:]]></define>
 	<define key="TEXT_PRODUCTS_URL_WITHOUT_HTTP"><![CDATA[<small>(without http://)</small>]]></define>
-	<define key="TEXT_PRODUCTS_PRICE_NET"><![CDATA[Products Price (Net):]]></define>
+	<define key="TEXT_PRODUCTS_COST"><![CDATA[Cost:]]></define>
+        <define key="TEXT_PRODUCTS_PRICE_NET"><![CDATA[Products Price (Net):]]></define>
 	<define key="TEXT_PRODUCTS_PRICE_GROSS"><![CDATA[Products Price (Gross):]]></define>
 	<define key="TEXT_PRODUCTS_WEIGHT"><![CDATA[Products Weight:]]></define>
 	<define key="TEXT_PRODUCTS_TYPE"><![CDATA[Purchase/Rental Types: ]]></define>

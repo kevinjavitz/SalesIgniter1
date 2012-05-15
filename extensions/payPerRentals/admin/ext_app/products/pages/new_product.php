@@ -45,6 +45,7 @@ class payPerRentals_admin_products_new_product extends Extension_payPerRentals {
 		->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 		
 		$overbookingInput = htmlBase::newElement('checkbox')->setName('reservation_overbooking')->setValue('1');
+                $consumptionInput = htmlBase::newElement('checkbox')->setName('reservation_consumption')->setValue('1');
 		//$monthsInput = htmlBase::newElement('input')->setName('reservation_max_months');
 		$maxInput = htmlBase::newElement('input')->setName('reservation_max_period');
 		//$authMethodInput = htmlBase::newElement('selectbox')->setName('products_auth_method')->addOption('auth', 'Authorization Charge')->addOption('rental', 'Rental Fee');
@@ -300,6 +301,7 @@ class payPerRentals_admin_products_new_product extends Extension_payPerRentals {
 
 		if (isset($payPerRental)){
 			$overbookingInput->setChecked(($payPerRental['overbooking'] == 1));
+                        $consumptionInput->setChecked(($payPerRental['consumption'] == 1));
 			//$monthsInput->val($payPerRental['max_months']);
 			$maxInput->val($payPerRental['max_period']);
 			$htypeMax->selectOptionByValue($payPerRental['max_type']);
@@ -377,6 +379,13 @@ class payPerRentals_admin_products_new_product extends Extension_payPerRentals {
 			'columns' => array(
 				array('addCls' => 'main', 'text' => sysLanguage::get('TEXT_PAY_PER_RENTAL_OVERBOOKING')),
 				array('addCls' => 'main', 'text' => $overbookingInput)
+			)
+		));
+                
+                $mainTable->addBodyRow(array(
+			'columns' => array(
+				array('addCls' => 'main', 'text' => sysLanguage::get('TEXT_PAY_PER_RENTAL_CONSUMPTION')),
+				array('addCls' => 'main', 'text' => $consumptionInput)
 			)
 		));
 		

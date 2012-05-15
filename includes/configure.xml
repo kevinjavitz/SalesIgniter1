@@ -2,11 +2,11 @@
 <configuration>
 	<config protected="true">
 		<key>HTTP_DOMAIN_NAME</key>
-		<value>rentasurfboard.net</value>
+		<value>alex.rent-manager.com</value>
 	</config>
 	<config protected="true">
 		<key>HTTPS_DOMAIN_NAME</key>
-		<value>rentasurfboard.net</value>
+		<value>alex.rent-manager.com</value>
 	</config>
 	<config protected="false">
 		<key>DIR_WS_CATALOG</key>
@@ -14,7 +14,7 @@
 	</config>
 	<config protected="true">
 		<key>DIR_FS_DOCUMENT_ROOT</key>
-		<value>/home/rentasun/public_html</value>
+		<value>/home/alex0ren/public_html</value>
 	</config>
 	<config protected="true">
 		<key>DB_SERVER</key>
@@ -22,15 +22,15 @@
 	</config>
 	<config protected="true">
 		<key>DB_SERVER_USERNAME</key>
-		<value>rentasun_si</value>
+		<value>alex0ren_ses</value>
 	</config>
 	<config protected="true">
 		<key>DB_SERVER_PASSWORD</key>
-		<value>si22</value>
+		<value>6n$d,j8u$</value>
 	</config>
 	<config protected="true">
 		<key>DB_DATABASE</key>
-		<value>rentasun_si</value>
+		<value>alex0ren_ses</value>
 	</config>
 	<config protected="true">
 		<key>ENABLE_SSL</key>
@@ -50,15 +50,15 @@
 	</config>
 	<config protected="true">
 		<key>SYSTEM_UPGRADE_USERNAME</key>
-		<value>rentasun</value>
+		<value>alex0ren</value>
 	</config>
 	<config protected="true">
 		<key>SYSTEM_UPGRADE_PASSWORD</key>
-		<value>4b814d2d15c6b8003cac9af653460238</value>
+		<value>3cf53482455eb5f0aa727d6af16dc4bd</value>
 	</config>
 	<config protected="true">
 		<key>SYSTEM_FTP_SERVER</key>
-		<value>rentasurfboard.net</value>
+		<value>alex.rent-manager.com</value>
 	</config>
 	<config protected="true">
 		<key>SYSTEM_FTP_PATH</key>
@@ -66,11 +66,11 @@
 	</config>
 	<config protected="true">
 		<key>SYSTEM_FTP_USERNAME</key>
-		<value>rentasun</value>
+		<value>alex0ren</value>
 	</config>
 	<config protected="true">
 		<key>SYSTEM_FTP_PASSWORD</key>
-		<value>B74UqLBh~5XI</value>
+		<value>,W@n6h6d8</value>
 	</config>
 	<config protected="true">
 		<key>SYSTEM_INSTALL_DATE</key>

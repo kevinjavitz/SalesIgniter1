@@ -61,7 +61,7 @@ class QuickBooks_IPP_Cache
 		
 	}
 	
-	public function todo($resources = array(), $actions = array())
+	/*public function todo($resources = array(), $actions = array())
 	{
 		foreach ($resources as $resource)
 		{
@@ -72,7 +72,7 @@ class QuickBooks_IPP_Cache
 				
 			}
 		}
-	}
+	}*/
 	
 	public function initialized()
 	{

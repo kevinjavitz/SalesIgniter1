@@ -128,6 +128,7 @@ class Products extends Doctrine_Record {
 			'autoincrement' => false,
 			'scale'         => 4
 		));
+                
 		$this->hasColumn('products_date_added', 'timestamp', null, array(
 			'type'          => 'timestamp',
 			'primary'       => false,

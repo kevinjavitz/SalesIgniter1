@@ -67,7 +67,7 @@
 			));
 		}
 
-        if($pricingTypeName !== 'rental' && $pricingTypeName !== 'member_stream'){
+        if($pricingTypeName !== 'rental' && $pricingTypeName !== 'member_stream' && $pricingTypeName !== 'acquisition_cost'){
 			$inputNet = htmlBase::newElement('input')->addClass('netPricing');
 			$inputGross = htmlBase::newElement('input')->addClass('grossPricing');
 			if ($pricingTypeName == 'new'){
@@ -114,7 +114,7 @@
 					)
 				));
 
-        }
+                }
 
 		EventManager::notify('NewProductPricingTabBottom', (isset($Product) ? $Product : false), &$inputTable, &$pricingTypeName);
 		

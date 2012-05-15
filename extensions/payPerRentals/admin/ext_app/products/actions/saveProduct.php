@@ -12,7 +12,7 @@
 		$PayPerRental->max_type = (int)$_POST['reservation_max_type'];
 		$PayPerRental->deposit_amount = (float)$_POST['reservation_deposit_amount'];
 		$PayPerRental->insurance = (float)$_POST['reservation_insurance'];
-        $PayPerRental->min_period = (int)$_POST['reservation_min_period'];
+                 $PayPerRental->min_period = (int)$_POST['reservation_min_period'];
 		$PayPerRental->min_type = (int)$_POST['reservation_min_type'];
 
 
@@ -46,6 +46,12 @@
 			$PayPerRental->overbooking = (int)$_POST['reservation_overbooking'];
 		}else{
 			$PayPerRental->overbooking = '0';
+		}
+                
+                if (isset($_POST['reservation_consumption'])){
+			$PayPerRental->consumption = (int)$_POST['reservation_consumption'];
+		}else{
+			$PayPerRental->consumption = '0';
 		}
 		
 		$Product->save();

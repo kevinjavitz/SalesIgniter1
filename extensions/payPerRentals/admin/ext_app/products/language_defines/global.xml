@@ -17,6 +17,7 @@
 	<define key="TEXT_PAY_PER_RENTAL_MAX_DAYS"><![CDATA[Max rental days: ]]></define>
 	<define key="TEXT_PAY_PER_RENTAL_MAX_MONTHS"><![CDATA[Max rental months: ]]></define>
 	<define key="TEXT_PAY_PER_RENTAL_OVERBOOKING"><![CDATA[Allow overbooking: ]]></define>
+	<define key="TEXT_PAY_PER_RENTAL_CONSUMPTION"><![CDATA[Allow rental per consumption: ]]></define>
 	<define key="TEXT_PAY_PER_RENTAL_CHOOSE_PRODUCT"><![CDATA[Choose Product:]]></define>
 	<define key="TEXT_PAY_PER_RENTAL_COMBO_PRICE"><![CDATA[Special Combo Price:]]></define>
 	<define key="TEXT_PAY_PER_RENTAL_IN_COMBO"><![CDATA[Products in this combo]]></define>
