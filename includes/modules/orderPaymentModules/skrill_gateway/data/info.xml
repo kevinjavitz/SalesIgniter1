@@ -1,7 +1,7 @@
 <info>
-	<code>paypalipn</code>
-	<title_key>MODULE_PAYMENT_PAYPALIPN_TEXT_TITLE</title_key>
-	<description_key>MODULE_PAYMENT_PAYPALIPN_TEXT_DESCRIPTION</description_key>
+	<code>moneybookersgateway</code>
+	<title_key>MODULE_PAYMENT_MONEYBOOKERSGATEWAY_TEXT_TITLE</title_key>
+	<description_key>MODULE_PAYMENT_MONEYBOOKERSGATEWAY_TEXT_DESCRIPTION</description_key>
 	<installed_key>INSTALLED</installed_key>
 	<status_key>STATUS</status_key>
 	<zone_key>ZONE</zone_key>

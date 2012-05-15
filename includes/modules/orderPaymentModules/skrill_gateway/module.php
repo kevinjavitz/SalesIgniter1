@@ -1,25 +1,25 @@
 <?php
-class OrderPaymentPaypalipn extends StandardPaymentModule
+class OrderPaymentSkrill_gateway extends StandardPaymentModule
 {
 
 	public function __construct() {
 		/*
 		 * Default title and description for modules that are not yet installed
 		 */
-		$this->setTitle('Credit/Debit Card (via PayPal)');
-		$this->setDescription('Credit/Debit Card (via PayPal)');
+		$this->setTitle('MoneyBookers gateway');
+		$this->setDescription('MoneyBookers gateway');
 
-		$this->init('paypalipn');
+		$this->init('skrill_gateway');
 
 		if ($this->isEnabled() === true){
-			$this->email_footer = sysLanguage::get('MODULE_PAYMENT_PAYPALIPN_TEXT_EMAIL_FOOTER');
-			$this->identifier = 'osCommerce PayPal IPN v2.1';
+			$this->email_footer = sysLanguage::get('MODULE_PAYMENT_MONEYBOOKERS_GATEWAY_TEXT_EMAIL_FOOTER');
+			$this->identifier = 'osCommerce MoneyBookers Gateway';
 
-			if ($this->getConfigData('MODULE_PAYMENT_PAYPALIPN_GATEWAY_SERVER') == 'Live'){
-				$this->setFormUrl('https://www.paypal.com/cgi-bin/webscr');
+			if ($this->getConfigData('MODULE_PAYMENT_MONEYBOOKERS_GATEWAY_SERVER') == 'Live'){
+				$this->setFormUrl('https://www.moneybookers.com/app/payment.pl');
 			}
 			else {
-				$this->setFormUrl('https://www.sandbox.paypal.com/cgi-bin/webscr');
+				$this->setFormUrl('https://www.moneybookers.com/app/payment.pl');
 			}
 		}
 	}
@@ -134,7 +134,7 @@ class OrderPaymentPaypalipn extends StandardPaymentModule
 			$order_id = '';
 		}
 		if (Session::exists('cartID')){
-			Session::set('cart_PayPal_IPN_ID', Session::get('cartID') . '-' . $order_id);
+			Session::set('cart_MoneyBookers_GATEWAY_ID', Session::get('cartID') . '-' . $order_id);
 		}
 		else {
 			return false;
@@ -144,12 +144,12 @@ class OrderPaymentPaypalipn extends StandardPaymentModule
 	}
 
 	function process_cancel_button() {
-		$alias = $this->getConfigData('MODULE_PAYMENT_PAYPALIPN_ID');
+		$alias = $this->getConfigData('MODULE_PAYMENT_MONEYBOOKERSGATEWAY_ID');
 		$returnUrl = itw_app_link(null, 'account', 'membership_cancel', 'SSL');
 
 		$process_button_string = htmlBase::newElement('button')
 			->usePreset('continue')
-			->setHref('https://www.paypal.com/cgi-bin/webscr?cmd=_subscr-find&alias=' . $alias . '&return=' . $returnUrl)
+			->setHref(' https://www.moneybookers.com/app/payment.pl' . $alias . '&return=' . $returnUrl)
 			->draw();
 		return $process_button_string;
 	}
@@ -168,11 +168,11 @@ class OrderPaymentPaypalipn extends StandardPaymentModule
 			Session::set('planid', Session::get('plan_id'));
 		}
 
-		if ($this->getConfigData('MODULE_PAYMENT_PAYPALIPN_CURRENCY') == 'Selected Currency'){
+		if ($this->getConfigData('MODULE_PAYMENT_MONEYBOOKERSGATEWAY_CURRENCY') == 'Selected Currency'){
 			$my_currency = Session::get('currency');
 		}
 		else {
-			$my_currency = substr($this->getConfigData('MODULE_PAYMENT_PAYPALIPN_CURRENCY'), 5);
+			$my_currency = substr($this->getConfigData('MODULE_PAYMENT_MONEYBOOKERSGATEWAY_CURRENCY'), 5);
 		}
 
 		if (!in_array($my_currency, array('AUD', 'CAD', 'CHF', 'CZK', 'DKK', 'EUR', 'GBP', 'HKD', 'HUF', 'JPY', 'NOK', 'NZD', 'PLN', 'SEK', 'SGD', 'USD'))){
@@ -180,130 +180,69 @@ class OrderPaymentPaypalipn extends StandardPaymentModule
 		}
 
 		$parameters = array();
-		if (($this->getConfigData('MODULE_PAYMENT_PAYPALIPN_TRANSACTION_TYPE') == 'Per Item') && ($this->getConfigData('MODULE_PAYMENT_PAYPALIPN_EWP_STATUS') == 'False') && Session::exists('payment_rental') === false){
-			$parameters['cmd'] = '_cart';
-			$parameters['upload'] = '1';
-			$shipping = Session::get('shipping');
-			for($i = 0, $n = sizeof($order->products); $i < $n; $i++){
-				$item = $i + 1;
-				$tax_value = ($order->products[$i]['tax'] / 100) * $order->products[$i]['final_price'];
-
-				$parameters['item_name_' . $item] = $order->products[$i]['name'];
-				$parameters['amount_' . $item] = number_format($order->products[$i]['final_price'] * $currencies->get_value($my_currency), $currencies->get_decimal_places($my_currency));
-				$parameters['tax_' . $item] = number_format($tax_value * $currencies->get_value($my_currency), $currencies->get_decimal_places($my_currency));
-				$parameters['quantity_' . $item] = $order->products[$i]['qty'];
-
-				if ($i == 0){
-					if (sysConfig::get('DISPLAY_PRICE_WITH_TAX') == 'true'){
-						$shipping_cost = $order->info['shipping_cost'];
-					}
-					else {
-						$module = substr($shipping['id'], 0, strpos($shipping['id'], '_'));
-						$shipping_tax = tep_get_tax_rate($GLOBALS[$module]->tax_class, $deliveryAddress['entry_country_id'], $order->delivery['zone_id']);
-						$shipping_cost = $order->info['shipping_cost'] + tep_calculate_tax($order->info['shipping_cost'], $shipping_tax);
-					}
-
-					$parameters['shipping_' . $item] = number_format($shipping_cost * $currencies->get_value($my_currency), $currencies->get_decimal_places($my_currency));
-				}
-			}
-
-			$parameters['num_cart_items'] = $item;
-			$parameters['cmd'] = '_xclick';
-			if ($this->getConfigData('MOVE_TAX_TO_TOTAL_AMOUNT') == 'True'){
-				// PandA.nl move tax to total amount
-				$parameters['amount'] = number_format(($order->info['total'] - $order->info['shipping_cost']) * $currencies->get_value($my_currency), $currencies->get_decimal_places($my_currency));
-			}
-			else {
-				// default
-				$parameters['amount'] = number_format(($order->info['total'] - $order->info['shipping_cost'] - $order->info['tax']) * $currencies->get_value($my_currency), $currencies->get_decimal_places($my_currency));
-			}
-		}
-		else {
-			if ($onePageCheckout->isMembershipCheckout() === false){
-				$parameters['cmd'] = '_xclick';
-				$parameters['redirect_cmd'] = '_xclick';
-				$parameters['item_name'] = sysConfig::get('STORE_NAME');
-			}
-			$parameters['shipping'] = '0';
-
-			if ($this->getConfigData('MOVE_TAX_TO_TOTAL_AMOUNT') == 'True'){
-				// PandA.nl move tax to total amount
-				$parameters['amount'] = number_format($order->info['total'] * $currencies->get_value($my_currency), $currencies->get_decimal_places($my_currency));
-			}
-			else {
-				// default
-				$parameters['amount'] = number_format(($order->info['total'] - $order->info['tax']) * $currencies->get_value($my_currency), $currencies->get_decimal_places($my_currency));
-			}
-		}
+		
 
 		// billing information fix by gravyface
-		// for pre-populating the fiels if customer has no PayPal account
+		// for pre-populating the fiels if customer has no MoneyBookers account
 		// only works if force shipping address is set to FALSE
 		$state_abbr = tep_get_zone_code($deliveryAddress['entry_country_id'], $deliveryAddress['entry_zone_id'], $deliveryAddress['entry_state']);
 		$name = $deliveryAddress['entry_firstname'] . ' ' . $deliveryAddress['entry_lastname'];
 
-		$parameters['business'] = $this->getConfigData('MODULE_PAYMENT_PAYPALIPN_ID');
-		// let's check what has been defined in the shop admin for the shipping address
-		if ($this->getConfigData('MODULE_PAYMENT_PAYPALIPN_SHIPPING') == 'True'){
-			// all that matters is that we send the variables
-			// what they contain is irrelevant as PayPal overwrites it with the customer's confirmed PayPal address
-			// so what we send is probably not what we'll get back
-			$parameters['no_shipping'] = '2';
-			$parameters['address_name'] = $name;
-			$parameters['address_street'] = $deliveryAddress['entry_street_address'];
-			$parameters['address_city'] = $deliveryAddress['entry_city'];
-			$parameters['address_zip'] = $deliveryAddress['entry_postcode'];
-			$parameters['address_state'] = $state_abbr;
-			$parameters['address_country_code'] = $deliveryCountryInfo['countries_iso_code_2'];
-			$parameters['address_country'] = $deliveryAddress['countries']['countries_name'];
-			$parameters['payer_email'] = $onePageCheckout->onePage['info']['email_address'];
+                //Merchant details
+		$parameters['pay_to_email'] = $this->getConfigData('MODULE_PAYMENT_MONEYBOOKERSGATEWAY_ID');
+                $parameters['recipient_description'] = sysConfig::get('STORE_NAME');
+                $parameters['transaction_id'] = substr(Session::get('cart_MoneyBookers_GATEWAY_ID'), strpos(Session::get('cart_MoneyBookers_GATEWAY_ID'), '-') + 1);
+                
+                if (sysConfig::get('ENABLE_SSL') == 'true'){
+                        //$parameters['return_url'] = sysConfig::get('HTTPS_SERVER') . sysConfig::getDirWsCatalog() . 'ext/modules/payment/skrill_gateway/gateway.php';
+			$parameters['status_url'] = sysConfig::get('HTTPS_SERVER') . sysConfig::getDirWsCatalog() . 'ext/modules/payment/skrill_gateway/status.php';
 		}
 		else {
-			$parameters['no_shipping'] = '1';
-			$parameters['H_PhoneNumber'] = $onePageCheckout->onePage['info']['telephone'];
-			$parameters['first_name'] = $deliveryAddress['entry_firstname'];
-			$parameters['last_name'] = $deliveryAddress['entry_lastname'];
-			$parameters['address1'] = $deliveryAddress['entry_street_address'];
-			$parameters['address2'] = $deliveryAddress['entry_suburb'];
-			$parameters['city'] = $deliveryAddress['entry_city'];
-			$parameters['zip'] = $deliveryAddress['entry_postcode'];
-			$parameters['state'] = $state_abbr;
-			$parameters['country'] = $deliveryCountryInfo['countries_iso_code_2'];
-			$parameters['email'] = $onePageCheckout->onePage['info']['email_address'];
+                        //$parameters['return_url'] = sysConfig::get('HTTP_SERVER') . sysConfig::getDirWsCatalog() . 'ext/modules/payment/skrill_gateway/gateway.php';
+			$parameters['status_url'] = sysConfig::get('HTTP_SERVER') . sysConfig::getDirWsCatalog() . 'ext/modules/payment/skrill_gateway/status.php';
 		}
-
-		$parameters['currency_code'] = $my_currency;
-		$parameters['invoice'] = substr(Session::get('cart_PayPal_IPN_ID'), strpos(Session::get('cart_PayPal_IPN_ID'), '-') + 1);
-		$parameters['custom'] = Session::getSessionId() . ';' . $userAccount->getCustomerId() . ';' . $_SERVER['REMOTE_ADDR'];
-		//$parameters['custom'] = $userAccount->getCustomerId();
-		$parameters['no_note'] = '1';
-		//$parameters['notify_url'] = sysConfig::get('HTTP_SERVER') . sysConfig::getDirWsCatalog(). 'gateway_response.php';
-		if (sysConfig::get('ENABLE_SSL') == 'true'){
-			$parameters['notify_url'] = sysConfig::get('HTTPS_SERVER') . sysConfig::getDirWsCatalog() . 'ext/modules/payment/paypal_ipn/ipn.php';
+                
+                $parameters['return_url_text'] = sysLanguage::get('TEXT_RETURN_MERCHANT'). sysConfig::get('STORE_NAME');
+                
+                if ($this->getConfigData('MODULE_PAYMENT_MONEYBOOKERSGATEWAY_GATEWAY_HIDELOGIN') != 'Live'){
+			$parameters['hide_login'] = '1';
 		}
-		else {
-			$parameters['notify_url'] = sysConfig::get('HTTP_SERVER') . sysConfig::getDirWsCatalog() . 'ext/modules/payment/paypal_ipn/ipn.php';
+                
+                $parameters['logo_url'] = sysConfig::get('HTTPS_SERVER') . sysConfig::getDirWsCatalog() .'/templates/newred/images/logo.png';
+                $parameters['merchant_fields'] = Session::getSessionId() . ';' . $userAccount->getCustomerId() . ';' . $_SERVER['REMOTE_ADDR'];
+		
+                
+                //Customer details
+                $parameters['pay_from_email'] = $onePageCheckout->onePage['info']['email_address'];
+                $parameters['firstname'] = $deliveryAddress['entry_firstname'];
+		$parameters['lastname'] = $deliveryAddress['entry_lastname'];
+                $parameters['address1'] = $deliveryAddress['entry_street_address'];
+		$parameters['address2'] = $deliveryAddress['entry_suburb'];
+                $parameters['phone_number'] = $onePageCheckout->onePage['info']['telephone'];
+                $parameters['postal_code'] = $deliveryAddress['entry_postcode'];
+                $parameters['city'] = $deliveryAddress['entry_city'];
+                $parameters['state'] = $state_abbr;
+                $parameters['country'] = $deliveryCountryInfo['countries_iso_code_3'];
+                
+                //Payment details
+                $parameters['currency'] = $my_currency;
+                $parameters['detail1_description'] = "Id:";
+                $parameters['detail1_text'] = substr(Session::get('cart_MoneyBookers_GATEWAY_ID'), strpos(Session::get('cart_MoneyBookers_GATEWAY_ID'), '-') + 1);
+                
+                		
+		if ($this->getConfigData('MODULE_PAYMENT_MONEYBOOKERSGATEWAY_GATEWAY_SERVER') != 'Live'){
+			$parameters['test_gateway'] = '1';
 		}
-		if ($this->getConfigData('MODULE_PAYMENT_PAYPALIPN_GATEWAY_SERVER') != 'Live'){
-			$parameters['test_ipn'] = '1';
-		}
-		$parameters['cbt'] = '';
-		$parameters['rm'] = '2';
+		
 		if ($onePageCheckout->isMembershipCheckout() === false){
-			$parameters['return'] = itw_app_link(null, 'checkout', 'success', 'SSL');
-			$parameters['cancel_return'] = itw_app_link(null, 'checkout', 'default', 'SSL');
+			$parameters['return_url'] = itw_app_link(null, 'checkout', 'success', 'SSL');
+			$parameters['cancel_url'] = itw_app_link(null, 'checkout', 'default', 'SSL');
 		}
 		else {
-			$parameters['return'] = itw_app_link(null, 'checkout', 'success', 'SSL');
-			$parameters['cancel_return'] = itw_app_link(null, 'checkout', 'default', 'SSL');
+			$parameters['return_url'] = itw_app_link(null, 'checkout', 'success', 'SSL');
+			$parameters['cancel_url'] = itw_app_link(null, 'checkout', 'default', 'SSL');
 		}
-		$parameters['bn'] = $this->identifier;
-		$parameters['lc'] = $billingCountryInfo['countries_iso_code_2'];
-
-		if (tep_not_null($this->getConfigData('MODULE_PAYMENT_PAYPALIPN_PAGE_STYLE'))){
-			$parameters['page_style'] = $this->getConfigData('MODULE_PAYMENT_PAYPALIPN_PAGE_STYLE');
-		}
-
+		
 		if ($onePageCheckout->isMembershipCheckout() === true){
 			$Qcustomer = Doctrine_Query::create()
 				->from('Customers c')
@@ -321,63 +260,63 @@ class OrderPaymentPaypalipn extends StandardPaymentModule
 			if (isset($QplanInfo[0])){
 				$planInfo = $QplanInfo[0];
 
-				if ($this->getConfigData('MOVE_TAX_TO_TOTAL_AMOUNT') == 'True'){
-					$a3Value = $order->info['total'] * $currencies->get_value($my_currency);
-				}
-				else {
-					$a3Value = ($order->info['total'] - $order->info['tax']) * $currencies->get_value($my_currency);
-				}
+				$a3Value = $order->info['total'] * $currencies->get_value($my_currency);
+				
+				
 				$packagePrice = number_format($a3Value, $currencies->get_decimal_places($my_currency));
 
 				if ($planInfo['membership_days'] > 0){
 					$p3Val = $planInfo['membership_days'];
-					$t3Val = 'D';
+					$t3Val = 'day';
+                                       
 				}
 				elseif ($planInfo['membership_months'] > 0) {
 					$p3Val = $planInfo['membership_months'];
-					$t3Val = 'M';
+					$t3Val = 'month';
 				}
 
 				if($planInfo['reccurring'] == 1){
-					$parameters['cmd'] = '_xclick-subscriptions';
-					$parameters['custom'] = Session::getSessionId() . ';' . $userAccount->getCustomerId() . ';' . $_SERVER['REMOTE_ADDR']. ';'.'f'.';'.(Session::exists('refid')?Session::get('refid'):'n');
+					$parameters['merchant_fields'] = Session::getSessionId() . ';' . $userAccount->getCustomerId() . ';' . $_SERVER['REMOTE_ADDR']. ';'.'f'.';'.(Session::exists('refid')?Session::get('refid'):'n');
 					if (isset($p3Val)){
-						$parameters['p3'] = $p3Val;
-						$parameters['t3'] = $t3Val;
+						$parameters['rec_period'] = $p3Val;
+						$parameters['rec_cycle'] = $t3Val;
+                                                $parameters['rec_amount'] = $packagePrice;
 					}
 					if ($planInfo['free_trial'] > 0){
-						$parameters['a1'] = $planInfo['free_trial_amount'];
-						$parameters['p1'] = $planInfo['free_trial'];
-						$parameters['t1'] = 'D';
-					}
-					$parameters['item_name'] = $planInfo['MembershipPlanDescription'][0]['name'];
-					$parameters['no_note'] = '1';
-					$parameters['a3'] = $packagePrice;
-					//$parameters['modify'] = '1';
-					$parameters['src'] = '1';
-					$parameters['sra'] = '1';
-
+						$parameters['rec_period'] = $planInfo['free_trial'];
+						$parameters['rec_cycle'] = 'day';
+                                                $parameters['rec_amount'] = $planInfo['free_trial_amount'];
+					}										
+					
 				}else{
-					$parameters['cmd'] = '_xclick';
+					$parameters['merchant_fields'] = Session::getSessionId() . ';' . $userAccount->getCustomerId() . ';' . $_SERVER['REMOTE_ADDR'] .';nonrecurring'.';'.(Session::exists('refid')?Session::get('refid'):'n');
 					$parameters['amount'] = $packagePrice;
-					$parameters['item_name'] = $planInfo['MembershipPlanDescription'][0]['name'];
-					$parameters['redirect_cmd'] = '_xclick';
-					$parameters['custom'] = Session::getSessionId() . ';' . $userAccount->getCustomerId() . ';' . $_SERVER['REMOTE_ADDR'] .';nonrecurring'.';'.(Session::exists('refid')?Session::get('refid'):'n');
-				}
-			}
-		}
+					
+                                }
+                                
+                                if (sysConfig::get('ENABLE_SSL') == 'true'){
+                                        $parameters['rec_status_url'] = sysConfig::get('HTTPS_SERVER') . sysConfig::getDirWsCatalog() . 'ext/modules/payment/skrill_gateway/gateway.php';
+                                }
+                                else {
+                                        $parameters['rec_status_url'] = sysConfig::get('HTTP_SERVER') . sysConfig::getDirWsCatalog() . 'ext/modules/payment/skrill_gateway/gateway.php';
+                                }
+                        }
 
-		if ($this->getConfigData('MODULE_PAYMENT_PAYPALIPN_EWP_STATUS') == 'True'){
-			$process_button_string = tep_draw_hidden_field('cmd', '_s-xclick') . "\n" .
-				tep_draw_hidden_field('encrypted', $this->buildEwpString($parameters)) . "\n";
+                }else{
+					
+			$parameters['amount'] = number_format(($order->info['total']) * $currencies->get_value($my_currency), $currencies->get_decimal_places($my_currency));
 		}
-		else {
-			$process_button_string = '';
-			while(list($key, $value) = each($parameters)){
-				$process_button_string .= tep_draw_hidden_field($key, $value) . "\n";
-			}
+                
+                if (isset($onePageCheckout->onePage['info']['account_action']) === true){
+			$parameters['merchant_fields'] .= $onePageCheckout->onePage['info']['account_action']; 
+                }
+                    
+		$process_button_string = '';
+		while(list($key, $value) = each($parameters)){
+			$process_button_string .= tep_draw_hidden_field($key, $value) . "\n";
 		}
-		if ($this->getConfigData('MODULE_PAYMENT_PAYPALIPN_DEBUG_EMAIL') != ''){
+		
+		if ($this->getConfigData('MODULE_PAYMENT_MONEYBOOKERSGATEWAY_DEBUG_EMAIL') != ''){
 			$email_body = $process_button_string;
 			/*To Debug
 			$myFile = sysConfig::getDirFsCatalog(). 'file2.txt';
@@ -385,7 +324,7 @@ class OrderPaymentPaypalipn extends StandardPaymentModule
 			fwrite($fh, '\n'.$email_body.'\n');
 			fclose($fh);
 			End Debug*/
-			tep_mail(sysConfig::get('STORE_OWNER'), $this->getConfigData('MODULE_PAYMENT_PAYPALIPN_DEBUG_EMAIL'), sprintf(sysLanguage::get('EMAIL_SUBJECT'), 'PayPal Debug'), htmlentities($email_body), 'Paypal Debug', sysConfig::get('STORE_OWNER_EMAIL_ADDRESS'));
+			tep_mail(sysConfig::get('STORE_OWNER'), $this->getConfigData('MODULE_PAYMENT_MONEYBOOKERSGATEWAY_DEBUG_EMAIL'), sprintf(sysLanguage::get('EMAIL_SUBJECT'), 'MoneyBookers Debug'), htmlentities($email_body), 'MoneyBookers Debug', sysConfig::get('STORE_OWNER_EMAIL_ADDRESS'));
 		}
 
 		//echo $process_button_string;
@@ -393,74 +332,8 @@ class OrderPaymentPaypalipn extends StandardPaymentModule
 		return $process_button_string;
 	}
 
-	private function buildEwpString(&$parameters) {
-		global $userAccount;
-		$parameters['cert_id'] = $this->getConfigData('MODULE_PAYMENT_PAYPALIPN_EWP_CERT_ID');
-		$random_string = rand(100000, 999999) . '-' . $userAccount->getCustomerId() . '-';
-		$data = '';
-		while(list($key, $value) = each($parameters)){
-			$data .= $key . '=' . $value . "\n";
-		}
-
-		$openSslPath = $this->getConfigData('MODULE_PAYMENT_PAYPALIPN_EWP_OPENSSL');
-		$ipnId = $this->getConfigData('MODULE_PAYMENT_PAYPALIPN_ID');
-		$ewpWorkingDir = $this->getConfigData('MODULE_PAYMENT_PAYPALIPN_EWP_WORKING_DIRECTORY') . '/';
-		$payPalKeyFile = $this->getConfigData('MODULE_PAYMENT_PAYPALIPN_EWP_PUBLIC_KEY');
-		$publicKeyFile = $this->getConfigData('MODULE_PAYMENT_PAYPALIPN_EWP_PUBLIC_KEY');
-		$privateKeyFile = $this->getConfigData('MODULE_PAYMENT_PAYPALIPN_EWP_PRIVATE_KEY');
-		$payPalKey = file_get_contents($payPalKeyFile);
-		$publicKey = file_get_contents($publicKeyFile);
-		$privateKey = file_get_contents($privateKeyFile);
-		$dataFile = $ewpWorkingDir . $random_string . 'data.txt';
-		$signedFile = $ewpWorkingDir . $random_string . 'signed.txt';
-		$encryptedFile = $ewpWorkingDir . $random_string . 'encrypted.txt';
-
-		$fp = fopen($dataFile, 'w');
-		fwrite($fp, $data);
-		fclose($fp);
-		unset($data);
-
-		if (function_exists('openssl_pkcs7_sign') && function_exists('openssl_pkcs7_encrypt')){
-			openssl_pkcs7_sign($dataFile, $signedFile, $publicKey, $privateKey, array('From' => $ipnId), PKCS7_BINARY);
-			unlink($dataFile);
-			// remove headers from the signature
-			$signed = file_get_contents($signedFile);
-			$signed = explode("\n\n", $signed);
-			$signed = base64_decode($signed[1]);
-
-			$fp = fopen($signedFile, 'w');
-			fwrite($fp, $signed);
-			fclose($fp);
-			unset($signed);
-
-			openssl_pkcs7_encrypt($signedFile, $encryptedFile, $payPalKey, array('From' => $ipnId), PKCS7_BINARY);
-			unlink($signedFile);
-
-			// remove headers from the encrypted result
-			$data = file_get_contents($encryptedFile);
-			$data = explode("\n\n", $data);
-			$data = '-----BEGIN PKCS7-----' . "\n" . $data[1] . "\n" . '-----END PKCS7-----';
-
-			unlink($encryptedFile);
-		}
-		else {
-			exec($openSslPath . ' smime -sign -in ' . $dataFile . ' -signer ' . $publicKeyFile . ' -inkey ' . $privateKeyFile . ' -outform der -nodetach -binary > ' . $signedFile);
-			unlink($dataFile);
-
-			exec($openSslPath . ' smime -encrypt -des3 -binary -outform pem ' . $payPalKeyFile . ' < ' . $signedFile . ' > ' . $encryptedFile);
-			unlink($signedFile);
-
-			$fh = fopen($encryptedFile, 'rb');
-			$data = fread($fh, filesize($encryptedFile));
-			fclose($fh);
-
-			unlink($encryptedFile);
-		}
-		return $data;
-	}
-
 	function processPayment($orderID = null, $amount = null){
-		Session::remove('cart_PayPal_IPN_ID');
+		Session::remove('cart_MoneyBookers_GATEWAY_ID');
 		/*global $ShoppingCart;
 
 		$ShoppingCart->emptyCart(true);
@@ -471,17 +344,17 @@ class OrderPaymentPaypalipn extends StandardPaymentModule
 		Session::remove('payment');
 		Session::remove('comments');
 
-		Session::remove('cart_PayPal_IPN_ID');
+		Session::remove('cart_MoneyBookers_IPN_ID');
 		tep_redirect(itw_app_link(null, 'checkout', 'success', 'SSL'));*/
 	}
 
 	function processPaymentCron($orderID) {
 		global $order;
-		$order_status_id = OrderPaymentModules::getModule('paypalipn')->getConfigData('MODULE_PAYMENT_PAYPALIPN_COMP_ORDER_STATUS_ID');
+		$order_status_id = OrderPaymentModules::getModule('skrill_gateway')->getConfigData('MODULE_PAYMENT_MONEYBOOKERSGATEWAY_COMP_ORDER_STATUS_ID');
 		$newStatus = new OrdersPaymentsHistory();
 		$newStatus->orders_id = $orderID;
-		$newStatus->payment_module = 'paypal_ipn';
-		$newStatus->payment_method = 'Paypal';
+		$newStatus->payment_module = 'skrill_gateway';
+		$newStatus->payment_method = 'MoneyBookers';
 		$newStatus->gateway_message = 'Successfull payment';
 		$newStatus->payment_amount = $order->info['total'];
 		$newStatus->card_details = 'NULL';
@@ -499,7 +372,7 @@ class OrderPaymentPaypalipn extends StandardPaymentModule
 		$newOrdersStatus->orders_status_id = $order_status_id;
 		$newOrdersStatus->date_added = date('Y-m-d H:i:s');
 		$newOrdersStatus->customer_notified = '0';
-		$newOrdersStatus->comments = 'PayPal IPN (Not Verified Transaction)';
+		$newOrdersStatus->comments = 'MoneyBookers GATEWAY (Not Verified Transaction)';
 		$newOrdersStatus->save();
 		$order->info['payment_method'] = $this->getTitle();
 
@@ -513,7 +386,7 @@ class OrderPaymentPaypalipn extends StandardPaymentModule
 			->from('OrdersStatus s')
 			->leftJoin('s.OrdersStatusDescription sd')
 			->where('sd.language_id = ?', (int)Session::get('languages_id'))
-			->andWhere('sd.orders_status_name=?', 'Preparing [PayPal IPN]')
+			->andWhere('sd.orders_status_name=?', 'Preparing [MoneyBookers GATEWAY]')
 			->orderBy('s.orders_status_id')
 			->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 
@@ -526,7 +399,7 @@ class OrderPaymentPaypalipn extends StandardPaymentModule
 			$Description = $Status->OrdersStatusDescription;
 			foreach(sysLanguage::getLanguages() as $lInfo){
 				$Description[$lInfo['id']]->language_id = $lInfo['id'];
-				$Description[$lInfo['id']]->orders_status_name = 'Preparing [PayPal IPN]';
+				$Description[$lInfo['id']]->orders_status_name = 'Preparing [MoneyBookers GATEWAY]';
 			}
 
 			$Status->save();
@@ -536,7 +409,7 @@ class OrderPaymentPaypalipn extends StandardPaymentModule
 		$Qupdate = Doctrine_Query::create()
 			->update('ModulesConfiguration')
 			->set('configuration_value', '?', (empty($status_id) ? '1' : $status_id))
-			->where('configuration_key = ?', 'MODULE_PAYMENT_PAYPALIPN_PREPARE_ORDER_STATUS_ID')
+			->where('configuration_key = ?', 'MODULE_PAYMENT_MONEYBOOKERSGATEWAY_PREPARE_ORDER_STATUS_ID')
 			->execute();
 	}
 }
