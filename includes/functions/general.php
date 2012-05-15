@@ -382,7 +382,7 @@ function tep_get_zone_name($country_id, $zone_id, $default_zone) {
 function tep_get_zone_code($country_id, $zone_id, $default_zone) {
 	$ResultSet = Doctrine_Manager::getInstance()
 		->getCurrentConnection()
-		->fetchArray("select zone_code from zones where zone_country_id = '" . (int)$country_id . "' and zone_id = '" . (int)$zone_id . "'");
+		->fetchAssoc("select zone_code from zones where zone_country_id = '" . (int)$country_id . "' and zone_id = '" . (int)$zone_id . "'");
 
 	if (sizeof($ResultSet) <= 0){
 		$state_prov_code = $default_zone;
@@ -492,12 +492,12 @@ function tep_get_zone_code($country_id, $zone_id, $default_zone) {
 
 ////
 // Add tax to a products price
-function tep_add_tax($price, $tax) {
+function tep_add_tax($price, $tax, $force = false) {
 	global $currencies;
 	//die(DISPLAY_PRICE_WITH_TAX);
 
-	if ((sysConfig::get('DISPLAY_PRICE_WITH_TAX') == 'true') && ($tax > 0)){
-		return tep_round($price, $currencies->currencies[Session::get('currency')]['decimal_places']) + tep_calculate_tax($price, $tax);
+	if ((sysConfig::get('DISPLAY_PRICE_WITH_TAX') == 'true' || $force == true) && ($tax > 0)){
+		return tep_round($price + tep_calculate_tax($price, $tax), $currencies->currencies[Session::get('currency')]['decimal_places']);
 	}
 	else {
 		return tep_round($price, $currencies->currencies[Session::get('currency')]['decimal_places']);

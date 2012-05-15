@@ -1,0 +1,33 @@
+<configurations>
+	<configuration>
+		<tab><![CDATA[General]]></tab>
+		<title><![CDATA[Installed Status]]></title>
+		<key><![CDATA[INSTALLED]]></key>
+		<value><![CDATA[False]]></value>
+		<description><![CDATA[Tells if the module is installed or not]]></description>
+		<set_function><![CDATA[tep_cfg_show_installed_status(]]></set_function>
+	</configuration>
+	<configuration>
+		<tab><![CDATA[General]]></tab>
+		<title><![CDATA[Display Total]]></title>
+		<key><![CDATA[STATUS]]></key>
+		<value><![CDATA[False]]></value>
+		<description><![CDATA[Do you want to display the total order value?]]></description>
+		<set_function><![CDATA[tep_cfg_select_option(array('True', 'False'),]]></set_function>
+	</configuration>
+	<configuration>
+		<tab><![CDATA[General]]></tab>
+		<title><![CDATA[Display Order]]></title>
+		<key><![CDATA[DISPLAY_ORDER]]></key>
+		<value><![CDATA[40]]></value>
+		<description><![CDATA[Display Order. Lowest is displayed first.]]></description>
+	</configuration>
+	<configuration>
+		<tab><![CDATA[General]]></tab>
+		<title><![CDATA[Order Minimum Amount]]></title>
+		<key><![CDATA[MODULE_ORDER_TOTAL_MINORDER_AMOUNT]]></key>
+		<value><![CDATA[50]]></value>
+		<description><![CDATA[Minimum order amount.]]></description>
+		<use_function><![CDATA[currencies->format]]></use_function>
+	</configuration>
+</configurations>

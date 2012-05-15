@@ -599,6 +599,7 @@ class OrderProcessor {
 		$emailEvent->setVar('order_id', (isset($this->newOrder['orderID'])?$this->newOrder['orderID']:$this->orderId));
 		$emailEvent->setVar('invoice_link', itw_app_link('order_id=' . (isset($this->newOrder['orderID'])?$this->newOrder['orderID']:$this->orderId), 'account', 'history_info', 'SSL', false));
 		$emailEvent->setVar('date_ordered', strftime(sysLanguage::getDateFormat('long')));
+		$emailEvent->setVar('full_name', $userAccount->getFullName());
 		$emailEvent->setVar('ordered_products', (isset($this->newOrder['productsOrdered']) ? $this->newOrder['productsOrdered'] : ((isset($products_ordered)&&(!empty($products_ordered)))?$products_ordered:$this->products_ordered) ));
 		$emailEvent->setVar('billing_address', $billToFormatted);
 		if(sysConfig::get('ONEPAGE_CHECKOUT_SHIPPING_ADDRESS') == 'true'){
@@ -626,15 +627,8 @@ class OrderProcessor {
 		}
 		$emailEvent->setVar('orderTotals', $orderTotals);
 
-		/*
-		 * @TODO: Why is ['payment_module'] == payment method title, it should be ['payment_method'] == payment method title
-		 */
 		if (!empty($this->info['payment_module'])){
 			$emailEvent->setVar('paymentTitle', $this->info['payment_module']);
-			if ($this->info['payment_module'] == 'po'){
-				$emailEvent->setVar('po_number', 'P.O. Number: ' . $this->info['po_number']);
-			}
-
 		}
 
 		/*to debug
@@ -659,27 +653,57 @@ class OrderProcessor {
 		}
 
 		$sendVariables = array();
+
 		EventManager::notify('OrderBeforeSendEmail', &$currentOrder, &$emailEvent, &$products_ordered, &$sendVariables);
 
-		$sendVariables['emails'][] = $userAccount->getEmailAddress();
-		if (sysConfig::get('SEND_EXTRA_ORDER_EMAILS_TO') != '') {
-			$sendVariables['emails'][] = sysConfig::get('SEND_EXTRA_ORDER_EMAILS_TO');
-		}
+		$sendVariables['email'] = $userAccount->getEmailAddress();
 		$sendVariables['name'] = $userAccount->getFullName();
+		$emailEvent->sendEmail($sendVariables);
 
-		foreach($sendVariables['emails'] as $emalAdd){
-			$sendVariables['email'] = $emalAdd;
-			$emailEvent->sendEmail($sendVariables);
+		if(isset($sendVariables['emails']) && is_array($sendVariables['emails'])){
+			foreach($sendVariables['emails'] as $email){
+				$email = trim($email);
+				$matches = array();
+				if (strstr($email, '<')){
+					preg_match('/([a-zA-Z 0-9]+)\<(.*)\>/', $email, &$matches);
+				}elseif (strstr($email, '@')){
+					$matches = array(
+						$userAccount->getFullName(),
+						$email
+					);
+				}
+
+				if (!empty($matches)){
+					$emailEvent->sendEmail(array(
+							'email' => $matches[2],
+							'name'  => $matches[1]
+						));
+				}
+			}
 		}
 
-		/*
 		if (sysConfig::get('SEND_EXTRA_ORDER_EMAILS_TO') != '') {
-			$emailEvent->sendEmail(array(
-					'email' => sysConfig::get('SEND_EXTRA_ORDER_EMAILS_TO'),
-					'name'  => ''
-				));
-		} */
+			$extraEmails = sysConfig::get('SEND_EXTRA_ORDER_EMAILS_TO');
+			foreach(explode(',', $extraEmails) as $email){
+				$email = trim($email);
+				$matches = array();
+				if (strstr($email, '<')){
+					preg_match('/([a-zA-Z 0-9]+)\<(.*)\>/', $email, &$matches);
+				}elseif (strstr($email, '@')){
+					$matches = array(
+						$userAccount->getFullName(),
+						$email
+					);
+				}
 
+				if (!empty($matches)){
+					$emailEvent->sendEmail(array(
+						'email' => $matches[2],
+						'name'  => $matches[1]
+					));
+				}
+			}
+		}
 	}
 }
 ?>

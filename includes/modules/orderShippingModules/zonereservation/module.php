@@ -160,6 +160,7 @@ class OrderShippingZonereservation extends OrderShippingModuleBase
 						'details' => $mInfo['details'],
 						'days_before' => $mInfo['days_before'],
 						'days_after' => $mInfo['days_after'],
+						'free_delivery_over' => $mInfo['free_delivery_over'],
 						'min_rental_number'    => $mInfo['min_rental_number'],
 						'min_rental_type'    => $mInfo['min_rental_type'],
 						'zone' => $mInfo['zone']

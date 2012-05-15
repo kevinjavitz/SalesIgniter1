@@ -22,7 +22,7 @@ class InfoBoxCustomImage extends InfoBoxAbstract {
 			$return = '';
 			if (isset($WidgetSettings->images) && sizeof($WidgetSettings->images) == 1){
 				foreach($WidgetSettings->images as $iInfo){
-					if (isset($iInfo->image->{Session::get('languages_id')})){
+					if (isset($iInfo->image->{Session::get('languages_id')}) && file_exists(sysConfig::getDirFsCatalog().fixImagesPath($iInfo->image->{Session::get('languages_id')}))){
 						$return = '<img src="' . fixImagesPath($iInfo->image->{Session::get('languages_id')}) . '" />';
 						break;
 					}
@@ -62,19 +62,20 @@ class InfoBoxCustomImage extends InfoBoxAbstract {
 				$ImageHtml = array();
 				foreach($boxWidgetProperties->images as $iInfo){
 					$linkInfo = $iInfo->link;
-			
-					$ImageEl = htmlBase::newElement('image')
-						->setSource(fixImagesPath($iInfo->image->{Session::get('languages_id')}));
-			
-					if ($linkInfo !== false){
-						$LinkEl = htmlBase::newElement('a')
-							->append($ImageEl);
-						$this->parseLink($LinkEl, $linkInfo);
+			        if(file_exists(sysConfig::getDirFsCatalog(). fixImagesPath($iInfo->image->{Session::get('languages_id')}))){
+						$ImageEl = htmlBase::newElement('image')
+							->setSource(fixImagesPath($iInfo->image->{Session::get('languages_id')}));
 
-						$ImageHtml[] = $LinkEl->draw();
-					}else{
-						$ImageHtml[] = $ImageEl->draw();
-					}
+						if ($linkInfo !== false){
+							$LinkEl = htmlBase::newElement('a')
+								->append($ImageEl);
+							$this->parseLink($LinkEl, $linkInfo);
+
+							$ImageHtml[] = $LinkEl->draw();
+						}else{
+							$ImageHtml[] = $ImageEl->draw();
+						}
+			        }
 				}
 				$htmlText = implode('', $ImageHtml);
 			}	

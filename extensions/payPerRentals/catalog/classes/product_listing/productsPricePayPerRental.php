@@ -69,7 +69,7 @@ class productListing_productsPricePayPerRental {
 				$isav = false;
 				$deleteS = false;
 				$isdouble = false;
-				if(Session::exists('isppr_inventory_pickup') === false && Session::exists('isppr_city') === true && Session::get('isppr_city') != ''){
+				//if(Session::exists('isppr_inventory_pickup') === false){ //&& Session::exists('isppr_city') === true && Session::get('isppr_city') != ''){
 					$Qproducts = Doctrine_Query::create()
 					->from('ProductsInventoryBarcodes b')
 					->leftJoin('b.ProductsInventory i')
@@ -110,7 +110,7 @@ class productListing_productsPricePayPerRental {
 						Session::set('isppr_inventory_pickup', $Qproducts[0]['ProductsInventoryBarcodesToInventoryCenters']['ProductsInventoryCenters']['inventory_center_id']);
 						$deleteS = true;
 					}
-				}
+				//}
 				$hasInventory = $purchaseTypeClass->hasInventory();
 				if(Session::exists('isppr_selected') && Session::get('isppr_selected') == true && $hasInventory){
 					$start_date = '';

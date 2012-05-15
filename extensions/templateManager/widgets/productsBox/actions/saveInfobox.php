@@ -8,6 +8,9 @@ if (isset($_POST['products_box_query']) && !empty($_POST['products_box_query']))
 		'block_width' => $_POST['products_box_block_width'],
 		'block_height' => $_POST['products_box_block_height'],
 	);
+	if(isset($_POST['new_selected_category']) && $_POST['new_selected_category'] != '-1' && $_POST['products_box_query'] == 'category_featured'){
+		$config['selected_category'] = $_POST['new_selected_category'];
+	}
 }
 
 $WidgetProperties['id'] = $_POST['products_box_id'];

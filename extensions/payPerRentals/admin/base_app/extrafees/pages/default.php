@@ -2,7 +2,7 @@
 	$QFees = Doctrine_Query::create()
 	->from('PayPerRentalExtraFees');
 	
-	$tableGrid = htmlBase::newElement('grid')
+	$tableGrid = htmlBase::newElement('newGrid')
 	->usePagination(true)
 	->setPageLimit((isset($_GET['limit']) ? (int)$_GET['limit']: 25))
 	->setCurrentPage((isset($_GET['page']) ? (int)$_GET['page'] : 1))
@@ -118,12 +118,51 @@
 			 ->usePreset('cancel')
 			 ->setHref(itw_app_link(tep_get_all_get_params(array('action', 'appPage')), null, 'default', 'SSL'));
 
+			  $timefeesTabsObj = htmlBase::newElement('tabs')
+				 ->setId('timefeesTabs');
 
-			 $infoBox->addContentRow($htmlTimeFeeName->draw());
-			 $infoBox->addContentRow($htmlTimeFeeDescription->draw());
-			 $infoBox->addContentRow($htmlMandatory->draw());
-			 $infoBox->addContentRow($htmlTimeFeeFee->draw());
-			 $infoBox->addContentRow($htmlTimeFeeHours->draw());
+			 $inputTable = htmlBase::newElement('table')
+				 ->setCellPadding(2)
+				 ->setCellSpacing(0);
+
+			 $inputTable->addBodyRow(array(
+					 'columns' => array(
+						 array('colspan' => 2,'text' => $htmlTimeFeeName->draw())
+					 )
+				 ));
+			 $inputTable->addBodyRow(array(
+					 'columns' => array(
+						 array('colspan' => 2,'text' => $htmlTimeFeeDescription->draw())
+					 )
+				 ));
+			 $inputTable->addBodyRow(array(
+					 'columns' => array(
+						 array('colspan' => 2,'text' => $htmlTimeFeeFee->draw())
+					 )
+				 ));
+
+			 $inputTable->addBodyRow(array(
+					 'columns' => array(
+						 array('colspan' => 2,'text' => $htmlTimeFeeHours->draw())
+					 )
+				 ));
+			 $inputTable->addBodyRow(array(
+					 'columns' => array(
+						 array('colspan' => 2,'text' => $htmlMandatory->draw())
+					 )
+				 ));
+
+			 $timefeesTabsObj->addTabHeader('timefeesTab1', array('text' => 'Fees'))
+				 ->addTabPage('timefeesTab1', array('text' => $inputTable));
+
+			 $multiStore = $appExtension->getExtension('multiStore');
+			 if ($multiStore !== false && $multiStore->isEnabled() === true){
+				 if (isset($multiStore->pagePlugin)){
+					 $multiStore->pagePlugin->loadTabs($timefeesTabsObj);
+				 }
+			 }
+
+			 $infoBox->addContentRow($timefeesTabsObj->draw());
 			 $infoBox->addButton($saveButton)->addButton($cancelButton);
 
 			 break;
@@ -146,7 +185,7 @@
 ?>
  <div class="pageHeading"><?php echo sysLanguage::get('HEADING_TITLE');?></div>
  <br />
- <div style="width:75%;float:left;">
+ <div style="width:50%;float:left;">
   <div class="ui-widget ui-widget-content ui-corner-all" style="width:99%;margin-right:5px;margin-left:5px;">
    <div style="width:99%;margin:5px;"><?php echo $tableGrid->draw();?></div>
   </div>
@@ -158,4 +197,4 @@
   	        ->draw();
   ?></div>
  </div>
- <div style="width:25%;float:right;"><?php echo $infoBox->draw();?></div>
+ <div style="width:50%;float:right;"><?php echo $infoBox->draw();?></div>

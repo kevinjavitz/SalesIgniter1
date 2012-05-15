@@ -65,7 +65,7 @@
 		</EXTENSION_PDF_PRINTER_ESTIMATE_LAYOUT>
 		<EXTENSION_PDF_PRINTER_AGREEMENT_LAYOUT>
 			<title>Select Agreement Layout</title>
-			<value>2</value>
+			<value>1</value>
 			<description>Select Agreement Layout</description>
 			<sort_order>1</sort_order>
 			<use_function><![CDATA[tep_cfg_get_layout_name]]></use_function>
@@ -73,7 +73,7 @@
 		</EXTENSION_PDF_PRINTER_AGREEMENT_LAYOUT>
 		<EXTENSION_PDF_PRINTER_PACKING_SLIP_LAYOUT>
 			<title>Select Packing Slip Layout</title>
-			<value>2</value>
+			<value>1</value>
 			<description>Select Packing Slip Layout</description>
 			<sort_order>1</sort_order>
 			<use_function><![CDATA[tep_cfg_get_layout_name]]></use_function>

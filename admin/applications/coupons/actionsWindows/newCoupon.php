@@ -53,6 +53,8 @@
 	//$infoBox->addContentRow(sysLanguage::get('TEXT_INFO_COUPON_CUSTOMERS') . ' - ' . sysLanguage::get('TEXT_INFO_COUPON_CUSTOMERS_HELP') . '<br>' . tep_draw_input_field('restrict_to_customers', $Coupon->restrict_to_customers));
 	$infoBox->addContentRow(sysLanguage::get('TEXT_INFO_COUPON_STARTDATE') . ' - ' . sysLanguage::get('TEXT_INFO_COUPON_STARTDATE_HELP') . '<br>' . tep_draw_input_field('coupon_start_date', $Coupon->coupon_start_date));
 	$infoBox->addContentRow(sysLanguage::get('TEXT_INFO_COUPON_FINISHDATE') . ' - ' . sysLanguage::get('TEXT_INFO_COUPON_FINISHDATE_HELP') . '<br>' . tep_draw_input_field('coupon_expire_date', $Coupon->coupon_expire_date));
+
+	$infoBox->addContentRow(sysLanguage::get('TEXT_INFO_COUPON_NUMBER_DAYS_MEMBERSHIP') . '<br>' . tep_draw_input_field('number_days_membership', $Coupon->number_days_membership));
 	
 	$infoBox->addContentRow(sysLanguage::get('TEXT_INFO_COUPON_NAME') . ' - ' . sysLanguage::get('TEXT_INFO_COUPON_NAME_HELP'));
 	foreach(sysLanguage::getLanguages() as $lInfo){

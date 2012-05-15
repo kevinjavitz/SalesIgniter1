@@ -83,9 +83,9 @@ class Extension_inventoryCenters extends ExtensionBase {
             $Qproducts->leftJoin('p.ProductsDownloads pdl')
                 ->orwhere('p.products_id = pdl.products_id');
         }
-		if (Session::exists('isppr_inventory_pickup') === true && Session::get('isppr_inventory_pickup') != ''){
+		/*if (Session::exists('isppr_inventory_pickup') === true && Session::get('isppr_inventory_pickup') != ''){
 			$Qproducts->andWhere('ic.inventory_center_id = ?', Session::get('isppr_inventory_pickup'));
-		}
+		} */ //todo check this part might need improvement
 		if($this->ignoreCenter == false){
 			$Qproducts->andWhere('i.use_center = ?', '1');
 		}
@@ -330,17 +330,19 @@ class Extension_inventoryCenters extends ExtensionBase {
 
 	public function OrdersProductsReservationListingBeforeExecuteUtilities(&$Qorders){
 		global $Editor, $appExtension;
-		$Qorders->leftJoin('ib.ProductsInventoryBarcodesToInventoryCenters b2c');
+		if($this->stockMethod == 'Zone') {
+			$Qorders->leftJoin('ib.ProductsInventoryBarcodesToInventoryCenters b2c');
 
-		if ($appExtension->isAdmin()){
-			if (is_object($Editor) && $Editor->hasData('inventory_center_id')){
-				$Qorders->andWhere('b2c.inventory_center_id = ?', $Editor->getData('inventory_center_id'));
+			if ($appExtension->isAdmin()){
+				if (is_object($Editor) && $Editor->hasData('inventory_center_id')){
+					$Qorders->andWhere('b2c.inventory_center_id = ?', $Editor->getData('inventory_center_id'));
+				}else{
+					$Qorders->andWhereIn('b2c.inventory_center_id', Session::get('isppr_inventory_pickup'));
+				}
 			}else{
-				$Qorders->andWhereIn('b2c.inventory_center_id', Session::get('isppr_inventory_pickup'));
-			}
-		}else{
-			if(Session::exists('isppr_inventory_pickup') === true){
-				$Qorders->andWhere('b2c.inventory_center_id = ?', Session::get('isppr_inventory_pickup'));
+				if(Session::exists('isppr_inventory_pickup') === true){
+					$Qorders->andWhere('b2c.inventory_center_id = ?', Session::get('isppr_inventory_pickup'));
+				}
 			}
 		}
 

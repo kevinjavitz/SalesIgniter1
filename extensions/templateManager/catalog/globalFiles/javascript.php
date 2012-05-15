@@ -12,7 +12,11 @@ else {
 }
 $import = '';
 if (isset($_GET['import']) && !empty($_GET['import'])){
-	$import = $_GET['import'];
+	if(is_array($_GET['import'])){
+		$import = implode(',', $_GET['import']);
+	}else{
+		$import = $_GET['import'];
+	}
 }
 $cacheKey = $env . '-javascript-' . $templateDir . '-' . md5($layoutId . '-' . $import);
 
@@ -199,8 +203,8 @@ else {
 		sysConfig::getDirFsCatalog() . 'ext/jQuery/ui/jquery.ui.dialog.js',
 		sysConfig::getDirFsCatalog() . 'ext/jQuery/ui/jquery.ui.datepicker.js',
 		sysConfig::getDirFsCatalog() . 'ext/jQuery/ui/jquery.ui.accordion.js',
-		sysConfig::getDirFsCatalog() . 'ext/jQuery/ui/jquery.ui.stars.js',//can be removed too
-		sysConfig::getDirFsCatalog() . 'ext/jQuery/external/virtualKeyboard/jquery.keyboard.js'
+		sysConfig::getDirFsCatalog() . 'ext/jQuery/ui/jquery.ui.stars.js'//,can be removed too
+		//sysConfig::getDirFsCatalog() . 'ext/jQuery/external/virtualKeyboard/jquery.keyboard.js'
 	);
 
 	if ($env == 'admin'){
@@ -225,8 +229,8 @@ else {
 		}
 	}
 
-	if (isset($_GET['import']) && !empty($_GET['import'])){
-		foreach(explode(',', $_GET['import']) as $filePath){
+	if (!empty($import)){
+		foreach(explode(',', $import) as $filePath){
 			if (substr($filePath, -3) != '.js'){
 				continue;
 			}

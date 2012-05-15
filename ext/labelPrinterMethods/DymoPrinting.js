@@ -8,6 +8,7 @@ var DymoPrinting = function (LabelPrinter) {
 	var ImageReelSelectBoth = 'data:image/jpeg;base64,/9j/4QAYRXhpZgAASUkqAAgAAAAAAAAAAAAAAP/sABFEdWNreQABAAQAAAA8AAD/4QMpaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wLwA8P3hwYWNrZXQgYmVnaW49Iu+7vyIgaWQ9Ilc1TTBNcENlaGlIenJlU3pOVGN6a2M5ZCI/PiA8eDp4bXBtZXRhIHhtbG5zOng9ImFkb2JlOm5zOm1ldGEvIiB4OnhtcHRrPSJBZG9iZSBYTVAgQ29yZSA1LjAtYzA2MCA2MS4xMzQ3NzcsIDIwMTAvMDIvMTItMTc6MzI6MDAgICAgICAgICI+IDxyZGY6UkRGIHhtbG5zOnJkZj0iaHR0cDovL3d3dy53My5vcmcvMTk5OS8wMi8yMi1yZGYtc3ludGF4LW5zIyI+IDxyZGY6RGVzY3JpcHRpb24gcmRmOmFib3V0PSIiIHhtbG5zOnhtcD0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wLyIgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0UmVmPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VSZWYjIiB4bXA6Q3JlYXRvclRvb2w9IkFkb2JlIFBob3Rvc2hvcCBDUzUgV2luZG93cyIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDo0NTkzMkU5OTI5MDMxMUUxOENCNkVCODVGMjlDMDUyQiIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDo0NTkzMkU5QTI5MDMxMUUxOENCNkVCODVGMjlDMDUyQiI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOjQ1OTMyRTk3MjkwMzExRTE4Q0I2RUI4NUYyOUMwNTJCIiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOjQ1OTMyRTk4MjkwMzExRTE4Q0I2RUI4NUYyOUMwNTJCIi8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+/+4ADkFkb2JlAGTAAAAAAf/bAIQABgQEBAUEBgUFBgkGBQYJCwgGBggL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';
 	var Image8160 = 'data:image/jpeg;base64,/9j/4QAYRXhpZgAASUkqAAgAAAAAAAAAAAAAAP/sABFEdWNreQABAAQAAAADAAD/4QMZaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wLwA8P3hwYWNrZXQgYmVnaW49Iu+7vyIgaWQ9Ilc1TTBNcENlaGlIenJlU3pOVGN6a2M5ZCI/PiA8eDp4bXBtZXRhIHhtbG5zOng9ImFkb2JlOm5zOm1ldGEvIiB4OnhtcHRrPSJBZG9iZSBYTVAgQ29yZSA1LjAtYzA2MCA2MS4xMzQ3NzcsIDIwMTAvMDIvMTItMTc6MzI6MDAgICAgICAgICI+IDxyZGY6UkRGIHhtbG5zOnJkZj0iaHR0cDovL3d3dy53My5vcmcvMTk5OS8wMi8yMi1yZGYtc3ludGF4LW5zIyI+IDxyZGY6RGVzY3JpcHRpb24gcmRmOmFib3V0PSIiIHhtbG5zOnhtcE1NPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvbW0vIiB4bWxuczpzdFJlZj0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL3NUeXBlL1Jlc291cmNlUmVmIyIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjNGOTdEQUVFMjgyODExRTFCMjgxOUE4MDcxM0JFRTI1IiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjNGOTdEQUVEMjgyODExRTFCMjgxOUE4MDcxM0JFRTI1IiB4bXA6Q3JlYXRvclRvb2w9IkFkb2JlIFBob3Rvc2hvcCBDUzUgV2luZG93cyI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJFMzc5MkVCNkE1NzA0NUVBQjE2RTkwRkJFOENCNzgwNyIgc3RSZWY6ZG9jdW1lbnRJRD0iRTM3OTJFQjZBNTcwNDVFQUIxNkU5MEZCRThDQjc4MDciLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz7/7gAOQWRvYmUAZMAAAAAB/9sAhAAZFxckGSQ5IiI5Qi8tL0JDODY2OENHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHARskJC8mLzgjIzhHOC44R0dHPj5HR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0f/wAARCABAAJwDASIAAhEBAxEB/8QAbwAAAwEBAQEAAAAAAAAAAAAAAAMEAQIFBgEBAAAAAAAAAAAAAAAAAAAAABAAAQIFAgMGBAYDAAAAAAAAAAECERIDkwRT0yExUkFREzNzs4FEhMTwcZHRIiRDFKQRAQAAAAAAAAAAAAAAAAAAAAD/2gAMAwEAAhEDEQA/APoKlV6uWnShMnFyu5Njy5c1XuinDiq8o8yZOpTtu3QxvMreontUylXIgE0mTqU7bt0JMnUp23bo6dTJlAVJk6lO27dCXJT/ACU7bt07jEAFwyNSnadumQyNSnadujYGwATDI1Kdp26Z/Z66dt26OABMcnrp23bpkcnrp23bo8AJpcjrp23boSZHXTtu3SkAJpMjrp23boSZHXTtu3Sk1EiBLJkddO27dCTI66dt26WSKEigSIldvFVY9OlGq1f1Vzk+EOPehR47PC8WP8IR/Cc49kOceEIjEZDmedD+vDs8eH/SBVjeZW9RPaplDmx4oT43mVvUT2qZUAmChBRwAJgoQU1yrE5A2CmAAAAAAAAAAAaBgIsDqCd5v8QO0WKRNMRyGgB5fy/1H3J6h5fy/wBR9yBVjeZW9RPaplRLjeZW9RPaplQAAHLnQA1UiJVIHUynIAAAAAAAAAMa1FSICwHSoEEASA6CGwgAlGqo4AADy/l/qPuT1Dy/l/qPuQKKDpalbvnT26f7KOmU5rUZlnYsr+UYRRU7nJwinHhBUVO/isZ5MjrZbdugVRUwmlyOunbduhJkddO27dApAmkyOunbduhJkddO27dApAmkyOunbdujG0sjmlSnbdugNhE2VRcmTqU7bt0JMnUp23boDkYvaM5EsmTqU7bt0JMnUp23boFQEsmTqU7bt0JMnUp23boFQEsmTqU7bt0JMnUp23boFQEsmTqU7bt0JMnUp23boFR5fy8ezx4/D/ZjH8ocSrwq7uD6jZe2RitX9Ve6HwSPcqcx/hMk8OCSwll7IcofkB//2Q==';
 	var Image8164 = 'data:image/jpeg;base64,/9j/4QAYRXhpZgAASUkqAAgAAAAAAAAAAAAAAP/sABFEdWNreQABAAQAAAAPAAD/4QMZaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wLwA8P3hwYWNrZXQgYmVnaW49Iu+7vyIgaWQ9Ilc1TTBNcENlaGlIenJlU3pOVGN6a2M5ZCI/PiA8eDp4bXBtZXRhIHhtbG5zOng9ImFkb2JlOm5zOm1ldGEvIiB4OnhtcHRrPSJBZG9iZSBYTVAgQ29yZSA1LjAtYzA2MCA2MS4xMzQ3NzcsIDIwMTAvMDIvMTItMTc6MzI6MDAgICAgICAgICI+IDxyZGY6UkRGIHhtbG5zOnJkZj0iaHR0cDovL3d3dy53My5vcmcvMTk5OS8wMi8yMi1yZGYtc3ludGF4LW5zIyI+IDxyZGY6RGVzY3JpcHRpb24gcmRmOmFib3V0PSIiIHhtbG5zOnhtcE1NPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvbW0vIiB4bWxuczpzdFJlZj0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL3NUeXBlL1Jlc291cmNlUmVmIyIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOkRFQjdEQTREMjgyNzExRTE4REQ0Rjc5N0NDQkM5MDkzIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOkRFQjdEQTRDMjgyNzExRTE4REQ0Rjc5N0NDQkM5MDkzIiB4bXA6Q3JlYXRvclRvb2w9IkFkb2JlIFBob3Rvc2hvcCBDUzUgV2luZG93cyI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJFMDNEREUzQUNDNzc2NUY3QzIzMDY1NEE4RDk1RDVEQSIgc3RSZWY6ZG9jdW1lbnRJRD0iRTAzRERFM0FDQzc3NjVGN0MyMzA2NTRBOEQ5NUQ1REEiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz7/7gAOQWRvYmUAZMAAAAAB/9sAhAATDw8XERclFhYlLyQdJC8sJCMjJCw6MjIyMjI6Qz09PT09PUNDQ0NDQ0NDQ0NDQ0NDQ0NDQ0NDQ0NDQ0NDQ0NDARQXFx4aHiQYGCQzJB4kM0IzKSkzQkNCPjI+QkNDQ0NDQ0NDQ0NDQ0NDQ0NDQ0NDQ0NDQ0NDQ0NDQ0NDQ0NDQ0P/wAARCABSAIgDASIAAhEBAxEB/8QAbQABAQEBAQEBAAAAAAAAAAAAAAQDAQIFBgEBAAAAAAAAAAAAAAAAAAAAABAAAQMBBAkCBgMBAAAAAAAAAAECAwQRMXNU0RKSM5Oz0xQVIUFRYYGRIgUyEzRSEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwD9XI+SWRYol1Ub/N9/qtzWp8fdVX0ssSxbVVvjsps1Lsw9M5Rb6pxW8mIuAi7KbNS7MPTHZTZqXZh6ZaAIuymzUuzD0x2U2al2YemWgCLsps1Lsw9MdlNmpdmHploAi7KbNS7MPTHZTZqXZh6ZaAIuymzUuzD0zOSjmRP9MuzD0y18lnohkqqt4EXZy5mX7RdMdnLmZftF0ywAR9nLmZftF0x2cuZl+0XTLABgx8kb/wCuT1a7+D7vVL2r8/dFT0stSxLE1hlWb2mxV5UgApot9VYreTEWkVFvqrFbyYi0AAAAPLnohmsq+wGwtJ1eq+5y0DV0qJcZq9ynkAAAAAOgcO2Ke2Mt9VNgPl1jV/upsVeVIDet31Niu5MgAUW+qsVvJiLSKi31Vit5MZaAMpH+yGplIz3QDIAAAAAAAAA6B1iWqUWHhjNVPmewAAAird9TYruTIBW76mxXcmQAKLfVWK3kxlpDQb2qxk5UZcAF4AE7m6q2Hk0lvMwAAAA6jVW41bFZeBm1iuNmsRp6AAAAAABFW76mxXcmQCt31Niu5MgA5Qb2qxk5UZcQNelJM9XpZHKuvr+yOREaut/yljUsW6+2z8db15ehzEXEbpAtBF5ehzEXEbpHl6HMRcRukDeW8zJpP21Eq/6IuI3Scb+zoVvqIuK3SBWiWmjYviSt/a0DbqiLit0nry9DmIuK3SBYiIlx0i8vQ5iLit0jy9DmIuK3SBaCLy9DmIuK3SPL0OYi4rdIFoIvL0OYi4rdI8vQ5iLit0gWgi8vQ5iLit0jy9DmIuK3SArd9TYruTIBrJVyscxLY4lV6PuRXK1W/j8U1XLat1tiJautqgNV+hwAAAANIvoagAAAAAAAAAAAACgAcUAAf//Z';
+	dymo.label.framework.FlowDirection = 'LeftToRight';
 
 	var PageOne = $('<table width="100%" cellspacing="20">' +
 		'<tbody>' +
@@ -64,7 +65,7 @@ var DymoPrinting = function (LabelPrinter) {
 		this.loadPageOne();
 	};
 
-	this.loadPageOne = function (isBack) {
+	this.loadPageTwo = function (isBack) {
 		LabelPrinter.setDialogTitle('Select Label Type');
 		LabelPrinter.setDialogBody(PageOne);
 
@@ -88,8 +89,12 @@ var DymoPrinting = function (LabelPrinter) {
 						'border-color' : '#fff'
 					});
 
-					LabelPrinter.setUserData('labelType', $(this).data('label_type'));
-					mainSelf.loadPageTwo();
+					var labelType = $(this).data('label_type');
+					if (SelectedPrinter.printerType == 'TapePrinter'){
+						labelType += '-tape';
+					}
+					LabelPrinter.setUserData('labelType', labelType);
+					mainSelf.loadPageThree();
 				});
 		});
 
@@ -100,23 +105,35 @@ var DymoPrinting = function (LabelPrinter) {
 		});
 	};
 
-	this.loadPageTwo = function (isBack) {
+	this.loadPageOne = function (isBack) {
 		var Printers = dymo.label.framework.getPrinters();
 		if (Printers.length > 1){
 			LabelPrinter.setDialogTitle('Select Printer');
 			LabelPrinter.setDialogBody(PageTwo);
 			PageTwo.find('tbody').empty();
-
 			$.each(Printers, function () {
-				PageTwo.find('tbody').append('<tr>' +
-					'<td>SELECTPRINTER</td>' +
-					'<td></td>' +
-					'</tr>');
+				var input = $('<input type="radio" name="printerName" value="' + this.name + '" />')
+					.data('printerInfo', this);
+
+				var td1 = $('<td></td>')
+					.append(input);
+				var td2 = $('<td></td>')
+					.html(this.name);
+
+				var newTr = $('<tr></tr>')
+					.append(td1)
+					.append(td2);
+
+				PageTwo.find('tbody').append(newTr);
 			});
 
 			LabelPrinter.setDialogButtons({
 				'Back' : function () {
 					mainSelf.loadPageOne(true);
+				},
+				'Select Printer': function (){
+					SelectedPrinter = $('input[name=printerName]:checked').data('printerInfo');
+					mainSelf.loadPageTwo();
 				}
 			});
 		}
@@ -179,6 +196,22 @@ var DymoPrinting = function (LabelPrinter) {
 						LabelPrinter.setUserData('selectedReel', $(this).data('reel'));
 					});
 			});
+		}else if (SelectedPrinter.printerType == 'TapePrinter'){
+			PageThree.find('tbody').append('<tr>' +
+				'<td>Tape Cut Mode: </td>' +
+				'<td>' +
+				'<input type="radio" value="AutoCut" name="TapeCutMode" checked="checked">AutoCut<br>' +
+				'<input type="radio" value="ChainMarks" name="TapeCutMode">ChainMarks<br>' +
+				'</td>' +
+				'</tr>');
+			PageThree.find('tbody').append('<tr>' +
+				'<td>Tape Alignment: </td>' +
+				'<td>' +
+				'<input type="radio" value="Left" name="TapeAlignment" checked="checked">Left<br>' +
+				'<input type="radio" value="Center" name="TapeAlignment">Center<br>' +
+				'<input type="radio" value="Right" name="TapeAlignment">Right<br>' +
+				'</td>' +
+				'</tr>');
 		}
 
 		LabelPrinter.setDialogButtons({
@@ -206,6 +239,10 @@ var DymoPrinting = function (LabelPrinter) {
 			data : LabelPrinter.GetPrintData(),
 			type : 'get',
 			success : function (resp) {
+				if (SelectedPrinter.printerType == 'TapePrinter'){
+					dymo.label.framework.TapeCutMode = LabelPrinter.getUserData('TapeCutMode');
+					dymo.label.framework.TapeAlignment = LabelPrinter.getUserData('TapeAlignment');
+				}
 				var label = dymo.label.framework.openLabelXml(resp.labelInfo.xmlData);
 				var previewImages = [];
 				var renderParams = dymo.label.framework.createLabelRenderParamsXml({
@@ -222,7 +259,7 @@ var DymoPrinting = function (LabelPrinter) {
 						b : 204
 					},
 					shadowDepth : 50,
-					flowDirection : 'LeftToRight',
+					flowDirection : dymo.label.framework.FlowDirection,
 					pngUseDisplayResolution : true
 				});
 
@@ -238,7 +275,7 @@ var DymoPrinting = function (LabelPrinter) {
 
 					previewImages.push({
 						labelXml : label.getLabelXml(),
-						image : '<img width="175" src="data:image/png;base64,' + label.render(renderParams, SelectedPrinter.name) + '"/>'
+						image : this.Barcode/*'<img width="175" src="data:image/png;base64,' + label.render(renderParams, SelectedPrinter.name) + '"/>'*/
 					});
 				});
 
@@ -341,13 +378,24 @@ var DymoPrinting = function (LabelPrinter) {
 	};
 
 	this.printLabels = function (labels) {
-		var printParams = dymo.label.framework.createLabelWriterPrintParamsXml({
-			copies : 1,
-			jobTitle : 'Label Printer',
-			flowDirection : 'LeftToRight',
-			printQuality : 'BarcodeAndGraphics',
-			twinTurboRoll : LabelPrinter.getUserData('selectedReel')
-		});
+		if (SelectedPrinter.printerType == 'TapePrinter'){
+			var printParams = dymo.label.framework.createTapePrintParamsXml({
+				copies : 1,
+				jobTitle : 'Label Printer',
+				flowDirection : dymo.label.framework.FlowDirection,
+				alignment: dymo.label.framework.TapeAlignment,
+				cutMode: dymo.label.framework.TapeCutMode
+			});
+		}else{
+			var printParams = dymo.label.framework.createLabelWriterPrintParamsXml({
+				copies : 1,
+				jobTitle : 'Label Printer',
+				flowDirection : dymo.label.framework.FlowDirection,
+				printQuality : 'BarcodeAndGraphics',
+				twinTurboRoll : LabelPrinter.getUserData('selectedReel')
+			});
+		}
+
 		PageFour.find('.printStatusButton').each(function (){
 			var image = $(this).parent().find('img');
 			if (image.hasClass('ui-state-disabled') === false){

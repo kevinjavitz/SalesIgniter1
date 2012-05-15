@@ -155,6 +155,9 @@ class InfoBoxNavigationMenu extends InfoBoxAbstract
 
 	public function buildStylesheet() {
 		$WidgetProperties = $this->loadLinkedSettings($this->getWidgetProperties());
+		if($WidgetProperties->menuId == ''){
+			$WidgetProperties->menuId = 'navMenu'.md5(serialize($this->getWidgetProperties()));
+		}
 		if (!isset($WidgetProperties->alwaysShow) || $WidgetProperties->alwaysShow == 'false'){
 		$css = '/* Navigation Menu --BEGIN-- */' . "\n" .
 			'.ui-navigation-menu { position:relative;background-color:transparent;border: none;line-height:inherit;font-size:inherit; }' . "\n" .
@@ -314,7 +317,9 @@ class InfoBoxNavigationMenu extends InfoBoxAbstract
 
 	public function buildJavascript() {
 		$WidgetProperties = $this->loadLinkedSettings($this->getWidgetProperties());
-
+		if($WidgetProperties->menuId == ''){
+			$WidgetProperties->menuId = 'navMenu'.md5(serialize($this->getWidgetProperties()));
+		}
 		ob_start();
 		if (isset($WidgetProperties->alwaysShow) && $WidgetProperties->alwaysShow == 'true'){
 			readfile(sysConfig::getDirFsCatalog().'ext/jQuery/external/megamenu/jquery.hoverIntent.minified.js');
@@ -429,7 +434,9 @@ class InfoBoxNavigationMenu extends InfoBoxAbstract
 
 	public function show() {
 		$WidgetProperties = $this->loadLinkedSettings($this->getWidgetProperties());
-
+		if($WidgetProperties->menuId == ''){
+			$WidgetProperties->menuId = 'navMenu'.md5(serialize($this->getWidgetProperties()));
+		}
 		$menuItems = '';
 		$this->firstAdded = false;
 		$this->firstAddedol = false;

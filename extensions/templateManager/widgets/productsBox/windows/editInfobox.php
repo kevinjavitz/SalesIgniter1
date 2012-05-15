@@ -1,10 +1,40 @@
 <?php
-	$productsBoxQueryTypes = array(
+function getCategoryTree($parentId, $namePrefix = '', &$categoriesTree){
+	global $lID, $allGetParams, $cInfo;
+	$Qcategories = Doctrine_Query::create()
+		->select('c.*, cd.categories_name')
+		->from('Categories c')
+		->leftJoin('c.CategoriesDescription cd')
+		->where('cd.language_id = ?', (int)Session::get('languages_id'))
+		->andWhere('c.parent_id = ?', $parentId)
+		->orderBy('c.sort_order, cd.categories_name');
+
+	EventManager::notify('CategoryListingQueryBeforeExecute', &$Qcategories);
+
+	$Result = $Qcategories->execute();
+	if ($Result->count() > 0){
+		foreach($Result->toArray(true) as $Category){
+			if ($Category['parent_id'] > 0){
+				//$namePrefix .= '&nbsp;';
+			}
+
+			$categoriesTree[] = array(
+				'categoryId'           => $Category['categories_id'],
+				'categoryName'         => $namePrefix . $Category['CategoriesDescription'][Session::get('languages_id')]['categories_name'],
+			);
+
+			getCategoryTree($Category['categories_id'], '&nbsp;&nbsp;&nbsp;' . $namePrefix, &$categoriesTree);
+		}
+	}
+}
+
+$productsBoxQueryTypes = array(
 		'best_sellers' => 'Best Selling Products',
 		'featured' => 'Featured Products',
 		'new_products' => 'New Products',
 		'top_rentals' => 'Top Rented Products',
 		'specials' => 'Specials Products',
+		'category_featured' => 'Featured products from specific Category',
 		'related' => 'Current Product Related Products',
 		'category' => 'Current Category Products'
 	);
@@ -25,6 +55,9 @@
 		$productsBoxReflect = $WidgetSettings->config->reflect_blocks;
 		$productsBoxBlockWidth = $WidgetSettings->config->block_width;
 		$productsBoxBlockHeight = $WidgetSettings->config->block_height;
+		if(isset($WidgetSettings->config->selected_category)){
+			$categorySelected = $WidgetSettings->config->selected_category;
+		}
 	}
 	
 	$productsBoxQueryOptions = '';
@@ -52,6 +85,18 @@
 	ob_start();
 
 	echo $editTable->draw();
+$categoryTreeList = false;
+getCategoryTree(0,'',&$categoryTreeList);
+$categoryTreeNew = htmlBase::newElement('selectbox')
+	->setName('new_selected_category')
+	->setId('new_selected_category');
+$categoryTreeNew->addOption('-1', '--select--');
+foreach($categoryTreeList as $category){
+	$categoryTreeNew->addOption($category['categoryId'], $category['categoryName']);
+}
+if(isset($categorySelected)){
+	$categoryTreeNew->selectOptionByValue($categorySelected);
+}
 ?>
 <fieldset>
 	<legend>Box Configuration</legend>
@@ -76,6 +121,13 @@
 		<tr>
 			<td>Block Height: </td>
 			<td><input type="text" name="products_box_block_height" value="<?php echo $productsBoxBlockHeight;?>" size="4"> In Pixels</td>
+		</tr>
+		<tr>
+			<td>Show featured products from selected category:</td>
+			<td><?php
+                echo $categoryTreeNew->draw();
+				?>
+			</td>
 		</tr>
 	</table>
 </fieldset>

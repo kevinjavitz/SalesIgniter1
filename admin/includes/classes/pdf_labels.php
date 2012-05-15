@@ -151,7 +151,7 @@ class PDF_Labels
 					if (isset($Queue['ProductsInventoryBarcodes']) && !empty($Queue['ProductsInventoryBarcodes'])){
 						$dataArray[$idx]['barcode_id'] = $Queue['ProductsInventoryBarcodes']['barcode_id'];
 						$dataArray[$idx]['barcode'] = $Queue['ProductsInventoryBarcodes']['barcode'];
-						$dataArray[$idx]['barcode_type'] = 'Code128Auto';
+						$dataArray[$idx]['barcode_type'] = sysConfig::get('SYSTEM_BARCODE_FORMAT');
 					}
 
 					if (isset($Queue['ProductsInventoryQuantity']) && !empty($Queue['ProductsInventoryQuantity'])){
@@ -161,7 +161,8 @@ class PDF_Labels
 				$idx++;
 			}
 		}
-
+		$Result->free();
+		unset($Result);
 		return $dataArray;
 	}
 
@@ -268,7 +269,7 @@ class PDF_Labels
 						if (isset($resInfo['ProductsInventoryBarcodes']) && !empty($resInfo['ProductsInventoryBarcodes'])){
 							$dataArray[$idx]['barcode_id'] = $resInfo['ProductsInventoryBarcodes']['barcode_id'];
 							$dataArray[$idx]['barcode'] = $resInfo['ProductsInventoryBarcodes']['barcode'];
-							$dataArray[$idx]['barcode_type'] = 'Code128Auto';
+							$dataArray[$idx]['barcode_type'] = sysConfig::get('SYSTEM_BARCODE_FORMAT');
 						}
 
 						if (isset($resInfo['ProductsInventoryQuantity']) && !empty($resInfo['ProductsInventoryQuantity'])){
@@ -279,6 +280,8 @@ class PDF_Labels
 				}
 			}
 		}
+		$Result->free();
+		unset($Result);
 		return $dataArray;
 	}
 
@@ -380,7 +383,7 @@ class PDF_Labels
 					'products_type'    => $itemData['products_type'],
 					'date_sent'        => $itemData['date_sent'],
 					'barcode'          => (isset($itemData['barcode']) ? $itemData['barcode'] : 'Quantity Tracking'),
-					'barcode_type'     => (isset($itemData['type']) ? $itemData['type'] : 'Code128Auto'),
+					'barcode_type'     => (isset($itemData['type']) ? $itemData['type'] : sysConfig::get('SYSTEM_BARCODE_FORMAT')),
 					'inventory_center' => $inventoryCenterName
 				);
 				if(sysConfig::get('EXTENSION_CUSTOM_FIELDS_SHOW_DOWNLOAD_FILE_COLUMN') == 'True'){
@@ -569,7 +572,7 @@ class PDF_Labels
 				$this->labels[] = array(
 					'products_name'        => $product->getName(),
 					'barcode'              => $barcode['barcode'],
-					'barcode_type'         => 'Code128Auto',
+					'barcode_type'         => sysConfig::get('SYSTEM_BARCODE_FORMAT'),
 					'barcode_id'           => $barcode['barcode_id'],
 					'products_description' => $product->getDescription(),
 					'customers_address'    => false
@@ -590,7 +593,7 @@ class PDF_Labels
 				$this->labels[] = array(
 					'products_name'        => $product->getName(),
 					'barcode'              => $Qbarcode[0]['barcode'],
-					'barcode_type'         => 'Code128Auto',
+					'barcode_type'         => sysConfig::get('SYSTEM_BARCODE_FORMAT'),
 					'barcode_id'           => $Qbarcode[0]['barcode_id'],
 					'products_description' => strip_tags($product->getDescription()),
 					'customers_address'    => false
@@ -620,10 +623,12 @@ class PDF_Labels
 					'products_name'        => $ProductDescription['products_name'],
 					'barcode_id'           => $ProductsInventoryBarcodes['barcode_id'],
 					'barcode'              => $ProductsInventoryBarcodes['barcode'],
-					'barcode_type'         => 'Code128Auto',
+					'barcode_type'         => sysConfig::get('SYSTEM_BARCODE_FORMAT'),
 					'products_description' => stripslashes(strip_tags($ProductDescription['products_description'])),
 					'customers_address'    => $CustomerAddress
 				);
+					$order->free();
+					unset($order);
 				break;
 			case 'O':
 				$Qorder = $this->getPayPerRentalQuery(array(
@@ -637,10 +642,12 @@ class PDF_Labels
 					'products_name'        => $oInfo['OrdersProducts']['products_name'],
 					'barcode_id'           => $oInfo['ProductsInventoryBarcodes']['barcode_id'],
 					'barcode'              => $oInfo['ProductsInventoryBarcodes']['barcode'],
-					'barcode_type'         => 'Code128Auto',
+					'barcode_type'         => sysConfig::get('SYSTEM_BARCODE_FORMAT'),
 					'products_description' => stripslashes(strip_tags($oInfo['OrdersProducts']['Products']['ProductsDescription'][Session::get('languages_id')]['products_description'])),
 					'customers_address'    => $oInfo['OrdersProducts']['Orders']['OrdersAddresses']['delivery']
 				);
+					$order->free();
+					unset($order);
 				break;
 			case 'barcode':
 				$this->loadProductBarcodes($id, $singleBarcode);

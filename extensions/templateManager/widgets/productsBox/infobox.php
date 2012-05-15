@@ -18,16 +18,43 @@ class InfoBoxProductsBox extends InfoBoxAbstract {
 		$this->buildJavascriptMultiple = false;
 	}
 
+	public function getAllSubCategories($categoriesId, &$categoriesArray){
+		$Categories = Doctrine_Query::create()
+			->select('categories_id')
+			->from('Categories')
+			->where('parent_id = ?', $categoriesId)
+			->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+		if (!empty($Categories)) {
+			foreach($Categories as $catInfo){
+				$categoriesArray[] = $catInfo['categories_id'];
+				$this->getAllSubCategories($catInfo['categories_id'],$categoriesArray);
+			}
+		}
+	}
+
 	public function show(){
 		$boxWidgetProperties = $this->getWidgetProperties();
 
 		$this->setBoxId($boxWidgetProperties->id);
 
 		$cInfo = $boxWidgetProperties->config;
-		$Results = $this->getQueryResults($cInfo->query, $cInfo->query_limit);
+		$Results = $this->getQueryResults($cInfo->query, $cInfo->query_limit, (isset($cInfo->selected_category)?$cInfo->selected_category:''));
 		
 		if (!empty($Results)) {
-			$ProductsList = $this->buildList($Results, $cInfo);		
+			$selectedCatName = '';
+			if(isset($cInfo->selected_category)){
+				$Qcat = Doctrine_Query::create()
+				->from('Categories c')
+				->leftJoin('c.CategoriesDescription cd')
+				->where('cd.language_id = ?', Session::get('languages_id'))
+				->where('categories_id = ?', $cInfo->selected_category)
+				->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+				if(count($Qcat) > 0){
+					$selectedCatName = $Qcat[0]['CategoriesDescription'][0]['categories_name'];
+				}
+			}
+
+			$ProductsList = $this->buildList($Results, $cInfo, $selectedCatName);
 			$this->setBoxContent($ProductsList->draw());
 			return $this->draw();
 		} else {
@@ -35,7 +62,7 @@ class InfoBoxProductsBox extends InfoBoxAbstract {
 		}
 	}
 	
-	public function buildList($products, $cInfo){
+	public function buildList($products, $cInfo, $selectedCategoryName = ''){
 		$List = htmlBase::newElement('ul')->addClass('productsBoxList');
 		
 		foreach($products as $pInfo){
@@ -68,12 +95,27 @@ class InfoBoxProductsBox extends InfoBoxAbstract {
 				$ListItemNameLink = htmlBase::newElement('a')
 				->setHref($productLink)
 				->html($pInfo['ProductsDescription'][0]['products_name']);
+
+				if($selectedCategoryName != ''){
+					$ListItemCategoryName= htmlBase::newElement('span')
+					->html($selectedCategoryName);
+				}
 			
 				$NameBlock = htmlBase::newElement('div')
 				->addClass('productsBoxBlockName')
 				->append($ListItemNameLink);
-				
+
 				$Block->append($NameBlock);
+
+				if(isset($ListItemCategoryName)){
+					$CategoryNameBlock = htmlBase::newElement('div')
+					->addClass('productsBoxBlockCategoryName')
+					->append($ListItemCategoryName);
+					$Block->append($CategoryNameBlock);
+				}
+				
+
+
 			}
 			
 			$ListItem = htmlBase::newElement('li')
@@ -92,7 +134,7 @@ class InfoBoxProductsBox extends InfoBoxAbstract {
 		return $ListContainer;
 	}
 	
-	public function getQueryResults($queryType, $queryLimit){
+	public function getQueryResults($queryType, $queryLimit, $selectedCategory = 0){
 		$Query = Doctrine_Query::create()
 		->select('p.products_id, p.products_image, pd.products_name')
 		->from('Products p')
@@ -100,7 +142,6 @@ class InfoBoxProductsBox extends InfoBoxAbstract {
 		->where('p.products_status = ?', '1')
 		->andWhere('pd.language_id = ?', Session::get('languages_id'));
 
-		EventManager::notify('ProductListingQueryBeforeExecute', &$Query);
 		
 		if ($queryLimit > 0){
 			$Query->limit($queryLimit);
@@ -132,6 +173,16 @@ class InfoBoxProductsBox extends InfoBoxAbstract {
 			case 'related':
 				EventManager::notify('ScrollerRelatedQueryBeforeExecute', &$Query);
 				break;
+			case 'category_featured':
+
+				$catsArray = array($selectedCategory);
+				$this->getAllSubCategories($selectedCategory, $catsArray);
+
+				$Query->andWhere('p.products_featured = ?', '1')
+					->leftJoin('p.ProductsToCategories p2c')
+				//->leftJoin('p2c.Categories c')
+					->andWhere('p2c.categories_id in (' . implode(',',$catsArray) . ')');//, '"' . array(implode(',',$catsArray) . '"'));
+			     break;
 			case 'category':
 				if (Session::exists('current_category_id')){
 					$Query->leftJoin('p.ProductsToCategories p2c')

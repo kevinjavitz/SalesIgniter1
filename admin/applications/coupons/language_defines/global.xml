@@ -206,7 +206,7 @@
 	<define key="TEXT_INFO_COUPON_NAME"><![CDATA[Coupon Name: ]]></define>
 	<define key="TEXT_INFO_COUPON_DESC"><![CDATA[Coupon Description: ]]></define>
 	<define key="TEXT_INFO_COUPON_PURCHASE_TYPE"><![CDATA[Allowed Purchase Types: ]]></define>
-
+	<define key="TEXT_INFO_COUPON_NUMBER_DAYS_MEMBERSHIP"><![CDATA[Number of days from membership: ]]></define>
     <define key="TEXT_INFO_COUPON_NAME_HELP"><![CDATA[A short name for the coupon]]></define>
     <define key="TEXT_INFO_COUPON_AMOUNT_HELP"><![CDATA[The value of the discount for the coupon, either fixed or add a % on the end for a percentage discount.]]></define>
     <define key="TEXT_INFO_COUPON_CODE_HELP"><![CDATA[You can enter your own code here, or leave blank for an auto generated one.]]></define>

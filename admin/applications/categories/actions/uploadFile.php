@@ -12,9 +12,14 @@
 	$fileType = $_GET['fileType'];
 	
 	require(SysConfig::getDirFsCatalog() . 'includes/classes/uploadManager.php');
-	$mgr = new UploadManager($fileTypeUploadDirs[$fileType]['abs'], '777');
-	
-	$file = new UploadFile('Filedata');
+	if($fileType == 'image'){
+		$mgr = new UploadManager($fileTypeUploadDirs[$fileType]['abs'], '777', array('gif','png','jpg','jpeg'));
+	}else{
+		$mgr = new UploadManager($fileTypeUploadDirs[$fileType]['abs'], '777', array('zip','pdf','avi','flv','swf','mov'));
+	}
+
+
+$file = new UploadFile('Filedata');
 	if ($mgr->processFile($file)){
 		//$file->moveTo($fileTypeUploadDirs[$fileType]['abs']);
 		$json = array(

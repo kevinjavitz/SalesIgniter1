@@ -62,6 +62,10 @@
 			'rel' => sysConfig::getDirWsCatalog() . 'files/',
 			'abs' => sysConfig::getDirFsCatalog() . 'files/'
 		),
+		'templates' => array(
+			'rel' => sysConfig::getDirWsCatalog() . 'images/templates/',
+			'abs' => sysConfig::getDirFsCatalog() . 'images/templates/'
+		),
 		'movie' => array(
 			'rel' => sysConfig::getDirWsCatalog() . 'movies/',
 			'abs' => sysConfig::getDirFsCatalog() . 'movies/'

@@ -284,8 +284,8 @@ class membershipUpdate_cron {
 		}
 		$OrderTotalModules = new OrderTotalModules;
 
-		$addressBook =& $this->userAccount->plugins['addressBook'];
-		$membership =& $this->userAccount->plugins['membership'];
+		$addressBook =& $this->getUserAccount()->plugins['addressBook'];
+		$membership =& $this->getUserAccount()->plugins['membership'];
 		$rentalAddress = $addressBook->getAddress($membership->getRentalAddressId());
 
 		$addressBook->addAddressEntry('customer', $rentalAddress);
@@ -325,16 +325,29 @@ class membershipUpdate_cron {
 		), $productsOrdered);
 
 		$TotalModule = $OrderTotalModules->getModule('total');
+		$TaxModule = $OrderTotalModules->getModule('tax');
 		$SubTotalModule = $OrderTotalModules->getModule('subtotal');
 		if(is_object($SubTotalModule)){
 			$order->newOrder['orderTotals'][] = array(
 				'module'     => $SubTotalModule->getCode(),
 				'method'     => null,
 				'title'      => $SubTotalModule->getTitle() . ':',
-				'text'       => $currencies->format(tep_add_tax($planPrice, $taxRate)),
-				'value'      => tep_add_tax($planPrice, $taxRate),
+				'text'       => $currencies->format($planPrice),
+				'value'      => $planPrice,
 				'code'       => $SubTotalModule->getCode(),
 				'sort_order' => 1
+			);
+		}
+
+		if(is_object($TaxModule)){
+			$order->newOrder['orderTotals'][] = array(
+				'module'     => $TaxModule->getCode(),
+				'method'     => null,
+				'title'      => $TaxModule->getTitle() . ':',
+				'text'       => $currencies->format(tep_calculate_tax($planPrice, $taxRate)),
+				'value'      => $currencies->format(tep_calculate_tax($planPrice, $taxRate)),
+				'code'       => $TaxModule->getCode(),
+				'sort_order' => 2
 			);
 		}
 
@@ -342,10 +355,10 @@ class membershipUpdate_cron {
 				'module'     => $TotalModule->getCode(),
 				'method'     => null,
 				'title'      => $TotalModule->getTitle() . ':',
-				'text'       => '<b>' . $currencies->format(tep_add_tax($planPrice, $taxRate)) . '</b>',
-				'value'      => tep_add_tax($planPrice, $taxRate),
+				'text'       => '<b>' . $currencies->format(tep_add_tax($planPrice, $taxRate, sysConfig::get('DISPLAY_PRICE_WITH_TAX') == 'true' ? false: true)) . '</b>',
+				'value'      => tep_add_tax($planPrice, $taxRate, sysConfig::get('DISPLAY_PRICE_WITH_TAX') == 'true' ? false: true),
 				'code'       => $TotalModule->getCode(),
-				'sort_order' => 2
+				'sort_order' => 3
 		);
 		$order->insertOrderTotals();
 

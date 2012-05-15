@@ -334,7 +334,7 @@ Casa Grande, AZ  85122]]></value>
 				</SHOW_MANUFACTURER_ON_PRODUCT_INFO>
 				<SYSTEM_BARCODE_FORMAT>
 					<title><![CDATA[Choose barcode type to use in the store]]></title>
-					<value><![CDATA[Code 39]]></value>
+					<value><![CDATA[Code128Auto]]></value>
 					<description><![CDATA[Choose barcode type to use in the store]]></description>
 					<set_function>
 						<type>radio</type>

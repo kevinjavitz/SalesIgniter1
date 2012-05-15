@@ -832,13 +832,7 @@ class ReservationUtilities {
 										$selfID.parent().find('.inCart').show();
 										$selfID.parent().find('.inCart').button();
 
-										$selfID.parent().find('.inCart').position({
-											my:        "left bottom",
-											at:        "left top",
-											offset:    "200, 28",
-											of:        $selfID.find('.refreshCal'), // or $("#otherdiv)
-											collision: "fit"
-										});
+
 									}
 
 								} else if (data.success == 'not_supported') {
@@ -1009,13 +1003,7 @@ class ReservationUtilities {
 								$selfID.parent().find('.inCart').show();
 								$selfID.parent().find('.inCart').button();
 
-								$selfID.parent().find('.inCart').position({
-									my:        "left bottom",
-									at:        "left top",
-									offset:    "200, 28",
-									of:        $selfID.find('.refreshCal'), // or $("#otherdiv)
-									collision: "fit"
-								});
+
 							}
 						} else if (data.success == 'not_supported') {
 							$selfID.parent().find('.priceQuote').html(data.price);
@@ -1171,13 +1159,7 @@ class ReservationUtilities {
 									if(isCatalog){
 										$selfID.parent().find('.inCart').show();
 										$selfID.parent().find('.inCart').button();
-										$selfID.parent().find('.inCart').position({
-											my:        "left bottom",
-											at:        "left top",
-											offset:    "200, 28",
-											of:        $selfID.find('.refreshCal'), // or $("#otherdiv)
-											collision: "fit"
-										});
+
 									}
 								} else if (data.success == 'not_supported') {
 									$selfID.parent().find('.priceQuote').html(data.price);
@@ -1218,13 +1200,7 @@ class ReservationUtilities {
 							if(isCatalog){
 								$selfID.parent().find('.inCart').show();
 								$selfID.parent().find('.inCart').button();
-								$selfID.parent().find('.inCart').position({
-									my:        "left bottom",
-									at:        "left top",
-									offset:    "200, 28",
-									of:        $selfID.find('.refreshCal'), // or $("#otherdiv)
-									collision: "fit"
-								});
+
 							}
 						} else if (data.success == 'not_supported') {
 							$selfID.parent().find('.priceQuote').html(data.price);
@@ -1260,13 +1236,7 @@ class ReservationUtilities {
 							if(isCatalog){
 								$selfID.parent().find('.inCart').show();
 								$selfID.parent().find('.inCart').button();
-								$selfID.parent().find('.inCart').position({
-									my:        "left bottom",
-									at:        "left top",
-									offset:    "200, 28",
-									of:        $selfID.find('.refreshCal'), // or $("#otherdiv)
-									collision: "fit"
-								});
+
 							}
 						} else if (data.success == 'not_supported') {
 							$selfID.parent().find('.priceQuote').html(data.price);
@@ -1408,7 +1378,7 @@ class ReservationUtilities {
 				$('.dateQuotes').html(m_names[dd1.getMonth()] + ' ' +dd1_day + ', ' +dd1.getFullYear() + '&nbsp;&nbsp;&nbsp;To&nbsp;&nbsp;&nbsp;' + m_names[dd2.getMonth()] + ' ' +dd2_day + ', ' +dd2.getFullYear());
 			}
 		});
-		var $priceText = $('<div class="priceText">Price: </div>');
+		var $priceText = $('<div class="priceText"><?php echo sysLanguage::get('TEXT_DATES_PRICE');?> </div>');
 
 		$('.priceQuote').wrap('<div class="divPriceWrap"></div>');
 		var $divPrice = $('.divPriceWrap');
@@ -1431,17 +1401,20 @@ class ReservationUtilities {
 		<?php }?>
 		$('.dateRow').css('top','-'+($('.periodsInsurance').height()+12-30-$('.maxPeriod').height()-$('.minPeriod').height())+'px');
 		$('.pprButttons').css('top','-'+($('.periodsInsurance').height()+12-45)+'px');
-		$('.pprButttons_wrapper').css('height',($('.pprButttons').height() - $('.periodsInsurance').height()+24)+'px');
+		$('.pprButttons_wrapper').css('height',(100)+'px');
+		$('.pprButttons').css('height',(100)+'px');
+		$('.pprButttons_wrapper').css('width','100%');
+		$('.pprButttons_wrapper').css('margin-bottom','50px');
 		/*if(isCatalog){
 			$('.refreshCal').css('top',($('.pprButttons').position().top + 58)+'px');
 		}else{*/
-			$('.refreshCal').css('top',($('.pprButttons').position().top + 115)+'px');
+		//$('.refreshCal').css('top',($('.pprButttons').position().top + 115)+'px');
 		//}
-		var firstColumnWidth = $('.calendarTable').width()*12/100;
+		var firstColumnWidth = $('.calendarTable').width()*7/100;
 		var secColumnWidth = $('.calendarTable').width()*80/100;
 
 		$('.pprButttons').css('left',firstColumnWidth+'px');
-		$('.refreshCal').css('left',(1.4*firstColumnWidth)+'px');
+		//$('.refreshCal').css('left',(1.4*firstColumnWidth)+'px');
 		$('.calendarTable').css('padding-bottom', '40px');
 	});
 	</script>
@@ -1558,6 +1531,7 @@ class ReservationUtilities {
 			padding:0 !important;
 			line-height:25px;
 			display:inline-block;
+			text-align: center;
 			margin-top:10px !important;
 		}
 		.datesInputs{
@@ -1568,6 +1542,8 @@ class ReservationUtilities {
 		}
 		.refreshCal{
 			position:absolute;
+			top:120px;
+			left:20%;
 		}
 		.priceText{
 			display:inline-block;
@@ -1575,8 +1551,7 @@ class ReservationUtilities {
 			margin-right:10px;
 		}
 		.wrapPrice{
-			width:500px;
-			text-align:center;
+			text-align:right;
 			padding-left:31px;
 		}
 		.dateText{
@@ -1585,8 +1560,7 @@ class ReservationUtilities {
 			margin-right:10px;
 		}
 		.wrapDates{
-			text-align:center;
-			width:500px;
+			text-align:right;
 		}
 		.divPriceWrap{
 			height:25px !important;
@@ -1612,6 +1586,12 @@ class ReservationUtilities {
 		}
 
 		.datePicker {
+		}
+
+		.inCart{
+			position:relative;
+			top:21px;
+			left:50%;
 		}
 
 		.ui-datepicker {

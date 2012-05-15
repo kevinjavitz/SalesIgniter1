@@ -350,6 +350,17 @@ class OrderPaymentPaypalipn extends StandardPaymentModule
 						$parameters['p1'] = $planInfo['free_trial'];
 						$parameters['t1'] = 'D';
 					}
+					if(Session::exists('cc_id_trial')){
+						if ($planInfo['free_trial'] > 0){
+							$parameters['a2'] = $packagePrice - Session::get('cc_id_trial');
+							$parameters['p2'] = Session::get('cc_id_trial_days');
+							$parameters['t2'] = 'D';
+						}else{
+							$parameters['a1'] = $packagePrice - Session::get('cc_id_trial');
+							$parameters['p1'] = Session::get('cc_id_trial_days');
+							$parameters['t1'] = 'D';
+						}
+					}
 					$parameters['item_name'] = $planInfo['MembershipPlanDescription'][0]['name'];
 					$parameters['no_note'] = '1';
 					$parameters['a3'] = $packagePrice;
@@ -477,6 +488,7 @@ class OrderPaymentPaypalipn extends StandardPaymentModule
 
 	function processPaymentCron($orderID) {
 		global $order;
+		OrderPaymentModules::loadModules();
 		$order_status_id = OrderPaymentModules::getModule('paypalipn')->getConfigData('MODULE_PAYMENT_PAYPALIPN_COMP_ORDER_STATUS_ID');
 		$newStatus = new OrdersPaymentsHistory();
 		$newStatus->orders_id = $orderID;

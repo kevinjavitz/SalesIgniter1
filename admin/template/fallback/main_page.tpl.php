@@ -3,14 +3,14 @@ $stylesheetLink = sysConfig::getDirWsCatalog() . 'extensions/templateManager/cat
 	'&env=admin' .
 	'&' . Session::getSessionName() . '=' . Session::getSessionId() .
 	'&tplDir=' . Session::get('tplDir') .
-	'&import=' . implode(',', $App->getStylesheetFiles()) .
+	'&import[]=' . implode('&import[]=', $App->getStylesheetFiles()) .
 	(isset($_GET['noCache']) ? '&noCache' : '');
 
 $javascriptLink = sysConfig::getDirWsCatalog() . 'extensions/templateManager/catalog/globalFiles/javascript.php?' .
 	'&env=admin' .
 	'&' . Session::getSessionName() . '=' . Session::getSessionId() .
 	'&tplDir=' . Session::get('tplDir') .
-	'&import=' . implode(',', $App->getJavascriptFiles()) .
+	'&import[]=' . implode('&import[]=', $App->getJavascriptFiles()) .
 	(isset($_GET['noCache']) ? '&noCache' : '');
 ?>
 <!DOCTYPE html>

@@ -538,7 +538,11 @@ tep_update_whos_online();
 			$options['page_number'] = $pager->getLastPage();
 			$str .= $this->processPage($options);
 
-			$str .= '&nbsp;&nbsp;<b>' . $pager->getFirstIndice() . ' - ' . $pager->getLastIndice() . ' ('.sysLanguage::get('TEXT_PAGER_OF').' ' . $pager->getNumResults() . ' ' . $this->myType. ')</b>';
+			if(sysConfig::get('PRODUCT_LISTING_SHOW_TOTAL_PRODUCTS_TEXT') == 'True'){
+				$str .= '&nbsp;&nbsp;<b>' . $pager->getFirstIndice() . ' - ' . $pager->getLastIndice() . ' ('.sysLanguage::get('TEXT_PAGER_OF').' ' . $pager->getNumResults() . ' ' . $this->myType. ')</b>';
+			} else {
+				$str .= '&nbsp;&nbsp;<b>' . $pager->getFirstIndice() . ' - ' . $pager->getLastIndice() . ' ' . $this->myType . '</b>';
+			}
 			// Possible wish to return value instead of print it on screen
 			if ($return) {
 				return $str;

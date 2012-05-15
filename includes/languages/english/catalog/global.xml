@@ -616,7 +616,7 @@
 	<define key="PPR_INFO_SELECTED_DAYS"><![CDATA[Selected Days.]]></define>
 	<define key="PPR_INFO_SHIPPING_DAYS"><![CDATA[Shipping Days.]]></define>
 	<define key="TEXT_DATES_SELECTED"><![CDATA[Dates Selected:]]></define>
-
+	<define key="TEXT_DATES_PRICE"><![CDATA[Price:]]></define>
 	<define key="TEXT_January"><![CDATA[January]]></define>
 	<define key="TEXT_February"><![CDATA[February]]></define>
 	<define key="TEXT_March"><![CDATA[March]]></define>

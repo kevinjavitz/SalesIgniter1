@@ -194,9 +194,6 @@ class RentalStoreUser implements Serializable {
 		if ($Qcustomer){
 			EventManager::notify('ProcessLoginBeforeExecute', &$noValidate, $password, &$Qcustomer);
 			if ($noValidate === true || $this->validatePassword($password, $Qcustomer[0]->customers_password) === true){
-				if (sysConfig::get('SESSION_RECREATE') == 'True') {
-					Session::recreate();
-				}
 
 				$this->loadCustomersInfo($Qcustomer[0]->customers_id);
 

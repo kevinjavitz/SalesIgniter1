@@ -51,13 +51,7 @@
 			'text' => 'Google Zones'
 		);
 	}
-	
-	if (sysPermissions::adminAccessAllowed('ses_update', 'default') === true){
-		$contents['children'][] = array(
-			'link' => itw_app_link(null, 'ses_update', 'default', 'SSL'),
-			'text' => sysLanguage::get('TEXT_ADMIN_MENU_SES_UPDATES')
-		);
-	}
+
 	if (sysPermissions::adminAccessAllowed('database_manager', 'default') === true){
 		$contents['children'][] = array(
 			'link' => itw_app_link(null, 'database_manager', 'default'),
