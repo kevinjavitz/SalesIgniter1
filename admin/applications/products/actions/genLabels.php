@@ -8,7 +8,8 @@
 	$PDF_Labels->setLabelsType($labelType);
 	$PDF_Labels->loadBarcodes($_GET['pID'], explode(',', $_GET['barcodes']));
 	if (isset($_GET['loc'])){
-		$PDF_Labels->setLabelLocation((int)$_GET['loc']);
+		//$PDF_Labels->setLabelLocation((int)$_GET['loc']);
+		$PDF_Labels->setStartLocationByColmn((int)$_GET['loc']);
 	}
 
 	switch($labelType){

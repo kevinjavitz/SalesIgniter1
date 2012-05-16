@@ -50,6 +50,10 @@ class PDF_Labels
 		);
 	}
 
+	public function setStartLocationByColmn($col){
+		$this->setStartLocation(floor($col / 2) + 1, ($col % 2) + 1);
+	}
+
 	function getRentedQueueQuery($settings = null) {
 		$query = Doctrine_Query::create()
 		->select('ab.*, co.*, z.*, rq.customers_queue_id, rq.shipment_date as date_shipped, concat(c.customers_firstname, " ", c.customers_lastname) as customers_name, p.products_id, pd.products_name, "rental" as products_type, c.customers_id, co.countries_id, ib.barcode_id, ib.barcode')
@@ -785,7 +789,7 @@ class PDF_Labels
 				}
 
 				while($CurrentCol <= $this->layoutInfo['ColsPerRow']){
-					if ($CurPage == 1){
+					//if ($CurPage == 1){
 						if ($blankRow === true || $CurrentCol < $this->startLocation['col']){
 							$blankCol = true;
 						}
@@ -794,10 +798,10 @@ class PDF_Labels
 							$this->startLocation['col'] = 1;
 							$blankCol = false;
 						}
-					}
+					/*}
 					else {
 						$blankCol = false;
-					}
+					}*/
 
 					$newLine = ($CurrentCol == $this->layoutInfo['ColsPerRow'] ? 1 : 0);
 
