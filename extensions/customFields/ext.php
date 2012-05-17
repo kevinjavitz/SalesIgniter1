@@ -271,8 +271,20 @@ class Extension_customFields extends ExtensionBase {
             if ($Qcheck !== false){
                 if (isset($key) && empty($_GET[$key])){
                     $totalErrors++;
-                }elseif (isset($key) && !empty($_GET[$key])){
+                }elseif (isset($key) && !is_array($_GET[$key]) && !empty($_GET[$key])){
                     $this->validSearchKeys[$key] = $_GET[$key];
+                }elseif(isset($key) && is_array($_GET[$key])){
+	                $invalid = true;
+	                foreach($_GET[$key] as $val){
+		                if(!empty($val)){
+			                $invalid = false;
+		                }
+	                }
+	                if($invalid){
+		                $totalErrors++;
+	                } else {
+		                $this->validSearchKeys[$key] = $_GET[$key];
+	                }
                 }
             }
         }
@@ -334,15 +346,19 @@ class Extension_customFields extends ExtensionBase {
         }
 
 	    $productIds = false;
+	    $firstKeyCheck = true;
+	    $currentProductIdsToQuery = '';
 	    if (isset($this->validSearchKeys) && count($this->validSearchKeys) > 0){
 		    foreach($this->validSearchKeys as $k => $v){
 			    if(empty($v))   continue;
+			    if($firstKeyCheck == false){
+				    $currentProductIdsToQuery = ' AND f2p.product_id IN(' . implode(',', $productIds) . ') ';
+			    }
 			    if ($k == 'field_val'){
 
 				    $query = Doctrine_Manager::getInstance()
 					    ->getCurrentConnection()
-				        ->fetchAssoc('SELECT f2p.product_id FROM products_custom_fields_to_products f2p LEFT JOIN products_custom_fields f using(field_id) WHERE f.field_id = "' . $this->validSearchKeys['field_id'] . '" AND f2p.value LIKE "%' . str_replace('.', '%', $v) . '%"');
-
+				        ->fetchAssoc('SELECT f2p.product_id FROM products_custom_fields_to_products f2p LEFT JOIN products_custom_fields f using(field_id) WHERE f.field_id = "' . $this->validSearchKeys['field_id'] . '" AND f2p.value = "' . str_replace('.', '%', $v) . '"' . $currentProductIdsToQuery);
 
 				    if(sizeof($query) > 0){
 					    foreach($query as $result){
@@ -355,23 +371,25 @@ class Extension_customFields extends ExtensionBase {
 			    }elseif (is_array($v)){
 				    $addSearch = array();
 				    foreach($v as $count => $val){
-					    $addSearch[] = 'f2p.value like "%' . str_replace('.', '%', $val) . '%"';
+					    $addSearch[] = 'f2p.value = "' . str_replace('.', '%', $val) . '"';
 				    }
 
 				    $query = Doctrine_Manager::getInstance()
 					    ->getCurrentConnection()
-					    ->fetchAssoc('SELECT f2p.product_id FROM products_custom_fields_to_products f2p LEFT JOIN products_custom_fields f using(field_id) WHERE f.search_key = "' . $k . '" AND (' . implode(' OR ', $addSearch) . ')');
+					    ->fetchAssoc('SELECT f2p.product_id FROM products_custom_fields_to_products f2p LEFT JOIN products_custom_fields f using(field_id) WHERE f.search_key = "' . $k . '" AND (' . implode(' OR ', $addSearch) . ')' . $currentProductIdsToQuery);
 
 			    }else{
 				    $query =  Doctrine_Manager::getInstance()
 					    ->getCurrentConnection()
-					    ->fetchAssoc('SELECT f2p.product_id FROM products_custom_fields_to_products f2p LEFT JOIN products_custom_fields f using(field_id) WHERE f.search_key = "' . $k . '" AND f2p.value LIKE "%' . str_replace('.', '%', $v) . '%"');
+					    ->fetchAssoc('SELECT f2p.product_id FROM products_custom_fields_to_products f2p LEFT JOIN products_custom_fields f using(field_id) WHERE f.search_key = "' . $k . '" AND f2p.value = "' . str_replace('.', '%', $v) . '"' . $currentProductIdsToQuery);
 			    }
 			    if(sizeof($query) > 0){
+				    $productIds = false;
 				    foreach($query as $result){
 					    $productIds[$result['product_id']] = $result['product_id'];
 				    }
 			    }
+			    $firstKeyCheck = false;
 		    }
 
 		    if(is_array($productIds) && count($productIds)){
