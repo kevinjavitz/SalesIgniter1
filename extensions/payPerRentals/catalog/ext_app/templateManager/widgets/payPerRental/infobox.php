@@ -508,10 +508,10 @@ class InfoBoxPayPerRental extends InfoBoxAbstract {
 								$start_date = strtotime($eInfo['events_date']);
 								$starting_date = date("Y-m-d h:i:s", mktime(date("h",$start_date),date("i",$start_date), date("s",$start_date), date("m",$start_date), date("d",$start_date), date("Y",$start_date)));
 							}
-							$eventb->addOption($eInfo['events_id'],$eInfo['events_name']);
 							break;
 						}
 					}
+					$eventb->addOption($eInfo['events_id'],$eInfo['events_name']);
 				}else{
 					if($firstEvent == $eInfo['events_id'] || $firstEvent == 0){
 						$gatesArr = explode(',', $eInfo['gates']);
@@ -749,6 +749,7 @@ class InfoBoxPayPerRental extends InfoBoxAbstract {
 
 	public function buildStylesheet(){
 		ob_start();
+		readfile(sysConfig::getDirFsCatalog().'ext/jQuery/external/datepick/css/jquery.datepick.css');
 			?>
 
 	.myf1{
@@ -908,6 +909,7 @@ class InfoBoxPayPerRental extends InfoBoxAbstract {
 			$WidgetProperties = $this->getWidgetProperties();
 
 			ob_start();
+			readfile(sysConfig::getDirFsCatalog().'ext/jQuery/external/datepick/jquery.datepick.js');
 			?>
 			<?php
 		$datePadding = sysConfig::get('EXTENSION_PAY_PER_RENTALS_DATE_PADDING');
@@ -1068,6 +1070,7 @@ class InfoBoxPayPerRental extends InfoBoxAbstract {
 
 
 	$('.no_dates_selected').each(function(){$(this).click(function(){
+		<?php if(sysConfig::get('EXTENSION_PAY_PER_RENTALS_PRODUCT_INFO_DATES') == 'True'){ ?>
 	    $( '<div id="dialog-mesage" title="Choose Dates"><input class="tField" name="tField" ><div class="destBD"><span class="start_text">Start: </span><input class="picker dstart" name="dstart" ></div><div class="destBD"><span class="end_text">End: </span><input class="picker dend" name="dend" ></div><?php echo sysConfig::get('EXTENSION_PAY_PER_RENTALS_INFOBOX_CONTENT');?></div>' ).dialog({
 			modal: false,
 			autoOpen: true,
@@ -1087,9 +1090,12 @@ class InfoBoxPayPerRental extends InfoBoxAbstract {
 				}
 			}
 		});
-
+		<?php }else{?>
+			alert('No event selected!');
+		<?php  }?>
 		return false;
 	})});
+
 	$('button[name="no_inventory"]').each(function(){$(this).click(function(){
 
 		$( '<div id="dialog-mesage" title="No Inventory"><span style="color:red;font-size:18px;"><?php echo sysLanguage::get('EXTENSION_PAY_PER_RENTALS_ERROR_NO_INVENTORY_FOR_SELECTED_DATES');?></span></div>' ).dialog({

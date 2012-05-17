@@ -840,7 +840,7 @@ class StyleBuilder {
 				$this->addRule('background-color', $val->background_color);
 				$this->addRule('background-image', 'url(' . $bgImage . ')');
 				$this->addRule('background-position', $val->background_position_x . '% ' . $val->background_position_y . '%');
-				$this->addRule('background-repeat', $val->background_position_repeat);
+				$this->addRule('background-repeat', $val->background_repeat);
 				break;
 			case 'border_radius':
 				buildBorderRadius(

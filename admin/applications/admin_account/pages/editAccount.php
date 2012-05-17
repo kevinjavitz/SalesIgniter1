@@ -1,5 +1,4 @@
 <?php
-	require('includes/account_check.js.php');
 	
 	$Qaccount = Doctrine_Query::create()
 	->select('admin_id, admin_firstname, admin_lastname, admin_email_address')

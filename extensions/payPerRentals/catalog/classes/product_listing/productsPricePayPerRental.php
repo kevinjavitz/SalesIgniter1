@@ -23,7 +23,7 @@ class productListing_productsPricePayPerRental {
 	}
 
 	public function show(&$productClass, &$purchaseTypesCol){
-		global $currencies;
+		global $currencies, $appExtension;
 		$tableRow = array();
 		$purchaseTypeClass = $productClass->getPurchaseType('reservation');
 
@@ -70,6 +70,7 @@ class productListing_productsPricePayPerRental {
 				$deleteS = false;
 				$isdouble = false;
 				//if(Session::exists('isppr_inventory_pickup') === false){ //&& Session::exists('isppr_city') === true && Session::get('isppr_city') != ''){
+				if(sysConfig::get('EXTENSION_PAY_PER_RENTALS_CHOOSE_PICKUP') == 'True' && $appExtension->isInstalled('inventoryCenters') && $appExtension->isEnabled('inventoryCenters')){
 					$Qproducts = Doctrine_Query::create()
 					->from('ProductsInventoryBarcodes b')
 					->leftJoin('b.ProductsInventory i')
@@ -110,7 +111,7 @@ class productListing_productsPricePayPerRental {
 						Session::set('isppr_inventory_pickup', $Qproducts[0]['ProductsInventoryBarcodesToInventoryCenters']['ProductsInventoryCenters']['inventory_center_id']);
 						$deleteS = true;
 					}
-				//}
+				}
 				$hasInventory = $purchaseTypeClass->hasInventory();
 				if(Session::exists('isppr_selected') && Session::get('isppr_selected') == true && $hasInventory){
 					$start_date = '';

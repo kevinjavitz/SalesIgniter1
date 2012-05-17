@@ -55,7 +55,7 @@ class ModulesShippingZoneReservationMethods extends Doctrine_Record {
 				'length'        => 15,
 				'fixed'         => false,
 				'primary'       => false,
-				'default'       => '',
+				'default'       => '-1',
 				'notnull'       => true,
 				'autoincrement' => false
 			));

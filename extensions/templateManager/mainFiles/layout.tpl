@@ -23,7 +23,7 @@ echo '		' . $html . "\n";
 	?>
 	<meta http-equiv="Content-Type" content="text/html; charset=<?php echo sysLanguage::getCharset();?>" />
 	<base href="<?php echo (($request_type == 'SSL') ? sysConfig::get('HTTPS_SERVER') : sysConfig::get('HTTP_SERVER')) . sysConfig::getDirWsCatalog(); ?>" />
-	<link rel="stylesheet" type="text/css" href="<?php echo sysConfig::getDirWsCatalog();?>extensions/templateManager/catalog/globalFiles/stylesheet.php?import=<?php echo implode(',', $stylesheets);?>&layout_id=<?php echo $templateLayoutId;?>&tplDir=<?php echo Session::get('tplDir');?>" />
+	<link rel="stylesheet" type="text/css" href="<?php echo sysConfig::getDirWsCatalog();?>extensions/templateManager/catalog/globalFiles/stylesheet.php?import[]=<?php echo implode('&import[]=', $stylesheets);?>&layout_id=<?php echo $templateLayoutId;?>&tplDir=<?php echo Session::get('tplDir');?>" />
 	<script type="text/javascript">
 		var thisFile = '<?php echo basename($_SERVER['PHP_SELF']);?>';
 		var serverName = '<?php echo sysConfig::get('HTTP_HOST');?>';
@@ -34,7 +34,7 @@ echo '		' . $html . "\n";
 		var sessionName = '<?php echo Session::getSessionName();?>';
 		var request_type = '<?php echo $request_type;?>';
 	</script>
-	<script type="text/javascript" src="<?php echo sysConfig::getDirWsCatalog();?>extensions/templateManager/catalog/globalFiles/javascript.php?import=<?php echo implode(',', $javascriptFiles);?>&layout_id=<?php echo $templateLayoutId;?>&tplDir=<?php echo Session::get('tplDir');?>"></script>
+	<script type="text/javascript" src="<?php echo sysConfig::getDirWsCatalog();?>extensions/templateManager/catalog/globalFiles/javascript.php?import[]=<?php echo implode('&import[]=', $javascriptFiles);?>&layout_id=<?php echo $templateLayoutId;?>&tplDir=<?php echo Session::get('tplDir');?>"></script>
 </head>
 <body>
 <noscript>

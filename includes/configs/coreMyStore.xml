@@ -72,6 +72,12 @@ Casa Grande, AZ  85122]]></value>
 					<description><![CDATA[Logo for the store<br />should be 392 pixels wide and 121 pixels high maximum]]></description>
 					<set_function><![CDATA[itw_cfg_upload_field(]]></set_function>
 				</STORE_LOGO>
+				<USE_INTRO_PAGE>
+					<title><![CDATA[Use Intro page]]></title>
+					<value><![CDATA[false]]></value>
+					<description><![CDATA[Use intro page]]></description>
+					<set_function><![CDATA[tep_cfg_select_option(array('true', 'false'),]]></set_function>
+				</USE_INTRO_PAGE>
 			</configurations>
 		</general>
 		<taxes>

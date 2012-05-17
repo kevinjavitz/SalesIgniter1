@@ -1,3 +1,4 @@
 <?php
-	header('Location: index/default.php');
+
+header('Location: intro/default.php');
 ?>
