@@ -1404,7 +1404,7 @@ function tep_language_exists($code) {
   }
 
 
-	function addChildren($child, $currentPath, &$ulElement, $catArrExcl = array()) {
+	function addChildren($child, $currentPath, &$ulElement, $catArrExcl = array(), $expandSelected = true) {
 		global $current_category_id;
 		//$currentPath .= '_' . $child['categories_id'];
 
@@ -1414,7 +1414,7 @@ function tep_language_exists($code) {
 		->html('<span class="ui-icon ui-icon-triangle-1-e ui-icon-categories-bullet" style="vertical-align:middle;"></span><span style="display:inline-block;vertical-align:middle;">' . $child['CategoriesDescription'][Session::get('languages_id')]['categories_name'] . '</span>')
 		->setHref(itw_app_link(null, 'index', $child['CategoriesDescription'][Session::get('languages_id')]['categories_seo_url']));
 			
-		if ($child['categories_id'] == $current_category_id){
+		if ($expandSelected && $child['categories_id'] == $current_category_id){
 			$childLinkEl->addClass('selected');
 		}
 		
@@ -1447,7 +1447,7 @@ function tep_language_exists($code) {
 			->addClass('ui-widget ui-widget-content ui-corner-all ui-menu-flyout')
 			->css('display', 'none');
 			foreach($currentParentChildren as $childInfo){
-				addChildren($childInfo, $currentPath, &$children);
+				addChildren($childInfo, $currentPath, &$children, $catArrExcl, $expandSelected);
 			}
 		}
 		
