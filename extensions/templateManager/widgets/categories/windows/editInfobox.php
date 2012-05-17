@@ -51,18 +51,33 @@ $categoryTreeList[] = array(
 getCategoryTree(0,'',&$categoryTreeList);
 
 $selectedCategory = isset($WidgetSettings->selected_category)?$WidgetSettings->selected_category:'';
+$defaultExpandedCategory = isset($WidgetSettings->default_expanded_category)?$WidgetSettings->default_expanded_category:'';
 
 $categoryTree = htmlBase::newElement('selectbox')
 		->setName('selected_category')
 		->setId('selectedCategory')
 		->setLabel('Parent Category')//sysLanguage::get('TEXT_SELECT_PARENT_CATEGORY')
 		->setLabelPosition('before');
+
+$categoryTreeDefaultExpanded = htmlBase::newElement('selectbox')
+	->setName('default_expanded_category')
+	->setId('defaultExpandedCategory')
+	->setLabel('Expand this category when not on a category page')//sysLanguage::get('TEXT_SELECT_PARENT_CATEGORY')
+	->setLabelPosition('before');
+
 $categoryTree->addOption('', sysLanguage::get('INFOBOX_CATEGORIES_SELECT_PARENT_CATEGORY_OPTION'));
+$categoryTreeDefaultExpanded->addOption('', sysLanguage::get('INFOBOX_CATEGORIES_SELECT_PARENT_CATEGORY_OPTION'));
+
 foreach($categoryTreeList as $category){
 	$categoryTree->addOption($category['categoryId'], $category['categoryName']);
+	$categoryTreeDefaultExpanded->addOption($category['categoryId'], $category['categoryName']);
 }
 if(isset($selectedCategory)){
 	$categoryTree->selectOptionByValue($selectedCategory);
+}
+
+if(isset($defaultExpandedCategory)){
+	$categoryTreeDefaultExpanded->selectOptionByValue($defaultExpandedCategory);
 }
 
 $WidgetSettingsTable->addBodyRow(array(
@@ -87,8 +102,19 @@ $WidgetSettingsTable->addBodyRow(array(
 	));
 */
 $WidgetSettingsTable->addBodyRow(array(
+	'columns' => array(
+		array('text' => 'Show current category\'s sub categories'),
+		array('text' => '<input type="checkbox" name="showCurrentSubcategory" value="showCurrentSubcategory" '.$checkedshowCurrentSubcategory.'>')
+	)
+));
+$WidgetSettingsTable->addBodyRow(array(
                                       'columns' => array(
 	                                      array('colspan' => 2, 'text' => $categoryTree->draw())
+                                      )
+                                 ));
+$WidgetSettingsTable->addBodyRow(array(
+                                      'columns' => array(
+	                                      array('colspan' => 2, 'text' => $categoryTreeDefaultExpanded->draw())
                                       )
                                  ));
 $checkedCats = array();

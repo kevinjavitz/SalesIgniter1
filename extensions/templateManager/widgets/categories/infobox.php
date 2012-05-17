@@ -27,6 +27,7 @@ class infoBoxCategories extends InfoBoxAbstract {
 		$boxWidgetProperties = $this->getWidgetProperties();
 		//$showSubcategory = (isset($boxWidgetProperties->showSubcategory)&& $boxWidgetProperties->showSubcategory == 'showSubcategory')?true:false;
 		//$showAlways = (isset($boxWidgetProperties->showAlways)&& $boxWidgetProperties->showAlways == 'showAlways')?true:false;
+		$showCurrentSubcategory = (isset($boxWidgetProperties->showCurrentSubcategory) && !empty($boxWidgetProperties->showCurrentSubcategory)) ? true : false;
 		$excludedCategories = (isset($boxWidgetProperties->excludedCategories) && !empty($boxWidgetProperties->excludedCategories))?explode(';',$boxWidgetProperties->excludedCategories):false;
 		$catArrExcl = false;
 		if(is_array($excludedCategories) && count($excludedCategories)){
@@ -83,7 +84,9 @@ class infoBoxCategories extends InfoBoxAbstract {
 				$categoryName = $cInfo['CategoriesDescription'][0]['categories_name'];
 
 				$headerEl = htmlBase::newElement('h3');
-				if ($current_category_id == $catId){
+				if ($showCurrentSubcategory && $current_category_id > 0 && $current_category_id == $catId){
+					$headerEl->addClass('selected');
+				} else if((int)$boxWidgetProperties->default_expanded_category > 0 && (int)$catId == (int)$boxWidgetProperties->default_expanded_category){
 					$headerEl->addClass('selected');
 				}
 				$headerEl->html($categoryName);
@@ -106,7 +109,7 @@ class infoBoxCategories extends InfoBoxAbstract {
 				$ulElement = htmlBase::newElement('list');
 				if ($currentChildren->count() > 0){
 					foreach($currentChildren->toArray() as $child){
-						addChildren($child, $categoryId, &$ulElement, $catArrExcl);
+						addChildren($child, $categoryId, $ulElement, $catArrExcl, $showCurrentSubcategory);
 					}
 				}else{
 					$childLinkEl = htmlBase::newElement('a')
@@ -138,59 +141,60 @@ class infoBoxCategories extends InfoBoxAbstract {
 
 		ob_start();
 		?>
-		$('.categoriesBoxMenu').accordion({
-			header: 'h3',
-		collapsible: true,
-		autoHeight: false,
-		active:$('.categoriesBoxMenu h3.selected'),
-		collapsible: true,
-		icons: {
-				header: 'ui-icon-circle-triangle-s',
-				headerSelected: 'ui-icon-circle-triangle-n'
-		}
-	});
+		$('document').ready(function (){
+			$('.categoriesBoxMenu').accordion({
+				header: 'h3',
+				collapsible: true,
+				autoHeight: false,
+				active:$('.categoriesBoxMenu h3.selected'),
+				collapsible: true,
+				icons: {
+						header: 'ui-icon-circle-triangle-s',
+						headerSelected: 'ui-icon-circle-triangle-n'
+				}
+			});
+			$('a', $('.categoriesBoxMenu')).each(function (){
+					var $link = $(this);
+					$($link.parent()).hover(function (){
+							$link.css('cursor', 'pointer').addClass('ui-state-hover');
 
-	$('a', $('.categoriesBoxMenu')).each(function (){
-			var $link = $(this);
-			$($link.parent()).hover(function (){
-					$link.css('cursor', 'pointer').addClass('ui-state-hover');
+							var linkOffset = $link.parent().offset();
+							var boxOffset = $('.categoriesBoxMenu').offset();
+							if ($('ul', $(this)).size() > 0){
+								var $menuList = $('ul:first', $(this));
+								$menuList.css({
+									position: 'absolute',
+									top: $link.parent().position().top,
+									left: $link.parent().position().left + $link.parent().innerWidth() - 5,
+									backgroundColor: '#FFFFFF',
+									zIndex: 9999
+						}).show();
+					}
+						}, function (){
+					$link.css({cursor: 'default'}).removeClass('ui-state-hover');
 
-					var linkOffset = $link.parent().offset();
-					var boxOffset = $('.categoriesBoxMenu').offset();
-					if ($('ul', $(this)).size() > 0){
-						var $menuList = $('ul:first', $(this));
-				$menuList.css({
-							position: 'absolute',
-					top: $link.parent().position().top,
-					left: $link.parent().position().left + $link.parent().innerWidth() - 5,
-					backgroundColor: '#FFFFFF',
-					zIndex: 9999
-				}).show();
-			}
-				}, function (){
-			$link.css({cursor: 'default'}).removeClass('ui-state-hover');
-
-			if ($('ul', this).size() > 0){
-				$('ul:first', this).hide();
-			}
-		}).click(function (){
-					document.location = $('a:first', this).attr('href');
+					if ($('ul', this).size() > 0){
+						$('ul:first', this).hide();
+					}
+				}).click(function (){
+							document.location = $('a:first', this).attr('href');
+						});
 				});
+
+			$('.categoriesBoxMenu li a.selected').each(function() {
+					var li = $(this);
+					$('.categoriesBoxMenu').accordion("activate",li.parent().parent().parent().prev());
+			});
+
+			$('.categoriesBoxMenu .issingle').each(function() {
+				var h3 = $(this).parent().parent().parent().parent().prev();
+				var self = $(this);
+				h3.click(function (){
+					document.location = self.parent().attr('href');
+				});
+
+			});
 		});
-
-	$('.categoriesBoxMenu li a.selected').each(function() {
-			var li = $(this);
-			$('.categoriesBoxMenu').accordion("activate",li.parent().parent().parent().prev());
-	});
-
-	$('.categoriesBoxMenu .issingle').each(function() {
-		var h3 = $(this).parent().parent().parent().parent().prev();
-		var self = $(this);
-		h3.click(function (){
-			document.location = self.parent().attr('href');
-		});
-
-	});
 		<?php
 		$javascript = ob_get_contents();
 		ob_end_clean();
