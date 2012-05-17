@@ -164,6 +164,8 @@ class Extension_customFields extends ExtensionBase {
                         if (sizeof($values) > 0){
                             foreach($values as $val){
                                 $trimmed = trim($val);
+	                            if(empty($val))
+		                            continue;
                                 if (!in_array($trimmed, $added)){
                                     $dropArray[] = array(
                                         'id'   => addslashes($trimmed),
