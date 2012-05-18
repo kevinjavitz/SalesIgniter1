@@ -12,6 +12,145 @@ EventManager::notify('ProductInfoProductsImageShow', &$image, &$product);
 .productImageGallery a { border:1px solid transparent;display:inline-block;vertical-align:middle;margin:.2em; }
 </style>
 <?php
+
+if(sysConfig::get('SHOW_PRODUCT_INFO_BUTTONS_TOP') !== 'False'){
+
+
+	$purchaseBoxes = array();
+	$purchaseTypes = array();
+	foreach($product->productInfo['typeArr'] as $typeName){
+		$purchaseTypes[$typeName] = $product->getPurchaseType($typeName);
+		if ($purchaseTypes[$typeName]){
+			$settings = $purchaseTypes[$typeName]->getPurchaseHtml('product_info');
+			if (is_null($settings) === false){
+				EventManager::notify('ProductInfoPurchaseBoxOnLoad', &$settings, $typeName, $purchaseTypes);
+				$purchaseBoxes[] = $settings;
+			}
+		}
+	}
+
+	$extDiscounts = $appExtension->getExtension('quantityDiscount');
+	$extAttributes = $appExtension->getExtension('attributes');
+
+	$purchaseTable = htmlBase::newElement('table')
+		->addClass('ui-widget')
+		->css('width', '100%')
+		->setCellPadding(5)
+		->setCellSpacing(0);
+
+	$columns = array();
+	foreach($purchaseBoxes as $boxInfo){
+		if ($extAttributes !== false){
+			$boxInfo['content'] .= $extAttributes->pagePlugin->drawAttributes(array(
+				'productClass' => $product,
+				'purchase_type' => $boxInfo['purchase_type']
+			));
+		}
+
+		if ($extDiscounts !== false && $purchaseTypes[$boxInfo['purchase_type']]->hasInventory()){
+			$boxInfo['content'] .= $extDiscounts->showQuantityTable(array(
+				'productClass' => $product,
+				'purchase_type' => $boxInfo['purchase_type'],
+				'product_id' => $product->getId()
+			));
+		}
+
+		$boxInfo['content'] .= tep_draw_hidden_field('products_id', $productID);
+
+		$boxObj = htmlBase::newElement('infobox')
+			->setForm(array(
+			'name' => 'cart_quantity',
+			'action' => $boxInfo['form_action']
+		))
+			->css('width', 'auto')->removeCss('margin-left')->removeCss('margin-right')
+			->setHeader($boxInfo['header'])
+			->setButtonBarLocation('bottom');
+		$typesTable = htmlBase::newElement('table')
+			->addClass('ui-widget-content')
+			->css('width', '100%')
+			->setCellPadding(0)
+			->setCellSpacing(2);
+
+		if ($boxInfo['allowQty'] === true){
+			$qtyInput = htmlBase::newElement('input')
+				->css('margin-right', '1em')
+				->setType('hidden')
+				->setName('quantity[' . $boxInfo['purchase_type'] . ']')
+				->setValue(1);
+			$boxInfo['content'] . $qtyInput->draw();
+			//$boxObj->addButton($qtyInput);
+		}
+		if(isset($boxInfo['button']) && is_object($boxInfo['button'])){
+			//$boxObj->addButton($boxInfo['button']);
+		}
+
+		EventManager::notifyWithReturn('ProductInfoTabImageBeforeDrawPurchaseType', &$product, &$boxObj, &$boxInfo);
+		$boxInfo['button']->addClass('buttonSmall');
+		//$boxObj->addContentRow($boxInfo['content']);
+		switch($boxInfo['purchase_type']){
+			case 'rental':
+			case 'reservation':
+				$typesTable->addBodyRow(array(
+					'align' => 'center',
+					'columns' => array(
+						array('text' => $boxInfo['button'])
+					)
+				));
+				break;
+			default:
+				$typesTable->addBodyRow(array(
+					'align' => 'center',
+					'columns' => array(
+						array('text' => ucfirst($boxInfo['purchase_type']) . ':'),
+						array('text' => $boxInfo['content']),
+						array('text' => $boxInfo['button'])
+					)
+				));
+		}
+
+		$typesForm = htmlBase::newElement('form')
+			->attr('name', 'cart_quantity')
+			->attr('method', 'post')
+			->attr('action', $boxInfo['form_action'])
+			->append($typesTable);
+
+		$columns[] = array(
+			'valign' => 'top',
+			'text' => $typesForm->draw()
+		);
+
+		if (sizeof($columns) > 1){
+			$purchaseTable->addBodyRow(array(
+				'align' => 'center',
+				'columns' => $columns
+			));
+			$columns = array();
+		}
+	}
+
+	if (sizeof($columns) > 0){
+		//$columns[0]['colspan'] = 1;
+		$purchaseTable->addBodyRow(array(
+			'columns' => $columns
+		));
+	}
+
+
+	echo '<div style="text-align:center;">' .
+		$purchaseTable->draw() .
+		'<div style="clear:both;"></div>' .
+		'</div>' ;
+	//'<div style="clear:both;"></div>';
+
+	$contents = EventManager::notifyWithReturn('ProductInfoAfterPurchaseTypes', &$product);
+	if (!empty($contents)){
+		foreach($contents as $content){
+			echo $content;
+		}
+	}
+}
+
+
 	$productsImage = '<div style="text-align:center;float:left;margin:1em;margin-right:2em;" class="ui-widget ui-widget-content ui-corner-all">' .
                      '<div style="margin:.5em;text-align:center;">';
 	if(sysConfig::get('SHOW_ENLAGE_IMAGE_TEXT') == 'true') {
@@ -80,6 +219,7 @@ EventManager::notify('ProductInfoProductsImageShow', &$image, &$product);
 	echo '</p>' . 
 	'<div style="clear:both;"></div>';
 
+if(sysConfig::get('SHOW_PRODUCT_INFO_BUTTONS_BOTTOM') == 'True'){
 	$purchaseBoxes = array();
 	$purchaseTypes = array();
 	foreach($product->productInfo['typeArr'] as $typeName){
@@ -183,6 +323,7 @@ EventManager::notify('ProductInfoProductsImageShow', &$image, &$product);
 			echo $content;
 		}
 	}
+}
 
 	if ($product->isBox()){
 		$discs = $product->getDiscs(false, true);

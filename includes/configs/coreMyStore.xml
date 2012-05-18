@@ -332,6 +332,18 @@ Casa Grande, AZ  85122]]></value>
 					<description><![CDATA[If true id will show new products module on nested categories]]></description>
 					<set_function><![CDATA[tep_cfg_select_option(array('true', 'false'),]]></set_function>
 				</NEW_PRODUCTS_ON_NESTED_CATEGORIES>
+				<SHOW_PRODUCT_INFO_BUTTONS_TOP>
+					<title><![CDATA[On product info page show buttons on top?]]></title>
+					<value><![CDATA[False]]></value>
+					<description><![CDATA[If true purchase buttons will be shown on top of product image]]></description>
+					<set_function><![CDATA[tep_cfg_select_option(array('True', 'False'),]]></set_function>
+				</SHOW_PRODUCT_INFO_BUTTONS_TOP>
+				<SHOW_PRODUCT_INFO_BUTTONS_BOTTOM>
+					<title><![CDATA[On product info page show buttons on bottom?]]></title>
+					<value><![CDATA[False]]></value>
+					<description><![CDATA[If true purchase buttons will be shown on bottom of product info page]]></description>
+					<set_function><![CDATA[tep_cfg_select_option(array('True', 'False'),]]></set_function>
+				</SHOW_PRODUCT_INFO_BUTTONS_BOTTOM>
 				<SHOW_MANUFACTURER_ON_PRODUCT_INFO>
 					<title><![CDATA[Show manufacturer name on product Info]]></title>
 					<value><![CDATA[false]]></value>
