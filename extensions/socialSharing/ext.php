@@ -7,13 +7,21 @@ class Extension_socialSharing extends ExtensionBase {
 	}
 	
 	public function init(){
+		//this is the main extension
 		if ($this->isEnabled() === false) return;
-		
 		EventManager::attachEvents(array(
 			'ProductInfoAfterShowImages',
 			'PageLayoutHeaderCustomMeta'
-
 		), null, $this);
+		
+		//this is for facebook connect
+		if(sysConfig::get('EXTENSION_FACEBOOK_CONNECT_ENABLED') == 'True'){
+			EventManager::attachEvents(array(
+				'LoginBeforeTabs',
+				'ProcessLoginBeforeExecute',
+				'ProcessLogoutExecute'
+			), null, $this);
+		}
 	}
 
 	public function PageLayoutHeaderCustomMeta(){
@@ -25,8 +33,181 @@ class Extension_socialSharing extends ExtensionBase {
 			return '';
 		}
 	}
+	
+	public function ProcessLogoutExecute() {
+		if(!class_exists('Facebook'))
+			require 'fb-sdk/facebook.php';
+		
+			$facebook = new Facebook(array(
+			'appId'  => sysConfig::get('EXTENSION_FACEBOOK_CONNECT_APPID'),
+			'secret' => sysConfig::get('EXTENSION_FACEBOOK_CONNECT_SECRET'),
+		));
+		
+		$user = $facebook->getUser();
+		if( $user ) {
+			tep_redirect( $facebook->getLogoutUrl() );
+		}
+	}
+	
+	public function ProcessLoginBeforeExecute(&$noValidate, $password, &$Qcustomer) {
+		if(!class_exists('Facebook'))
+			require 'fb-sdk/facebook.php';
+		
+		$facebook = new Facebook(array(
+			'appId'  => sysConfig::get('EXTENSION_FACEBOOK_CONNECT_APPID'),
+			'secret' => sysConfig::get('EXTENSION_FACEBOOK_CONNECT_SECRET'),
+		));
+		
+		$user = $facebook->getUser();
+		if( $user ) {
+			$profile = $facebook->api('/me');
+			if( $password == sha1($profile['id']) )
+				$noValidate = true;
+		}
+	}
 
-
+	public function LoginBeforeTabs() {
+		if(!class_exists('Facebook'))
+			require 'fb-sdk/facebook.php';
+		
+		$facebook = new Facebook(array(
+			'appId'  => sysConfig::get('EXTENSION_FACEBOOK_CONNECT_APPID'),
+			'secret' => sysConfig::get('EXTENSION_FACEBOOK_CONNECT_SECRET'),
+		));
+		
+		// Get User ID
+		$redirectUrl = false;
+		$user = $facebook->getUser();
+		if( $user ) {
+			try {
+				global $userAccount, $emailEvent;
+				$profile = $facebook->api('/me');
+				$dbUser = Doctrine_Query::create()->from('Customers')->where("customers_email_address='".$profile['email']."'")->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+				
+				if( $dbUser ) {
+					$pL = $userAccount->processLogIn($profile['email'], sha1($profile['id']));
+					if($pL === true) {
+						$redirectUrl = itw_app_link(null, 'account', 'default', 'SSL');
+					}
+				} else {
+					$process = true;
+					$hasError = false;
+					$userAccount = new rentalStoreUser();
+					$userAccount->loadPlugins();
+					$addressBook =& $userAccount->plugins['addressBook'];
+					
+					$newPassword = substr(str_shuffle('abcdefghijklmnopqrstuvxyzABCDEFGHIJKLMNOPQRSTUVXYZ1234567890'), 0, 8);
+					$name = explode(' ', $profile['name']);
+					$accountValidation = array(
+						'entry_firstname'      => $name[0],
+						'entry_lastname'       => $name[count($name)-1],
+						'email_address'        => $profile['email'],
+						'password'             => $newPassword,
+						'confirmation'         => $newPassword,
+						'terms'                => 1
+					);
+					
+					$hasError = $userAccount->validate($accountValidation);
+					if ($hasError === false){
+						$userAccount->setFirstName($accountValidation['entry_firstname']);
+						$userAccount->setLastName($accountValidation['entry_lastname']);
+						$userAccount->setEmailAddress($accountValidation['email_address']);
+						$userAccount->setPassword($accountValidation['password']);
+						$userAccount->setNewsLetter($accountValidation['newsletter']);
+						$userAccount->setLanguageId(Session::get('languages_id'));
+					
+						$customerId = $userAccount->createNewAccount();
+						$addressBook->insertAddress($accountValidation, true, true);
+					
+						$userAccount->processLogIn(
+							$accountValidation['email_address'],
+							$accountValidation['password']
+						);
+					
+						$emailEvent = new emailEvent(null, $userAccount->getLanguageId());
+						$emailEvent->setEvent('password_forgotten');
+						
+						$emailEvent->setVars(array(
+							'newPassword' => $newPassword,
+						));
+						
+						$emailEvent->sendEmail(array(
+							'email' => $profile['email'],
+							'name' => $profile['name']
+						));
+						
+						$redirectUrl = itw_app_link(null, 'account', 'default', 'SSL');
+					}
+				}
+			} catch (FacebookApiException $e) {
+				
+			}
+		}
+		if( $redirectUrl )
+			tep_redirect( $redirectUrl );
+		
+		return '<fb:login-button></fb:login-button>
+				<div id="fb-login"></div>
+				<script type="text/javascript">
+				   window.fbAsyncInit = function() {
+			        FB.init({
+			          appId: \''.$facebook->getAppID().'\',
+			          cookie: true,
+			          xfbml: true,
+			          oauth: true
+			        });
+			        FB.Event.subscribe(\'auth.login\', function(response) {
+			          window.location.reload();
+			        });
+			        FB.Event.subscribe(\'auth.logout\', function(response) {
+			          window.location.reload();
+			        });
+			      };
+			      (function() {
+			        var e = document.createElement(\'script\'); e.async = true;
+			        e.src = document.location.protocol +
+			          \'//connect.facebook.net/en_US/all.js\';
+			        document.getElementById(\'fb-login\').appendChild(e);
+			      }());
+			    </script>';
+		
+		/*
+		 * This is for showing a Facebook registration form that is very similar to our system's form
+		 * and is handled by createFBAccount action
+		 * 
+		$data_fields = "[{'name':'name'},{'name':'email'},";
+		$data_fields .= "{'name':'street_address', 'description':'Street Address', 'type':'text'},";
+		$data_fields .= "{'name':'city', 'description':'City', 'type':'text'},";
+		$data_fields .= "{'name':'postal_code', 'description':'Postal Code', 'type':'text'},";
+		
+		//countries
+		$countryJson = '';
+		$countriesArray = Doctrine_Query::create()->from('Countries')->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+		foreach( $countriesArray as $country )
+			$countryJson .= "'{$country['countries_id']}':'".str_replace("'", "", htmlentities($country['countries_name']))."',";
+		$countryJson = substr( $countryJson, 0, -1 );
+			
+		$data_fields .= "{'name':'country', 'description':'Country', 'type':'select', 'options':{{$countryJson}}},";
+		$data_fields .= "{'name':'password'}]";
+		return '<script type="text/javascript">
+					window.fbAsyncInit = function() {
+			          FB.init({
+			            appId      : \''.sysConfig::get('EXTENSION_FACEBOOK_CONNECT_APPID').'\',
+			            status     : true, 
+			            cookie     : true,
+			            xfbml      : true,
+			            oauth      : true,
+			          });
+			        };
+			        (function(d){
+			           var js, id = \'facebook-jssdk\'; if (d.getElementById(id)) {return;}
+			           js = d.createElement(\'script\'); js.id = id; js.async = true;
+			           js.src = "//connect.facebook.net/en_US/all.js";
+			           d.getElementsByTagName(\'head\')[0].appendChild(js);
+			         }(document));
+				</script>
+				<div class="fb-registration" data-fields="'.$data_fields.'" data-redirect-uri="'.itw_app_link('action=createFBAccount', 'account', 'create', 'SSL').'">Sign in with Facebook</div>';*/
+	}
 
 	public function ProductInfoAfterShowImages($product, &$productsImage){
 		if(sysConfig::get('EXTENSION_SOCIAL_SHARING_SHOW_TWITTER') == 'True'){
