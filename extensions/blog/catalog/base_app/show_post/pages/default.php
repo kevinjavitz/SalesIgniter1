@@ -24,7 +24,7 @@
 		$contentHtml .= '<div class="blogpostimage"><img src="'.$thumbUrl.'"/></div>';
 	}
 
-	$contentHtml .= '<div class="blogpostdescription">'.$pageBlog['BlogPostsDescription'][$langId]['blog_post_text'].'<div>';
+	$contentHtml .= '<div class="blogpostdescription">'.$pageBlog['BlogPostsDescription'][$langId]['blog_post_text'].'</div>';
 
 	$contentHtml .= '<br style="clear:both;"/>';
 
@@ -33,7 +33,7 @@
 
 		foreach ($pageBlog['BlogCommentToPost'] as $comments){
 			if($comments['BlogComments']['comment_status'] == 1){
-				$theComments .= "Author: <a href='mailto: ".$comments['BlogComments']['comment_email']."'>".$comments['BlogComments']['comment_author']."</a><br/>". $comments['BlogComments']['comment_text']."<br/>";
+				$theComments .= "<p class='blogPostCommentsAuthor'>Author: <a href='mailto: ".$comments['BlogComments']['comment_email']."'>".$comments['BlogComments']['comment_author']."</a></p><p>". $comments['BlogComments']['comment_text']."</p>";
 			}
 
 		}
@@ -111,7 +111,7 @@
 	$contentHeading = stripslashes($contentHeading);
 	$contentHtml = stripslashes($contentHtml);
     if(sysConfig::get('EXTENSION_BLOG_ENABLE_COMMENTS') == 'True'){
-	    $contentHtml .= "<p>Comments: </p>" . stripslashes($theComments);
+	    $contentHtml .= "<p class='blogPostCommentsHeading'>Comments: </p>" . stripslashes($theComments);
 		$contentHtml .= '<br/><br style="clear:both;"/><div id="addComment">Add Comment +</div><div id="commentDiv">'. $commentForm->draw().'</div>';
     }
 
