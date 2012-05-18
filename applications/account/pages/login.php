@@ -37,6 +37,16 @@ foreach($tabsArr as $tabId => $tInfo){
 	ob_end_clean();
 }
 
+//build the pageContent
+$theContent = '';
+$beforeTabs = EventManager::notifyWithReturn('LoginBeforeTabs');
+if (!empty($beforeTabs)){
+	foreach($beforeTabs as $content){
+		$theContent .= $content;
+	}
+}
+$theContent .= $TabsObj->draw();
+
 $pageTitle = sysLanguage::get('HEADING_TITLE_LOGIN');
 	
 $pageContent->set('pageForm', array(
@@ -46,4 +56,4 @@ $pageContent->set('pageForm', array(
 	));
 	
 $pageContent->set('pageTitle', $pageTitle);
-$pageContent->set('pageContent', $TabsObj->draw());
+$pageContent->set('pageContent', $theContent);
