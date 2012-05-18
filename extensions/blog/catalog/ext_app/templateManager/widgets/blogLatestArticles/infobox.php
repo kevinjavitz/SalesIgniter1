@@ -75,10 +75,14 @@ class InfoBoxBlogLatestArticles extends InfoBoxAbstract {
 					}
 					//print_r($img);
 					$src = str_replace('"','',(isset($img[2])?$img[2]:''));
+					if(empty($src)){
+						$thumbUrl = '';
+					} else {
+						$thumbUrl = 'imagick_thumb.php?path=rel&imgSrc=images/'.$src.'&width='.$imageWidth.'&height='.$imageHeight;
+					}
 
-					$thumbUrl = 'imagick_thumb.php?path=rel&imgSrc='.$src.'&width='.$imageWidth.'&height='.$imageHeight;
 				}else{
-					$thumbUrl = 'imagick_thumb.php?path=rel&imgSrc='.$post['post_featured_image'].'&width='.$imageWidth.'&height='.$imageHeight;
+					$thumbUrl = 'imagick_thumb.php?path=rel&imgSrc=images/'.$post['post_featured_image'].'&width='.$imageWidth.'&height='.$imageHeight;
 				}
 				$contentHtml.= '<div class="pictPart">';
 				if($thumbUrl !=''){
@@ -89,6 +93,8 @@ class InfoBoxBlogLatestArticles extends InfoBoxAbstract {
 					if($imageHasLink){
 						$contentHtml.= '</a>';
 					}
+				}else{
+					$contentHtml.= '<img src="images/feedicon.png"/>';
 				}
 				$contentHtml.= '</div>';
 
@@ -98,6 +104,10 @@ class InfoBoxBlogLatestArticles extends InfoBoxAbstract {
 					$contentHtml.= $this->video_from_url($post['post_featured_media'], $imageWidth, $imageHeight);
 					$contentHtml.= '</div>';
 				}
+			} else {
+				$contentHtml.= '<div class="pictPart">';
+				$contentHtml.= '<img src="images/feedicon.png"/>';
+				$contentHtml.= '</div>';
 			}
 
 			$contentHtml.= '<div class="textPart">';
@@ -113,7 +123,7 @@ class InfoBoxBlogLatestArticles extends InfoBoxAbstract {
 			}
 
 			if($showReadMore){
-				$contentHtml.= "<a style='color:red;font-weight:bold;' class='blogReadMore' href='" . itw_app_link('appExt=blog', 'show_post', $post['BlogPostsDescription'][Session::get('languages_id')]['blog_post_seo_url']) . "'>". 'go check here >>' . "</a>"; //sysLanguage::get('INFOBOX_BLOGLATESTARTICLES_TEXT_READ_MORE')
+				$contentHtml.= "<a class='blogReadMore' href='" . itw_app_link('appExt=blog', 'show_post', $post['BlogPostsDescription'][Session::get('languages_id')]['blog_post_seo_url']) . "'>". sysLanguage::get('INFOBOX_BLOGLATESTARTICLES_TEXT_READ_MORE') . "</a>"; //sysLanguage::get('INFOBOX_BLOGLATESTARTICLES_TEXT_READ_MORE')
 			}
 			$contentHtml.= "</div>";
 
