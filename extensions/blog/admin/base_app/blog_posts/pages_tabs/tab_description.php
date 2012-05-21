@@ -1,5 +1,5 @@
 <?php
-
+$blogExtension = $appExtension->getExtension('blog');
 $PostStatusEnabled = htmlBase::newElement('radio')
 	->setName('post_status')
 	->setLabel('Published')
@@ -27,19 +27,24 @@ $PostFeaturedImage = htmlBase::newElement('uploadManagerInput')
 	->setName('post_featured_image')
 	->setFileType('image')
 	->autoUpload(true)
+	->setUploadPath($blogExtension->getFilesUploadPath('image', 'rel'))
 	->showPreview(true)
 	->showMaxUploadSize(true);
-
-$PostFeaturedImage->setPreviewFile($Post['post_featured_image']);
+if(!empty($Post['post_featured_image']) && file_exists($blogExtension->getFilesUploadPath() . $Post['post_full_featured_image'])){
+	$PostFeaturedImage->setPreviewFile($Post['post_featured_image']);
+}
 
 $PostFullFeaturedImage = htmlBase::newElement('uploadManagerInput')
 	->setName('post_full_featured_image')
 	->setFileType('image')
 	->autoUpload(true)
+	->setUploadPath($blogExtension->getFilesUploadPath('image', 'rel'))
 	->showPreview(true)
 	->showMaxUploadSize(true);
 
-$PostFullFeaturedImage->setPreviewFile($Post['post_full_featured_image']);
+if(!empty($Post['post_full_featured_image']) && file_exists($blogExtension->getFilesUploadPath() . $Post['post_full_featured_image'])){
+	$PostFullFeaturedImage->setPreviewFile($Post['post_full_featured_image']);
+}
 
 $PostFeaturedVideo = htmlBase::newElement('input')
 ->setName('post_featured_media')

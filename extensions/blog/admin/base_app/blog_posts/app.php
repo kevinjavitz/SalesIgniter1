@@ -10,6 +10,8 @@ $appContent = $App->getAppContentFile();
 		$App->addJavascriptFile('ext/jQuery/external/uploadify/swfobject.js');
 		$App->addJavascriptFile('ext/jQuery/external/uploadify/jquery.uploadify.js');
 		$App->addStylesheetFile('ext/jQuery/external/uploadify/jquery.uploadify.css');
+		$App->addJavascriptFile('ext/jQuery/external/fancybox/jquery.fancybox.js');
+		$App->addStylesheetFile('ext/jQuery/external/fancybox/jquery.fancybox.css');
 	}
 
 ?>

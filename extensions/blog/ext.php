@@ -88,6 +88,15 @@
 			), null, $this);
 		}
 
+		public function getFilesUploadPath($fileType='image', $type='abs'){
+			global $fileTypeUploadDirs;
+			if($type == 'abs'){
+				return sysConfig::getDirFsCatalog() . 'extensions/blog/' . $fileTypeUploadDirs[$fileType]['rel'];
+			} else {
+				return sysConfig::getDirWsCatalog() . 'extensions/blog/' . $fileTypeUploadDirs[$fileType]['rel'];
+			}
+		}
+
 		public function BoxModulesAddLink(&$contents){
 			$subChildren = array();
 

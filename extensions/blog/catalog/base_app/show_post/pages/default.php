@@ -20,7 +20,7 @@
     $contentHtml = '';
 
 	if(!empty($pageBlog['post_full_featured_image'])){
-		$thumbUrl = 'imagick_thumb.php?path=rel&imgSrc=images/'.$pageBlog['post_full_featured_image'];
+		$thumbUrl = 'imagick_thumb.php?path=rel&imgSrc=' . $blog->getFilesUploadPath('image', 'rel') . $pageBlog['post_full_featured_image'];
 		$contentHtml .= '<div class="blogpostimage"><img src="'.$thumbUrl.'"/></div>';
 	}
 

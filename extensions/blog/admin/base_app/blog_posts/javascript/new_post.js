@@ -85,7 +85,7 @@ function uploadManagerField($el){
 
 				if (hasPreviewContainer === true){
 					var $deleteIcon = $('<a></a>')
-						.addClass('ui-icon ui-icon-closethick');
+						.addClass('ui-icon ui-icon-closethick deleteImage');
 
 					var $zoomIcon = $('<a></a>')
 						.addClass('ui-icon ui-icon-zoomin');
@@ -118,6 +118,48 @@ function uploadManagerField($el){
 						$previewContainer.html($theBox);
 					}
 					$('.fancyBox', $theBox).trigger('loadBox');
+					$('.ui-icon-zoomin').live('click mouseover mouseout', function (event){
+						switch(event.type){
+							case 'click':
+								$(this).parent().find('.fancyBox').click();
+								break;
+							case 'mouseover':
+								this.style.cursor = 'pointer';
+								//$(this).addClass('ui-state-hover');
+								break;
+							case 'mouseout':
+								this.style.cursor = 'default';
+								//$(this).removeClass('ui-state-hover');
+								break;
+						}
+					});
+
+					$('.deleteImage').live('click', function (event){
+						var newVal = [];
+						var imageInput = $('#' + $(this).parent().attr('data-input_id'));
+						var currentVal = imageInput.val();
+						var images = currentVal.split(';');
+						for(var i=0; i<images.length; i++){
+							if (images[i] != $(this).parent().attr('data-image_file_name')){
+								newVal.push(images[i]);
+							}
+						}
+						imageInput.val(newVal.join(';'));
+						$(this).parent().parent().remove();
+					});
+
+					$('.ui-icon-closethick').live('mouseover mouseout', function (event){
+						switch(event.type){
+							case 'mouseover':
+								this.style.cursor = 'pointer';
+								//$(this).addClass('ui-state-hover');
+								break;
+							case 'mouseout':
+								this.style.cursor = 'default';
+								//$(this).removeClass('ui-state-hover');
+								break;
+						}
+					});
 				}
 			}else{
 				alert("Error Uploading: " + theResp.errorMsg);
@@ -140,6 +182,79 @@ $(document).ready(function (){
 		});
 	$('.uploadManagerInput').each(function(){
 		uploadManagerField($(this));
+	});
+	$('.fancyBox').live('loadBox', function (){
+		$(this).fancybox({
+			speedIn: 500,
+			speedOut: 500,
+			overlayShow: false,
+			type: 'image'
+		});
+	}).trigger('loadBox');
+	$('.ui-icon-zoomin').live('click mouseover mouseout', function (event){
+		switch(event.type){
+			case 'click':
+				$(this).parent().find('.fancyBox').click();
+				break;
+			case 'mouseover':
+				this.style.cursor = 'pointer';
+				//$(this).addClass('ui-state-hover');
+				break;
+			case 'mouseout':
+				this.style.cursor = 'default';
+				//$(this).removeClass('ui-state-hover');
+				break;
+		}
+	});
+
+	$('.deleteImage').live('click', function (event){
+		/*
+		var newVal = [];
+		var imageInput = $('#' + $(this).parent().attr('data-input_id'));
+		var currentVal = imageInput.val();
+		var images = currentVal.split(';');
+		for(var i=0; i<images.length; i++){
+			if (images[i] != $(this).parent().attr('data-image_file_name')){
+				newVal.push(images[i]);
+			}
+		}
+		imageInput.val(newVal.join(';'));
+
+		$(this).parent().parent().remove();
+		*/
+		var fileFieldName = $(this).parent().parent().parent().parent().parent().find('input');
+		var fileFieldPreview = $(this);
+		$.get("application.php", { 'app': thisApp,
+				'appPage': thisAppPage,
+				'appExt': thisAppExt,
+				'action': 'deleteFile',
+				'rType': 'ajax',
+				'fileName': fileFieldName.val(),
+				'fileType': fileFieldName.attr('data-file_type'),
+				'osCAdminID': sessionId},
+			function(data){
+				if(data.success){
+					fileFieldName.val('');
+					fileFieldPreview.parent().parent().parent().html('');
+				} else {
+					alert(data.errorMessage);
+				}
+
+			}, "json");
+
+	});
+
+	$('.ui-icon-closethick').live('mouseover mouseout', function (event){
+		switch(event.type){
+			case 'mouseover':
+				this.style.cursor = 'pointer';
+				//$(this).addClass('ui-state-hover');
+				break;
+			case 'mouseout':
+				this.style.cursor = 'default';
+				//$(this).removeClass('ui-state-hover');
+				break;
+		}
 	});
 
 });

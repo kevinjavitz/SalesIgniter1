@@ -78,11 +78,11 @@ class InfoBoxBlogLatestArticles extends InfoBoxAbstract {
 					if(empty($src)){
 						$thumbUrl = '';
 					} else {
-						$thumbUrl = 'imagick_thumb.php?path=rel&imgSrc=images/'.$src.'&width='.$imageWidth.'&height='.$imageHeight;
+						$thumbUrl = sysConfig::getDirWsCatalog() . 'imagick_thumb.php?path=rel&imgSrc=' . $blog->getFilesUploadPath('image', 'rel') . $src.'&width='.$imageWidth.'&height='.$imageHeight;
 					}
 
 				}else{
-					$thumbUrl = 'imagick_thumb.php?path=rel&imgSrc=images/'.$post['post_featured_image'].'&width='.$imageWidth.'&height='.$imageHeight;
+					$thumbUrl = sysConfig::getDirWsCatalog() . 'imagick_thumb.php?path=rel&imgSrc=' . $blog->getFilesUploadPath('image', 'rel') . $post['post_featured_image'].'&width='.$imageWidth.'&height='.$imageHeight;
 				}
 				$contentHtml.= '<div class="pictPart">';
 				if($thumbUrl !=''){
@@ -94,7 +94,7 @@ class InfoBoxBlogLatestArticles extends InfoBoxAbstract {
 						$contentHtml.= '</a>';
 					}
 				}else{
-					$contentHtml.= '<img src="images/feedicon.png"/>';
+					$contentHtml.= '<img src="' . $blog->getFilesUploadPath('image', 'rel') . 'feedicon.png"/>';
 				}
 				$contentHtml.= '</div>';
 
@@ -106,7 +106,7 @@ class InfoBoxBlogLatestArticles extends InfoBoxAbstract {
 				}
 			} else {
 				$contentHtml.= '<div class="pictPart">';
-				$contentHtml.= '<img src="images/feedicon.png"/>';
+				$contentHtml.= '<img src="' . $blog->getFilesUploadPath('image', 'rel') . 'feedicon.png"/>';
 				$contentHtml.= '</div>';
 			}
 

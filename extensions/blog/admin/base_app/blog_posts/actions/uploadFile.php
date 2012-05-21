@@ -10,12 +10,12 @@
 	This script and it's source is not redistributable
 */
 	$fileType = $_GET['fileType'];
-	
+	$blogExtension = $appExtension->getExtension('blog');
 	require(SysConfig::getDirFsCatalog() . 'includes/classes/uploadManager.php');
 	if($fileType == 'image'){
-		$mgr = new UploadManager($fileTypeUploadDirs[$fileType]['abs'], '777', array('gif','png','jpg','jpeg'));
+		$mgr = new UploadManager($blogExtension->getFilesUploadPath($fileType), '777', array('gif','png','jpg','jpeg'));
 	}else{
-		$mgr = new UploadManager($fileTypeUploadDirs[$fileType]['abs'], '777', array('zip','pdf','avi','flv','swf','mov'));
+		$mgr = new UploadManager($blogExtension->getFilesUploadPath($fileType), '777', array('zip','pdf','avi','flv','swf','mov'));
 	}
 
 	
@@ -25,15 +25,15 @@
 		$json = array(
 			'success' => true,
 			'image_name' => $file->getName(),
-			'thumb_path' => 'imagick_thumb.php?width=80&height=80&imgSrc=' . $fileTypeUploadDirs[$fileType]['abs'] . $file->getName(),
-			'image_path' => $fileTypeUploadDirs[$fileType]['rel'] . $file->getName()
+			'thumb_path' => sysConfig::getDirWsCatalog() . 'imagick_thumb.php?width=80&height=80&path=rel&imgSrc=' . $blogExtension->getFilesUploadPath($fileType, 'rel') . $file->getName(),
+			'image_path' => $blogExtension->getFilesUploadPath($fileType, 'rel') . $file->getName()
 		);
 	}else{
 		$exception = $mgr->getException();
 		$json = array(
 			'success' => false,
 			'fileType' => $fileType,
-			'uploadedTo' => $fileTypeUploadDirs[$fileType]['abs'],
+			'uploadedTo' => $blogExtension->getFilesUploadPath($fileType, 'rel'),
 			'errorMsg' => $exception->getMessage()
 		);
 	}
