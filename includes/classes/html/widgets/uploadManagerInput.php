@@ -23,6 +23,7 @@ class htmlWidget_uploadManagerInput implements htmlWidgetPlugin {
 		$this->showDescription = false;
 		$this->previewFiles = array();
 		$this->setVal = null;
+		$this->setUploadPath();
 	}
 	
 	public function __call($function, $args){
@@ -197,7 +198,7 @@ class htmlWidget_uploadManagerInput implements htmlWidgetPlugin {
 			'width' => $this->previewWidth,
 			'height' => $this->previewHeight
 		))
-		->setSource($fileTypeUploadDirs[$this->fileType]['rel'] . $imgSrc)
+		->setSource($this->getUploadPath('rel') . $imgSrc)
 		->thumbnailImage(true);
 				
 		$previewEl = htmlBase::newElement('a')
@@ -206,7 +207,7 @@ class htmlWidget_uploadManagerInput implements htmlWidgetPlugin {
 		->css(array(
 			'display' => 'block'
 		))
-		->setHref($fileTypeUploadDirs[$this->fileType]['rel'] . $imgSrc)
+		->setHref($this->getUploadPath('rel') . $imgSrc)
 		->append($previewImage);
 				
 		$previewThumbContainer = htmlBase::newElement('div')
@@ -251,6 +252,22 @@ class htmlWidget_uploadManagerInput implements htmlWidgetPlugin {
 		}
 				
 		return $previewContainer;
+	}
+
+	public function setUploadPath($path = ''){
+		global $fileTypeUploadDirs;
+		if(empty($path)){
+			$this->path->{$this->fileType}->rel = $fileTypeUploadDirs[$this->fileType]['rel'];
+			$this->path->{$this->fileType}->abs = $fileTypeUploadDirs[$this->fileType]['abs'];
+		} else {
+			$this->path->{$this->fileType}->rel = $path;
+			$this->path->{$this->fileType}->abs = sysConfig::getDirFsCatalog() . $path;
+		}
+		return $this;
+	}
+
+	public function getUploadPath($type= 'abs'){
+		return $this->path->{$this->fileType}->{$type};
 	}
 	
 	public function setFileType($val){
