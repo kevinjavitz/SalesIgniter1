@@ -146,7 +146,7 @@ class Extension_socialSharing extends ExtensionBase {
 		if( $redirectUrl )
 			tep_redirect( $redirectUrl );
 		
-		return '<fb:login-button></fb:login-button>
+		return '<fb:login-button scope="'.sysConfig::get('EXTENSION_FACEBOOK_CONNECT_PERMISSIONS').'"></fb:login-button>
 				<div id="fb-login"></div>
 				<script type="text/javascript">
 				   window.fbAsyncInit = function() {

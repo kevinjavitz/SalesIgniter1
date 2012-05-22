@@ -148,6 +148,12 @@
 			<description>App Secret</description>
 			<sort_order>1</sort_order>
 		</EXTENSION_FACEBOOK_CONNECT_SECRET>
+		<EXTENSION_FACEBOOK_CONNECT_PERMISSIONS>
+			<title>Permissions</title>
+			<description>Comma delimited list of requested permissions, 'email' is required and default. http://developers.facebook.com/docs/authentication/permissions/</description>
+			<value>email</value>
+			<sort_order>1</sort_order>
+		</EXTENSION_FACEBOOK_CONNECT_PERMISSIONS>
 	</configurations>
 	</fbconnect>
 	</tabs>
