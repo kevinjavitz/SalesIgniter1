@@ -1,34 +1,35 @@
 <?php
-function getCategoryTree($parentId, $namePrefix = '', &$categoriesTree){
-	global $lID, $allGetParams, $cInfo;
-	$Qcategories = Doctrine_Query::create()
-		->select('c.*, cd.categories_name')
-		->from('Categories c')
-		->leftJoin('c.CategoriesDescription cd')
-		->where('cd.language_id = ?', (int)Session::get('languages_id'))
-		->andWhere('c.parent_id = ?', $parentId)
-		->orderBy('c.sort_order, cd.categories_name');
+	function getCategoryTree($parentId, $namePrefix = '', &$categoriesTree){
+		global $lID, $allGetParams, $cInfo;
+		$Qcategories = Doctrine_Query::create()
+			->select('c.*, cd.categories_name')
+			->from('Categories c')
+			->leftJoin('c.CategoriesDescription cd')
+			->where('cd.language_id = ?', (int)Session::get('languages_id'))
+			->andWhere('c.parent_id = ?', $parentId)
+			->orderBy('c.sort_order, cd.categories_name');
 
-	EventManager::notify('CategoryListingQueryBeforeExecute', &$Qcategories);
+		EventManager::notify('CategoryListingQueryBeforeExecute', &$Qcategories);
 
-	$Result = $Qcategories->execute();
-	if ($Result->count() > 0){
-		foreach($Result->toArray(true) as $Category){
-			if ($Category['parent_id'] > 0){
-				//$namePrefix .= '&nbsp;';
+		$Result = $Qcategories->execute();
+		if ($Result->count() > 0){
+			foreach($Result->toArray(true) as $Category){
+				if ($Category['parent_id'] > 0){
+					//$namePrefix .= '&nbsp;';
+				}
+
+				$categoriesTree[] = array(
+					'categoryId'           => $Category['categories_id'],
+					'categoryName'         => $namePrefix . $Category['CategoriesDescription'][Session::get('languages_id')]['categories_name'],
+				);
+
+				getCategoryTree($Category['categories_id'], '&nbsp;&nbsp;&nbsp;' . $namePrefix, &$categoriesTree);
 			}
-
-			$categoriesTree[] = array(
-				'categoryId'           => $Category['categories_id'],
-				'categoryName'         => $namePrefix . $Category['CategoriesDescription'][Session::get('languages_id')]['categories_name'],
-			);
-
-			getCategoryTree($Category['categories_id'], '&nbsp;&nbsp;&nbsp;' . $namePrefix, &$categoriesTree);
 		}
 	}
-}
 
-$productsBoxQueryTypes = array(
+
+	$productsBoxQueryTypes = array(
 		'best_sellers' => 'Best Selling Products',
 		'featured' => 'Featured Products',
 		'new_products' => 'New Products',
@@ -55,9 +56,6 @@ $productsBoxQueryTypes = array(
 		$productsBoxReflect = $WidgetSettings->config->reflect_blocks;
 		$productsBoxBlockWidth = $WidgetSettings->config->block_width;
 		$productsBoxBlockHeight = $WidgetSettings->config->block_height;
-		if(isset($WidgetSettings->config->selected_category)){
-			$categorySelected = $WidgetSettings->config->selected_category;
-		}
 	}
 	
 	$productsBoxQueryOptions = '';
@@ -85,18 +83,35 @@ $productsBoxQueryTypes = array(
 	ob_start();
 
 	echo $editTable->draw();
-$categoryTreeList = false;
-getCategoryTree(0,'',&$categoryTreeList);
-$categoryTreeNew = htmlBase::newElement('selectbox')
-	->setName('new_selected_category')
-	->setId('new_selected_category');
-$categoryTreeNew->addOption('-1', '--select--');
-foreach($categoryTreeList as $category){
-	$categoryTreeNew->addOption($category['categoryId'], $category['categoryName']);
-}
-if(isset($categorySelected)){
-	$categoryTreeNew->selectOptionByValue($categorySelected);
-}
+
+	$categoryTreeList = false;
+	getCategoryTree(0,'',&$categoryTreeList);
+	$categoryTreeNew = htmlBase::newElement('selectbox')
+		->setName('new_selected_category')
+		->setId('new_selected_category');
+
+	$categoryTree = htmlBase::newElement('selectbox')
+		->setName('excluded_categories[]')
+		->setId('excludedCategories[]')
+		->attr('size', 15)
+		->attr('multiple', true);
+	$categoryTree->addOption('', sysLanguage::get('INFOBOX_CATEGORIES_SELECT_PARENT_CATEGORY_OPTION'));
+	$categoryTreeNew->addOption('', sysLanguage::get('INFOBOX_CATEGORIES_SELECT_PARENT_CATEGORY_OPTION'));
+	foreach($categoryTreeList as $category){
+		$categoryTree->addOption($category['categoryId'], $category['categoryName']);
+		$categoryTreeNew->addOption($category['categoryId'], $category['categoryName']);
+	}
+	if(isset($WidgetSettings->config->selected_category)){
+		$categoryTreeNew->selectOptionByValue($WidgetSettings->config->selected_category);
+	}
+	if(isset($WidgetSettings->config->excluded_categories)){
+		foreach($WidgetSettings->config->excluded_categories as $excludedCategory){
+			$categoryTree->selectOptionByValue($excludedCategory);
+			echo($excludedCategory);
+		}
+	} else {
+		$categoryTree->selectOptionByValue('');
+	}
 ?>
 <fieldset>
 	<legend>Box Configuration</legend>
@@ -113,6 +128,10 @@ if(isset($categorySelected)){
 		<tr>
 			<td>Reflect Blocks: </td>
 			<td><input type="checkbox" name="products_box_block_reflect" value="1"<?php echo ($productsBoxReflect === true ? ' checked=checked' : '');?>></td>
+		</tr>
+		<tr>
+			<td valign="top">Exclude products under these categories</td>
+			<td><?php echo $categoryTree->draw(); ?></td>
 		</tr>
 		<tr>
 			<td>Block Width: </td>

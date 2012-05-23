@@ -38,11 +38,11 @@ class InfoBoxProductsBox extends InfoBoxAbstract {
 		$this->setBoxId($boxWidgetProperties->id);
 
 		$cInfo = $boxWidgetProperties->config;
-		$Results = $this->getQueryResults($cInfo->query, $cInfo->query_limit, (isset($cInfo->selected_category)?$cInfo->selected_category:''));
+		$Results = $this->getQueryResults($cInfo);
 		
 		if (!empty($Results)) {
 			$selectedCatName = '';
-			if(isset($cInfo->selected_category)){
+			if((int)$cInfo->selected_category > 0){
 				$Qcat = Doctrine_Query::create()
 				->from('Categories c')
 				->leftJoin('c.CategoriesDescription cd')
@@ -134,20 +134,27 @@ class InfoBoxProductsBox extends InfoBoxAbstract {
 		return $ListContainer;
 	}
 	
-	public function getQueryResults($queryType, $queryLimit, $selectedCategory = 0){
+	public function getQueryResults($cInfo){
+		$excludedCategories = (array)$cInfo->excluded_categories;
 		$Query = Doctrine_Query::create()
-		->select('p.products_id, p.products_image, pd.products_name')
+		->select('p2c.products_id, p.products_image, pd.products_name')
 		->from('Products p')
+		->leftJoin('p.ProductsToCategories p2c')
 		->leftJoin('p.ProductsDescription pd')
 		->where('p.products_status = ?', '1')
-		->andWhere('pd.language_id = ?', Session::get('languages_id'));
+		->andWhere('pd.language_id = ?', Session::get('languages_id'))
+		->groupBy('p.products_id');
+		if(count($excludedCategories) > 0){
+			$Query->andWhere('p2c.categories_id NOT IN (' . implode(',', $excludedCategories) . ')');
+		}
 
+		EventManager::notify('ProductListingQueryBeforeExecute', &$Query);
 		
-		if ($queryLimit > 0){
-			$Query->limit($queryLimit);
+		if ($cInfo->query_limit > 0){
+			$Query->limit($cInfo->query_limit);
 		}
 		
-		switch($queryType){
+		switch($cInfo->query){
 			case 'best_sellers':
 				$Query->andWhere('p.products_ordered > ?', '0')
 				->orderBy('p.products_ordered desc, pd.products_name asc');
@@ -165,6 +172,9 @@ class InfoBoxProductsBox extends InfoBoxAbstract {
 				EventManager::notify('ScrollerNewProductsQueryBeforeExecute', &$Query);
 				break;
 			case 'top_rentals':
+				$Query->addSelect('rt.*')
+				->leftJoin('p.RentalTop rt')
+				->orderBy('rt.top desc');
 				EventManager::notify('ScrollerTopRentalsQueryBeforeExecute', &$Query);
 				break;
 			case 'specials':
@@ -174,19 +184,18 @@ class InfoBoxProductsBox extends InfoBoxAbstract {
 				EventManager::notify('ScrollerRelatedQueryBeforeExecute', &$Query);
 				break;
 			case 'category_featured':
-
-				$catsArray = array($selectedCategory);
-				$this->getAllSubCategories($selectedCategory, $catsArray);
+				$catsArray = array($cInfo->selected_category);
+				$this->getAllSubCategories($cInfo->selected_category, $catsArray);
 
 				$Query->andWhere('p.products_featured = ?', '1')
-					->leftJoin('p.ProductsToCategories p2c')
-				//->leftJoin('p2c.Categories c')
+					//->leftJoin('p.ProductsToCategories p2c')
+					//->leftJoin('p2c.Categories c')
 					->andWhere('p2c.categories_id in (' . implode(',',$catsArray) . ')');//, '"' . array(implode(',',$catsArray) . '"'));
 			     break;
 			case 'category':
 				if (Session::exists('current_category_id')){
-					$Query->leftJoin('p.ProductsToCategories p2c')
-					->leftJoin('p2c.Categories c')
+					//$Query->leftJoin('p.ProductsToCategories p2c')
+					$Query->leftJoin('p2c.Categories c')
 					->andWhere('c.parent_id = ?', Session::get('current_category_id'));
 				}
 		

@@ -1,3 +1,5 @@
 <definitions>
 	<define key="INFOBOX_HEADING_PRODUCTS_BOX"><![CDATA[Products Box]]></define>
-</definitions>                                                                       
+	<define key="INFOBOX_CATEGORIES_SELECT_PARENT_CATEGORY"><![CDATA[Please select a parent category]]></define>
+	<define key="INFOBOX_CATEGORIES_SELECT_PARENT_CATEGORY_OPTION"><![CDATA[--Select--]]></define>
+</definitions>
