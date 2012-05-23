@@ -54,6 +54,10 @@ class htmlElement_selectbox implements htmlElementPlugin {
 				}else{
 						$optionObj->removeAttr('selected');
 				}
+			} else {
+				if (in_array($optionObj->val(),$this->selectedOptionValue)){
+					$optionObj->attr('selected', 'selected');
+				}
 			}
 
 			if ($this->optionsAppended === false){
@@ -156,7 +160,11 @@ class htmlElement_selectbox implements htmlElementPlugin {
 	}
 	
 	public function selectOptionByValue($val){
-		$this->selectedOptionValue = $val;
+		if ($this->selectElement->hasAttr('multiple') === false){
+			$this->selectedOptionValue = $val;
+		} else {
+			$this->selectedOptionValue[] = $val;
+		}
 		return $this;
 	}
 	
