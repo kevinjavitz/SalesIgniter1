@@ -28,12 +28,14 @@
 		$("#pickupz").trigger('change');*/
 		//ajax call to set before  inv_id =i
 		$ellem = $('#pprMain').find('form');
-		$ellem.append('<input type="hidden" name="pickup" value="'+i+'"/>');
+		//$ellem.append('<input type="hidden" name="pickup" value="'+i+'"/>');
+		var sendValues = $ellem.serialize();
+		sendValues = sendValues.replace(/&pickup=.*&/i,'&pickup='+i+'&');
 		showAjaxLoader($ellem,'xlarge');
 		$.ajax({
 			type: "post",
 			url: js_app_link('appExt=payPerRentals&app=build_reservation&appPage=default&action=setBefore'),
-			data: $ellem.serialize()+"&rType=ajax",
+			data: sendValues+"&rType=ajax",
 			success: function(data) {
 				$ellem.find('.invCenter').replaceWith(data.data);
 				$ellem.find('.rentbbut').button();

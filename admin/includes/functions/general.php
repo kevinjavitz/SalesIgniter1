@@ -1036,7 +1036,7 @@ function tep_calculate_tax($price, $tax) {
 ////
 // Returns the tax rate for a zone / class
 // TABLES: tax_rates, zones_to_geo_zones
-function tep_get_tax_rate($class_id, $country_id = -1, $zone_id = -1) {
+/*function tep_get_tax_rate($class_id, $country_id = -1, $zone_id = -1) {
 	global $customer_zone_id, $customer_country_id;
 
 	if ( ($country_id == -1) && ($zone_id == -1) ) {
@@ -1068,6 +1068,42 @@ function tep_get_tax_rate($class_id, $country_id = -1, $zone_id = -1) {
 	} else {
 		return 0;
 	}
+}*/
+
+function tep_get_tax_rate($class_id, $country_id = -1, $zone_id = -1) {
+	global $customer_zone_id, $customer_country_id;
+
+	if ( ($country_id == -1) && ($zone_id == -1) ) {
+		if (Session::exists('customer_id') === false) {
+			$country_id = sysConfig::get('STORE_COUNTRY');
+			$zone_id = sysConfig::get('STORE_ZONE');
+		} else {
+			$country_id = $customer_country_id;
+			$zone_id = $customer_zone_id;
+		}
+	}
+
+	//$tax_query = tep_db_query("select sum(tax_rate) as tax_rate from " . TABLE_TAX_RATES . " tr left join " . TABLE_ZONES_TO_GEO_ZONES . " za on (tr.tax_zone_id = za.geo_zone_id) left join " . TABLE_GEO_ZONES . " tz on (tz.geo_zone_id = tr.tax_zone_id) where (za.zone_country_id is null or za.zone_country_id = '0' or za.zone_country_id = '" . (int)$country_id . "') and (za.zone_id is null or za.zone_id < '1' or za.zone_id = '" . (int)$zone_id . "') and tr.tax_class_id = '" . (int)$class_id . "' group by tr.tax_priority");
+	$QtaxRates = Doctrine_Query::create()
+		->select('r.tax_rates_id, z.geo_zone_id, z.geo_zone_name, z.geo_zone_description, tc.tax_class_title, tc.tax_class_id, r.tax_priority, r.tax_rate, r.tax_description, r.date_added, r.last_modified')
+		->from('TaxRates r')
+		->leftJoin('r.TaxClass tc')
+		->leftJoin('r.GeoZones z')
+		->leftJoin('z.ZonesToGeoZones zt')
+		->where('zt.zone_country_id is null or zt.zone_country_id = "0" or zt.zone_country_id = "' . (int)$country_id . '"')
+		->andWhere('r.tax_class_id = ?',(int)$class_id)
+		->andWhere('(zt.zone_id= "' . $zone_id . '" OR zt.zone_id < 1)')
+		->orderBy('r.tax_priority')
+		->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+
+	$taxes = 0;
+	if (count($QtaxRates) > 0) {
+		foreach($QtaxRates as $trInfo) {
+			$taxes += $trInfo['tax_rate'];
+		}
+		return $taxes;
+	}
+	return $taxes;
 }
 
 ////
@@ -1618,7 +1654,7 @@ function tep_cfg_payment_fee($selected, $key=''){
 	$Qmodules = Doctrine_Query::create()
 	->from('Modules m')
 	->leftJoin('m.ModulesConfiguration mc')
-	->where('m.modules_type = ?', 'order_payment')
+	->where('m.modules_type = ?', 'orderPayment')
 	->orderBy('mc.sort_order')
 	->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 

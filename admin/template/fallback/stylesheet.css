@@ -113,21 +113,21 @@ a.linkAreaTitle { font-family: Tahoma, Verdana, Arial, sans-serif; font-size: 12
 .ui-icon-brown, .ui-widget .ui-icon-brown { background-image: url(<?php echo $jqueryThemeIcons;?>/ui-icons_a83300_256x240.png); }
 .ui-icon-gray, .ui-widget .ui-icon-gray { background-image: url(<?php echo $jqueryThemeIcons;?>/ui-icons_888888_256x240.png); }
 
-.ui-state-error, .ui-widget-content .ui-state-error {border: 1px solid #e60018; background: #fef1ec url(<?php echo $jqueryThemeImages;?>/ui-bg_glass_95_fcccca_1x400.png) 50% 50% repeat-x; color: #333333; }
-.ui-state-error a, .ui-widget-content .ui-state-error a { color: #333333; }
-.ui-state-error-text, .ui-widget-content .ui-state-error-text { color: #333333; }
+.messageStack_pageStack.ui-widget .ui-state-error,messageStack_pageStack.ui-widget .ui-widget-content .ui-state-error {border: 1px solid #e60018; background: #fef1ec url(<?php echo $jqueryThemeImages;?>/ui-bg_glass_95_fcccca_1x400.png) 50% 50% repeat-x; color: #333333; }
+.messageStack_pageStack.ui-widget.ui-state-error a,messageStack_pageStack.ui-widget .ui-widget-content .ui-state-error a { color: #333333; }
+.messageStack_pageStack.ui-widget .ui-state-error-text,messageStack_pageStack.ui-widget .ui-widget-content .ui-state-error-text { color: #333333; }
 
-.ui-state-success, .ui-widget-content .ui-state-success {border: 1px solid #24e600; background: #fef1ec url(<?php echo $jqueryThemeImages;?>/ui-bg_glass_95_cafccc_1x400.png) 50% 50% repeat-x; color: #333333; }
-.ui-state-success a, .ui-widget-content .ui-state-success a { color: #333333; }
-.ui-state-success-text, .ui-widget-content .ui-state-success-text { color: #333333; }
+.messageStack_pageStack.ui-widget .ui-state-success,messageStack_pageStack.ui-widget .ui-widget-content .ui-state-success {border: 1px solid #24e600; background: #fef1ec url(<?php echo $jqueryThemeImages;?>/ui-bg_glass_95_cafccc_1x400.png) 50% 50% repeat-x; color: #333333; }
+.messageStack_pageStack.ui-widget .ui-state-success a,messageStack_pageStack.ui-widget .ui-widget-content .ui-state-success a { color: #333333; }
+.messageStack_pageStack.ui-widget .ui-state-success-text,messageStack_pageStack.ui-widget .ui-widget-content .ui-state-success-text { color: #333333; }
 
-.ui-state-warning, .ui-widget-content .ui-state-warning {border: 1px solid #c0c4de; background: #fef1ec url(<?php echo $jqueryThemeImages;?>/ui-bg_glass_95_cae0fc_1x400.png) 50% 50% repeat-x; color: #333333; }
-.ui-state-warning a, .ui-widget-content .ui-state-warning a { color: #333333; }
-.ui-state-warning-text, .ui-widget-content .ui-state-warning-text { color: #333333; }
+.messageStack_pageStack.ui-widget .ui-state-warning,messageStack_pageStack.ui-widget .ui-widget-content .ui-state-warning {border: 1px solid #c0c4de; background: #fef1ec url(<?php echo $jqueryThemeImages;?>/ui-bg_glass_95_cae0fc_1x400.png) 50% 50% repeat-x; color: #333333; }
+.messageStack_pageStack.ui-widget .ui-state-warning a,messageStack_pageStack.ui-widget .ui-widget-content .ui-state-warning a { color: #333333; }
+.messageStack_pageStack.ui-widget .ui-state-warning-text,messageStack_pageStack.ui-widget .ui-widget-content .ui-state-warning-text { color: #333333; }
 
-.ui-state-error .ui-icon, .ui-state-error-text .ui-icon {background-image: url(<?php echo $jqueryThemeIcons;?>/ui-icons_FF0000_256x240.png); }
-.ui-state-success .ui-icon, .ui-state-success-text .ui-icon {background-image: url(<?php echo $jqueryThemeIcons;?>/ui-icons_00FF00_256x240.png); }
-.ui-state-warning .ui-icon, .ui-state-warning-text .ui-icon {background-image: url(<?php echo $jqueryThemeIcons;?>/ui-icons_2e83ff_256x240.png); }
+.messageStack_pageStack.ui-widget .ui-state-error .ui-icon,messageStack_pageStack.ui-widget .ui-state-error-text .ui-icon {background-image: url(<?php echo $jqueryThemeIcons;?>/ui-icons_FF0000_256x240.png); }
+.messageStack_pageStack.ui-widget .ui-state-success .ui-icon,messageStack_pageStack.ui-widget .ui-state-success-text .ui-icon {background-image: url(<?php echo $jqueryThemeIcons;?>/ui-icons_00FF00_256x240.png); }
+.messageStack_pageStack.ui-widget .ui-state-warning .ui-icon,messageStack_pageStack.ui-widget .ui-state-warning-text .ui-icon {background-image: url(<?php echo $jqueryThemeIcons;?>/ui-icons_2e83ff_256x240.png); }
 
 textarea.ui-state-modified, textarea.hasCustomDefine.ui-state-modified { border: 1px solid #FF0000; }
 textarea.hasCustomDefine { border: 1px solid #00FF00; }

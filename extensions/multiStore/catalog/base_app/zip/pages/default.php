@@ -14,24 +14,47 @@
 $zip = isset($_GET['zip'])?$_GET['zip']:null;
 
 if (!empty($zip)) {
+	$zip =(int)ltrim(rtrim(urldecode($zip)));
     $multi_store = $appExtension->getExtension('multiStore');    
-    $store = $multi_store->getClosestStoreByZip($zip);        
+    $store = $multi_store->getClosestStoreByZip($zip);
+    if(sysConfig::get('EXTENSION_PAY_PER_RENTALS_USE_ZIPCODES_SHIPPING') == 'True'){
+        $module = OrderShippingModules::getModule('zonereservation');
+	    $zipExists = false;
+		foreach($module->getMethods() as $methodId => $mInfo){
+
+			if(in_array($zip, $mInfo['zipcodesArr']) && $mInfo['status'] == 'True'){
+				$zipExists = true;
+				break;
+			}
+		}
+    }
+
 } else {
     $store = null;
 }
     
 if (empty($store)) {
-    //Store not found
     $url = itw_app_link('', 'index','default');
 	$messageStack->addSession('pageStack', 'No store was found for the given zip. You were redirected to our main store.', 'success');
 } else {
-    $url = 'http://'.$store->stores_domain;
-	$messageStack->addSession('pageStack', 'Thank you the closest store to you is '.$store->stores_name.', we have redirected you to this store\'s homepage', 'success');
+	if(!isset($zipExists) || isset($zipExists) && $zipExists == true){
+		Session::set('zipClient'.$store->stores_id, ltrim(rtrim(urldecode($zip))));
+        $url = 'http://'.$store->stores_domain;
+		$messageStack->addSession('pageStack', 'Thank you the closest store to you is '.$store->stores_name.', we have redirected you to this store\'s homepage', 'success');
+	}else{
+		$url = 'http://'.$store->stores_domain;
+		$messageStack->addSession('pageStack', 'We do not serve the zip code area you are in', 'success');
+	}
 }
 
 if(!empty($store) && Session::get('current_store_id') == $store->stores_id){
-	Session::set('zipClient', ltrim(rtrim(urldecode($zip))));
-	$url .= '/products/all.php';
+	if(!isset($zipExists) || isset($zipExists) && $zipExists == true){
+		Session::set('zipClient'.$store->stores_id, ltrim(rtrim(urldecode($zip))));
+		$url .= '/products/all.php';
+	}else{
+		$messageStack->addSession('pageStack', 'We do not serve the zip code area you are in', 'success');
+		$url .= '/products/all.php';
+	}
 }else{
 	//$messageStack->addSession('pageStack','We do not serve that location. Please choose a different one');
 	//$url = '';

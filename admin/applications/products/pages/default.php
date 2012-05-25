@@ -168,8 +168,7 @@
 	->orderBy('p.products_featured desc, pd.products_name asc, p.products_id desc');
 	if (isset($_GET['search'])) {
 		$search = $_GET['search'];
-		$Qproducts->andWhere('p.products_model LIKE ?', '%'.$search.'%');
-		$Qproducts->orWhere('pd.products_name LIKE ?', '%'.$search.'%');
+		$Qproducts->andWhere('p.products_model LIKE "%'.$search.'%" OR pd.products_name LIKE "%'.$search.'%"');
 	}
 
 	if(isset($_GET['categorySelect']) && $_GET['categorySelect'] != -1){

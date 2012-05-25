@@ -5,6 +5,7 @@ $appContent = $App->getAppContentFile();
 		$App->addStylesheetFile('ext/jQuery/external/mopTip/mopTip-2.2.css');
 		$App->addJavascriptFile('ext/jQuery/external/mopTip/mopTip-2.2.js');
 	}
+	$App->addJavascriptFile('ext/jQuery/ui/jquery.ui.datepicker.js');
 	$App->addJavascriptFile('applications/products/javascript/common.js');
 
 	$breadcrumb->add(sysLanguage::get('NAVBAR_TITLE_PRODUCTS'));
@@ -42,10 +43,6 @@ $appContent = $App->getAppContentFile();
 						case 'keywords':
 							if (empty($_GET[$key])) $errors++;
 							break;
-						case 'dto':
-						case 'dfrom':
-							if ($_GET[$key] == DOB_FORMAT_STRING) $errors++;
-							break;
 						case 'pfrom':
 						case 'pto':
 							if (is_array($_GET[$key])){
@@ -68,18 +65,17 @@ $appContent = $App->getAppContentFile();
 				$error = true;
 				$messageStack->add_session('search', sysLanguage::get('ERROR_AT_LEAST_ONE_INPUT'));
 			} else {
-				$dfrom = '';
-				$dto = '';
+
 				$pfrom = '';
 				$pto = '';
 				$keywords = '';
 
 				if (isset($_GET['dfrom'])) {
-					$dfrom = (($_GET['dfrom'] == DOB_FORMAT_STRING) ? '' : $_GET['dfrom']);
+					$dfrom = $_GET['dfrom'];
 				}
 
 				if (isset($_GET['dto'])) {
-					$dto = (($_GET['dto'] == DOB_FORMAT_STRING) ? '' : $_GET['dto']);
+					$dto = $_GET['dto'];
 				}
 
 				if (isset($_GET['pfrom'])) {
@@ -95,32 +91,6 @@ $appContent = $App->getAppContentFile();
 				}
 
 				$date_check_error = false;
-				if (tep_not_null($dfrom)) {
-					if (!tep_checkdate($dfrom, DOB_FORMAT_STRING, $dfrom_array)) {
-						$error = true;
-						$date_check_error = true;
-
-						$messageStack->add_session('search', sysLanguage::get('ERROR_INVALID_FROM_DATE'));
-					}
-				}
-
-				if (tep_not_null($dto)) {
-					if (!tep_checkdate($dto, DOB_FORMAT_STRING, $dto_array)) {
-						$error = true;
-						$date_check_error = true;
-
-						$messageStack->add_session('search', sysLanguage::get('ERROR_INVALID_TO_DATE'));
-					}
-				}
-
-				if (($date_check_error == false) && tep_not_null($dfrom) && tep_not_null($dto)) {
-					if (mktime(0, 0, 0, $dfrom_array[1], $dfrom_array[2], $dfrom_array[0]) > mktime(0, 0, 0, $dto_array[1], $dto_array[2], $dto_array[0])) {
-						$error = true;
-
-						$messageStack->add_session('search', sysLanguage::get('ERROR_TO_DATE_LESS_THAN_FROM_DATE'));
-					}
-				}
-
 				$price_check_error = false;
 				if (tep_not_null($pfrom)) {
 					if (is_array($pfrom)){

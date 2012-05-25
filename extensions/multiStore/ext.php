@@ -34,6 +34,7 @@ class Extension_multiStore extends ExtensionBase {
 			'OrdersProductsReservationListingBeforeExecuteUtilities',
 			'MetaTagsFetchDefaultsQueryBeforeExecute',
 			'BoxMarketingAddLink',
+			'OrderBeforeSendEmail',
 			'OrderSingleLoad'
 		), null, $this);
 		
@@ -310,7 +311,10 @@ class Extension_multiStore extends ExtensionBase {
 	}
 	public function OrderBeforeSendEmail(&$order, &$emailEvent, &$products_ordered, &$sendVariables){
 		if(isset($this->storeInfo['stores_email']) && !empty($this->storeInfo['stores_email'])){
-			$sendVariables['emails'][] = $this->storeInfo['stores_email'];
+			$sendVariables['emails'][] = array(
+				'email' => $this->storeInfo['stores_email'],
+				'name'  => $this->storeInfo['stores_owner']
+			);
 		}
 	}
 

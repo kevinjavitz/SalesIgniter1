@@ -41,6 +41,8 @@
 		$Plan->free_trial_amount = $_POST['free_trial_amount'];
 		$Plan->no_of_titles = $_POST['no_of_titles'];
 		$Plan->price = $_POST['price'];
+		$Plan->terms_page = (int)$_POST['terms_page'];
+
 		$Plan->rent_tax_class_id = $_POST['rent_tax_class_id'];
 		$Plan->reccurring = (isset($_POST['not_reccurring'])?0:1);
 		$Plan->save();

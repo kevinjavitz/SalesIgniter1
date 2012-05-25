@@ -659,26 +659,13 @@ class OrderProcessor {
 		$sendVariables['email'] = $userAccount->getEmailAddress();
 		$sendVariables['name'] = $userAccount->getFullName();
 		$emailEvent->sendEmail($sendVariables);
-
 		if(isset($sendVariables['emails']) && is_array($sendVariables['emails'])){
 			foreach($sendVariables['emails'] as $email){
-				$email = trim($email);
-				$matches = array();
-				if (strstr($email, '<')){
-					preg_match('/([a-zA-Z 0-9]+)\<(.*)\>/', $email, &$matches);
-				}elseif (strstr($email, '@')){
-					$matches = array(
-						$userAccount->getFullName(),
-						$email
-					);
-				}
 
-				if (!empty($matches)){
 					$emailEvent->sendEmail(array(
-							'email' => $matches[2],
-							'name'  => $matches[1]
+							'email' => $email['email'],
+							'name'  => $email['name']
 						));
-				}
 			}
 		}
 

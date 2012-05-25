@@ -884,16 +884,17 @@ class PurchaseType_reservation extends PurchaseTypeAbstract
 			if (isset($pricing)){
 				$totalPrice += (float)$pricing['price'];
 			}
-
-			$quotes = $shipping_modules->quote($pInfo['reservationInfo']['shipping']['id'], $total_weight + $weight, $totalPrice);
-			$reservationInfo['shipping'] = array(
-				'title'        => isset($quotes[0]['methods'][0]['title']) ? $quotes[0]['methods'][0]['title'] : $quotes['methods'][0]['title'],
-				'cost'         => isset($quotes[0]['methods'][0]['cost']) ? $quotes[0]['methods'][0]['cost'] : $quotes['methods'][0]['cost'],
-				'id'           => isset($quotes[0]['methods'][0]['id']) ? $quotes[0]['methods'][0]['id'] : $quotes['methods'][0]['id'],
-				'module'       => $pInfo['reservationInfo']['shipping']['module'],
-				'days_before'  => $pInfo['reservationInfo']['shipping']['days_before'],
-				'days_after'   => $pInfo['reservationInfo']['shipping']['days_after']
-			);
+			if(is_object($shipping_modules)){
+				$quotes = $shipping_modules->quote($pInfo['reservationInfo']['shipping']['id'], $total_weight + $weight, $totalPrice);
+				$reservationInfo['shipping'] = array(
+					'title'        => isset($quotes[0]['methods'][0]['title']) ? $quotes[0]['methods'][0]['title'] : $quotes['methods'][0]['title'],
+					'cost'         => isset($quotes[0]['methods'][0]['cost']) ? $quotes[0]['methods'][0]['cost'] : $quotes['methods'][0]['cost'],
+					'id'           => isset($quotes[0]['methods'][0]['id']) ? $quotes[0]['methods'][0]['id'] : $quotes['methods'][0]['id'],
+					'module'       => $pInfo['reservationInfo']['shipping']['module'],
+					'days_before'  => $pInfo['reservationInfo']['shipping']['days_before'],
+					'days_after'   => $pInfo['reservationInfo']['shipping']['days_after']
+				);
+			}
 		}
 
 		if (isset($pricing)){
@@ -1272,7 +1273,7 @@ class PurchaseType_reservation extends PurchaseTypeAbstract
 						?>
 					<script type="text/javascript">
 						$(document).ready(function () {
-							var hasZip = <?php echo (Session::exists('zipClient') == false ? 'false' : 'true');?>;
+							var hasZip = <?php echo (Session::exists('zipClient'.Session::get('current_store_id')) == false ? 'false' : 'true');?>;
 							$('.pprResButton').click(function () {
 								var self = $(this);
 								if (hasZip == false){
@@ -1289,9 +1290,17 @@ class PurchaseType_reservation extends PurchaseTypeAbstract
 													data     : $('#dialog-mesage-ppr *').serialize(),
 													dataType : 'json',
 													success  : function (data) {
-														hasZip = true;
-														dial.dialog("close");
-														self.click();
+														if(data.redirect != ''){
+															js_redirect(data.redirect);
+														}else{
+															if(data.error == ''){
+																hasZip = true;
+																dial.dialog("close");
+																self.click();
+															}else{
+																alert(data.error);
+															}
+														}
 													}
 												});
 											}

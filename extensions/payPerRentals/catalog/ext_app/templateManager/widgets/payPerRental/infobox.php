@@ -1127,6 +1127,7 @@ class InfoBoxPayPerRental extends InfoBoxAbstract {
 						}else{
 							link = js_app_link('appExt=payPerRentals&app=show_event&appPage=list');
 						}
+						var eventVal = $(this).val();
 						$('.myev1').attr('href',link);
 						myel = $(this).parent();
 						showAjaxLoader(myel,'xlarge');
@@ -1255,7 +1256,7 @@ class InfoBoxPayPerRental extends InfoBoxAbstract {
 										self.parent().parent().find('.shipf').html(data.data);
 										self.parent().parent().find('.shipf').change();
 									if ($.browser.msie) $('.eventf').removeClass('expand clicked');
-									if (data.nr == 0){
+									if (data.nr == 0 && eventVal > 0){
 										alert('<?php echo sysLanguage::get('EXTENSION_PAY_PER_RENTALS_DELIVERY_PASSED');?>');
 									}
 								<?php }else{

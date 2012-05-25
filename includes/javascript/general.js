@@ -449,7 +449,16 @@ $(document).ready(function (){
 			this.Tooltip.remove();
 		}
 	});
+	$('.ui-button').each(function(){
+		if($(this).attr('icon')){
+			var sp = $('<span></span>');
+			sp.addClass('ui-button-icon-primary ui-icon '+$(this).attr('icon'));
+			$(this).removeClass('ui-button-text-only');
+			$(this).addClass('ui-button-text-icon-primary');
+			sp.prependTo($(this));
+		}
 
+	});
 	$('[required=true]').each(function (){
 		$('<a style="display: inline-block;" tooltip="Input Required" class="ui-icon ui-icon-gear ui-icon-required"></a>').insertAfter(this);
 	});

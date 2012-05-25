@@ -160,6 +160,23 @@ p *{ line-height:100%;}
 .errorReport .ui-state-warning { border-color:#fceede;<?php echo buildSimpleGradient('#fedfbd', '#fbb86f'); ?> }
 .errorReport .ui-state-notice { border-color:#cfddf7;<?php echo buildSimpleGradient('#a4c4fe', '#6499fa'); ?> }
 
+.messageStack_pageStack.ui-widget .ui-state-error,messageStack_pageStack.ui-widget .ui-widget-content .ui-state-error {border: 1px solid #e60018; background: #fef1ec url(<?php echo $jqueryThemeImages;?>/ui-bg_glass_95_fcccca_1x400.png) 50% 50% repeat-x; color: #333333; }
+.messageStack_pageStack.ui-widget.ui-state-error a,messageStack_pageStack.ui-widget .ui-widget-content .ui-state-error a { color: #333333; }
+.messageStack_pageStack.ui-widget .ui-state-error-text,messageStack_pageStack.ui-widget .ui-widget-content .ui-state-error-text { color: #333333; }
+
+.messageStack_pageStack.ui-widget .ui-state-success,messageStack_pageStack.ui-widget .ui-widget-content .ui-state-success {border: 1px solid #24e600; background: #fef1ec url(<?php echo $jqueryThemeImages;?>/ui-bg_glass_95_cafccc_1x400.png) 50% 50% repeat-x; color: #333333; }
+.messageStack_pageStack.ui-widget .ui-state-success a,messageStack_pageStack.ui-widget .ui-widget-content .ui-state-success a { color: #333333; }
+.messageStack_pageStack.ui-widget .ui-state-success-text,messageStack_pageStack.ui-widget .ui-widget-content .ui-state-success-text { color: #333333; }
+
+.messageStack_pageStack.ui-widget .ui-state-warning,messageStack_pageStack.ui-widget .ui-widget-content .ui-state-warning {border: 1px solid #c0c4de; background: #fef1ec url(<?php echo $jqueryThemeImages;?>/ui-bg_glass_95_cae0fc_1x400.png) 50% 50% repeat-x; color: #333333; }
+.messageStack_pageStack.ui-widget .ui-state-warning a,messageStack_pageStack.ui-widget .ui-widget-content .ui-state-warning a { color: #333333; }
+.messageStack_pageStack.ui-widget .ui-state-warning-text,messageStack_pageStack.ui-widget .ui-widget-content .ui-state-warning-text { color: #333333; }
+
+.messageStack_pageStack.ui-widget .ui-state-error .ui-icon,messageStack_pageStack.ui-widget .ui-state-error-text .ui-icon {background-image: url(<?php echo $jqueryThemeIcons;?>/ui-icons_FF0000_256x240.png); }
+.messageStack_pageStack.ui-widget .ui-state-success .ui-icon,messageStack_pageStack.ui-widget .ui-state-success-text .ui-icon {background-image: url(<?php echo $jqueryThemeIcons;?>/ui-icons_00FF00_256x240.png); }
+.messageStack_pageStack.ui-widget .ui-state-warning .ui-icon,messageStack_pageStack.ui-widget .ui-state-warning-text .ui-icon {background-image: url(<?php echo $jqueryThemeIcons;?>/ui-icons_2e83ff_256x240.png); }
+
+
 .pageStackContainer { font-family: Verdana, Arial, sans-serif; font-size: .9em; }
 .pageStackContainer .ui-widget { margin-bottom: 1em; }
 

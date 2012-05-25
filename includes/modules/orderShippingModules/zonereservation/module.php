@@ -123,8 +123,8 @@ class OrderShippingZonereservation extends OrderShippingModuleBase
 			$this->getNumBoxes($shipping_weight_prod, $shipping_num_boxes_prod);//adding boxes weight
 
 			foreach($this->methods as $methodId => $mInfo){
-				if(sysConfig::get('EXTENSION_PAY_PER_RENTALS_USE_ZIPCODES_SHIPPING') == 'True' && Session::exists('zipClient') === true){
-					if(!in_array((int)Session::get('zipClient'), $mInfo['zipcodesArr']) || Session::get('zipClient') == ''){
+				if(Session::exists('current_store_id') && sysConfig::get('EXTENSION_PAY_PER_RENTALS_USE_ZIPCODES_SHIPPING') == 'True' && Session::exists('zipClient'.Session::get('current_store_id')) === true){
+					if(!in_array((int)Session::get('zipClient'.Session::get('current_store_id')), $mInfo['zipcodesArr']) || Session::get('zipClient'.Session::get('current_store_id')) == ''){
 						continue;
 					}
 				}

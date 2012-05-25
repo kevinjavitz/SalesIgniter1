@@ -1,2 +1,10 @@
 <data>
+	<Membership>
+		<terms_page>
+			<type>integer</type>
+			<length>4</length>
+			<notnull>true</notnull>
+			<default>0</default>
+		</terms_page>
+	</Membership>
 </data>

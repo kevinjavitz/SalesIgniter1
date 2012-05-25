@@ -46,7 +46,10 @@
 		/*special modifications*/
 		$contentHtml.= "<h2 class='blog_post_title'><a href='" . itw_app_link('appExt=blog', 'show_post', $post['BlogPostsDescription'][Session::get('languages_id')]['blog_post_seo_url']) . "'>" . $post['BlogPostsDescription'][Session::get('languages_id')]['blog_post_title'] . "</a></h2>";
 		$contentHtml.= "<div class='blog_post_text'>" . $post['BlogPostsDescription'][Session::get('languages_id')]['blog_post_text'] . "</div>";
-		$contentHtml.= "<p class='blog_post_foot'>" . "Date: " . tep_date_short($post['post_date']) . "<br/>Categories: " . $categ. "<br/>" . count($Qcomments).' Comments( <a href="'.itw_app_link('appExt=blog', 'show_post', $post['BlogPostsDescription'][Session::get('languages_id')]['blog_post_seo_url']).'#comments">click here to post a comment</a>)' . "</p>";
+		if(sysConfig::get('EXTENSION_BLOG_SHOW_DATE') == 'True'){
+			$contentHtml.= "<p class='blog_post_foot'>" . "Date: " . tep_date_short($post['post_date']);
+		}
+		$contentHtml.= "<br/>Categories: " . $categ. "<br/>" . count($Qcomments).' Comments( <a href="'.itw_app_link('appExt=blog', 'show_post', $post['BlogPostsDescription'][Session::get('languages_id')]['blog_post_seo_url']).'#comments">click here to post a comment</a>)' . "</p>";
 	}
 
 	if ($app_pg == null){

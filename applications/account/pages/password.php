@@ -43,7 +43,7 @@
 
 	ob_start();
 ?>
-<div class="main" style="margin-top:1em;"><b><?php echo sysLanguage::get('MY_PASSWORD_TITLE'); ?></b><span class="inputRequirement" style="float:right;"><?php echo FORM_REQUIRED_INFORMATION; ?></span></div>
+<div class="main" style="margin-top:1em;"><b><?php echo sysLanguage::get('MY_PASSWORD_TITLE'); ?></b><span class="inputRequirement" style="float:right;"><?php echo sysLanguage::get('FORM_REQUIRED_INFORMATION'); ?></span></div>
 <div class="ui-widget ui-widget-content ui-corner-all" style="padding:1em;"><?php echo $formTable->draw();?></div>
 <?php
 	$pageContents = ob_get_contents();

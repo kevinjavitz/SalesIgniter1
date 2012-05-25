@@ -31,6 +31,26 @@
 		
 		$nameInputs .= '<br>' . $lInfo['showName']('&nbsp;') . ': ' . $htmlInput->draw();
 	}
+
+$Qpages = Doctrine_Query::create()
+	->select('p.*, pd.pages_title')
+	->from('Pages p')
+	->leftJoin('p.PagesDescription pd')
+	->where('pd.language_id = ?', Session::get('languages_id'))
+	->andWhere('p.page_type = ?', 'block')
+	->orderBy('p.sort_order, pd.pages_title')
+	->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+
+$InfopageName = htmlBase::newElement('selectbox')
+	->setName('terms_page')
+	->addOption('-1', 'Not used')
+	->selectOptionByValue($Package->terms_page);
+
+foreach($Qpages as $iPage){
+	$InfopageName->addOption($iPage['pages_id'], $iPage['page_key']);
+}
+
+
 	$infoBox->addContentRow(sysLanguage::get('TEXT_ENTRY_PACKAGE_NAME') . $nameInputs);
 
 	$infoBox->addContentRow('Sort Order:' . '<br>' . tep_draw_input_field('sort_order', $Package->sort_order));
@@ -43,6 +63,7 @@
 	$infoBox->addContentRow(sysLanguage::get('TEXT_ENTRY_TAX_CLASS') . '<br>' . tep_draw_pull_down_menu('rent_tax_class_id', $tax_class_array, $Package->rent_tax_class_id, 'onchange="updateGross()"'));
 	$infoBox->addContentRow(sysLanguage::get('TEXT_ENTRY_PRICE') . '<br>' . tep_draw_input_field('price', $Package->price));
 	$infoBox->addContentRow(sysLanguage::get('TEXT_ENTRY_PRICE_GROSS') . '<br>' . tep_draw_input_field('gross_price', $Package->price));
+	$infoBox->addContentRow(sysLanguage::get('TEXT_TERMS') . '<br>' . $InfopageName->draw());
 	$infoBox->addContentRow(sysLanguage::get('TEXT_ENTRY_FREE_TRIAL') . '<br>' . tep_draw_input_field('free_trial', $Package->free_trial));
 
 	EventManager::notify('MembershipPackageEditWindowBeforeDraw', $infoBox, $Package);

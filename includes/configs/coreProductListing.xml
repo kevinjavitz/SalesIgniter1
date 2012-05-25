@@ -112,6 +112,12 @@
 					<value><![CDATA[12,24,48,96]]></value>
 					<description><![CDATA[Results Per Page drop down values (comma seperated example: 12,24,48,96)]]></description>
 				</PRODUCT_LISTING_PRODUCTS_LIMIT_ARRAY>
+				<NAVIGATION_BAR_LOCATION>
+					<title><![CDATA[Where the navigation bar should show]]></title>
+					<value><![CDATA[bottom]]></value>
+					<description><![CDATA[Where the navigation bar should show]]></description>
+					<set_function><![CDATA[tep_cfg_select_option(array('top', 'bottom', 'both'),]]></set_function>
+				</NAVIGATION_BAR_LOCATION>
 				<PRODUCT_LISTING_HIDE_NO_INVENTORY>
 					<title><![CDATA[Hide products with no inventory]]></title>
 					<value><![CDATA[False]]></value>

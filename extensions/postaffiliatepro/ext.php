@@ -55,7 +55,7 @@ class Extension_postaffiliatepro extends ExtensionBase {
 
 	public function CronPaymentSuccess($membershipUpdate){
 		include_once(sysConfig::getDirFsCatalog(). 'ext/pap/api/PapApi.class.php');
-		$session = new Gpf_Api_Session(sysConfig::get('EXTENSION_PAP_URL'));// - /affiliate/scripts/server.php
+		$session = new Gpf_Api_Session(sysConfig::get('EXTENSION_PAP_URL').'scripts/server.php');
 		if(!$session->login(sysConfig::get('EXTENSION_PAP_MERCH'), sysConfig::get('EXTENSION_PAP_PASS'))) {
 			return;
 		}

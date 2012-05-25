@@ -91,11 +91,11 @@
 	}
 	
 	if (tep_not_null($dfrom)) {
-		$Qproducts->andWhere('p.products_date_added >= ?', tep_date_raw($dfrom));
+		$Qproducts->andWhere('p.products_date_added >= ?', $dfrom);
 	}
 	
 	if (tep_not_null($dto)) {
-		$Qproducts->andWhere('p.products_date_added <= ?', tep_date_raw($dto));
+		$Qproducts->andWhere('p.products_date_added <= ?', $dto);
 	}
 	
 	if (tep_not_null($pfrom)){

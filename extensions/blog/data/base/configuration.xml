@@ -53,6 +53,18 @@
 						</values>
 					</set_function>
 				</EXTENSION_BLOG_ENABLE_CAPTCHA>
+				<EXTENSION_BLOG_SHOW_DATE>
+					<title>Show date on blog posts</title>
+					<value>True</value>
+					<description>Show blog post date</description>
+					<set_function>
+						<type>radio</type>
+						<values>
+							<value>True</value>
+							<value>False</value>
+						</values>
+					</set_function>
+				</EXTENSION_BLOG_SHOW_DATE>
 				<EXTENSION_BLOG_SHOW_ONLY_INFOBOXES>
 					<title>Show only blog infoboxes on the blog pages</title>
 					<value>True</value>

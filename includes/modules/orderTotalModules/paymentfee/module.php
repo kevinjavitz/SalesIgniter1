@@ -1,6 +1,8 @@
 <?php
 class OrderTotalPaymentfee extends OrderTotalModuleBase
 {
+	public $allowPaymentFee;
+	public $showPaymentFee;
 
 	public function __construct() {
 		/*
@@ -19,7 +21,6 @@ class OrderTotalPaymentfee extends OrderTotalModuleBase
 
 	public function process() {
 		global $order, $appExtension, $userAccount, $onePageCheckout;
-
 		if ($this->allowPaymentFee == 'True' && isset($onePageCheckout->onePage['info']['payment']['id'])){
 			$paymentFee = explode(',', $this->getConfigData('MODULE_ORDER_TOTAL_PAYMENTFEE_VALUE'));
 			$val = '0';

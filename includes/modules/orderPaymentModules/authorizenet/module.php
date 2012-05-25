@@ -25,6 +25,7 @@
 		var $transkey;
 		var $urlCIM;
 		var $params;
+		var $transactionId;
 		public function __construct(){
 			/*
 			 * Default title and description for modules that are not yet installed

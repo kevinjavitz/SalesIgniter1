@@ -40,6 +40,8 @@
 	<define key="TEXT_ENTRY_ALLOW_STREAMING"><![CDATA[Allow streaming]]></define>
 	<define key="TEXT_ENTRY_VIEWS_ALLOWED"><![CDATA[# of views allowed]]></define>
 	<define key="TEXT_ENTRY_VIEWS_PER"><![CDATA[Views Per:]]></define>
+	<define key="TEXT_TERMS"><![CDATA[Terms Page]]></define>
+
 	<define key="TEXT_ENTRY_TIME_PERIOD"><![CDATA[If Time Period Above:]]></define>
 	<define key="TEXT_ENTRY_STREAM_HOURS"><![CDATA[Allow access to stream for X hours ]]></define>
 	

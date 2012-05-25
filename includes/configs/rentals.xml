@@ -25,6 +25,13 @@
 					<description><![CDATA[Automatically upgrade/downgrade users account on their next billing cycle if they have requested it?]]></description>
 					<set_function><![CDATA[tep_cfg_select_option(array('true', 'false'),]]></set_function>
 				</RENTAL_UPGRADE_CYCLE>
+				<TERMS_CONDITIONS_PACKAGES>
+					<title><![CDATA[Accept terms and conditions per membership package]]></title>
+					<value><![CDATA[false]]></value>
+					<description><![CDATA[Accept terms and conditions per membership package]]></description>
+					<set_function><![CDATA[tep_cfg_select_option(array('true', 'false'),]]></set_function>
+				</TERMS_CONDITIONS_PACKAGES>
+
 				<RENTAL_UPGRADE_BILL_DATE>
 					<title><![CDATA[Auto-update members next billing date?]]></title>
 					<value><![CDATA[true]]></value>

@@ -208,7 +208,7 @@
 			<?php
 				if(sysConfig::get('EXTENSION_PAY_PER_RENTALS_USE_ZIPCODES_SHIPPING') == 'True'){
 				?>
-				var hasZip = <?php echo (Session::exists('zipClient') == false? 'false':'true');?>;
+				var hasZip = <?php echo (Session::exists('zipClient'.Session::get('current_store_id')) == false? 'false':'true');?>;
 				$('.pprResButton').click(function(){
 					var self = $(this);
 
@@ -226,9 +226,17 @@
 										data: $('#dialog-mesage-ppr *').serialize(),
 										dataType: 'json',
 										success: function (data){
-											hasZip = true;
-											dial.dialog( "close" );
-											self.click();
+											if(data.redirect != ''){
+												js_redirect(data.redirect);
+											} else{
+												if(data.error == ''){
+													hasZip = true;
+													dial.dialog( "close" );
+													self.click();
+												}else{
+													alert(data.error);
+												}
+											}
 										}
 									});
 								}
@@ -244,8 +252,19 @@
 			?>
 		});
 		</script>
+<?php if(sysConfig::get('NAVIGATION_BAR_LOCATION') == 'top' || sysConfig::get('NAVIGATION_BAR_LOCATION') == 'both'){ ?>
+	<?php if (isset($pager) || isset($sorter)){ ?>
+<br />
+<div class="productListingRowPager ui-corner-all"><?php
+ if (isset($pager)){
+	echo '<div style="margin:.5em;line-height:2em;text-align:right;"><b>'.sysLanguage::get('PRODUCT_LISTING_PAGE').':</b> ' . $pager . '</div>';
+}
+	?></div>
+	<?php } ?>
+<?php }?>
 
  <div class="productListingRowContents"><?php echo $listingTable->draw();?></div>
+		<?php if(sysConfig::get('NAVIGATION_BAR_LOCATION') == 'bottom' || sysConfig::get('NAVIGATION_BAR_LOCATION') == 'both'){ ?>
 <?php if (isset($pager) || isset($sorter)){ ?>
 <br />
  <div class="productListingRowPager ui-corner-all"><?php
@@ -254,6 +273,8 @@
  }
  ?></div>
 <?php } ?>
+<?php } ?>
+
 </div>
 <?php
 	}else{

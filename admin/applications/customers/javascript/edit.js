@@ -41,7 +41,9 @@ $('select[name="activate"]').live('change',function (){
 		fnClicked();
 	});
 	$('select[name="payment_method"]').trigger('change');
-	$('select[name="activate"]').trigger('change');
+	if($('select[name="activate"]').val() == 'N'){
+		$('select[name="activate"]').trigger('change');
+	}
 	$('select[name=country]').live('change', function (){
 
 		var stateType = 'state';

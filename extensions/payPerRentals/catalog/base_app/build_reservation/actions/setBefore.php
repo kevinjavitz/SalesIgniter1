@@ -202,11 +202,19 @@ else {
 }
 
 	if(!isset($_POST['rType']) && !isset($_POST['fromInfobox'])){
-			if (isset($_POST['url']) && (strpos($_POST['url'],'index/default') === false)){
+		if(isset($_POST['cPath']) && ($_POST['cPath'] != '-1')){
+			$redirectLink = itw_app_link(null, 'index', $_POST['cPath']);
+			$redirectCat = $_POST['cPath'];
+		}else if(isset($_GET['cPath']) && ($_POST['cPath'] != '-1')){
+			$redirectLink = itw_app_link(null, 'index', $_GET['cPath']);
+			$redirectCat = $_GET['cPath'];
+		}else{
+			if (isset($_POST['url']) && (strpos($_POST['url'],'index/default') < 0) && $_POST['cPath'] != '-1' && $_GET['cPath'] != '-1'){
 				$redirectLink = $_POST['url'];
 			}else{
 				$redirectLink = itw_app_link(null,'products','all');
 			}
+		}
 			if(isset($redirectLink)){
 				if(sysConfig::get('EXTENSION_INVENTORY_CENTERS_INTERMEDIARY_PAGE') == 'True'){
 					Session::set('redirectLinkBefore', $redirectLink);
@@ -508,10 +516,18 @@ else {
 				), 'json');
 			}else{
 
-				if (isset($_POST['url']) && (strpos($_POST['url'],'index/default') === false)){
-					$redirectLink = $_POST['url'];
+				if(isset($_POST['cPath']) && ($_POST['cPath'] != '-1')){
+					$redirectLink = itw_app_link(null, 'index', $_POST['cPath']);
+					$redirectCat = $_POST['cPath'];
+				}else if(isset($_GET['cPath']) && ($_POST['cPath'] != '-1')){
+					$redirectLink = itw_app_link(null, 'index', $_GET['cPath']);
+					$redirectCat = $_GET['cPath'];
 				}else{
-					$redirectLink = itw_app_link(null,'products','all');
+					if (isset($_POST['url']) && (strpos($_POST['url'],'index/default') < 0) && $_POST['cPath'] != '-1' && $_GET['cPath'] != '-1'){
+						$redirectLink = $_POST['url'];
+					}else{
+						$redirectLink = itw_app_link(null,'products','all');
+					}
 				}
 
 				if(isset($redirectLink)){

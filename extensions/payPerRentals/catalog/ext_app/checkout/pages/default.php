@@ -129,7 +129,7 @@ class payPerRentals_catalog_checkout_default extends Extension_payPerRentals {
 	public function CheckoutSetShippingStatus(){
 		global $appExtension, $order, $ShoppingCart, $onePageCheckout;
 		if ($this->isEnabled() === false) return;
-		
+
 		$reservationProducts = 0;
 
 		if(Session::exists('onlyReservations')){

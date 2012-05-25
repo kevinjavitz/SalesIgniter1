@@ -46,14 +46,14 @@
 	$AdvancedTable->addBodyRow(array(
 		'columns' => array(
 			array('text' => sysLanguage::get('ENTRY_DATE_FROM')),
-			array('text' => tep_draw_input_field('dfrom', DOB_FORMAT_STRING, 'onFocus="RemoveFormatString(this, \'' . DOB_FORMAT_STRING . '\')"'))
+			array('text' => htmlBase::newElement('input')->setName('dfrom'))
 		)
 	));
 	
 	$AdvancedTable->addBodyRow(array(
 		'columns' => array(
 			array('text' => sysLanguage::get('ENTRY_DATE_TO')),
-			array('text' => tep_draw_input_field('dto', DOB_FORMAT_STRING, 'onFocus="RemoveFormatString(this, \'' . DOB_FORMAT_STRING . '\')"'))
+			array('text' => htmlBase::newElement('input')->setName('dto'))
 		)
 	));
 	

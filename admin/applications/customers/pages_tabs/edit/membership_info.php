@@ -25,8 +25,19 @@
 						$MembershipBox = htmlBase::newElement('selectbox')
 						->setName('planid')
 						->selectOptionByValue($CustomersMembership->plan_id);
+
 						foreach($Qmembership as $mInfo){
-							$MembershipBox->addOption($mInfo['plan_id'], $mInfo['MembershipPlanDescription'][0]['name']);
+							$attr = array(
+								array(
+									'name' => 'months',
+									'value' => $mInfo['membership_months']
+								),
+								array(
+									'name' => 'days',
+									'value' => $mInfo['membership_days']
+								)
+							);
+							$MembershipBox->addOptionWithAttributes($mInfo['plan_id'], $mInfo['MembershipPlanDescription'][0]['name'],$attr);
 						}
 						echo $MembershipBox->draw() . tep_draw_hidden_field('prev_plan_id', $CustomersMembership->plan_id);
 					?></td>

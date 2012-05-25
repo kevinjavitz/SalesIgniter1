@@ -63,6 +63,11 @@
 			if (isset($track_method) && $track_method[$invController][$purchaseType] == $id){
 				$radioField->setChecked(true);
 			}
+			if(!isset($track_method[$invController])){
+				if($purchaseType == 'reservation' && $id == 'barcode' || $purchaseType == 'rental' && $id == 'barcode'){
+					$radioField->setChecked(true);
+				}
+			}
 			if ($purchaseType == 'rental' && $id == 'quantity'){
 				$radioField->disable(true);
 			}

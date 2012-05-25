@@ -264,6 +264,11 @@ if (isset($_GET['type']) && $_GET['type'] == 'addressBook'){
 		}
 		//}
 	} elseif ($_POST['currentPage'] == 'payment_shipping') {
+		if(sysConfig::get('TERMS_CONDITIONS_PACKAGES') == 'true' && $onePageCheckout->isMembershipCheckout() === true){
+			if(!isset($_POST['terms_packages']) && $onePageCheckout->onePage['rentalPlan']['terms_page'] > 0){
+				$messageStack->addSession('pageStack','You need to accept the terms and conditions!','error');
+			}
+		}
 		unset($order->newOrder['orderTotals']);
 		if (isset($_POST['payment_method'])) {
 			$PaymentModule = OrderPaymentModules::getModule($_POST['payment_method'], true);

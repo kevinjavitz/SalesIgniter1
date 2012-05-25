@@ -634,6 +634,18 @@ function confirmDialog(options){
 		resizable : false,
 		allowClose : false,
 		modal : true,
+		open: function(){
+			$('.ui-button').each(function(){
+				if($(this).attr('icon')){
+					var sp = $('<span></span>');
+					sp.addClass('ui-button-icon-primary ui-icon '+$(this).attr('icon'));
+					$(this).removeClass('ui-button-text-only');
+					$(this).addClass('ui-button-text-icon-primary');
+					sp.prependTo($(this));
+				}
+
+			});
+		},
 		buttons : [
 			{
 				text : jsLanguage.get('TEXT_BUTTON_CONFIRM'),
@@ -842,7 +854,16 @@ function gridWindow(options){
 							editWindowOnLoad.apply(windowEl);
 						}
 					}
+					$('.ui-button').each(function(){
+						if($(this).attr('icon')){
+							var sp = $('<span></span>');
+							sp.addClass('ui-button-icon-primary ui-icon '+$(this).attr('icon'));
+							$(this).removeClass('ui-button-text-only');
+							$(this).addClass('ui-button-text-icon-primary');
+							sp.prependTo($(this));
+						}
 
+					});
 					removeAjaxLoader($(self));
 				});
 			});
@@ -1172,7 +1193,16 @@ $(document).ready(function () {
 	});
 
 	$('button, a[type="button"]').button();
+	$('.ui-button').each(function(){
+		if($(this).attr('icon')){
+			var sp = $('<span></span>');
+			sp.addClass('ui-button-icon-primary ui-icon '+$(this).attr('icon'));
+			$(this).removeClass('ui-button-text-only');
+			$(this).addClass('ui-button-text-icon-primary');
+			sp.prependTo($(this));
+		}
 
+	});
 	$('.phpTraceView').live('click', function (e) {
 		e.preventDefault();
 

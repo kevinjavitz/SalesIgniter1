@@ -899,6 +899,17 @@ $(document).ready(function (){
 			$('.clstnormal a').click();
 		}
 	});
+	$('.trackMethodButton:checked').each(function(){
+		if($(this).val() == 'quantity'){
+			$('.quantityTable').show();
+			$('.quantityTable').next().show();
+			$('.barcodeTable').hide();
+		}else{
+			$('.quantityTable').hide();
+			$('.quantityTable').next().hide();
+			$('.barcodeTable').show();
+		}
+	});
 
 });
 

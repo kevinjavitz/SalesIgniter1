@@ -417,6 +417,13 @@ $(document).ready(function (){
 	        async:false,
             data: 'planID=' + $(this).val(),
             success: function (data) {
+	            if(data.html != ''){
+		            $('#agreeMessage').html(data.html);
+		            $('#agreeMessage').show();
+	            } else{
+		            $('#agreeMessage').hide();
+		            $('#agreeMessage').html('');
+	            }
 	            updateTotals();
             }
         });
