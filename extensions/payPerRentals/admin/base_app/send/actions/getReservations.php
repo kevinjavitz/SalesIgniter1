@@ -313,7 +313,7 @@
 							'"' . $oInfo['customers_telephone'] . '",' . 
 							'"Rental",' . 
 							'"' . addslashes($productName) . '",' . 
-							'"-' . /*$opInfo['products_quantity']*/1 . '",' . //Hardcoded to 1 because each reservation is put in and reservations only allow 1 qty
+							'"' . /*$opInfo['products_quantity']*/1 . '",' . //Hardcoded to 1 because each reservation is put in and reservations only allow 1 qty
 							'"' . $shipOn . '",' . 
 							'"' . addslashes(strip_tags($oInfo['shipping_module'])) . '",' . 
 							'""';

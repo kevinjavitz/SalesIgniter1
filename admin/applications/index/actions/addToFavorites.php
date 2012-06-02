@@ -1,23 +1,27 @@
 <?php
-	if (isset($_POST['url']) && !empty($_POST['url']) && isset($_POST['link_name']) && !empty($_POST['link_name'])){
-		$Admin = Doctrine_Core::getTable('Admin')->findOneByAdminId((int)Session::get('login_id'));
-		if (sysConfig::get('ENABLE_SSL') == 'true') {
+if (isset($_POST['settings']) && isset($_POST['settings']['name']) && !empty($_POST['settings']['name'])){
+	$Admin = Doctrine_Core::getTable('Admin')
+		->find((Session::get('login_id') == 'master' ? 0 : (int)Session::get('login_id')));
 
-			$url = str_replace( sysConfig::get('HTTPS_SERVER') . sysConfig::get('DIR_WS_ADMIN'),'', $_POST['url']);
-			$url = preg_replace('/([?&])'.'osCAdminID'.'=[^&]+(&|$)/','$1',$url);
-			$Admin->favorites_links .= ';' .$url;
-		}else{
-			$url = str_replace( sysConfig::get('HTTP_SERVER') . sysConfig::get('DIR_WS_ADMIN'),'', $_POST['url']);
-			$url = preg_replace('/([?&])'.'osCAdminID'.'=[^&]+(&|$)/','$1',$url);
-			$Admin->favorites_links .= ';' . $url;
-		}
-		$Admin->favorites_names .= ';' . $_POST['link_name'];
-		$Admin->save();		
+	$Settings = $_POST['settings'];
+	$url = '';
+	if (isset($Settings['appExt']) && !empty($Settings['appExt'])){
+		$url .= $Settings['appExt'] . '/';
+	}
+	$url .= $Settings['app'] . '/';
+	$url .= $Settings['appPage'] . '.php';
+	if (isset($Settings['get']) && !empty($Settings['get'])){
+		$url .= '?' . $Settings['get'];
 	}
 
-	$json = array(
-			'success' => true
-	);
+	$Admin->favorites_links .= ';' . $url;
+	$Admin->favorites_names .= ';' . $Settings['name'];
+	$Admin->save();
+}
 
-	EventManager::attachActionResponse($json, 'json');
+$json = array(
+	'success' => true
+);
+
+EventManager::attachActionResponse($json, 'json');
 ?>

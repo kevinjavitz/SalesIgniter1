@@ -34,6 +34,10 @@ class OrderShippingUsps extends OrderShippingModuleBase
 
 	private $selectedIntlTypes;
 
+	private $intnationalTitle;
+	private $nationalTitle;
+	private $nationalCost;
+	private $intnationalCost;
 
 
 	public function __construct() {
@@ -101,7 +105,7 @@ class OrderShippingUsps extends OrderShippingModuleBase
 		$usps_shipping_weight = ($shipping_weight <= 0.0 ? 0.0625 : $shipping_weight);
 		$shipping_pounds = floor ($usps_shipping_weight);
 		$shipping_ounces = (16 * ($usps_shipping_weight - floor($usps_shipping_weight)));
-		$shipping_ounces = number_format($shipping_ounces, 3);
+		$shipping_ounces = number_format($shipping_ounces, 2);
 
 		switch(true) {
 		  case ($shipping_pounds == 0 and $shipping_ounces < 6):
@@ -134,10 +138,10 @@ class OrderShippingUsps extends OrderShippingModuleBase
 			'icon'    => tep_image(DIR_WS_ICONS . 'shipping_usps.gif', $this->getTitle())
 		);
 		
-		if (is_array($uspsQuote)){
-			if (isset($uspsQuote['error'])){
-				$this->quotes['error'] = $uspsQuote['error'];
-			}else{
+		if (is_array($uspsQuote) && !isset($uspsQuote['error'])){
+			//if (isset($uspsQuote['error'])){
+			//	$this->quotes['error'] = $uspsQuote['error'];
+			//}else{
 				$this->quotes['module'] .= ' (' . $shipping_num_boxes . ' x ' . $shipping_weight . 'lbs)';
 
 				foreach($uspsQuote as $qInfo){
@@ -160,7 +164,7 @@ class OrderShippingUsps extends OrderShippingModuleBase
 					$deliveryAddress = $this->getDeliveryAddress();
 					$this->quotes['tax'] = tep_get_tax_rate($classId, $deliveryAddress['entry_country_id'], $deliveryAddress['entry_zone_id']);
 				}
-			}
+			//}
 		}else{
 			$deliveryAddress = $this->getDeliveryAddress();
 			if($deliveryAddress['entry_country_id'] == sysConfig::get('STORE_COUNTRY')){

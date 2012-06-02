@@ -50,7 +50,16 @@
 
 			$sCont.html(self.settings);
 
-			$sCont.find('input[name=background_color], input[name=background_image], input[name=background_repeat]').each(function (){
+
+
+
+
+
+
+			$sCont.find('input[name=background_color], input[name=background_image], select[name=background_repeat]').each(function (){
+
+
+
 					if (inputVals.config[$(this).attr('name')]){
 						$(this).val(inputVals.config[$(this).attr('name')]);
 					}

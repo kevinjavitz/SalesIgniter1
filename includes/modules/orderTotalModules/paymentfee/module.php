@@ -2,7 +2,6 @@
 class OrderTotalPaymentfee extends OrderTotalModuleBase
 {
 	public $allowPaymentFee;
-	public $showPaymentFee;
 
 	public function __construct() {
 		/*
@@ -14,7 +13,6 @@ class OrderTotalPaymentfee extends OrderTotalModuleBase
 		$this->init('paymentfee');
 
 		if ($this->isInstalled() === true){
-			$this->showPaymentFee = $this->getConfigData('MODULE_ORDER_TOTAL_PAYMENTFEE_STATUS');
 			$this->allowPaymentFee = $this->getConfigData('MODULE_ORDER_TOTAL_PAYMENTFEE_ENABLE');
 		}
 	}
@@ -42,7 +40,7 @@ class OrderTotalPaymentfee extends OrderTotalModuleBase
 
 			$order->info['total'] += $fee;
 
-			if ($fee > 0 && ($this->showPaymentFee == 'True')){
+			if ($fee > 0){
 				$this->addOutput(array(
 						'title' => $this->getTitle() . ':',
 						'text' => $this->formatAmount($fee),

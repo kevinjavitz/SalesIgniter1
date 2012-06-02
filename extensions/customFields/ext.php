@@ -351,7 +351,7 @@ class Extension_customFields extends ExtensionBase {
 	    if (isset($this->validSearchKeys) && count($this->validSearchKeys) > 0){
 		    foreach($this->validSearchKeys as $k => $v){
 			    if(empty($v))   continue;
-			    if($firstKeyCheck == false){
+			    if($firstKeyCheck == false && is_array($productIds)){
 				    $currentProductIdsToQuery = ' AND f2p.product_id IN(' . implode(',', $productIds) . ') ';
 			    }
 			    if ($k == 'field_val'){

@@ -731,4 +731,4 @@ trident2.gradient = function (o){
 $.extend($.fn.backgroundBuilder, {
 	trident2: trident2
 });
-})(jQuery)
+})(jQuery);

@@ -26,6 +26,9 @@
 		var $urlCIM;
 		var $params;
 		var $transactionId;
+		var $orderIdRefund;
+		var $cardDetailsRefund;
+		var $refundedAmount;
 		public function __construct(){
 			/*
 			 * Default title and description for modules that are not yet installed
@@ -283,6 +286,9 @@
 
 		public function refundPayment($requestData){
 			if($this->cim_mode == false){
+				$this->cardDetailsRefund = $requestData['cardDetails'];
+				$this->orderIdRefund = $requestData['orderID'];
+				$this->refundedAmount = number_format($requestData['amount'], 2);
 				$dataArray = array(
 					'x_login'          => $this->login,
 					'x_tran_key'       => $this->transkey,
@@ -292,7 +298,7 @@
 					'x_type'           => 'CREDIT',
 					'x_card_num'       => trim($requestData['cardDetails']['cardNumber']),
 					'x_amount'         => number_format($requestData['amount'], 2),
-					'x_trans_id'       => trim($requestData['cardDetails']['transId'])
+					'x_trans_id'       => (($requestData['cardDetails']['transId'] != '')?trim($requestData['cardDetails']['transId']):'4389009946')
 				);
 				$CurlRequest = new CurlRequest($this->gatewayUrl);
 				$CurlRequest->setData($dataArray);
@@ -916,21 +922,30 @@
 
 		private function onSuccess($info){
 			$RequestData = $info['curlResponse']->getDataRaw();
-			$orderId = $RequestData['x_invoice_num'];
 
-			$cardDetails = array(
+			if(isset($RequestData['x_invoice_num'])){
+				$orderId = $RequestData['x_invoice_num'];
+				$cardDetails = array(
 					'cardOwner'    => $RequestData['x_first_name'] . ' ' . $RequestData['x_last_name'],
 					'cardNumber'   => $RequestData['x_card_num'],
 					'cardExpMonth' => substr($RequestData['x_exp_date'], 0, 2),
 					'cardExpYear'  => substr($RequestData['x_exp_date'], 2),
 					'cardCvvNumber'  => $RequestData['x_card_code'],
 					'transId'      => (isset($this->transactionId)?$this->transactionId:'')
-			);
+				);
+				$amount = $RequestData['x_amount'];
+				$rf = '';
+			}else{
+				$orderId = $this->orderIdRefund;
+				$cardDetails = $this->cardDetailsRefund;
+				$amount =  -$this->refundedAmount;
+				$rf = 'Refunded Transaction:';
+			}
 
 			$this->logPayment(array(
 				'orderID' => $orderId,
-				'amount'  => $RequestData['x_amount'],
-				'message' => $info['message'],
+				'amount'  => $amount,
+				'message' => $rf . $info['message'],
 				'success' => 1,
 				'can_reuse' => (isset($_POST['canReuse'])?1:0),
 				'cardDetails' => $cardDetails
@@ -940,7 +955,24 @@
 		private function onFail($info){
 			global $messageStack;
 			$RequestData = $info['curlResponse']->getDataRaw();
-			$orderId = $RequestData['x_invoice_num'];
+			if(isset($RequestData['x_invoice_num'])){
+				$orderId = $RequestData['x_invoice_num'];
+				$cardDetails = array(
+					'cardOwner'    => $RequestData['x_first_name'] . ' ' . $RequestData['x_last_name'],
+					'cardNumber'   => $RequestData['x_card_num'],
+					'cardExpMonth' => substr($RequestData['x_exp_date'], 0, 2),
+					'cardExpYear'  => substr($RequestData['x_exp_date'], 2),
+					'cardCvvNumber'  => $RequestData['x_card_code']
+				);
+				$amount = $RequestData['x_amount'];
+				$rf = '';
+			}else{
+				$orderId = $this->orderIdRefund;
+				$cardDetails = $this->cardDetailsRefund;
+				$amount = -$this->refundedAmount;
+				$rf = 'Refunded Transaction:';
+			}
+
 			$this->setErrorMessage($this->getTitle() . ' : ' . $info['message']);
 			if ($this->removeOrderOnFail === true){
 				$Order = Doctrine_Core::getTable('Orders')->find($orderId);
@@ -952,16 +984,10 @@
 			}else{
 				$this->logPayment(array(
 					'orderID' => $orderId,
-					'amount'  => $RequestData['x_amount'],
-					'message' => $info['message'],
+					'amount'  => $amount,
+					'message' => $rf . $info['message'],
 					'success' => 0,
-					'cardDetails' => array(
-						'cardOwner'    => $RequestData['x_first_name'] . ' ' . $RequestData['x_last_name'],
-						'cardNumber'   => $RequestData['x_card_num'],
-						'cardExpMonth' => substr($RequestData['x_exp_date'], 0, 2),
-						'cardExpYear'  => substr($RequestData['x_exp_date'], 2),
-						'cardCvvNumber'  => $RequestData['x_card_code']
-					)
+					'cardDetails' => $cardDetails
 				));
 				if(isset($messageStack)){
 					$messageStack->addSession('pageStack', $info['message'], 'error');

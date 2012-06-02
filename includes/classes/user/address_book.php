@@ -127,8 +127,8 @@ class rentalStoreUser_addressBook {
 			$Qcheck = Doctrine_Query::create()
 			->select('zone_id')
 			->from('Zones')
-			->where('zone_name = ?', $addressArray['entry_state'])
-			->orWhere('zone_code = ?', $addressArray['entry_state'])
+			->where('zone_name = "'.$addressArray['entry_state'] .'" OR zone_code = "'. $addressArray['entry_state'].'"')
+			->andWhere('zone_country_id = ?', $addressArray['entry_country_id'])
 			->execute(array(), Doctrine::HYDRATE_ARRAY);
 			if ($Qcheck){
 				$newAddress->entry_zone_id = (int)$Qcheck[0]['zone_id'];
