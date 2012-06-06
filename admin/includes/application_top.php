@@ -97,6 +97,9 @@ $conn->setCharset(sysConfig::get('SYSTEM_CHARACTER_SET'));
 $conn->setCollate(sysConfig::get('SYSTEM_CHARACTER_SET_COLLATION'));
 $manager->setCurrentConnection('mainConnection');
 Doctrine_Manager::connection()->setAttribute(Doctrine_Core::ATTR_AUTO_FREE_QUERY_OBJECTS, true );
+Doctrine_Manager::getInstance()
+	->getCurrentConnection()
+	->exec('SET SQL_BIG_SELECTS=1');
 	define('CURRENCY_SERVER_PRIMARY', 'oanda');
 	define('CURRENCY_SERVER_BACKUP', 'xe');
 	require(sysConfig::getDirFsCatalog() . 'includes/classes/dataAccess.php');

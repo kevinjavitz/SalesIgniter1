@@ -4,6 +4,7 @@
 require(sysConfig::getDirFsCatalog() . 'includes/classes/Order/Base.php');
 
 require_once(sysConfig::getDirFsCatalog(). 'dompdf/dompdf_config.inc.php');
+//require_once(sysConfig::getDirFsCatalog(). 'mpdf54/mpdf.php');
 
 require(sysConfig::getDirFsCatalog() . 'includes/classes/pdftemplate.php');
 
@@ -329,8 +330,14 @@ $dompdf = new DOMPDF();
 $dompdf->set_base_path(sysConfig::get('DIR_FS_DOCUMENT_ROOT'));
 $dompdf->load_html(utf8_decode($myPdf));
 $dompdf->render();
-//$dompdf->stream('saved_pdf.pdf', array("Attachment" => 0));
 $pdf = $dompdf->output();
 file_put_contents(sysConfig::getDirFsCatalog(). 'temp/pdf/'.$iName.'_'.(isset($_GET['oID'])?$_GET['oID']:'').'.pdf', $pdf);
+
+/*
+$dompdf = new mPDF();
+$dompdf->WriteHTML(utf8_decode($myPdf));
+$dompdf->Output(sysConfig::getDirFsCatalog(). 'temp/pdf/'.$iName.'_'.(isset($_GET['oID'])?$_GET['oID']:'').'.pdf');
+*/
+
 header("Location: " .sysConfig::getDirWsCatalog(). 'temp/pdf/'.$iName.'_'.(isset($_GET['oID'])?$_GET['oID']:'').'.pdf');
 itwExit();

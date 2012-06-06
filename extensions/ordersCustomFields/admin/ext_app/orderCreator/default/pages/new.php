@@ -54,29 +54,71 @@ class ordersCustomFields_admin_orderCreator_default_new extends Extension_orders
 							->orderBy('sort_order')
 							->execute();
 						$input->addOption('NoneSelected','Please Select');
+						$otherVal = '';
+						if(isset($_GET['oID'])){
+							$Qfields1 = Doctrine_Query::create()
+							->from('OrdersCustomFieldsToOrders')
+							->where('orders_id = ?', $_GET['oID'])
+							->andWhere('field_id = ?', $fieldId)
+							->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+							if(isset($Qfields1[0])){
+								$input->selectOptionByValue('Other');
+								$otherVal =  $Qfields1[0]['value'];
+							}
+
+						}
+
 						if ($Qoptions->count()){
 							foreach($Qoptions->toArray(true) as $option){
 								$input->addOption(
 									$option['OrdersCustomFieldsOptionsDescription'][Session::get('languages_id')]['option_name'],
 									$option['OrdersCustomFieldsOptionsDescription'][Session::get('languages_id')]['option_name']
 								);
+								if(isset($Qfields1[0]) && $option['OrdersCustomFieldsOptionsDescription'][Session::get('languages_id')]['option_name'] == $otherVal){
+									$input->selectOptionByValue($option['OrdersCustomFieldsOptionsDescription'][Session::get('languages_id')]['option_name']);
+									$otherVal = '';
+								}
 							}
 						}
 
 						if ($fieldType == 'select_other'){
 							$input->addOption('Other', 'Other (Fill in below)');
 
-							$otherInput = '<div class="main" style="clear:both;margin-top:.3em;">Other: ' . tep_draw_input_field('orders_custom_field_other[' . $fieldId . ']') . '</div>';
+							$otherInput = '<div class="main" style="clear:both;margin-top:.3em;">Other: ' . tep_draw_input_field('orders_custom_field_other[' . $fieldId . ']',$otherVal) . '</div>';
 						}
 						break;
 					case 'text':
 						$input = htmlBase::newElement('input');
+						if(isset($_GET['oID'])){
+							$Qfields1 = Doctrine_Query::create()
+								->from('OrdersCustomFieldsToOrders')
+								->where('orders_id = ?', $_GET['oID'])
+								->andWhere('field_id = ?', $fieldId)
+								->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+							if(isset($Qfields1[0])){
+								$input->setValue($Qfields1[0]['value']);
+							}
+
+						}
+
 						break;
 					case 'textarea':
 						$input = htmlBase::newElement('textarea')->attr('rows', 3)->attr('cols', 30);
+						if(isset($_GET['oID'])){
+							$Qfields1 = Doctrine_Query::create()
+								->from('OrdersCustomFieldsToOrders')
+								->where('orders_id = ?', $_GET['oID'])
+								->andWhere('field_id = ?', $fieldId)
+								->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+							if(isset($Qfields1[0])){
+								$input->html($Qfields1[0]['value']);
+							}
+
+						}
 						break;
 				}
 				$input->setName('orders_custom_field[' . $fieldId . ']');
+
 				if ($fieldRequired === true){
 					$input->css('float', 'left');
 				}

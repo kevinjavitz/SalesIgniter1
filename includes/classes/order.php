@@ -656,14 +656,14 @@ class OrderProcessor {
 
 		EventManager::notify('OrderBeforeSendEmail', &$currentOrder, &$emailEvent, &$products_ordered, &$sendVariables);
 
-		$sendVariables['email'] = $userAccount->getEmailAddress();
+		$sendVariables['email'] = strtolower($userAccount->getEmailAddress());
 		$sendVariables['name'] = $userAccount->getFullName();
 		$emailEvent->sendEmail($sendVariables);
 		if(isset($sendVariables['emails']) && is_array($sendVariables['emails'])){
 			foreach($sendVariables['emails'] as $email){
 
 					$emailEvent->sendEmail(array(
-							'email' => $email['email'],
+							'email' => strtolower($email['email']),
 							'name'  => $email['name']
 						));
 			}
@@ -685,7 +685,7 @@ class OrderProcessor {
 
 				if (!empty($matches)){
 					$emailEvent->sendEmail(array(
-						'email' => $matches[2],
+						'email' => strtolower($matches[2]),
 						'name'  => $matches[1]
 					));
 				}

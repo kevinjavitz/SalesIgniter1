@@ -110,7 +110,7 @@ class payPerRentals_catalog_shoppingCart_default extends Extension_payPerRentals
 			$divScript = htmlBase::newElement('div');
 			$divScript->html($script);
 
-			$div->append($divRadio)->append($divRadioDelivery)->append($divScript);
+			$div->append($divRadioDelivery)->append($divRadio)->append($divScript);
 		}
 
 		if(sysConfig::get('EXTENSION_PAY_PER_RENTALS_ENABLE_EXTRA_FEES') == 'True'){

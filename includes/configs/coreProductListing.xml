@@ -126,6 +126,13 @@
 
 				</PRODUCT_LISTING_HIDE_NO_INVENTORY>
 
+				<SHOW_ALSO_PURCHASED_TAB>
+					<title><![CDATA[Show also purchased tab]]></title>
+					<value><![CDATA[true]]></value>
+					<description><![CDATA[Do you want to show also purchased tab]]></description>
+					<set_function><![CDATA[tep_cfg_select_option(array('true', 'false'),]]></set_function>
+				</SHOW_ALSO_PURCHASED_TAB>
+
 			</configurations>
 		</general>
 	</tabs>

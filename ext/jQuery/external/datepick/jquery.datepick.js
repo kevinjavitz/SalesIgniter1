@@ -1638,8 +1638,16 @@ $.extend(Datepick.prototype, {
 			[this._restrictMinMax(inst, this._determineDate(inst, date[0], new Date()))]);
 		inst.cursorDate = (date.length == 0 ? new Date() :
 			new Date(inst.dates[0].getTime()));
-		inst.drawMonth = inst.curMonth;//inst.cursorDate.getMonth();
-		inst.drawYear = inst.curYear;//inst.cursorDate.getFullYear();
+		if(inst.curMonth){
+			inst.drawMonth = inst.curMonth;//inst.cursorDate.getMonth();
+		}else{
+			inst.drawMonth = inst.cursorDate.getMonth();
+		}
+		if(inst.curYear){
+			inst.drawYear = inst.curYear;//inst.cursorDate.getFullYear();
+		}else{
+			inst.drawYear = inst.cursorDate.getFullYear();
+		}
 		if (this._get(inst, 'rangeSelect')) {
 			if (date.length > 0)
 				inst.dates[1] = (date.length < 1 ? inst.dates[0] :

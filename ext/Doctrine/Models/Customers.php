@@ -40,7 +40,7 @@ class Customers extends Doctrine_Record {
 
 		$this->hasOne('CustomersInfo', array(
 				'local' => 'customers_id',
-				'foreign' => 'customers_info_id',
+				'foreign' => 'c',
 				'cascade' => array('delete')
 			));
 	}

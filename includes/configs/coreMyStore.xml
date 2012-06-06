@@ -340,7 +340,7 @@ Casa Grande, AZ  85122]]></value>
 				</SHOW_PRODUCT_INFO_BUTTONS_TOP>
 				<SHOW_PRODUCT_INFO_BUTTONS_BOTTOM>
 					<title><![CDATA[On product info page show buttons on bottom?]]></title>
-					<value><![CDATA[true]]></value>
+					<value><![CDATA[True]]></value>
 					<description><![CDATA[If true purchase buttons will be shown on bottom of product info page]]></description>
 					<set_function><![CDATA[tep_cfg_select_option(array('True', 'False'),]]></set_function>
 				</SHOW_PRODUCT_INFO_BUTTONS_BOTTOM>

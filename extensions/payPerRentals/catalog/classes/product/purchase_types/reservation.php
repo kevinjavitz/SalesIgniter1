@@ -126,6 +126,7 @@ class PurchaseType_reservation extends PurchaseTypeAbstract
 			'deposit_amount'   => $this->getDepositAmount(),
 			'semester_name'    => (isset($resData[0]['semester_name']) ? $resData[0]['semester_name'] : ''),
 			'event_name'       => (isset($resData[0]['event_name']) ? $resData[0]['event_name'] : ''),
+			'insurance'       => (isset($resData[0]['insurance']) ? $resData[0]['insurance'] : ''),
 			'event_gate'       => (isset($resData[0]['event_gate']) ? $resData[0]['event_gate'] : ''),
 			'event_date'       => (isset($resData[0]['event_date']) ? $resData[0]['event_date'] : date('Ymd')),
 			'shipping'         => array(
@@ -253,10 +254,18 @@ class PurchaseType_reservation extends PurchaseTypeAbstract
 				->setName('eventInsurance')
 				->addClass('eventInsurance')
 				->setValue('1');
+			if (is_null($resInfo) === false && isset($resInfo['insurance']) && $resInfo['insurance'] > 0){
+				$htmlHasInsurance->setChecked(true);
+			}
 			$return .= '<br/>' . $htmlHasInsurance->draw();
 			if (sysConfig::get('EXTENSION_PAY_PER_RENTALS_USE_GATES') == 'True'){
 				$return .= '<br /><small><i> - Gates ' . $gateb->draw() . '</i></small>'; //use gates too in OC
 			}
+			if (isset($resInfo['start_date']) && !empty($resInfo['start_date'])){
+				$dateFormatted = date('m/d/Y', strtotime($resInfo['start_date']));
+				$return .= '<div class="mydates"><input type="hidden" class="mpDates" name="multiple_dates[]" value="'.$dateFormatted.'"></div>';
+			}
+
 		}
 
 		if (sysConfig::get('EXTENSION_PAY_PER_RENTALS_USE_UPS_RESERVATION') == 'False'){

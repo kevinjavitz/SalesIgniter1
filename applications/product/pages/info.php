@@ -33,6 +33,9 @@
 				$showAlsoPurchased = true;
 			}
 		}
+		if($showAlsoPurchased){
+			$showAlsoPurchased = sysConfig::get('SHOW_ALSO_PURCHASED_TAB') == 'true'?true:false;
+		}
 		$contents = EventManager::notifyWithReturn('ProductInfoBeforeInfo', &$product);
 		
 		if (!empty($contents)){

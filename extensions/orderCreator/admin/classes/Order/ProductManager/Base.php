@@ -2,7 +2,8 @@
 require(dirname(__FILE__) . '/Product.php');
 
 class OrderCreatorProductManager extends OrderProductManager implements Serializable {
-
+    	public $Contents;
+	public $orderId;
 	public function __construct($orderedProducts = null){
 		if (is_null($orderedProducts) === false){
 			foreach($orderedProducts as $i => $pInfo){

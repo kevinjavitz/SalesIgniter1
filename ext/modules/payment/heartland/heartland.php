@@ -1,10 +1,9 @@
 <?php
 
 	$textArr = explode('-', $_POST['ClientSessionID']);
-
+	$_SERVER['HTTP_ACCEPT_LANGUAGE'] = 'en';
 	chdir('../../../../');
 	include('includes/application_top.php');
-
 
 	$orderID = (int)$textArr[2];
 	$customerID = (int)$textArr[1];
@@ -20,7 +19,7 @@
 		$userAccount->loadPlugins();
 		require('includes/classes/order.php');
 		$order = new OrderProcessor($orderID);
-
+	    OrderPaymentModules::loadModules();
 		$total_query =  Doctrine_Manager::getInstance()
 			->getCurrentConnection()
 			->fetchAssoc("select value from orders_total where orders_id = '" . $orderID . "' and (module_type = 'ot_total' OR module_type = 'total') limit 1");

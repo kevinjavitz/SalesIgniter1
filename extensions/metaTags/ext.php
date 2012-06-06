@@ -59,6 +59,7 @@ class Extension_metaTags extends ExtensionBase {
 				EventManager::attachEvents(array(
 					'PageLayoutHeaderTitle',
 					'PageLayoutHeaderMetaDescription',
+					'PageLayoutHeaderCustomMeta',
 					'PageLayoutHeaderMetaKeyword'
 				), null, $this);
 			//}
@@ -119,6 +120,10 @@ class Extension_metaTags extends ExtensionBase {
 
 		return $metas_array;
 
+	}
+
+	public function PageLayoutHeaderCustomMeta(){
+		return sysConfig::get('EXTENSION_METATAGS_EXTRA_TAGS');
 	}
 
 	// -------------------------------------------------------------------------------------------

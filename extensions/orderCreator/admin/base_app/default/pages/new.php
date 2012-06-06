@@ -36,7 +36,8 @@
 	if (isset($_GET['oID'])){
 		if(!isset($_GET['isEstimate'])){
 			$saveButton->setText(sysLanguage::get('TEXT_BUTTON_UPDATE_ORDER'));
-			$estimateButton->disable();
+			$estimateButton->setText(sysLanguage::get('TEXT_BUTTON_SAVE_AS_ESTIMATE'));
+			$estimateButton->attr('disabled','disabled');
 		}else{
 			$saveButton->setText(sysLanguage::get('TEXT_BUTTON_SAVE_AS_ORDER'));
 			$estimateButton->setText(sysLanguage::get('TEXT_BUTTON_UPDATE_ESTIMATE'));
@@ -369,8 +370,8 @@
 	'<td class="main"><b>' . sysLanguage::get('ENTRY_STATUS') . '</b> ' . $statusDrop->draw() . '</td>' .
 	'</tr>' . 
 	'<tr>' . 
-	'<td class="main"><b>' . sysLanguage::get('ENTRY_NOTIFY_CUSTOMER') . '</b> ' . tep_draw_checkbox_field('notify', '', true) . '</td>' . 
-	'<td class="main"><b>' . sysLanguage::get('ENTRY_NOTIFY_COMMENTS') . '</b> ' . tep_draw_checkbox_field('notify_comments', '', true) . '</td>' . 
+	'<td class="main"><b>' . sysLanguage::get('ENTRY_NOTIFY_CUSTOMER') . '</b> ' . tep_draw_checkbox_field('notify', '', (sysConfig::get('EXTENSION_ORDER_CREATOR_NOTIFY_CUSTOMER_DEFAULT') == 'True'?true:false)) . '</td>' .
+	'<td class="main"><b>' . sysLanguage::get('ENTRY_NOTIFY_COMMENTS') . '</b> ' . tep_draw_checkbox_field('notify_comments', '', (sysConfig::get('EXTENSION_ORDER_CREATOR_NOTIFY_CUSTOMER_DEFAULT') == 'True'?true:false)) . '</td>' .
 	'</tr>' . 
 	'</table></td>' . 
 	'</tr>' . 

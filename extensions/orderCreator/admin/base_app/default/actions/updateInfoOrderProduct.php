@@ -1,5 +1,5 @@
 <?php
-$OrderedProduct = $Editor->ProductManager->get($_GET['id']);
+$OrderedProduct = $Editor->ProductManager->get((int)$_GET['id']);
 
 if ($Editor->hasErrors() === false){
 	$response = array(

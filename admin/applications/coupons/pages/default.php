@@ -51,8 +51,8 @@
 			$restrictToPurchaseType = $cInfo['restrict_to_purchase_type'];
 			$dateCreated = $cInfo['date_created'];
 			$dateModified = $cInfo['date_modified'];
-			
-			$couponName = $cInfo['CouponsDescription'][0]['coupon_name'];
+
+			$couponName = $cInfo['CouponsDescription'][Session::get('languages_id')]['coupon_name'];
 			
 			if ($couponType == 'P'){
 				if ($couponAmount == round($couponAmount)){
@@ -174,7 +174,7 @@
 		echo sysLanguage::get('HEADING_TITLE_STATUS') . ' ' . tep_draw_pull_down_menu('status', $status_array, $status, 'onChange="this.form.submit();"');
 	?></form>
 </div>
-<div class="gridContainer">
+<div class="gridContainerNew">
 	<div style="width:100%;float:left;">
 		<div class="ui-widget ui-widget-content ui-corner-all" style="width:99%;margin-right:5px;margin-left:5px;">
 			<div style="width:99%;margin:5px;"><?php echo $tableGrid->draw();?></div>

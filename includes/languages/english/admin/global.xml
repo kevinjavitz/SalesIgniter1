@@ -481,4 +481,5 @@
 	<define key="TEXT_October"><![CDATA[October]]></define>
 	<define key="TEXT_November"><![CDATA[November]]></define>
 	<define key="TEXT_December"><![CDATA[December]]></define>
+	<define key="TEXT_INFO_INSURANCE"><![CDATA[Insurance:]]></define>
 </definitions>

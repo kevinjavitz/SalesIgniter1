@@ -88,15 +88,16 @@
 			if ($resultsMode != 'csv'){
 				$html .= '<tr class="dataTableRow"><td colspan="11" style="border-bottom:1px solid #000000;">Order id:'.$oInfo['orders_id'].' </td></tr>';
 			}
+
 			foreach($oInfo['OrdersProducts'] as $opInfo){
+				$orderAddress = $oInfo['OrdersAddresses']['delivery'];
+				$orderId = $oInfo['orders_id'];
+				$productName = $opInfo['products_name'];
+				$shippingMethod = $oInfo['shipping_module'];
+
+				$customersName = $orderAddress['entry_name'];
 				foreach($opInfo['OrdersProductsReservation'] as $rInfo){
-					$orderAddress = $oInfo['OrdersAddresses']['delivery'];
 
-					$orderId = $oInfo['orders_id'];
-					$productName = $opInfo['products_name'];
-					$shippingMethod = $oInfo['shipping_module'];
-
-					$customersName = $orderAddress['entry_name'];
 					$trackMethod = $rInfo['track_method'];
 					$useCenter = 0;
 
@@ -289,37 +290,7 @@
 					//->attr('readonly','readonly')
 					->addClass('barcodeReplacement');
 
-					if ($resultsMode == 'csv'){
-						if (!isset($currentName) || $currentName != $customersName){
-							$currentName = $customersName;
-							$showName = $currentName;
-						}else{
-							$showName = '';
-						}
-						
-						if (!isset($currentOrder) || $currentOrder != $oInfo['orders_id']){
-							$currentOrder = $oInfo['orders_id'];
-							$showOrder = $currentOrder;
-						}else{
-							$showOrder = '';
-						}
-						
-						$html .= '"' . addslashes($showName) . '",' . 
-							'"' . $showOrder . '",' . 
-							'"' . addslashes($orderAddress['entry_street_address']) . '",' . 
-							'"' . addslashes($orderAddress['entry_city']) . '",' . 
-							'"' . addslashes($orderAddress['entry_state']) . '",' . 
-							'"' . addslashes($orderAddress['entry_postcode']) . '",' . 
-							'"' . $oInfo['customers_telephone'] . '",' . 
-							'"Rental",' . 
-							'"' . addslashes($productName) . '",' . 
-							'"' . /*$opInfo['products_quantity']*/1 . '",' . //Hardcoded to 1 because each reservation is put in and reservations only allow 1 qty
-							'"' . $shipOn . '",' . 
-							'"' . addslashes(strip_tags($oInfo['shipping_module'])) . '",' . 
-							'""';
-							
-						$html .= "\n";
-					}else{
+					if ($resultsMode != 'csv'){
 						$html .= '<tr class="dataTableRow">' .
 							'<td class="dataTableContent">' . ($rInfo['rental_state'] == 'out' ? 'Sent' : '<input type="checkbox" name="sendRes[]" class="reservations" value="' . $rInfo['orders_products_reservations_id'] . '">') . '</td>' .
 							'<td class="dataTableContent">' . $customersName . '</td>' .
@@ -361,7 +332,46 @@
 						'</tr>';
 					}
 				}
+				if ($resultsMode == 'csv'){
+					if (!isset($currentName) || $currentName != $customersName){
+						$currentName = $customersName;
+						$showName = $currentName;
+					}else{
+						$showName = '';
+					}
+
+					if (!isset($currentOrder) || $currentOrder != $oInfo['orders_id']){
+						$currentOrder = $oInfo['orders_id'];
+						$showOrder = $currentOrder;
+					}else{
+						$showOrder = '';
+					}
+					$Qhistory = Doctrine_Query::create()
+					->from('OrdersStatusHistory')
+					->where('orders_id = ?', $oInfo['orders_id'])
+					->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+					$comments = '';
+					foreach($Qhistory as $history){
+						$comments .= stripslashes($history['comments'])."\n";
+					}
+					$html .= '"' . addslashes($showName) . '",' .
+						'"' . $showOrder . '",' .
+						'"' . addslashes($orderAddress['entry_street_address']) . '",' .
+						'"' . addslashes($orderAddress['entry_city']) . '",' .
+						'"' . addslashes($orderAddress['entry_state']) . '",' .
+						'"' . addslashes($orderAddress['entry_postcode']) . '",' .
+						'"' . $oInfo['customers_telephone'] . '",' .
+						'"Rental",' .
+						'"' . addslashes($productName) . '",' .
+						'"' . $opInfo['products_quantity']. '",' .
+						'"' . $shipOn . '",' .
+						'"' . addslashes(strip_tags($oInfo['shipping_module'])) . '",' .
+						'"'.addslashes($comments).'"';
+
+					$html .= "\n";
+				}
 			}
+
 		}
 	}
 	

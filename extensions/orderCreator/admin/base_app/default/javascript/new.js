@@ -30,6 +30,12 @@ $(document).ready(function (){
 		});
 	}); */
 	var getVars = getUrlVars();
+	var oID;
+	if(getVars['oID']){
+		 oID = '&oID='+getVars['oID'];
+	}else{
+		 oID = '';
+	}
 	$('.resReports').click(function(){
 		var newwindow=window.open(js_app_link('appExt=payPerRentals&app=reservations_reports&appPage=default'),'name','height=700,width=960');
 		if (window.focus) {newwindow.focus()}
@@ -72,7 +78,7 @@ $(document).ready(function (){
 
 	$('input[name=customer_search]').autocomplete({
 		html: true,
-		source: js_app_link('appExt=orderCreator&app=default&appPage=new&action=findCustomer'),
+		source: js_app_link('appExt=orderCreator&app=default&appPage=new&action=findCustomer'+oID),
 		select: function (e, ui){
 			if (ui.item.value == 'no-select') return false;
 			if (ui.item.value == 'disabled'){
@@ -84,7 +90,7 @@ $(document).ready(function (){
 			$.ajax({
 				cache: false,
 				dataType: 'json',
-				url: js_app_link('appExt=orderCreator&app=default&appPage=new&action=loadCustomerInfo&cID=' + ui.item.value),
+				url: js_app_link('appExt=orderCreator&app=default&appPage=new&action=loadCustomerInfo&cID=' + ui.item.value+oID),
 				success: function (data){
 					removeAjaxLoader($('.addressTable'));
 					
@@ -159,7 +165,7 @@ $(document).ready(function (){
 
 		showAjaxLoader($Row, 'normal');
 		$.ajax({
-			url: js_app_link('rType=ajax&appExt=orderCreator&app=default&appPage=new&action=updateOrderProduct&id=' + $Row.attr('data-id') + '&purchase_type=' + $(this).val()),
+			url: js_app_link('appExt=orderCreator&app=default&appPage=new&action=updateOrderProduct&id=' + $Row.attr('data-id') + '&purchase_type=' + $(this).val()+oID),
 			cache: false,
 			dataType: 'json',
 			success: function (data){
@@ -183,7 +189,9 @@ $(document).ready(function (){
 						}
 					}
 					if(isEvent && $Row.find('.eventf').val() != '0'){
-						$('.reservationShipping').trigger('change');
+						//$('.reservationShipping').trigger('change');
+						//$('.eventf').attr('isTriggered','1');
+						//$('.eventf').trigger('change');
 					}
 				}
 				removeAjaxLoader($Row);
@@ -198,7 +206,7 @@ $(document).ready(function (){
 
 		showAjaxLoader($Row, 'normal');
 		$.ajax({
-			url: js_app_link('rType=ajax&appExt=orderCreator&app=default&appPage=new&action=updateInfoOrderProduct&id=' + $Row.attr('data-id') + '&purchase_type=' + $(this).val()),
+			url: js_app_link('appExt=orderCreator&app=default&appPage=new&action=updateInfoOrderProduct&id=' + $Row.attr('data-id') + '&purchase_type=' + $(this).val()+oID),
 			cache: false,
 			dataType: 'json',
 			success: function (data){
@@ -222,7 +230,9 @@ $(document).ready(function (){
 						}
 					}
 					if(isEvent && $Row.find('.eventf').val() != '0'){
-						$('.reservationShipping').trigger('change');
+						//$('.reservationShipping').trigger('change');
+						$('.eventf').attr('isTriggered','1');
+						$('.eventf').trigger('change');
 					}
 					$('.barcodeName').live('focus',function(){
 						if($(this).val() == ''){
@@ -243,7 +253,7 @@ $(document).ready(function (){
 						attributeVal += '{' + $(this).parent().attr('attrval') + '}' + $(this).val();/*this part needs updated for attributes*/
 					});
 
-					var link = js_app_link('appExt=orderCreator&app=default&appPage=new&action=getBarcodes');
+					var link = js_app_link('appExt=orderCreator&app=default&appPage=new&action=getBarcodes'+oID);
 		            var $barInput = $(this);
 					$(this).autocomplete({
 						source: function(request, response) {
@@ -348,7 +358,7 @@ $(document).ready(function (){
 	});
 
 	$('.insertProductIcon').live('click', function (){
-		var $TableBody = $(this).parent().parent().parent().parent().find('tbody');
+		var $TableBody = $(this).parent().parent().parent().parent().find('tbody:first');
 		var productInput = '';
 
 		var loadProductRow = function (pID, prtype){
@@ -356,7 +366,7 @@ $(document).ready(function (){
 			$.ajax({
 				cache: false,
 				dataType: 'json',
-				url: js_app_link('appExt=orderCreator&app=default&appPage=new&action=loadProductRow&pID=' + pID+'&purchaseType=' + prtype),
+				url: js_app_link('appExt=orderCreator&app=default&appPage=new&action=loadProductRow&pID=' + pID+'&purchaseType=' + prtype+oID),
 				success: function (data) {
 					removeAjaxLoader($Row);
 					if (data.hasError == true){
@@ -386,7 +396,7 @@ $(document).ready(function (){
 			showAjaxLoader($('.productSection'), 'xlarge');
 			$.ajax({
 				cache: false,
-				url: js_app_link('appExt=orderCreator&app=default&appPage=new&action=getProductsDropBox'),
+				url: js_app_link('appExt=orderCreator&app=default&appPage=new&action=getProductsDropBox'+oID),
 				dataType: 'html',
 				success: function (data){
 					$Row.find('.productInput').html(data);
@@ -427,7 +437,7 @@ $(document).ready(function (){
 		$.ajax({
 			cache: false,
 			dataType: 'json',
-			url: js_app_link('appExt=orderCreator&app=default&appPage=new&action=removeProductRow&id=' + $Row.attr('data-id')),
+			url: js_app_link('appExt=orderCreator&app=default&appPage=new&action=removeProductRow&id=' + $Row.attr('data-id')+oID),
 			success: function (data){
 				removeAjaxLoader($Row);
 				$Row.remove();
@@ -447,7 +457,7 @@ $(document).ready(function (){
 		var $self = $(this);
 		showAjaxLoader($self, 'small');
 		$.ajax({
-			url: js_app_link('appExt=orderCreator&app=default&appPage=new&action=getCountryZones&addressType=' + $self.attr('data-address_type') + '&country=' + $self.val()+'&state='+$('.stateCol select option:selected').val()),
+			url: js_app_link('appExt=orderCreator&app=default&appPage=new&action=getCountryZones&addressType=' + $self.attr('data-address_type') + '&country=' + $self.val()+'&state='+$('.stateCol select option:selected').val()+oID),
 			cache: false,
 			dataType: 'html',
 			success: function (html){
@@ -462,7 +472,7 @@ $(document).ready(function (){
 		showAjaxLoader($self, 'small');
 		
 		$.ajax({
-			url: js_app_link('appExt=orderCreator&app=default&appPage=new&action=processPayment'),
+			url: js_app_link('appExt=orderCreator&app=default&appPage=new&action=processPayment'+oID),
 			cache: false,
 			dataType: 'json',
 			data: $(this).parent().parent().find('*').serialize(),
@@ -485,7 +495,7 @@ $(document).ready(function (){
 		showAjaxLoader($self, 'small');
 
 		$.ajax({
-			url: js_app_link('appExt=orderCreator&app=default&appPage=new&action=changePaymentMethod'),
+			url: js_app_link('appExt=orderCreator&app=default&appPage=new&action=changePaymentMethod'+oID),
 			cache: false,
 			dataType: 'json',
 			data: 'payment_method=' + $self.val(),
@@ -527,7 +537,7 @@ $(document).ready(function (){
 					 //ajax call to save comment on success
 						dialog = $(this);
 					   $.ajax({
-						url: js_app_link('appExt=orderCreator&app=default&appPage=new&action=refundPayment'),
+						url: js_app_link('appExt=orderCreator&app=default&appPage=new&action=refundPayment'+oID),
 						cache: false,
 						dataType: 'json',
 						data: 'payment_module=' + $self.data('payment_module') + '&payment_history_id=' + $self.data('payment_history_id')+'&amount='+$('#refundedAmount').val(),
@@ -561,7 +571,7 @@ $(document).ready(function (){
 			$.ajax({
 				cache: false,
 				dataType: 'html',
-				url: js_app_link('appExt=orderCreator&app=default&appPage=new&action=getShippingQuotes&totalCount=' + $self.parent().parent().attr('data-count')),
+				url: js_app_link('appExt=orderCreator&app=default&appPage=new&action=getShippingQuotes&totalCount=' + $self.parent().parent().attr('data-count')+oID),
 				success: function (data){
 					$self.parent().parent().find('td:eq(0)').html(data);
 					removeAjaxLoader($self.parent().parent());
@@ -610,7 +620,7 @@ $(document).ready(function (){
 		$.ajax({
 			cache: false,
 			dataType: 'html',
-			url: js_app_link('appExt=orderCreator&app=default&appPage=new&action=saveCustomerInfo'),
+			url: js_app_link('appExt=orderCreator&app=default&appPage=new&action=saveCustomerInfo'+oID),
 			data: $('.customerSection *').serialize(),
 			type: 'post',
 			success: function (data){
@@ -620,7 +630,7 @@ $(document).ready(function (){
 					showAjaxLoader($self, 'small');
 
 					$.ajax({
-						url: js_app_link('appExt=orderCreator&app=default&appPage=new&action=changePaymentMethod'),
+						url: js_app_link('appExt=orderCreator&app=default&appPage=new&action=changePaymentMethod'+oID),
 						cache: false,
 						dataType: 'json',
 						data: 'payment_method=' + $self.val(),

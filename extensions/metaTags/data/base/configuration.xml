@@ -63,6 +63,12 @@
 						</values>
 					</set_function>
 				</EXTENSION_METATAGS_KEYWORDS>
+				<EXTENSION_METATAGS_EXTRA_TAGS>
+					<value></value>
+					<title>Extra tags</title>
+					<description>Extra tags</description>
+					<set_function><![CDATA[tep_cfg_textarea_element(]]></set_function>
+				</EXTENSION_METATAGS_EXTRA_TAGS>
 			</configurations>
 		</general>
 	</tabs>

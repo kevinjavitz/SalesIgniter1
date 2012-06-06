@@ -381,7 +381,7 @@ class OrderCreator extends Order implements Serializable {
 				 	$opInfo->products_quantity
 				)
 			);
-			
+
 			EventManager::notify('OrderCreatorAddProductToEmail', $opInfo, &$products_ordered);
 		}
 		
@@ -414,9 +414,8 @@ class OrderCreator extends Order implements Serializable {
 		 */
 		if (!empty($CollectionObj->payment_module)){
 			$Module = OrderPaymentModules::getModule($CollectionObj->payment_module);
-			$emailEvent->setVar('paymentTitle', $Module->getTitle());
-			if ($CollectionObj->payment_module == 'po'){
-				$emailEvent->setVar('po_number', 'P.O. Number: ' . $CollectionObj->po_number);
+			if(is_object($Module)){
+				$emailEvent->setVar('paymentTitle', $Module->getTitle());
 			}
 		}
 		$sendVariables = array();
@@ -490,7 +489,9 @@ class OrderCreator extends Order implements Serializable {
 
 		if (isset($CollectionObj->OrdersPaymentsHistory[0]->payment_module) && !empty($CollectionObj->OrdersPaymentsHistory[0]->payment_module)){
 			$Module = OrderPaymentModules::getModule($CollectionObj->OrdersPaymentsHistory[0]->payment_module);
-			$emailEvent->setVar('paymentTitle', $Module->getTitle());
+			if(is_object($Module)){
+				$emailEvent->setVar('paymentTitle', $Module->getTitle());
+			}
 		}
 		$sendVariables = array();
 		EventManager::notify('OrderCreatorBeforeSendUpdateEmail', $CollectionObj, $emailEvent, &$products_ordered, &$sendVariables);
