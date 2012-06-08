@@ -16,13 +16,12 @@
 	$position = 0;
 	$major = -1;
 	$rent_array = array();
-
 	$Qcustomers = Doctrine_Query::create()
 	->from('Customers c')
 	->leftJoin('c.CustomersMembership cm')
 	->where('cm.ismember = ?', 'M')
 	->andWhere('cm.activate = ?', 'Y')
-	->andWhere('DATEDIFF(cm.next_bill_date,CURDATE()) > ?', sysConfig::get('RENTAL_DAYS_CUSTOMER_PAST_DUE'))
+	->andWhere('DATEDIFF(cm.next_bill_date,CURDATE()) > ?', -((int)sysConfig::get('RENTAL_DAYS_CUSTOMER_PAST_DUE')))
 	->orderBy('c.customers_id');
 
 	if(isset($_GET['pickupRequest'])){

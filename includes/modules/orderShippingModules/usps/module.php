@@ -38,7 +38,8 @@ class OrderShippingUsps extends OrderShippingModuleBase
 	private $nationalTitle;
 	private $nationalCost;
 	private $intnationalCost;
-
+	private $service;
+	private $translated;
 
 	public function __construct() {
 		/*
@@ -86,7 +87,14 @@ class OrderShippingUsps extends OrderShippingModuleBase
 			        'First Class Mail Int Lrg Env' => 'First-Class Mail&lt;sup&gt;&amp;reg;&lt;/sup&gt; International Large Envelope**',
 			        'First Class Mail Int Package' => 'First-Class Mail&lt;sup&gt;&amp;reg;&lt;/sup&gt; International Package**'
 			);
+			$this->translated = array(
+				htmlspecialchars('Priority Mail&lt;sup&gt;&amp;reg;&lt;/sup&gt; International') => 'USPS Priority International Package with tracking',
+				htmlspecialchars('Priority Mail&lt;sup&gt;&amp;reg;&lt;/sup&gt; International Small Flat Rate Box**') => 'USPS Priority International Small Flat Rate Box with tracking (limit 2 items or less)',
+				htmlspecialchars('Priority Mail&lt;sup&gt;&amp;reg;&lt;/sup&gt; International Medium Flat Rate Box') => 'USPS Priority International Medium Flat Rate Box with tracking (limit 10 items or less)',
+				htmlspecialchars('Priority Mail&lt;sup&gt;&amp;reg;&lt;/sup&gt; International Large Flat Rate Box') => 'USPS Priority International Large Flat Rate Box with tracking (limit 15 items or less)',
+				htmlspecialchars('First-Class Mail&lt;sup&gt;&amp;reg;&lt;/sup&gt; International Package**') => 'USPS First-Class International Package (no tracking)'
 
+			);
 
 			$this->countries = $this->country_list();
 			$isEnabled = true;
@@ -395,8 +403,7 @@ class OrderShippingUsps extends OrderShippingModuleBase
 				if (isset($this->service) && ($service != $this->service) ) {
 				  continue;
 				}
-
-				$rates[] = array('method' => $service, 'cost' => $postage, 'time'=> $time);
+				$rates[] = array('method' => (isset($this->translated[$service])?$this->translated[$service]:$service), 'cost' => $postage, 'time'=> $time);
 			  }
 			}
 		  }
