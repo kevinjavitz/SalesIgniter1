@@ -33,6 +33,7 @@ class PDFInfoBoxInvoiceStatus extends PDFInfoBoxAbstract {
 		        $Qhistory = Doctrine_Query::create()
 			        ->from('OrdersPaymentsHistory')
 			        ->where('orders_id = ?', $oID)
+					->andWhere('success =?', '1')
 			        ->orderBy('payment_history_id DESC')
 			        ->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 				$paidValue = 0;

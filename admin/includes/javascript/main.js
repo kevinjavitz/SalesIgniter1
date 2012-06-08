@@ -629,8 +629,16 @@ function confirmDialog(options){
 			$(this).dialog('close').remove();
 		};
 	}
+    var id = '';
+    var title = '';
+    if(o.id && o.id != ''){
+        id = 'id="'+o.id+'"';
+    }
+    if(o.title && o.title != ''){
+        title = 'title="'+o.title+'"';
+    }
 
-	$('<div></div>').html(o.content).attr('title', o.title).dialog({
+	$('<div '+id+' '+title+'>'+o.content+'</div>').dialog({
 		resizable : false,
 		allowClose : false,
 		modal : true,

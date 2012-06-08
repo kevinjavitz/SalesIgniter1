@@ -505,10 +505,20 @@ function importPDFLayouts(){
 	$PDFTemplatesInfoboxes = Doctrine_Core::getTable('PDFTemplatesInfoboxes');
 	$Qcount = Doctrine_Query::create()
 		->from('PDFTemplateManagerLayouts')
+		->where('layout_name = ?', 'invoice1')
 		->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 
 	if(count($Qcount) == 0){
 		require(sysConfig::getDirFsCatalog() . 'ext/pdfLayouts/installDataInvoice.php');
+	}
+
+	$Qcount1 = Doctrine_Query::create()
+			->from('PDFTemplateManagerLayouts')
+			->where('layout_name = ?', 'invoice2')
+			->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+
+	if(count($Qcount1) == 0){
+		require(sysConfig::getDirFsCatalog() . 'ext/pdfLayouts/installDataInvoice2.php');
 	}
 
 }
@@ -535,19 +545,36 @@ function updateCategoriesSEOUrls(){
 		->leftJoin('c.CategoriesDescription cd')
 		->execute();
 	$languages = tep_get_languages();
+	$findDuplicates = array();
 	foreach($QCategories as $Category){
 		$CategoriesDescription =& $Category->CategoriesDescription;
 		for ($i=0, $n=sizeof($languages); $i<$n; $i++) {
 			$lID = $languages[$i]['id'];
 			if($CategoriesDescription[$lID]->categories_seo_url == ''){
 				$CategoriesDescription[$lID]->categories_seo_url = makeUniqueCategory($Category->categories_id, tep_friendly_seo_url($CategoriesDescription[$lID]->categories_name), true);
-			}else{
-				$CategoriesDescription[$lID]->categories_seo_url = makeUniqueCategory($Category->categories_id, tep_friendly_seo_url($CategoriesDescription[$lID]->categories_seo_url), true);
 			}
+			$findDuplicates[$Category->categories_id][$lID] = $CategoriesDescription[$lID]->categories_seo_url;
 		}
 		$Category->save();
 	}
 
+	foreach($findDuplicates as $iCat => $langArr){
+
+		foreach($findDuplicates as $iCat2 => $langArr2){
+			if($iCat != $iCat2){
+				foreach($langArr2 as $iLang =>$catSeo){
+					if(in_array($catSeo, $langArr)){
+						Doctrine_Query::create()
+						->update('CategoriesDescription')
+						->set('categories_seo_url','?', $catSeo.$iCat2.$iLang)
+						->where('categories_id = ?', $iCat2)
+						->andWhere('language_id = ?', $iLang)
+						->execute();
+					}
+				}
+			}
+		}
+	}
 }
 
 
@@ -849,70 +876,6 @@ function updateHTaccess(){
 }
 
 function updateToolsConfiguration(){
-	/*//addConfiguration('SHOW_MANUFACTURER_ON_PRODUCT_INFO', 1, 'Show manufacturer name on product Info', 'Show manufacturer name on product Info', 'false', "tep_cfg_select_option(array('true', 'false'),");
-	//addConfiguration('SHOW_PRODUCTS_FROM_SUBCATEGORIES', 1, 'Show all the products from all the subcategories of the current category', 'Show all the products from all the subcategories of the current category', 'false', "tep_cfg_select_option(array('true', 'false'),");
-	//addConfiguration('SHOW_SUBCATEGORIES', 1, 'Show subcategories of the current category', 'Show subcategories of the current category', 'true', "tep_cfg_select_option(array('true', 'false'),");
-	//addConfiguration('ONEPAGE_CHECKOUT_SHIPPING_ADDRESS', 7575, 'Show shipping address on checkout', 'Show shipping address on checkout', 'true', "tep_cfg_select_option(array('true', 'false'),");
-	//addConfiguration('PRODUCT_INFO_SHOW_MODEL', 1, 'Show model on product info', 'Show model on product Info', 'true', "tep_cfg_select_option(array('true', 'false'),");
-	//addConfiguration('CUSTOMER_CHANGE_SEND_NOTIFICATION_EMAIL_DEFAULT', 1, 'Send customer email when a change is made to his account set as default', 'Send customer email set as default', 'true', "tep_cfg_select_option(array('true', 'false'),");
-	//addConfiguration('CHECK_STOCK_NEW_USED', 1, 'Check Stock for new and used purchase types', 'Check Stock for new and used purchase types', 'true', "tep_cfg_select_option(array('true', 'false'),");
-	//addConfiguration('ORDERS_STATUS_CANCELLED_ID', 1, 'Order Status cancel ID', 'Order Status cancel ID', '7', 'tep_cfg_pull_down_order_status_list(');
-	//addConfiguration('ORDERS_STATUS_WAITING_ID', 1, 'Order Status Waiting for Confirmation ID', 'Order Status Waiting for Confirmation ID', '6', 'tep_cfg_pull_down_order_status_list(');
-	//addConfiguration('ORDERS_STATUS_APPROVED_ID', 1, 'Order Status Order Approved ID', 'Order Status order Approved ID', '8', 'tep_cfg_pull_down_order_status_list(');
-	//addConfiguration('ORDERS_STATUS_PROCESSING_ID', 1, 'Order Status order Processing ID', 'Order Status order Processing ID', '1', 'tep_cfg_pull_down_order_status_list(');
-	//addConfiguration('ORDERS_STATUS_DELIVERED_ID', 1, 'Order Status order Delivered ID', 'Order Status order Delivered ID', '3', 'tep_cfg_pull_down_order_status_list(');
-	//addConfiguration('ORDERS_STATUS_ESTIMATE_ID', 1, 'Order Status order Estimate ID', 'Order Status order estimate ID', '9', 'tep_cfg_pull_down_order_status_list(');
-	//addConfiguration('ORDERS_STATUS_SHIPPED_ID', 1, 'Order Status Order Shipped ID', 'Order Status order Shipped ID', '10', 'tep_cfg_pull_down_order_status_list(');
-	//addConfiguration('ACCOUNT_FISCAL_CODE_REQUIRED', 5, 'Fiscal Code required', 'Fiscal Code required', 'false', "tep_cfg_select_option(array('true', 'false'),");
-	//addConfiguration('ACCOUNT_VAT_NUMBER_REQUIRED', 5, 'VAT Number required', 'VAT Number required', 'false', "tep_cfg_select_option(array('true', 'false'),");
-	//addConfiguration('ACCOUNT_CITY_BIRTH_REQUIRED', 5, 'City of birth required', 'City of birth required', 'false', "tep_cfg_select_option(array('true', 'false'),");
-	//addConfiguration('ACCOUNT_NEWSLETTER', 5, 'Enable newsletter subscription', 'Enable newsletter subscription', 'false', "tep_cfg_select_option(array('true', 'false'),");
-	//addConfiguration('ENABLE_HTML_EDITOR', 1, 'Use wysiwyg editor for product description', 'Use wysiwyg editor to edit product description', 'true', "tep_cfg_select_option(array('true', 'false'),");
-	//addConfiguration('SHOW_ENLAGE_IMAGE_TEXT', 1, 'Show enlarge image text on product info page', 'Show enlarge image text on product info page', 'true', "tep_cfg_select_option(array('true', 'false'),");
-	//addConfiguration('PRODUCT_LISTING_TYPE', 8, 'Use rows or columns for product listing', 'Use rows or columns for product listing', 'row', "tep_cfg_select_option(array('row', 'column'),");
-	//addConfiguration('PRODUCT_LISTING_ALLOW_PRODUCT_SORTER', 8, 'Allow sort products', 'Allow sort products', 'True', "tep_cfg_select_option(array('True', 'False'),");
-
-	//addConfiguration('PRODUCT_LISTING_TOTAL_WIDTH', 8, 'When using columns for product listing content area width to use when calculating image width', 'When using columns for product listing content area width to use when calculating image width', '600', "");
-	//addConfiguration('PRODUCT_LISTING_PRODUCTS_COLUMNS', 8, 'When using columns for product listing number of products to display in a row', 'When using columns for product listing number of products to display in a row', '4', "");
-	//addConfiguration('CATEGORIES_MAX_WIDTH', 8, 'Max width for the subcategories images', 'Max width for the subcategories images', '170', "");
-	//addConfiguration('CATEGORIES_MAX_HEIGHT', 8, 'Max height for the subcategories images', 'Max height for the subcategories images', '170', "");
-	//addConfiguration('PRODUCT_LISTING_PRODUCTS_LIMIT', 8, 'Number of products to list per page', 'Number of products to list per page (max 25)', '12', "");
-	//addConfiguration('PRODUCT_LISTING_SELECT_MULTIPLES', 8, 'Can add to cart multiple items', 'Can add to cart multiple items?', 'false', "tep_cfg_select_option(array('true', 'false'),");
-	//addConfiguration('PRODUCT_LISTING_PRODUCTS_LIMIT_ARRAY', 8, 'Results Per Page drop down values', 'Results Per Page drop down values (comma seperated example:<br>12,24,48,96)', '12,24,48,96', "");
-	//addConfiguration('TOOLTIP_DESCRIPTION_ENABLED', 8, 'Enable product image tooltip description for products listing?', 'Enable product image tooltip description for products listing?', 'true', "tep_cfg_select_option(array('true', 'false'),");
-	//addConfiguration('TOOLTIP_DESCRIPTION_BUTTONS', 8, 'Show buttons in product image tooltip description for products listing?', 'Show buttons in product image tooltip description for products listing?', 'true', "tep_cfg_select_option(array('true', 'false'),");
-
-	//addConfiguration('RENTAL_DAYS_CUSTOMER_PAST_DUE', 16, 'How many days past due the customer is allowed to rent and receive items', 'How many days past due the customer is allowed to rent and receive items', '3', '');
-	//updateConfiguration('DIR_WS_TEMPLATES_DEFAULT', -1, -1, -1, -1, "tep_cfg_pull_down_template_list(");
-	//addConfiguration('SHOW_COMMENTS_CHECKOUT', 1, 'Show comments on checkout', 'Show comments on checkout page', 'true', "tep_cfg_select_option(array('true', 'false'),");
-
-	//addConfiguration('ACCOUNT_COMPANY_REQUIRED',5, 'Company required', 'Company required','false',"tep_cfg_select_option(array('true', 'false'),");
-	//addConfiguration('ACCOUNT_SUBURB_REQUIRED',5, 'Suburb required', 'Suburb required','false',"tep_cfg_select_option(array('true', 'false'),");
-	//addConfiguration('ACCOUNT_GENDER_REQUIRED',5, 'Gender required', 'Gender required','false',"tep_cfg_select_option(array('true', 'false'),");
-	//addConfiguration('ACCOUNT_DOB_REQUIRED',5, 'DOB required', 'DOB required','false',"tep_cfg_select_option(array('true', 'false'),");
-	//addConfiguration('ACCOUNT_STATE_REQUIRED',5, 'State required', 'State required','false',"tep_cfg_select_option(array('true', 'false'),");
-	//addConfiguration('ACCOUNT_VAT_NUMBER',5, 'VAT Number', 'VAT Number','false',"tep_cfg_select_option(array('true', 'false'),");
-	//addConfiguration('ACCOUNT_TELEPHONE',5, 'Telephone Number', 'Telephone Number','false',"tep_cfg_select_option(array('true', 'false'),");
-	//addConfiguration('ACCOUNT_FISCAL_CODE',5, 'Fiscal Code', 'Fiscal Code','false',"tep_cfg_select_option(array('true', 'false'),");
-	//addConfiguration('ACCOUNT_CITY_BIRTH', 5, 'City of birth', 'City of birth', 'false', "tep_cfg_select_option(array('true', 'false'),");
-
-	//addConfiguration('BARCODE_TYPE', 1, 'Choose barcode type to use in the store', 'Choose barcode type to use in the store', 'Code 39', "tep_cfg_select_option(array('Code 128B', 'Code 39 Extended', 'QR', 'Code 39', 'Code 25', 'Code 25 Interleaved'),");
-	//addConfiguration('SHOW_IP_ADDRESS_ORDERS_DETAILS', 1, 'Show IP address on orders details page', 'Show IP address on orders details page', 'true', "tep_cfg_select_option(array('true', 'false'),");
-	//addConfiguration('SHOW_PACKING_SLIP_BUTTONS', 1, 'Show packing slip buttons', 'Show packing slip buttons', 'true', "tep_cfg_select_option(array('true', 'false'),");
-	//addConfiguration('BARCODES_INVENTORY_TYPES', 1, 'List of barcodes inventory types', 'List of barcodes inventory types separated by ;', '', '');
-
-	//addConfiguration('SITE_MAINTENANCE_MODE', 1, 'Site In maintenance mode', 'Site in maintenance mode', 'false', "tep_cfg_select_option(array('true', 'false'),");
-	//addConfiguration('IP_LIST_MAINTENANCE_ENABLED', 1, 'List of IP enabled in maintenance mode', 'List of IP enabled in maintenance mode separated by ;', '', '');
-
-
-	//addConfiguration('REQUEST_PICKUP_BEFORE_DAYS', 16, 'How many days to not show on the request pickup or delivery', 'How many days to not show on the request pickup or delivery', '2', '');
-	//addConfiguration('SHOW_STANDARD_CREATE_ACCOUNT', 1, 'Show standard create account tab on account login', 'Show standard create account tab on account login', 'true', "tep_cfg_select_option(array('true', 'false'),");
-
-	//addConfiguration('GOOGLE_API_SERVER_KEY', 1, 'Google API Server Key', 'The server key created through googles apis page', '', '');
-	//addConfiguration('GOOGLE_API_BROWSER_KEY', 1, 'Google API Browser Key', 'The browser key created through googles apis page', '', '');
-    */
-
-
 	$EmailTemplatesVariables = Doctrine_Core::getTable('EmailTemplatesVariables');
 	$EmailTemplatesVariableCheck = $EmailTemplatesVariables->findOneByEmailTemplatesIdAndEventVariable(17,'adminEditLink');
 
@@ -1059,7 +1022,6 @@ function run_updates(){
 	global $appExtension;
 	updateAllDbFields();
 	update_configs();
-	//addMissingConfigs();
 	updateModules();
 	updateTemplates();
 	updateToolsConfiguration();
@@ -1079,7 +1041,7 @@ else {
 
 
 
-$ftpCmd = ftp_chdir($ftpConn, 'public_html');
+$ftpCmd = ftp_chdir($ftpConn, sysConfig::get('SYSTEM_FTP_PATH'));
 if (!$ftpCmd){
 	die('Error ftp_chdir public_html');
 }

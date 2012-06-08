@@ -510,7 +510,7 @@ class ReservationUtilities {
 
 		$selfID.find('.datePicker').datepick({
 			useThemeRoller: true,
-			minDate: '+<?php echo sysConfig::get('EXTENSION_PAY_PER_RENTALS_DATE_PADDING');?>',
+			minDate: '<?php echo ((int)sysConfig::get('EXTENSION_PAY_PER_RENTALS_DATE_PADDING')>0?'+'.sysConfig::get('EXTENSION_PAY_PER_RENTALS_DATE_PADDING'):sysConfig::get('EXTENSION_PAY_PER_RENTALS_DATE_PADDING')); ?>',
 			dateFormat: '<?php echo getJsDateFormat();?>',
 			rangeSelect: <?php echo ((sysConfig::get('EXTENSION_PAY_PER_RENTALS_FORCE_START_DATE') == 'True') ? 'false' : 'true');?>,
 			rangeSeparator: ',',

@@ -463,8 +463,8 @@ class Extension_multiStore extends ExtensionBase {
 	}
 	
 	public function OrderQueryBeforeExecute(&$orderQuery){
-		global $appExtension;
-		if ($appExtension->isAdmin()){
+		global $appExtension, $App;
+		if ($appExtension->isAdmin() || $App->getAppName() == 'generate_pdf'){
 			$orderQuery->leftJoin('o.OrdersToStores o2s');
 		}else{
 			$orderQuery->leftJoin('o.OrdersToStores o2s')

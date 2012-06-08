@@ -308,6 +308,13 @@ Casa Grande, AZ  85122]]></value>
 					<title><![CDATA[Send Extra Order Emails To]]></title>
 					<value><![CDATA[]]></value>
 					<description><![CDATA[Send extra order emails to the following email addresses, in this format: Name 1 &lt;email@address1&gt;, Name 2 &lt;email@address2&gt;]]></description>
+                    <set_function>
+                        <type>textarea</type>
+                        <attributes>
+                            <rows>5</rows>
+                            <cols>40</cols>
+                        </attributes>
+                    </set_function>
 				</SEND_EXTRA_ORDER_EMAILS_TO>
 				<DISPLAY_CART>
 					<title><![CDATA[Display Cart After Adding Product]]></title>

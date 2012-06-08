@@ -140,7 +140,8 @@ $(document).ready(function () {
 		]);
 		confirmDialog({
 			title: 'Duplicate Layout',
-			content: 'New Layout Name: <input type="text" name="layout_name">',
+            id:'dupLayout',
+			content: 'New Layout Name: <input type="text" class="layoutName" name="layoutName">',
 			errorMessage: 'This layout could not be duplicated.',
 			onConfirm: function (){
 				var dialogEl = this;
@@ -148,7 +149,7 @@ $(document).ready(function () {
 					cache: false,
 					url: js_app_link(getVars),
 					dataType: 'json',
-					data: $(dialogEl).find('*').serialize(),
+                    data: 'layoutName='+$('#dupLayout').find('.layoutName').val(),
 					type: 'post',
 					success: function (data) {
 						//alert('Updated/Added, Want To Edit Now?');
