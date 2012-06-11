@@ -18,8 +18,7 @@ class pdfPrinterInstall extends extensionInstaller {
 	}
 
 	public function install(){
-		if (sysConfig::exists('EXTENSION_PDF_PRINTER_ENABLED') === true) return;
-		
+
 		parent::install();
 	}
 	

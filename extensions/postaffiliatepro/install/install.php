@@ -7,7 +7,6 @@ class postaffiliateproInstall extends extensionInstaller {
 	}
 
 	public function install(){
-		if (sysConfig::exists('EXTENSION_PAP_ENABLED') === true) return;
 
 		parent::install();
 	}

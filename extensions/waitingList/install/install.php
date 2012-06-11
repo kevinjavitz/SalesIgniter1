@@ -17,8 +17,6 @@ class waitingListInstall extends extensionInstaller {
 	}
 	
 	public function install(){
-		if (sysConfig::exists('EXTENSION_WAITINGLIST_ENABLED') === true) return;
-		
 		parent::install();
 		
 		$Email = new EmailTemplates();

@@ -1079,7 +1079,7 @@ else {
 
 
 
-$ftpCmd = ftp_chdir($ftpConn, 'public_html');
+$ftpCmd = ftp_chdir($ftpConn, sysConfig::get('SYSTEM_FTP_PATH'));
 if (!$ftpCmd){
 	die('Error ftp_chdir public_html');
 }

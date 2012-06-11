@@ -17,8 +17,7 @@ class imageRotInstall extends extensionInstaller {
 	}
 	
 	public function install(){
-		if (sysConfig::exists('EXTENSION_BANNER_MANAGER_ENABLED') === true) return;
-		
+
 		parent::install();
 	}
 	

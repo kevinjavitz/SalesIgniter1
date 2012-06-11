@@ -17,7 +17,6 @@ class uspsCassInstall extends extensionInstaller {
 	}
 	
 	public function install(){
-		if (sysConfig::exists('EXTENSION_USPSCASS_ENABLED') === true) return;
 		
 		parent::install();
 	}

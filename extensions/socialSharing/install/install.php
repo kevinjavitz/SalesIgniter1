@@ -17,8 +17,7 @@ class socialSharingInstall extends extensionInstaller {
 	}
 	
 	public function install(){
-		if (sysConfig::exists('EXTENSION_SOCIAL_SHARING_ENABLED') === true) return;
-		
+
 		parent::install();
 	}
 	

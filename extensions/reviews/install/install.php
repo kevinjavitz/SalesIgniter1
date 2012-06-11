@@ -17,8 +17,7 @@ class reviewsInstall extends extensionInstaller {
 	}
 	
 	public function install(){
-		if (sysConfig::exists('EXTENSION_REVIEWS_ENABLED') === true) return;
-		
+
 		parent::install();
 	}
 	

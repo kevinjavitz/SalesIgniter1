@@ -17,7 +17,6 @@ class customerWishlistInstall extends extensionInstaller {
 	}
 	
 	public function install(){
-		if (sysConfig::exists('EXTENSION_CUSTOMER_WISHLIST_ENABLED') === true) return;
 		
 		parent::install();
 	}

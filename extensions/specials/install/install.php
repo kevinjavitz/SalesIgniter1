@@ -17,8 +17,7 @@ class specialsInstall extends extensionInstaller {
 	}
 	
 	public function install(){
-		if (sysConfig::exists('EXTENSION_SPECIALS_ENABLED') === true) return;
-		
+
 		parent::install();
 	}
 	

@@ -24,8 +24,6 @@ class addToAnyInstall extends extensionInstaller {
 	}
 
 	public function install(){
-		if (defined('EXTENSION_ADDTOANY_ENABLED')) return;
-
 		parent::install();
 	}
 

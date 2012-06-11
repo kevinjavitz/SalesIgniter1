@@ -8,8 +8,7 @@ class upsLabelsInstall extends extensionInstaller {
 	}
 	
 	public function install(){
-		if (sysConfig::exists('EXTENSION_UPSLABELS_ENABLED') === true) return;
-		
+
 		parent::install();
 	}
 	

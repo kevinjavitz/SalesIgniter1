@@ -8,7 +8,6 @@ class subAccountsInstall extends extensionInstaller {
 	}
 
 	public function install(){
-		if (defined('EXTENSION_SUBACCOUNTS_ENABLED')) return;
 
 		parent::install();
 	}

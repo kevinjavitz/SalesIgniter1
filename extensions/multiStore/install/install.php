@@ -17,8 +17,7 @@ class multiStoreInstall extends extensionInstaller {
 	}
 
 	public function install(){
-		if (sysConfig::exists('EXTENSION_MULTI_STORE_ENABLED') === true) return;
-		
+
 		parent::install();
 		
 		$storeInfo = array(

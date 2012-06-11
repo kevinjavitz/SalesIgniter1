@@ -17,8 +17,6 @@ class forcedSetInstall extends extensionInstaller {
 	}
 	
 	public function install(){
-		if (sysConfig::exists('EXTENSION_FORCED_SET_ENABLED') === true) return;
-		
 		parent::install();
 	}
 	

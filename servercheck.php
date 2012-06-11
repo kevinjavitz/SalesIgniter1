@@ -1,6 +1,7 @@
 <?php
 
-
+ echo 'aaaa';
+echo 'bbbb';
 $requirements = array(
 	'php_min_version' => '5.3',
 	'php_extensions' => array(
@@ -53,7 +54,7 @@ $infoIcon = '<span class="ui-icon-colored ui-icon-blue ui-icon-info" style="disp
 			$('.phpVersion').append('<tr>' +
 				'<td align="left"><?php echo $requirements['php_min_version'];?></td>' +
 				'<td align="right"><?php echo PHP_VERSION;?></td>' +
-				'<td align="center" style="width:20px;"><?php echo (version_compare(PHP_VERSION, $requirements->php_min_version) ? $successIcon : $errorIcon);?></td>' +
+				'<td align="center" style="width:20px;"><?php echo (version_compare(PHP_VERSION, $requirements['php_min_version']) ? $successIcon : $errorIcon);?></td>' +
 				'</tr>');
 		<?php
 			//check suhosin

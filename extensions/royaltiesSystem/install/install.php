@@ -17,8 +17,7 @@ class royaltiesSystemInstall extends extensionInstaller {
 	}
 	
 	public function install(){
-		if (sysConfig::exists('EXTENSION_ROYALTIES_SYSTEM_ENABLED') === true) return;
-		
+
 		parent::install();
 	}
 	

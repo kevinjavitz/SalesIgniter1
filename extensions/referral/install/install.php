@@ -18,7 +18,6 @@ class referralInstall extends extensionInstaller {
 
 	public function install(){
 		global $currencies, $pointsEarned;
-		if (sysConfig::exists('EXTENSION_REFFERAL_SYSTEM_ENABLED') === true) return;
 
 		parent::install();
 

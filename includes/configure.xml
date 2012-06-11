@@ -2,11 +2,11 @@
 <configuration>
 	<config protected="true">
 		<key>HTTP_DOMAIN_NAME</key>
-		<value>alex.rent-manager.com</value>
+		<value>cristianinstall.rent-manager.com</value>
 	</config>
 	<config protected="true">
 		<key>HTTPS_DOMAIN_NAME</key>
-		<value>alex.rent-manager.com</value>
+		<value>cristianinstall.rent-manager.com</value>
 	</config>
 	<config protected="false">
 		<key>DIR_WS_CATALOG</key>
@@ -14,7 +14,7 @@
 	</config>
 	<config protected="true">
 		<key>DIR_FS_DOCUMENT_ROOT</key>
-		<value>/home/alex0ren/public_html</value>
+		<value>c:/xampp/htdocs/sescristian</value>
 	</config>
 	<config protected="true">
 		<key>DB_SERVER</key>
@@ -22,15 +22,15 @@
 	</config>
 	<config protected="true">
 		<key>DB_SERVER_USERNAME</key>
-		<value>alex0ren_ses</value>
+		<value>root</value>
 	</config>
 	<config protected="true">
 		<key>DB_SERVER_PASSWORD</key>
-		<value>6n$d,j8u$</value>
+		<value></value>
 	</config>
 	<config protected="true">
 		<key>DB_DATABASE</key>
-		<value>alex0ren_ses</value>
+		<value>sescristian</value>
 	</config>
 	<config protected="true">
 		<key>ENABLE_SSL</key>
@@ -58,19 +58,19 @@
 	</config>
 	<config protected="true">
 		<key>SYSTEM_FTP_SERVER</key>
-		<value>alex.rent-manager.com</value>
+		<value>localhost</value>
 	</config>
 	<config protected="true">
 		<key>SYSTEM_FTP_PATH</key>
-		<value>/public_html/</value>
+		<value>/</value>
 	</config>
 	<config protected="true">
 		<key>SYSTEM_FTP_USERNAME</key>
-		<value>alex0ren</value>
+		<value>sescristian</value>
 	</config>
 	<config protected="true">
 		<key>SYSTEM_FTP_PASSWORD</key>
-		<value>,W@n6h6d8</value>
+		<value>gabriela</value>
 	</config>
 	<config protected="true">
 		<key>SYSTEM_INSTALL_DATE</key>

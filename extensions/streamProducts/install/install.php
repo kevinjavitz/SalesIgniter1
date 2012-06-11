@@ -17,8 +17,7 @@ class streamProductsInstall extends extensionInstaller {
 	}
 	
 	public function install(){
-		if (sysConfig::exists('EXTENSION_STREAMPRODUCTS_ENABLED') === true) return;
-		
+
 		parent::install();
 	}
 	

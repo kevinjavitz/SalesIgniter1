@@ -17,8 +17,7 @@ class templateManagerInstall extends extensionInstaller {
 	}
 	
 	public function install(){
-		if (sysConfig::exists('EXTENSION_TEMPLATEMANAGER_ENABLED') === true) return;
-		
+
 		parent::install();
 	}
 	

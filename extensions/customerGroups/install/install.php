@@ -17,7 +17,6 @@ class customerGroupsInstall extends extensionInstaller {
 	}
 	
 	public function install(){
-		if (sysConfig::exists('EXTENSION_CUSTOMER_GROUPS_ENABLED') === true) return;
 		
 		parent::install();
 	}

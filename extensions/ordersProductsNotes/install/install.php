@@ -17,8 +17,7 @@ class ordersProductsNotesInstall extends extensionInstaller {
 	}
 	
 	public function install(){
-		if (sysConfig::exists('EXTENSION_ORDERS_PRODUCTS_NOTES_ENABLED') === true) return;
-		
+
 		parent::install();
 	}
 	

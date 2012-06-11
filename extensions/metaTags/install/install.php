@@ -22,7 +22,6 @@ class metaTagsInstall extends extensionInstaller {
 	}
 
 	public function install(){
-		if (sysConfig::exists('EXTENSION_METATAGS_ENABLED') === true) return;
 
 		parent::install();
 	}

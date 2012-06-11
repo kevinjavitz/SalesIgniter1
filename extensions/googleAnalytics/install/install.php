@@ -17,8 +17,7 @@ class googleAnalyticsInstall extends extensionInstaller {
 	}
 	
 	public function install(){
-		if (sysConfig::exists('EXTENSION_GOOGLE_ANALYTICS_ENABLED') === true) return;
-		
+
 		parent::install();
 	}
 	

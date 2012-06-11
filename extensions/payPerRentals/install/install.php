@@ -17,8 +17,7 @@ class payPerRentalsInstall extends extensionInstaller {
 	}
 
 	public function install(){
-		if (sysConfig::exists('EXTENSION_PAY_PER_RENTALS_ENABLED') === true) return;
-		
+
 		parent::install();
 		
 		$status = new RentalStatus();

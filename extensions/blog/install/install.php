@@ -17,8 +17,6 @@ class blogInstall extends extensionInstaller {
 	}
 	
 	public function install(){
-		if (sysConfig::exists('EXTENSION_BLOG_ENABLED') === true) return;
-		
 		parent::install();
 	}
 	
