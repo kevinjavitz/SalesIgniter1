@@ -2,6 +2,13 @@
 	$pID = (int)$_GET['pID'];
 	$barcode = (isset($_POST['barcodeNumber']) ? $_POST['barcodeNumber'] : false);
 	$type = $_GET['purchaseType'];
+    $supplier_id = $_GET['suppliersId'];
+
+    if($_GET['acquisitionCost'] != '')
+        $cost = $_GET['acquisitionCost'];
+    else
+        $cost = 0;
+
 	$status = 'A';
 	if (array_key_exists('aID_string', $_GET)){
 		$aID_string = $_GET['aID_string'];
@@ -76,6 +83,8 @@
 			
 			$Barcodes[$nextIndex]->barcode = $genBarcode;
 			$Barcodes[$nextIndex]->status = $status;
+            $Barcodes[$nextIndex]->suppliers_id = $supplier_id;
+            $Barcodes[$nextIndex]->acquisition_cost = $cost;
 			
 			/* ????Put in extension???? */
 			if (isset($aID_string)){
@@ -130,6 +139,8 @@
 			if(!isset($json['errorMsg'])){
 				$Barcodes[$nextIndex]->barcode = $barcode;
 				$Barcodes[$nextIndex]->status = $status;
+                $Barcodes[$nextIndex]->suppliers_id = $supplier_id;
+                $Barcodes[$nextIndex]->acquisition_cost = $cost;
 
 				/* ????Put in extension???? */
 				if (isset($aID_string)){
@@ -143,7 +154,21 @@
 		}
 	}
 	$ProductsInventory->save();
-	
+
+    $QSuppliers = Doctrine_Query::create()
+        ->from('Suppliers')
+        ->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+
+    $suppliers = htmlBase::newElement('selectbox')
+        ->addClass('ui-widget-content')
+        ->setName('suppliersId')
+        ->addClass('suppliersId')
+        ->selectOptionByValue($supplier_id);
+
+    foreach($QSuppliers as $supplier){
+        $suppliers->addOption($supplier['suppliers_id'], $supplier['suppliers_name']);
+    }
+
 	$tableRowHtml = '';
 	if (sizeof($newBarcodes) > 0){
 		$deleteButton = htmlBase::newElement('button')->setText(sysLanguage::get('TEXT_BUTTON_DELETE'))->addClass('deleteBarcode');
@@ -168,6 +193,14 @@
 				'addCls' => 'ui-widget-content ui-grid-cell centerAlign',
 				'text' => $barcodeStatuses[$status]
 			);
+            $tableRow[] = array(
+                'addCls' => 'ui-widget-content ui-grid-cell centerAlign',
+                'text' => $suppliers->draw()
+            );
+            $tableRow[] = array(
+                'addCls' => 'ui-widget-content ui-grid-cell',
+                'text' => $barcode->acquisition_cost
+            );
 			
 		 EventManager::notify('NewProductAddBarcodeListingBody', &$barcode, &$tableRow);
 			

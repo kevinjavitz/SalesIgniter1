@@ -480,7 +480,17 @@ $(document).ready(function (){
 		if ($(this).attr('data-attribute_string')){
 			linkParams.push('aID_string=' + $(this).attr('data-attribute_string'));
 		}
-		
+
+        if ($thisRow.find('.acquisitionCost')){
+            linkParams.push('acquisitionCost=' + $thisRow.find('.acquisitionCost').val());
+        }
+
+        var suppliersId = $thisRow.find('.suppliersId option:selected');
+
+        if (suppliersId){
+            linkParams.push('suppliersId=' + suppliersId.val());
+        }
+
 		$thisRow.fadeTo('fast', .3, function (){
 			applyRowOverlay($thisRow, 'Adding Barcode, Please Wait', function (){
 				$.ajax({

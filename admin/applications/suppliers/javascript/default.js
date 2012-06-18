@@ -5,26 +5,28 @@ $(document).ready(function (){
 	$('#limit').change(function(){
 		$('#search').submit();
 	});
-	$('.selectallProducts').click(function(){
+	$('.selectallSuppliers').click(function(){
 		var self = this;
 
-		$('.selectedProducts').each(function (){
+		$('.selectedSuppliers').each(function (){
 			this.checked = self.checked;
 		});
 
 		if (self.checked){
-			$('.selectAllProductsText').html('Uncheck All Products');
+			$('.selectAllSuppliersText').html('Uncheck All Suppliers');
 		}else{
-			$('.selectAllProductsText').html('Check All Products');
+			$('.selectAllSuppliersText').html('Check All Suppliers');
 		}
 	});
-	$('.deleteMultipleProducts').click(function(){
+	$('.deleteMultipleSuppliers').click(function(){
 		var $selfButton = $(this);
+		var checked = false;
 
-        $('.selectedProducts').each(function (){
+        $('.selectedSuppliers').each(function (){
             if(this.checked)
                 checked = true;
         });
+
         if(checked == true){
             $('<div></div>').dialog({
                 autoOpen: true,
@@ -32,23 +34,23 @@ $(document).ready(function (){
                 modal: true,
                 resizable: false,
                 allowClose: false,
-                title: 'Delete Products Confirm',
+                title: 'Delete Suppliers Confirm',
                 open: function (e){
-                    $(e.target).html('Are you sure you want to delete the selected products');
+                    $(e.target).html('Are you sure you want to delete the selected Suppliers');
                 },
                 close: function (){
                     $(this).dialog('destroy');
                 },
                 buttons: {
-                    'Delete Products': function(){
+                    'Delete Suppliers': function(){
                         $.ajax({
                             cache: false,
-                            url: js_app_link('app=products&appPage=default&action=deleteMultipleProductConfirm'),
+                            url: js_app_link('app=suppliers&appPage=default&action=deleteMultipleSupplierConfirm'),
                             data:$('.gridContainer *').serialize(),
                             type:'post',
                             dataType: 'json',
                             success: function (data){
-                                js_redirect(js_app_link('app=products&appPage=default'));
+                                js_redirect(js_app_link('app=suppliers&appPage=default'));
                             }
                         });
                     },
@@ -61,9 +63,9 @@ $(document).ready(function (){
 		return false;
 	});
 	$('.copyButton').click(function(){
-		window.location = js_app_link('app=products&appPage=default&action=copyProduct&products_id=' + $(this).attr('products_id'));
+		window.location = js_app_link('app=suppliers&appPage=default&action=copySupplier&Suppliers_id=' + $(this).attr('Suppliers_id'));
 	});
-	$('.deleteProductButton').click(function (){
+	$('.deleteSupplierButton').click(function (){
 		var $selfButton = $(this);
 		$('<div></div>').dialog({
 			autoOpen: true,
@@ -71,16 +73,16 @@ $(document).ready(function (){
 			modal: true,
 			resizable: false,
 			allowClose: false,
-			title: 'Delete Product Confirm',
+			title: 'Delete Supplier Confirm',
 			open: function (e){
-				$(e.target).html('Are you sure you want to delete this product?');
+				$(e.target).html('Are you sure you want to delete this Supplier?');
 			},
 			close: function (){
 				$(this).dialog('destroy');
 			},
 			buttons: {
-				'Delete Product': function(){
-					window.location = js_app_link('app=products&appPage=default&action=deleteProductConfirm&products_id=' + $selfButton.attr('products_id'));
+				'Delete Supplier': function(){
+					window.location = js_app_link('app=suppliers&appPage=default&action=deleteSupplierConfirm&Suppliers_id=' + $selfButton.attr('Suppliers_id'));
 				},
 				'Don\'t Delete': function(){
 					$(this).dialog('destroy');
@@ -89,14 +91,5 @@ $(document).ready(function (){
 		});
 		return false;
 	});
-	
-	$('.setExpander').click(function (){
-		if ($(this).hasClass('ui-icon-triangle-1-s')){
-			$(this).removeClass('ui-icon-triangle-1-s').addClass('ui-icon-triangle-1-e');
-			$('tr[box_id=' + $(this).parent().parent().attr('infobox_id') + ']').hide();
-		}else{
-			$(this).removeClass('ui-icon-triangle-1-e').addClass('ui-icon-triangle-1-s');
-			$('tr[box_id=' + $(this).parent().parent().attr('infobox_id') + ']').show();
-		}
-	});
+
 });

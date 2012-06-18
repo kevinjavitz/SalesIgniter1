@@ -16,4 +16,13 @@ $(document).ready(function (){
 		});
 		return false;
 	});
+
+    $('.trackingButton').click(function(){
+        var $Row = $(this).parentsUntil('tbody').last();
+
+        if($Row.find('.trackingInput').val() ==  '') {
+            alert('Please enter tracking number');
+            return false;
+        }
+    });
 });

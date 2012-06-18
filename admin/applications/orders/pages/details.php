@@ -184,10 +184,10 @@
 		foreach($tracker['data'] as $fieldName){
 			$trackNum = $orderInfo[$fieldName];
 			$bodyCols[] = array(
-				'text' => tep_draw_input_field($fieldName, $trackNum, 'size="40" maxlength="40"')
+				'text' => tep_draw_input_field($fieldName, $trackNum, 'size="40" maxlength="40" class="trackingInput"')
 			);
 			$bodyCols[] = array(
-				'text' => htmlBase::newElement('button')->setHref($tracker['link'] . $trackNum, false, '_blank')->setText('Track')
+				'text' => htmlBase::newElement('button')->addClass('trackingButton')->setHref($tracker['link'] . $trackNum, false, '_blank')->setText('Track')
 			);
 		}
 		$trackingTable->addBodyRow(array(
