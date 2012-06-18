@@ -69,6 +69,8 @@
 			$addressBook->insertAddress($accountValidation, true);
 		}
 
+        EventManager::notify('NewCustomerAccountBeforeExecute', $_GET['cID']);
+
 		if (array_key_exists('planid', $_POST) || array_key_exists('activate', $_POST) || array_key_exists('make_member', $_POST)){
 			if (array_key_exists('activate', $_POST)){
 				$membership->setActivationStatus($_POST['activate']);

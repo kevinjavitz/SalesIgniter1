@@ -39,6 +39,7 @@ $(document).ready(function () {
 				'Save': function() {
 					//ajax call to save comment on success
 					dialog = $(this);
+                    myFav = $('.favoritesLinks').html();
 					showAjaxLoader($('#favoritesSetDialog'), 'xlarge');
 					$.ajax({
 						cache: false,

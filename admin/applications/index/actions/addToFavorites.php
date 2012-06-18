@@ -19,9 +19,12 @@ if (isset($_POST['settings']) && isset($_POST['settings']['name']) && !empty($_P
 	$Admin->save();
 }
 
-$json = array(
-	'success' => true
-);
+
+	$json = array(
+			'success' => true,
+            'link_name' => $_POST['link_name'],
+            'url' => $_POST['url']
+	);
 
 EventManager::attachActionResponse($json, 'json');
 ?>

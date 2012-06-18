@@ -41,8 +41,14 @@ $(document).ready(function (){
 	
 	$('.gridButtonBar').find('.editButton').click(function (){
 		var customerId = $('.gridBodyRow.state-active').attr('data-customer_id');
-		js_redirect(js_app_link('app=customers&appPage=edit&cID=' + customerId));
-	});
+
+        if(customerId){
+            js_redirect(js_app_link('app=customers&appPage=edit&cID=' + customerId));
+        }
+        else{
+            alert("Please select a customer");
+        }
+    });
 
 	$('.gridButtonBar').find('.newButton').click(function (){
 		js_redirect(js_app_link('app=customers&appPage=edit'));

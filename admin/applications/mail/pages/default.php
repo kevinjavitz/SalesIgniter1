@@ -23,34 +23,34 @@
 <table border="0" cellpadding="0" cellspacing="2">
 	<tr>
 		<td class="main"><?php echo sysLanguage::get('TEXT_CUSTOMER'); ?></td>
-		<td><?php echo tep_draw_pull_down_menu('customers_email_address', $customers, (isset($_GET['customer']) ? $_GET['customer'] : ''));?></td>
+		<td><?php echo tep_draw_pull_down_menu('customers_email_address', $customers, (isset($_GET['customer']) ? $_GET['customer'] : ''),'class="customerMail"');?></td>
 	</tr>
 	<tr>
 		<td colspan="2"><?php echo tep_draw_separator('pixel_trans.gif', '1', '10'); ?></td>
 	</tr>
 	<tr>
 		<td class="main"><?php echo sysLanguage::get('TEXT_FROM'); ?></td>
-		<td><?php echo tep_draw_input_field('from', sysConfig::get('EMAIL_FROM')); ?></td>
+		<td><?php echo tep_draw_input_field('from', sysConfig::get('EMAIL_FROM'),'class="fromEmail"'); ?></td>
 	</tr>
 	<tr>
 		<td colspan="2"><?php echo tep_draw_separator('pixel_trans.gif', '1', '10'); ?></td>
 	</tr>
 	<tr>
 		<td class="main"><?php echo sysLanguage::get('TEXT_SUBJECT'); ?></td>
-		<td><?php echo tep_draw_input_field('subject'); ?></td>
+		<td><?php echo tep_draw_input_field('subject','','class="subjectEmail"'); ?></td>
 	</tr>
 	<tr>
 		<td colspan="2"><?php echo tep_draw_separator('pixel_trans.gif', '1', '10'); ?></td>
 	</tr>
 	<tr>
 		<td valign="top" class="main"><?php echo sysLanguage::get('TEXT_MESSAGE'); ?></td>
-		<td><?php echo tep_draw_textarea_field('message', 'soft', '60', '15'); ?></td>
+		<td><?php echo tep_draw_textarea_field('message', 'soft', '60', '15','','class="messageEmail"'); ?></td>
 	</tr>
 	<tr>
 		<td colspan="2"><?php echo tep_draw_separator('pixel_trans.gif', '1', '10'); ?></td>
 	</tr>
 	<tr>
-		<td colspan="2" align="right"><?php echo htmlBase::newElement('button')->setText(sysLanguage::get('IMAGE_SEND_EMAIL'))->setType('submit')->draw(); ?></td>
+		<td colspan="2" align="right"><?php echo htmlBase::newElement('button')->addClass('sendMail')->setText(sysLanguage::get('IMAGE_SEND_EMAIL'))->setType('submit')->draw(); ?></td>
 	</tr>
 </table>
 </form>
