@@ -40,6 +40,7 @@
 	<define key="BOX_HEADING_CATALOG"><![CDATA[Catalog]]></define>
 	<define key="BOX_CATALOG_CATEGORIES"><![CDATA[Categories]]></define>
 	<define key="BOX_CATALOG_PRODUCTS"><![CDATA[Products]]></define>
+    <define key="BOX_CATALOG_SUPPLIERS"><![CDATA[Suppliers]]></define>
 	<define key="BOX_ACTORS"><![CDATA[Actors]]></define>
 	<define key="BOX_DIRECTORS"><![CDATA[Directors]]></define>
 	<define key="BOX_FUNWAYS"><![CDATA[Funways Categories/Products]]></define>

@@ -16,7 +16,8 @@ class PDFInfoBoxCustomImage extends PDFInfoBoxAbstract {
 	}
 
 	public function showLayoutPreview($WidgetSettings){
-		return '<img src="' . $WidgetSettings->image_source . '" />';
+        if($WidgetSettings->image_source)
+		    return '<img src="' . $WidgetSettings->image_source . '" />';
 	}
 
 	public function show(){

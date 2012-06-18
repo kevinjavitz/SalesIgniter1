@@ -64,6 +64,41 @@ class OrderProduct {
 		return $this->pInfo['products_name'];
 	}
 
+    public function isConsumption(){
+        return $this->purchaseTypeClass->consumptionAllowed();
+    }
+
+    public function getBarcodeId2($i = 0){
+        if ($this->pInfo['purchase_type'] == 'reservation'){
+            if (!isset($this->pInfo['OrdersProductsReservation'][$i]['barcode_id'])){
+                return false;
+            }
+            $bID = $this->pInfo['OrdersProductsReservation'][$i]['barcode_id'];
+            return $bID;
+        }else{
+            if($i > 0){
+                return false;
+            }
+        }
+    }
+
+    public function getBarcodeEdit2($i = 0){
+        if ($this->pInfo['purchase_type'] == 'reservation'){
+            $barcodes = count($this->pInfo['OrdersProductsReservation']);
+            $content = 'Add Barcode '.htmlBase::newElement('icon')->setType('insert')->addClass('addBarcode')->draw().'<br/>';
+            for($i=0;$i<$barcodes;$i++){
+                $content = $content.'<div><input type="text" size="10" class="ui-widget-content barcodeName" name="product[' . $this->id . '][barcode]" barid="' . $this->getBarcodeId2($i) . '" value="' . $this->getBarcode($i) . '">'.htmlBase::newElement('icon')->setType('delete')->addClass('removeBarcode')->draw().'</div>';
+                if($i + 1 < $barcodes)
+                     $content = $content.'<br/>';
+            }
+            return $content;
+        }else{
+            if($i > 0){
+                return false;
+            }
+        }
+    }
+
 	public function hasBarcode(){
 		if ($this->pInfo['purchase_type'] == 'reservation'){
 			return (!empty($this->pInfo['OrdersProductsReservation'][0]['barcode_id']));			
