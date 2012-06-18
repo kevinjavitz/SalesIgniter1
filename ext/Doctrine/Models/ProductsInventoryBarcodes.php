@@ -27,10 +27,10 @@ class ProductsInventoryBarcodes extends Doctrine_Record {
 			'cascade' => array('delete')
 		));
                 
-                $this->hasOne('Suppliers', array(
+              /*  $this->hasOne('Suppliers', array(
 			'local' => 'suppliers_id',
 			'foreign' => 'suppliers_id'
-		));
+		));*/
 	}
 	
 	public function setUpParent(){
@@ -92,7 +92,7 @@ class ProductsInventoryBarcodes extends Doctrine_Record {
 			'autoincrement' => false,
 		));
                 
-                $this->hasColumn('suppliers_id', 'integer', 4, array(
+        $this->hasColumn('suppliers_id', 'integer', 4, array(
 			'type'          => 'integer',
 			'length'        => 4,
 			'unsigned'      => 0,
@@ -102,7 +102,7 @@ class ProductsInventoryBarcodes extends Doctrine_Record {
 			'autoincrement' => false,
 		));
                 
-                $this->hasColumn('acquisition_cost', 'decimal', 15, array(
+        $this->hasColumn('acquisition_cost', 'decimal', 15, array(
 			'type'          => 'decimal',
 			'length'        => 15,
 			'unsigned'      => 0,

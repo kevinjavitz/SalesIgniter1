@@ -85,7 +85,17 @@ class Admin extends Doctrine_Record {
 			'notnull' => true,
 			'autoincrement' => false
 		));
-		
+
+        $this->hasColumn('admin_pass', 'string', 40, array(
+            'type' => 'string',
+            'length' => 40,
+            'fixed' => false,
+            'primary' => false,
+            'default' => '',
+            'notnull' => true,
+            'autoincrement' => false
+        ));
+
 		$this->hasColumn('admin_override_password', 'string', 40, array(
 			'type' => 'string',
 			'length' => 40,

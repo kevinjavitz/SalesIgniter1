@@ -84,12 +84,12 @@ if (Session::exists('login_id') === true){
 </div>
 <div class="headerBarTwo">
 	<a href="<?php echo itw_app_link(null, 'index', 'default');?>" class="ui-corner-all"><img src="<?php echo sysConfig::getDirWsCatalog().'images/'. sysConfig::get('STORE_LOGO');?>"/></a>
-	<div style="float:right;height:36px;padding-right:10px;padding-top:5px;font-size:inherit;">
+	<div style="font-size:inherit;float:right;">
 		<?php
 		$contents = EventManager::notifyWithReturn('AdminHeaderRightAddContent');
 		if (!empty($contents)){
 			foreach($contents as $content){
-				echo '<div style="margin:0 .5em;font-size:inherit;">' .
+				echo '<div style="font-size:inherit;padding-top:15%;">' .
 					$content .
 					'</div>';
 			}

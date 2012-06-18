@@ -15,8 +15,10 @@ class RentalStoreUserExtended extends RentalStoreUser{
 
 	public function updateCustomerAccountExt(){
 		$Customer = Doctrine::getTable('Customers')->find($this->getCustomerId());
-		$Customer->allow_one = $this->customerInfo['allow_one'];
-		$Customer->save();
+        if($Customer){
+            $Customer->allow_one = $this->customerInfo['allow_one'];
+            $Customer->save();
+        }
 	}
 
 	public function isProvider(){ return ($this->customerInfo['allow_one'] == 0 ? false : true); }

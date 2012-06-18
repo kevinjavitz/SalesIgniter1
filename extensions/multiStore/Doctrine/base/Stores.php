@@ -168,7 +168,19 @@ class Stores extends Doctrine_Record {
 				'default' => 'en',
 				'primary' => false,
 				'autoincrement' => false
-			));
+		));
+
+        $this->hasColumn('commission', 'integer', 4, array(
+            'type'          => 'integer',
+            'length'        => 4,
+            'unsigned'      => 0,
+        ));
+
+        $this->hasColumn('commission_type', 'integer', 4, array(
+            'type'          => 'integer',
+            'length'        => 4,
+            'unsigned'      => 0,
+        ));
 
 	}
 	

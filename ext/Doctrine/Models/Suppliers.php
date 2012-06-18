@@ -41,17 +41,69 @@ class Suppliers extends Doctrine_Record {
 			'primary'       => true,
 			'autoincrement' => true
 		));
-		
-		$this->hasColumn('acquisition_cost', 'decimal', 15, array(
-			'type'          => 'decimal',
-			'length'        => 15,
-			'unsigned'      => 0,
-			'primary'       => false,
-			'default'       => '0.0000',
-			'notnull'       => true,
-			'autoincrement' => false,
-			'scale'         => 4
-		));
+
+        $this->hasColumn('suppliers_name', 'string', 50, array(
+            'type' => 'string',
+            'length' => 50,
+            'fixed' => false,
+            'primary' => false,
+            'notnull' => true,
+            'autoincrement' => false
+        ));
+
+        $this->hasColumn('suppliers_address', 'string', 250, array(
+            'type' => 'string',
+            'length' => 250,
+            'fixed' => false,
+            'primary' => false,
+            'default' => '',
+            'notnull' => false,
+            'autoincrement' => false
+        ));
+
+        $this->hasColumn('suppliers_phone', 'string', 20, array(
+            'type' => 'string',
+            'length' => 20,
+            'fixed' => false,
+            'primary' => false,
+            'default' => '',
+            'notnull' => false,
+            'autoincrement' => false
+        ));
+
+        $this->hasColumn('suppliers_website', 'string', 250, array(
+            'type' => 'string',
+            'length' => 250,
+            'fixed' => false,
+            'primary' => false,
+            'default' => '',
+            'notnull' => false,
+            'autoincrement' => false
+        ));
+
+        $this->hasColumn('suppliers_notes', 'string', 250, array(
+            'type' => 'string',
+            'length' => 250,
+            'fixed' => false,
+            'primary' => false,
+            'default' => '',
+            'notnull' => false,
+            'autoincrement' => false
+        ));
+
+        $this->hasColumn('suppliers_date_added', 'timestamp', null, array(
+            'type'          => 'timestamp',
+            'primary'       => false,
+            'default'       => '0000-00-00 00:00:00',
+            'notnull'       => true,
+            'autoincrement' => false
+        ));
+        $this->hasColumn('suppliers_last_modified', 'timestamp', null, array(
+            'type'          => 'timestamp',
+            'primary'       => false,
+            'notnull'       => false,
+            'autoincrement' => false
+        ));
 		
 	}
 	

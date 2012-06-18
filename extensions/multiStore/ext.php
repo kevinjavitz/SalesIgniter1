@@ -68,6 +68,8 @@ class Extension_multiStore extends ExtensionBase {
 				'NewCustomerAccountBeforeExecute',
 				'CustomerInfoAddTableContainer',
 				'AdminOrdersListingBeforeExecute',
+                'AdminOrdersListingBeforeExecuteReportConsumption',
+                'AdminOrdersListingBeforeExecuteReportConsumptionBarcodes',
 				'AdminProductListingTemplateQueryBeforeExecute',
 				'ProductInventoryReportsListingQueryBeforeExecute'
 			), null, $this);
@@ -75,36 +77,36 @@ class Extension_multiStore extends ExtensionBase {
 			$App->addStylesheetFile('ext/jQuery/themes/smoothness/ui.dropdownchecklist.css');
 			$App->addJavascriptFile('extensions/multiStore/javascript/main.js');
 		}
-			
+
 			if ($App->getAppName() == 'customers'){
 				EventManager::attachEvents(array(
 						'CustomersListingQueryBeforeExecute'
 					), null, $this);
 			}
-			
+
 			if ($App->getAppName() == 'orders'){
 				EventManager::attachEvents(array(
 					'OrdersListingAddGridHeader',
 					'OrdersListingAddGridBody'
 				), null, $this);
 			}
-			
+
 			if ($App->getAppName() == 'products'){
 				EventManager::attachEvents(array(
 					'AdminProductListingQueryBeforeExecute'
 				), null, $this);
 			}
-			
+
 			if ($App->getAppName() == 'categories'){
 
 				EventManager::attachEvents(array(
 						'CategoryListingQueryBeforeExecute'
 				), null, $this);
 			}
-		
+
 		$this->loadStoreInfo();
 	}
-	
+
 	public function loadStoreInfo() {
 		global $App;
 		if ($App->getEnv() == 'admin'){
@@ -138,6 +140,8 @@ class Extension_multiStore extends ExtensionBase {
 			if (Session::exists('admin_showing_stores') === false || Session::get('admin_showing_stores') == '' || sizeof(Session::get('admin_showing_stores')) == 0){
 				Session::set('admin_showing_stores',  explode(',', $Qadmin[0]['admins_stores']));
 			}
+
+
 
 			if (isset($_GET['stores_id'])){
 				$validStores = array();
@@ -302,7 +306,7 @@ class Extension_multiStore extends ExtensionBase {
 		$Qreviews->leftJoin('p.ProductsToStores p2s')
 		->andWhere('p2s.stores_id = ?', Session::get('current_store_id'));
 	}
-	
+
 	public function AdminProductListingQueryBeforeExecute(&$Qproducts){
 		if(Session::exists('admin_showing_stores')){
 			$Qproducts->leftJoin('p.ProductsToStores p2s')
@@ -371,12 +375,26 @@ class Extension_multiStore extends ExtensionBase {
 			->addSelect('store.stores_name, order2store.stores_id')
 			->whereIn('order2store.stores_id', Session::get('admin_showing_stores'));
 	}
-	
+
+    public function AdminOrdersListingBeforeExecuteReportConsumptionBarcodes(&$Qorders) {
+        $Qorders
+            ->leftJoin('pib.ProductsInventoryBarcodesToStores pibs')
+            ->leftJoin('pibs.Stores s')
+            ->whereIn('pibs.inventory_store_id', Session::get('admin_showing_stores'));
+    }
+
+    public function AdminOrdersListingBeforeExecuteReportConsumption(&$Qorders) {
+        $Qorders
+            ->leftJoin('o.OrdersToStores ots')
+            ->leftJoin('ots.Stores s')
+            ->whereIn('ots.stores_id', Session::get('admin_showing_stores'));
+    }
+
 	public function SeoUrlsInit(&$seoUrl){
 		$seoUrl->base_url = 'http://' . $this->storeInfo['stores_domain'] . sysConfig::getDirWsCatalog('NONSSL');
 		$seoUrl->base_url_ssl = 'https://' . $this->storeInfo['stores_ssl_domain'] . sysConfig::getDirWsCatalog('SSL');
 	}
-	
+
 	public function getStoresArray($storesId = false, $nofilter = false) {
 		global $appExtension;
 		if ($storesId !== false){
@@ -403,7 +421,7 @@ class Extension_multiStore extends ExtensionBase {
 		}
 		return $this->storesArray;
 	}
-	
+
 	public function AdminHeaderRightAddContent(){
 		$Result = $this->getStoresArray();
 		if ($Result){
@@ -422,11 +440,13 @@ class Extension_multiStore extends ExtensionBase {
 			$selectBox->addOption('all', 'All Allowed Stores', false);
 
 			foreach($Result as $sInfo){
-				$selectBox->addOption(
-					$sInfo['stores_id'],
-					$sInfo['stores_name'],
-					(in_array($sInfo['stores_id'], Session::get('admin_showing_stores')) ? true : false)
-				);
+				if(in_array($sInfo['stores_id'], Session::get('admin_allowed_stores'))) {
+                    $selectBox->addOption(
+                        $sInfo['stores_id'],
+                        $sInfo['stores_name'],
+                        (in_array($sInfo['stores_id'], Session::get('admin_showing_stores')) ? true : false)
+                    );
+                }
 			}
 			$form->append($selectBox);
 			$form->append(htmlBase::newElement('button')->setText('GO')->setType('submit'));
@@ -467,8 +487,8 @@ class Extension_multiStore extends ExtensionBase {
 		if ($appExtension->isAdmin()){
 			$orderQuery->leftJoin('o.OrdersToStores o2s');
 		}else{
-			$orderQuery->leftJoin('o.OrdersToStores o2s')
-			->andWhere('o2s.stores_id = ?', $this->storeInfo['stores_id']);
+			$orderQuery->leftJoin('o.OrdersToStores o2s');
+			//->andWhere('o2s.stores_id = ?', $this->storeInfo['stores_id']);
 		}
 	}
 	
@@ -690,7 +710,6 @@ class Extension_multiStore extends ExtensionBase {
 	public function CustomerInfoAddTableContainer($Customer){
 		$storeDrop = htmlBase::newElement('selectbox')
 			->setName('customers_store_id')
-			->addOption('', sysLanguage::get('TEXT_PLEASE_SELECT'))
 			->selectOptionByValue($Customer->CustomersToStores->stores_id);
 		foreach($this->getStoresArray() as $sInfo){
 			$storeDrop->addOption($sInfo['stores_id'], $sInfo['stores_name']);
@@ -715,8 +734,16 @@ class Extension_multiStore extends ExtensionBase {
 
 	}
 	
-	public function NewCustomerAccountBeforeExecute(&$newUser){
-		$newUser->CustomersToStores->stores_id = $_POST['customers_store_id'];
+	public function NewCustomerAccountBeforeExecute(&$customerId){
+
+        $Qexiting = Doctrine::getTable('CustomersToStores')->findOneByCustomersId($customerId);
+        if ($Qexiting){
+            $Qexiting->delete();
+        }
+        $CustomerToStore = new CustomersToStores();
+        $CustomerToStore->customers_id = $customerId;
+        $CustomerToStore->stores_id = $_POST['customers_store_id'];
+        $CustomerToStore->save();
 	}
 
 	public function ProductQueryAfterExecute(&$productInfo){
