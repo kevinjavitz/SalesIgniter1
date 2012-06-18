@@ -1,0 +1,60 @@
+<!--
+	Info Pages Extension Version 1
+	
+	I.T. Web Experts, Rental Store v2
+	http://www.itwebexperts.com
+
+	Copyright (c) 2009 I.T. Web Experts
+
+	This script and it's source is not redistributable
+-->
+<definitions>
+
+	<define key="HEADING_TITLE_START_DATE"><![CDATA[Start Date:]]></define>
+	<define key="HEADING_TITLE_START_END"><![CDATA[End Date:]]></define>
+	<define key="HEADING_TITLE_CNT_PROVIDER"><![CDATA[Content Provider:]]></define>
+	
+	<define key="HEADING_TITLE"><![CDATA[Content Providers Royalties Fees]]></define>
+	<define key="HEADING_TITLE_TOTALS"><![CDATA[Content Providers Royalties Fees Totals]]></define>
+
+	<define key="TABLE_HEADING_PAGES"><![CDATA[Pages]]></define>
+	<define key="TABLE_HEADING_INFOBOX"><![CDATA[Shown in infobox]]></define>
+	<define key="TABLE_HEADING_SORT_ORDER"><![CDATA[Sort Order]]></define>
+	<define key="TABLE_HEADING_PAGES_KEY"><![CDATA[Pages Key]]></define>
+	<define key="TABLE_HEADING_ACTION"><![CDATA[Action]]></define>
+	<define key="TEXT_PAGES_TITLE"><![CDATA[Page Title:]]></define>
+	<define key="TEXT_PAGES_HTML_TEXT"><![CDATA[Text or HTML (If internal):]]></define>
+	<define key="TEXT_PAGES_SORT_ORDER"><![CDATA[Sort Order (admin use only):]]></define>
+	<define key="TEXT_PAGES_INTEXT"><![CDATA[Link Type:]]></define>
+	<define key="TEXT_PAGES_EXTERNAL_LINK"><![CDATA[Link(If external):]]></define>
+	<define key="TEXT_TARGET"><![CDATA[Link Target]]></define>
+	<define key="TEXT_TARGET_INTERNAL"><![CDATA[Internal]]></define>
+	<define key="TEXT_TARGET_EXTERNAL"><![CDATA[External]]></define>
+	<define key="TEXT_TARGET_SAMEWINDOW"><![CDATA[Same Window]]></define>
+	<define key="TEXT_TARGET_NEWWINDOW"><![CDATA[New Window]]></define>
+	<define key="RICH_EDIT"><![CDATA[Rich Edit]]></define>
+	<define key="TEXT_PAGE_TYPE_INDEX"><![CDATA[Index]]></define>
+	<define key="TEXT_PAGE_TYPE_CONTACT"><![CDATA[Contact Us]]></define>
+	<define key="TEXT_PAGE_TYPE_SHIPPING"><![CDATA[Shipping]]></define>
+	<define key="TEXT_PAGE_TYPE_PRIVACY"><![CDATA[Privacy]]></define>
+	<define key="TEXT_PAGE_TYPE_LINKS"><![CDATA[Links]]></define>
+	<define key="TEXT_PAGE_TYPE_OTHER"><![CDATA[Other]]></define>
+	<define key="TEXT_PAGE_TYPE_OLD"><![CDATA[Old Page]]></define>
+	<define key="TEXT_PAGES_PAGE_NOTE"><![CDATA[<b>You can use plain text or fully marked up HTML for the page.</b>]]></define>
+	<define key="TEXT_PAGES_STATUS_CHANGE"><![CDATA[Status Change: %s]]></define>
+	<define key="TEXT_PAGES_DATA"><![CDATA[D<br>A<br>T<br>A]]></define>
+	<define key="TEXT_INFO_DELETE_INTRO"><![CDATA[Are you sure you want to delete this page?]]></define>
+	<define key="SUCCESS_PAGE_INSERTED"><![CDATA[Success: The page has been inserted.]]></define>
+	<define key="SUCCESS_PAGE_UPDATED"><![CDATA[Success: The page has been updated.]]></define>
+	<define key="SUCCESS_PAGE_REMOVED"><![CDATA[Success: The page has been removed.]]></define>
+	<define key="SUCCESS_PAGE_STATUS_UPDATED"><![CDATA[Success: The status of the page has been updated.]]></define>
+	<define key="SUCCESS_PAGE_INFOBOX_STATUS_UPDATED"><![CDATA[Success: The infobox status of the page has been updated.]]></define>
+	<define key="ERROR_PAGE_TITLE_REQUIRED"><![CDATA[Error: Page title required.]]></define>
+	<define key="ERROR_UNKNOWN_STATUS_FLAG"><![CDATA[Error: Unknown status flag.]]></define>
+	<define key="IMAGE_NEW_PAGE"><![CDATA[New Page]]></define>
+	<define key="TABLE_HEADING_STATUS"><![CDATA[Status]]></define>
+	<define key="TEXT_PAGES_TYPE"><![CDATA[Page Type:]]></define>
+	<define key="TEXT_PAGES_KEY"><![CDATA[Page Key:]]></define>
+
+	<define key="TEXT_INFO_PAGES_KEY"><![CDATA[*Used to access page content in the code and through urls ie. http://www.domain.com/infoPages/page_key.html]]></define>
+</definitions>

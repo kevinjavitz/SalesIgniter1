@@ -462,6 +462,12 @@ class Extension_payPerRentals extends ExtensionBase {
 				'text' => 'Rental Inventory Report'
 			);
 		}
+        if (sysPermissions::adminAccessAllowed('default_orders', 'consumption_report', 'payPerRentals') === true){
+            $contents['children'][] = array(
+                'link'       => itw_app_link('appExt=payPerRentals','consumption_report','default_orders','SSL'),
+                'text' => 'Consumption Product Report'
+            );
+        }
 	}
 
 	public function BeforeShowShippingOrderTotals(&$orderTotals){

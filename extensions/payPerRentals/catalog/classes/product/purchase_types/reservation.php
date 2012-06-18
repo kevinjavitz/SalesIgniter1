@@ -161,6 +161,7 @@ class PurchaseType_reservation extends PurchaseTypeAbstract
 		global $currencies;
 		$return = '';
 		$resInfo = null;
+        $hasInfo = false;
 		if ($orderedProduct->hasInfo('OrdersProductsReservation')){
 			$resData = $orderedProduct->getInfo('OrdersProductsReservation');
 			$resInfo = $this->formatOrdersReservationArray($resData);
@@ -176,7 +177,6 @@ class PurchaseType_reservation extends PurchaseTypeAbstract
 
 		$return .= '<br /><small><b><i><u>' . sysLanguage::get('TEXT_INFO_RESERVATION_INFO') . '</u></i></b>&nbsp;' . '</small>';
 		/*This part will have to be changed for events*/
-
 		/**/
 
 		if (sysConfig::get('EXTENSION_PAY_PER_RENTALS_USE_EVENTS') == 'False'){
@@ -190,11 +190,31 @@ class PurchaseType_reservation extends PurchaseTypeAbstract
 			}
 			$startTime = mktime($start['hour'], $start['minute'], $start['second'], $start['month'], $start['day'], $start['year']);
 			$endTime = mktime($end['hour'], $end['minute'], $end['second'], $end['month'], $end['day'], $end['year']);
-			$changeButton = htmlBase::newElement('button')
-				->setText('Select Dates')
-				->addClass('reservationDates');
-			$return .= '<br /><small><i> - Start Date: <span class="res_start_date">' . date('m/d/Y H:i:s', $startTime) . '</span><br/>- End Date: <span class="res_end_date">' . date('m/d/Y H:i:s', $endTime) . '</span>' . $changeButton->draw() . '<input type="hidden" class="ui-widget-content resDateHidden" name="product[' . $id . '][reservation][dates]" value="' . date('m/d/Y H:i:s', $startTime) . ',' . date('m/d/Y H:i:s', $endTime) . '"></i></small><div class="selectDialog"></div>';
-		}
+
+            if($this->consumptionAllowed() === '1'){
+                $resData = $orderedProduct->getInfo('OrdersProductsReservation');
+                $startButton = htmlBase::newElement('button')
+                    ->addClass('startConsumption');
+
+                $return .= '<div class="barcodes"><span style="display:none">'.$startButton->draw().'</span><input type="hidden" class="consumption" value="1" />';
+
+                foreach($resData as $res){
+
+                     if($start == $end)
+                         $return .= '<div class="barcode" ><span class="bar_id" barid="' .$res['ProductsInventoryBarcodes']['barcode_id'] . '">' .$res['ProductsInventoryBarcodes']['barcode']. '</span><a class="ui-icon ui-icon-closethick removeBarcode"></a><br/><small><i>- Start Date: <span class="res_start_date">'. $resInfo['start_date'] . '</span><br/><span class="res_end_date" style="display:none">' . $resInfo['end_date'] . '</span></small></div>';
+                     else
+                         $return .= '<div class="barcode" ><span class="bar_id" barid="' .$res['ProductsInventoryBarcodes']['barcode_id'] . '">' .$res['ProductsInventoryBarcodes']['barcode']. '</span><a class="ui-icon ui-icon-closethick removeBarcode"></a><br/><small><i>- Start Date: <span class="res_start_date">'. $resInfo['start_date'] . '</span><br/>- End Date: <span class="res_end_date">' . $resInfo['end_date'] . '</span></small></div>';
+                }
+                $return .= '</div>';
+            }
+            else{
+                $changeButton = htmlBase::newElement('button')
+                    ->setText('Select Dates')
+                    ->addClass('reservationDates');
+
+                $return .= '<br /><small><i> - Start Date: <span class="res_start_date">' . date('m/d/Y H:i:s', $startTime) . '</span><br/>- End Date: <span class="res_end_date">' . date('m/d/Y H:i:s', $endTime) . '</span>' . $changeButton->draw() . '<input type="hidden" class="ui-widget-content resDateHidden" name="product[' . $id . '][reservation][dates]" value="' . date('m/d/Y H:i:s', $startTime) . ',' . date('m/d/Y H:i:s', $endTime) . '"></i></small><div class="selectDialog"></div>';
+            }
+        }
 		else {
 			$Qevent = Doctrine_Query::create()
 				->from('PayPerRentalEvents')
@@ -611,7 +631,8 @@ class PurchaseType_reservation extends PurchaseTypeAbstract
 		$pInfo['reservationInfo'] = array(
 			'start_date'    => $resInfo['start_date'],
 			'end_date'      => $resInfo['end_date'],
-			'quantity'      => $resInfo['quantity']
+			'quantity'      => $resInfo['quantity'],
+            'bar_id'        => $resInfo['bar_id']
 		);
 
 		if (sysConfig::get('EXTENSION_PAY_PER_RENTALS_USE_EVENTS') == 'True'){
@@ -1273,6 +1294,12 @@ class PurchaseType_reservation extends PurchaseTypeAbstract
 						->addClass('pprResButton')
 						->setText(sysLanguage::get('TEXT_BUTTON_PAY_PER_RENTAL'));
 
+                    $button2 = htmlBase::newElement('button')
+                        ->setType('submit')
+                        ->setName('try_now')
+                        ->addClass('pprTryButton')
+                        ->setText(sysLanguage::get('TEXT_BUTTON_PAY_PER_RENTAL_TRY'));
+
 					if ($this->hasInventory() === false){
 						$button->disable();
 					}
@@ -1335,7 +1362,8 @@ class PurchaseType_reservation extends PurchaseTypeAbstract
 						'allowQty'      => false,
 						'header'        => $this->typeShow,
 						'content'       => $priceTableHtmlPrices,
-						'button'        => $button
+						'button'        => $button//,
+                        //'button2'        => $button2
 					);
 				}
 				else {
@@ -2073,6 +2101,9 @@ class PurchaseType_reservation extends PurchaseTypeAbstract
 		}
 		return;
 	}
+    public function consumptionAllowed(){
+        return $this->payperrental['consumption'];
+    }
 
 	public function getPricingTable() {
 		global $currencies;

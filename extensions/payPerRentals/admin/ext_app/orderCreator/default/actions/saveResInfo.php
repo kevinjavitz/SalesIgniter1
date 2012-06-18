@@ -9,15 +9,23 @@ $nr = 0;
 $goodDates = '';
 $events_date = '';
 $selectedDates = array();
+$start = date('m/d/Y H:i:s');
+
     if (sysConfig::get('EXTENSION_PAY_PER_RENTALS_USE_EVENTS') == 'False'){
-		if ((isset($_POST['start_date']) && $_POST['start_date'] != 'undefined')&&(isset($_POST['end_date']) && $_GET['end_date'] != 'undefined')){
+        if($PurchaseType->consumptionAllowed() === '1' && !isset($_POST['has_info'])){
+            $starting_date = date('Y-m-d H:i:s');
+            $ending_date = date('Y-m-d H:i:s');
+            $resInfo['start_date'] = $starting_date;
+            $resInfo['end_date'] = $ending_date;
+        }
+		if ((isset($_POST['start_date']) && $_POST['start_date'] != 'undefined')&&(isset($_POST['end_date']) && $_POST['end_date'] != 'undefined')){
 			$resInfo['start_date'] = $_POST['start_date']; //. $myStartTime;
 			$resInfo['end_date'] = $_POST['end_date'];//.$myEndTime;
-			$starting_date = date('Y-m-d H:i:s', strtotime($_GET['start_date']));
-			$ending_date = date('Y-m-d H:i:s', strtotime($_GET['end_date']));
+			$starting_date = date('Y-m-d H:i:s', strtotime($_POST['start_date']));
+			$ending_date = date('Y-m-d H:i:s', strtotime($_POST['end_date']));
 		}
 
-	}else if (isset($_POST['event']) && $_POST['event'] != 'undefined'){
+	}elseif (isset($_POST['event']) && $_POST['event'] != 'undefined'){
 		$event_duration = 1;
 		$Qevent = Doctrine_Query::create()
 		->from('PayPerRentalEvents')
@@ -96,7 +104,11 @@ $selectedDates = array();
 			$resInfo['quantity'] = $_POST['qty'];
 		}
 
-		if (sysConfig::get('EXTENSION_PAY_PER_RENTALS_USE_EVENTS') == 'True' && $Qevent){
+        if (isset($_POST['bar_id']) && $_POST['bar_id'] != 'undefined'){
+            $resInfo['bar_id'] = $_POST['bar_id'];
+        }
+
+        if (sysConfig::get('EXTENSION_PAY_PER_RENTALS_USE_EVENTS') == 'True' && $Qevent){
 			$resInfo['event_name'] = $Qevent->events_name;
 			$resInfo['event_date'] = $starting_date;
 			if (sysConfig::get('EXTENSION_PAY_PER_RENTALS_USE_GATES') == 'True' && isset($_POST['gate'])){
@@ -189,6 +201,8 @@ $selectedDates = array();
 		'events_date' => $events_date,
 		'selectedDates' => $selectedDates,
 		'goodDates' => $goodDates,
+        'start_date' => $start,
+        'bar_id' => (isset($reservationInfo['reservationInfo']['bar_id'])?$reservationInfo['reservationInfo']['bar_id']:0),
 		'price'	=> (isset($reservationInfo['price'])?$reservationInfo['price']:0)
 	), 'json');
 	}else{

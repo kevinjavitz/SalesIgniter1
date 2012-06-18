@@ -13,6 +13,117 @@ $(document).ready(function (){
 	}
 
 
+    $('.removeBarcode').live('click', function (){
+        var $Row = $(this).parent().parent().parent();
+        $(this).parent().remove();
+        $Row.find('.startConsumption').trigger('click');
+    });
+
+  /*  $('.addBarcode').live('click', function (){
+        var $Row = $(this).parentsUntil('tbody').last();
+        var qty = $Row.find('.productQty').val();
+        $Row.find('.productQty').val(++qty);
+       // alert($(this).parent().html());
+
+        var newBarcode=  '<div><br/><input size="10" class="ui-widget-content barcodeName" name="product['+ $Row.attr('data-product_id') +'][barcode]" barid="" value="" type="text"><a class="ui-icon ui-icon-closethick removeBarcode"></a></div>';
+        $(this).parent().append(newBarcode);
+
+        if($Row.hasClass('datesSelected') == true){
+            $Row.removeClass('datesSelected');
+            $Row.addClass('nodatesSelected');
+        }
+    });       */
+
+    $('.startConsumption').live('click', function (){
+           
+        var $Row = $(this).parentsUntil('tbody').last();
+
+        var attrv = 'idP='+ $Row.attr('data-id')+'&pID='+ $Row.attr('data-product_id');
+        if ($Row.find('.productAttribute').size() > 0) {
+            attrv = attrv + '&id[reservation]=';
+            $Row.find('.productAttribute').each(function(){
+                attrv = attrv+'{'+$(this).attr('attrval')+'}'+$(this).val();
+            });
+
+        }
+
+        attrv = attrv + '&bar_id='
+        var i = 0;
+        $Row.find('.barcode').each(function(){
+            attrv = attrv+$(this).find('.bar_id').attr('barid')+ '(' + $(this).find('.res_start_date').html() + '-' + $(this).find('.res_start_date').html() + ')' +',';
+            i++;
+        });
+
+        if(i == 0)
+            i = 1;
+
+        $Row.find('.productQty').val(i);
+
+        var $purchaseTypeSelected = $Row.find('.purchaseType option:selected');
+        var postData1 = attrv + '&shipping=0&qty='+$Row.find('.productQty').val()+'&purchase_type='+$purchaseTypeSelected.val();
+        var addCartData = {};
+        var postData = $.extend(addCartData, {
+                shipping   : false,
+                qty        : $Row.find('.productQty').val(),
+                bar_name    : $Row.find('.barcodeName').val()
+        });
+
+        $.ajax({
+            cache: false,
+            dataType: 'json',
+            type:'post',
+            data: postData1,
+            url: js_app_link('appExt=orderCreator&app=default&appPage=new&action=saveResInfo'),
+            success: function (postResp) {
+                    //update priceEx
+                    if($Row.hasClass('datesSelected') == false){
+                            $Row.removeClass('nodatesSelected');
+                            $Row.addClass('datesSelected');
+                    }
+
+                    var barcodeInfo = postResp.bar_id.split(',');
+                    var barcode = '';//str.substring(1,7);
+                    var dates = '';
+                    $Row.find('.bar').each(function(){
+
+                        for(i = 0; i < barcodeInfo.length; i++){
+                           barcode = barcodeInfo[i].substring(1,barcodeInfo[i].indexOf('('))
+                           dates = barcodeInfo[i].substring(barcodeInfo[i].indexOf('(') + 1,barcodeInfo[i].indexOf(')') - 1).split('-');
+
+                           if($(this).find('.bar_id').attr('barid') == barcode) {
+                               $(this).find('.res_start_date').html(dates[0]);
+                               $(this).find('.res_start_date').show();
+                               $(this).find('.res_end_date').html(dates[1]);
+                               $(this).find('.res_end_date').show();
+                           }
+                           i++;
+                        }
+                    });
+
+                    $Row.find('.resDateHidden').val(postData.start_date + ',' + postData.end_date);
+                    //$Row.find('.stop_button').show();
+                    //$Row.find('.productQty').val(postData.qty);
+                    //$Row.find('.barcodeName').val(postData.bar_name);
+                    $Row.find('.priceEx').val(postResp.price).trigger('keyup');
+
+                    var $shippingInput = $Row.find('.reservationShipping');
+                    var $shippingText = $Row.find('.reservationShippingText');
+                    var $shipRadio = $(self).find('input[name="rental_shipping"]:checked');
+                    if ($shipRadio.size() > 0) {
+                            var valShip = $shipRadio.val().split('_');
+                            $shippingInput.val(valShip[1]);
+                            $shippingText.html($shipRadio.parent().parent().find('td:eq(0)').html());
+                    }
+
+
+
+            }
+        });
+
+        $(this).hide();
+
+	});
+
 	$('.reservationDates').live('click', function (){
 		var mainField = this;
         var $Row = $(this).parentsUntil('tbody').last();
@@ -359,11 +470,11 @@ $(document).ready(function (){
 		}
 		$('.productTable tbody tr').each(function(){
 			if($(this).hasClass('nodatesSelected')){
-				alert('You have to select dates for all reservation products on the order');
+				alert('Please select barcode / dates for all reservation products on the order');
 				canpass = false;
 			}
-
-		});
+        
+		}); 
 		return canpass;
 	});
 });

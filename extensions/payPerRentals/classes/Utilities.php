@@ -1963,8 +1963,11 @@ class ReservationUtilities {
 	}
 
 	public static function returnReservation($bID, $status, $comment, $lost, $broken){
-		global $appExtension, $messageStack;
-		
+		global $appExtension,$currencies, $messageStack;
+        $consumption = false;
+        $subtotal = 0;
+        $total = 0;
+
 		$Qcheck = Doctrine_Query::create()
 		->select('orders_products_id')
 		->from('OrdersProductsReservation')
@@ -1974,6 +1977,7 @@ class ReservationUtilities {
 		if (isset($Qcheck[0]['orders_products_id']) && is_null($Qcheck[0]['orders_products_id']) === false){
 			$ReservationQuery = Doctrine_Query::create()
 			->from('Orders o')
+            ->leftJoin('o.OrdersTotal ot')
 			->leftJoin('o.Customers c')
 			->leftJoin('o.OrdersAddresses oa')
 			->leftJoin('o.OrdersProducts op')
@@ -2014,18 +2018,43 @@ class ReservationUtilities {
 			}
 			foreach($Products as $pInfo){
 				if (isset($pInfo->OrdersProductsReservation)){
+                    $purchase_type = $pInfo['purchase_type'];
 					$Reservations = $pInfo->OrdersProductsReservation;
 				}else{
 					$Reservations = array($pInfo);
 				}
 				foreach($Reservations as $oprInfo){
-					$reservationId = $oprInfo->orders_products_reservations_id;
-					$trackMethod = $oprInfo->track_method;
+                    if(!class_exists('Product')){
+                        require(sysConfig::getDirFsCatalog() . 'includes/classes/product.php');
+                    }
+					$product = new Product($pInfo->products_id);
 
-					$oprInfo->rental_state = 'returned';
-					$oprInfo->date_returned = date('Y-m-d h:i:s');
+                    $reservationId = $oprInfo->orders_products_reservations_id;
+					$trackMethod = $oprInfo->track_method;
 					$oprInfo->broken = $broken;
 					//$oprInfo->lost = $lost;
+
+                    if($purchase_type == 'reservation'){
+                        $purchaseTypeClass = $product->getPurchaseType('reservation');
+                        if($purchaseTypeClass->consumptionAllowed() === '1'){
+                            $consumption = true;
+                            if ($oprInfo->rental_state == 'out'){
+                                $now = date('Y-m-d H:i:s');
+                                $prices = $purchaseTypeClass->getReservationPrice($oprInfo->start_date,$now,$oprInfo,'', (sysConfig::get('EXTENSION_PAY_PER_RENTALS_INSURE_ALL_PRODUCTS_AUTO') == 'True'));
+                                $oprInfo->end_date = $now;
+                                $oprInfo->OrdersProducts->products_price = $prices['price'];
+                                $oprInfo->OrdersProducts->final_price = $prices['totalPrice'];
+                                $oprInfo->rental_state = 'returned';
+                                $oprInfo->date_returned = $now;
+                                $subtotal += $prices['price'];
+                                $total += $prices['totalPrice'];
+                                $oprInfo->ProductsInventoryBarcodes->status = $status;
+                            }else{
+                                $subtotal +=  $oprInfo->OrdersProducts->products_price;
+                                $total += $oprInfo->OrdersProducts->final_price;
+                            }
+                        }
+                    }
 
 					if (!empty($comment)){
 						if ($reservationId == 'barcode'){
@@ -2122,6 +2151,26 @@ class ReservationUtilities {
 					}
 				}
 			}
+
+            if (isset($oInfo->OrdersTotal) and $consumption === True){
+                $Totals =  $oInfo->OrdersTotal;
+                foreach($Totals as $totInfo){
+                    $tax = $total - $subtotal;
+                    if($totInfo['module'] == 'subtotal'){
+                        $totInfo['value'] = $subtotal;
+                        $totInfo['text'] = $currencies->currencies[DEFAULT_CURRENCY]['symbol_left']. ' '.$subtotal;
+                    }
+                    if($totInfo['module'] == 'tax'){
+                        $totInfo['value'] = $tax;
+                        $totInfo['text'] = $currencies->currencies[DEFAULT_CURRENCY]['symbol_left']. ' '.$tax;
+                    }
+                    if($totInfo['module'] == 'total'){
+                        $totInfo['value'] = $total;
+                        $totInfo['text'] = $currencies->currencies[DEFAULT_CURRENCY]['symbol_left']. ' '.$total;
+                    }
+                }
+
+            }
 		}
 		$Reservation->save();
 	}

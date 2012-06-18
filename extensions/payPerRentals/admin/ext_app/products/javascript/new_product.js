@@ -62,20 +62,37 @@ $(document).ready(function (){
         $(this).parent().parent().parent().parent().parent().attr('data-next_id', parseInt(nextId) + 1);
 
 
-        var $td2 = $('<div style="float:left;width:80px;"></div>').attr('align', 'center').append('<input class="ui-widget-content date_hidden" size="15" type="text" name="pprhidden[' + nextId + '][start_date]">');
-        var $td5 = $('<div style="float:left;width:80px;"></div>').attr('align', 'center').append('<input class="ui-widget-content date_hidden" size="15" type="text" name="pprhidden[' + nextId + '][end_date]">');
+        var $td2 = $('<div style="float:left;width:80px;"></div>').attr('align', 'center').append('<input class="ui-widget-content date_hidden_start" size="15" type="text" name="pprhidden[' + nextId + '][start_date]">');
+        var $td5 = $('<div style="float:left;width:80px;"></div>').attr('align', 'center').append('<input class="ui-widget-content date_hidden_end" size="15" type="text" name="pprhidden[' + nextId + '][end_date]">');
         var $td9 = $('<div style="float:left;width:40px;"></div>').attr('align', 'center').append('<a class="ui-icon ui-icon-closethick deleteIconHidden"></a>');
-        var $newTr = $('<li style="list-style:none"></li>').append($td2).append($td5).append($td9).append('<br style="clear:both;"/>');//<input type="hidden" name="sortvprice[]">
+        var $newTr = $('<li style="list-style:none" class="listHiddenDates"></li>').append($td2).append($td5).append($td9).append('<br style="clear:both;"/>');//<input type="hidden" name="sortvprice[]">
         $(this).parent().parent().parent().parent().parent().find('.hiddenList').append($newTr);
-		$('.date_hidden').datepicker({
-					dateFormat: 'yy-mm-dd',
-					gotoCurrent: true
-		});
+
+
     });
-	$('.date_hidden').datepicker({
-					dateFormat: 'yy-mm-dd',
-					gotoCurrent: true
+	$('.date_hidden_start').live("click", function(){
+        var $Row = $(this).parent().parent();
+
+        $(this).datepicker({
+            dateFormat: 'yy-mm-dd',
+            gotoCurrent: true,
+            onSelect: function(selected) {
+                $Row.find('.date_hidden_end').datepicker("option","minDate", selected)
+            }
+        });
 	});
+
+    $('.date_hidden_end').live("click", function(){
+        var $Row = $(this).parent().parent();
+
+        $(this).datepicker({
+            dateFormat: 'yy-mm-dd',
+            gotoCurrent: true,
+            onSelect: function(selected) {
+                $Row.find('.date_hidden_start').datepicker("option","maxDate", selected)
+            }
+        });
+    });
 
     //$('.pricePPR').sortable('refresh');
     $('.sortableList').sortable();
