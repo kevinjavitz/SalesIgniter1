@@ -6,7 +6,7 @@ function number_format(number){
 
 $(document).ready(function (){
 
-	/*$('select[name="payment_method"]').live('change', function(){
+    /*$('select[name="payment_method"]').live('change', function(){
 		var $self = $(this);
 		showAjaxLoader($self, 'small');
 
@@ -30,17 +30,29 @@ $(document).ready(function (){
 		});
 	}); */
 	var getVars = getUrlVars();
+
 	var oID;
 	if(getVars['oID']){
 		 oID = '&oID='+getVars['oID'];
 	}else{
 		 oID = '';
 	}
+
 	$('.resReports').click(function(){
 		var newwindow=window.open(js_app_link('appExt=payPerRentals&app=reservations_reports&appPage=default'),'name','height=700,width=960');
 		if (window.focus) {newwindow.focus()}
 		return false;
 	});
+
+    $('.trackingButton').click(function(){
+        var $Row = $(this).parentsUntil('tbody').last();
+
+        if($Row.find('.trackingInput').val() ==  '') {
+            alert('Please enter tracking number');
+            return false;
+        }
+    });
+
 	$('#emailEstimate').click(function(){
 		$.ajax({
 			url: js_app_link('appExt=orderCreator&app=default&appPage=new&action=sendEstimateEmail'),
@@ -93,7 +105,7 @@ $(document).ready(function (){
 				url: js_app_link('appExt=orderCreator&app=default&appPage=new&action=loadCustomerInfo&cID=' + ui.item.value+oID),
 				success: function (data){
 					removeAjaxLoader($('.addressTable'));
-					
+
 					$('.customerAddress').html(data.customer);
 					$('.billingAddress').html(data.billing);
 					$('.deliveryAddress').html(data.delivery);
@@ -103,7 +115,7 @@ $(document).ready(function (){
 					});
 					$('input[name=account_password]').attr('disabled', 'disabled');
 					$('input[name=member_number]').attr('disabled', 'disabled');
-
+                    $('input[name=customer_search]').attr('disabled','disabled');
 					$('.productSection, .totalSection, .paymentSection, .commentSection').show();
 
 					if (data.productTable){
@@ -154,7 +166,7 @@ $(document).ready(function (){
 		$('input[name=email]').val('');
 		$('input[name=telephone]').val('');
 		$('input[name=account_password]').removeAttr('disabled');
-		
+        $('input[name=customer_search]').removeAttr('disabled');
 		$('.productSection, .totalSection, .paymentSection, .commentSection').hide();
 	});
 	
@@ -175,6 +187,11 @@ $(document).ready(function (){
 				}else{
 					$Row.find('td:eq(1)').html(data.name);
 					$Row.find('td:eq(2)').html(data.barcodes);
+
+
+                    if($Row.find('.consumption').val() == '1'){
+                        $Row.find('.addonsPopup').hide();
+                    }
 					//$Row.find('td:eq(2)').find('select').combobox();
 
 					$Row.find('.priceEx').val(data.price).trigger('keyup');
@@ -245,15 +262,40 @@ $(document).ready(function (){
 		})
 	});
 
-	$('.barcodeName').live('keyup', function() {
-					var $rowVal = $(this).parent().parent();
-					var attributeVal = 'mId='+ $rowVal.attr('data-id') + '&purchaseType=' + $rowVal.find('.purchaseType').val();
+	$('.barcodeName').live('mousedown', function() {
+					var $rowVal = $(this).parentsUntil('tbody').last();;
+
+                    if($rowVal.find('.datesSelected').attr('data-id'))
+					    var attributeVal = 'mId='+ $rowVal.attr('data-id') + '&purchaseType=' + $rowVal.find('.purchaseType').val();
+                    else
+                        var attributeVal = 'mId='+ $rowVal.attr('data-id') + '&purchaseType=' + $rowVal.find('.purchaseType').val();
 					attributeVal += '&id[reservation]=';
 					$rowVal.find('.productAttribute option:selected').each(function() {
-						attributeVal += '{' + $(this).parent().attr('attrval') + '}' + $(this).val();/*this part needs updated for attributes*/
+						attributeVal += '{' + $(this).parent().parent().attr('attrval') + '}' + $(this).val();/*this part needs updated for attributes*/
 					});
 
+                    if($rowVal.find('.datesSelected').attr('data-product_id'))
+                        attributeVal += '&pID='+ $rowVal.attr('data-product_id');
+                    else
+                        attributeVal += '&pID='+ $rowVal.attr('data-product_id');
+
+                    var i = 0;
+                    var a = new Array();
+                    $rowVal.find('.bar').each(function (){
+                        attributeVal += '&barcode' + i + '=' +  $(this).find('.bar_id').attr('barid');
+                        i++;
+
+                    });
+                    if(i >= 1)
+                        attributeVal += '&barcodeQty=' + i;
+                    else
+                        attributeVal += '&barcodeQty=0';
+                     // alert(attributeVal);
+                    var link = js_app_link('appExt=orderCreator&app=default&appPage=new&action=getBarcodes');
+
+
 					var link = js_app_link('appExt=orderCreator&app=default&appPage=new&action=getBarcodes'+oID);
+
 		            var $barInput = $(this);
 					$(this).autocomplete({
 						source: function(request, response) {
@@ -269,8 +311,12 @@ $(document).ready(function (){
 						 },
 						minLength: 0,
 						select: function(event, ui) {
-							$barInput.val(ui.item.label);
-							$barInput.attr('barid', ui.item.value);
+
+                            $barInput.val('');
+                            var newBarcode=  '<div class="barcode" ><span class="bar_id" barid="' + ui.item.value + '">' + ui.item.label + '</span><a class="ui-icon ui-icon-closethick removeBarcode"></a><br/><small><i>- Start Date: <span class="res_start_date">'+ ui.item.date + '</span><br/><span class="res_end_date" style="display: none">' + ui.item.date + '</span></small></div>';
+                            $rowVal.find('.barcodes').append(newBarcode);
+                            $rowVal.find('.startConsumption').trigger('click');
+
 							return false;
 						}
 					})
@@ -284,6 +330,10 @@ $(document).ready(function (){
 
 		$Row.find('.priceIn').html(number_format(Price + (Price * (TaxRate/100))));
 		$Row.find('.priceInTotal').html(number_format(((Price * Quantity) + ((Price * Quantity) * (TaxRate/100)))));
+
+        if($Row.find('.consumption').val() == '1'){
+            $Row.find('.addonsPopup').hide();
+        }
 
 		var $TotalRow = null;
 		var total = 0;
@@ -361,7 +411,7 @@ $(document).ready(function (){
 		var $TableBody = $(this).parent().parent().parent().parent().find('tbody:first');
 		var productInput = '';
 
-		var loadProductRow = function (pID, prtype){
+		var loadProductRow = function (pID, prtype,barcode){
 			showAjaxLoader($Row, 'normal');
 			$.ajax({
 				cache: false,
@@ -383,6 +433,8 @@ $(document).ready(function (){
 							$myRow.parent().find('.purchaseType').first().val(va);
 						}
 						$myRow.find('.purchaseType').trigger('change');
+                        $myRow.find('.barcodeName').val(barcode);
+                        $myRow.find('.startConsumption').trigger('click');
 
 					}
 				}
@@ -425,8 +477,39 @@ $(document).ready(function (){
 			$Row.find('.productSearch').autocomplete({
 				source: js_app_link('appExt=orderCreator&app=default&appPage=new&action=findProduct'),
 				select: function (e, ui) {
-					loadProductRow(ui.item.value, ui.item.prtype);
-				}
+                    var barcode = 0;
+                    var product = 0;
+                    var $productRow;
+
+                    if(ui.item.consumption == '1'){
+                        $Row.parent().find('.bar_id').each(function(){
+                            if(ui.item.barcode == $(this).html())
+                                barcode = 1;
+                        });
+
+                        $Row.parent().find('.productName').each(function(){
+                            if(ui.item.label == $(this).html()){
+                               $productRow = $(this).parent();
+                               product = 1;
+                            }
+                        });
+
+                        if(barcode == 0 && product == 0)
+                            loadProductRow(ui.item.value, ui.item.prtype, ui.item.barcode);
+                        if(barcode == 1 && product == 1)
+                            alert('Product already selected');
+                        if(barcode == 0 && ui.item.bar_id == null && product == 1)
+                            alert('Product already selected');
+                        if(barcode == 0 && ui.item.bar_id != null && product == 1){
+                            var newBarcode=  '<div class="barcode" ><span class="bar_id" barid="' + ui.item.bar_id + '">' + ui.item.barcode + '</span><a class="ui-icon ui-icon-closethick removeBarcode"></a><br/><small><i>- Start Date: <span class="res_start_date">'+ ui.item.date + '</span><br/>- End Date: <span class="res_end_date" >' + ui.item.date + '</span></small></div>';
+                            $productRow.find('.barcodes').append(newBarcode);
+                            $productRow.find('.startConsumption').trigger('click');
+                        }
+                    }else{
+                        loadProductRow(ui.item.value, ui.item.prtype, ui.item.barcode);
+                    }
+
+                }
 			});
 		}
 	});
@@ -440,8 +523,46 @@ $(document).ready(function (){
 			url: js_app_link('appExt=orderCreator&app=default&appPage=new&action=removeProductRow&id=' + $Row.attr('data-id')+oID),
 			success: function (data){
 				removeAjaxLoader($Row);
-				$Row.remove();
-				$('.priceEx').trigger('keyup');
+                $Row.remove();
+                var $TotalRow = null;
+                var total = 0;
+                var subtotal = 0;
+                var tax = 0;
+
+                $('.priceEx').each(function (){
+                    var Quantity = parseFloat($(this).parent().parent().find('.productQty').val());
+                    var Price = parseFloat($(this).val());
+
+                    subtotal += Price * Quantity;
+                    tax += (Price * Quantity) * (parseFloat($(this).parent().parent().find('.taxRate').val()) / 100);
+                });
+
+                $('.orderTotalTable > tbody > tr').each(function (){
+                    var $Row = $(this);
+                    if ($Row.data('code') == 'subtotal'){
+                        $Row.find('.orderTotalValue').attr('readonly','readonly');
+                        $Row.find('.orderTotalValue').val(number_format(subtotal));
+                        total += subtotal;
+                    }else if ($Row.data('code') == 'tax'){
+                        $Row.find('.orderTotalValue').attr('readonly','readonly');
+                        $Row.find('.orderTotalValue').val(number_format(tax));
+                        total += tax;
+                    }else if ($Row.data('code') == 'total'){
+                        $Row.find('.orderTotalValue').attr('readonly','readonly');
+                        $TotalRow = $(this);
+                    }else{
+                        total += parseFloat($Row.find('.orderTotalValue').val());
+                    }
+                });
+
+                if ($TotalRow){
+                    $TotalRow.find('.orderTotalValue span').html(number_format(total));
+                    $TotalRow.find('.orderTotalValue input').val(number_format(total));
+                    $TotalRow.find('.orderTotalValue').val(number_format(total));
+                }
+
+
+
 			}
 		});
 	});
@@ -616,8 +737,14 @@ $(document).ready(function (){
 	});
 	
 	$('.saveAddressButton').click(function (){
-		showAjaxLoader($('.customerSection'), 'xlarge');
-		$.ajax({
+        if(!$('input[name=customer_search]').attr('disabled')){
+            alert("Please select a Customer first");
+            return false;
+        }
+
+        showAjaxLoader($('.customerSection'), 'xlarge');
+
+        $.ajax({
 			cache: false,
 			dataType: 'html',
 			url: js_app_link('appExt=orderCreator&app=default&appPage=new&action=saveCustomerInfo'+oID),
@@ -685,4 +812,73 @@ $(document).ready(function (){
 	if (!getVars['error'] && !getVars['oID']){
 		$('.productSection, .totalSection, .paymentSection, .commentSection').hide();
 	}
+
+    $('.startConsumption').each(function (){
+        var $Row = $(this).parentsUntil('tbody').last();
+
+        var attrv = 'idP='+ $Row.attr('data-id')+'&pID='+ $Row.attr('data-product_id');
+        if ($Row.find('.productAttribute').size() > 0) {
+            attrv = attrv + '&id[reservation]=';
+            $Row.find('.productAttribute').each(function(){
+                attrv = attrv+'{'+$(this).attr('attrval')+'}'+$(this).val();
+            });
+
+        }
+
+        attrv = attrv + '&bar_id='
+        var i = 0;
+        $Row.find('.barcode').each(function(){
+            attrv = attrv+$(this).find('.bar_id').attr('barid')+ '(' + $(this).find('.res_start_date').html() + '-' + $(this).find('.res_start_date').html() + ')' +',';
+            i++;
+        });
+
+        var $purchaseTypeSelected = $Row.find('.purchaseType option:selected');
+        var postData1 = attrv + '&has_info=1&start_date=' + $Row.find('.res_start_date').html() + '&end_date=' + $Row.find('.res_end_date').html() + '&shipping=0&qty='+$Row.find('.productQty').val()+'&purchase_type='+$purchaseTypeSelected.val();
+        var addCartData = {};
+        var postData = $.extend(addCartData, {
+            shipping   : false,
+            start_date : $Row.find('.res_start_date').html(),
+            end_date   : $Row.find('.res_end_date').html(),
+            qty        : $Row.find('.productQty').val(),
+            bar_name   : $Row.find('.barcodeName').val(),
+            bar_id     : $Row.find('.barcodeName').attr('barid')
+        });
+
+        $.ajax({
+            cache: false,
+            dataType: 'json',
+            type:'post',
+            data: postData1,
+            url: js_app_link('appExt=orderCreator&app=default&appPage=new&action=saveResInfo'),
+            success: function (postResp) {
+                //update priceEx
+                if($Row.hasClass('datesSelected') == false){
+                    $Row.removeClass('nodatesSelected');
+                    $Row.addClass('datesSelected');
+                }
+
+                $Row.find('.resDateHidden').val(postData.start_date + ',' + postData.end_date);
+                $Row.find('.res_start_date').html(postData.start_date);
+                $Row.find('.res_start_date').show();
+                $Row.find('.res_end_date').html(postData.end_date);
+                $Row.find('.res_end_date').show();
+                $Row.find('.productQty').val(postData.qty);
+                $Row.find('.barcodeName').val(postData.bar_name);
+                $Row.find('.barcodeName').attr('barid', postData.bar_id);
+                $Row.find('.priceEx').val(postResp.price).trigger('keyup');
+
+                var $shippingInput = $Row.find('.reservationShipping');
+                var $shippingText = $Row.find('.reservationShippingText');
+                var $shipRadio = $(self).find('input[name="rental_shipping"]:checked');
+                if ($shipRadio.size() > 0) {
+                    var valShip = $shipRadio.val().split('_');
+                    $shippingInput.val(valShip[1]);
+                    $shippingText.html($shipRadio.parent().parent().find('td:eq(0)').html());
+                }
+
+            }
+        });
+
+    });
+
 });

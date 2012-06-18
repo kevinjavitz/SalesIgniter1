@@ -321,12 +321,13 @@
 			foreach($tracker['data'] as $fieldName){
 				$inputField = htmlBase::newElement('input')
 				->setName($fieldName)
+                ->addClass('trackingInput')
 				->attr(array(
 					'size' => 40,
 					'maxlength' => 40
 				));
 
-				$trackButton = htmlBase::newElement('button')->setHref($tracker['link'], false, '_blank')->setText('Track');
+				$trackButton = htmlBase::newElement('button')->addClass('trackingButton')->setHref($tracker['link'], false, '_blank')->setText('Track');
 				if (array_key_exists($fieldName, $orderInfo)){
 					$inputField->setValue($orderInfo[$fieldName]);
 					$trackButton->attr('data-track_number', $orderInfo[$fieldName]);

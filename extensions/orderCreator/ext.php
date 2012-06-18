@@ -49,7 +49,8 @@ class Extension_orderCreator extends ExtensionBase {
 			'OrderQueryBeforeExecute',
 			'ReservationCheckQueryBeforeExecute',
 			'ProductInventoryReportsListingQueryBeforeExecute',
-			'CustomerGroupsExportQueryBeforeExecute'
+			'CustomerGroupsExportQueryBeforeExecute',
+            'AdminOrderDetailsAddButton'
 
 		), null, $this);
 
@@ -110,6 +111,13 @@ class Extension_orderCreator extends ExtensionBase {
 			);
 		}
 	}
+
+    public function AdminOrderDetailsAddButton($oID, &$infoBox){
+        $editButton = htmlBase::newElement('button')->setText(sysLanguage::get('TEXT_EDIT_ORDER'))
+            ->setHref(itw_app_link('appExt=orderCreator&oID=' . $oID.(isset($_GET['isEstimate'])?'&isEstimate=1':''), 'default', 'new'));
+
+        $infoBox->append($editButton);
+    }
 	
 	public function OrdersGridButtonsBeforeAdd(&$gridButtons){
 		$gridButtons[] = htmlBase::newElement('button')

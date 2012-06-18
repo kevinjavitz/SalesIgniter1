@@ -15,7 +15,8 @@ $QcustomerName = Doctrine_Query::create()
 		'c.customers_telephone LIKE "' . $_GET['term'] . '%"' .
 		') AND TRUE');
 
-EventManager::notify('OrderCreatorFindCustomerQueryBeforeExecute', $QcustomerName);
+if(sysConfig::get('SEARCH_CUSTOMERS_PER_STORE') == 'True')
+    EventManager::notify('OrderCreatorFindCustomerQueryBeforeExecute', $QcustomerName);
 
 $Result = $QcustomerName->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 if ($Result){
