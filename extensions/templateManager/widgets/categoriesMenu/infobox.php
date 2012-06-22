@@ -27,7 +27,7 @@ class infoBoxCategoriesMenu extends InfoBoxAbstract {
 		    ->andWhere('cd.language_id = ?', (int)Session::get('languages_id'))
 		    ->orderBy('c.sort_order, cd.categories_name');
 
-		EventManager::notify('CategoryQueryBeforeExecute', $Qcategories);
+		//EventManager::notify('CategoryQueryBeforeExecute', $Qcategories);
 		
 		return $Qcategories->execute(array(), Doctrine::HYDRATE_ARRAY);
 	}
@@ -166,8 +166,12 @@ class infoBoxCategoriesMenu extends InfoBoxAbstract {
 			}
 		} */
 		$ulElement = $this->getChildCategories((isset($boxWidgetProperties->selected_category) && (int)$boxWidgetProperties->selected_category > 0) ? $boxWidgetProperties->selected_category : 0);
-
-	    $this->setBoxContent('<div id="'.(isset($boxWidgetProperties->widgetId)?$boxWidgetProperties->widgetId:'').'">'.$ulElement->draw().'</div>');
+		if(is_object($ulElement)){
+			$ulElem = $ulElement->draw();
+		}else{
+			$ulElem = '';
+		}
+	    $this->setBoxContent('<div id="'.(isset($boxWidgetProperties->widgetId)?$boxWidgetProperties->widgetId:'').'">'.$ulElem.'</div>');
 
 	    return $this->draw();
 	}	

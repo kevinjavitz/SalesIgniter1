@@ -3,6 +3,15 @@
 $Orders = Doctrine_Core::getTable('Orders');
 	if (isset($_GET['oID'])){
 		$NewOrder = $Orders->find((int) $_GET['oID']);
+		if(sysConfig::get('EXTENSION_ORDER_CREATOR_TELEPHONE_NUMBER_REQUIRED') == 'True'){
+			if(isset($_POST['telephone']) && !empty($_POST['telephone'])){
+				$Editor->setTelephone($_POST['telephone']);
+			}else{
+				$Editor->addErrorMessage('Telephone Number not set');
+			}
+		}else{
+			$Editor->setTelephone($_POST['telephone']);
+		}
 	}else{
 		$NewOrder = new Orders();
 		$createAccount = false;
@@ -95,16 +104,24 @@ $Orders = Doctrine_Core::getTable('Orders');
 	$Editor->ProductManager->updateFromPost();
 	$Editor->ProductManager->addAllToCollection($NewOrder->OrdersProducts);
 
+	$NewOrder->OrdersTotal->clear();
+	$Editor->TotalManager->clear();
 	$Editor->TotalManager->updateFromPost();
 	$Editor->TotalManager->addAllToCollection($NewOrder->OrdersTotal);
 
-	EventManager::notify('OrderSaveBeforeSave', $NewOrder);
+EventManager::notify('OrderSaveBeforeSave', &$NewOrder);
 	//echo '<pre>';print_r($NewOrder->toArray());itwExit();
 
 	if($Editor->hasErrors()){
 		$success = false;
 	}else{
 		$success = true;
+		if (isset($_GET['oID']) && isset($NewOrder->orders_id)){
+			Doctrine_Query::create()
+			->delete('OrdersTotal')
+			->where('orders_id = ?', $NewOrder->orders_id)
+			->execute();
+		}
 		$NewOrder->save();
 		if (!isset($_GET['oID'])){
 			$NewOrder->bill_attempts = 1;

@@ -596,7 +596,7 @@ class Extension_customFields extends ExtensionBase {
 
     public function AdvancedSearchAddSearchFields(&$AdvancedTable){
         $Qfields = Doctrine_Query::create()
-                ->select('f.search_key, f.field_id, fd.field_name, f2p.value')
+                ->select('f.search_key, f.field_id, fd.field_name, f2p.value,f.show_as_checkbox')
                 ->from('ProductsCustomFields f')
                 ->leftJoin('f.ProductsCustomFieldsDescription fd')
                 ->leftJoin('f.ProductsCustomFieldsToProducts f2p')
@@ -622,18 +622,27 @@ class Extension_customFields extends ExtensionBase {
                     }
 
                     natsort($added);
-
+					if($fInfo['show_as_checkbox'] == '0'){
                     $dropArray = array(array('id' => '', 'text' => sysLanguage::get('TEXT_PLEASE_SELECT')));
+					}
                     foreach($added as $value){
                         $dropArray[] = array(
                             'id'   => addslashes($value),
                             'text' => $value
                         );
                     }
+					if($fInfo['show_as_checkbox'] == '1'){
+						$searchOptions = '';
+						foreach($dropArray as $elemCheckbox){
+							$searchOptions .= '<input type="checkbox" name="'.$fInfo['search_key'].'[]" value="'.$elemCheckbox['id'].'"/>'.$elemCheckbox['text'];
+						}
+					}else{
+						$searchOptions = tep_draw_pull_down_menu($fInfo['search_key'], $dropArray);
+					}
                     $AdvancedTable->addBodyRow(array(
                                                     'columns' => array(
                                                         array('addCls' => 'fieldKey', 'text' => $fInfo['ProductsCustomFieldsDescription'][0]['field_name']),
-                                                        array('addCls' => 'fieldValue', 'text' => tep_draw_pull_down_menu($fInfo['search_key'], $dropArray))
+                                                        array('addCls' => 'fieldValue', 'text' => $searchOptions)
                                                     )
                                                ));
                     unset($dropArray);

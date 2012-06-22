@@ -19,25 +19,17 @@
 		$html .= "\n";
 	}
 	$Qreservations = Doctrine_Query::create()
-	->from('Orders o')
+	->from('OrdersProductsReservation opr')
+	->leftJoin('opr.OrdersProducts op')
+	->leftJoin('op.Orders o')
 	->leftJoin('o.OrdersAddresses oa')
-	->leftJoin('o.OrdersProducts op')
-	->leftJoin('op.OrdersProductsReservation opr')
 	->leftJoin('opr.ProductsInventoryBarcodes ib')
 	->leftJoin('ib.ProductsInventory i')
 	->leftJoin('opr.ProductsInventoryQuantity iq')
 	->leftJoin('iq.ProductsInventory i2')
-	/*			->leftJoin('rb.RentalBookings rb_child')
-	->leftJoin('rb_child.Orders o_child')
-	->leftJoin('o_child.OrdersAddresses oa_child')
-	->leftJoin('rb_child.OrdersProducts op_child')
-	->leftJoin('rb_child.ProductsInventoryBarcodes ib_child')
-	->leftJoin('ib_child.ProductsInventory i_child')
-	->leftJoin('rb_child.ProductsInventoryQuantity iq_child')
-	->leftJoin('iq_child.ProductsInventory i2_child')*/
 	->where('opr.start_date BETWEEN "' . $_GET['start_date'] . '" AND "' . $_GET['end_date'] . '"')
-	->andWhere('oa.address_type = ?', 'delivery')
-	->andWhere('opr.parent_id is null');
+	->andWhere('oa.address_type = "delivery" or oa.address_type is null');
+
 	
 	if (isset($_GET['include_sent'])){
 		$Qreservations->andWhereIn('opr.rental_state', array('reserved', 'out'));
@@ -84,20 +76,35 @@
 	$Qreservations = $Qreservations->execute();
 	if ($Qreservations !== false){
 		$Orders = $Qreservations->toArray(true);
-		foreach($Orders as $oInfo){
+		foreach($Orders as $rInfo){
 			if ($resultsMode != 'csv'){
 				$html .= '<tr class="dataTableRow"><td colspan="11" style="border-bottom:1px solid #000000;">Order id:'.$oInfo['orders_id'].' </td></tr>';
 			}
-
-			foreach($oInfo['OrdersProducts'] as $opInfo){
+			if(!is_null($rInfo['orders_products_id']) && $rInfo['orders_products_id'] > 0){
+				$oInfo = $rInfo['OrdersProducts']['Orders'];
+				$opInfo = $rInfo['OrdersProducts'];
+			//foreach($oInfo['OrdersProducts'] as $opInfo){
+			//	foreach($opInfo['OrdersProductsReservation'] as $rInfo){
 				$orderAddress = $oInfo['OrdersAddresses']['delivery'];
 				$orderId = $oInfo['orders_id'];
 				$productName = $opInfo['products_name'];
 				$shippingMethod = $oInfo['shipping_module'];
 
 				$customersName = $orderAddress['entry_name'];
-				foreach($opInfo['OrdersProductsReservation'] as $rInfo){
-
+			}else{
+				    $shippingMethod = '';
+				    $QQueue = Doctrine_Query::create()
+					->from('QueueProductsReservation qpr')
+					->leftJoin('qpr.PayPerRentalQueueToReservations pprqr')
+				    ->where('pprqr.orders_products_reservations_id = ?', $rInfo['orders_products_reservations_id'])
+				    ->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+					$productName = $QQueue[0]['products_name'];
+					$QCustomer = Doctrine_Query::create()
+					->from('Customers c')
+					->where('customers_id = ?', $QQueue[0]['customers_id'])
+					->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+					$customersName = $QCustomer[0]['customers_firstname'].' '. $QCustomer[0]['customers_lastname'];
+			}
 					$trackMethod = $rInfo['track_method'];
 					$useCenter = 0;
 
@@ -303,6 +310,9 @@
 								$html .=  '<td class="dataTableContent">' . $rInfo['event_gate'] . '</td>';
 							}
 						}
+						if (sysConfig::get('EXTENSION_INVENTORY_CENTERS_USE_LP') == 'True'){
+							$html .=  '<td class="dataTableContent">' . $rInfo['inventory_center_lp'] . '</td>';
+						}
 						$html .= '<td class="dataTableContent" align="center"><table cellpadding="2" cellspacing="0" border="0">' .
 								'<tr>' .
 									'<td class="dataTableContent">Ship On: </td>' .
@@ -370,9 +380,9 @@
 
 					$html .= "\n";
 				}
-			}
+		//	}
 
-		}
+	//	}
 	}
 	
 	if ($resultsMode == 'csv'){

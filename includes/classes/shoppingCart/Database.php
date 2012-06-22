@@ -28,7 +28,9 @@
 						break;
 					case 'update':
 					case 'insert':
-						$this->insertBasket($pID_string, $pInfo, $action);
+						if(!isset($pInfo['is_queue'])){
+							$this->insertBasket($pID_string, $pInfo, $action);
+						}
 						break;
 				}
 			}

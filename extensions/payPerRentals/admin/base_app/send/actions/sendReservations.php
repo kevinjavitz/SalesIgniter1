@@ -14,30 +14,52 @@ foreach($_POST['barcode_replacement'] as $resId => $barcode){
 }
 
 $Qreservations = Doctrine_Query::create()
-	->from('Orders o')
+	->from('OrdersProductsReservation opr')
+	->leftJoin('opr.OrdersProducts op')
+	->leftJoin('op.Orders o')
 	->leftJoin('o.Customers c')
 	->leftJoin('o.OrdersAddresses oa')
-	->leftJoin('o.OrdersProducts op')
-	->leftJoin('op.OrdersProductsReservation opr')
 	->leftJoin('opr.ProductsInventoryBarcodes ib')
 	->leftJoin('ib.ProductsInventory i')
 	->leftJoin('opr.ProductsInventoryQuantity iq')
 	->leftJoin('iq.ProductsInventory i2')
 	->whereIn('opr.orders_products_reservations_id', (isset($_POST['sendRes'])?$_POST['sendRes']:array()))
-	->andWhere('oa.address_type = ?', 'customer')
+	->andWhere('oa.address_type = "customer" or oa.address_type is null')
 	->andWhere('opr.parent_id IS NULL')
 	->execute();
 
 	if ($Qreservations->count() > 0){
-		foreach($Qreservations as $oInfo){
+		foreach($Qreservations as $oprInfo){
+			if(!is_null($oprInfo['orders_products_id']) && $oprInfo['orders_products_id'] > 0){
+				$opInfo = $oprInfo->OrdersProducts;
+				$oInfo = $opInfo->Orders;
+				$finalPrice = $opInfo['final_price'];
+				$productName = $opInfo->products_name;
+				$customerEmailAddress = $oInfo->customers_email_address;
+				$fullName = $oInfo->OrdersAddresses['customer']->entry_name;
+			}else{
+				$finalPrice = 0;
+				$QQueue = Doctrine_Query::create()
+					->from('QueueProductsReservation qpr')
+					->leftJoin('qpr.PayPerRentalQueueToReservations pprqr')
+					->where('pprqr.orders_products_reservations_id = ?', $oprInfo['orders_products_reservations_id'])
+					->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+				$productName = $QQueue[0]['products_name'];
+				$QCustomer = Doctrine_Query::create()
+					->from('Customers c')
+					->where('customers_id = ?', $QQueue[0]['customers_id'])
+					->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+				$fullName = $QCustomer[0]['customers_firstname'].' '. $QCustomer[0]['customers_lastname'];
+				$customerEmailAddress = $QCustomer[0]['customers_email_address'];
+			}
 
-			foreach($oInfo->OrdersProducts as $opInfo){
-				foreach($opInfo->OrdersProductsReservation as $oprInfo){
+			//foreach($oInfo->OrdersProducts as $opInfo){
+			//	foreach($opInfo->OrdersProductsReservation as $oprInfo){
 
 					if (sysConfig::get('EXTENSION_PAY_PER_RENTALS_PROCESS_SEND') == 'True'){
 						$payedAmount = (isset($_POST['amount_payed'][$oprInfo->orders_products_reservations_id])?$_POST['amount_payed'][$oprInfo->orders_products_reservations_id]:'');
 
-						if($payedAmount - $opInfo['final_price'] >= 0){
+						if($payedAmount - $finalPrice >= 0){
 
 						}else{
 							continue;
@@ -78,26 +100,26 @@ $Qreservations = Doctrine_Query::create()
 						$oprInfo->ProductsInventoryQuantity->reserved -= 1;
 						$oprInfo->ProductsInventoryQuantity->qty_out += 1;
 					}
-					if (isset($oInfo->Customers)){
-						$emailEvent = new emailEvent('reservation_sent', $oInfo->Customers->language_id);
+					if (isset($customerEmailAddress)){
+						$emailEvent = new emailEvent('reservation_sent');
 
 						$emailEvent->setVars(array(
-							'full_name' => $oInfo->OrdersAddresses['customer']->entry_name,
-							'rented_product' => $opInfo->products_name,
+							'full_name' => $fullName,
+							'rented_product' => $productName,
 							'due_date' => tep_date_long($oprInfo->end_date),
 	 						'shipping_number'=> (isset($shippingURL)?$shippingURL:''),
-							'email_address' => $oInfo->customers_email_address
+							'email_address' => $customerEmailAddress
 						));
 
 						$emailEvent->sendEmail(array(
-							'email' => $oInfo->customers_email_address,
-							'name' => $oInfo->OrdersAddresses['customer']->entry_name
+							'email' => $customerEmailAddress,
+							'name' => $fullName
 						));
 					}
 				}
 
-			}
-		}
+			//}
+		//}
 		$Qreservations->save();
 	}
 

@@ -1019,8 +1019,8 @@ function tep_round($value, $precision) {
 function tep_add_tax($price, $tax) {
 	global $currencies;
 
-	if (DISPLAY_PRICE_WITH_TAX == 'true') {
-		return tep_round($price, $currencies->currencies[DEFAULT_CURRENCY]['decimal_places']) + tep_calculate_tax($price, $tax);
+	if (sysConfig::get('DISPLAY_PRICE_WITH_TAX') == 'true') {
+		return tep_round($price + tep_calculate_tax($price, $tax), $currencies->currencies[DEFAULT_CURRENCY]['decimal_places']);
 	} else {
 		return tep_round($price, $currencies->currencies[DEFAULT_CURRENCY]['decimal_places']);
 	}

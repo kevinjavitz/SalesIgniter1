@@ -56,14 +56,14 @@
 			if (isset($cInfo) && is_object($cInfo)) {
 				$infoBox->setHeader('<b>' . $cInfo->block_name . '</b>');
 
-				$deleteButton = htmlBase::newElement('button')->setType('submit')->usePreset('delete')->setHref(itw_app_link(tep_get_all_get_params(array('action', 'pID')) . 'action=deleteConfirm&pID=' . $cInfo->block_dates_id));
-				$editButton = htmlBase::newElement('button')->setType('submit')->usePreset('edit')
+				$deleteButton = htmlBase::newElement('button')->usePreset('delete')->setHref(itw_app_link(tep_get_all_get_params(array('action', 'pID')) . 'action=deleteConfirm&pID=' . $cInfo->block_dates_id));
+				$editButton = htmlBase::newElement('button')->usePreset('edit')
 				->setHref(itw_app_link(tep_get_all_get_params(array('action', 'pID')) . 'pID=' . $cInfo->block_dates_id,null,'new'));
 
 				$infoBox->addButton($editButton)->addButton($deleteButton);
 
-				$infoBox->addContentRow('<br>' . date(sysLanguage::getDateFormat(),strtotime($cInfo->block_start_date)));
-				$infoBox->addContentRow('<br>' . date(sysLanguage::getDateFormat(),strtotime($cInfo->block_end_date)));
+				$infoBox->addContentRow('<br>' . strftime(sysLanguage::getDateTimeFormat(),strtotime($cInfo->block_start_date)));
+				$infoBox->addContentRow('<br>' . strftime(sysLanguage::getDateTimeFormat(),strtotime($cInfo->block_end_date)));
 			}
 			break;
 	}

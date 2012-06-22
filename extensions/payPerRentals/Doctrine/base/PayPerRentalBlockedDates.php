@@ -51,7 +51,21 @@ class PayPerRentalBlockedDates extends Doctrine_Record {
 			'autoincrement' => false,
 		));
 
-		$this->hasColumn('recurring', 'int', 1, array(
+		$this->hasColumn('recurring_year', 'int', 1, array(
+			'type'          => 'string',
+			'length'        => 1,
+			'primary'       => false,
+			'notnull'       => true,
+			'autoincrement' => false,
+		));
+		$this->hasColumn('recurring_month', 'int', 1, array(
+			'type'          => 'string',
+			'length'        => 1,
+			'primary'       => false,
+			'notnull'       => true,
+			'autoincrement' => false,
+		));
+		$this->hasColumn('recurring_day', 'int', 1, array(
 			'type'          => 'string',
 			'length'        => 1,
 			'primary'       => false,

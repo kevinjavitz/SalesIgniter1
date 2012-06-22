@@ -13,7 +13,7 @@
 		$messageStack->addSession('pageStack', sysLanguage::get('TEXT_INFO_ERROR'), 'error');
 		$errorMsg = sysLanguage::get('TEXT_INFO_ERROR');
 	}else{
-		/*if (!isset($_GET['aID'])){
+		if (!isset($_GET['aID']) && empty($_POST['admin_password'])){
 			function randomize() {
 				$salt = "abchefghjkmnpqrstuvwxyz0123456789";
 				srand((double)microtime()*1000000);
@@ -27,7 +27,10 @@
 				return $pass;
 			}
 			$makePassword = randomize();
-		}    */
+		}
+		if(!empty($_POST['admin_password'])){
+			$makePassword = $_POST['admin_password'];
+		}
 		
 		$Admin = Doctrine_Core::getTable('Admin');
 		if (isset($_GET['aID'])){
@@ -36,8 +39,8 @@
 			$adminAccount = $Admin->create();
 		}
 
-        $adminAccount->admin_password = tep_encrypt_password($_POST['admin_pass']);
-        $adminAccount->admin_pass = $_POST['admin_pass'];
+		$adminAccount->admin_password = tep_encrypt_password($makePassword);
+		
 		$adminAccount->admin_override_password = (!empty($_POST['admin_override_password']) ? $_POST['admin_override_password'] : '');
 		$adminAccount->admin_groups_id = $_POST['admin_groups_id'];
 		$adminAccount->admin_firstname = $_POST['admin_firstname'];

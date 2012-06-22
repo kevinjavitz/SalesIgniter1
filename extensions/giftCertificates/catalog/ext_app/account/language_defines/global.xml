@@ -13,5 +13,5 @@
     <define key="VIEW_GIFT_CERTIFICATES_TRANSACTIONS_HISTORY"><![CDATA[View Gift Certificates Transactions History]]></define>
     <define key="TABLE_HEADING_PURCHASE_TYPE"><![CDATA[Product Type]]></define>
     <define key="TABLE_HEADING_PURCHASE_TYPE_VALUE"><![CDATA[Balance Available]]></define>
-
+    <define key="BOX_HEADING_GIFT_CERTICICATES"><![CDATA[Gift Certificates]]></define>
 </definitions>

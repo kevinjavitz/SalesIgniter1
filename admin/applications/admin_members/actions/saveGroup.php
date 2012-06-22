@@ -20,8 +20,8 @@
 		if (isset($_GET['gID'])){
 			$searchGroups->andWhere('admin_groups_id != ?', (int)$_GET['gID']);
 		}
-		$searchGroups->execute();
-		if ($searchGroups->count() > 0){
+		$searchGroups = $searchGroups->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+		if (count($searchGroups) > 0){
 			$messageStack->addSession('pageStack', sysLanguage::get('TEXT_INFO_GROUPS_NAME_USED'), 'error');
 			$error = true;
 		}
@@ -30,7 +30,7 @@
 	if ($error === false){
 		$AdminGroups = Doctrine_Core::getTable('AdminGroups');
 		if (isset($_GET['gID'])){
-			$group = $AdminGroups->findOneByAdminGroupsId((int)$_GET['gID']);
+			$group = $AdminGroups->findByAdminGroupsId((int)$_GET['gID']);
 		}else{
 			$group = $AdminGroups->create();
 		}

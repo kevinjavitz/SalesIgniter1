@@ -1,3 +1,4 @@
 <definitions>
 	<define key="ENTRY_CUSTOMERS_INVENTORY_CENTER"><![CDATA[Inventory Center: ]]></define>
+	<define key="ENTRY_CUSTOMERS_INVENTORY_LP"><![CDATA[Launch Point: ]]></define>
 </definitions>

@@ -2,7 +2,7 @@
 	$windowAction = $_GET['windowAction'];
 	if ($windowAction == 'edit'){
 		$Qvalue = Doctrine_Query::create()
-		->select('v.products_options_values_id, vd.products_options_values_name')
+		->select('v.products_options_values_id, vd.products_options_values_name, vd.products_options_front_values_name')
 		->from('ProductsOptionsValues v')
 		->leftJoin('v.ProductsOptionsValuesDescription vd')
 		->where('v.products_options_values_id = ?', $_GET['value_id'])
@@ -12,21 +12,25 @@
 
 	$languages = tep_get_languages();
 	$valueNames = htmlBase::newElement('table')->setCellPadding('3')->setCellSpacing('0');
-	for ($i=0, $n=sizeof($languages); $i<$n; $i++){
-		$langID = $languages[$i]['id'];
+	foreach(sysLanguage::getLanguages() as $lInfo){
+		$langID = $lInfo['id'];
 				
-		$langImage = htmlBase::newElement('image')
-		->setSource(DIR_WS_CATALOG_LANGUAGES . $languages[$i]['directory'] . '/images/' . $languages[$i]['image'])
-		->setTitle($languages[$i]['name']);
+		$langImage = htmlBase::newElement('div')
+		->html($lInfo['showName']('&nbsp;'));
 				
-		$valueNameInput = htmlBase::newElement('input')->setName('value_name[' . $langID . ']');
+		$valueNameInput = htmlBase::newElement('input')->setName('value_name[' . $langID . '][admin]');
 		if (isset($Qvalue)){
 			$valueNameInput->setValue($Qvalue['ProductsOptionsValuesDescription'][$langID]['products_options_values_name']);
+		}
+		$valueNameInputFront = htmlBase::newElement('input')->setName('value_name[' . $langID . '][front]');
+		if (isset($Qvalue)){
+			$valueNameInputFront->setValue($Qvalue['ProductsOptionsValuesDescription'][$langID]['products_options_front_values_name']);
 		}
 		$valueNames->addBodyRow(array(
 			'columns' => array(
 				array('addCls' => 'main', 'text' => $langImage),
-				array('addCls' => 'main', 'text' => $valueNameInput)
+				array('addCls' => 'main', 'text' => $valueNameInput),
+				array('addCls' => 'main', 'text' => $valueNameInputFront)
 			)
 		));
 	}

@@ -59,6 +59,7 @@ $checkedReadMore = '';
 $checkedDesc = '';
 $descLength = '200';
 $imageHasLink = '';
+$startAuto = '';
 $checkedTitle = '';
 if (isset($WidgetSettings->showImage) && $WidgetSettings->showImage == 'showImage'){
 	$checkedImage = 'checked="checked"';
@@ -90,6 +91,9 @@ if (isset($WidgetSettings->showDesc) && $WidgetSettings->showDesc == 'showDesc')
 }
 if (isset($WidgetSettings->imageHasLink) && $WidgetSettings->imageHasLink == 'imageHasLink'){
 	$imageHasLink = 'checked="checked"';
+}
+if (isset($WidgetSettings->startAuto) && $WidgetSettings->startAuto == 'startAuto'){
+	$startAuto = 'checked="checked"';
 }
 
 if (isset($WidgetSettings->descLength) && !empty($WidgetSettings->descLength)){
@@ -139,6 +143,10 @@ ob_start();
 		<tr>
 			<td>Image Has Link:</td>
 			<td><input type="checkbox" name="imageHasLink" value="imageHasLink" <?php echo $imageHasLink;?>></td>
+		</tr>
+		<tr>
+			<td>Start auto:</td>
+			<td><input type="checkbox" name="startAuto" value="startAuto" <?php echo $startAuto;?>></td>
 		</tr>
 		<tr>
 			<td>Show Description:</td>

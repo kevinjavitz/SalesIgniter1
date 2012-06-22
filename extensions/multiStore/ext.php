@@ -170,7 +170,7 @@ class Extension_multiStore extends ExtensionBase {
 	}
 
 	private function loadStoreInfoCatalog(){
-		global $App;
+		global $App, $ShoppingCart;
 		if ((getenv('HTTPS') == 'on' && Session::exists('current_store_id')) || isset($_GET['forceStoreId'])) {
 			$checkId = Session::get('current_store_id');
 			if (isset($_GET['forceStoreId'])){
@@ -205,6 +205,9 @@ class Extension_multiStore extends ExtensionBase {
 		if (!Session::exists('current_store_id') || (Session::get('current_store_id') != $this->storeInfo['stores_id'])){
 			//if (getenv('HTTPS') != 'on'){
 				Session::set('current_store_id', $this->storeInfo['stores_id']);
+				if(isset($ShoppingCart)){
+					$ShoppingCart->emptyCart();
+				}
 			//}
 		}
 		else {
@@ -347,7 +350,7 @@ class Extension_multiStore extends ExtensionBase {
 	public function AdminInventoryCentersListingQueryBeforeExecute(&$Qcenter) {
 		if (Session::exists('admin_showing_stores')){
 			$power_set = $this->pc_array_power_set(Session::get('admin_showing_stores'));
-			$string = '';
+			$string = 'inventory_center_stores = "" OR ';
 		    foreach($power_set as $set){
 				if(count($set) > 0){
 					$val = implode(';', array_reverse($set));
@@ -483,8 +486,8 @@ class Extension_multiStore extends ExtensionBase {
 	}
 	
 	public function OrderQueryBeforeExecute(&$orderQuery){
-		global $appExtension;
-		if ($appExtension->isAdmin()){
+		global $appExtension, $App;
+		if ($appExtension->isAdmin() || $App->getAppName() == 'generate_pdf'){
 			$orderQuery->leftJoin('o.OrdersToStores o2s');
 		}else{
 			$orderQuery->leftJoin('o.OrdersToStores o2s');
@@ -654,6 +657,9 @@ class Extension_multiStore extends ExtensionBase {
 	
 	public function ProductInventoryBarcodeGetInventoryItemsQueryBeforeExecute($invData, &$Qcheck){
 		global $Editor, $appExtension;
+		$isInventory = $appExtension->isInstalled('inventoryCenters') && $appExtension->isEnabled('inventoryCenters');
+		$extInventoryCenters = $appExtension->getExtension('inventoryCenters');
+		if ($isInventory && $extInventoryCenters->stockMethod == 'Store'){
 		$Qcheck->leftJoin('ib.ProductsInventoryBarcodesToStores ib2s')
 			->leftJoin('ib2s.Stores');
 		if ($appExtension->isAdmin()){
@@ -663,9 +669,6 @@ class Extension_multiStore extends ExtensionBase {
 				$Qcheck->andWhereIn('ib2s.inventory_store_id', Session::get('admin_showing_stores'));
 			}
 		}else{
-			$isInventory = $appExtension->isInstalled('inventoryCenters') && $appExtension->isEnabled('inventoryCenters');
-			$extInventoryCenters = $appExtension->getExtension('inventoryCenters');
-			if ($isInventory && $extInventoryCenters->stockMethod == 'Store'){
 				$Qcheck->andWhere('ib2s.inventory_store_id = ?', Session::get('current_store_id'));
 			}
 		}

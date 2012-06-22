@@ -17,6 +17,14 @@
 	</configuration>
 	<configuration>
 		<tab><![CDATA[General]]></tab>
+        <title><![CDATA[Show Estimated time]]></title>
+        <key><![CDATA[MODULE_ORDER_SHIPPING_USPS_SHOW_ESTIMATED_TIME]]></key>
+        <value><![CDATA[True]]></value>
+        <description><![CDATA[Do you want to show estimated time?]]></description>
+        <set_function><![CDATA[tep_cfg_select_option(array('True', 'False'),]]></set_function>
+    </configuration>
+	<configuration>
+		<tab><![CDATA[General]]></tab>
 		<title><![CDATA[Tax Class]]></title>
 		<key><![CDATA[TAX_CLASS]]></key>
 		<value><![CDATA[0]]></value>

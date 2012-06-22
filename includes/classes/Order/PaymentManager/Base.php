@@ -42,8 +42,12 @@ class OrderPaymentManager {
 		return $this->History;
 	}
 	
-	public function show($cardData = true){
+	public function show($cardData = true, $currency = 'USD', $currencyValue = '1'){
 		global $Order, $currencies, $App;
+		if(is_object($Order)){
+			$currency = $Order->getCurrency();
+			$currencyValue = $Order->getCurrencyValue();
+		}
 		$paymentHistoryTable = htmlBase::newElement('table')
 		->setCellPadding(3)
 		->setCellSpacing(0)
@@ -95,7 +99,7 @@ class OrderPaymentManager {
 						'border-top' => 'none',
 						'border-left' => 'none'
 					),
-					'text' => $currencies->format($paymentHistory['payment_amount'], true, $Order->getCurrency(), $Order->getCurrencyValue())
+					'text' => $currencies->format($paymentHistory['payment_amount'], true, $currency, $currencyValue)
 				)
 			);
 			

@@ -74,13 +74,13 @@
 			<title>Pricing</title>
 			<description>Pricing Extension Settings</description>
 			<configurations>
-				<EXTENSION_PAY_PER_RENTALS_USE_PRO_RATED>
-					<value>True</value>
+				<EXTENSION_PAY_PER_RENTALS_PRICING_CONFIG>
+					<value>Prorated</value>
 					<title>Use prorated calculation of prices</title>
 					<description>Use prorated calculation of prices.</description>
 					<sort_order>20</sort_order>
-					<set_function>tep_cfg_select_option(array('True','False'),</set_function>
-				</EXTENSION_PAY_PER_RENTALS_USE_PRO_RATED>
+					<set_function>tep_cfg_select_option(array('Prorated','No Pro-rates: extra lower time periods allowed.','No Pro-rates: extra time periods not allowed.'),</set_function>
+				</EXTENSION_PAY_PER_RENTALS_PRICING_CONFIG>
 				<EXTENSION_PAY_PER_RENTALS_SHOW_PRICES_DATES_BEFORE>
 					<value>True</value>
 					<title>Show prices for rentals when date before is selected.</title>
@@ -374,6 +374,26 @@
 			<set_function>tep_cfg_select_option(array('True','False'),</set_function>
 		</EXTENSION_PAY_PER_RENTALS_ENABLE_TIME>
 
+        <EXTENSION_PAY_PER_RENTALS_ENABLE_TIME_DROPDOWN>
+                    <value>False</value>
+                    <title>Enable time dropdown on calendar</title>
+                    <description>Time dropdown is enabled on calendar? </description>
+                    <sort_order>12</sort_order>
+                    <set_function>tep_cfg_select_option(array('True','False'),</set_function>
+        </EXTENSION_PAY_PER_RENTALS_ENABLE_TIME_DROPDOWN>
+        <EXTENSION_PAY_PER_RENTALS_SAME_DATES_FOR_RESERVATIONS>
+                    <value>False</value>
+                    <title>If enabled after first product added to cart all the other products will be added to cart with the same dates.</title>
+                    <description>Keep same dates for future reservations</description>
+                    <sort_order>12</sort_order>
+                    <set_function>tep_cfg_select_option(array('True','False'),</set_function>
+        </EXTENSION_PAY_PER_RENTALS_SAME_DATES_FOR_RESERVATIONS>
+        <EXTENSION_PAY_PER_RENTALS_TIME_DAY_NEXT_DAY>
+                    <value>00:00:00</value>
+                    <title>Time of day after which reservation is considered next day.</title>
+                    <description>Time of day after which reservation is considered next day. (0-23) format hh:mm:ss. It works only if full days for pricing calculations config is enabled </description>
+                    <sort_order>13</sort_order>
+        </EXTENSION_PAY_PER_RENTALS_TIME_DAY_NEXT_DAY>
 		<EXTENSION_PAY_PER_RENTALS_START_TIME>
 			<value>9</value>
 			<title>Store hour when rental is allowed. Basically open store time.</title>
@@ -575,6 +595,21 @@
 			<set_function>tep_cfg_select_option(array('True','False'),</set_function>
 		</EXTENSION_PAY_PER_RENTALS_SHOW_RESERVATION_STATUS_COLUMN>
 
+		<EXTENSION_PAY_PER_RENTALS_END_DATE_SAME_START_DATE>
+					<value>False</value>
+					<title>End Date is the same with start date</title>
+					<description>End Date is always the same as start date</description>
+					<sort_order>31</sort_order>
+					<set_function>tep_cfg_select_option(array('True','False'),</set_function>
+		</EXTENSION_PAY_PER_RENTALS_END_DATE_SAME_START_DATE>
+		
+		 <EXTENSION_PAY_PER_RENTALS_DISABLED_MESSAGE>
+	            <value>False</value>
+	            <title>Do you want to show a message when clicking on a disabled day</title>
+	            <description>If False the days will be automatically disabled </description>
+	            <sort_order>31</sort_order>
+	            <set_function>tep_cfg_select_option(array('True','False'),</set_function>
+	        </EXTENSION_PAY_PER_RENTALS_DISABLED_MESSAGE>
 		<EXTENSION_PAY_PER_RENTALS_INFOBOX_CONTENT>
 			<value></value>
 			<title>Content to add to ppr infobox</title>
@@ -582,6 +617,13 @@
 			<sort_order>32</sort_order>
 		</EXTENSION_PAY_PER_RENTALS_INFOBOX_CONTENT>
 
+		<EXTENSION_PAY_PER_RENTAL_ALLOW_MEMBERSHIP>
+					<value>False</value>
+					<title>Do you want to allow memberships?</title>
+					<description>Allow memberships</description>
+					<sort_order>31</sort_order>
+					<set_function>tep_cfg_select_option(array('True','False'),</set_function>
+		</EXTENSION_PAY_PER_RENTAL_ALLOW_MEMBERSHIP>
 			</configurations>
 		</advanced>
 	</tabs>

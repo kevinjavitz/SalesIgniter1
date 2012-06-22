@@ -1,0 +1,30 @@
+<ConfigurationGroup>
+	<title>Product Groups</title>
+	<key>productGroups</key>
+	<description>Configuration Settings For The Product Groups Extension</description>
+	<tabs>
+		<general>
+			<title>General</title>
+			<description>General Extension Settings</description>
+			<configurations>
+				<EXTENSION_PRODUCT_GROUPS_INSTALLED editable="false">
+					<title>Installation Status</title>
+					<value>False</value>
+					<description></description>
+				</EXTENSION_PRODUCT_GROUPS_INSTALLED>
+				<EXTENSION_PRODUCT_GROUPS_ENABLED>
+					<title>Enable Product Groups</title>
+					<value>False</value>
+					<description>Enable Or Disable The Product Groups Extension</description>
+					<set_function>
+						<type>radio</type>
+						<values>
+							<value>True</value>
+							<value>False</value>
+						</values>
+					</set_function>
+				</EXTENSION_PRODUCT_GROUPS_ENABLED>
+			</configurations>
+		</general>
+	</tabs>
+</ConfigurationGroup>

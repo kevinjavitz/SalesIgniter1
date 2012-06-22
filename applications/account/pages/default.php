@@ -16,6 +16,10 @@
 		->setHref(itw_app_link(null, 'account', 'newsletters', 'SSL'));
 	}
 
+	if(sysConfig::get('ACCOUNT_MEMBERSHIP_CARD') == 'true') {
+		$membershipCardLink = htmlBase::newElement('a')->html(sysLanguage::get('MEMBERSHIP_CARD'))
+			->setHref(itw_app_link(null, 'account', 'membership_card', 'SSL'));
+	}
 	$listIcon = '<span class="ui-icon ui-icon-carat-1-e" style="display:inline-block;"></span>';
 
 	$Qorders = Doctrine_Query::create()
@@ -204,6 +208,16 @@
 				'<li>' . $listIcon . $newslettersLink->draw() . '</li>' .
 			'</ul>' .
 		'</div>';
+	}
+	if(sysConfig::get('ACCOUNT_MEMBERSHIP_CARD') == 'true') {
+		$pageContents .= '<div class="main" style="margin-top:1em;">' .
+			'<b>' . sysLanguage::get('MEMBERSHIP_CARD') . '</b>' .
+			'</div>' .
+			'<div class="ui-widget ui-widget-content ui-corner-all" style="padding:1em;">' .
+			'<ul class="accountPageLinks">' .
+			'<li>' . $listIcon . $membershipCardLink->draw() . '</li>' .
+			'</ul>' .
+			'</div>';
 	}
 	$pageContent->set('pageTitle', $pageTitle);
 	$pageContent->set('pageContent', $pageContents);

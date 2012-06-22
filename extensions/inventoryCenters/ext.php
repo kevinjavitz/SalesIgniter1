@@ -13,6 +13,7 @@
 class Extension_inventoryCenters extends ExtensionBase {
 
 	public function __construct(){
+		global $Editor;
 		parent::__construct('inventoryCenters');
 		$this->stockMethod = 'Zone';
 
@@ -306,6 +307,9 @@ class Extension_inventoryCenters extends ExtensionBase {
 			$returningArray['inventory_center_pickup'] = (!empty($resData) ? $resData[0]['inventory_center_pickup'] : '');
 		}
 
+		if (sysConfig::get('EXTENSION_INVENTORY_CENTERS_USE_LP') == 'True'){
+			$returningArray['inventory_center_lp'] = (!empty($resData) ? $resData[0]['inventory_center_lp'] : '');
+		}
 		if (sysConfig::get('EXTENSION_PAY_PER_RENTALS_CHOOSE_DROPOFF') == 'True'){
 			$returningArray['inventory_center_dropoff'] = (!empty($resData) ? $resData[0]['inventory_center_dropoff'] : '');
 		}
@@ -334,8 +338,10 @@ class Extension_inventoryCenters extends ExtensionBase {
 			$Qorders->leftJoin('ib.ProductsInventoryBarcodesToInventoryCenters b2c');
 
 			if ($appExtension->isAdmin()){
-				if (is_object($Editor) && $Editor->hasData('inventory_center_id')){
+				if (is_object($Editor)){
+					if($Editor->hasData('inventory_center_id')){
 					$Qorders->andWhere('b2c.inventory_center_id = ?', $Editor->getData('inventory_center_id'));
+					}
 				}else{
 					$Qorders->andWhereIn('b2c.inventory_center_id', Session::get('isppr_inventory_pickup'));
 				}
@@ -369,7 +375,7 @@ class Extension_inventoryCenters extends ExtensionBase {
 				}
 			}
 		}
-		if($colValue > 0){
+		if($colValue > 0 && $this->ignoreCenter === false){
 			$Qcheck->andWhere($colName . ' = ?', $colValue);
 		}
 	}
@@ -396,6 +402,7 @@ class Extension_inventoryCenters extends ExtensionBase {
 	
 	public function ProductInventoryBarcodeHasInventoryQueryBeforeExecute($invData, &$Qcheck){
 		global $Editor, $appExtension;
+		if($this->ignoreCenter === false){
 		if ($this->stockMethod == 'Zone' && $appExtension->isAdmin()){
 			$Qcheck->leftJoin('ib.ProductsInventoryBarcodesToInventoryCenters ib2c');
 			if (is_object($Editor)&& $Editor->hasData('inventory_center_id')){
@@ -432,6 +439,7 @@ class Extension_inventoryCenters extends ExtensionBase {
 						$Qcheck->leftJoin('ib.ProductsInventoryBarcodesToInventoryCenters b2c')
 								->leftJoin('b2c.ProductsInventoryCenters');
 						$Qcheck->andWhere('b2c.inventory_center_id = ?', $invCenterID);
+						}
 					}
 				}
 			}
@@ -488,6 +496,11 @@ class Extension_inventoryCenters extends ExtensionBase {
 			}
 		}
 
+		if (sysConfig::get('EXTENSION_INVENTORY_CENTERS_USE_LP') == 'True'){
+			if(isset($resInfo['inventory_center_lp']) && $resInfo['inventory_center_lp'] != ''){
+				$return .= '<br /><small><i> - ' .  'Inventory Center Launch Point: ' . $resInfo['inventory_center_lp'] . '</i></small>';
+			}
+		}
 		if (sysConfig::get('EXTENSION_PAY_PER_RENTALS_CHOOSE_DROPOFF') == 'True'){
 			$dropoff = $this->getInventoryCenters($resInfo['inventory_center_dropoff']);
 			if(isset($dropoff[0]) && $dropoff[0]['inventory_center_name'] != ''){
@@ -504,6 +517,9 @@ class Extension_inventoryCenters extends ExtensionBase {
 				$reservationInfo['reservationInfo']['inventory_center_pickup'] = $reservationInfo['OrdersProductsReservation'][0]['inventory_center_pickup'];
 			}
 
+			if (sysConfig::get('EXTENSION_INVENTORY_CENTERS_USE_LP') == 'True'){
+				$reservationInfo['reservationInfo']['inventory_center_lp'] = $reservationInfo['OrdersProductsReservation'][0]['inventory_center_lp'];
+			}
 			if (sysConfig::get('EXTENSION_PAY_PER_RENTALS_CHOOSE_DROPOFF') == 'True'){
 				$reservationInfo['reservationInfo']['inventory_center_dropoff'] = $reservationInfo['OrdersProductsReservation'][0]['inventory_center_dropoff'];
 			}
@@ -515,6 +531,9 @@ class Extension_inventoryCenters extends ExtensionBase {
 
 		if (sysConfig::get('EXTENSION_PAY_PER_RENTALS_CHOOSE_PICKUP') == 'True'){
 			$reservationInfo['inventory_center_pickup'] = $_POST['pickup'];
+		}
+		if (sysConfig::get('EXTENSION_INVENTORY_CENTERS_USE_LP') == 'True'){
+			$reservationInfo['inventory_center_lp'] = $_POST['lp'];
 		}
 
 		if (sysConfig::get('EXTENSION_PAY_PER_RENTALS_CHOOSE_DROPOFF') == 'True'){
@@ -573,16 +592,24 @@ class Extension_inventoryCenters extends ExtensionBase {
 			$Reservation->inventory_center_pickup = $resInfo['inventory_center_pickup'];
 		}
 
+		if (sysConfig::get('EXTENSION_INVENTORY_CENTERS_USE_LP') == 'True'){
+			$Reservation->inventory_center_lp = $resInfo['inventory_center_lp'];
+		}
 		if (sysConfig::get('EXTENSION_PAY_PER_RENTALS_CHOOSE_DROPOFF') == 'True'){
 			$Reservation->inventory_center_dropoff = $resInfo['inventory_center_dropoff'];
 		}
 	}
 
 	public function Extension_payPerRentalsOrderClassQueryFillProductArray(&$mainReservation, &$product){
-		if(sysConfig::get('EXTENSION_PAY_PER_RENTALS_CHOOSE_PICKUP') == 'True')
+		if(sysConfig::get('EXTENSION_PAY_PER_RENTALS_CHOOSE_PICKUP') == 'True'){
 			$product['reservationInfo']['inventory_center_pickup'] = $mainReservation['inventory_center_pickup'];
-		if(sysConfig::get('EXTENSION_PAY_PER_RENTALS_CHOOSE_DROPOFF') == 'True')
+		}
+		if(sysConfig::get('EXTENSION_INVENTORY_CENTERS_USE_LP') == 'True'){
+			$product['reservationInfo']['inventory_center_lp'] = $mainReservation['inventory_center_lp'];
+		}
+		if(sysConfig::get('EXTENSION_PAY_PER_RENTALS_CHOOSE_DROPOFF') == 'True'){
 			$product['reservationInfo']['inventory_center_dropoff'] = $mainReservation['inventory_center_dropoff'];
+		}
 	}
 	
 	public function ReservationAppendOrderedProductsString(&$products_ordered, &$cartProduct){
@@ -590,6 +617,9 @@ class Extension_inventoryCenters extends ExtensionBase {
 		if (sysConfig::get('EXTENSION_PAY_PER_RENTALS_CHOOSE_PICKUP') == 'True'){
 			$pickup = $this->getInventoryCenters($resInfo['inventory_center_pickup']);
 			$products_ordered .= "\n\t" . 'Inventory Center pickup zone: ' . $pickup[0]['inventory_center_name'] . '</i></small>';
+		}
+		if (sysConfig::get('EXTENSION_INVENTORY_CENTERS_USE_LP') == 'True'){
+			$products_ordered .= "\n\t" . 'Inventory Center Launch Point: ' . $resInfo['inventory_center_lp'] . '</i></small>';
 		}
 		
 		if (sysConfig::get('EXTENSION_PAY_PER_RENTALS_CHOOSE_DROPOFF') == 'True'){
@@ -599,7 +629,7 @@ class Extension_inventoryCenters extends ExtensionBase {
 	}
 
 	public function ReservationCheckQueryAfterExecute(&$Result, $settings, &$returnVal){
-		if ($returnVal <= 0){
+		if ($returnVal <= 0 && $this->ignoreCenter === false){
 			if (isset($settings['cartProduct'])){
 				$resInfo = $settings['cartProduct']->getInfo('reservationInfo');
 				$qtyCheck = $settings['cartProduct']->getQuantity();

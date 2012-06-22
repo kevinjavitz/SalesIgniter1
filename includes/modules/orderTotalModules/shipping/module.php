@@ -104,6 +104,7 @@ class OrderTotalShipping extends OrderTotalModuleBase
 		//echo 'hh'.$shippingCost.'-'.$totalShippingCost;
 		if ($totalShippingCost >= 0){
 			//echo 'd';
+			$order->info['total'] += $totalShippingCost;
 			$this->addOutput(array(
 					'title' => '<b>'.$shippingmodulesInfo.'</b>:',
 					'text' => $this->formatAmount($totalShippingCost),

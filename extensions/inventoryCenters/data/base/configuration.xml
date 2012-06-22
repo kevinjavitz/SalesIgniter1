@@ -162,6 +162,13 @@
 			<set_function>tep_cfg_select_option(array('True','False'),</set_function>
 		</EXTENSION_INVENTORY_CENTERS_INTERMEDIARY_PAGE>
 
+		<EXTENSION_INVENTORY_CENTERS_USE_LP>
+			<value>False</value>
+			<title>Use launch points</title>
+			<description>Use launch points</description>
+			<sort_order>13</sort_order>
+			<set_function>tep_cfg_select_option(array('True','False'),</set_function>
+		</EXTENSION_INVENTORY_CENTERS_USE_LP>
 	</configurations>
 	</general>
 	</tabs>

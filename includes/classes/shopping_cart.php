@@ -25,6 +25,9 @@
 				$cartProduct->init();
 			}
 		}
+		public function loadQueueContents(){
+			EventManager::notify('ShoppingCart\OnConstruct');
+		}
 		
 		private function _notify($pID){
 			Session::set('new_products_id_in_cart', $pID);
@@ -53,7 +56,9 @@
 
 			$this->contents->rewind();
 			foreach($this->contents as $cartProduct){
+				if($cartProduct->hasInfo('is_queue') == false){
 				$product_id_list .= ', ' . $cartProduct->getIdString();
+				}
 			}
 
 			return substr($product_id_list, 2);
@@ -85,7 +90,7 @@
 			return false;
 		}
 		
-		public function addProduct($pID, $purchaseType = 'new', $qty = 0, $pInfo = null){
+		public function addProduct($pID, $purchaseType = 'new', $qty = 0, $pInfo = null, $isQueue = false, $alreadyInQueue = false){
 			global $messageStack;
 			$pID_strings = array(array(
 				'id'           => $pID,
@@ -127,9 +132,13 @@
 			
 						$this->_notify((int)$pInfo['id_string']);
 
-						if ($cartProduct){
+						if ($cartProduct && $alreadyInQueue == false){
 							$cartProduct->updateInfo($pInfo);
 						}else{
+							if($isQueue){
+								$pInfo['is_queue'] = true;
+								$pInfo['already_queue'] = $alreadyInQueue;
+							}
 							$this->contents->add(new ShoppingCartProduct($pInfo));
 						}
 						EventManager::notify('ShoppingCart\AddToCartAfterAction', $pID_info, &$pInfo, &$cartProduct); 
@@ -170,7 +179,22 @@
 		}
 		
 		public function getProducts(){
-			return $this->contents;
+			$contArr = array();
+			foreach($this->contents as $cartProduct){
+				if($cartProduct->hasInfo('is_queue') == false){
+					$contArr[] = $cartProduct;
+				}
+			}
+			return $contArr;
+		}
+		public function getProductsQueue(){
+			$contArr = array();
+			foreach($this->contents as $cartProduct){
+				if($cartProduct->hasInfo('is_queue') == true){
+					$contArr[] = $cartProduct;
+				}
+			}
+			return $contArr;
 		}
 
 		public function calculate() {
@@ -214,10 +238,23 @@
 			
 			$this->contents->rewind();
 			foreach($this->contents as $cartProduct){
+				if($cartProduct->hasInfo('is_queue') == false){
 				$totalItems += $cartProduct->getQuantity();
+				}
 			}
 
 			EventManager::notify('ShoppingCart\CountContents', &$totalItems);
+			return $totalItems;
+		}
+		public function countContentsQueue() {
+			$totalItems = 0;
+			$this->contents->rewind();
+			foreach($this->contents as $cartProduct){
+				if($cartProduct->hasInfo('is_queue') == true){
+					$totalItems += $cartProduct->getQuantity();
+				}
+			}
+			EventManager::notify('ShoppingCart\CountContentsQueue', &$totalItems);
 			return $totalItems;
 		}
 		

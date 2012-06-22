@@ -343,6 +343,10 @@ function updatePagesDescription(){
 	mysql_select_db($db , $link) or die("Select Error: ".mysql_error());
 	mysql_query("ALTER TABLE  `pages_description` CHANGE  `pages_html_text`  `pages_html_text` TEXT CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL") or die('An error occured when running updating pages_description table'.mysql_error());
 	mysql_query("ALTER TABLE  `pages_description` CHANGE  `pages_title`  `pages_title` TEXT CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL") or die('An error occured when running updating pages_description table'.mysql_error());
+	mysql_query("ALTER TABLE  `admin` CHANGE  `favorites_names`  `favorites_names` TEXT CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL") or die('An error occured when running updating pages_description table'.mysql_error());
+	mysql_query("ALTER TABLE  `admin` CHANGE  `favorites_links`  `favorites_links` TEXT CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL") or die('An error occured when running updating pages_description table'.mysql_error());
+	mysql_query("ALTER TABLE  `admin_favorites` CHANGE  `favorites_names`  `favorites_names` TEXT CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL") or die('An error occured when running updating pages_description table'.mysql_error());
+	mysql_query("ALTER TABLE  `admin_favorites` CHANGE  `favorites_links`  `favorites_links` TEXT CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL") or die('An error occured when running updating pages_description table'.mysql_error());	
 	mysql_query("ALTER TABLE  `template_pages` CHANGE  `page`  `page` VARCHAR(250) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL") or die('An error occured when running updating pages_description table'.mysql_error());
 	mysql_query("ALTER TABLE  `sessions` CHANGE  `value`  `value` LONGTEXT CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL") or die('An error occured when running updating pages_description table'.mysql_error());
 }

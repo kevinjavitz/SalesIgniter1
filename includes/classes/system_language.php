@@ -119,6 +119,20 @@ class sysLanguage
 
 	/**
 	 * @static
+	 * @param bool $reload
+	 * @return array
+	 */
+	public static function getLanguageIdFromCode($code) {
+			$Languages = Doctrine_Manager::getInstance()
+					->getCurrentConnection()
+					->fetchAssoc('select * from languages where status = 1 and code = "'.$code.'" order by sort_order');
+			if (sizeof($Languages) > 0){
+				return $Languages[0]['languages_id'];
+			}
+		return self::$catalog_languages[sysConfig::get('DEFAULT_LANGUAGE')]['id'];
+	}
+	/**
+	 * @static
 	 * @param int $id
 	 * @return array
 	 */

@@ -1,6 +1,11 @@
 <?php
+	if(!isset($_POST['start_time']) && !isset($_POST['end_time']) || sysConfig::get('EXTENSION_PAY_PER_RENTALS_ENABLE_TIME_DROPDOWN') == 'False'){
 	$starting_date = date('Y-m-d H:i:s', strtotime($_POST['start_date']));
 	$ending_date = date('Y-m-d H:i:s', strtotime($_POST['end_date']));
+	}else{
+		$starting_date = date('Y-m-d H:i:s', strtotime($_POST['start_date'].' '.$_POST['start_time']));
+		$ending_date = date('Y-m-d H:i:s', strtotime($_POST['end_date'] .' '.$_POST['end_time']));
+	}
  	//$isSemester = (isset($_POST['isSemester'])?true:false);
   	$semName = (isset($_POST['semester_name'])?$_POST['semester_name']:'');
 	$success = false;

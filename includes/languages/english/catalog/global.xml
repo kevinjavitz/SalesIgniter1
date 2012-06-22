@@ -254,10 +254,12 @@
 	<define key="TEXT_BUTTON_BUY"><![CDATA[Buy]]></define>
 	<define key="TEXT_BUTTON_BUY_NOW"><![CDATA[Buy Now]]></define>
 	<define key="TEXT_BUTTON_IN_CART"><![CDATA[Add To Cart]]></define>
-	<define key="TEXT_BUTTON_RESERVE"><![CDATA[Reserve]]></define>
-	<define key="TEXT_BUTTON_PAY_PER_RENTAL"><![CDATA[Pay Per Rental]]></define>
-	<define key="TEXT_BUTTON_RENT_NOW"><![CDATA[Rent Now]]></define>
 	<define key="TEXT_BUTTON_IN_QUEUE"><![CDATA[Add To Queue]]></define>
+	<define key="TEXT_BUTTON_RESERVE"><![CDATA[Reserve]]></define>
+	<define key="TEXT_BUTTON_RESERVE_QUEUE"><![CDATA[Queue]]></define>
+	<define key="TEXT_BUTTON_PAY_PER_RENTAL"><![CDATA[Reserve]]></define>
+	<define key="TEXT_BUTTON_RENT_NOW"><![CDATA[Rent Now]]></define>
+	<define key="TEXT_BUTTON_IN_QUEUE"><![CDATA[Reserve]]></define>
 	<define key="TEXT_BUTTON_IN_QUEUE_SERIES"><![CDATA[Add All To Queue]]></define>
 	<define key="TEXT_BUTTON_UPDATE_QUEUE"><![CDATA[Update Queue]]></define>
 	<define key="TEXT_BUTTON_VIEW"><![CDATA[View]]></define>
@@ -447,6 +449,7 @@
     <define key="TEXT_PAYMENT_HISTORY_DATE_ADDED"><![CDATA[Date Added]]></define>
     <define key="TEXT_ACCEPTED_PAYMENT_METHODS"><![CDATA[Accepted Payment Methods]]></define>
     <define key="TO_ADD_TO_QUEUE_MESSAGE"><![CDATA[To add to queue you need to login to your rental account or create one here]]></define>
+    <define key="TO_ADD_TO_QUEUE_PPR_MESSAGE"><![CDATA[To add to queue you need to login to your rental account or create one here]]></define>
     <define key="TEXT_PAGER_TYPE"><![CDATA[products]]></define>
     <define key="TEXT_PAGER_OF"><![CDATA[of]]></define>
     <define key="TEXT_EMAIL_DO_NOT_MATCH"><![CDATA[The email address or password do not match our records]]></define>
@@ -629,8 +632,14 @@
 	<define key="TEXT_October"><![CDATA[October]]></define>
 	<define key="TEXT_November"><![CDATA[November]]></define>
 	<define key="TEXT_December"><![CDATA[December]]></define>
-
-
+	<define key="VIEW_SIZE_CHART"><![CDATA[View size chart]]></define>
+    <define key="TABLE_HEADING_PRICE_EXCLUDING_TAX"><![CDATA[Price (ex)]]></define>
+    <define key="TABLE_HEADING_PRICE_INCLUDING_TAX"><![CDATA[Price (inc)]]></define>
+    <define key="TABLE_HEADING_TOTAL_EXCLUDING_TAX"><![CDATA[Total (ex)]]></define>
+    <define key="TABLE_HEADING_TOTAL_INCLUDING_TAX"><![CDATA[Total (inc)]]></define>
+    <define key="EXTENSION_PAY_PER_RENTALS_START_TIME"><![CDATA[Time for delivery:]]></define>
+    <define key="EXTENSION_PAY_PER_RENTALS_END_TIME"><![CDATA[Time for pickup:]]></define>
+    <define key="ENTRY_RENTAL_TIMES_SELECTED"><![CDATA[]]></define>
 
 
 </definitions>

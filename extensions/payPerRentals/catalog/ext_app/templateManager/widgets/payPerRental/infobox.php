@@ -71,7 +71,7 @@ class InfoBoxPayPerRental extends InfoBoxAbstract {
 		$ulElement->addItemObj($liElement);
 	}
 
-	public function getPprForm($hasUpdateButton = true, $hasHeaders = false, $hasGeographic = true, $showCategories = false, $showSubmit = false, $showShipping = false, $showTimes = false, $showQty = false, $showPickup = false, $showDropoff = false){
+	public function getPprForm($hasUpdateButton = true, $hasHeaders = false, $hasGeographic = true, $showCategories = false, $showSubmit = false, $showShipping = false, $showTimes = false, $showQty = false, $showPickup = false, $showDropoff = false, $hasLP = false, $timesWithHeader = false){
 		global $appExtension, $userAccount, $currencies, $cPath, $cPath_array, $tree, $categoriesString, $current_category_id, $App;
 
 		$getv = '';
@@ -84,7 +84,7 @@ class InfoBoxPayPerRental extends InfoBoxAbstract {
 		->attr('action', itw_app_link('appExt=payPerRentals&action=setBefore' . $getv, 'build_reservation', 'default'))
 		->attr('method', 'post');
 
-		$pprform->append(ReservationUtilities::inventoryCenterAddon($hasHeaders, $hasGeographic, $showPickup, $showDropoff));
+		$pprform->append(ReservationUtilities::inventoryCenterAddon($hasHeaders, $hasGeographic, $showPickup, $showDropoff, $hasLP));
 
 
 		$separator2 = htmlBase::newElement('div');
@@ -601,8 +601,23 @@ class InfoBoxPayPerRental extends InfoBoxAbstract {
 			$container_destshBT = htmlBase::newElement('div')
 				->addClass('destBT');
 			if ($showTimes){
+				if($timesWithHeader == false){
 				$container_destshBT->append($hst);
 				$container_destshBT->append($hourStart);
+				}else{
+					$separator21 = htmlBase::newElement('div');
+					$separator21->addClass('ui-my-header');
+					$separatort21 = htmlBase::newElement('div');
+					$separatort21->addClass('ui-my-header-text');
+					$separatort21->html(sysLanguage::get('INFOBOX_PAYPERRENTAL_SELECT_TIMES'));
+					$separator21->append($separatort21);
+					$container_dates21 = htmlBase::newElement('div');
+					$container_dates21->addClass('ui-my-content');
+					$container_destshTimesB = htmlBase::newElement('div')
+						->addClass('destTimesB');
+					$container_destshTimesB->append($hst)->append($hourStart);
+					$container_dates21->append($container_destshTimesB);
+				}
 			}
 			$brClear = htmlBase::newElement('br')
 			->addClass('brClear');
@@ -621,12 +636,24 @@ class InfoBoxPayPerRental extends InfoBoxAbstract {
 			$container_rethBD->append($est)
 			->append($dateEnd);
 
+			if(sysConfig::get('EXTENSION_PAY_PER_RENTALS_END_DATE_SAME_START_DATE') == 'True'){
+				$container_rethBD->css(array(
+						'display'   => 'none'
+					));
+			}
 			$container_rethBT = htmlBase::newElement('div')
 			->addClass('retBT');
 
 			if ($showTimes){
+				if($timesWithHeader == false){
 				$container_rethBT->append($hen);
 				$container_rethBT->append($hourEnd);
+				}else{
+					$container_retshTimesB = htmlBase::newElement('div')
+						->addClass('retTimesB');
+					$container_retshTimesB->append($hen)->append($hourEnd);
+					$container_dates21->append($container_retshTimesB);
+				}
 			}
 
 			$container_rethB->append($container_rethBD)
@@ -669,6 +696,10 @@ class InfoBoxPayPerRental extends InfoBoxAbstract {
 
 		$pprform->append($separator2)
 		->append($container_dates);
+		if($showTimes && $timesWithHeader){
+			$pprform->append($separator21);
+			$pprform->append($container_dates21);
+		}
 
 		//here is for the level of service or reservation shipping methods
 		if ($showShipping){
@@ -709,7 +740,7 @@ class InfoBoxPayPerRental extends InfoBoxAbstract {
 		$WidgetProperties = $this->getWidgetProperties();
 		if ($this->enabled === false) return;
 		$extraContent = sysConfig::get('EXTENSION_PAY_PER_RENTALS_INFOBOX_CONTENT');
-		$this->setBoxContent('<div id="'.$WidgetProperties->boxID.'">'.$this->getPprForm($WidgetProperties->hasButton, $WidgetProperties->hasHeader, $WidgetProperties->hasGeographic, $WidgetProperties->showCategories, $WidgetProperties->showSubmit, $WidgetProperties->showShipping, $WidgetProperties->showTimes, $WidgetProperties->showQty, $WidgetProperties->showPickup, $WidgetProperties->showDropoff). $extraContent. '</div>');
+		$this->setBoxContent('<div id="'.$WidgetProperties->boxID.'">'.$this->getPprForm($WidgetProperties->hasButton, $WidgetProperties->hasHeader, $WidgetProperties->hasGeographic, $WidgetProperties->showCategories, $WidgetProperties->showSubmit, $WidgetProperties->showShipping, $WidgetProperties->showTimes, $WidgetProperties->showQty, $WidgetProperties->showPickup, $WidgetProperties->showDropoff, $WidgetProperties->hasLP, $WidgetProperties->hasTimesHeader). $extraContent. '</div>');
 
 		return $this->draw();
 	}
@@ -985,6 +1016,12 @@ class InfoBoxPayPerRental extends InfoBoxAbstract {
 		//startSelectedDate = new Date(selectedDate);
 		dateFut = new Date(date.setDate(date.getDate() + parseInt(days)));
 		dates.not(this).datepicker("option", option, dateFut);
+		<?php if(sysConfig::get('EXTENSION_PAY_PER_RENTALS_END_DATE_SAME_START_DATE') == 'True'){?>
+			$(this).closest('form').find('.dend').val($(this).closest('form').find('.dstart').val());
+		<?php }?>
+		<?php if(sysConfig::get('EXTENSION_INVENTORY_CENTERS_USE_LP') == 'True'){?>
+			$('<?php echo '#'.$WidgetProperties->boxID;?> .changer').trigger('change');
+		<?php }?>
 		}
 		f = true;
 		if(myid == "dend"){
@@ -1402,6 +1439,66 @@ class InfoBoxPayPerRental extends InfoBoxAbstract {
 								data: sendValues+"&rType=ajax&pick="+pick+'&isContinent='+continent,
 								success: function(data) {
 									$ellem.find('.invCenter').replaceWith(data.data);
+									<?php if(sysConfig::get('EXTENSION_INVENTORY_CENTERS_USE_LP') == 'True'){?>
+										lpArr = data.lpPos.split(',');
+										if(typeof GMap2 != 'undefined' && data.lpPos != '0,0'){
+											map.setCenter(new GLatLng(lpArr[0],lpArr[1]), 14);
+										}
+										excludedTimes = new Array();
+										if(data.excluded_times != null){
+											excludedTimes = data.excluded_times;
+										}
+										if(data.excluded_dates != 'null'){
+											disabledDays = data.excluded_dates;
+											//$(".picker").datepicker("setDate",$(".picker").datepicker("getDate"));
+											$('.picker').datepicker( "refresh" );
+										}
+										var selectedValPickup = $('.pickupz option:selected').val();
+										$('.pickupz').html('');
+										for (i=0;i<data.lps.length;i++){
+											var option = $('<option/>');
+											if(data.lps[i] == selectedValPickup){
+												option.attr('selected','selected');
+											}
+										   option.val(data.lps[i]).html(data.lps[i]).appendTo('.pickupz');
+										}
+										if(data.start_time > 0){
+										var selectedValhStart = $('.hstart option:selected').val();
+										var selectedValhEnd = $('.hend option:selected').val();
+			                           	    $('.hstart').html('');
+											$('.hend').html('');
+											var endTime = <?php echo sysConfig::get('EXTENSION_PAY_PER_RENTALS_END_TIME');?>;
+											for (i=data.start_time;i<endTime;i++){
+												if($.inArray(i, excludedTimes) == -1){
+													var timeVal = (i % 12) + (i<12?':00 AM':':00 PM');
+													if(i == 12){
+														timeVal = '12:00 PM';
+													}
+													var option1 = $('<option/>').val(i).html(timeVal);
+													var option2 = $('<option/>').val(i).html(timeVal);
+													if(i == selectedValhStart){
+														option1.attr('selected','selected');
+													}
+													if(i == selectedValhEnd){
+														option2.attr('selected','selected');
+													}
+													option1.appendTo('.hstart');
+													option2.appendTo('.hend');
+												}
+											}
+										}
+											$('<?php echo '#'.$WidgetProperties->boxID;?> .mylp1').attr('href',"#");
+											$('<?php echo '#'.$WidgetProperties->boxID;?> .mylp1').click(function(){
+													if(selectedValPickup != 'No Destination Available'){
+														link = js_app_link('appExt=inventoryCenters&app=show_launch_point&appPage=default&dialog=true&lp_name='+selectedValPickup);
+														popupWindow(link,'400','300');
+													}
+													return false;
+											});
+									<?php }?>
+									
+									$('.changer').addClass('round_sb');
+									$('.changer').sb({useTie:true, fixedWidth: true });
 									$ellem.find('.rentbbut').button();
 									$ellem.find('.rentbbut').click(function(){
 										$ellem.submit();
@@ -1448,7 +1545,11 @@ class InfoBoxPayPerRental extends InfoBoxAbstract {
 		});
 
 		$('.eventf').trigger('change');
+	<?php if(sysConfig::get('EXTENSION_INVENTORY_CENTERS_USE_LP') == 'True'){?>
+		$('<?php echo '#'.$WidgetProperties->boxID;?> .changer').trigger('change');
+	<?php }?>
 		$('#ui-datepicker-div').css('z-index','10000');
+		$('#ui-datepicker-div').css('display','none');
 
 	});
 

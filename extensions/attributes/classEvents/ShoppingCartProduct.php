@@ -32,8 +32,8 @@
 						*/
 						if (isset($attribute['ProductsOptions']['ProductsOptionsDescription'][$langId]) && isset($attribute['ProductsOptionsValues']['ProductsOptionsValuesDescription'][$langId])){
 							$return .= '<br><small><i> - ' .
-							$attribute['ProductsOptions']['ProductsOptionsDescription'][$langId]['products_options_name'] . ': ' .
-							$attribute['ProductsOptionsValues']['ProductsOptionsValuesDescription'][$langId]['products_options_values_name'] .
+							(!empty($attribute['ProductsOptions']['ProductsOptionsDescription'][$langId]['products_options_front_name'])?$attribute['ProductsOptions']['ProductsOptionsDescription'][$langId]['products_options_front_name']:$attribute['ProductsOptions']['ProductsOptionsDescription'][$langId]['products_options_name']) . ': ' .
+							(!empty($attribute['ProductsOptionsValues']['ProductsOptionsValuesDescription'][$langId]['products_options_front_values_name'])?$attribute['ProductsOptionsValues']['ProductsOptionsValuesDescription'][$langId]['products_options_front_values_name']:$attribute['ProductsOptionsValues']['ProductsOptionsValuesDescription'][$langId]['products_options_values_name']) .
 							'</i></small>' . tep_draw_hidden_field($this->inputKey . '[' . $pID_string . '][' . $option . ']', $value);
 						}
 					}

@@ -4,8 +4,11 @@ $productID_string = $_GET['products_id'];
 $productName = $product->getName();
 $productImage = $product->getImage();
 $thumbUrl = 'imagick_thumb.php?path=rel&imgSrc=';
-
+if($productImage != '' && file_exists(sysConfig::getDirFsCatalog() . $productImage)){
 $image = $thumbUrl . $productImage;
+}else{
+	$image = $thumbUrl . 'images/photo_not_available.jpg';
+}
 EventManager::notify('ProductInfoProductsImageShow', &$image, &$product);
 ?>
 <style>
@@ -41,10 +44,7 @@ if(sysConfig::get('SHOW_PRODUCT_INFO_BUTTONS_TOP') !== 'False'){
 	$columns = array();
 	foreach($purchaseBoxes as $boxInfo){
 		if ($extAttributes !== false){
-			$boxInfo['content'] .= $extAttributes->pagePlugin->drawAttributes(array(
-				'productClass' => $product,
-				'purchase_type' => $boxInfo['purchase_type']
-			));
+			$boxInfo['content'] .= $extAttributes->drawAttributes(array('productCls' => $product,'purchase_type' => $boxInfo['purchase_type'],'template_file' => 'product_info_table.tpl','template_dir' => 'templates/slam69/modules/'));//$extAttributes->pagePlugin->drawAttributes(array('productClass' => $product,'purchase_type' => $boxInfo['purchase_type'],'template_file' => 'product_info_table.tpl','template_dir' => 'templates/slam69/modules/'));
 		}
 
 		if ($extDiscounts !== false && $purchaseTypes[$boxInfo['purchase_type']]->hasInventory()){
@@ -245,10 +245,7 @@ if(sysConfig::get('SHOW_PRODUCT_INFO_BUTTONS_BOTTOM') == 'True'){
 	$columns = array();
 	foreach($purchaseBoxes as $boxInfo){
 		if ($extAttributes !== false){
-			$boxInfo['content'] .= $extAttributes->pagePlugin->drawAttributes(array(
-				'productClass' => $product,
-				'purchase_type' => $boxInfo['purchase_type']
-			));
+			$boxInfo['content'] .= $extAttributes->drawAttributes(array('productCls' => $product,'purchase_type' => $boxInfo['purchase_type'],'template_file' => 'product_info_table.tpl','template_dir' => 'templates/slam69/modules/'));//$extAttributes->pagePlugin->drawAttributes(array('productClass' => $product,'purchase_type' => $boxInfo['purchase_type'],'template_file' => 'product_info_table.tpl','template_dir' => 'templates/slam69/modules/'));
 		}
 		
 		if ($extDiscounts !== false && $purchaseTypes[$boxInfo['purchase_type']]->hasInventory()){

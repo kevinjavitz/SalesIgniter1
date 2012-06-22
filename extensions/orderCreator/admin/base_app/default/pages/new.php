@@ -99,7 +99,10 @@
 	/* customer_info --BEGIN-- */
 	$addressesTable = $Editor->editAddresses();
 
-	$infoTable = htmlBase::newElement('table')->setCellPadding(3)->setCellSpacing(0);
+	$infoTable = htmlBase::newElement('table')
+	->setCellPadding(3)
+	->setCellSpacing(0)
+	->addClass('addressTable');
 	$inputType = htmlBase::newElement('input')
 	->setName('isType')
 	->addClass('isType')

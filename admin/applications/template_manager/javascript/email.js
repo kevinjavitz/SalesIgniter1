@@ -1,4 +1,5 @@
 var selectedTabTextarea = null;
+var editorInstances = new Array();
 $(document).ready(function (){
 	/*
 	google.language.getBranding('googleBrand');
@@ -40,8 +41,12 @@ $(document).ready(function (){
 			$('#emailTemplateOriginal').attr('disabled', 'disabled').val('');
 			$('.makeFCK').each(function (){
 				$(this).val('');
+                var thisEditor = CKEDITOR.replace(this, {
+                    filebrowserBrowseUrl: DIR_WS_ADMIN + 'rentalwysiwyg/editor/filemanager/browser/default/browser.php'
+                });
+                editorInstances.push(thisEditor);
 				//var thisEditor = $(this).data('editorInstance');
-				//thisEditor.setData('');
+				thisEditor.setData('');
 			});
 		}else{
 			showAjaxLoader($('#templateConfigure'), 'xlarge', 'append');
@@ -55,7 +60,16 @@ $(document).ready(function (){
 					$('div').filter(function() { return $(this).attr('lang_name'); }).each(function (){
 						var langName = $(this).attr('lang_name');
 						$(this).find('.makeFCK').each(function(){
-							$(this).val(data.emailText[langName])
+                            var e= CKEDITOR.instances[$(this).attr('name')];
+                            e.destroy();
+                            e= null;
+                            $(this).val(data.emailText[langName]);
+                             CKEDITOR.replace(this, {
+                                    filebrowserBrowseUrl: DIR_WS_ADMIN + 'rentalwysiwyg/editor/filemanager/browser/default/browser.php'
+                                });
+                            //var e1= CKEDITOR.instances[$(this).attr('name')];
+                                //var thisEditor = $(this).data('editorInstance');
+                              //  e1.setData(data.emailText[langName]);
 						});
 						$(this).find('.emailSubject').val(data.emailSubject[langName]);
 					});
@@ -127,4 +141,13 @@ $(document).ready(function (){
 		
 		varBox.append(condition);
 	});
+    $('.makeFCK').each(function (){
+        $(this).val('');
+        var thisEditor = CKEDITOR.replace(this, {
+            filebrowserBrowseUrl: DIR_WS_ADMIN + 'rentalwysiwyg/editor/filemanager/browser/default/browser.php'
+        });
+        editorInstances.push(thisEditor);
+        //var thisEditor = $(this).data('editorInstance');
+        thisEditor.setData('');
+    });
 });

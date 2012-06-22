@@ -524,44 +524,7 @@ $(document).ready(function (){
 			success: function (data){
 				removeAjaxLoader($Row);
                 $Row.remove();
-                var $TotalRow = null;
-                var total = 0;
-                var subtotal = 0;
-                var tax = 0;
-
-                $('.priceEx').each(function (){
-                    var Quantity = parseFloat($(this).parent().parent().find('.productQty').val());
-                    var Price = parseFloat($(this).val());
-
-                    subtotal += Price * Quantity;
-                    tax += (Price * Quantity) * (parseFloat($(this).parent().parent().find('.taxRate').val()) / 100);
-                });
-
-                $('.orderTotalTable > tbody > tr').each(function (){
-                    var $Row = $(this);
-                    if ($Row.data('code') == 'subtotal'){
-                        $Row.find('.orderTotalValue').attr('readonly','readonly');
-                        $Row.find('.orderTotalValue').val(number_format(subtotal));
-                        total += subtotal;
-                    }else if ($Row.data('code') == 'tax'){
-                        $Row.find('.orderTotalValue').attr('readonly','readonly');
-                        $Row.find('.orderTotalValue').val(number_format(tax));
-                        total += tax;
-                    }else if ($Row.data('code') == 'total'){
-                        $Row.find('.orderTotalValue').attr('readonly','readonly');
-                        $TotalRow = $(this);
-                    }else{
-                        total += parseFloat($Row.find('.orderTotalValue').val());
-                    }
-                });
-
-                if ($TotalRow){
-                    $TotalRow.find('.orderTotalValue span').html(number_format(total));
-                    $TotalRow.find('.orderTotalValue input').val(number_format(total));
-                    $TotalRow.find('.orderTotalValue').val(number_format(total));
-                }
-
-
+			$('.priceEx').trigger('keyup');
 
 			}
 		});
@@ -572,13 +535,15 @@ $(document).ready(function (){
 			this.Tooltip.remove();
 		}
 		$(this).parent().parent().remove();
+        $('.priceEx').trigger('keyup');
 	});
 	
 	$('select.country').live('change', function (){
 		var $self = $(this);
+        var state = $(this).parent().parent().parent().find('.stateCol select option:selected').val();
 		showAjaxLoader($self, 'small');
 		$.ajax({
-			url: js_app_link('appExt=orderCreator&app=default&appPage=new&action=getCountryZones&addressType=' + $self.attr('data-address_type') + '&country=' + $self.val()+'&state='+$('.stateCol select option:selected').val()+oID),
+			url: js_app_link('appExt=orderCreator&app=default&appPage=new&action=getCountryZones&addressType=' + $self.attr('data-address_type') + '&country=' + $self.val()+'&state='+state+oID),
 			cache: false,
 			dataType: 'html',
 			success: function (html){
@@ -742,13 +707,13 @@ $(document).ready(function (){
             return false;
         }
 
-        showAjaxLoader($('.customerSection'), 'xlarge');
+		showAjaxLoader($('.addressTable'), 'xlarge');
 
         $.ajax({
 			cache: false,
 			dataType: 'html',
 			url: js_app_link('appExt=orderCreator&app=default&appPage=new&action=saveCustomerInfo'+oID),
-			data: $('.customerSection *').serialize(),
+			data: $('.addressTable *').serialize(),
 			type: 'post',
 			success: function (data){
 				$('.productSection, .totalSection, .paymentSection, .commentSection').show();
@@ -776,7 +741,7 @@ $(document).ready(function (){
 					});
 				});
 				$('select[name=payment_method]').trigger('change');
-				removeAjaxLoader($('.customerSection'));
+				removeAjaxLoader($('.addressTable'));
 			}
 		});
 	});

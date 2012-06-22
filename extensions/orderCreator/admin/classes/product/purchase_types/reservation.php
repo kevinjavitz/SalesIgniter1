@@ -202,6 +202,7 @@ class OrderCreatorProductPurchaseTypeReservation extends PurchaseType_reservatio
 				}
 			}
 		}
+		EventManager::notify('SaveResInfoOrderCreatorNew', &$dataArray, $resInfo);
 		$this->processAddToOrderOrCart($dataArray, $pInfo);
 
 		EventManager::notify('ReservationProcessAddToCart', $pInfo['reservationInfo']);

@@ -1,0 +1,952 @@
+<?php
+	set_time_limit(0);
+	function generateSlug($phrase){
+		$result = strtolower($phrase);
+
+		$result = preg_replace("/[^a-z0-9\s-]/", "", $result);
+		$result = trim(preg_replace("/[\s-]+/", " ", $result));
+		//$result = trim(substr($result, 0, $maxLength));
+		$result = preg_replace("/\s/", "-", $result);
+
+		return $result;
+	}
+	$gRows = false;
+	$line = 0;
+    $barcodesArr = array();
+	$timeBooked = array();
+	$qtyTimes = array();
+	function getAttr($status, $type, $rID, $barcode_id, $products_id){
+
+		$tooltip = '';
+
+		if ($status != 0){
+			$QrentalStatus = Doctrine_Query::create()
+			->select('rental_status_text')
+			->from('RentalStatus')
+			->where('rental_status_id = ?', $status)
+			->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+
+			if (count($QrentalStatus) > 0){
+				$attr = array(
+					'isEdit'    => '1',
+					'barcode_id' => $barcode_id,
+					'products_id' => $products_id,
+					'type'  =>  $type,
+					'rid'   =>  $rID
+
+				);
+			}
+            		unset($QrentalStatus);
+		}else{
+			$attr = array(
+					'tooltip' => $tooltip . '<br/>Status: Available' .
+								'<br/>Click to add action',
+                    			'isEdit'    => '0',
+					'barcode_id' => $barcode_id,
+					'products_id' => $products_id,
+					'type'  =>  $type,
+					'rid'   =>  $rID
+
+				);
+		}
+
+		if ($type == '0'){
+			$attr['tooltip'] = '';
+		}
+		return $attr;
+	}
+
+	function getColor($status){
+		$color = '#ffffff';
+		if($status != 0){
+			$QrentalStatus = Doctrine_Query::create()
+							->select('rental_status_color')
+							->from('RentalStatus')
+							->where('rental_status_id = ?', $status)
+							->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+			if (count($QrentalStatus) > 0){
+			$color = '#' . $QrentalStatus[0]['rental_status_color'];
+			}
+            		unset($QrentalStatus);
+		}				
+		return $color;
+	}
+
+	function dateInBetween($startDate,$endDate, $reserveStartDate, $reserveEndDate, $day, $dayStart){
+		$returned = -1;		
+		
+		if ($reserveStartDate <= strtotime($startDate) && strtotime($startDate) <= $reserveEndDate){
+		   $returned = $day;
+		}
+
+		if ($reserveStartDate >= strtotime($startDate) && strtotime($endDate) >= $reserveStartDate){
+		   $returned = $dayStart;
+		}
+
+		return $returned;
+	}
+
+	function fillColors($day, $year, $month, $numberofdays, $dayEnd, $cdayEnd, $nextMonth, $monthEnd, $numCols, $line, $color, $attr, &$rowProducts){
+		global $gRows;
+		$i = 0;
+		$j = $day;
+		$k = $dayEnd;
+		$tMonth = $month;
+		if ($attr['type'] == '0'){
+			$cls = '';
+		}else{
+			$cls = 'rowData';
+		}
+		while(true){
+
+			if ($j > $numberofdays){
+				$j = 1;
+				$tMonth = $nextMonth;
+			}
+			if ($i == $numCols){
+				break;
+			}
+
+			if(!isset($gRows[$year][$tMonth][$j])){
+				break;
+			}
+        	$rowProducts[$line][$gRows[$year][$tMonth][$j]+1] = array('text' => '&nbsp;',
+								'align' => 'right',
+		                        'addCls' => $cls,
+		                        'attr'  => $attr,
+								'css' => array('background'=>'none',
+												'background-color'   => $color
+								)
+			);
+			if (($j == $k && $tMonth == $monthEnd) || ($j == $cdayEnd && $tMonth == $nextMonth)){
+				break;
+			}
+
+			$i++;
+			$j++;
+		}
+	}
+
+	function addGridRow($product, &$tableGrid, $startDate, $endDate, $purchaseType, $numCols, $line, &$numBarcodes, &$rowProducts, &$barcodesArr, &$timeBooked, &$qtyTimes){
+
+		$productId = $product['products_id'];
+		$initLine = $line;
+
+		foreach($product['ProductsInventory'] as $piInfo){
+
+			if ($piInfo['type'] == 'reservation' && $piInfo['controller'] == $product['products_inventory_controller']){
+				if ($piInfo['track_method'] == 'barcode'){
+
+
+							$line++;
+
+						    $attributeV = '';  //to be done
+							/*if (!is_null($pibInfo['attributes'])){
+								$attributeValArr = attributesUtil::splitStringToArray($pibInfo['attributes']);
+								foreach($attributeValArr as $k =>$v){
+									$productOptions = Doctrine_Query::create()
+									->from('ProductsOptionsDescription')
+									->where('products_options_id = ?', $k)
+									->andWhere('language_id = ?', Session::get('languages_id'))
+									->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+
+									$optionVal = $productOptions[0]['products_options_name'];
+									$attributeOptions = Doctrine_Query::create()
+									->from('ProductsOptionsValuesDescription')
+									->where('products_options_values_id = ?', $v)
+									->andWhere('language_id = ?', Session::get('languages_id'))
+									->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+
+									$attributeVal = $attributeOptions[0]['products_options_values_name'];
+									$attributeV = '('.$optionVal . ' ->'. $attributeVal.')';
+								}
+							}*/
+
+						foreach($piInfo['ProductsInventoryBarcodes'] as $pibInfo){
+							foreach($pibInfo['OrdersProductsReservation'] as $oprInfo){
+								if($oprInfo['rental_state'] != 'returned'){
+									$reserveStartDate = strtotime('-' . $oprInfo['shipping_days_before'] . ' days' ,strtotime($oprInfo['start_date'])); //+-ship_days
+									$reserveEndDate = strtotime('+' . $oprInfo['shipping_days_after'] . ' days' , strtotime($oprInfo['end_date']));
+										//here I fill the Events Array
+										//$timeDateParseStart = date_parse(date('Y-m-d H:i',));
+										//$timeDateParseEnd = date_parse(date('Y-m-d H:i',));
+
+										if($reserveStartDate + 60 * 60 *24 <= $reserveEndDate){
+											while ($reserveStartDate <= $reserveEndDate) {
+												$dateFormatted = date('Y-m-d H:i', $reserveStartDate);
+												if(isset($qtyTimes[$productId]['reservation']['days'][$dateFormatted])){
+													$qtyTimes[$productId]['reservation']['days'][$dateFormatted] =  $qtyTimes[$productId]['reservation']['days'][$dateFormatted] -1;
+												}else{
+													$qtyTimes[$productId]['reservation']['days'][$dateFormatted] = count($piInfo['ProductsInventoryBarcodes']) - 1;
+												}
+												$reserveStartDate += 60 * 60 * 24;
+											}
+										}else{
+											while ($reserveStartDate <= $reserveEndDate) {
+												$dateFormatted = date('Y-m-d H:i', $reserveStartDate);
+												if(isset($qtyTimes[$productId]['reservation']['hours'][$dateFormatted])){
+													$qtyTimes[$productId]['reservation']['hours'][$dateFormatted] =  $qtyTimes[$productId]['reservation']['hours'][$dateFormatted] -1;
+												}else{
+													$qtyTimes[$productId]['reservation']['hours'][$dateFormatted] = count($piInfo['ProductsInventoryBarcodes']) - 1;
+												}
+												$reserveStartDate += 60 * 60;
+											}
+										}
+									}
+									//$stringStart = 'new Date('.$timeDateParseStart['year'].','.($timeDateParseStart['month']-1).','.$timeDateParseStart['day'].','.$timeDateParseStart['hour'].','.$timeDateParseStart['minute'].')';
+									//$stringEnd = 'new Date('.$timeDateParseEnd['year'].','.($timeDateParseEnd['month']-1).','.$timeDateParseEnd['day'].','.$timeDateParseEnd['hour'].','.($timeDateParseEnd['minute']+1).')';
+								    //check by attribute and add rows for every attribute
+									//$timeBooked[] = "{title:'Not Available',start:".$stringStart.",end:".$stringStart.", className:'".'b'.generateSlug($pibInfo['barcode'])."', rid:'".$oprInfo['orders_products_reservations_id']."', rsid:'".getColor($oprInfo['rental_status_id'])."',type:'".'reservation'."',barcode_name:'".'b'.generateSlug($pibInfo['barcode'])."',product_id:'".$productId."', allDay:false}";
+
+							}
+						}
+					$rowProducts[$line][0] = array('text' =>  ' '. $piInfo['type'] .'&nbsp;Total Items: '.count($piInfo['ProductsInventoryBarcodes']).' '.$product['products_inventory_controller'],'addCls' =>'b'.generateSlug($piInfo['type'].$productId),'attr' =>array('product_id' =>$productId, 'type'=>$piInfo['type'],'barcode_name' =>'b'.generateSlug($piInfo['type'].$productId)));
+					$barcodesArr[] = '"'.'b'.generateSlug($piInfo['type'].$productId).'"';
+				}else{
+					$line++;
+					foreach($piInfo['ProductsInventoryQuantity'] as $pibInfo){
+						foreach($pibInfo['OrdersProductsReservation'] as $oprInfo){
+							if($oprInfo['rental_state'] != 'returned'){
+								$reserveStartDate = strtotime('-' . $oprInfo['shipping_days_before'] . ' days' ,strtotime($oprInfo['start_date'])); //+-ship_days
+								$reserveEndDate = strtotime('+' . $oprInfo['shipping_days_after'] . ' days' , strtotime($oprInfo['end_date']));
+								//here I fill the Events Array
+								//$timeDateParseStart = date_parse(date('Y-m-d H:i',));
+								//$timeDateParseEnd = date_parse(date('Y-m-d H:i',));
+
+								if($reserveStartDate + 60 * 60 *24 <= $reserveEndDate){
+									while ($reserveStartDate <= $reserveEndDate) {
+										$dateFormatted = date('Y-m-d H:i', $reserveStartDate);
+										if(isset($qtyTimes[$productId]['reservation']['days'][$dateFormatted])){
+											$qtyTimes[$productId]['reservation']['days'][$dateFormatted] =  $qtyTimes[$productId]['reservation']['days'][$dateFormatted] -1;
+										}else{
+											$qtyTimes[$productId]['reservation']['days'][$dateFormatted] = count($piInfo['ProductsInventoryBarcodes']) - 1;
+										}
+										$reserveStartDate += 60 * 60 * 24;
+									}
+								}else{
+									while ($reserveStartDate <= $reserveEndDate) {
+										$dateFormatted = date('Y-m-d H:i', $reserveStartDate);
+										if(isset($qtyTimes[$productId]['reservation']['hours'][$dateFormatted])){
+											$qtyTimes[$productId]['reservation']['hours'][$dateFormatted] =  $qtyTimes[$productId]['reservation']['hours'][$dateFormatted] -1;
+										}else{
+											$qtyTimes[$productId]['reservation']['hours'][$dateFormatted] = count($piInfo['ProductsInventoryBarcodes']) - 1;
+										}
+										$reserveStartDate += 60 * 60;
+									}
+								}
+							}
+							//$stringStart = 'new Date('.$timeDateParseStart['year'].','.($timeDateParseStart['month']-1).','.$timeDateParseStart['day'].','.$timeDateParseStart['hour'].','.$timeDateParseStart['minute'].')';
+							//$stringEnd = 'new Date('.$timeDateParseEnd['year'].','.($timeDateParseEnd['month']-1).','.$timeDateParseEnd['day'].','.$timeDateParseEnd['hour'].','.($timeDateParseEnd['minute']+1).')';
+							//check by attribute and add rows for every attribute
+							//$timeBooked[] = "{title:'Not Available',start:".$stringStart.",end:".$stringStart.", className:'".'b'.generateSlug($pibInfo['barcode'])."', rid:'".$oprInfo['orders_products_reservations_id']."', rsid:'".getColor($oprInfo['rental_status_id'])."',type:'".'reservation'."',barcode_name:'".'b'.generateSlug($pibInfo['barcode'])."',product_id:'".$productId."', allDay:false}";
+
+						}
+					}
+					$rowProducts[$line][0] = array('text' =>  ' '. $piInfo['type'] .'&nbsp;Total Items: '.count($piInfo['ProductsInventoryQuantity']).' '.$product['products_inventory_controller'],'addCls' =>'b'.generateSlug($piInfo['type'].$productId),'attr' =>array('product_id' =>$productId, 'type'=>$piInfo['type'],'barcode_name' =>'b'.generateSlug($piInfo['type'].$productId)));
+					$barcodesArr[] = '"'.'b'.generateSlug($piInfo['type'].$productId).'"';
+				}
+
+			}else if ($piInfo['type'] == 'rental' && $piInfo['controller'] == $product['products_inventory_controller']){
+					if ($piInfo['track_method'] == 'barcode'){
+						$line++;
+						foreach($piInfo['ProductsInventoryBarcodes'] as $pibInfo){
+							foreach($pibInfo['RentedProducts'] as $rpInfo){
+								if ($rpInfo['return_date'] == '0000-00-00 00:00:00'){
+									$reserveStartDate = strtotime($rpInfo['shipment_date']);
+									$reserveEndDate = strtotime($rpInfo['return_date']);
+									if ($rpInfo['return_date'] == '0000-00-00'){
+										$reserveEndDate = strtotime("+1 month", strtotime($startDate));
+									}
+
+
+									//if($reserveStartDate + 60 * 60 *24 <= $reserveEndDate){
+										while ($reserveStartDate <= $reserveEndDate) {
+											$dateFormatted = date('Y-m-d H:i', $reserveStartDate);
+											if(isset($qtyTimes[$productId]['rental']['days'][$dateFormatted])){
+												$qtyTimes[$productId]['rental']['days'][$dateFormatted] =  $qtyTimes[$productId]['reservation']['days'][$dateFormatted] -1;
+											}else{
+												$qtyTimes[$productId]['rental']['days'][$dateFormatted] = count($piInfo['ProductsInventoryBarcodes']) - 1;
+											}
+											$reserveStartDate += 60 * 60 * 24;
+										}
+								}
+								//}
+								//$timeBooked[] = "{title:'Not Available',start:".$stringStart.",end:".$stringEnd.", className:'".'b'.generateSlug($pibInfo['barcode'])."', rid:'".$rpInfo['rented_products_id']."', rsid:'".getColor($rpInfo['rental_status_id'])."',type:'".'rental'."',barcode_name:'".'b'.generateSlug($pibInfo['barcode'])."',product_id:'".$productId."', allDay:false}";
+							}
+						}
+						$rowProducts[$line][0] = array('text' =>  ' '. $piInfo['type'] .'&nbsp;Total Items: '.count($piInfo['ProductsInventoryBarcodes']),'addCls' =>'b'.generateSlug($piInfo['type'].$productId),'attr' =>array('product_id' =>$productId, 'type'=>$piInfo['type'],'barcode_name' =>'b'.generateSlug($piInfo['type'].$productId)));
+						$barcodesArr[] = '"'.'b'.generateSlug($piInfo['type'].$productId).'"';
+					}
+			}
+        }
+		$numBarcodes = $line - $initLine;
+	}
+
+
+	$rows = 0;
+	$products_count = 0;
+
+	$lID = (int)Session::get('languages_id');
+
+	if (isset($_GET['purchase_type_field']) && !empty($_GET['purchase_type_field'])){
+		$purchaseType = $_GET['purchase_type_field'];
+	}else{
+		$purchaseType = 'both';
+	}
+
+	$Qproducts = Doctrine_Query::create()
+	->from('Products p')
+	->leftJoin('p.ProductsDescription pd')	
+	->leftJoin('p.ProductsInventory pi')
+	->leftJoin('pi.ProductsInventoryBarcodes pib')
+	->leftJoin('pi.ProductsInventoryQuantity piq')
+	->leftJoin('pib.OrdersProductsReservation opr')
+	->leftJoin('piq.OrdersProductsReservation opr2')
+	->leftJoin('pib.RentedProducts rp')
+	->where('pd.language_id = ?', $lID)
+	->andWhere('p.products_status = ?','1');
+
+	if ($purchaseType == 'both'){
+		$Qproducts->andWhere('pi.type = "rental" or pi.type = "reservation"');
+	}else{
+		$Qproducts->andWhere('pi.type = ?', $purchaseType);		
+	}
+	$Qproducts->orderBy(' pd.products_name asc, p.products_id desc');
+
+	if (isset($_GET['productsID']) && !empty($_GET['productsID'])){
+		$Qproducts->andWhere('p.products_id = ?', $_GET['productsID']);		
+	}
+	if(isset($_GET['prodName']) && !empty($_GET['prodName'])){
+		$Qproducts->andWhere('pd.products_name LIKE ?', $_GET['prodName'].'%');
+	}
+
+
+	if(isset($_GET['limitinventory']) && $_GET['limitinventory'] == 2){
+		$Qproducts->andWhere('opr.orders_products_reservations_id is not null');
+		$Qproducts->andWhere('opr2.orders_products_reservations_id is not null');
+	}
+
+	EventManager::notify('ProductInventoryReportsListingQueryBeforeExecuteQuantity', &$Qproducts);
+
+	$tableGrid = htmlBase::newElement('newGrid');
+	if (isset($_GET['page']) && !empty($_GET['page'])){
+		$page = $_GET['page'];
+	}else{
+		$page = 1;
+	}
+	if (isset($_GET['limit']) && !empty($_GET['limit'])){
+		$limit = $_GET['limit'];	
+	}else{
+		$limit = 10;
+	}
+
+	$listingPager = new Doctrine_Pager($Qproducts, $page, $limit);
+	$pagerLink = itw_app_link(tep_get_all_get_params(array('page', 'action')) . 'page={%page_number}');
+
+	$pagerRange = new Doctrine_Pager_Range_Sliding(array(
+	'chunk' => 5
+	));
+
+	$pagerLayout = new PagerLayoutWithArrows($listingPager, $pagerRange, $pagerLink);
+	$pagerLayout->setMyType('products');
+	$pagerLayout->setTemplate('<a href="{%url}" style="margin-left:5px;background-color:#ffffff;padding:3px;">{%page}</a>');
+	$pagerLayout->setSelectedTemplate('<span style="margin-left:5px;">{%page}</span>');
+
+	$pager = $pagerLayout->getPager();
+
+	$products = $pager->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+
+	$pagerBar = $pagerLayout->display(array(), true);
+
+	if (isset($_GET['num_cols']) && !empty($_GET['num_cols'])){
+		$numCols = $_GET['num_cols'];
+	}else{
+		$numCols = '31';
+	}
+
+	if (isset($_GET['start_date']) && !empty($_GET['start_date'])){
+		$startDate = $_GET['start_date'];
+		$startDateAsTime = strtotime($_GET['start_date']);
+	}else{
+		$startDate = date('Y-m-d');
+		$startDateAsTime = strtotime($startDate);
+	}
+    	$endDate = date('Y-m-d', strtotime('+' . ($numCols-1) . ' days', $startDateAsTime));
+
+	if ($numCols > 31){
+		$numColsFinal = $numCols;
+		$endDateFinal = date('Y-m-d', strtotime('+' . ($numColsFinal-1) . ' days', $startDateAsTime));
+	}else{
+		$numColsFinal = $numCols;
+		$endDateFinal = $endDate;
+	}
+
+	$endMonth = date('M', strtotime($endDateFinal));
+	$endYear = date('Y', strtotime($endDateFinal));
+
+   	$headArr[] =  array('text' => 'Product'
+	);
+
+    $daysH[] = array('text' => '<span style="float:left;height:27px;">Select</span> <span style="float:right">&nbsp;</span><span style="clear:both"></span>');
+
+	$tableGrid->addHeaderRow(array(
+		'columns' => $headArr
+	));
+
+
+	$tableGrid->addHeaderRow(array(
+		'columns' => $daysH
+	));
+
+	$line = 0;
+	if (count($products) > 0){
+		foreach($products as $product){
+			if(count($product['ProductsInventory']) > 0 && (strpos($product['products_type'],'reservation') !== false || strpos($product['products_type'],'rental') !== false)){
+				$rowProducts[$line][] = array('addCls' => 'noHover',
+							'text' =>'<b>' . (!empty($product['ProductsDescription'][0]['products_name'])?$product['ProductsDescription'][0]['products_name']:$product['products_model']) . '</b><a target="_blank" href="'.itw_app_link('pID='.$product['products_id'],'products','new_product').'"> Edit Product </a><a target="_blank" href="'.itw_catalog_app_link('products_id='.$product['products_id'],'product','info').'"> | View Product</a>'
+				);
+				$numBarcodes = 0;
+				addGridRow($product,
+								$tableGrid,
+								$startDate,
+								$endDate,
+								$purchaseType,
+								$numCols
+								,$line,
+								$numBarcodes,
+								$rowProducts,
+								$barcodesArr,
+								$timeBooked,
+								$qtyTimes
+
+				);
+
+				 $rowAttr = array();
+				 foreach($rowProducts as $tRows){
+					$tableGrid->addBodyRow(array(
+						'rowAttr' => $rowAttr,
+						'columns' => $tRows
+					));
+				 }
+
+				 unset($rowProducts);
+				//end for
+				$line += $numBarcodes;
+				$line++;
+			}
+		}
+	}
+
+
+    foreach($qtyTimes as $productId1 => $val1){
+		foreach($val1 as $ptype1 => $qtyDate2){
+			foreach($qtyDate2 as $Type => $qtyDate1){
+				foreach($qtyDate1 as $date1 => $qty1){
+					$timeDateParseStart = date_parse($date1);
+					if($Type == 'days'){
+						$stringStart = 'new Date('.$timeDateParseStart['year'].','.($timeDateParseStart['month']-1).','.$timeDateParseStart['day'].','.$timeDateParseStart['hour'].','.$timeDateParseStart['minute'].')';
+						$stringEnd = 'new Date('.$timeDateParseStart['year'].','.($timeDateParseStart['month']-1).','.$timeDateParseStart['day'].','.($timeDateParseStart['hour']+23).','.($timeDateParseStart['minute']+59).')';
+
+						$timeBooked[] = "{title:'".$qty1."',start:".$stringStart.",end:".$stringEnd.", className:'".'b'.generateSlug($ptype1.$productId1)."', rid:'".'1'."', rsid:'".'1'."',type:'".$ptype1."',barcode_name:'".'b'.generateSlug($ptype1.$productId1)."',product_id:'".$productId1."', allDay:false}";
+
+						$stringStart = 'new Date('.$timeDateParseStart['year'].','.($timeDateParseStart['month']-1).','.$timeDateParseStart['day'].','.$timeDateParseStart['hour'].','.$timeDateParseStart['minute'].')';
+						$stringEnd = 'new Date('.$timeDateParseStart['year'].','.($timeDateParseStart['month']-1).','.$timeDateParseStart['day'].','.$timeDateParseStart['hour'].','.($timeDateParseStart['minute']+1).')';
+						$timeBooked[] = "{title:'".$qty1."',start:".$stringStart.",end:".$stringEnd.", className:'".'b'.generateSlug($ptype1.$productId1)."', rid:'".'1'."', rsid:'".'1'."',type:'".$ptype1."',barcode_name:'".'b'.generateSlug($ptype1.$productId1)."',product_id:'".$productId1."', allDay:false}";
+					}else{
+						$stringStart = 'new Date('.$timeDateParseStart['year'].','.($timeDateParseStart['month']-1).','.$timeDateParseStart['day'].','.$timeDateParseStart['hour'].','.$timeDateParseStart['minute'].')';
+						$stringEnd = 'new Date('.$timeDateParseStart['year'].','.($timeDateParseStart['month']-1).','.$timeDateParseStart['day'].','.$timeDateParseStart['hour'].','.($timeDateParseStart['minute']+1).')';
+
+						$timeBooked[] = "{title:'".$qty1."',start:".$stringStart.",end:".$stringEnd.", className:'".'b'.generateSlug($ptype1.$productId1)."', rid:'".'1'."', rsid:'".'1'."',type:'".$ptype1."',barcode_name:'".'b'.generateSlug($ptype1.$productId1)."',product_id:'".$productId1."', allDay:false}";
+					}
+				}
+			}
+		}
+	}
+
+?>
+ <div class="pageHeading"><?php echo sysLanguage::get('HEADING_TITLE_REPORTS');?></div>
+ <br />
+ <table border="0" width="100%" cellspacing="0" cellpadding="3">
+  <tr>
+   <td class="smallText" align="right" colspan="2"><?php
+
+    $searchForm = htmlBase::newElement('form')
+    ->attr('name', 'search')
+    ->attr('id', 'searchFormReports')
+    ->attr('action', itw_app_link('appExt=payPerRentals','reservations_reports', 'default', 'SSL'))
+    ->attr('method', 'get');
+
+    if (isset($_GET['productsID']) && !empty($_GET['productsID'])){
+	    $htmlProductsId = htmlBase::newElement('input')
+		->setType('hidden')
+	    ->setName('productsID')
+		->setValue($_GET['productsID']);
+    }
+
+    $startdateField = htmlBase::newElement('input')
+	->setName('start_date')
+    ->setLabel(sysLanguage::get('HEADING_TITLE_START_DATE'))
+	->setLabelPosition('before')
+	->setId('start_date');
+
+    if (isset($_GET['start_date']) && !empty($_GET['start_date'])){
+		$startdateField->val($_GET['start_date']);
+    }
+
+    $numColsField = htmlBase::newElement('selectbox')
+	->setName('num_cols')
+	->attr('id','numCols')
+	->setLabel('Number of Days')
+	->setLabelPosition('before');
+
+    $numColsField->addOption('7','7');
+    $numColsField->addOption('14','14');
+    $numColsField->addOption('21','21');
+    $numColsField->addOption('31','31');
+    $numColsField->addOption('365','1 year');
+
+    if (isset($_GET['num_cols']) && !empty($_GET['num_cols'])){
+		$numColsField->selectOptionByValue($_GET['num_cols']);
+    }else{
+	    $numColsField->selectOptionByValue('31');
+    }
+	                                    
+	//limit
+	if (isset($_GET['start_date']) && !empty($_GET['start_date'])){
+		$startDateSearch = $_GET['start_date'];
+	}else{
+		$startDateSearch = date('Y-m-d');
+	}
+    $startdateField->setValue($startDateSearch);
+
+    $prevArrow = htmlBase::newElement('a')
+	->setId('prevArrow')
+	->attr('prevData', date('Y-m-d', strtotime('-' . $numCols . ' days',strtotime($startDateSearch))))
+	->html('<b><</b>');
+    $nextArrow = htmlBase::newElement('a')
+	->setId('nextArrow')
+    ->attr('nextData', date('Y-m-d', strtotime('+' . $numCols . ' days',strtotime($startDateSearch))))
+	->html('<b>></b>');
+
+	$limitField = htmlBase::newElement('selectbox')
+	->setName('limit')
+	->attr('id','limitProd')
+	->setLabel('Products per Page')
+	->setLabelPosition('before');
+
+    $limitField->addOption('10','10');
+    $limitField->addOption('20','20');
+    $limitField->addOption('40','40');
+    $limitField->addOption('100','100');
+
+    if (isset($_GET['limit']) && !empty($_GET['limit'])){
+		$limitField->selectOptionByValue($_GET['limit']);		
+    }
+
+    $purchaseTypeField = htmlBase::newElement('selectbox')
+	->setName('purchase_type_field')
+	->attr('id','purchType')
+	->setLabel('Purchase Type')
+	->setLabelPosition('before');
+
+    $purchaseTypeField->addOption('all','All');
+    $purchaseTypeField->addOption('reservation','Reservation');
+    $purchaseTypeField->addOption('rental', 'Rental Membership');
+	$purchaseTypeField->addOption('new','New');
+	   
+    EventManager::notify('ProductInventoryReportsPurchaseTypeAddFilterOption', &$purchaseTypeField);
+
+    $purchaseTypeField->selectOptionByValue($purchaseType);
+
+   $limitByInventory = htmlBase::newElement('selectbox')
+	   ->setName('limitinventory')
+	   ->attr('id','limitInventory')
+	   ->setLabel('Limit by Inventory')
+	   ->setLabelPosition('before');
+
+   $limitByInventory->addOption('1','Show All');
+   $limitByInventory->addOption('2','Show only inventory with reservations');
+    if(isset($_GET['limitinventory'])){
+	    $limitByInventory->selectOptionByValue($_GET['limitinventory']);
+    }
+
+    $submitButton = htmlBase::newElement('button')
+	->setType('submit')
+    ->usePreset('save')
+    ->setText('Search');
+
+	$changeButton = htmlBase::newElement('button')
+	->attr('id','changeView')
+    ->setText('Change Calendar View');
+
+    if (isset($htmlProductsId)){
+	    $searchForm->append($htmlProductsId);
+    }
+
+   $htmlProductInput = htmlBase::newElement('input')
+   ->setName('prodName')
+   ->setLabel('Product: ')
+   ->setLabelPosition('before')
+   ->addClass('prodName');
+
+   if(isset($_GET['prodName']) && !empty($_GET['prodName'])){
+	   $htmlProductInput->setValue($_GET['prodName']);
+   }
+
+    //$htmlBr = htmlBase::newElement('br');
+	$htmlBarcodeButton = htmlBase::newElement('button')
+	->setText('Search')
+	->setType('submit')
+	->addClass('checkBarcode');
+
+    $searchForm
+	->append($htmlProductInput)
+	->append($htmlBarcodeButton)
+    ->append($limitField)
+    ->append($limitByInventory)
+    ->append($prevArrow)
+	->append($startdateField)
+    ->append($nextArrow)
+	->append($numColsField)
+	->append($purchaseTypeField)
+
+   // ->append($htmlBr)
+	->append($changeButton);
+
+    EventManager::notify('ProductsInventoryReportsDefaultAddFilterOptions', &$searchForm);
+
+    echo $searchForm->draw();
+
+   	   /*creating add edit reservation window*/
+    $editWindow = htmlBase::newElement('form')
+	->attr('action', itw_app_link('appExt=payPerRentals','reservations_reports','default'))
+	->attr('method','post')
+	->attr('id', 'editWindowForm');
+
+    $editWindowHeader = htmlBase::newElement('div')
+	->attr('id','header_edit');
+
+    $editWindowStartDate = htmlBase::newElement('input')
+	->setName('start_date_edit')
+    ->setLabel('Start Date: ')
+	->setLabelPosition('before')
+	->setId('start_date_edit');
+
+	$editWindowEndDate = htmlBase::newElement('input')
+	->setName('end_date_edit')
+    ->setLabel('End Date: ')
+	->setLabelPosition('before')
+	->setId('end_date_edit');
+
+    $editWindowDateAdded = htmlBase::newElement('input')
+	->setName('date_added_edit')
+    ->setLabel('Queue added: ')
+	->setLabelPosition('before')
+	->setId('date_added_edit');
+
+	$editWindowReturnDate = htmlBase::newElement('input')
+	->setName('return_date_edit')
+    ->setLabel('Date returned: ')
+	->setLabelPosition('before')
+	->setId('return_date_edit');
+
+	$editWindowRentalStatus = htmlBase::newElement('selectbox')
+	->setName('rental_status_edit')
+	->setLabel('Rental Status: ')
+	->setId('rental_status_edit')
+	->setLabelPosition('before');
+
+	$QRentalStatus = Doctrine_Query::create()
+	->from('RentalStatus')
+	->orderBy('rental_status_text')
+	->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+
+	foreach($QRentalStatus as $rInfo){
+		$editWindowRentalStatus->addOption($rInfo['rental_status_id'], $rInfo['rental_status_text']);
+	}
+
+	$editWindowCustomers = htmlBase::newElement('selectbox')
+	->setName('customers_edit')
+	->setLabel('Customers: ')
+	->setId('customers_edit')
+	->setLabelPosition('before');
+
+	$QCustomers = Doctrine_Query::create()
+	->from('Customers')
+	->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+
+	foreach($QCustomers as $cInfo){
+		$editWindowCustomers->addOption($cInfo['customers_id'], $cInfo['customers_firstname'] . ' ' . $cInfo['customers_lastname']);
+	}
+
+	$br = htmlBase::newElement('br');
+	$editWindow->append($editWindowHeader)
+	->append($br)
+	->append($editWindowStartDate)
+  	->append($editWindowDateAdded)
+	->append($br)
+	->append($editWindowEndDate)
+	->append($editWindowReturnDate)
+	->append($br)
+	->append($editWindowRentalStatus)
+	->append($br)
+	->append($editWindowCustomers)
+	->append($br);
+
+   echo $editWindow->draw();
+   $minSize = $numCols*39;
+
+
+
+
+   ?></td>
+  </tr>
+ </table>
+
+ <div id="mainWindow">
+  <div id="secWindow" class="ui-widget ui-widget-content ui-corner-all" style="width:<?php echo ($minSize+330);?>px;margin-right:5px;margin-left:5px;">
+   <div style="width:300px;margin:5px;float:left" id="prodTable">
+   <?php echo $tableGrid->draw();
+	    echo "<br/>";
+		echo $pagerBar;   
+   ?>
+   </div>
+	  <div id="calendarTime" style="float:left;width:<?php echo $minSize;?>px;margin-top:5px;"></div>
+	  <table id="header-fixed" style="float:left;width:<?php echo $minSize;?>px;table-layout: fixed;border-spacing: 1px;"></table>
+	  <table id="header-fixed2" style="float:left;width:1918px;border-spacing: 1px;"></table>
+	  <br style="clear:both;"/>
+  </div>
+ </div>
+<?php
+	$minTime = 30;
+?>
+<style type="text/css">
+	#header-fixed {
+		display:none;
+		position:absolute;
+		left:316px;
+		top:150px;
+	}
+	#header-fixed2 {
+		display:none;
+		position:absolute;
+		left:316px;
+		top:150px;
+	}
+	.fc-agenda-bg{
+		display:none;
+	}
+	?
+</style>
+	<script type="text/javascript">
+	var tableOffset;
+	var $fixedHeader;
+	var $header;
+	var tableOffset2;
+	var $fixedHeader2;
+	var $header2;
+	var $p = 0;
+var barcodesArr = [<?php echo implode(',', $barcodesArr);?>];
+var barcodePos = Array();
+var $linesArray = Array();
+var ratio = 1;
+var startSec = 0;
+var startCal = 0;
+var viewType = 'day';
+var startArray =[<?php echo implode(',', $timeBooked);?>];
+		$(window).load(function (){
+			//$('#calendarTime').height($('#prodTable').height()-50);
+			startCal = $('#calendarTime').css('width');
+			startSec = $('#secWindow').css('width');
+			startHeight = -$('.adminHeader').height()-88;
+			$('.gridBodyRow').each(function(){
+				if( $(this).children(":first").attr('class').indexOf('noHover') >0){
+
+				}else{
+					barcode_name = $(this).find('td').attr('barcode_name');
+
+					if(barcode_name !== undefined){
+						pos = $(this).offset();
+						$lineTop =$('<div></div>');
+						$lineTop.css('position','absolute');
+						$lineTop.css('top', (pos.top-1)+'px');
+						$lineTop.css('width', $('#calendarTime').width()+'px');
+						$lineTop.css('height', '1px');
+						$lineTop.css('z-index', '100');
+						$lineTop.css('border-top', '1px solid #cccccc');
+						$lineTop.css('left', (pos.left+300)+'px');
+						$lineTop.appendTo($('body'));
+						barcodePos[barcode_name] = pos.top;
+						$linesArray.push($lineTop);
+
+					}
+				}
+
+			});
+
+			$('#calendarTime').fullCalendar({
+				header: {
+					 left:   '',
+					center: '',
+					right:  ''
+				},
+				theme: true,
+				allDaySlot:false,
+				contentHeight:$('#prodTable').height()-30,
+				slotMinutes:<?php echo $minTime;?>,
+				weekDayNumber:<?php echo $numCols;?>,
+				//axisFormat:'h:mm',
+				editable: false,
+				disableDragging: true,
+				disableResizing: true,
+				defaultView: 'basicWeek',
+				height: $('#prodTable').height()-30,
+				events: startArray,
+				dayClick: function(date, allDay, jsEvent, view) {
+					var clicky = jsEvent.pageY;
+					var clickedBarcode = '';
+					for(i=0;i<=barcodesArr.length;i++){
+						if(barcodePos[barcodesArr[i]] < clicky && barcodePos[barcodesArr[i]]+19 > clicky){
+							clickedBarcode = barcodesArr[i];
+						}
+					}
+					if(clickedBarcode != ''){
+						rID = 0;
+						type = $('.'+clickedBarcode).attr('type');
+						selectedBarcodes = new Array();
+						$('input[name="selectedBarcodes[]"]:checked').each(function() {selectedBarcodes.push($(this).val());});
+						products_id = $('.'+clickedBarcode).attr('products_id');
+						//popupWindowEditReservation(type,rID, barcode_id, selectedBarcodes, products_id,500,300);
+					}
+
+				},
+				eventAfterRender:function( event, element, view ) {
+					//if(view)
+					$('.fc-event-time').hide();
+					element.find('.fc-event-bg').css('background-color',event.rsid);
+					element.attr('rid', event.rid);
+					element.attr('barcode_name', event.barcode_name);
+					element.attr('type', event.type);
+
+					if(viewType == 'day'){
+						for(i=0;i<=barcodesArr.length;i++){
+							$('.'+barcodesArr[i]).each(function(){
+								if($(this).parent().get(0).tagName == 'TR'){
+									var pos = $(this).offset();
+									$('.'+barcodesArr[i]).css('top', (pos.top+startHeight)+'px');
+									$('.'+barcodesArr[i]).css('height', '16px');
+								}
+							});
+						}
+						if(element.width()<32){
+							element.width(32);
+						}
+					} else{
+						posx = ($('.fc-agenda-body table').height())/(24*(60/<?php echo $minTime;?>));
+						posy = 40;
+
+						pos = element.position();
+						element.css('top', (barcodePos[element.attr('barcode_name')]+startHeight-16)+'px');
+						element.css('width', (element.height()*posy/posx)+'px');
+						element.css('left', (pos.top*posy/posx)+'px');
+						element.css('height', '16px');
+					}
+
+				}
+
+			});
+			$('.fc-event').click(function(){
+						rID = $(this).attr('rid');
+						type = $(this).attr('type');
+						selectedBarcodes = new Array();
+						$('input[name="selectedBarcodes[]"]:checked').each(function() {selectedBarcodes.push($(this).val());});
+						products_id = $(this).attr('products_id');
+						//popupWindowEditReservation(type,rID, barcode_id, selectedBarcodes, products_id,500,300);
+			});
+			$('.headerDay').css('cursor','pointer');
+			$('.fc-content table td').css('cursor','pointer');
+			$('.headerDay').click(function() {
+
+				curentDay = $(this).html().replace(' ', '');
+				curDate = new Date(curentDay);
+				if (curDate.getMonth() + 1 < 10) {
+					tmonth = '0' + (curDate.getMonth() + 1);
+				} else {
+					tmonth = (curDate.getMonth() + 1);
+				}
+
+				if (curDate.getDate() < 10) {
+					tday = '0' + (curDate.getDate());
+				} else {
+					tday = (curDate.getDate());
+				}
+
+				$('#changeView').trigger('click');
+				$('#start_date').val(curDate.getFullYear() + '-' + tmonth + '-' + tday);
+				$('#start_date').trigger('change');
+			});
+			$('#changeView').click(function(){
+				if(viewType == 'day'){
+					viewType = 'hour';
+					$('#secWindow').css('width','2250px');
+					$('#calendarTime').css('width','1920px');
+					for(i7=0;i7<$linesArray.length;i7++){
+						$linesArray[i7].css('width','1920px');
+					}
+					$('#calendarTime').fullCalendar( 'changeView','agendaDay');
+					$('.fc-agenda-body table').tableTranspose();
+					$('.fc-agenda-body').height($('#prodTable').height()-50+startHeight);
+					$('.fc-agenda-body table th:first').css('width','40px');
+					$('.fc-agenda-body table tr:nth-child(2)').each(function(){
+						$(this).height($('#prodTable').height()-83+startHeight);
+
+					});
+					$('.fc-content table td').css('cursor','pointer');
+					$p++;
+					if($p == 1){
+						tableOffset2 = $("#calendarTime .fc-agenda-body table").offset().top;
+						$header2 = $("#calendarTime .fc-agenda-body table").find('tr:first').clone();
+						$fixedHeader2 = $("#header-fixed2").append($header2);
+						$p++;
+					}
+				}else{
+					viewType = 'day';
+					$('#secWindow').css('width',startSec);
+					$('#calendarTime').css('width',startCal);
+					for(i7=0;i7<$linesArray.length;i7++){
+						$linesArray[i7].css('width',startCal);
+					}
+					$('.fc-agenda-body table').tableTranspose();
+					$('#calendarTime').fullCalendar( 'changeView','basicWeek');
+					$('.fc-content table td').css('cursor','pointer');
+				}
+			});
+
+			$('div.ui-tooltip-wiki').css('min-width', '300px');
+			tableOffset = $("#calendarTime .fc-view-basicWeek table").offset().top;
+			$header = $("#calendarTime .fc-view-basicWeek table > thead").clone();
+			$fixedHeader = $("#header-fixed").append($header);
+		});
+		$(window).bind("scroll", function() {
+			if(viewType == 'day'){
+				var offset = $(this).scrollTop();
+				$fixedHeader.css('top', (window.pageYOffset-150) + 'px');
+				if (offset >= tableOffset && $fixedHeader.is(":hidden")) {
+					$fixedHeader.show();
+				}
+				else if (offset < tableOffset) {
+					$fixedHeader.hide();
+				}
+			}else{
+				var offset2 = $(this).scrollTop();
+				$fixedHeader2.css('top', (window.pageYOffset-150) + 'px');
+				if (offset2 >= tableOffset2 && $fixedHeader2.is(":hidden")) {
+					$fixedHeader2.show();
+				}
+				else if (offset2 < tableOffset2) {
+					$fixedHeader2.hide();
+				}
+			}
+		});
+	</script>
+

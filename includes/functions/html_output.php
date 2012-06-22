@@ -98,6 +98,16 @@ function buildAppLink($o){
 	if (!is_null($o['params'])){
 		$vars = $parseVars;
 		$paramsParsed = true;
+		if ($o['app'] == 'index' && isset($vars['cPath'])){
+			$ResultSet = Doctrine_Manager::getInstance()
+			->getCurrentConnection()
+			->fetchAssoc('select categories_seo_url from categories_description where categories_id = "' . $vars['cPath'] .'" and language_id = "'.Session::get('languages_id').'" ');
+			if(sizeof($ResultSet) > 0){
+				//$link = $o['app'] . '/' . $ResultSet[0]['categories_seo_url'] . '/';
+				$o['page'] = $ResultSet[0]['categories_seo_url'];
+				//$_GET['actualPage'] = ;
+			}
+		}
 		if ($o['app'] == 'product' && isset($vars['products_id'])){
 			$products_id = $vars['products_id'];
 			if (!isset($productNameResults[(int)$vars['products_id']])){

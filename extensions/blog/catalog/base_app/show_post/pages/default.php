@@ -20,7 +20,9 @@
     $contentHtml = '';
 
 	if(!empty($pageBlog['post_full_featured_image'])){
-		$thumbUrl = 'imagick_thumb.php?path=rel&imgSrc=' . $blog->getFilesUploadPath('image', 'rel') . $pageBlog['post_full_featured_image'];
+		$width = '1024';
+		$height = '1024';
+		$thumbUrl = 'imagick_thumb.php?path=rel&imgSrc=' . $blog->getFilesUploadPath('image', 'rel') . $pageBlog['post_full_featured_image'].'&width='.$width.'&height='.$height;
 		$contentHtml .= '<div class="blogpostimage"><img src="'.$thumbUrl.'"/></div>';
 	}
 
@@ -118,11 +120,7 @@
 	$pageTitle = stripslashes($contentHeading);
 	$pageContents = $contentHtml;
 
-	$pageButtons = htmlBase::newElement('button')
-	->usePreset('continue')
-	->setHref(itw_app_link(null, 'index', 'default'))
-	->draw();
 
 	$pageContent->set('pageTitle', $pageTitle);
 	$pageContent->set('pageContent', $pageContents);
-	$pageContent->set('pageButtons', $pageButtons);
+//	$pageContent->set('pageButtons', $pageButtons);

@@ -49,6 +49,7 @@ class Extension_orderCreator extends ExtensionBase {
 			'OrderQueryBeforeExecute',
 			'ReservationCheckQueryBeforeExecute',
 			'ProductInventoryReportsListingQueryBeforeExecute',
+			'ProductInventoryReportsListingQueryBeforeExecuteQuantity',
 			'CustomerGroupsExportQueryBeforeExecute',
             'AdminOrderDetailsAddButton'
 
@@ -92,6 +93,11 @@ class Extension_orderCreator extends ExtensionBase {
 	public function ProductInventoryReportsListingQueryBeforeExecute(&$Products){
 		if(!isset($_GET['isEstimate'])){
 			$Products->andWhere('opr.is_estimate = 0 or opr.is_estimate is null');
+		}
+	}
+	public function ProductInventoryReportsListingQueryBeforeExecuteQuantity(&$Products){
+		if(!isset($_GET['isEstimate'])){
+			$Products->andWhere('opr2.is_estimate = 0 or opr2.is_estimate is null');
 		}
 	}
 

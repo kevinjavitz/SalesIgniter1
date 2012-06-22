@@ -1,0 +1,25 @@
+<ConfigurationGroup>
+	<title>Custom Tags</title>
+	<key>customTags</key>
+	<description>Configuration Settings For The Custom Tags Extension</description>
+	<tabs>
+	<general>
+	<title>General</title>
+	<description>General Extension Settings</description>
+	<configurations>
+		<EXTENSION_CUSTOM_TAGS_INSTALLED editable="false">
+			<title>Installation Status</title>
+			<value>False</value>
+			<description></description>
+		</EXTENSION_CUSTOM_TAGS_INSTALLED>
+		<EXTENSION_CUSTOM_TAGS_ENABLED>
+			<title>Enable Custom tags</title>
+			<value>True</value>
+			<description>Enable Or Disable The Custom Tags Extension</description>
+			<sort_order>1</sort_order>
+			<set_function>tep_cfg_select_option(array('True','False'),</set_function>
+		</EXTENSION_CUSTOM_TAGS_ENABLED>
+	</configurations>
+	</general>
+	</tabs>
+</ConfigurationGroup>

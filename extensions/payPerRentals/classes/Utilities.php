@@ -81,6 +81,41 @@ class ReservationUtilities {
 		}*/
 	}
 
+	public static function addReservationProductToQueue($productID, $rQty){
+		global $ShoppingCart, $messageStack, $userAccount;
+		//global variable with all the attributes per product which will get the POST[id] changed and then cleaned based on the product id
+		$_POST['rental_qty'] = $rQty;
+		$product = new product($productID);
+		$purchaseTypeClass = $product->getPurchaseType('reservation');
+		//if($purchaseTypeClass->hasInventory($rQty)){
+		if(Session::exists('isppr_event_multiple_dates')){
+			$datesArr = Session::get('isppr_event_multiple_dates');
+			if(Session::exists('noInvDates')){
+				$myNoInvDates = Session::get('noInvDates');
+				if(isset($myNoInvDates[$productID]) && is_array($myNoInvDates[$productID]) && count($myNoInvDates[$productID]) > 0){
+					foreach($myNoInvDates[$productID] as $iDate){
+						foreach($datesArr as $k => $iDate1){
+							if(strtotime($iDate1) == $iDate){
+								unset($datesArr[$k]);
+								break;
+							}
+						}
+					}
+				}
+			}
+			foreach($datesArr as $iDate){
+				$_POST['start_date'] = $iDate;
+				$_POST['end_date'] = $iDate;
+				$_POST['event_date'] = $iDate;
+				$ShoppingCart->addProduct($productID, 'reservation', $rQty,null,true);
+			}
+		} else{
+			$ShoppingCart->addProduct($productID, 'reservation', $rQty,null,true);
+		}
+		/*} else{
+			$messageStack->addSession('pageStack', 'Not enough inventory for one or multiple selected dates for the selected quantity');
+		}*/
+	}
 	public static function getPeriodTime($period, $type){
 		if(isset($period) && is_numeric($period)){
 			$QPayPerRentalTypes = Doctrine_Query::create()
@@ -408,7 +443,7 @@ class ReservationUtilities {
 	var disabledDates = [];
 	var minRentalPeriod1 = <?php echo $minRentalPeriod;?>;
 	var maxRentalPeriod = <?php echo $maxRentalPeriod;?>;
-
+	var disabledWithMessage = <?php echo ((sysConfig::get('EXTENSION_PAY_PER_RENTALS_DISABLED_MESSAGE') == 'True')?'true':'false');?>;
 	var minRentalPeriodMessage1 = '<?php echo $minRentalMessage;?>';
 	var maxRentalPeriodMessage = '<?php echo $maxRentalMessage; ?>';
 	var allowSelectionBefore = true;
@@ -510,7 +545,7 @@ class ReservationUtilities {
 
 		$selfID.find('.datePicker').datepick({
 			useThemeRoller: true,
-			minDate: '+<?php echo sysConfig::get('EXTENSION_PAY_PER_RENTALS_DATE_PADDING');?>',
+			minDate: '0',
 			dateFormat: '<?php echo getJsDateFormat();?>',
 			rangeSelect: <?php echo ((sysConfig::get('EXTENSION_PAY_PER_RENTALS_FORCE_START_DATE') == 'True') ? 'false' : 'true');?>,
 			rangeSeparator: ',',
@@ -529,11 +564,14 @@ class ReservationUtilities {
 			beforeShowDay: function (dateObj) {
 				dateObj.setHours(0, 0, 0, 0);
 				var dateFormatted = $.datepick.formatDate('yy-m-d', dateObj);
-				if ($.inArray(dayShortNames[dateObj.getDay()], disabledDays) > -1) {
+				today = new Date($.datepick.formatDate('yy-m-d', new Date()));
+				/*if (today.getTime() > new Date(dateFormatted).getTime()){
+					return [false, ''];
+				}else */if ($.inArray(dayShortNames[dateObj.getDay()], disabledDays) > -1) {
 					return [false, 'ui-datepicker-disabled ui-datepicker-shipable', 'Disabled By Admin'];
 				} else if ($.inArray(dateFormatted, bookedDates) > -1 || isDisabled == true) {
 					return [false, 'ui-datepicker-reserved', 'Reserved for '+ ((isDisabled == false)?popArr[$.inArray(dateFormatted, bookedDates)]:disabledBy)];
-				} else if ($.inArray(dateFormatted, disabledDatesPadding) > -1) {
+				} else if ($.inArray(dateFormatted, disabledDatesPadding) > -1 && disabledWithMessage == false) {
 					return [false, 'ui-datepicker-disabled', 'Disabled by Admin'];
 				} else if ($.inArray(dateFormatted, shippingDaysPadding) > -1) {
 					return [true, 'hasd dayto-' + shippingDaysArray[$.inArray(dateFormatted, shippingDaysPadding)], 'Available'];
@@ -635,6 +673,12 @@ class ReservationUtilities {
 				}
 			},
 			onDayClick: function (date, inst, td) {
+				date.setHours(0, 0, 0, 0);
+				var dateFormatted = $.datepick.formatDate('yy-m-d', date);
+				if($.inArray(dateFormatted, disabledDatesPadding) > -1 && disabledWithMessage){
+					alert('If you require service within 48 hours, please contact us directly at (877) 922-2337. Representatives are standing by and we’ll make every effort to service your request.');
+					return false;
+				}else{
 				var shippingLabel;
 				var myclass = '';
 				var sDay = 0;
@@ -848,7 +892,7 @@ class ReservationUtilities {
 					$selfID.find('.datePicker').datepick('option', 'initStatus', '<?php echo sysLanguage::get('PPR_SELECT_START_DATE'); ?>');
 				}
 			<?php
-   		if ($allowHourly && sysConfig::get('EXTENSION_PAY_PER_RENTALS_USE_FULL_DAYS') == 'False') {
+   		if ($allowHourly && sysConfig::get('EXTENSION_PAY_PER_RENTALS_USE_FULL_DAYS') == 'False' && (sysConfig::get('EXTENSION_ORDER_CREATOR_SHOW_TIMES') == 'False' || $App->getEnv() == 'catalog')) {
 					?>
 					$selfID.find('.calendarTime').show();
 					$selfID.find('.calendarTime').fullCalendar('gotoDate', date);
@@ -901,6 +945,20 @@ class ReservationUtilities {
 					}
 					<?php
 
+				} elseif(sysConfig::get('EXTENSION_PAY_PER_RENTALS_END_DATE_SAME_START_DATE') == 'True'){
+					?>
+					if ($selfID.find('.start_date').val() == '' && isStart) {
+					} else {
+						$selfID.find('.start_date').val(dates[0]).trigger('change');
+						$selfID.find('.end_date').val(dates[0]).trigger('change');
+						$selfID.find('.days_before').val(days_before);
+						$selfID.find('.days_after').val(days_after);
+						$selfID.find('.datePicker').datepick('option', 'maxDate', null);
+						isStart = false;
+						selected = 'end';
+						$('.end_time').trigger('change');
+					}
+			<?php
 				} else {
 					?>
 					var dates = value.split(',');
@@ -947,7 +1005,7 @@ class ReservationUtilities {
 		}
 		?>
 
-		$selfID.find('.rental_qty').blur(function () {
+		$selfID.find('.rental_qty').change(function () {
 			var $calLoader = $selfID.find('.datePicker');
 			showAjaxLoader($calLoader, 'xlarge');
 			$.ajax({
@@ -961,6 +1019,9 @@ class ReservationUtilities {
 						removeAjaxLoader($calLoader);
 						$selfID.parent().html(data.calendar);
 						$('#getQuotes').button();
+						$selfID.parent().find('.inCart').hide();
+						$selfID.parent().find('.start_date').val('');
+						$selfID.parent().find('.end_date').val('');
 						$calLoader.trigger('EventAfterLoadedCalendar');
 					}
 				}
@@ -1688,10 +1749,54 @@ class ReservationUtilities {
      </div>
 
      <div class="dateSelectedCalendar">
+
       <div class="datesInputs"><?php echo sysLanguage::get('ENTRY_RENTAL_DATES_SELECTED');?>
       <input type="text" name="start_date" class="start_date" value="<?php echo (isset($rInfo) ? $rInfo['reservationInfo']['start_date'] : '');?>" readonly="readonly">
+      <?php echo sysLanguage::get('PAYPERRENTALS_TO');?>
+		<input type="text" name="end_date" class="end_date" value="<?php echo (isset($rInfo) ? $rInfo['reservationInfo']['end_date'] : '');?>" readonly="readonly">
+		<input type="hidden" name="days_before" class="days_before" value="<?php echo (isset($rInfo['reservationInfo']['days_before']) ? $rInfo['reservationInfo']['days_before'] : '');?>"> <input type="hidden" name="days_after" class="days_after" value="<?php echo (isset($rInfo['reservationInfo']['days_after']) ? $rInfo['reservationInfo']['days_after'] : '');?>">
+	  </div>
      <?php
-		if(sysConfig::get('EXTENSION_ORDER_CREATOR_SHOW_TIMES') == 'True'){
+		if(sysConfig::get('EXTENSION_PAY_PER_RENTALS_ENABLE_TIME_DROPDOWN') == 'True'){
+			if(sysConfig::get('EXTENSION_PAY_PER_RENTALS_ENABLE_TIME_FEES') == 'True' && Session::exists('current_store_id')){
+				?>
+					 <div class="timesInputs"><?php echo sysLanguage::get('ENTRY_RENTAL_TIMES_SELECTED');?>
+					<?php
+				$multiStore = $appExtension->getExtension('multiStore');
+				if ($multiStore !== false && $multiStore->isEnabled() === true){
+					$QTimeFees = Doctrine_Query::create()
+							->from('StoresTimeFees')
+							->where('stores_id = ?', Session::get('current_store_id'))
+							->orderBy('timefees_id')
+							->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+				}else{
+					$QTimeFees = Doctrine_Query::create()
+							->from('PayPerRentalTimeFees')
+							->orderBy('timefees_id')
+							->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+				}
+				$hourStart = htmlBase::newElement('selectbox')
+						->setName('start_time')
+						->addClass('start_time');
+				$hourEnd = htmlBase::newElement('selectbox')
+						->setName('end_time')
+						->addClass('end_time');
+				foreach($QTimeFees as $timeFee){
+					if(!empty($timeFee['timefees_name']) && $timeFee['timefees_name'] != 'not applicable' && $timeFee['timefees_name'] != 'not available'){
+						//echo '<b>'.$timeFee['timefees_name'].' - Cost: '.$currencies->format($timeFee['timefees_fee']).''.'</b><br/>';
+						$hourStart->addOption($timeFee['timefees_start'].':00:00',$timeFee['timefees_name'].' - Cost: '.$currencies->format($timeFee['timefees_fee']));
+						$hourEnd->addOption($timeFee['timefees_start'].':00:00',$timeFee['timefees_name'].' - Cost: '.$currencies->format($timeFee['timefees_fee']));
+					}
+				}
+						 echo sysLanguage::get('EXTENSION_PAY_PER_RENTALS_START_TIME'). $hourStart->draw();
+						 echo '&nbsp;&nbsp;&nbsp;&nbsp;'.sysLanguage::get('EXTENSION_PAY_PER_RENTALS_END_TIME').$hourEnd->draw();
+						 ?>
+			</div>
+					<?php
+			}else{
+		?>
+	  <div class="timesInputs"><?php echo sysLanguage::get('ENTRY_RENTAL_TIMES_SELECTED');?>
+          <?php
 		      $starttimeVal = (int) sysConfig::get('EXTENSION_PAY_PER_RENTALS_START_TIME');
 		      $endtimeVal = (int) sysConfig::get('EXTENSION_PAY_PER_RENTALS_END_TIME');
 
@@ -1735,18 +1840,15 @@ class ReservationUtilities {
 
 
 		      }
-		      echo $hourStart->draw();
-	    }
+			echo sysLanguage::get('EXTENSION_PAY_PER_RENTALS_START_TIME'). $hourStart->draw();
+		  	echo '&nbsp;&nbsp;&nbsp;&nbsp;'.sysLanguage::get('EXTENSION_PAY_PER_RENTALS_END_TIME').$hourEnd->draw();
 	 ?>
-	      <?php echo sysLanguage::get('PAYPERRENTALS_TO');?> <input type="text" name="end_date" class="end_date" value="<?php echo (isset($rInfo) ? $rInfo['reservationInfo']['end_date'] : '');?>" readonly="readonly">
+	  </div>
      <?php
-	       if(sysConfig::get('EXTENSION_ORDER_CREATOR_SHOW_TIMES') == 'True'){
-		      echo $hourEnd->draw();
+	      }
 	      }
 	      ?>
 
-	  <input type="hidden" name="days_before" class="days_before" value="<?php echo (isset($rInfo['reservationInfo']['days_before']) ? $rInfo['reservationInfo']['days_before'] : '');?>"> <input type="hidden" name="days_after" class="days_after" value="<?php echo (isset($rInfo['reservationInfo']['days_after']) ? $rInfo['reservationInfo']['days_after'] : '');?>">
-      </div>
 	     <div class="refreshCal_wrapper">
 	  <?php
         echo htmlBase::newElement('button')
@@ -1773,6 +1875,7 @@ class ReservationUtilities {
 
 	   $pprButtons .= $purchaseTypeClass->getHiddenFields();
 	   if($hasButton){
+		   if(sysConfig::get('EXTENSION_PAY_PER_RENTAL_ALLOW_MEMBERSHIP') == 'False'){
 		   $pprButtons .= htmlBase::newElement('div')
 		   ->addClass('inCart')
 		   ->css(array(
@@ -1781,6 +1884,16 @@ class ReservationUtilities {
 		   ))
 		   ->html(sysLanguage::get('TEXT_BUTTON_IN_CART'))
 		   ->draw();
+		   }else{
+		   		$pprButtons .= htmlBase::newElement('div')
+			  	->addClass('inCart inQueue')
+			   	->css(array(
+				   'display'   => 'inline-block',
+				   'width' => '150px'
+			   	))
+			   	->html(sysLanguage::get('TEXT_BUTTON_IN_QUEUE'))
+			   	->draw();
+		   }
 	   }
 
 		echo $pprButtons;
@@ -2174,7 +2287,7 @@ class ReservationUtilities {
 		}
 		$Reservation->save();
 	}
-	public static function inventoryCenterAddon($hasHeaders, $hasGeographic = true, $showPickup = true, $showDropoff){
+	public static function inventoryCenterAddon($hasHeaders, $hasGeographic = true, $showPickup = true, $showDropoff, $hasLP){
 			global $appExtension;
 			$invCentExt = $appExtension->getExtension('inventoryCenters');
 			$pprform = htmlBase::newElement('div')
@@ -2281,6 +2394,9 @@ class ReservationUtilities {
 					$pickup->selectOptionByValue(Session::get('isppr_inventory_pickup'));
 				}
 
+				if($hasLP == true && sysConfig::get('EXTENSION_INVENTORY_CENTERS_USE_LP') == 'True' && Session::exists('isppr_inventory_lp')){
+					$pickup->selectOptionByValue(Session::get('isppr_inventory_lp'));
+				}
 				if(Session::exists('isppr_continent') && (Session::get('isppr_continent') != '')){
 					$continent->selectOptionByValue(Session::get('isppr_continent'));
 					$QinventoryCountry = Doctrine_Query::create()
@@ -2394,7 +2510,17 @@ class ReservationUtilities {
 							'value' => $qinv['inventory_center_min_rental_days']
 						)
 					);
+					if($hasLP == false){
 					$pickup->addOptionWithAttributes($qinv['inventory_center_id'], $qinv['inventory_center_name'], $attr);
+					}else{
+						$QLP = Doctrine_Query::create()
+						->from('InventoryCentersLaunchPoints')
+						->where('inventory_center_id = ?', $qinv['inventory_center_id'])
+						->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+						foreach($QLP as $iLP){
+							$pickup->addOption($iLP['lp_name'], $iLP['lp_name']);
+						}
+					}
 					$dropoff->addOption($qinv['inventory_center_id'], $qinv['inventory_center_name']);
 					$curInv++;
 				}
@@ -2443,6 +2569,11 @@ class ReservationUtilities {
 				->addClass('myf1')
 				->attr('href', itw_app_link('appExt=inventoryCenters&inv_id=' . $myfinv, 'show_inventory', 'default'));
 
+				$lpText = htmlBase::newElement('a')
+				->addClass('icon1 mylp1')
+				->css(array(
+					'display' => 'inline-block'
+				));
 				$dropText = htmlBase::newElement('a')
 				->text('More Info')
 				->addClass('myg1')
@@ -2464,7 +2595,7 @@ class ReservationUtilities {
 				}
 
 				if (sysConfig::get('EXTENSION_PAY_PER_RENTALS_CHOOSE_PICKUP') == 'True'){
-					$container_dest->append($pickupt)->append($pickup)->append($pickText);
+					$container_dest->append($pickupt)->append($pickup)->append($pickText)->append($lpText);
 				}
 				if (sysConfig::get('EXTENSION_PAY_PER_RENTALS_CHOOSE_DROPOFF') == 'True'){
 					$container_dest->append($dropofft)->append($dropoff)->append($dropText)->append($br);

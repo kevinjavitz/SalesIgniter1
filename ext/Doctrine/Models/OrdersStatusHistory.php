@@ -14,6 +14,10 @@ class OrdersStatusHistory extends Doctrine_Record {
 
 	public function setUp(){
 		$this->setUpParent();
+		$this->hasOne('Orders', array(
+			'local' => 'orders_id',
+			'foreign' => 'orders_id'
+		));
 		
 		$this->hasOne('OrdersStatus', array(
 			'local' => 'orders_status_id',

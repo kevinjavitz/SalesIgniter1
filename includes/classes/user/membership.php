@@ -599,5 +599,8 @@ class rentalStoreUser_membership extends StandardClass {
 	public function getMembershipName(){
 		return $this->membershipInfo['plan_name'];
 	}
+	public function getAllPlanInfo(){
+		return $this->planInfo;
+	}
 }
 ?>

@@ -1,4 +1,5 @@
 <?php
+set_time_limit(0);
 	$appContent = $App->getAppContentFile();
 
 	//require(sysConfig::getDirFsCatalog() . 'includes/classes/product.php');

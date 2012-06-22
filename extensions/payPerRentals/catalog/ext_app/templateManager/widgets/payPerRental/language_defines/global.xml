@@ -15,7 +15,7 @@
 
 	<define key="EXTENSION_PAY_PER_RENTALS_NO_GATES"><![CDATA[No Gates ]]></define>
 	<define key="TEXT_QTY"><![CDATA[Quantity: ]]></define>
-	<define key="INFOBOX_CATEGORIES_VIEW_PRODUCTS"><![CDATA[View All Surfboards]]></define>
+	<define key="INFOBOX_CATEGORIES_VIEW_PRODUCTS"><![CDATA[View All]]></define>
 
 	<define key="TEXT_PICKUP_ZONE"><![CDATA[Pickup Zone: ]]></define>
 	<define key="TEXT_DROPOFF_ZONE"><![CDATA[Drop off Zone: ]]></define>
@@ -40,8 +40,9 @@
 	<define key="INFOBOX_PAYPERRENTAL_SHOWPICKUP"><![CDATA[Show Pickup: ]]></define>
 	<define key="INFOBOX_PAYPERRENTAL_SHOWDROPOFF"><![CDATA[Show Dropoff: ]]></define>
 
-	<define key="INFOBOX_PAYPERRENTAL_SELECT_CATEGORY"><![CDATA[Select Category ]]></define>
+	<define key="INFOBOX_PAYPERRENTAL_SELECT_CATEGORY"><![CDATA[3. Select Category ]]></define>
 	<define key="INFOBOX_PAYPERRENTAL_SELECT_DATES"><![CDATA[2. Select Dates ]]></define>
+	<define key="INFOBOX_PAYPERRENTAL_SELECT_TIMES"><![CDATA[3. Select Times ]]></define>
 	<define key="INFOBOX_PAYPERRENTAL_SELECT_EVENT"><![CDATA[<span style="color:#ffffff;font-size:18px;font-family:'Trebuchet Ms'">Event/Fair Reservations</span><a class="icon1 myev2" style="display:inline-block;"></a>]]></define>
 	<define key="INFOBOX_PAYPERRENTAL_SELECT_GATE"><![CDATA[<span style="display:inline-block;color:#ffffff;font-size:18px;font-family:'Trebuchet Ms'">Select Gate</span><span class="icon1 myga1" style="display:inline-block;"></span>]]></define>
 

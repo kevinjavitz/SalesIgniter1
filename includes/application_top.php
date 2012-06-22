@@ -318,7 +318,11 @@ $breadcrumb->add(sysLanguage::get('HEADER_TITLE_CATALOG') .' '. sysLanguage::get
 						}
 					}
 				}
+					if(isset($_POST['isQueue'])){
+						tep_redirect(itw_app_link('appExt=payPerRentals','rentalQueue','default'));
+					}else{
 				tep_redirect($goto);
+					}
 				break;
 			case 'removeCartProduct':
 				$ShoppingCart->removeProduct($_GET['pID'], $_GET['purchaseTypeVal']);

@@ -1,0 +1,9 @@
+<definitions>
+	<define key="HEADING_TITLE_REPORTS"><![CDATA[Rental Inventory Report]]></define>
+	<define key="HEADING_TITLE_START_DATE"><![CDATA[Start Date: ]]></define>
+	<define key="TABLE_HEADING_ACTION"><![CDATA[Action]]></define>
+
+	<define key="HEADING_TITLE_START_END"><![CDATA[End Date: ]]></define>
+	<define key="HEADING_TITLE_SEARCH"><![CDATA[Search: ]]></define>
+
+</definitions>

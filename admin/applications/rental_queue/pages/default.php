@@ -22,7 +22,7 @@
 	->leftJoin('c.CustomersMembership cm')
 	->where('cm.ismember = ?', 'M')
 	->andWhere('cm.activate = ?', 'Y')
-	->andWhere('DATEDIFF(cm.next_bill_date,CURDATE()) > ?', sysConfig::get('RENTAL_DAYS_CUSTOMER_PAST_DUE'))
+	->andWhere('DATEDIFF(cm.next_bill_date,CURDATE()) > ?', -((int)sysConfig::get('RENTAL_DAYS_CUSTOMER_PAST_DUE')))
 	->orderBy('c.customers_id');
 
 	if(isset($_GET['pickupRequest'])){

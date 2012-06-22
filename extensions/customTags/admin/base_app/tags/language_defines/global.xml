@@ -1,0 +1,11 @@
+<definitions>
+	<define key="HEADING_TITLE"><![CDATA[Tags]]></define>
+	<define key="TEXT_TAG_NAME"><![CDATA[Tag Name]]></define>
+	<define key="TABLE_HEADING_ACTION"><![CDATA[Action]]></define>
+
+	<define key="TABLE_HEADING_CUSTOMTAGS"><![CDATA[Tag]]></define>
+	<define key="TABLE_HEADING_TAG_STATUS"><![CDATA[Status]]></define>
+	<define key="TABLE_HEADING_TAG_PRODUCTS"><![CDATA[Products]]></define>
+	<define key="TABLE_HEADING_TAG_CUSTOMER"><![CDATA[Customers]]></define>
+
+</definitions>

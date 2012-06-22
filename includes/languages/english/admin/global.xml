@@ -469,6 +469,7 @@
 	<define key="PPR_INFO_SELECTED_DAYS"><![CDATA[Selected Days.]]></define>
 	<define key="PPR_INFO_SHIPPING_DAYS"><![CDATA[Shipping Days.]]></define>
 	<define key="TEXT_DATES_SELECTED"><![CDATA[Dates Selected:]]></define>
+	<define key="TEXT_DATES_PRICE"><![CDATA[Price:]]></define>
 
 	<define key="TEXT_January"><![CDATA[January]]></define>
 	<define key="TEXT_February"><![CDATA[February]]></define>
@@ -483,4 +484,7 @@
 	<define key="TEXT_November"><![CDATA[November]]></define>
 	<define key="TEXT_December"><![CDATA[December]]></define>
 	<define key="TEXT_INFO_INSURANCE"><![CDATA[Insurance:]]></define>
+    <define key="EXTENSION_PAY_PER_RENTALS_START_TIME"><![CDATA[Time for delivery:]]></define>
+    <define key="EXTENSION_PAY_PER_RENTALS_END_TIME"><![CDATA[Time for pickup:]]></define>
+    <define key="ENTRY_RENTAL_TIMES_SELECTED"><![CDATA[]]></define>
 </definitions>

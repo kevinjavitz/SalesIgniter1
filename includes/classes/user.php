@@ -458,6 +458,7 @@ class RentalStoreUser implements Serializable {
 			$Customer->customers_gender = $this->customerInfo['gender'];
 		}
 
+		EventManager::notify('UpdateCustomerAccountBeforeExecute', &$Customer);
 		$Customer->customers_number = $this->customerInfo['memberNumber'];
 		$Customer->customers_account_frozen = ($this->customerInfo['frozen'] === true ? '1' : '0');
 

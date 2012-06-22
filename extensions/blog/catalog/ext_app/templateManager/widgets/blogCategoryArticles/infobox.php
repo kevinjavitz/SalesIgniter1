@@ -93,7 +93,7 @@ class InfoBoxBlogCategoryArticles extends InfoBoxAbstract {
 
 					$thumbUrl = 'imagick_thumb.php?path=rel&imgSrc='.$src.'&width='.$imageWidth.'&height='.$imageHeight;
 				}else{
-					$thumbUrl = 'imagick_thumb.php?path=rel&imgSrc=images/'.$post['post_featured_image'].'&width='.$imageWidth.'&height='.$imageHeight;
+					$thumbUrl = 'imagick_thumb.php?path=rel&imgSrc='.$blog->getFilesUploadPath('image', 'rel'). $post['post_featured_image'].'&width='.$imageWidth.'&height='.$imageHeight;
 				}
 				$contentHtml.= '<div class="pictPostPart">';
 				if($thumbUrl !=''){

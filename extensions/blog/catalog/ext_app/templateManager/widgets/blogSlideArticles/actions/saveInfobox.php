@@ -101,6 +101,12 @@ else {
 	$WidgetProperties['imageHasLink'] = '';
 }
 
+if (isset($_POST['startAuto'])){
+	$WidgetProperties['startAuto'] = $_POST['startAuto'];
+}
+else {
+	$WidgetProperties['startAuto'] = '';
+}
 if (isset($_POST['showVideo'])){
 	$WidgetProperties['showVideo'] = $_POST['showVideo'];
 }

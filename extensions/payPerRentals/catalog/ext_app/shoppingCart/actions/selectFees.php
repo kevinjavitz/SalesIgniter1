@@ -4,6 +4,29 @@ $shippingmodulesInfo = '';
 EventManager::notify('OrderTotalShippingProcess', &$totalShippingCost, &$shippingmodulesInfo);
 $totals = '';
 $totalPrice = $ShoppingCart->showTotal();
+if(isset($_POST['delivery_time'])){
+	$deliveryTime  = $_POST['delivery_time'];
+	$multiStore = $appExtension->getExtension('multiStore');
+	if ($multiStore !== false && $multiStore->isEnabled() === true){
+		$QTimeFees = Doctrine_Query::create()
+			->from('StoresTimeFees')
+			->where('stores_id = ?', Session::get('current_store_id'))
+			->andWhere('timefees_id = ?', $deliveryTime)
+			->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+	}else{
+		$QTimeFees = Doctrine_Query::create()
+		->from('PayPerRentalTimeFees')
+		->where('timefees_id = ?', $deliveryTime)
+		->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+	}
+	$totalPrice += $QTimeFees[0]['timefees_fee'];
+	if($QTimeFees[0]['timefees_fee'] > 0){
+		$totals .= '<b>Delivery Time - '.$QTimeFees[0]['timefees_name'].': '.$currencies->format($QTimeFees[0]['timefees_fee']).'</b><br/>';
+	}
+	Session::set('deliveryFees_time', $deliveryTime);
+	Session::set('deliveryFees_fee', $QTimeFees[0]['timefees_fee']);
+	Session::set('deliveryFees_name', $QTimeFees[0]['timefees_name']);
+}
 if(isset($_POST['pickup_time'])){
 	$pickupTime = $_POST['pickup_time'];
 	$multiStore = $appExtension->getExtension('multiStore');
@@ -21,31 +44,12 @@ if(isset($_POST['pickup_time'])){
 	}
 
 	$totalPrice += $QTimeFees[0]['timefees_fee'];
+	if($QTimeFees[0]['timefees_fee'] > 0){
 	$totals .= '<b>Pickup Time - '.$QTimeFees[0]['timefees_name'].': '.$currencies->format($QTimeFees[0]['timefees_fee']).'</b><br/>';
+	}
 	Session::set('pickupFees_time', $pickupTime);
 	Session::set('pickupFees_fee', $QTimeFees[0]['timefees_fee']);
 	Session::set('pickupFees_name', $QTimeFees[0]['timefees_name']);
-}
-if(isset($_POST['delivery_time'])){
-	$deliveryTime  = $_POST['delivery_time'];
-	$multiStore = $appExtension->getExtension('multiStore');
-	if ($multiStore !== false && $multiStore->isEnabled() === true){
-		$QTimeFees = Doctrine_Query::create()
-			->from('StoresTimeFees')
-			->where('stores_id = ?', Session::get('current_store_id'))
-			->andWhere('timefees_id = ?', $deliveryTime)
-			->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
-	}else{
-		$QTimeFees = Doctrine_Query::create()
-		->from('PayPerRentalTimeFees')
-		->where('timefees_id = ?', $deliveryTime)
-		->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
-	}
-	$totalPrice += $QTimeFees[0]['timefees_fee'];
-	$totals .= '<b>Delivery Time - '.$QTimeFees[0]['timefees_name'].': '.$currencies->format($QTimeFees[0]['timefees_fee']).'</b><br/>';
-	Session::set('deliveryFees_time', $deliveryTime);
-	Session::set('deliveryFees_fee', $QTimeFees[0]['timefees_fee']);
-	Session::set('deliveryFees_name', $QTimeFees[0]['timefees_name']);
 }
 
 if(isset($_POST['extrafees_time']) && $_POST['extrafees_time'] > 0){
@@ -88,7 +92,7 @@ if(isset($_POST['extrafees_time']) && $_POST['extrafees_time'] > 0){
 	}
 if(count($QExtraFees) > 0){
 	foreach($QExtraFees as $extraFee){
-		if($extraFee['timefees_hours'] == 0){
+		if($extraFee['timefees_hours'] == 0 && $extraFee['timefees_fee'] > 0){
 			$totalPrice += $extraFee['timefees_fee'];
 			$totals .= '<b>'.$extraFee['timefees_name'].': '.$currencies->format($extraFee['timefees_fee']).'</b><br/>';
 			continue;
@@ -101,7 +105,7 @@ if(count($QExtraFees) > 0){
 				$pInfo = $cartProduct->getInfo('reservationInfo');
 				$startDate = $pInfo['start_date'];
 				$diffHours = floor((strtotime($startDate) - time())/3600);
-				if($diffHours < $extraFee['timefees_hours']){
+				if($diffHours < $extraFee['timefees_hours'] && $extraFee['timefees_fee'] > 0){
 					$totalPrice += $extraFee['timefees_fee'];
 					$totals .= '<b>'.$extraFee['timefees_name'].': '.$currencies->format($extraFee['timefees_fee']).'</b><br/>';
 					break;
@@ -115,7 +119,7 @@ if(count($QExtraFees) > 0){
 
 if ($totalShippingCost >= 0){
 	$totals .= '<b>'.$shippingmodulesInfo.': '.$currencies->format($totalShippingCost).'</b><br/>';
-	//$totalPrice -= $totalShippingCost;
+	$totalPrice += $totalShippingCost;
 }
 $totals .= '<b>'. sysLanguage::get('SUB_TITLE_SUB_TOTAL').'&nbsp;'. $currencies->format($totalPrice).'</b>';
 $html ='<div class="main" style="text-align:right;"><span class="smallText" style="float:left;"></span>'. $totals.'</div><div style="clear:both;"></div>';

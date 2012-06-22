@@ -5,8 +5,9 @@
 		$favorites_links = explode(';', $Admin->favorites_links);
 		$favorites_names = explode(';', $Admin->favorites_names);
 		$removeVal = array_search($_GET['url'], $favorites_links);
+		$removeValName = array_search($_GET['url'], $favorites_names);
 		unset($favorites_links[$removeVal]);
-		unset($favorites_names[$removeVal]);
+		unset($favorites_names[$removeValName]);
 		$Admin->favorites_links = implode(';', $favorites_links);
 		$Admin->favorites_names = implode(';', $favorites_names);
 		$Admin->save();

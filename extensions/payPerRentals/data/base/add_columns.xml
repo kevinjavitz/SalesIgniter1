@@ -94,4 +94,24 @@
 			<notnull>true</notnull>
 		</ppr_show_in_menu>
 	</Categories>
+	<Membership>
+		<ppr_rentals>
+			<type>integer</type>
+			<length>4</length>
+			<unsigned>0</unsigned>
+			<primary>false</primary>
+			<default>0</default>
+			<notnull>true</notnull>
+		</ppr_rentals>
+	</Membership>
+	<Customers>
+		<ppr_rentals>
+			<type>integer</type>
+			<length>4</length>
+			<unsigned>0</unsigned>
+			<primary>false</primary>
+			<default>0</default>
+			<notnull>true</notnull>
+		</ppr_rentals>
+	</Customers>
 </data>

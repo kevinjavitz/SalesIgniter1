@@ -1511,12 +1511,6 @@ function makeCategoriesArrayForParrent($categoryId = 0, &$catArr){
 }
 
 function makeUniqueCategory($categoryId, $category_seo, $removeLast){
-	/*$QCategories = Doctrine_Query::create()
-			->from('Categories c')
-			->leftJoin('c.CategoriesDescription cd')
-			->where('categories_seo_url = ?', $category_seo)
-			->andWhere('cd.language_id = ?', Session::get('languages_id'))
-			->execute(array(), Doctrine_Core::HYDRATE_ARRAY);*/
 	$catArr = array();
 	makeCategoriesArrayForParrent($categoryId, $catArr);
 

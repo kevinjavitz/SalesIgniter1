@@ -10,8 +10,25 @@
 				'CountContents',
 				'AddToCartAfterAction',
 				'UpdateProductBeforeAction',
-				'AddToCartBeforeAction'
+				'AddToCartBeforeAction',
+				'OnConstruct'
 			), 'ShoppingCart', $this);
+		}
+	public function OnConstruct(){
+		global $userAccount, $ShoppingCart;
+		if($userAccount->isLoggedIn()){
+			if(sysConfig::get('EXTENSION_PAY_PER_RENTAL_ALLOW_MEMBERSHIP') == 'True'){
+				$QQueue = Doctrine_Query::create()
+				->from('QueueProductsReservation qpr')
+				->where('customers_id = ?', $userAccount->getCustomerId())
+				->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+				foreach($QQueue as $iQueue){
+					$pInfo = unserialize($iQueue['pinfo']);
+					$pInfo['queue_products_reservations_id'] = $iQueue['queue_products_reservations_id'];
+					$ShoppingCart->addProduct($iQueue['products_id'],$iQueue['purchase_type'],$iQueue['products_quantity'], $pInfo,true, true);
+				}
+			}
+		}
 		}
 
 
@@ -95,6 +112,9 @@
 
 			if (isset($pInfo['postVal']['pickup'])) {
 				$pInfo['reservationInfo']['pickup'] = $pInfo['postVal']['pickup'];
+			}
+			if (isset($pInfo['postVal']['lp'])) {
+				$pInfo['reservationInfo']['lp'] = $pInfo['postVal']['lp'];
 			}
 			if (isset($pInfo['postVal']['dropoff'])) {
 				$pInfo['reservationInfo']['dropoff'] = $pInfo['postVal']['dropoff'];
@@ -199,6 +219,9 @@
 					$pInfo['reservationInfo']['inventory_center_pickup'] = $_POST['pickup'];
 				}
 
+				if (isset($_POST['lp'])) {
+					$pInfo['reservationInfo']['inventory_center_lp'] = $_POST['lp'];
+				}
 				if (isset($_POST['dropoff'])) {
 					$pInfo['reservationInfo']['inventory_center_dropoff'] = $_POST['dropoff'];
 				}
@@ -229,7 +252,7 @@
 			global $messageStack, $ShoppingCart;
 			$pID = $pInfo['id_string'];
 			$isRemoved = false;
-			$shoppingProducts = $ShoppingCart->getProducts()->getContents();
+			$shoppingProducts = $ShoppingCart->getProducts();
 			for ($i=0;$i<count($shoppingProducts)-1;$i++){
 				if(is_object($shoppingProducts[$i])){
 					$shoppingInfo = $shoppingProducts[$i]->getInfo();

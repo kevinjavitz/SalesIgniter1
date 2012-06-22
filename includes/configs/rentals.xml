@@ -44,6 +44,12 @@
 					<description><![CDATA[Show free trial column on rental signup page]]></description>
 					<set_function><![CDATA[tep_cfg_select_option(array('true', 'false'),]]></set_function>
 				</RENTAL_SHOW_TRIAL_COLUMN>
+				<RENTAL_SHOW_NUMBER_TITLES_COLUMN>
+					<title><![CDATA[Show number titles column on rental signup page]]></title>
+					<value><![CDATA[true]]></value>
+					<description><![CDATA[Show number titles column on rental signup page]]></description>
+					<set_function><![CDATA[tep_cfg_select_option(array('true', 'false'),]]></set_function>
+				</RENTAL_SHOW_NUMBER_TITLES_COLUMN>
 				<RENTAL_SHOW_TAX_COLUMN>
 					<title><![CDATA[Show tax column on rental signup page]]></title>
 					<value><![CDATA[false]]></value>

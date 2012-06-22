@@ -14,5 +14,12 @@
 			<primary>false</primary>
 			<notnull>false</notnull>
 		</inventory_center_dropoff>
+		<inventory_center_lp>
+			<type>string</type>
+			<length>999</length>
+			<fixed>false</fixed>
+			<primary>false</primary>
+			<notnull>true</notnull>
+		</inventory_center_lp>
 	</OrdersProductsReservation>
 </data>

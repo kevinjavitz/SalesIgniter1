@@ -21,6 +21,16 @@
 		$WidgetProperties['hasGeographic'] = false;
 	}
 
+	if (isset($_POST['hasLP'])){
+		$WidgetProperties['hasLP'] = true;
+	}else{
+		$WidgetProperties['hasLP'] = false;
+	}
+	if (isset($_POST['hasTimesHeader'])){
+		$WidgetProperties['hasTimesHeader'] = true;
+	}else{
+		$WidgetProperties['hasTimesHeader'] = false;
+	}
 	if (isset($_POST['showSubmit'])){
 		$WidgetProperties['showSubmit'] = true;
 	}else{

@@ -80,7 +80,7 @@ Released under the GNU General Public License
 
         public function getPath($history = 0){
             $pos = (sizeof($this->path)-1-$history);
-            if (sizeof($this->path[$pos]) > 0) {
+            if (isset($this->path[$pos]) && sizeof($this->path[$pos]) > 0) {
                 return array('app' => $this->path[$pos]['app'],
                              'appPage' => $this->path[$pos]['appPage'],
                              'mode' => $this->path[$pos]['mode'],

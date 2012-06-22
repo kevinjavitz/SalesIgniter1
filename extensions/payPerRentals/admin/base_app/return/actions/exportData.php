@@ -24,14 +24,19 @@ $Qreservations = Doctrine_Query::create()
 ->where('oa.address_type = ?', 'delivery')
 ->andWhere('opr.parent_id IS NULL')
 ->orderBy('opr.end_date');
-	if (isset($_GET['include_returned'])){
+if (isset($_GET['include_returned']) && isset($_GET['include_unsent'])){
+	$Qreservations->andWhereIn('opr.rental_state', array('returned','reserved', 'out'));
+}elseif (isset($_GET['include_returned'])){
 		$Qreservations->andWhereIn('opr.rental_state', array('returned', 'out'));
+}elseif (isset($_GET['include_unsent'])){
+	$Qreservations->andWhereIn('opr.rental_state', array('reserved', 'out'));
 	}else{
 		$Qreservations->andWhere('opr.rental_state = ?', 'out');
 	}
 
 if (isset($_GET['start_date']) || isset($_GET['end_date'])){
-	$Qreservations->andWhere('opr.start_date between "' . $_GET['start_date'] . '" and "' . $_GET['end_date'] . '"');
+	//$Qreservations->andWhere('opr.start_date between "' . $_GET['start_date'] . '" and "' . $_GET['end_date'] . '" OR opr.end_date between "' . $_GET['start_date'] . '" and "' . $_GET['end_date'] . '"');
+	$Qreservations->andWhere('opr.end_date between "' . $_GET['start_date'] . '" and "' . $_GET['end_date'] . '"');
 }
 	if (isset($_GET['filter_shipping']) && !empty($_GET['filter_shipping'])){
 		$Qreservations->andWhere('o.shipping_module LIKE ?', '%' . $_GET['filter_shipping'] . '%');
@@ -69,7 +74,7 @@ $Result = $Qreservations->execute();
 			'Rental Or Retail,' . 
 			'Items Ordered,' . 
 			'Quantity,' . 
-			'Delivery Date,' . 
+			'Return Date,' .
 			'Delivery Method,' . 
 			'Comments';
 		$html .= "\n";
@@ -78,7 +83,7 @@ $Result = $Qreservations->execute();
 		$Orders = $Result->toArray(true);
 		foreach($Orders as $oInfo){
 			foreach($oInfo['OrdersProducts'] as $opInfo){
-				foreach($opInfo['OrdersProductsReservation'] as $rInfo){
+			
 					$orderAddress = $oInfo['OrdersAddresses']['delivery'];
 
 					$orderId = $oInfo['orders_id'];
@@ -86,6 +91,7 @@ $Result = $Qreservations->execute();
 					$shippingMethod = $oInfo['shipping_module'];
 
 					$customersName = $orderAddress['entry_name'];
+					foreach($opInfo['OrdersProductsReservation'] as $rInfo){
 					$trackMethod = $rInfo['track_method'];
 					$useCenter = 0;
 
@@ -268,7 +274,14 @@ $Result = $Qreservations->execute();
 						}else{
 							$showOrder = '';
 						}
-						
+					$Qhistory = Doctrine_Query::create()
+					->from('OrdersStatusHistory')
+					->where('orders_id = ?', $oInfo['orders_id'])
+					->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+					$comments = '';
+					foreach($Qhistory as $history){
+						$comments .= stripslashes($history['comments'])."\n";
+					}
 						$html .= '"' . addslashes($showName) . '",' . 
 							'"' . $showOrder . '",' . 
 							'"' . addslashes($orderAddress['entry_street_address']) . '",' . 
@@ -278,10 +291,10 @@ $Result = $Qreservations->execute();
 							'"' . $oInfo['customers_telephone'] . '",' . 
 							'"Rental",' . 
 							'"' . addslashes($productName) . '",' . 
-							'"-' . /*$opInfo['products_quantity']*/1 . '",' . //Hardcoded to 1 because each reservation is put in and reservations only allow 1 qty
-							'"' . $shipOn . '",' . 
+							'"' .  $opInfo['products_quantity'] . '",' . //Hardcoded to 1 because each reservation is put in and reservations only allow 1 qty
+							'"' . $dueBack . '",' .
 							'"' . addslashes(strip_tags($oInfo['shipping_module'])) . '",' . 
-							'""';
+						'"'.addslashes($comments).'"';						
 							
 						$html .= "\n";
 				}
