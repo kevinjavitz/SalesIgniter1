@@ -15,10 +15,9 @@ require_once sysConfig::getDirFsCatalog() . 'extensions/manageQuickBooks/QuickBo
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-$token="a78848b3b1b4fb46f4babb7bc39fdf7926d8";
-
-$oauth_consumer_key="qyprdVKXiM8thRsO1x4IYef7ZPHnoA";
-$oauth_consumer_secret="0I4tIymAcp7mXC9mgee5kJ9JXsAw8NTWnXQ6SgZH";
+$token = sysConfig::get('EXTENSION_MANAGE_QUICKBOOKS_TOKEN');
+$oauth_consumer_key= sysConfig::get('EXTENSION_MANAGE_QUICKBOOKS_KEY');
+$oauth_consumer_secret= sysConfig::get('EXTENSION_MANAGE_QUICKBOOKS_SECRET');
 
 $domain = sysConfig::get('HTTP_DOMAIN_NAME');
 //change to ssl
@@ -26,7 +25,8 @@ $this_url =  'http://' . $domain .  '/admin/manageQuickBooks/Export_To_QuickBook
 $that_url =  'http://' . $domain .  '/admin/manageQuickBooks/Export_To_QuickBooks/exportToQB.php';
 
 $dsn=$connString;
-$encryption_key='35271962697020860610';
+//$encryption_key='35271962697020860610';
+$encryption_key= sysConfig::get('EXTENSION_MANAGE_QUICKBOOKS_ENCRYPT');
 
 $the_username = Session::get('login_firstname') . Session::get('login_id');
 $the_tenant = 12345;
