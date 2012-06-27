@@ -1,0 +1,165 @@
+
+			<configurations>
+			
+			<configuration>
+					<tab><![CDATA[General]]></tab>
+					<key><![CDATA[INSTALLED]]></key>
+					<title><![CDATA[Installed Status]]></title>
+					<value><![CDATA[False]]></value>
+					<description><![CDATA[Tells if the module is installed or not]]></description>
+			</configuration>
+	              <configuration>
+					<tab><![CDATA[General]]></tab>
+					<key><![CDATA[STATUS]]></key>
+					<title><![CDATA[Enable 2Checkout Module]]></title>
+					<value><![CDATA[False]]></value>
+					<description><![CDATA[Do you want to accept 2Checkout payments?]]></description>
+					<set_function><![CDATA[tep_cfg_select_option(array('True', 'False'),]]></set_function>
+			</configuration>
+	              <configuration>
+				
+					<tab><![CDATA[General]]></tab>
+					<key><![CDATA[DISPLAY_ORDER]]></key>
+					<title><![CDATA[Display Order]]></title>
+					<value><![CDATA[0]]></value>
+					<description><![CDATA[Display Order. Lowest is displayed first.]]></description>
+			</configuration>
+	              <configuration>
+								
+					<tab><![CDATA[Cart]]></tab>
+					<key><![CDATA[ZONE]]></key>
+					<title><![CDATA[Payment Zone]]></title>
+					<value><![CDATA[0]]></value>
+					<description><![CDATA[If a zone is selected, only enable this payment method for that zone.]]></description>
+					<use_function><![CDATA[tep_get_zone_class_title]]></use_function>
+					<set_function><![CDATA[tep_cfg_pull_down_zone_classes(]]></set_function>
+			</configuration>
+	              <configuration>
+					<tab><![CDATA[Cart]]></tab>
+					<key><![CDATA[ORDER_STATUS_ID]]></key>
+					<title><![CDATA[Set Order Status]]></title>
+					<value><![CDATA[1]]></value>
+					<description><![CDATA[Set the status of orders made with this payment module to this value]]></description>
+					<use_function><![CDATA[tep_get_order_status_name]]></use_function>
+					<set_function><![CDATA[tep_cfg_pull_down_order_statuses(]]></set_function>
+			</configuration>
+	              <configuration>
+					<tab><![CDATA[Cart]]></tab>
+					<key><![CDATA[ORDER_STATUS_PROCESSING_ID]]></key>
+					<title><![CDATA[Set Order Processing Status]]></title>
+					<value><![CDATA[2]]></value>
+					<description><![CDATA[This order status is used to indicate that the payment has been made and is processing at the gateway]]></description>
+					<use_function><![CDATA[tep_get_order_status_name]]></use_function>
+					<set_function><![CDATA[tep_cfg_pull_down_order_statuses(]]></set_function>
+			</configuration>
+	              <configuration>
+					<tab><![CDATA[Cart]]></tab>
+					<key><![CDATA[CHECKOUT_METHOD]]></key>
+					<title><![CDATA[Accepted Checkout Method]]></title>
+					<value><![CDATA[Normal]]></value>
+					<description><![CDATA[Allow this payment module to be used for (Rental membership signup, Normal checkout or Both )]]></description>
+					<set_function><![CDATA[tep_cfg_select_option(array('Membership','Normal','Both'),]]></set_function>
+			</configuration>
+	              <configuration>
+					<tab><![CDATA[Cart]]></tab>
+					<key><![CDATA[VISIBLE]]></key>
+					<title><![CDATA[Payment method visible]]></title>
+					<value><![CDATA[Catalog]]></value>
+					<description><![CDATA[Where is this payment method visible: Admin, Catalog or Both )]]></description>
+					<set_function><![CDATA[tep_cfg_select_option(array('Admin','Catalog','Both'),]]></set_function>
+			</configuration>
+	              <configuration>
+			
+					<tab><![CDATA[Gateway]]></tab>
+					<key><![CDATA[DEMO_MODE]]></key>
+					<title>Demo Mode</title>
+					<value>True</value>
+					<description>Turn on/off demo mode to the payment module</description>
+					<set_function><![CDATA[tep_cfg_select_option(array('True', 'False'),]]></set_function>
+			</configuration>
+	              <configuration>
+					<tab><![CDATA[Gateway]]></tab>
+					<key><![CDATA[VENDOR_ID]]></key>
+					<title>Vendor Id</title>
+					<value></value>
+					<description>2Checkout Vendor Id</description>
+			</configuration>
+	              <configuration>
+					<tab><![CDATA[Gateway]]></tab>
+					<key><![CDATA[USERNAME]]></key>
+					<title>API Username</title>
+					<value></value>
+					<description>2Checkout API username</description>
+			</configuration>
+	              <configuration>
+					<tab><![CDATA[Gateway]]></tab>
+					<key><![CDATA[PASSWORD]]></key>
+					<title>API Password</title>
+					<value></value>
+					<description>2Checkout API Password</description>
+			</configuration>
+	              <configuration>
+					<tab><![CDATA[Gateway]]></tab>
+					<key><![CDATA[SECRET_WORD]]></key>
+					<title>Secret Word</title>
+					<value></value>
+					<description>The secret word you set with 2checkout, used to verify communications between this server and theirs</description>
+			</configuration>
+	              <configuration>
+					<tab><![CDATA[Gateway]]></tab>
+					<key><![CDATA[USE_INS]]></key>
+					<title>Use Instant Notification System</title>
+					<value>False</value>
+					<description>Use Instant Notification System to recieve notifications when an order has completed</description>
+					<set_function><![CDATA[tep_cfg_select_option(array('True', 'False'),]]></set_function>
+			</configuration>
+	              <configuration>
+					<tab><![CDATA[Gateway]]></tab>
+					<key><![CDATA[PURCHASE_ROUTINE]]></key>
+					<title>Purchase Routine</title>
+					<value>spurchase</value>
+					<description>Select a purchase routine to use when the customer is directed to the 2checkout website</description>
+					<set_function><![CDATA[tep_cfg_select_option(array('Standard', 'One Page'),]]></set_function>
+			</configuration>
+	              <configuration>
+					<tab><![CDATA[Gateway]]></tab>
+					<key><![CDATA[PRODUCT_INFORMATION]]></key>
+					<title>Product Info Method</title>
+					<value>SalesIgniter</value>
+					<description>Use a specified 2checkout product id or pass product information from the cart to 2checkout</description>
+					<set_function><![CDATA[tep_cfg_select_option(array('Gateway', 'SalesIgniter'),]]></set_function>
+			</configuration>
+	              <configuration>
+					<tab><![CDATA[Gateway]]></tab>
+					<key><![CDATA[DEFAULT_PAYMENT]]></key>
+					<title>Default Payment Method</title>
+					<value>CC</value>
+					<description>Default payment method to be selected when the customer is on 2checkout's site</description>
+					<set_function><![CDATA[tep_cfg_select_option(array('Credit Card', 'Paypal'),]]></set_function>
+			</configuration>
+	              <configuration>
+					<tab><![CDATA[Gateway]]></tab>
+					<key><![CDATA[SKIP_LANDING]]></key>
+					<title>Skip Landing Page</title>
+					<value>1</value>
+					<description>Will skip the order review page on 2checkout's site if set to True</description>
+					<set_function><![CDATA[tep_cfg_select_option(array('True', 'False'),]]></set_function>
+			</configuration>
+	              <configuration>
+					<tab><![CDATA[Gateway]]></tab>
+					<key><![CDATA[PREPOPULATE_BILLING_INFO]]></key>
+					<title>Prepopulate Billing Address</title>
+					<value>True</value>
+					<description>Populate billing address to send to the gateway?</description>
+					<set_function><![CDATA[tep_cfg_select_option(array('True', 'False'),]]></set_function>
+			</configuration>
+	              <configuration>
+					<tab><![CDATA[Gateway]]></tab>
+					<key><![CDATA[PREPOPULATE_SHIPPING_INFO]]></key>
+					<title>Prepopulate Shipping Address</title>
+					<value>True</value>
+					<description>Populate shipping addressto send to the gateway?</description>
+					<set_function><![CDATA[tep_cfg_select_option(array('True', 'False'),]]></set_function>
+				</configuration>
+	            
+</configurations>
