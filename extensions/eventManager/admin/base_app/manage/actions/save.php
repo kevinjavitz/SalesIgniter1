@@ -10,7 +10,6 @@
 	This script and it's source is not redistributable
 */
 
-
 	$event_start_date = $_POST['events_start_date'];
 	$event_end_date = $_POST['events_end_date'];
 
@@ -28,14 +27,16 @@
 
 $languages = tep_get_languages();
 $EventsDescription =& $Event->EventManagerEventsDescription;
+
 for ($i=0, $n=sizeof($languages); $i<$n; $i++) {
 	$lID = $languages[$i]['id'];
 
 	$EventsDescription[$lID]->language_id = $lID;
 	$EventsDescription[$lID]->events_title = $_POST['events_title'][$lID];
+    $EventsDescription[$lID]->events_featured = ($_POST['events_featured'][$lID] == 'on' ? 1 : 0);
 	$EventsDescription[$lID]->events_description_text = $_POST['events_description'][$lID];
 
 }
 $Event->save();
-        EventManager::attachActionResponse(itw_app_link(tep_get_all_get_params(array('action', 'eID')) . 'eID=' . $Event->events_id, null, 'default'), 'redirect');
+       EventManager::attachActionResponse(itw_app_link(tep_get_all_get_params(array('action', 'eID')) . 'eID=' . $Event->events_id, null, 'default'), 'redirect');
 ?>

@@ -651,7 +651,18 @@ class PurchaseType_reservation extends PurchaseTypeAbstract
 			$pInfo['reservationInfo']['semester_name'] = '';
 		}
 
-		$pricing = $this->figureProductPricing($pInfo['reservationInfo']);
+        if(isset($_POST['freeTrialButton']) && $_POST['freeTrialButton'] == '1') {
+            $freeOn = explode(',',$_POST['freeTrial']);
+            $pricing['price'] = $freeOn[2];
+            $pricing['final_price'] = $freeOn[2];
+        }
+        elseif(isset($_GET['freeTrialButton']) && $_GET['freeTrialButton'] == '1') {
+            $freeOn = explode(',',$_GET['freeTrial']);
+            $pricing['price'] = $freeOn[2];
+            $pricing['final_price'] = $freeOn[2];
+        }
+        else
+		    $pricing = $this->figureProductPricing($pInfo['reservationInfo']);
 
 		$shippingMethod = $resInfo['shipping_method'];
 		$rShipping = false;
@@ -1294,12 +1305,6 @@ class PurchaseType_reservation extends PurchaseTypeAbstract
 						->addClass('pprResButton')
 						->setText(sysLanguage::get('TEXT_BUTTON_PAY_PER_RENTAL'));
 
-                    $button2 = htmlBase::newElement('button')
-                        ->setType('submit')
-                        ->setName('try_now')
-                        ->addClass('pprTryButton')
-                        ->setText(sysLanguage::get('TEXT_BUTTON_PAY_PER_RENTAL_TRY'));
-
 					if ($this->hasInventory() === false){
 						$button->disable();
 					}
@@ -1354,16 +1359,24 @@ class PurchaseType_reservation extends PurchaseTypeAbstract
 						$priceTableHtmlPrices .= $scriptBut;
 					}
 
+                    if($this->freeTrial() == '1')  {
+                        $button2 = htmlBase::newElement('button')
+                            ->setType('submit')
+                            ->setName('try_now')
+                            ->addClass('pprTryButton')
+                            ->setText(sysLanguage::get('TEXT_BUTTON_PAY_PER_RENTAL_TRY'));
+                    }
 					$link = itw_app_link('appExt=payPerRentals&products_id=' . $_GET['products_id'], 'build_reservation', 'default');
 
 					$return = array(
 						'form_action'   => $link,
+                        'freeTrial'     => $this->freeTrialOnLength().','. $this->freeTrialOnLengthType().','.$this->freeTrialPrice(),
 						'purchase_type' => $this->typeLong,
 						'allowQty'      => false,
 						'header'        => $this->typeShow,
 						'content'       => $priceTableHtmlPrices,
-						'button'        => $button//,
-                        //'button2'        => $button2
+						'button'        => $button,
+                        'button2'        => $button2
 					);
 				}
 				else {
@@ -2067,6 +2080,22 @@ class PurchaseType_reservation extends PurchaseTypeAbstract
 		return $this->payperrental['pay_per_rental_id'];
 	}
 
+    public function freeTrial() {
+        return $this->payperrental['free_trial'];
+    }
+
+    public function freeTrialOnLength() {
+        return $this->payperrental['free_try_on_length'];
+    }
+
+    public function freeTrialOnLengthType() {
+        return $this->payperrental['free_try_on_length_type'];
+    }
+
+    public function freeTrialPrice() {
+        return $this->payperrental['free_try_price'];
+    }
+
 	public function displayReservePrice($price) {
 		global $currencies;
 
@@ -2105,7 +2134,7 @@ class PurchaseType_reservation extends PurchaseTypeAbstract
         return $this->payperrental['consumption'];
     }
 
-	public function getPricingTable() {
+    public function getPricingTable() {
 		global $currencies;
 		$table = '';
 		$table .= '<table cellpadding="0" cellspacing="0" border="0">';
@@ -2808,13 +2837,19 @@ class PurchaseType_reservation extends PurchaseTypeAbstract
 		}
 	}
 
-	public function findBestPrice($dateArray) {
+	public function findBestPrice($dateArray, $freeTrial) {
 		global $currencies, $appExtension, $Editor;
-		if (!class_exists('currencies')){
+        if($freeTrial){
+            $return['price'] = round($this->freeTrialPrice(), 2);
+            $return['totalPrice'] = round($this->freeTrialPrice(), 2);
+            return $return;
+        }
+        if (!class_exists('currencies')){
 			require(sysConfig::getDirFsCatalog() . 'includes/classes/currencies.php');
 			$currencies = new currencies();
 		}
-		$this->addDays(&$dateArray['start'], &$dateArray['end']);
+
+        $this->addDays(&$dateArray['start'], &$dateArray['end']);
 		$price = 0;
 		$start = date_parse($dateArray['start']);
 		$end = date_parse($dateArray['end']);
@@ -2953,9 +2988,9 @@ class PurchaseType_reservation extends PurchaseTypeAbstract
 			}
 		}
 
-		$return['price'] = round($price, 2);
-		$return['totalPrice'] = round($price, 2);
-		if (sysconfig::get('EXTENSION_PAY_PER_RENTALS_SHORT_PRICE') == 'False'){
+        $return['price'] = round($price, 2);
+        $return['totalPrice'] = round($price, 2);
+        if (sysconfig::get('EXTENSION_PAY_PER_RENTALS_SHORT_PRICE') == 'False'){
 			$return['message'] = $message;
 		}
 		else {
@@ -2998,7 +3033,7 @@ class PurchaseType_reservation extends PurchaseTypeAbstract
 		}
 	}
 
-	public function getReservationPrice($start, $end, &$rInfo = '', $semName = '', $includeInsurance = false, $onlyShow = true) {
+	public function getReservationPrice($start, $end, &$rInfo = '', $semName = '', $includeInsurance = false, $onlyShow = true, $freeTrial = false) {
 		global $currencies, $ShoppingCart, $App;
 		$productPricing = array();
 
@@ -3023,7 +3058,7 @@ class PurchaseType_reservation extends PurchaseTypeAbstract
 			}
 		}
 		if ($semName == '' && $f){
-			$returnPrice = $this->findBestPrice($dateArray);
+			$returnPrice = $this->findBestPrice($dateArray,$freeTrial);
 		}
 		else {
 			if ($semName == ''){
@@ -3081,14 +3116,14 @@ class PurchaseType_reservation extends PurchaseTypeAbstract
 
 		if (is_array($returnPrice)){
 
-			if (isset($productPricing['shipping']) && sysConfig::get('EXTENSION_PAY_PER_RENTALS_SHOW_SHIPPING') == 'True'){
+			if (isset($productPricing['shipping']) && sysConfig::get('EXTENSION_PAY_PER_RENTALS_SHOW_SHIPPING') == 'True' && $freeTrial == false){
 				if ($onlyShow){
 					$returnPrice['price'] += $productPricing['shipping'];
 				}
 				$returnPrice['totalPrice'] += $productPricing['shipping'];
 				$returnPrice['message'] .= ' + ' . $currencies->format($productPricing['shipping']) . ' ' . sysLanguage::get('EXTENSION_PAY_PER_RENTALS_CALENDAR_SHIPPING');
 			}
-			if ($this->getDepositAmount() > 0){
+			if ($this->getDepositAmount() > 0 && $freeTrial == false){
 				if ($onlyShow){
 					$returnPrice['price'] += $this->getDepositAmount();
 				}

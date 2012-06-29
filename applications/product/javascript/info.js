@@ -2,6 +2,12 @@ $(document).ready(function (){
 	$('#tabs').tabs();
 	var mainProductImageSrc = $('#productsImage img').attr('src');
 	var myind = 0;
+
+    $('.pprTryButton').click(function(){
+        var $Row = $(this).parentsUntil('tbody').last();
+        $Row.find('input[name="freeTrialButton"]').val(1);
+    });
+
 	$('.additionalImage').live('click',function (e){
 		$('.fancyBox.ui-state-active').removeClass('ui-state-active');
 		$(this).parent().addClass('ui-state-active');
@@ -17,7 +23,6 @@ $(document).ready(function (){
 
 		return false;
 	});
-
 
 
 		$('#productsImage').live('click', function(){

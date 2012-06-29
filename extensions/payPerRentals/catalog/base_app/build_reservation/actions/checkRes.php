@@ -21,7 +21,14 @@
 	    if(sysconfig::get('EXTENSION_PAY_PER_RENTALS_SHORT_PRICE') == 'True'){
 		    $onlyShow = false;
 	    }
-		$pricing = $purchaseTypeClass->getReservationPrice($starting_date, $ending_date, $rInfo, $semName, isset($_POST['hasInsurance'])?true:false, $onlyShow);
+
+        if(isset($_GET['freeTrialButton']) && $_GET['freeTrialButton'] == '1'){
+            $freeOn = explode(',',$_GET['freeTrial']);
+            $pricing = $purchaseTypeClass->getReservationPrice($starting_date, $ending_date, $rInfo, $semName, false, true ,true);
+        }
+        else{
+            $pricing = $purchaseTypeClass->getReservationPrice($starting_date, $ending_date, $rInfo, $semName, isset($_POST['hasInsurance'])?true:false, $onlyShow);
+        }
 
 		$Module = OrderShippingModules::getModule($purchaseTypeClass->shipModuleCode);
 		$selectedMethod = '';
@@ -45,6 +52,7 @@
 						break;
 					}
 					$weight += $cartProduct->getWeight();
+
 				}
 			}
 

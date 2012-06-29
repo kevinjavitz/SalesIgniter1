@@ -20,6 +20,7 @@ if (isset($_GET['eID'])){
 		if (isset($_GET['eID'])){
 			$name = $Event->EventManagerEventsDescription[$lID]->events_title;
 			$description = $Event->EventManagerEventsDescription[$lID]->events_description_text;
+            $featured = $Event->EventManagerEventsDescription[$lID]->events_featured;
 			//$seo_url = $Category->PhotoGalleryCategoriesDescription[$lID]->categories_seo_url;
 		}
 		?>
@@ -29,6 +30,10 @@ if (isset($_GET['eID'])){
 				<td class="main"><?php echo sysLanguage::get('TEXT_EVENTS_NAME'); ?></td>
 				<td class="main"><?php echo tep_draw_input_field('events_title[' . $lID . ']', $name); ?></td>
 			</tr>
+            <tr>
+                <td class="main" valign="top"><?php echo sysLanguage::get('TEXT_EVENTS_FEATURED'); ?></td>
+                <td class="main"><?php echo tep_draw_checkbox_field('events_featured[' . $lID . ']', '', $featured, ''); ?></td>
+            </tr>
 			<tr>
 				<td class="main" valign="top"><?php echo sysLanguage::get('TEXT_EVENTS_DETAILS'); ?></td>
 				<td class="main"><?php echo tep_draw_textarea_field('events_description[' . $lID . ']', 'hard', 30, 5, $description, 'class="makeFCK"'); ?></td>

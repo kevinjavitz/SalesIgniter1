@@ -7,6 +7,7 @@
 	<define key="TEXT_EVENTS_DATE"><![CDATA[Event Date: ]]></define>
 	<define key="TEXT_EVENTS_DAYS"><![CDATA[Event Days: ]]></define>
 	<define key="TEXT_EVENTS_DETAILS"><![CDATA[Event Details: ]]></define>
+    <define key="TEXT_EVENTS_FEATURED"><![CDATA[Featured: ]]></define>
 	<define key="TEXT_EVENTS_SHIPPING"><![CDATA[Event Shipping: ]]></define>
 	<define key="TEXT_EVENTS_GATES"><![CDATA[Event Gates: ]]></define>
 	<define key="TABLE_HEADING_PRODUCT_MODEL"><![CDATA[Model ]]></define>
@@ -15,5 +16,4 @@
 	<define key="TEXT_EVENTS_GATES_DETAILS"><![CDATA[Gates Details]]></define>
 	<define key="TEXT_EVENTS_START_DATE"><![CDATA[Event Start Date]]></define>
 	<define key="TEXT_EVENTS_END_DATE"><![CDATA[Event End Date]]></define>
-
 </definitions>
