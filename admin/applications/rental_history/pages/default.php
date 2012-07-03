@@ -18,7 +18,7 @@ function _buildUrl($p) {
 $future = date( 'Y-m-d H:i:s', strtotime( '-30 day' , time() ) );
 switch( $params['filter'] ) {
 	case 'sent':
-		$where = 'rP.shipment_date != \'0000-00-00 00:00:00\' AND rP.date_added > \''.$future.'\'';
+		$where = 'rP.return_date = \'0000-00-00 00:00:00\' AND rP.date_added > \''.$future.'\'';
 		break;
 	case 'return':
 		$where = 'rP.return_date != \'0000-00-00 00:00:00\' AND rP.date_added > \''.$future.'\'';
