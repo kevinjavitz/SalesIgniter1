@@ -153,6 +153,16 @@
 				)
 			));
 			
+			$descDefault = htmlBase::newElement('radio')
+			->addGroup(array(
+				'name'      => 'products_listing_default_descend[' . $listingId . ']',
+				'checked'   => $listing['products_listing_heading_valign'],
+				'data'      => array(
+					array('label' => 'Yes', 'labelPosition' => 'after', 'value' => '1'),
+					array('label' => 'No', 'labelPosition' => 'after', 'value' => '0')
+				)
+			));
+			
 			$sortKey = htmlBase::newElement('selectbox')
 			->setLabel(htmlBase::newElement('b')->html('<u>Sort Key:</u><br />')->draw())
 			->setLabelPosition('before')
@@ -213,6 +223,8 @@
 			->append(htmlBase::newElement('div')->css('padding', '.2em'))
 			->append(htmlBase::newElement('b')->html('<u>Default Sorting:</u><br />'))
 			->append($isDefault)
+			->append(htmlBase::newElement('b')->html('<br /><u>Sort By Desc:</u><br />'))
+			->append($descDefault)
 			->append(htmlBase::newElement('div')->css('padding', '.2em'))
 			->append($sortKey)
 			//->append(htmlBase::newElement('div')->css('padding', '.2em'))
@@ -311,6 +323,15 @@
 			array('label' => 'No', 'value' => '0')
 		)
 	));
+	
+	$descDefault = htmlBase::newElement('radio')
+	->addGroup(array(
+		'name'      => 'products_listing_default_descend[new][RandomNumber]',
+		'data'      => array(
+			array('label' => 'Yes', 'value' => '1'),
+			array('label' => 'No', 'value' => '0')
+		)
+	));
 			
 	$sortKey = htmlBase::newElement('selectbox')
 			->setLabel(htmlBase::newElement('b')->html('<u>Sort Key:</u><br />')->draw())
@@ -363,6 +384,8 @@
 	->append(htmlBase::newElement('div')->css('padding', '.2em'))
 	->append(htmlBase::newElement('b')->html('<u>Default Sorting:</u><br />'))
 	->append($isDefault)
+	->append(htmlBase::newElement('b')->html('<br /><u>Sort By Desc:</u><br />'))
+	->append($descDefault)
 	->append(htmlBase::newElement('div')->css('padding', '.2em'))
 	->append($sortKey)
 	//->append(htmlBase::newElement('div')->css('padding', '.2em'))
