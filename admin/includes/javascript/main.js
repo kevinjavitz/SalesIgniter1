@@ -656,7 +656,7 @@ function confirmDialog(options){
 		},
 		buttons : [
 			{
-				text : jsLanguage.get('TEXT_BUTTON_CONFIRM'),
+				text : 'OK',//jsLanguage.get('TEXT_BUTTON_CONFIRM'),
 				icon : 'ui-icon-check',
 				click : onConfirm || function () {
 					var dialogEl = this;
@@ -688,7 +688,7 @@ function confirmDialog(options){
 				}
 			},
 			{
-				text : jsLanguage.get('TEXT_BUTTON_CANCEL'),
+				text : 'Cancel',//jsLanguage.get('TEXT_BUTTON_CANCEL'),
 				icon : 'ui-icon-closethick',
 				click : o.onCancel || function () {
 					$(this).dialog('close').remove();

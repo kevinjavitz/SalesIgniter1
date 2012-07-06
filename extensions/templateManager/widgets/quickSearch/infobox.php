@@ -39,8 +39,8 @@ class infoBoxQuickSearch extends InfoBoxAbstract {
 		$boxContent = tep_hide_session_id() ;
 		$boxContent .=  htmlBase::newElement('span')
 				              ->addClass('quickSearchLabel')
-				              ->text(sysLanguage::get('INFOBOX_QUICK_SEARCH_TEXT')  .
-                                     '<br><a href="' . itw_app_link(null, 'products', 'search') . '"><b>' . sysLanguage::get('INFOBOX_SEARCH_ADVANCED_SEARCH') . '</b></a>' .
+				              ->text('<br>'.sysLanguage::get('INFOBOX_QUICK_SEARCH_TEXT')  .
+                                     '<br><a href="' . itw_app_link(null, 'products', 'search') . '"><b></b></a>' .
                                      '<br />')
 				              ->draw();
 		$boxContent .=  $searchField ;

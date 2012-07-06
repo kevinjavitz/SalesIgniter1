@@ -12,10 +12,10 @@
 
 require_once sysConfig::getDirFsCatalog() . 'extensions/manageQuickBooks/QuickBooks.php';
 
-$token="a78848b3b1b4fb46f4babb7bc39fdf7926d8";
+$token = sysConfig::get('EXTENSION_MANAGE_QUICKBOOKS_TOKEN');
+$oauth_consumer_key= sysConfig::get('EXTENSION_MANAGE_QUICKBOOKS_KEY');
+$oauth_consumer_secret= sysConfig::get('EXTENSION_MANAGE_QUICKBOOKS_SECRET');
 
-$oauth_consumer_key="qyprdVKXiM8thRsO1x4IYef7ZPHnoA";
-$oauth_consumer_secret="0I4tIymAcp7mXC9mgee5kJ9JXsAw8NTWnXQ6SgZH";
 
 $domain = sysConfig::get('HTTP_DOMAIN_NAME');
 //change to ssl
@@ -23,7 +23,8 @@ $this_url =  'http://' . $domain .  '/admin/manageQuickBooks/Export_To_QuickBook
 $that_url =  'http://' . $domain .  '/admin/manageQuickBooks/Export_To_QuickBooks/exportToQB.php';
 
 $dsn=$connString;
-$encryption_key='35271962697020860610';
+$encryption_key= sysConfig::get('EXTENSION_MANAGE_QUICKBOOKS_ENCRYPT');
+
 
 $the_username = Session::get('login_firstname') . Session::get('login_id');
 $the_tenant = 12345;
@@ -86,7 +87,7 @@ if ($Context = $IPP->context())
               $address=$q2->execute();
 
 		$Customer = new QuickBooks_IPP_Object_Customer();
-	       $Customer->setName($customerSI['customers_firstname'] . " " . $customerSI['customers_lastname']);
+	    $Customer->setName($customerSI['customers_firstname'] . " " . $customerSI['customers_lastname']);
 		
 		$Customer->setGivenName($customerSI['customers_firstname']);
 		$Customer->setFamilyName($customerSI['customers_lastname']);
@@ -160,35 +161,13 @@ if ($Context = $IPP->context())
                 $Item->addUnitPrice($ItemUnitPrice);
                 $ServiceItem = new QuickBooks_IPP_Service_Item();
                 $ID = $ServiceItem->add($Context, $realmID, $Item);
+                
               }
               $SalesReceipt = new QuickBooks_IPP_Object_SalesReceipt();
               $SalesReceiptHeader = new QuickBooks_IPP_Object_Header();
               $SalesReceiptHeader->setDocNumber("SI-" . $orders['orders_id']);
               $SalesReceiptHeader->setTxnDate($orders['date_purchased']);
-              for($j=0; $j < count($orderproducts); $j++) 
-              {
-            	   $SalesReceiptLine = new QuickBooks_IPP_Object_Line();
-                 $SalesReceiptLine->setItemName($orderproducts[$j]['products_name']);
-
-               //this is code to add rental dates
-         
-                if ((strcmp($orderproducts[0]['purchase_type'], "reservation")) == 0) 
-               {    $resString = "r.orders_products_id = " . $orderproducts[$j]['orders_products_id'];
-                    $reservation = Doctrine_Query::create()
-  	    	        ->select('r.*')
-  	               ->from('OrdersProductsReservation r')
- 		        ->where($resString);
-                    $res=$reservation->execute();
-                    $SalesReceiptLine->setDesc($orderproducts[$j]['products_name'] . " -- " . $res[0]['start_date'] . " - " . $res[0]['end_date']);
-                } 
-                 else  
- 	              $SalesReceiptLine->setDesc($orderproducts[$j]['products_name']);
-                 $SalesReceiptLine->setQty($orderproducts[$j]['products_quantity']);  
-                 $SalesReceiptLine->setAmount($orderproducts[$j]['products_price']);
-                 $SalesReceipt->addLine($SalesReceiptLine);
-                 //$SalesReceiptHeader->setDepositToAccountName("Sales");
-		}
-              //get tax
+                 //get tax
               $totalString = "y.orders_id = " . $orders['orders_id'] .  " AND y.title = 'Sub-Total:'"; 
               $y = Doctrine_Query::create()
   	    	   ->select('y.*')
@@ -203,8 +182,9 @@ if ($Context = $IPP->context())
   	          ->from('OrdersTotal tax')
  		   ->where($taxString);
              	$ordertotals_tax=$tax->execute();
-		$SalesReceiptHeader->setTaxAmt($ordertotals_tax[0]['value']);
-              
+             
+		  $SalesReceiptHeader->setTaxAmt($ordertotals_tax[0]['value']);
+		
               $Service2 = new QuickBooks_IPP_Service_SalesReceipt(); 
               $searchString = "a.customers_id = " . $orders['customers_id']; 
 
@@ -227,6 +207,33 @@ if ($Context = $IPP->context())
             $SalesReceiptHeader->addCustomerId("{". $idAndDomain[1] . "-" . $idAndDomain[2] . "}");
             $SalesReceiptHeader->addCustomerName($searchName);
             $SalesReceipt->addHeader($SalesReceiptHeader);
+              
+              for($j=0; $j < count($orderproducts); $j++) 
+              {
+            	   $SalesReceiptLine = new QuickBooks_IPP_Object_Line();
+                 $SalesReceiptLine->setItemName($orderproducts[$j]['products_name']);
+                
+
+               //this is code to add rental dates
+         
+                if ((strncmp($orderproducts[0]['purchase_type'], "reservation", 10)) == 0) 
+               {    $resString = "r.orders_products_id = " . $orderproducts[$j]['orders_products_id'];
+                    $reservation = Doctrine_Query::create()
+  	    	        ->select('r.*')
+  	               ->from('OrdersProductsReservation r')
+ 		        ->where($resString);
+                    $res=$reservation->execute();
+                    $SalesReceiptLine->setDesc($orderproducts[$j]['products_name'] . " -- " . $res[0]['start_date'] . " - " . $res[0]['end_date']);
+                } 
+                 else  
+ 	              $SalesReceiptLine->setDesc($orderproducts[$j]['products_name']);
+                 $SalesReceiptLine->setQty($orderproducts[$j]['products_quantity']);  
+                 $SalesReceiptLine->setAmount($orderproducts[$j]['products_price'] * $orderproducts[$j]['products_quantity']);
+                 $SalesReceiptLine->setUnitPrice($orderproducts[$j]['products_price']);
+                 $SalesReceipt->addLine($SalesReceiptLine);
+                 //$SalesReceiptHeader->setDepositToAccountName("Sales");
+		}
+           
             
             //check for duplicates
 
@@ -237,12 +244,16 @@ if ($Context = $IPP->context())
             {
               if ($ID = $Service2->add($Context, $realmID, $SalesReceipt, $creds['qb_flavor']))
                { preg_match("/<Id.*>(.*)<\/Id>/sU", $ID, $match); echo $searchName . sysLanguage::get('QB_SALE_ADDED') . "SI-" . $orders['orders_id'] . "<br> ";
-                //echo "<br>" . print_r($Service2->lastRequest()) . "<br>" . print_r($Service2->lastResponse());
+                //echo "<br>" . print_r($Service2->lastRequest()) . "<br>---" . print_r($Service2->lastResponse());
                } 
               else
+		{
+		        echo "<br>" . print_r($Service2->lastRequest());
                 echo "<br>" . sysLanguage::get('QB_SALE_ERROR') . "<br>"  . $Service2->lastResponse();
+		  
 		 }
              }
+	}
     echo "<br>" . sysLanguage::get('QB_COMPLETE');
 
 }

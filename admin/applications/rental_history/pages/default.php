@@ -18,7 +18,7 @@ function _buildUrl($p) {
 $future = date( 'Y-m-d H:i:s', strtotime( '-30 day' , time() ) );
 switch( $params['filter'] ) {
 	case 'sent':
-		$where = 'rP.shipment_date != \'0000-00-00 00:00:00\' AND rP.date_added > \''.$future.'\'';
+		$where = 'rP.return_date = \'0000-00-00 00:00:00\' AND rP.date_added > \''.$future.'\'';
 		break;
 	case 'return':
 		$where = 'rP.return_date != \'0000-00-00 00:00:00\' AND rP.date_added > \''.$future.'\'';
@@ -92,12 +92,18 @@ if ($rentalHistory){
 	foreach($rentalHistory as $rInfo){
 		$status = $rInfo['return_date'] == '0000-00-00 00:00:00' ? 'Sent' : 'Returned';
 		
+		$Qbarcode = Doctrine_Query::create()
+			->select('barcode')
+			->from('ProductsInventoryBarcodes')
+			->where('barcode_id=?', $rInfo['products_barcode'])
+			->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+		
 		$reportGrid->addBodyRow(array(
 			'columns' => array(
 				array('align' => 'center', 'text' => $rInfo['Customers']['customers_firstname'].' '.$rInfo['Customers']['customers_lastname']),
 				array('align' => 'center', 'text' => $rInfo['Customers']['AddressBook'][0]['entry_street_address']),
 				array('align' => 'center', 'text' => $rInfo['Products']['ProductsDescription'][1]['products_name']),
-				array('align' => 'center', 'text' => $rInfo['products_barcode']),
+				array('align' => 'center', 'text' => $Qbarcode[0]['barcode']),
 				array('align' => 'center', 'text' => date( 'Y-m-d', strtotime( $rInfo['sort_date'] ) )),
 				array('align' => 'center', 'text' => $status)
 			)

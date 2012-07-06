@@ -89,7 +89,7 @@ if (Session::exists('login_id') === true){
 		$contents = EventManager::notifyWithReturn('AdminHeaderRightAddContent');
 		if (!empty($contents)){
 			foreach($contents as $content){
-				echo '<div style="font-size:inherit;padding-top:15%;">' .
+				echo '<div style="font-size:inherit;margin-top:10px;">' .
 					$content .
 					'</div>';
 			}

@@ -156,6 +156,14 @@ class ReservationUtilities {
 	public static function getCalendar($productsId, $purchaseTypeClasses, $rQty = 1, $showShipping = true, $callType = 'catalog', $usableBarcodes = array(), $hasButton = true)
 	{
 		global $App;
+        if(isset($_POST['freeTrialButton']) && $_POST['freeTrialButton'] == '1') {
+            $freeTrialButton = $_POST['freeTrialButton'];
+            $freeTrial = $_POST['freeTrial'];
+        }
+        elseif(isset($_GET['freeTrialButton']) && $_GET['freeTrialButton'] == '1') {
+            $freeTrialButton = $_GET['freeTrialButton'];
+            $freeTrial = $_GET['freeTrial'];
+        }
 		if($callType == 'catalog'){
 			if($App->getEnv() == 'catalog'){
 				$callLink = 'js_catalog_app_link(\'rType=ajax&appExt=payPerRentals&app=build_reservation&appPage=default\')';
@@ -171,10 +179,10 @@ class ReservationUtilities {
 		}
 		if($App->getEnv() == 'catalog'){
 			$upsQuotes = 'js_catalog_app_link(\'appExt=payPerRentals&app=build_reservation&appPage=default&action=getUpsQuotes&products_id=\'+$(\'.pID\').val()+\'&qty=\'+$selfID.find(\'.rental_qty\').val())';
-			$checkRes = 'js_catalog_app_link(\'rType=ajax&appExt=payPerRentals&app=build_reservation&appPage=default&action=checkRes\')';
+			$checkRes = 'js_catalog_app_link(\'rType=ajax&appExt=payPerRentals&app=build_reservation&freeTrialButton='.$freeTrialButton.'&freeTrial='.$freeTrial.'&appPage=default&action=checkRes\')';
 		}else{
 			$upsQuotes = 'js_app_link(\'appExt=orderCreator&app=default&appPage=new&action=getUpsQuotes&products_id=\'+$(\'.pID\').val()+\'&qty=\'+$selfID.find(\'.rental_qty\').val())';
-			$checkRes = 'js_app_link(\'rType=ajax&appExt=orderCreator&app=default&appPage=new&action=checkRes\')';
+			$checkRes = 'js_app_link(\'rType=ajax&appExt=orderCreator&app=default&freeTrialButton='.$freeTrialButton.'&freeTrial='.$freeTrial.'&appPage=new&action=checkRes\')';
 		}
 
 		$countryZones = 'js_catalog_app_link(\'appExt=payPerRentals&app=build_reservation&appPage=default&action=getCountryZones\')';
@@ -223,7 +231,17 @@ class ReservationUtilities {
 		$allowHourly = (sysConfig::get('EXTENSION_PAY_PER_RENTALS_ALLOW_HOURLY') == 'True') ? true : false;
 		$minTime = 15; //slotMinutes
 
-		if (sysConfig::get('EXTENSION_PAY_PER_RENTALS_USE_GLOBAL_MIN_RENTAL_DAYS') == 'False') {
+        if(isset($_POST['freeTrialButton']) && $_POST['freeTrialButton'] == '1') {
+            $freeOn = explode(',',$_POST['freeTrial']);
+            $minRentalPeriod = ReservationUtilities::getPeriodTime($freeOn[0], $freeOn[1]) * 60 * 1000;
+            $minRentalMessage = sysLanguage::get('PPR_ERR_AT_LEAST') . ' ' . $freeOn[0] . ' ' . ReservationUtilities::getPeriodType($freeOn[1]) . ' ' . sysLanguage::get('PPR_ERR_DAYS_RESERVED');
+        }
+        elseif(isset($_GET['freeTrialButton']) && $_GET['freeTrialButton'] == '1') {
+            $freeOn = explode(',',$_GET['freeTrial']);
+            $minRentalPeriod = ReservationUtilities::getPeriodTime($freeOn[0], $freeOn[1]) * 60 * 1000;
+            $minRentalMessage = sysLanguage::get('PPR_ERR_AT_LEAST') . ' ' . $freeOn[0] . ' ' . ReservationUtilities::getPeriodType($freeOn[1]) . ' ' . sysLanguage::get('PPR_ERR_DAYS_RESERVED');
+        }
+        elseif (sysConfig::get('EXTENSION_PAY_PER_RENTALS_USE_GLOBAL_MIN_RENTAL_DAYS') == 'False') {
 			$minRentalPeriod = ReservationUtilities::getPeriodTime($pprTable->min_period, $pprTable->min_type) * 60 * 1000;
 			$minRentalMessage = sysLanguage::get('PPR_ERR_AT_LEAST') . ' ' . $pprTable->min_period . ' ' . ReservationUtilities::getPeriodType($pprTable->min_type) . ' ' . sysLanguage::get('PPR_ERR_DAYS_RESERVED');
 		} else {
@@ -233,7 +251,15 @@ class ReservationUtilities {
 
 		$maxRentalPeriod = -1;
 		$maxRentalMessage = '';
-		if ($pprTable->max_period > 0) {
+        if(isset($_POST['freeTrialButton']) && $_POST['freeTrialButton'] == '1') {
+            $maxRentalPeriod = ReservationUtilities::getPeriodTime($freeOn[0], $freeOn[1]) * 60 * 1000;
+            $maxRentalMessage = sysLanguage::get('PPR_ERR_MAXIMUM') . ' ' . $freeOn[0] . ' ' . ReservationUtilities::getPeriodType($freeOn[1]) . ' ' . sysLanguage::get('PPR_ERR_DAYS_RESERVED');
+        }
+        elseif(isset($_GET['freeTrialButton']) && $_GET['freeTrialButton'] == '1') {
+            $maxRentalPeriod = ReservationUtilities::getPeriodTime($freeOn[0], $freeOn[1]) * 60 * 1000;
+            $maxRentalMessage = sysLanguage::get('PPR_ERR_MAXIMUM') . ' ' . $freeOn[0] . ' ' . ReservationUtilities::getPeriodType($freeOn[1]) . ' ' . sysLanguage::get('PPR_ERR_DAYS_RESERVED');
+        }
+        elseif ($pprTable->max_period > 0) {
 			$maxRentalPeriod = ReservationUtilities::getPeriodTime($pprTable->max_period, $pprTable->max_type) * 60 * 1000;
 			$maxRentalMessage = sysLanguage::get('PPR_ERR_MAXIMUM') . ' ' . $pprTable->max_period . ' ' . ReservationUtilities::getPeriodType($pprTable->max_type) . ' ' . sysLanguage::get('PPR_ERR_DAYS_RESERVED');
 		}
@@ -1651,7 +1677,7 @@ class ReservationUtilities {
 
 		.inCart{
 			position:relative;
-			top:21px;
+			top:26px;
 			left:50%;
 		}
 

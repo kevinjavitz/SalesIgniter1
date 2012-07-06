@@ -17,16 +17,17 @@
 				var bannerId = $(this).attr('bid');
 				var bannerType = $(this).attr('type');
 				if(bannerType == 'cmsPage') {
-					var link = js_app_link('appExt=infoPages&dialog=true&app=show_page&appPage=' + $(this).attr('page'));
-					popupWindow(link,'800','600');
-					$.ajax({
-						url: js_app_link('appExt=imageRot&app=banner_actions&appPage=default'+'&action=clickBanner&bid='+bannerId),
-						cache: false,
-						type: 'get',
-						dataType: 'html',
-						success: function (html){
-						}
-					});
+					var link = js_app_link('appExt=infoPages&app=show_page&appPage=' + $(this).attr('page'));
+
+                    $.ajax({
+                             url: js_app_link('appExt=imageRot&app=banner_actions&appPage=default'+'&action=clickBanner&bid='+bannerId),
+                             cache: false,
+                             type: 'get',
+                             dataType: 'html',
+                             success: function (html){
+                                 window.location.replace(link);
+                             }
+                         });
 					return false;
 				}
 			});
