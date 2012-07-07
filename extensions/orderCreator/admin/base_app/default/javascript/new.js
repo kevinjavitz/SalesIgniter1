@@ -737,8 +737,8 @@ $(document).ready(function (){
 	});
 	
 	$('.saveAddressButton').click(function (){
-        if(!$('input[name=customer_search]').attr('disabled')){
-            alert("Please select a Customer first");
+        if($('input[name="address[customer][entry_name]"]').val() == ''){
+            alert("Please select/type a Customer first");
             return false;
         }
 
