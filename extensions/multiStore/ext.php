@@ -70,8 +70,10 @@ class Extension_multiStore extends ExtensionBase {
 				'AdminOrdersListingBeforeExecute',
                 'AdminOrdersListingBeforeExecuteReportConsumption',
                 'AdminOrdersListingBeforeExecuteReportConsumptionBarcodes',
+                'AdminProductsInventoryBarcodesToStores',
 				'AdminProductListingTemplateQueryBeforeExecute',
-				'ProductInventoryReportsListingQueryBeforeExecute'
+				'ProductInventoryReportsListingQueryBeforeExecute',
+                'AdminProductsToStores'
 			), null, $this);
 			$App->addJavascriptFile('ext/jQuery/ui/jquery.ui.dropdownchecklist.js');
 			$App->addStylesheetFile('ext/jQuery/themes/smoothness/ui.dropdownchecklist.css');
@@ -381,6 +383,18 @@ class Extension_multiStore extends ExtensionBase {
             ->leftJoin('pib.ProductsInventoryBarcodesToStores pibs')
             ->leftJoin('pibs.Stores s')
             ->whereIn('pibs.inventory_store_id', Session::get('admin_showing_stores'));
+    }
+
+    public function AdminProductsInventoryBarcodesToStores($QProductsInventoryBarcodes){
+        $QProductsInventoryBarcodes
+            ->leftJoin('pib.ProductsInventoryBarcodesToStores pis')
+            ->andWhere('FIND_IN_SET(pis.inventory_store_id,"'.implode(',',Session::get('admin_showing_stores')).'") > 0 OR pis.inventory_store_id is null' );
+    }
+
+    public function AdminProductsToStores($QproductName){
+        $QproductName
+            ->leftJoin('p.ProductsToStores pts')
+            ->where('FIND_IN_SET(pts.stores_id,"'.implode(',',Session::get('admin_showing_stores')).'") > 0 OR pts.stores_id is null' );
     }
 
     public function AdminOrdersListingBeforeExecuteReportConsumption(&$Qorders) {
