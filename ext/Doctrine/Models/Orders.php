@@ -253,5 +253,14 @@ class Orders extends Doctrine_Record {
 		'notnull' => false,
 		'autoincrement' => false,
 		));
+        $this->hasColumn('admin_id', 'integer', 4, array(
+        'type' => 'integer',
+        'length' => 4,
+        'unsigned' => 0,
+        'primary' => false,
+        'default' => '0',
+        'notnull' => true,
+        'autoincrement' => false,
+        ));
 	}
 }
