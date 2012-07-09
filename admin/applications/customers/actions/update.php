@@ -175,7 +175,7 @@
 			/* Send email based on certian conditions - END */
 		}
 
-	//	EventManager::attachActionResponse(itw_app_link(tep_get_all_get_params(array('cID', 'action')) . 'cID=' . $userAccount->getCustomerId(), null, 'default'), 'redirect');
+		EventManager::attachActionResponse(itw_app_link(tep_get_all_get_params(array('cID', 'action')) . 'cID=' . $userAccount->getCustomerId(), null, 'default'), 'redirect');
 	}elseif ($error == true){
 		$cInfo = new objectInfo($_POST);
 		$noExit = true;
