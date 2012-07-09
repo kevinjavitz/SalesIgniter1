@@ -31,7 +31,8 @@ if (sysConfig::get('RENTAL_UPGRADE_CYCLE') == 'true'){
   	->from('Customers c')
   	->leftJoin('c.CustomersMembership cm');
 	if(isset($_GET['custID'])){
-		$Qcustomer->where('customers_id = ?', $_GET['custID']);
+		$Qcustomer->where('customers_id = ?', $_GET['custID'])
+                  ->andWhere('cm.auto_billing = ?', 1);
 	}
 	$Qcustomer = $Qcustomer->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 

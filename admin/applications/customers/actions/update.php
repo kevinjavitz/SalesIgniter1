@@ -102,11 +102,18 @@
 					$membership->setNextBillDate($next_bill_date);
 				}
 			}
+            if (array_key_exists('auto_billing', $_POST)){
+                $membership->setAutoBilling(1);
+            }else{
+                $membership->setAutoBilling(0);
+            }
+
 			if (array_key_exists('make_member', $_POST)){
 				$membership->createNewMembership();
 			}else{
 				$membership->updateMembership();
 			}
+
 		
 			/* Send email based on certian conditions - BEGIN */
 
@@ -168,7 +175,7 @@
 			/* Send email based on certian conditions - END */
 		}
 
-		EventManager::attachActionResponse(itw_app_link(tep_get_all_get_params(array('cID', 'action')) . 'cID=' . $userAccount->getCustomerId(), null, 'default'), 'redirect');
+	//	EventManager::attachActionResponse(itw_app_link(tep_get_all_get_params(array('cID', 'action')) . 'cID=' . $userAccount->getCustomerId(), null, 'default'), 'redirect');
 	}elseif ($error == true){
 		$cInfo = new objectInfo($_POST);
 		$noExit = true;

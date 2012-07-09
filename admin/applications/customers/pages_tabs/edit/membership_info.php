@@ -86,6 +86,10 @@
 							echo $htmlCheckbox->draw();
 						?></td>
 				</tr>
+                <tr>
+                    <td class="main"><?php echo sysLanguage::get('TEXT_AUTO_BILLING');?></td>
+                    <td class="main"><?php echo tep_draw_selection_field('auto_billing','checkbox','1',$CustomersMembership->auto_billing == 1?true:false,'disabled=disabled');?></td>
+                </tr>
 <?php
 		if ($CustomersMembership->free_trial_flag == 'Y'){
 ?>
@@ -235,6 +239,10 @@
 					<td class="main"><?php echo sysLanguage::get('TEXT_MAKE_MEMBER');?></td>
 					<td class="main"><?php echo tep_draw_selection_field('make_member','checkbox','1',false,'');?></td>
 				</tr>
+                <tr>
+                    <td class="main"><?php echo sysLanguage::get('TEXT_AUTO_BILLING');?></td>
+                    <td class="main"><?php echo tep_draw_selection_field('auto_billing','checkbox','1',false,'disabled=disabled');?></td>
+                </tr>
 				<tr>
 					<td class="main"><?php echo sysLanguage::get('TEXT_CHOOSE_PLAN');?></td>
 					<td class="main"><?php

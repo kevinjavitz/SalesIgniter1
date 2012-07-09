@@ -96,7 +96,8 @@ class rentalStoreUser_membership extends StandardClass {
 				'payment_method'             => $Qmembership[0]['payment_method'],
 				'rental_address_id'          => $userAccount->getDefaultAddressId()/*$Qmembership->getVal('rental_address_id')*/,
 				'subscr_id'                  => $Qmembership[0]['subscr_id'],
-				'payment_term'               => $Qmembership[0]['payment_term']/*,
+				'payment_term'               => $Qmembership[0]['payment_term'],
+                'auto_billing'               => $Qmembership[0]['auto_billing']/*,
 				'card_num'                   => $Qmembership[0]['card_num'],
 				'exp_date'                   => $Qmembership[0]['exp_date']*/
 			);
@@ -252,6 +253,7 @@ class rentalStoreUser_membership extends StandardClass {
 		$CustomersMembership->rental_address_id = $this->membershipInfo['rental_address_id'];
 		$CustomersMembership->subscr_id = (isset($this->membershipInfo['subscr_id']) ? $this->membershipInfo['subscr_id'] : '');
 		$CustomersMembership->payment_term = $this->membershipInfo['payment_term'];
+        $CustomersMembership->auto_billing = $this->membershipInfo['auto_billing'];
 		if (isset($this->membershipInfo['card_num'])) $CustomersMembership->card_num = $this->membershipInfo['card_num'];
 		if (isset($this->membershipInfo['exp_date'])) $CustomersMembership->exp_date = $this->membershipInfo['exp_date'];
 		if (isset($this->membershipInfo['card_cvv'])) $CustomersMembership->card_cvv = $this->membershipInfo['card_cvv'];
@@ -290,6 +292,10 @@ class rentalStoreUser_membership extends StandardClass {
 		if(isset($this->membershipInfo['payment_term']) && !empty($this->membershipInfo['payment_term'])){
 			$CustomersMembership->payment_term = $this->membershipInfo['payment_term'];
 		}
+
+        if(isset($this->membershipInfo['auto_billing']) && !empty($this->membershipInfo['auto_billing'])){
+            $CustomersMembership->auto_billing = $this->membershipInfo['auto_billing'];
+        }
 
 		if(isset($this->membershipInfo['card_num']) && !empty($this->membershipInfo['card_num'])){
 			$CustomersMembership->card_num = $this->membershipInfo['card_num'];
@@ -439,6 +445,10 @@ class rentalStoreUser_membership extends StandardClass {
 	public function setMembershipStatus($value){
 		$this->membershipInfo['ismember'] = $value;
 	}
+
+    public function setAutoBilling($value){
+        $this->membershipInfo['auto_billing'] = $value;
+    }
 
 	public function setActivationStatus($value){
 		$this->membershipInfo['activate'] = $value;

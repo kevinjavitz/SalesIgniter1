@@ -198,5 +198,13 @@ class CustomersMembership extends Doctrine_Record {
 		'notnull' => true,
 		'autoincrement' => false,
 		));
+        $this->hasColumn('auto_billing', 'integer', 11, array(
+        'type' => 'integer',
+        'length' => 11,
+        'unsigned' => 0,
+        'primary' => false,
+        'notnull' => false,
+        'autoincrement' => false,
+        ));
 	}
 }

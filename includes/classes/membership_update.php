@@ -142,6 +142,10 @@ class membershipUpdate_cron {
 		return $this->userAccount->plugins['membership']->isActivated();
 	}
 
+    public function setAutoBilling(){
+        return $this->userAccount->plugins['membership']->setAutoBilling();
+    }
+
 	public function updateStreamingAccess(){
 		if ($this->canStream() && $this->isCanceled() && $this->isMember()){
 			$membership =& $this->userAccount->plugins['membership'];

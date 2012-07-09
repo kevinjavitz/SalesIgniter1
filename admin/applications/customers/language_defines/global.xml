@@ -43,6 +43,7 @@
 	<define key="TEXT_NOT_MEMBER"><![CDATA[Currently not a member]]></define>
 	<define key="TEXT_MEMBERSHIP_STATUS"><![CDATA[Membership status:]]></define>
 	<define key="TEXT_MAKE_MEMBER"><![CDATA[Make this customer a member:]]></define>
+    <define key="TEXT_AUTO_BILLING"><![CDATA[Auto billing:]]></define>
 	<define key="TEXT_MAKE_THIS_CANDIDATE"><![CDATA[Make this candidate:]]></define>
 	<define key="TEXT_PAYPAL"><![CDATA[Paypal]]></define>
 	<define key="TEXT_AUTHORIZE"><![CDATA[Authorize.Net]]></define>
