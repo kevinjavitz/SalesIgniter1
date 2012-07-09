@@ -118,7 +118,7 @@ text-align: left;
 .ui-icon-required {
 background-position: -2px -198px;
 }
-#loginForm .ui-button {
+.ui-button {
 cursor: pointer;
 display: inline-block;
 margin-right: 0.1em;
@@ -276,6 +276,13 @@ padding: 0.3em;
 }
 #loginForm input.required, #loginForm select.required,#loginForm textarea.required {
 background: none repeat scroll 0 0 #FFD3D3;
+}
+.ui-widget-content .ui-icon-required {
+background: none;
+background-image: url("/images/icons/iconRequired.gif");
+height: 16px;
+width: 16px;
+background-repeat: no-repeat;
 }
 <?php
     /* Overwrites for jQuery UI Settinge --END-- */
