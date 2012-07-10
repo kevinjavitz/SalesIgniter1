@@ -300,7 +300,7 @@
 				'data' => array('ups_track_num', 'ups_track_num2')
 			),
 			array(
-				'heading' => sysLanguage::get('TABLE_HEADING_FEDEX_TRACKING'),
+				'heading' => sysLanguage::get('TABLE_HEADING_FEDEX_TRACKING').':<\br><a href="" id="popShipRush" title="ShipRush">'.sysLanguage::get('TABLE_HEADING_FEDEX_SHIPRUSH').'</a>',
 				'link' => 'http://www.fedex.com/Tracking?action=track&language=english&cntry_code=us&tracknumbers=',
 				'data' => array('fedex_track_num', 'fedex_track_num2')
 			),

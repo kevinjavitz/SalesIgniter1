@@ -17,7 +17,7 @@
 	<define key="TABLE_HEADING_UPS_TRACKING"><![CDATA[UPS Tracking Number(s)]]></define>
 	<define key="TABLE_HEADING_FEDEX_TRACKING"><![CDATA[Fedex Tracking Number(s)]]></define>
 	<define key="TABLE_HEADING_DHL_TRACKING"><![CDATA[DHL Tracking Number(s)]]></define>
-	
+    <define key="TABLE_HEADING_FEDEX_SHIPRUSH"><![CDATA[ShipRush]]></define>
 	<define key="ENTRY_STATUS"><![CDATA[Status:]]></define>
 	<define key="ENTRY_NOTIFY_CUSTOMER"><![CDATA[Notify Customer:]]></define>
 	<define key="ENTRY_NOTIFY_COMMENTS"><![CDATA[Append Comments:]]></define>

@@ -231,15 +231,17 @@ class OrderCreatorAddressManager extends OrderAddressManager implements Serializ
 		->css(array('width' => '150px'));
 		
 		$Qcountries = Doctrine_Query::create()
-		->select('countries_name')
+		->select('countries_name, countries_iso_code_2')
 		->from('Countries')
 		->orderBy('countries_name')
 		->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 
 		foreach($Qcountries as $cInfo){
-			$countryInput->addOption($cInfo['countries_name'], $cInfo['countries_name']);
-		}
-		
+            $iso = array();
+            $iso['iso_code'] = $cInfo['countries_iso_code_2'];
+            $countryInput->addOption($cInfo['countries_name'], $cInfo['countries_name'],false, $iso);
+
+        }
 		if (is_null($Address) === false){
 			$Qcountry = Doctrine_Query::create()
 					->select('countries_id')
@@ -252,13 +254,15 @@ class OrderCreatorAddressManager extends OrderAddressManager implements Serializ
 				$stateInput = htmlBase::newElement('selectbox')->setName('address[' . $aType . '][entry_state]')->css(array('width' => '150px'));
 
 				$Qzones = Doctrine_Query::create()
-						->select('zone_name')
+						->select('zone_name, zone_code')
 						->from('Zones')
 						->where('zone_country_id = ?', $addressCountryId)
 						->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 				foreach($Qzones as $zInfo){
-					$stateInput->addOption($zInfo['zone_name'], $zInfo['zone_name']);
-				}
+                    $iso = array();
+                    $iso['iso_code'] = $zInfo['zone_name'];
+                    $stateInput->addOption($zInfo['zone_name'], $zInfo['zone_name'],false,$iso);
+                }
 			}
 		}
 
