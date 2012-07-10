@@ -1,4 +1,5 @@
 <form name="login" action="<?php echo itw_app_link('action=processLogin');?>" method="post">
+<div id="loginForm">
     <div class="ui-widget ui-widget-content ui-corner-all loginBox" style="border-color:#222222;width:400px;margin-left:auto;margin-right:auto;">
         <div id="logoBar" class="dummy" style="text-align:center;height: 80px;line-height:80px">
             <img src="<?php echo sysConfig::getDirWsAdmin();?>images/seslogo.png" style="vertical-align: middle;">
@@ -15,4 +16,5 @@
             <button id="loginButton" type="submit" style="width:150px;"><span>Login</span></button>
         </div>
     </div>
+</div>
 </form>

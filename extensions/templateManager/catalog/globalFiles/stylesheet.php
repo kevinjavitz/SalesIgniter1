@@ -265,7 +265,7 @@ color: #363636;
 
 .ui-icon.ui-icon-closethick { background-image: url(<?php echo jqueryIconsPath('cd0a0a'); ?>); }
 
-input, select, textarea, .ui-widget input, .ui-widget select, .ui-widget textarea, .ui-widget button {
+#loginForm input, #loginForm select, #loginForm textarea, #loginForm .ui-widget input, #loginForm .ui-widget select, #loginForm .ui-widget textarea, #loginForm .ui-widget button {
 background: none repeat scroll 0 0 #ECFAFF;
 border: 1px solid #A6C9E2;
 border-radius: 5px 5px 5px 5px;
@@ -274,8 +274,15 @@ font-family: Tahoma,Verdana,Arial,sans-serif;
 font-size: 1.2em;
 padding: 0.3em;
 }
-input.required, select.required, textarea.required {
+#loginForm input.required, #loginForm select.required,#loginForm textarea.required {
 background: none repeat scroll 0 0 #FFD3D3;
+}
+.ui-widget-content .ui-icon-required {
+background: none;
+background-image: url("/images/icons/iconRequired.gif");
+height: 16px;
+width: 16px;
+background-repeat: no-repeat;
 }
 <?php
     /* Overwrites for jQuery UI Settinge --END-- */

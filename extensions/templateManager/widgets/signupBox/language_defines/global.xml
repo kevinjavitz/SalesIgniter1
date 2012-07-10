@@ -7,4 +7,8 @@
 	<define key="INFOBOX_LOGINBOX_LOGIN"><![CDATA[Submit]]></define>
 	<define key="INFOBOX_LOGINBOX_INFO"><![CDATA[<p align="center">We will not sell or rent your email address, <br>We may contact you about our service. <br>See ourprivacy notice.</p>]]></define>
 	<define key="INFOBOX_LOGINBOX_MY_ACCOUNT"><![CDATA[My Account]]></define>
+    <define key="INFOBOX_LOGINBOX_LOGOFF"><![CDATA[Log off]]></define>
+    <define key="INFOBOX_LOGINBOX_ADDRESS_BOOK"><![CDATA[My address book]]></define>
+    <define key="INFOBOX_LOGINBOX_ACCOUNT_HISTORY"><![CDATA[Account history]]></define>
+    <define key="INFOBOX_LOGINBOX_ACCOUNT_EDIT"><![CDATA[Edit account info]]></define>
 </definitions>

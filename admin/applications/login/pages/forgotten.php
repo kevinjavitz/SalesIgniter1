@@ -7,7 +7,9 @@ if (Session::exists('password_forgotten_tries') === true && Session::get('passwo
 }
 else {
     ?>
+
 <div id="forgottenDialog" title="<?php echo htmlspecialchars('<div><span class="ui-icon-red ui-icon-locked" style="position:absolute;top:5px;left:5px;"></span><span style="position:relative;top:1px;left:10px;">' . sysLanguage::get('HEADING_PASSWORD_FORGOTTEN') . '</span></div>');?>" style="display:none;">
+    <div id="loginForm">
     <form name="forgotten" action="<?php echo itw_app_link('action=getPassword');?>" method="post">
         <?php
         if (isset($info_message)){
@@ -26,6 +28,7 @@ else {
             </tr>
         </table>
     </form>
+    </div>
 </div>
 <?php
 }

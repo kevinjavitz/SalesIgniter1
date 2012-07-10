@@ -201,13 +201,15 @@ $(document).ready(function () {
 	
 	$('.saveButton').click(function () {
         var reporting = false;
+        var level = false;
 
         $('input[name="configuration[ERROR_REPORTING_LEVEL][]"]').each(function () {
+            level = true;
             if (this.checked)
                 reporting = true;
         });
 
-        if(!reporting){
+        if(!reporting && level == true){
             alert('Please select at least 1 Reporting Level');
             return false;
         }

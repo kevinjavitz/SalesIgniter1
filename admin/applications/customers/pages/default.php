@@ -1,4 +1,6 @@
 <?php
+    global $currencies;
+
 	$Qcustomers = Doctrine_Query::create()
 	->from('Customers c')
 	->leftJoin('c.CustomersMembership cm')
@@ -68,6 +70,9 @@ $tableGrid->addButtons(array(
 		array('text' => '<a href="'.itw_app_link('sortFirstname='.(isset($_GET['sortFirstname'])?($_GET['sortFirstname'] == 'ASC'?'DESC':'ASC'):'ASC').'&'.tep_get_all_get_params(array('sortLastname','sortDate','sortFirstname')),null,null).'">'.sysLanguage::get('TABLE_HEADING_FIRSTNAME').'</a>'),
 		array('text' => sysLanguage::get('TABLE_HEADING_MEMBER_OR_USER')),
 		array('text' => sysLanguage::get('TABLE_HEADING_MEMBERSHIP_STATUS')),
+        array('text' => sysLanguage::get('TABLE_HEADING_TOTAL')),
+        array('text' => sysLanguage::get('TABLE_HEADING_LAST_ORDER_NUMBER')),
+        array('text' => sysLanguage::get('TABLE_HEADING_LAST_ORDER_DATE')),
 		array('text' => '<a href="'.itw_app_link('sortDate='.(isset($_GET['sortDate'])?($_GET['sortDate'] == 'ASC'?'DESC':'ASC'):'ASC').'&'.tep_get_all_get_params(array('sortFirstname','sortLastname','sortDate')),null,null).'">'.sysLanguage::get('TABLE_HEADING_ACCOUNT_CREATED').'</a>')
 	);
 	
@@ -106,7 +111,7 @@ $tableGrid->addButtons(array(
 			}
 
 			$Qorders = Doctrine_Query::create()
-			->select('count(*) as total')
+			->select('count(*) as total,max(o.date_purchased) as lastDate, max(o.orders_id) as lastOrder')
 			->from('Orders o')
 			->where('o.customers_id = ?', $customerId);
 
@@ -114,7 +119,18 @@ $tableGrid->addButtons(array(
 
 			$Qorders = $Qorders->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 
-			$arrowIcon = htmlBase::newElement('icon')->setType('info');
+            $Qproducts = Doctrine_Query::create()
+                ->select('sum(op.final_price) as totalPrice')
+                ->from('Orders o')
+                ->leftJoin('o.OrdersProducts op')
+                ->where('o.customers_id = ?', $customerId);
+
+            EventManager::notify('OrdersProductsListingBeforeExecute', &$Qproducts);
+
+            $Qproducts = $Qproducts->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+
+
+            $arrowIcon = htmlBase::newElement('icon')->setType('info');
 
 			if (empty($customer['MembershipBillingReport'])){
 			}elseif ($customer['MembershipBillingReport']['status'] == 'A'){
@@ -150,6 +166,9 @@ $tableGrid->addButtons(array(
 				array('text' => $customer['customers_firstname']),
 				array('text' => $member, 'align' => 'center'),
 				array('text' => $activate, 'align' => 'center'),
+                array('text' => $currencies->format($Qproducts[0]['totalPrice']), 'align' => 'center'),
+                array('text' => $Qorders[0]['lastOrder'], 'align' => 'center'),
+                array('text' => tep_date_short($Qorders[0]['lastDate']), 'align' => 'center'),
 				array('text' => tep_date_short($customer['CustomersInfo']['customers_info_date_account_created']), 'align' => 'center')
 			);
 			
