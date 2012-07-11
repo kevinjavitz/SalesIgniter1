@@ -36,7 +36,7 @@ class productListing_productsCustomFields {
 			foreach($groups as $groupInfo){
 				$fieldsToGroups = $groupInfo['ProductsCustomFieldsToGroups'];
 				foreach($fieldsToGroups as $fieldToGroup){
-					if ($fieldToGroup['ProductsCustomFields']['show_name_on_listing'] == '1'){
+					if ($fieldToGroup['ProductsCustomFields']['show_name_on_listing'] === '1' || $fieldToGroup['ProductsCustomFields']['show_on_site'] === '1'){
 						$name = $fieldToGroup['ProductsCustomFields']['ProductsCustomFieldsDescription'][Session::get('languages_id')]['field_name'] . ': ';
 					}else{
 						$name = '';

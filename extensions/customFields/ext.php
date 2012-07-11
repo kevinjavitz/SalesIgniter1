@@ -88,7 +88,7 @@ class Extension_customFields extends ExtensionBase {
         foreach($groups as $groupInfo){
             $fieldsToGroups = $groupInfo['ProductsCustomFieldsToGroups'];
             foreach($fieldsToGroups as $fieldToGroup){
-                if ($fieldToGroup['ProductsCustomFields']['show_name_on_listing'] == '1'){
+                if ($fieldToGroup['ProductsCustomFields']['show_name_on_listing'] === '1' || $fieldToGroup['ProductsCustomFields']['show_on_site'] === '1'){
                     $name = $fieldToGroup['ProductsCustomFields']['ProductsCustomFieldsDescription'][Session::get('languages_id')]['field_name'] . ': ';
                 }else{
                     $name = '';
@@ -510,7 +510,7 @@ class Extension_customFields extends ExtensionBase {
         $Query = $this->_getFieldsQuery(array(
                                              'product_id' => $productInfo['products_id'],
                                              'language_id' => Session::get('languages_id'),
-                                             'show_on_site' => true,
+                                            // 'show_on_site' => true,
                                         ));
         $groups = $Query->execute()->toArray(true);
 
@@ -518,7 +518,7 @@ class Extension_customFields extends ExtensionBase {
             $fieldsToGroups = $groupInfo['ProductsCustomFieldsToGroups'];
             foreach($fieldsToGroups as $fieldToGroup){
 
-                if ($fieldToGroup['ProductsCustomFields']['show_name_on_listing'] == '1'){
+                if ($fieldToGroup['ProductsCustomFields']['show_name_on_listing'] === '1' || $fieldToGroup['ProductsCustomFields']['show_on_site'] === '1'){
                     $name = $fieldToGroup['ProductsCustomFields']['ProductsCustomFieldsDescription'][Session::get('languages_id')]['field_name'];
                 }else{
                     $name = '';

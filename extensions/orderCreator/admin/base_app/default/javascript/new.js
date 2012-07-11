@@ -846,4 +846,67 @@ $(document).ready(function (){
 
     });
 
+    function encodeParam(name, value)
+    {
+        if (value)
+        {
+            if (!value.toString() == "")
+            {
+                return name + "=" + escape( value ) + "&";
+            }
+        }
+        return "";
+    }
+
+    $('#popShipRush').live('click', function (){
+        window.location.href = btnGenerateShipURL_onclick();
+        return false;
+    });
+
+    function btnGenerateShipURL_onclick() {
+        var url =
+            "nntp://" +
+                "ship?" +
+                encodeParam("Carrier", "FedEx" ) +
+                encodeParam("AutoPrintLabel", false ) +
+                encodeParam("ShipmentXML", getShippmentXML() );
+
+        return url;
+    }
+
+    function getShippmentXML()
+    {
+        return '<?xml version = "1.0"?>' +
+            '<Request>' +
+            '<ShipTransaction>' +
+            '<Shipment>' +
+            '<UPSServiceType>FedEx Ground></UPSServiceType>' +
+            '<ShipmentChgType>PRE</ShipmentChgType>' +
+            '<DeliveryAddress>' +
+            '<Address>' +
+            '<FirstName><![CDATA[' + $('input[name="address[delivery][entry_name]"]').val() + ']]></FirstName>' +
+            '<Company><![CDATA[' + $('input[name="address[delivery][entry_company]"]').val() + ']]></Company>' +
+            '<Address1><![CDATA[' + $('input[name="address[delivery][entry_street_address]"]').val() + ']]></Address1>' +
+            '<Address2></Address2>' +
+            '<City><![CDATA[' + $('input[name="address[delivery][entry_city]"]').val() + ']]></City>' +
+            '<State><![CDATA[' + $('.state_delivery option:selected').attr('iso_code') + ']]></State>' +
+            '<PostalCode><![CDATA[' + $('input[name="address[delivery][entry_postcode]"]').val() + ']]></PostalCode>' +
+            '<Country><![CDATA[' + $('.country option:selected').attr('iso_code') + ']]></Country>' +
+            '</Address>' +
+            '</DeliveryAddress>' +
+            '<Package>' +
+            '<PackagingType>02></PackagingType>' +
+            '<PackageActualWeight></PackageActualWeight>' +
+            '<InsuranceAmount><![CDATA[' + $('input[name="order_total[1][value]"]').val() + ']]></InsuranceAmount>' +
+            '<PackageReference1></PackageReference1>' +
+            '<PkgLength>10</PkgLength>' +
+            '<PkgWidth>10</PkgWidth>' +
+            '<PkgHeight>5</PkgHeight>' +
+            '</Package>' +
+            '</Shipment>' +
+            '</ShipTransaction>' +
+            '</Request>';
+
+    }
+
 });
