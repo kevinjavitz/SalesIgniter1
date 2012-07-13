@@ -227,8 +227,10 @@ $(document).ready(function (){
     $('#changeBillingAddress').button();
     $('#changeShippingAddress').button();
     $('#changePickupAddress').button();
-    $('#insure_button').live('click',function(){
+
+    $('input[name=insure_all_products]').live('click',function(){
     	var linkParams = js_get_all_get_params(['app', 'appPage', 'action']);
+
 			var url = js_app_link(linkParams + 'rType=ajax&app=checkout&appPage=default&action=saveInsuranceCheckboxes');
             var $tableInsure = $(this).parent().parent().parent();
 			showAjaxLoader($tableInsure, 'xlarge');
@@ -245,11 +247,16 @@ $(document).ready(function (){
                     if(data.isRemove == true){
                         $('#insuranceTextRemove').show();
                         $('#insuranceText').hide();
+                        $('input[name=insure_all_products]').attr('checked',true);
+
                     }else{
                         $('#insuranceTextRemove').hide();
                         $('#insuranceText').show();
+                        $('input[name=insure_all_products]').attr('checked',false);
+
                     }
                     $('#insure_button').button();
+
 				}
 			});
 			return false;
@@ -284,6 +291,13 @@ $(document).ready(function (){
 				}else{
 					removeAjaxLoader($('.checkoutContent'));
 					$('.checkoutContent').html(data.pageHtml);
+
+                    $('.rentalPlans').each(function(){
+                        if($(this).attr('checked')){
+                            $(this).trigger('click');
+                        }
+                    });
+
 					if (data.isShipping == true) {
 						$('.shippingAddressDiff').trigger('click');
 						$('.shippingAddress').show();
@@ -317,6 +331,7 @@ $(document).ready(function (){
 							 });
 						 }
 
+
 						if($('input[name=shipping_method]').length == 1){
 							updateShipping($('input[name=shipping_method]').val());
 						}
@@ -342,17 +357,17 @@ $(document).ready(function (){
 
 						 $('.breadcrumbTrail').html('<a class="headerNavigation" href="'+js_app_link('app=index&appPage=default')+'">You Are Here: Home</a> &raquo; Checkout &raquo; Payment & Shipping');
 						 $('#insure_button').button();
-						if ($('.rentalPlans').length > 0){
+						/*if ($('.rentalPlans').length > 0){
 							if($('.rentalPlans:checked').size() == 0){
 								$('.rentalPlans').each(function(){
 									$(this).trigger('click');
 								});
 							} else{
-								$('.rentalPlans:checked').each(function(){
-									$(this).trigger('click');
-								});
+
 							}
-						}
+						}*/
+
+
 
 						if ($('.rentalPlans').length <= 0){
 							updateTotals();
@@ -360,11 +375,17 @@ $(document).ready(function (){
 						if ($('.giftCertificates').length <= 0){
 							updateTotals();
 						}
+
 					}
 					$('#loginButton').button();
 					$('#changeBillingAddress').button();
 					$('#changeShippingAddress').button();
 					$('#changePickupAddress').button();
+
+                    $('input[name=insure_all_products]').each(function(){
+                        $(this).trigger('click');
+                    });
+
 					window.scrollTo(0,0);
 				}
 			}
@@ -424,7 +445,7 @@ $(document).ready(function (){
 		            $('#agreeMessage').hide();
 		            $('#agreeMessage').html('');
 	            }
-	            updateTotals();
+                updateTotals();
             }
         });
 
@@ -455,5 +476,6 @@ $(document).ready(function (){
 
 		updateShipping($(this).val());
 	});
+
 
 });

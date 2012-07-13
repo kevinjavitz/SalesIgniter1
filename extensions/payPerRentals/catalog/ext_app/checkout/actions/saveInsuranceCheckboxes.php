@@ -11,15 +11,23 @@ foreach ($ShoppingCart->getProducts() as $cartProduct){
 								 ->where('products_id = ?', $pID)
 								 ->fetchOne();
 
-				if (!isset($pInfo['reservationInfo']['insurance']) || (isset($pInfo['reservationInfo']['insurance']) && $pInfo['reservationInfo']['insurance'] == 0)){
+				/*if (!isset($pInfo['reservationInfo']['insurance']) || (isset($pInfo['reservationInfo']['insurance']) && $pInfo['reservationInfo']['insurance'] == 0)){
 					$pInfo['reservationInfo']['insurance'] = $payPerRentals->insurance;//getInsurance from db
 					$isRemove = true;
 				}else{
 					$pInfo['reservationInfo']['insurance'] = 0;
 					$isRemove = false;
 				}
-				$ShoppingCart->updateProduct($cartProduct->getUniqID(), $pInfo);
-			}
+				$ShoppingCart->updateProduct($cartProduct->getUniqID(), $pInfo);*/
+
+                $pInfo['reservationInfo']['insurance'] = $payPerRentals->insurance;//getInsurance from db
+                $isRemove = true;
+            }else{
+                $pInfo['reservationInfo']['insurance'] = 0;
+                $isRemove = false;
+            }
+
+            $ShoppingCart->updateProduct($cartProduct->getUniqID(), $pInfo);
 		}
 	}
 
