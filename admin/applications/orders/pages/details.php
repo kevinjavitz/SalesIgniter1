@@ -29,6 +29,45 @@
 
 	echo $infobox->draw(). '<br>';
 
+    $inputName = htmlBase::newElement('input')
+        ->val($Order->getName('delivery'))
+        ->setName('inputName')
+        ->setType('hidden');
+
+    $inputCompany = htmlBase::newElement('input')
+        ->val($Order->getCompany('delivery'))
+        ->setName('inputCompany')
+        ->setType('hidden');
+
+    $inputStreet = htmlBase::newElement('input')
+        ->val($Order->getStreetAddress('delivery'))
+        ->setName('inputStreet')
+        ->setType('hidden');
+
+    $inputCity = htmlBase::newElement('input')
+        ->val($Order->getCity('delivery'))
+        ->setName('inputCity')
+        ->setType('hidden');
+
+    $inputTotal = htmlBase::newElement('input')
+        ->val($Order->getTotal())
+        ->setName('inputTotal')
+        ->setType('hidden');
+
+    $inputCountry = htmlBase::newElement('input')
+        ->val($Order->getCountry('delivery'))
+        ->setName('inputCountry')
+        ->setType('hidden');
+
+    $inputPost = htmlBase::newElement('input')
+        ->val($Order->getPostcode('delivery'))
+        ->setName('inputPost')
+        ->setType('hidden');
+
+    $inputZone = htmlBase::newElement('input')
+        ->val($Order->getZoneCode('delivery'))
+        ->setName('inputZone')
+        ->setType('hidden');
 
 ?></div>
 <br />
@@ -163,7 +202,7 @@
 			'data' => array('ups_track_num', 'ups_track_num2')
 		),
 		array(
-			'heading' => sysLanguage::get('TABLE_HEADING_FEDEX_TRACKING'),
+            'heading' => sysLanguage::get('TABLE_HEADING_FEDEX_TRACKING').':<\br><a href="" id="popShipRush" title="ShipRush">'.sysLanguage::get('TABLE_HEADING_FEDEX_SHIPRUSH').'</a>'.$inputName->draw().$inputCompany->draw().$inputCountry->draw().$inputCity->draw().$inputPost->draw().$inputStreet->draw().$inputZone->draw().$inputTotal->draw(),
 			'link' => 'http://www.fedex.com/Tracking?action=track&language=english&cntry_code=us&tracknumbers=',
 			'data' => array('fedex_track_num', 'fedex_track_num2')
 		),

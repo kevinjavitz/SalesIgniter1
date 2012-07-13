@@ -143,6 +143,38 @@ class Order {
 		return $this->ProductManager->getContents();
 	}
 
+    public function getName($type){
+        return $this->AddressManager->getName($type);
+    }
+
+    public function getCompany($type){
+        return $this->AddressManager->getCompany($type);
+    }
+
+    public function getStreetAddress($type){
+        return $this->AddressManager->getStreetAddress($type);
+    }
+
+    public function getCity($type){
+        return $this->AddressManager->getCity($type);
+    }
+
+    public function getState($type){
+        return $this->AddressManager->getState($type);
+    }
+
+    public function getCountry($type){
+        return $this->AddressManager->getCountry($type);
+    }
+
+    public function getPostcode($type){
+        return $this->AddressManager->getPostcode($type);
+    }
+
+    public function getZoneCode($type){
+        return $this->AddressManager->getZoneCode($type);
+    }
+
 	public function listProducts($showTableHeading = true, $showQty = true, $showBarcode = true, $showModel = true, $showName = true, $showExtraInfo = true, $showPrice = true, $showPriceWithTax = true, $showTotal = true, $showTotalWithTax = true, $showTax = true) {
 		return $this->ProductManager->listProducts($showTableHeading, $showQty, $showBarcode, $showModel, $showName, $showExtraInfo, $showPrice, $showPriceWithTax, $showTotal, $showTotalWithTax, $showTax, $this);
 	}

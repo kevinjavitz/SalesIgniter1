@@ -108,6 +108,70 @@ class OrderAddressManager {
 		return $Address;
 	}
 
+    public function getName($type){
+        $Address = null;
+        if (isset($this->addresses[$type])){
+            $Address = $this->addresses[$type]->getName();
+        }
+        return $Address;
+    }
+
+    public function getCompany($type){
+        $Address = null;
+        if (isset($this->addresses[$type])){
+            $Address = $this->addresses[$type]->getCompany();
+        }
+        return $Address;
+    }
+
+    public function getStreetAddress($type){
+        $Address = null;
+        if (isset($this->addresses[$type])){
+            $Address = $this->addresses[$type]->getStreetAddress();
+        }
+        return $Address;
+    }
+
+    public function getCity($type){
+        $Address = null;
+        if (isset($this->addresses[$type])){
+            $Address = $this->addresses[$type]->getCity();
+        }
+        return $Address;
+    }
+
+    public function getState($type){
+        $Address = null;
+        if (isset($this->addresses[$type])){
+            $Address = $this->addresses[$type]->getState();
+        }
+        return $Address;
+    }
+
+    public function getCountry($type){
+        $Address = null;
+        if (isset($this->addresses[$type])){
+            $Address = $this->addresses[$type]->getCountry();
+        }
+        return $Address;
+    }
+
+    public function getPostcode($type){
+        $Address = null;
+        if (isset($this->addresses[$type])){
+            $Address = $this->addresses[$type]->getPostcode();
+        }
+        return $Address;
+    }
+
+    public function getZoneCode($type){
+        $Address = null;
+        if (isset($this->addresses[$type])){
+            $Address = $this->addresses[$type]->getZoneCode();
+        }
+        return $Address;
+    }
+
 	public function showAddress($Address, $html = true){
 		if(sysConfig::get('ACCOUNT_COMPANY') == 'true'){
 			$company = htmlspecialchars($Address->getCompany());
