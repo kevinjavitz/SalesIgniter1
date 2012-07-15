@@ -1,15 +1,15 @@
 <definitions>
-	<define key="TEXT_DAYS"><![CDATA[Day(s)]]></define>
-	<define key="TEXT_WEEKS"><![CDATA[Week(s)]]></define>
-	<define key="TEXT_MONTHS"><![CDATA[Month(s)]]></define>
-	<define key="TEXT_BILLING_PERIOD"><![CDATA[Billing Period]]></define>
-	
-	<define key="TEXT_INFO_USED_STREAMS"><![CDATA[Customer has used %s views during $s which is from %s - %s]]></define>
-	<define key="TEXT_INFO_RESET_VIEWS"><![CDATA[Reset Views: ]]></define>
-	
-	<define key="TABLE_HEADING_PRODUCTS_NAME"><![CDATA[Products Name]]></define>
-	<define key="TABLE_HEADING_DATE_VIEWED"><![CDATA[Date Viewed]]></define>
-	<define key="TABLE_HEADING_VIEWS_HISTORY"><![CDATA[<b>Views History (last %s)</b>]]></define>
-	
-	<define key="TAB_STREAMING_INFO"><![CDATA[Streaming Info']]></define>
+    <define key="TEXT_DAYS"><![CDATA[Day(s)]]></define>
+    <define key="TEXT_WEEKS"><![CDATA[Week(s)]]></define>
+    <define key="TEXT_MONTHS"><![CDATA[Month(s)]]></define>
+    <define key="TEXT_BILLING_PERIOD"><![CDATA[Billing Period]]></define>
+
+    <define key="TEXT_INFO_USED_STREAMS"><![CDATA[Customer has used %s views during $s which is from %s - %s]]></define>
+    <define key="TEXT_INFO_RESET_VIEWS"><![CDATA[Reset Views: ]]></define>
+
+    <define key="TABLE_HEADING_PRODUCTS_NAME"><![CDATA[Products Name]]></define>
+    <define key="TABLE_HEADING_DATE_VIEWED"><![CDATA[Date Viewed]]></define>
+    <define key="TABLE_HEADING_VIEWS_HISTORY"><![CDATA[<b>Views History (last %s)</b>]]></define>
+
+    <define key="TAB_STREAMING_INFO"><![CDATA[Streaming Info']]></define>
 </definitions>

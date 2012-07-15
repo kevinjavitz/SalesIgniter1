@@ -1,38 +1,43 @@
 <?php
-class StreamProviderLocal extends StreamProviderModule {
+class StreamProviderLocal extends StreamProviderModule
+{
 
-	public function __construct($config = false) {
+	public function __construct($config = false){
 		/*
 		 * Default title and description for modules that are not yet installed
 		 */
 		$this->setTitle('Local');
 		$this->setDescription('Streams are stored on this server');
-		
+
 		$this->init('local');
-		
+
 		if ($config !== false && is_array($config)){
 			$this->setProviderConfig($config);
 		}
 	}
-	
+
 	public function getStorageFolder(){
 		return $this->getConfigData('MODULE_STREAM_PROVIDER_LOCAL_FOLDER');
 	}
-	
+
 	public function getFlowplayerConfig($sInfo){
 		$previewFile = $sInfo['file_name'];
-		$ext = substr($previewFile, strpos($previewFile, '.')+1);
+		$ext = substr($previewFile, strpos($previewFile, '.') + 1);
 		$movieName = 'preview.' . $ext;
 		$movieName = $sInfo['file_name'];
 		$params = '';
-		if(isset($sInfo['oID']) && $sInfo['oID'] > 0){
+		//$link = itw_app_link(null, 'pullStream', $sInfo['products_id'] . '/' . $params . $movieName);
+		//$link = str_replace('pullStream/', 'pullStream.php/', $link);
+
+		if (isset($sInfo['oID']) && $sInfo['oID'] > 0){
 			$params = $sInfo['oID'] . '/' . $sInfo['opID'] . '/';
 		}
-		$link = itw_app_link(null, 'pullStream', $sInfo['products_id'] . '/' . $params . $movieName);
-		$link = str_replace('pullStream/', 'pullStream.php/', $link);
-		
+		if (file_exists('streams/'.$movieName))
+			$link = '/streams/'.$movieName;
+		else
+			$link='/streamer/movies/'.$movieName;
 		return array(
-/*			'key' => 'Commercial Key',
+			/*'key' => 'Commercial Key',
 			'logo' => array(
 				'url' => 'streamer/flowplayer/images/logo.png',
 				'top' => 20,
@@ -46,12 +51,13 @@ class StreamProviderLocal extends StreamProviderModule {
 					'url' => 'streamer/flowplayer/flowplayer.controls-3.2.3.swf'
 				)
 			),
-			'clip' => array(
-				'url' => $link,
-				'autoPlay' => false,
+			'clip'    => array(
+				'url'           => $link,
+				'autoPlay'      => false,
 				'autoBuffering' => false
 			)
 		);
 	}
 }
+
 ?>

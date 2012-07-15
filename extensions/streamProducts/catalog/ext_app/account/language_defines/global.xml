@@ -1,4 +1,4 @@
 <definitions>
-	<define key="BOX_HEADING_MY_STREAMS"><![CDATA[My Ordered Streams]]></define>
-	<define key="BOX_MY_STREAMS_VIEW_LINK"><![CDATA[View My Streams]]></define>
+    <define key="BOX_HEADING_MY_STREAMS"><![CDATA[My Ordered Streams]]></define>
+    <define key="BOX_MY_STREAMS_VIEW_LINK"><![CDATA[View My Streams]]></define>
 </definitions>
