@@ -293,7 +293,7 @@ class rentalStoreUser_membership extends StandardClass {
 			$CustomersMembership->payment_term = $this->membershipInfo['payment_term'];
 		}
 
-        if(isset($this->membershipInfo['auto_billing']) && !empty($this->membershipInfo['auto_billing'])){
+        if(isset($this->membershipInfo['auto_billing'])){
             $CustomersMembership->auto_billing = $this->membershipInfo['auto_billing'];
         }
 
