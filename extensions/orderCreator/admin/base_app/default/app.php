@@ -1,5 +1,4 @@
 <?php
-set_time_limit(0);
 	$appContent = $App->getAppContentFile();
 
 	//require(sysConfig::getDirFsCatalog() . 'includes/classes/product.php');
@@ -18,15 +17,14 @@ set_time_limit(0);
 			}
 			Session::set('OrderCreator', $Editor);
 		}else{
-			$Editor =& Session::getReference('OrderCreator');
-			$Editor->init();
+			$Editor = Session::get('OrderCreator');
 			if (!isset($_GET['action']) && isset($_GET['oID']) && $Editor->getOrderId() != $_GET['oID']){
-				//$Editor = new OrderCreator((int) $_GET['oID']);
-				//Session::set('OrderCreator', $Editor);
+				$Editor = new OrderCreator((int) $_GET['oID']);
+				Session::set('OrderCreator', $Editor);
 			}else{
 				//$Editor = new Order((int) $_GET['oID']);
 				//Session::set('OrderEditor', $Editor);
-
+				$Editor->init();
 			}
 		}
     	$App->addJavascriptFile('ext/jQuery/ui/jquery.ui.datepicker.js');
