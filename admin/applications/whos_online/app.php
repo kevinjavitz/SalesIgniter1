@@ -3,8 +3,9 @@
 	
 	require(sysConfig::getDirFsCatalog() . 'includes/classes/currencies.php');
 	$currencies = new currencies();
-	
-	require(sysConfig::getDirFsCatalog() . 'includes/classes/product.php');
+	if(!class_exists('Product')){
+		require(sysConfig::getDirFsCatalog() . 'includes/classes/product.php');
+	}
 	
 	require(sysConfig::getDirFsCatalog() . 'includes/classes/shopping_cart.php');
 	//$ShoppingCart = new ShoppingCart;
