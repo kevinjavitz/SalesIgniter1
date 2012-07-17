@@ -2,8 +2,6 @@
 require(dirname(__FILE__) . '/Product.php');
 
 class OrderCreatorProductManager extends OrderProductManager implements Serializable {
-    	public $Contents;
-	public $orderId;
 	public function __construct($orderedProducts = null){
 		if (is_null($orderedProducts) === false){
 			foreach($orderedProducts as $i => $pInfo){
@@ -21,7 +19,8 @@ class OrderCreatorProductManager extends OrderProductManager implements Serializ
 	public function serialize(){
 		$data = array(
 			'orderId' => $this->orderId,
-			'Contents' => $this->Contents
+			'Contents' => $this->Contents,
+			'removedElements' => $this->removedElements
 		);
 		return serialize($data);
 	}
@@ -67,6 +66,7 @@ product[85544][price]:17.99
 	}
 	
 	public function addAllToCollection($CollectionObj){
+		global $Editor;
 		$CollectionObj->clear();
 		$langId = Session::get('languages_id');
 		foreach($this->Contents as $id => $Product){
@@ -106,7 +106,13 @@ product[85544][price]:17.99
 		}
 		foreach($this->Contents as $id => $Product){
 			$OrderedProduct = new OrdersProducts();
-
+			$QProductCheck = Doctrine_Query::create()
+			->from('Products p')
+			->leftJoin('p.ProductsDescription pd')
+			->where('pd.language_id = ?', Session::get('languages_id'))
+			->where('products_id = ?', $Product->getProductsId())
+			->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+			if(count($QProductCheck) > 0){
 			$OrderedProduct->products_id = $Product->getProductsId();
 			$OrderedProduct->products_quantity = $Product->getQuantity();
 			$OrderedProduct->products_name = $Product->getName();
@@ -119,6 +125,17 @@ product[85544][price]:17.99
 			$Product->onAddToCollection($OrderedProduct);
 
 			$CollectionObj->add($OrderedProduct);
+			}else{
+				$Editor->addErrorMessage('Your Order has a deleted product:'.$Product->getName().'. Please remove or replace this product and then update order again.');
+				break;
+			}
+		}
+		foreach($this->removedElements as $removed){
+			$allInfo = $removed->getPInfo();
+			Doctrine_Query::create()
+			->delete('OrdersProductsReservation')
+			->where('orders_products_id = ?', $allInfo['orders_products_id'])
+			->execute();
 		}
 	}
 
@@ -147,6 +164,7 @@ product[85544][price]:17.99
 	
 	private function removeFromContents($id){
 		if (array_key_exists($id, $this->Contents)){
+			$this->removedElements[] = $this->Contents[$id];
 			unset($this->Contents[$id]);
 		}
 	}

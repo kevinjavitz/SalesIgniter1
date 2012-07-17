@@ -14,7 +14,7 @@ require(dirname(__FILE__) . '/OrderGiftCertificateProduct.php');
 class OrderProductManager {
 	protected $orderId = null;
 	protected $Contents = array();
-
+	protected $removedElements = array();
 	public function __construct($orderedProducts = null, $order = null){
 		if (is_null($orderedProducts) === false){
             	$is_gift_certificate = 0;
