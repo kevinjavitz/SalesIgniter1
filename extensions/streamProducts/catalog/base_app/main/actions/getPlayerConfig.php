@@ -68,9 +68,9 @@
 	}elseif (isset($_GET['pID']) && isset($_GET['sID'])){
 		$productId = (int) $_GET['pID'];
 		$streamId = (int) $_GET['sID'];
-		
+
 		$extStream = $appExtension->getExtension('streamProducts');
-		
+
 		$PreviewStream = $extStream->getPreview($productId);
 		if ($streamId == $PreviewStream['stream_id']){
 			$Provider = $extStream->getProviderModule(
@@ -79,7 +79,7 @@
 			);
 			$config = $Provider->getFlowplayerConfig($PreviewStream);
 			$config['width'] = sysConfig::get('EXTENSION_STREAMPRODUCTS_STREAMER_WIDTH');
-			
+
 			$json = array(
 				'success' => true,
 				'config' => $config

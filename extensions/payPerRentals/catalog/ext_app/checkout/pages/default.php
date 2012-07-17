@@ -45,7 +45,8 @@ class payPerRentals_catalog_checkout_default extends Extension_payPerRentals {
 		$htmlCheckboxAll = htmlBase::newElement('checkbox')
 						   ->setName('insure_all_products')
 						   ->setId('insure_all_product');
-		
+
+
 		$htmlButton = htmlBase::newElement('div')
 					  ->attr('id','insure_button')
 					  ->html('Update')
@@ -75,6 +76,7 @@ class payPerRentals_catalog_checkout_default extends Extension_payPerRentals {
 							$isRemove = true;
 						}
 
+
 						$htmlCheckbox = htmlBase::newElement('checkbox')
 										->setName('insure_product[]')
 										->addClass('insure_product')
@@ -95,7 +97,7 @@ class payPerRentals_catalog_checkout_default extends Extension_payPerRentals {
 
 		if ($isAll){
 			$insuranceText = '<span id="insuranceTextRemove" style="display:'.(($isRemove == true)? '':'none').'">'.sysLanguage::get('TEXT_REMOVE_INSURANCE_ALL').'</span>'. '<span id="insuranceText"style="display:'.(($isRemove == false)? '':'none').'">'.sysLanguage::get('TEXT_INSURE_ALL').'</span>';
-
+            $htmlCheckboxAll->setChecked(true);
 			$rows[] = '<tr>
 						<td class="main" valign="top">' . $htmlCheckboxAll->draw() . '</td>
 						<td class="main" valign="top" colspan="2"><b>' . $insuranceText .' (Total: ' . $currencies->format($insuranceTotal) . ')</b></td>
@@ -118,7 +120,7 @@ class payPerRentals_catalog_checkout_default extends Extension_payPerRentals {
 							'</table></td>' .
 						'</tr>' .
 					'<tr><td>'.
-					$htmlButton->draw() .
+					//$htmlButton->draw() .
 					'</td></tr>'.
 					'</table>' .
 				'</div>';

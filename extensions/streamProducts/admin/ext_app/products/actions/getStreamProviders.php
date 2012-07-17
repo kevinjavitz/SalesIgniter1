@@ -6,7 +6,7 @@ $providers = Doctrine_Query::create()
 	->from('ProductsStreamProviders')
 	->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 if ($providers){
-	foreach($providers as $providerInfo){
+	foreach ($providers as $providerInfo){
 		$selectBox->addOption($providerInfo['provider_id'], ucfirst($providerInfo['provider_name']));
 	}
 }

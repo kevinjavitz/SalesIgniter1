@@ -1,4 +1,4 @@
 <definitions>
-	<define key="TAB_STREAMING_PREVIEW"><![CDATA[Preview]]></define>
-	<define key="TEXT_INFO_STREAM_PERMISSION_DENIED"><![CDATA[You do not have permission to view this stream]]></define>
+    <define key="TAB_STREAMING_PREVIEW"><![CDATA[Preview]]></define>
+    <define key="TEXT_INFO_STREAM_PERMISSION_DENIED"><![CDATA[You do not have permission to view this stream]]></define>
 </definitions>

@@ -252,7 +252,7 @@
 	<define key="EMAIL_PASSWORD_REMINDER_BODY"><![CDATA[A new password was requested from %s.\n\nYour new password to '%s' is:\n\n	%s\n\n]]></define>
 	<define key="SUCCESS_PASSWORD_SENT"><![CDATA[Success: A new password has been sent to your e-mail address.]]></define>
 
-	<define key="HEADING_TITLE"><![CDATA[Open Issues]]></define>
+	<define key="HEADING_TITLE"><![CDATA[I Forgot My Password]]></define>
 	<define key="NAVBAR_TITLE"><![CDATA[Rental Issues]]></define>
 	<define key="TEXT_SUCCESS"><![CDATA[Your enquiry has been successfully sent to the Store Owner.]]></define>
 	<define key="EMAIL_SUBJECT"><![CDATA[Enquiry from %s]]></define>
