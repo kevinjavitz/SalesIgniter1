@@ -54,10 +54,10 @@ function exportData(valType){
     dataArr.push('filter_shipping=' + $('#filterShipping').val());
     dataArr.push('filter_category=' + $('#filterCategory').val());
     if ($('#includeReturned:checked').size() > 0){
-        dataArr.include_returned = 1;
+        dataArr.push('include_returned=1');
     }
     if ($('#includeUnsent:checked').size() > 0){
-        dataArr.include_unsent = 1;
+        dataArr.push('include_unsent=1');
     }
 
     window.open(js_app_link(dataArr.join('&')));

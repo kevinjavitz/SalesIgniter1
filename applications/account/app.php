@@ -29,7 +29,7 @@ $App->addStylesheetFile('ext/jQuery/external/uploadify/jquery.uploadify.css');
 	if ($App->getPageName() == 'address_book_process' || $App->getPageName() == 'billing_address_book'){
 		if (isset($_GET['edit']) && is_numeric($_GET['edit'])){
 			$addressEntry = $addressBook->getAddress($_GET['edit']);
-			if (empty($addressEntry)){
+			if (empty($addressEntry) && $App->getPageName() == 'billing_address_book'){
 				$messageStack->addSession('pageStack', sysLanguage::get('ERROR_NONEXISTING_ADDRESS_BOOK_ENTRY'), 'error');
 				tep_redirect(itw_app_link(null, 'account', 'address_book', 'SSL'));
 			}

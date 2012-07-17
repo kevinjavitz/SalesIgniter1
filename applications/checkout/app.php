@@ -10,6 +10,10 @@
 	$App->addJavascriptFile('ext/jQuery/ui/jquery.ui.resizable.js');
 	require('includes/classes/http_client.php');
 	include('includes/functions/crypt.php');
+	require('includes/functions/google_maps_ppr.php');
+	if (!class_exists('Services_JSON')){
+		require('includes/classes/json.php');
+	}
 	if (sysConfig::get('ONEPAGE_LOGIN_REQUIRED') == 'true'){
 		if ($userAccount->isLoggedIn() === false){
 			if (!isset($_GET['checkoutType']) || (isset($_GET['checkoutType']) && $_GET['checkoutType'] == 'default')){

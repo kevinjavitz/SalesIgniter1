@@ -163,7 +163,8 @@
 	<define key="TABLE_HEADING_PAYMENT_METHOD"><![CDATA[Payment Method]]></define>
 	<define key="TABLE_HEADING_TRANS_STATUS"><![CDATA[Status]]></define>
 	<define key="TABLE_HEADING_TRANS_ERROR"><![CDATA[Result]]></define>
-    <define key="TABLE_HEADING_TOTAL"><![CDATA[Total Orders]]></define>
-    <define key="TABLE_HEADING_LAST_ORDER_NUMBER"><![CDATA[Last Order #]]></define>
+    <define key="TABLE_HEADING_TOTAL_ORDERS"><![CDATA[# Orders]]></define>
+    <define key="TABLE_HEADING_TOTAL"><![CDATA[Total]]></define>
+    <define key="TABLE_HEADING_LAST_ORDER_NUMBER"><![CDATA[Last Order Number]]></define>
     <define key="TABLE_HEADING_LAST_ORDER_DATE"><![CDATA[Last Order Date]]></define>
 </definitions>

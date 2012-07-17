@@ -51,6 +51,16 @@
 				$errMsg = sysLanguage::get('ERROR_INVALID_USES_USER_COUPON') . $Qcoupon[0]['uses_per_user'] . sysLanguage::get('TIMES');
 			}
 
+			$minModule = OrderTotalModules::getModule('minorder');
+			if($minModule->isEnabled()){
+				$couponModule = OrderTotalModules::getModule('coupon', true);
+				Session::set('cc_id', $Qcoupon[0]['coupon_id']);
+				if($order->info['subtotal'] - $couponModule->getDiscount() < $minModule->getConfigData('MODULE_ORDER_TOTAL_MINORDER_AMOUNT')){
+					$error = true;
+					$errMsg = sysLanguage::get('ERROR_INVALID_MIN_FEE_COUPON');
+				}
+				Session::remove('cc_id');
+			}
 			if($order->info['total'] < $Qcoupon[0]['coupon_minimum_order']){
 				$error = true;
 				$errMsg = sysLanguage::get('ERROR_MIN_ORDER_AMOUNT') . $Qcoupon[0]['coupon_minimum_order'];

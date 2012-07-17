@@ -4,6 +4,17 @@ $shippingmodulesInfo = '';
 EventManager::notify('OrderTotalShippingProcess', &$totalShippingCost, &$shippingmodulesInfo);
 $totals = '';
 $totalPrice = $ShoppingCart->showTotal();
+		$hasFees = false;
+		if(isset($ShoppingCart)){
+			foreach($ShoppingCart->getProducts() as $cartProduct) {
+				$purchaseType = $cartProduct->getPurchaseType();
+				if($purchaseType == 'reservation' && $cartProduct->hasInfo('reservationInfo')){
+					$hasFees = true;
+					break;
+				}
+			}
+		}
+		if($hasFees){
 if(isset($_POST['delivery_time'])){
 	$deliveryTime  = $_POST['delivery_time'];
 	$multiStore = $appExtension->getExtension('multiStore');
@@ -114,7 +125,7 @@ if(count($QExtraFees) > 0){
 		}
 	}
 }
-
+		}
 
 
 if ($totalShippingCost >= 0){

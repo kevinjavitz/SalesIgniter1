@@ -33,9 +33,9 @@ class Extension_referral extends ExtensionBase {
 
 	public function getReferralCode(){
 		global $userAccount;
-		if(is_object($userAccount)){
 		$userAccount = &Session::getReference('userAccount');
-		return $userAccount->getFirstName() . '!' . $userAccount->getCustomerId();
+		if(is_object($userAccount)){
+			return $userAccount->getFirstName() . '!' . $userAccount->getCustomerId();
 		}
 		return false;
 	}

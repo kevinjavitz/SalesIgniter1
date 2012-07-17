@@ -16,7 +16,7 @@
 		}
 		
 		public function runAction($action, ShoppingCartProduct $cartProduct){
-			global $customer_id;
+
 			$userAccount =& Session::getReference('userAccount');
 			if ($userAccount->isLoggedIn() === true){
 				$pID_string = $cartProduct->getIdString();
@@ -24,7 +24,7 @@
 				$pInfo = $cartProduct->getInfo();
 				switch($action){
 					case 'delete':
-						$this->deleteFromDatabase(array('customers_id'=> $customer_id, 'products_id' => $pID_string, 'purchase_type' => $purchaseType));
+						$this->deleteFromDatabase(array('customers_id'=> $userAccount->getCustomerId(), 'products_id' => $pID_string, 'purchase_type' => $purchaseType));
 						break;
 					case 'update':
 					case 'insert':
@@ -38,8 +38,6 @@
 		
 		function insertBasket($pID_string, $pInfo, $action = null){
 			$userAccount =& Session::getReference('userAccount');
-			if (is_null($action) === true || $action == 'update'){
-				$action = 'update';
 
 				$insert = Doctrine_Query::create()
 				->select('customers_basket_id')
@@ -51,10 +49,9 @@
 				if ($insert === false){
 					$action = 'insert';
 				}else{
-					//$insert = Doctrine_Core::getTable('CustomersBasket')
-					//->findByCustomersBasketId($Qcheck[0]->customers_basket_id);
+					$action = 'update';
 				}
-			}
+
 
 			if ($action == 'insert'){
 				$insert = new CustomersBasket;
@@ -62,7 +59,10 @@
 				$insert->products_id = $pID_string;
 				$insert->purchase_type = $pInfo['purchase_type'];
 			}
-
+			/*move into extension*/
+			if(Session::exists('current_store_id')){
+				$insert->stores_id = Session::get('current_store_id');
+			}
 			$insert->customers_basket_quantity = (int)$pInfo['quantity'];
 
 			EventManager::notify('ShoppingCartDatabase\InsertBasketBeforeProcess', &$insert, &$pInfo);
@@ -75,7 +75,7 @@
 		function deleteFromDatabase($settings){
 			$userAccount =& Session::getReference('userAccount');
 	    	$Qdelete = Doctrine_Query::create()
-			->from('CustomersBasket c')
+			->delete('CustomersBasket c')
 			->where('c.customers_id = ?', $settings['customers_id']);
 
 			if (is_null($settings['products_id']) === false){
@@ -85,10 +85,13 @@
 			if (is_null($settings['purchase_type']) === false){
 				$Qdelete->andWhere('c.purchase_type = ?', $settings['purchase_type']);
 			}
+			if(Session::exists('current_store_id')){
+				$Qdelete->andWhere('c.stores_id = ?', Session::get('current_store_id'));
+			}
 
 			EventManager::notify('ShoppingCartDatabase\DeleteBasketBeforeProcess', &$Qdelete);
 
-			$Qdelete->execute()->delete();
+			$Qdelete->execute();
 
 			EventManager::notify('ShoppingCartDatabase\DeleteBasketAfterProcess');
 		}
@@ -98,7 +101,9 @@
 			$Qproduct = Doctrine_Query::create()
 			->from('CustomersBasket c')
 			->where('c.customers_id = ?', $userAccount->getCustomerId());
-			
+			if(Session::exists('current_store_id')){
+				$Qproduct->andWhere('stores_id = ?', Session::get('current_store_id'));
+			}
 			EventManager::notify('ShoppingCartDatabase\GetCartFromDatabaseBeforeExecute');
 
 			$products = $Qproduct->execute();

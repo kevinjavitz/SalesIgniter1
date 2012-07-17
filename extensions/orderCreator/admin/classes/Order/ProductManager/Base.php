@@ -2,8 +2,6 @@
 require(dirname(__FILE__) . '/Product.php');
 
 class OrderCreatorProductManager extends OrderProductManager implements Serializable {
-    	public $Contents;
-	public $orderId;
 	public function __construct($orderedProducts = null){
 		if (is_null($orderedProducts) === false){
 			foreach($orderedProducts as $i => $pInfo){
@@ -21,7 +19,8 @@ class OrderCreatorProductManager extends OrderProductManager implements Serializ
 	public function serialize(){
 		$data = array(
 			'orderId' => $this->orderId,
-			'Contents' => $this->Contents
+			'Contents' => $this->Contents,
+			'removedElements' => $this->removedElements
 		);
 		return serialize($data);
 	}
@@ -67,6 +66,7 @@ product[85544][price]:17.99
 	}
 	
 	public function addAllToCollection($CollectionObj){
+		global $Editor;
 		$CollectionObj->clear();
 		$langId = Session::get('languages_id');
 		foreach($this->Contents as $id => $Product){
@@ -106,7 +106,13 @@ product[85544][price]:17.99
 		}
 		foreach($this->Contents as $id => $Product){
 			$OrderedProduct = new OrdersProducts();
-
+			$QProductCheck = Doctrine_Query::create()
+			->from('Products p')
+			->leftJoin('p.ProductsDescription pd')
+			->where('pd.language_id = ?', Session::get('languages_id'))
+			->where('products_id = ?', $Product->getProductsId())
+			->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+			if(count($QProductCheck) > 0){
 			$OrderedProduct->products_id = $Product->getProductsId();
 			$OrderedProduct->products_quantity = $Product->getQuantity();
 			$OrderedProduct->products_name = $Product->getName();
@@ -119,6 +125,16 @@ product[85544][price]:17.99
 			$Product->onAddToCollection($OrderedProduct);
 
 			$CollectionObj->add($OrderedProduct);
+			}else{
+				$Editor->addErrorMessage('Your Order has a deleted product:'.$Product->getName().'. Please remove or replace this product and then update order again.');
+				break;
+			}
+		foreach($this->removedElements as $removed){
+			$allInfo = $removed->getPInfo();
+			Doctrine_Query::create()
+			->delete('OrdersProductsReservation')
+			->where('orders_products_id = ?', $allInfo['orders_products_id'])
+			->execute();
 		}
 	}
 
@@ -147,6 +163,7 @@ product[85544][price]:17.99
 	
 	private function removeFromContents($id){
 		if (array_key_exists($id, $this->Contents)){
+			$this->removedElements[] = $this->Contents[$id];
 			unset($this->Contents[$id]);
 		}
 	}
@@ -157,23 +174,28 @@ product[85544][price]:17.99
 		->setCellPadding(3)
 		->setCellSpacing(0)
 		->addClass('productTable')
+		->attr('data-product_entry_method', sysConfig::get('EXTENSION_ORDER_CREATOR_PRODUCT_FIND_METHOD'))
 		->css('width', '100%');
 
 		$buttonAdd = htmlBase::newElement('button')
 		->addClass('insertProductIcon')
-		->attr('data-product_entry_method', sysConfig::get('EXTENSION_ORDER_CREATOR_PRODUCT_FIND_METHOD'))
-		->setText('Add Product To Order');
+		->setText('Add');
 
 		$productTableHeaderColumns = array(
-			array('colspan' => 2, 'text' => sysLanguage::get('TABLE_HEADING_PRODUCTS')),
+			array('text' => 'Qty'),
+			array('text' => sysLanguage::get('TABLE_HEADING_PRODUCTS')),
 			array('text' => 'Barcode'),
-			array('text' => sysLanguage::get('TABLE_HEADING_PRODUCTS_MODEL')),
+			array('text' => 'Start Date'),
+			array('text' => 'Start Time'),
+			array('text' => 'End Date'),
+			array('text' => 'End Time'),
+			//array('text' => sysLanguage::get('TABLE_HEADING_PRODUCTS_MODEL')),
 			array('text' => sysLanguage::get('TABLE_HEADING_TAX')),
 			array('text' => sysLanguage::get('TABLE_HEADING_PRICE_EXCLUDING_TAX')),
-			array('text' => sysLanguage::get('TABLE_HEADING_PRICE_INCLUDING_TAX')),
-			array('text' => sysLanguage::get('TABLE_HEADING_TOTAL_EXCLUDING_TAX')),
-			array('text' => sysLanguage::get('TABLE_HEADING_TOTAL_INCLUDING_TAX')),
-			array('text' => $buttonAdd->draw())
+			//array('text' => sysLanguage::get('TABLE_HEADING_PRICE_INCLUDING_TAX')),
+			//array('text' => sysLanguage::get('TABLE_HEADING_TOTAL_EXCLUDING_TAX')),
+			//array('text' => sysLanguage::get('TABLE_HEADING_TOTAL_INCLUDING_TAX')),
+			array('text' => '')
 		);
 		
 		foreach($productTableHeaderColumns as $i => $cInfo){
@@ -193,21 +215,89 @@ product[85544][price]:17.99
 			'columns' => $productTableHeaderColumns
 		));
 
+		$startTime = htmlBase::newElement('selectbox')
+		->setName('start_time')
+		->addClass('start_time');
+		$endTime = htmlBase::newElement('selectbox')
+		->setName('end_time')
+		->addClass('end_time');
+
+		for($i = sysConfig::get('EXTENSION_PAY_PER_RENTALS_START_TIME');$i <= sysConfig::get('EXTENSION_PAY_PER_RENTALS_END_TIME');$i++){
+			if($i == 12){
+				$startTime->addOption($i,'12:00 PM');
+				$endTime->addOption($i,'12:00 PM');
+			}else{
+				$startTime->addOption($i,($i % 12) . ($i<12?':00 AM':':00 PM'));
+				$endTime->addOption($i,($i % 12) . ($i<12?':00 AM':':00 PM'));
+			}
+
+		}
+
+		$bodyColumns = array(
+			array('align' => 'right', 'text' => '<input type="number" class="ui-widget-content productQty" size="3" value="1" style="width:50px;" name="qty" >'),
+			array('text' => '<input class="productSearch" name="product_search">'),
+			array('text' => '<input class="barcodeName" name="barcodeName" size="8">'),
+			array('text' => '<input class="start_date" name="start_date">'),
+			array('text' => $startTime->draw()),
+			array('text' => '<input class="end_date" name="end_date">'),
+			array('text' => $endTime->draw()),
+			//array('text' => $orderedProduct->getModel()),
+			//array('align' => 'right', 'text' => '<input class="taxRate" size="4" style="width:70px;" name="taxRate">'),
+			//array('align' => 'right', 'text' => '<input class="price" style="width:70px;" size="5" name="price">'),
+			//array('align' => 'right', 'text' => $orderedProduct->getPriceEdit(false, true)),
+			//array('align' => 'right', 'text' => $orderedProduct->getPriceEdit(true, false)),
+			//array('align' => 'right', 'text' => $orderedProduct->getPriceEdit(true, true)),
+			array('align' => 'right','colspan'=>'3', 'text' => $buttonAdd->draw())
+		);
+
+		$sizeOf = sizeof($bodyColumns);
+		foreach($bodyColumns as $idx => $colInfo){
+			$bodyColumns[$idx]['addCls'] = 'ui-widget-content';
+			$bodyColumns[$idx]['valign'] = 'top';
+			$bodyColumns[$idx]['css'] = array(
+				'border-top' => 'none'
+			);
+
+			if ($idx > 0 && $idx < $sizeOf){
+				$bodyColumns[$idx]['css']['border-left'] = 'none';
+			}
+		}
+
+		$productsTable->addBodyRow(array(
+			'attr' => array(
+				'data-id' => 'none',
+				'data-product_id' => 'none'
+			),
+			'addCls' => 'firstRow',
+			'columns' => $bodyColumns
+		));
+
+
 		foreach($this->getContents() as $orderedProduct){
 			//$productsName = '<input type="text" style="width:90%" class="ui-widget-content" name="product[' . $orderedProductId . '][name]" value="' . $orderedProduct->getName() . '">';
 
 			$bodyColumns = array(
 				array('align' => 'right', 'text' => $orderedProduct->getQuantityEdit()),
 				array('text' => $orderedProduct->getNameEdit()),
-				array('text' => $orderedProduct->getBarcodeEdit()),
-				array('text' => $orderedProduct->getModel()),
-				array('align' => 'right', 'text' => $orderedProduct->getTaxRateEdit()),
-				array('align' => 'right', 'text' => $orderedProduct->getPriceEdit()),
-				array('align' => 'right', 'text' => $orderedProduct->getPriceEdit(false, true)),
-				array('align' => 'right', 'text' => $orderedProduct->getPriceEdit(true, false)),
-				array('align' => 'right', 'text' => $orderedProduct->getPriceEdit(true, true)),
-				array('align' => 'right', 'text' => '<span class="ui-icon ui-icon-closethick deleteProductIcon"></span>')
-			);
+				array('text' => $orderedProduct->getBarcodeEdit()));
+			if($orderedProduct->getPurchaseType() == 'reservation'){
+				$bodyColumns[] = array('text' => $orderedProduct->getStartDateEdit());
+				$bodyColumns[] = array('text' => $orderedProduct->getStartTimeEdit());
+				$bodyColumns[] = array('text' => $orderedProduct->getEndDateEdit());
+				$bodyColumns[] = array('text' => $orderedProduct->getEndTimeEdit());
+
+			}else{
+				$bodyColumns[] = array('text' => 'Not available','colspan' => 4);
+
+			}
+				//array('text' => $orderedProduct->getModel()),
+			$bodyColumns[] = array('align' => 'right', 'text' => $orderedProduct->getTaxRateEdit());
+			$bodyColumns[] = array('align' => 'right', 'text' => $orderedProduct->getPriceEdit());
+			//array('align' => 'right', 'text' => $orderedProduct->getPriceEdit(false, true)),
+			//array('align' => 'right', 'text' => $orderedProduct->getPriceEdit(true, false)),
+			//array('align' => 'right', 'text' => $orderedProduct->getPriceEdit(true, true)),
+			$bodyColumns[] = array('align' => 'right', 'text' => '<span class="ui-icon ui-icon-closethick deleteProductIcon"></span>');
+
 
 			$sizeOf = sizeof($bodyColumns);
 			foreach($bodyColumns as $idx => $colInfo){
@@ -225,7 +315,9 @@ product[85544][price]:17.99
 			$productsTable->addBodyRow(array(
                 'attr' => array(
                     'data-id' => $orderedProduct->getId(),
-                    'data-product_id' => $orderedProduct->getProductsId()
+                    'data-product_id' => $orderedProduct->getProductsId(),
+					'data-product_type' => $orderedProduct->getPurchaseType()
+
                 ),
                 'columns' => $bodyColumns
             ));

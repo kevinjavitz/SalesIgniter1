@@ -171,6 +171,14 @@ class ProductsPayPerRental extends Doctrine_Record {
 			'notnull' => false,
 			'autoincrement' => false,
 		));
+		$this->hasColumn('turnover', 'string', 4, array(
+			'type' => 'string',
+			'length' => 4,
+			'unsigned' => 0,
+			'primary' => false,
+			'notnull' => false,
+			'autoincrement' => false,
+		));
 		
 		$this->hasColumn('shipping', 'string', null, array(
 			'type' => 'string',
@@ -293,6 +301,15 @@ class ProductsPayPerRental extends Doctrine_Record {
             'notnull' => false,
             'autoincrement' => false,
         ));
+	
+	$this->hasColumn('turnover_type', 'integer', 4, array(
+			'type' => 'integer',
+			'length' => 4,
+			'unsigned' => 0,
+			'primary' => false,
+			'notnull' => false,
+			'autoincrement' => false,
+	));
 
         $this->hasColumn('free_try_on_length_type', 'integer', 4, array(
             'type' => 'integer',

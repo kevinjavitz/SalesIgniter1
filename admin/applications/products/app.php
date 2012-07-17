@@ -30,7 +30,10 @@
 	
 		require(sysConfig::getDirFsCatalog() . 'includes/classes/currencies.php');
 		$currencies = new currencies();
-
+		require(sysConfig::getDirFsCatalog() . 'includes/functions/google_maps_ppr.php');
+		if (!class_exists('Services_JSON')){
+			require(sysConfig::getDirFsCatalog() . 'includes/classes/json.php');
+		}
 	
 		$trackMethods = array(
 			array('id' => 'quantity', 'text' => 'Use Quantity Tracking'),

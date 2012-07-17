@@ -288,6 +288,9 @@ function popupWindowEditReservation(type, rID, barcode_id, selectedBarcodes, pro
             $(this).attr('prevData',newDate.getFullYear()+'-'+tmonth+'-'+tday);
             $('#nextArrow').attr('nextData',prevDate.getFullYear()+'-'+tmonth1+'-'+tday1);
             $('#start_date').trigger('change');
+            tableOffset = $("#calendarTime .fc-view-basicWeek table").offset().top;
+            $header = $("#calendarTime .fc-view-basicWeek table > thead").clone();
+            $fixedHeader = $("#header-fixed").empty().append($header);
 			//$('#searchFormReports').submit();
 			return false;
 		});
@@ -331,6 +334,9 @@ function popupWindowEditReservation(type, rID, barcode_id, selectedBarcodes, pro
             $(this).attr('nextData',newDate.getFullYear()+'-'+tmonth+'-'+tday);
             $('#prevArrow').attr('prevData',prevDate.getFullYear()+'-'+tmonth1+'-'+tday1);
             $('#start_date').trigger('change');
+            tableOffset = $("#calendarTime .fc-view-basicWeek table").offset().top;
+            $header = $("#calendarTime .fc-view-basicWeek table > thead").clone();
+            $fixedHeader = $("#header-fixed").empty().append($header);
 			//$('#searchFormReports').submit();
 			return false;
 		});

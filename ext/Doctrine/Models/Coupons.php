@@ -158,6 +158,14 @@ class Coupons extends Doctrine_Record {
 			'notnull' => false,
 			'autoincrement' => false,
 		));
+		$this->hasColumn('products_excluded', 'string', null, array(
+			'type' => 'string',
+			'length' => null,
+			'fixed' => false,
+			'primary' => false,
+			'notnull' => false,
+			'autoincrement' => false,
+		));
 		
 		$this->hasColumn('restrict_to_categories', 'string', 255, array(
 			'type' => 'string',

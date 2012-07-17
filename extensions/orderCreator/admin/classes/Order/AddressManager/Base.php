@@ -139,6 +139,253 @@ class OrderCreatorAddressManager extends OrderAddressManager implements Serializ
 		}
 	}
 
+	public function hasPickup(){
+		$has = false;
+		foreach($this->addressHeadings as $type => $heading){
+			if($type == 'pickup'){
+				$has = true;
+				break;
+			}
+		}
+		return $has;
+	}
+
+	public function editPickup(){
+		global $Editor;
+		$addressesTable = htmlBase::newElement('table')
+				->setCellPadding(2)
+				->setCellSpacing(0)
+				->addClass('addressTablePickup')
+				->css('width', '100%');
+
+		$addressesRow = array();
+		foreach($this->addressHeadings as $type => $heading){
+			if($type == 'pickup'){
+				$addressObj = $this->addresses[$type];
+				$addressTable = htmlBase::newElement('table')
+						->setCellPadding(2)
+						->setCellSpacing(0)
+						->css('width', '100%');
+
+				$addressTable->addBodyRow(array(
+					'columns' => array(
+						array(
+							'addCls' => 'main',
+							'valign' => 'top',
+							'text' => '<b>' . $heading . '</b>'
+						)
+					)
+				));
+
+				$customerId = '';
+				if ($Editor->getCustomerId() > 0){
+					$customerId = htmlBase::newElement('input')
+							->setType('hidden')
+							->setName('customers_id')
+							->val((int) $Editor->getCustomerId())
+							->draw();
+				}
+
+				$addressTable->addBodyRow(array(
+					'columns' => array(
+						array(
+							'addCls' => 'main ' . $type . 'Address',
+							'valign' => 'top',
+							'text' => $this->editAddress($addressObj) . $customerId
+						)
+					)
+				));
+
+				$addressesRow[] = array(
+					'valign' => 'top',
+					'text' => $addressTable
+				);
+			}
+		}
+		$addressesTable->addBodyRow(array(
+			'columns' => $addressesRow
+		));
+
+		return $addressesTable->draw();
+	}
+
+	public function editShipping(){
+		global $Editor;
+		$addressesTable = htmlBase::newElement('table')
+				->setCellPadding(2)
+				->setCellSpacing(0)
+				->addClass('addressTableShipping')
+				->css('width', '100%');
+
+		$addressesRow = array();
+		foreach($this->addressHeadings as $type => $heading){
+			if($type == 'delivery'){
+				$addressObj = $this->addresses[$type];
+				$addressTable = htmlBase::newElement('table')
+						->setCellPadding(2)
+						->setCellSpacing(0)
+						->css('width', '100%');
+
+				$addressTable->addBodyRow(array(
+					'columns' => array(
+						array(
+							'addCls' => 'main',
+							'valign' => 'top',
+							'text' => '<b>' . $heading . '</b>'
+						)
+					)
+				));
+
+				$customerId = '';
+				if ($Editor->getCustomerId() > 0){
+					$customerId = htmlBase::newElement('input')
+							->setType('hidden')
+							->setName('customers_id')
+							->val((int) $Editor->getCustomerId())
+							->draw();
+				}
+
+				$addressTable->addBodyRow(array(
+					'columns' => array(
+						array(
+							'addCls' => 'main ' . $type . 'Address',
+							'valign' => 'top',
+							'text' => $this->editAddress($addressObj) . $customerId
+						)
+					)
+				));
+
+				$addressesRow[] = array(
+					'valign' => 'top',
+					'text' => $addressTable
+				);
+			}
+		}
+		$addressesTable->addBodyRow(array(
+			'columns' => $addressesRow
+		));
+
+		return $addressesTable->draw();
+	}
+
+	public function editBilling(){
+		global $Editor;
+		$addressesTable = htmlBase::newElement('table')
+				->setCellPadding(2)
+				->setCellSpacing(0)
+				->addClass('addressTableBilling')
+				->css('width', '100%');
+
+		$addressesRow = array();
+		foreach($this->addressHeadings as $type => $heading){
+			if($type == 'billing'){
+				$addressObj = $this->addresses[$type];
+				$addressTable = htmlBase::newElement('table')
+						->setCellPadding(2)
+						->setCellSpacing(0)
+						->css('width', '100%');
+
+				$addressTable->addBodyRow(array(
+					'columns' => array(
+						array(
+							'addCls' => 'main',
+							'valign' => 'top',
+							'text' => '<b>' . $heading . '</b>'
+						)
+					)
+				));
+
+				$customerId = '';
+				if ($Editor->getCustomerId() > 0){
+					$customerId = htmlBase::newElement('input')
+							->setType('hidden')
+							->setName('customers_id')
+							->val((int) $Editor->getCustomerId())
+							->draw();
+				}
+
+				$addressTable->addBodyRow(array(
+					'columns' => array(
+						array(
+							'addCls' => 'main ' . $type . 'Address',
+							'valign' => 'top',
+							'text' => $this->editAddress($addressObj) . $customerId
+						)
+					)
+				));
+
+				$addressesRow[] = array(
+					'valign' => 'top',
+					'text' => $addressTable
+				);
+			}
+		}
+		$addressesTable->addBodyRow(array(
+			'columns' => $addressesRow
+		));
+
+		return $addressesTable->draw();
+	}
+
+	public function editCustomer(){
+		global $Editor;
+		$addressesTable = htmlBase::newElement('table')
+				->setCellPadding(2)
+				->setCellSpacing(0)
+				->addClass('addressTableCustomer')
+				->css('width', '100%');
+
+		$addressesRow = array();
+		foreach($this->addressHeadings as $type => $heading){
+			if($type == 'customer'){
+				$addressObj = $this->addresses[$type];
+				$addressTable = htmlBase::newElement('table')
+						->setCellPadding(2)
+						->setCellSpacing(0)
+						->css('width', '100%');
+
+				$addressTable->addBodyRow(array(
+					'columns' => array(
+						array(
+							'addCls' => 'main',
+							'valign' => 'top',
+							'text' => '<b>' . $heading . '</b>'
+						)
+					)
+				));
+
+				$customerId = '';
+				if ($Editor->getCustomerId() > 0){
+					$customerId = htmlBase::newElement('input')
+							->setType('hidden')
+							->setName('customers_id')
+							->val((int) $Editor->getCustomerId())
+							->draw();
+				}
+
+				$addressTable->addBodyRow(array(
+					'columns' => array(
+						array(
+							'addCls' => 'main ' . $type . 'Address',
+							'valign' => 'top',
+							'text' => $this->editAddress($addressObj) . $customerId
+						)
+					)
+				));
+
+				$addressesRow[] = array(
+					'valign' => 'top',
+					'text' => $addressTable
+				);
+			}
+		}
+		$addressesTable->addBodyRow(array(
+			'columns' => $addressesRow
+		));
+
+		return $addressesTable->draw();
+	}
+
 	public function editAll(){
 		global $Editor;
 		$addressesTable = htmlBase::newElement('table')

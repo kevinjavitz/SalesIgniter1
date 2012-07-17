@@ -186,7 +186,8 @@
 			'columns' => array(
 				array('addCls' => 'main', 'text' => sysLanguage::get('ENTRY_STATE')),
 				array('addCls' => 'main', 'text' => $stateInput->draw(). $editVal->draw())
-			)
+			),
+			'addCls' => 'stateCls'
 		));
 	}
 
@@ -194,7 +195,8 @@
 		'columns' => array(
 			array('addCls' => 'main', 'text' => sysLanguage::get('ENTRY_COUNTRY')),
 			array('addCls' => 'main', 'text' => tep_get_country_list('country', (isset($addressEntry)?$addressEntry['entry_country_id']:sysConfig::get('ONEPAGE_DEFAULT_COUNTRY'))) . '&nbsp;' . (tep_not_null(sysLanguage::get('ENTRY_COUNTRY_TEXT')) ? '<span class="inputRequirement">' . sysLanguage::get('ENTRY_COUNTRY_TEXT') . '</span>': ''))
-		)
+		),
+		'addCls' => 'countryCls'
 	));
 	
 	if ((isset($_GET['edit']) && ($addressBook->getDefaultAddressId() != $_GET['edit'])) || (isset($_GET['edit']) == false) ){

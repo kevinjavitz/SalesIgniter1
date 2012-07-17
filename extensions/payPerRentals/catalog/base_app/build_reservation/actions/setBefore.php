@@ -5,6 +5,7 @@
 	$goodDates = '';
 	$events_date = '';
 	$selectedDates = array();
+	$excludedTimes = array();
 	if(sysConfig::get('EXTENSION_PAY_PER_RENTALS_ENABLE_TIME') == 'True'){
 
 			$hours = $_POST['hstart'];
@@ -85,7 +86,7 @@
 						->andWhere('start_date <= ?', date('Y-m-d H:i:s', strtotime('+1 day', strtotime($myDateStart))))
 						->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 					$lpArray = array();
-					$lpPos = '0,0';
+
 					if(count($QLpReservations) > 0){
 						$QLPRes = Doctrine_Query::create()
 						->from('InventoryCentersLaunchPoints')
@@ -93,9 +94,11 @@
 						->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 						foreach($QLPRes as $iLPRes){
 							$lpArray[] = $iLPRes['lp_name'];
-							if($iLPRes['lp_name'] == $_POST['pickup']){
-								$lpPos = $iLPRes['lp_position'];
-							}
+							//if($iLPRes['lp_name'] == $_POST['pickup']){
+							$spliPos = explode(',', $iLPRes['lp_position']);
+							$lpPosX[] = $spliPos[0];
+							$lpPosY[] = $spliPos[1];
+							//}
 						}
 						if(in_array($_POST['pickup'],$lpArray)){
 							Session::set('isppr_inventory_pickup',  $QLpReservations[0]['inventory_center_pickup']);
@@ -107,6 +110,7 @@
 							if(count($lpArray) > 0){
 								$arr = array_diff($lpArray, array(Session::get('isppr_inventory_lp')));
 								$arr = array_values($arr);
+								//$arr = $lpArray;
 							}
 							$QLpReservations = Doctrine_Query::create()
 								->from('OrdersProductsReservation')
@@ -115,9 +119,12 @@
 								->andWhere('start_date <= ?', date('Y-m-d H:i:s', strtotime('+1 day', strtotime($myDateStart))))
 								->orderBy('end_date DESC')
 								->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
-							if(count($QLpReservations) > 0) {
-								$getEndTimeArr = date_parse($QLpReservations[0]['end_date']);
-								$getEndTime = $getEndTimeArr['hour'] + 1;
+							foreach($QLpReservations as $iLpReserv){
+								$getEndTimeArr = date_parse($iLpReserv['end_date']);
+								$getStartTimeArr = date_parse($iLpReserv['start_date']);
+								//$getEndTime = $getEndTimeArr['hour'] + 1;
+								$excludedTimes[] = $getEndTimeArr['hour'];
+								$excludedTimes[] = $getStartTimeArr['hour'];
 							}
 						}
 					}else{
@@ -130,8 +137,11 @@
 							if($iLP['lp_name'] == $_POST['pickup']){
 								Session::set('isppr_inventory_pickup', $iLP['inventory_center_id']);
 								Session::set('isppr_inventory_lp', $_POST['pickup']);
-								$lpPos = $iLP['lp_position'];
+								//$lpPos = $iLP['lp_position'];
 							}
+							$spliPos = explode(',', $iLP['lp_position']);
+							$lpPosX[] = $spliPos[0];
+							$lpPosY[] = $spliPos[1];
 						}
 					}
 					//get inventory area of the selected lp. check the dates where there are reservations in other areas. Disable those dates.
@@ -249,7 +259,10 @@
 					if($iLP['lp_name'] == $_POST['pickup']){
 						Session::set('isppr_inventory_pickup', $iLP['inventory_center_id']);
 						Session::set('isppr_inventory_lp', $_POST['pickup']);
-						$lpPos = $iLP['lp_position'];
+						//$lpPos = $iLP['lp_position'];
+						$spliPos = explode(',', $iLP['lp_position']);
+						$lpPosX[] = $spliPos[0];
+						$lpPosY[] = $spliPos[1];
 					}
 				}
 				if(Session::exists('isppr_date_start') && Session::exists('isppr_date_end')){
@@ -257,6 +270,7 @@
 					if(count($lpArray) > 0){
 						$arr = array_diff($lpArray, array(Session::get('isppr_inventory_lp')));
 						$arr = array_values($arr);
+						//$arr = $lpArray;
 					}
 					$QLpReservations = Doctrine_Query::create()
 					->from('OrdersProductsReservation')
@@ -265,8 +279,13 @@
 					->andWhere('end_date <= ?', Session::get('isppr_date_end'))
 					->orderBy('end_date DESC')
 					->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
-					$getEndTimeArr = date_parse($QLpReservations[0]['end_date']);
-					$getEndTime = $getEndTimeArr['hour'] + 1;
+					foreach($QLpReservations as $iLpReserv){
+						$getEndTimeArr = date_parse($iLpReserv['end_date']);
+						$getStartTimeArr = date_parse($iLpReserv['start_date']);
+						//$getEndTime = $getEndTimeArr['hour'] + 1;
+						$excludedTimes[] = $getEndTimeArr['hour'];
+						$excludedTimes[] = $getStartTimeArr['hour'];
+					}
 				}
 			}
 		}else{
@@ -657,6 +676,25 @@ else {
 				}else if(isset($_GET['cPath']) && ($_POST['cPath'] != '-1')){
 					$redirectLink = itw_app_link(null, 'index', $_GET['cPath']);
 					$redirectCat = $_GET['cPath'];
+				}else{	
+						if (isset($_POST['url']) && (strpos($_POST['url'],'index/default') === false)){
+							$redirectLink = $_POST['url'];
+						}else{
+							$redirectLink = itw_app_link(null,'products','all');
+						}
+				}
+				if(isset($redirectLink)){
+					if(sysConfig::get('EXTENSION_INVENTORY_CENTERS_INTERMEDIARY_PAGE') == 'True'){
+						Session::set('redirectLinkBefore', $redirectLink);
+						if(isset($redirectCat)){
+							Session::set('redirectCategoryBefore', $redirectCat);
+						}
+						EventManager::attachActionResponse(itw_app_link('appExt=inventoryCenters','show_inventory','list_select'), 'redirect');
+					}else{
+						tep_redirect($redirectLink);
+					}
+				}
+			}
 		}elseif(sysConfig::get('EXTENSION_INVENTORY_CENTERS_USE_LP') == 'True'){
 			if (isset($_POST['hasHeaders']) && $_POST['hasHeaders'] == false){
 				$isHome = false;
@@ -672,7 +710,7 @@ else {
 				$QBlockedDates = Doctrine_Query::create()
 				->from('PayPerRentalBlockedDates')
 				->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
-				$excludedTimes = array();
+
 				foreach($QBlockedDates as $blockDate){
 					$startArr = date_parse($blockDate['block_start_date']);
 					$endArr = date_parse($blockDate['block_end_date']);
@@ -697,8 +735,11 @@ else {
 					}
 				}
 			 	$excludedTimes = array_unique($excludedTimes);
-				if(!isset($lpPos)){
-					$lpPos = '41.551756, -70.558548';
+				if(!isset($lpPosX)){
+					$lpPosX[] = '0';
+				}
+				if(!isset($lpPosY)){
+					$lpPosY[] = '0';
 				}
 				if(!isset($getEndTime)){
 					$getEndTime = sysConfig::get('EXTENSION_PAY_PER_RENTALS_START_TIME');
@@ -711,7 +752,8 @@ else {
 						'excluded_times' => $excludedTimes,
 						'start_time' => $getEndTime,
 						'lps' => $lpArray,
-						'lpPos' => $lpPos,
+						'lpPosX' => $lpPosX,
+						'lpPosY' => $lpPosY,
 						'selectedDates' =>$selectedDates,
 						'goodDates' => $goodDates
 					), 'json');	

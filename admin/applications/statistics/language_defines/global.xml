@@ -105,5 +105,6 @@
 	<define key="HEADING_TITLE_PRODUCT"><![CDATA[Product]]></define>
 	<define key="HEADING_TITLE_INVENTORY_CENTER"><![CDATA[Inventory Center]]></define>
 	<define key="TABLE_HEADING_RENTAL_MEMBERSHIPS"><![CDATA[Memberships]]></define>
+    <define key="HEADING_TITLE_CATEGORY"><![CDATA[Category]]></define>
 
 </definitions>

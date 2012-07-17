@@ -7,10 +7,12 @@
 			->leftJoin('a.ProductsAttributesViews v')
 			->leftJoin('a.ProductsOptions o')
 			->leftJoin('o.ProductsOptionsDescription od')
+			->leftJoin('o.ProductsOptionsToProductsOptionsGroups o2o')
 			->leftJoin('a.ProductsOptionsValues ov')
 			->leftJoin('ov.ProductsOptionsValuesDescription ovd')
 			->leftJoin('ov.ProductsOptionsValuesToProductsOptions v2o')
-			->orderBy('a.sort_order, v2o.sort_order');
+			->orderBy('a.sort_order,o2o.sort_order, v2o.sort_order')
+			->andWhere('o2o.products_options_groups_id = a.groups_id');
 
 			if (is_null($pId) === false){
 				$Query->andWhere('a.products_id = ?', (int)$pId);

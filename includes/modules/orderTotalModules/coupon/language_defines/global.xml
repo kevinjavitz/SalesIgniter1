@@ -18,4 +18,5 @@
 	<define key="REDEEMED_RESTRICTIONS"><![CDATA[ [Product-Category restrictions apply]]]></define>  
 	<define key="TEXT_ENTER_COUPON_CODE"><![CDATA[Enter Redeem Code&nbsp;&nbsp;]]></define>
 	<define key="MODULE_ORDER_TOTAL_COUPON_TEXT_ERROR"><![CDATA[Coupon Redemption]]></define>
+    <define key="ERROR_INVALID_MIN_FEE_COUPON"><![CDATA[Sorry you can't apply this coupon because it will make your order not meet the minimum order amount. ]]></define>
 </definitions>

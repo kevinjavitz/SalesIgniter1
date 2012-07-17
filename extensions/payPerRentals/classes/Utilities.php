@@ -229,7 +229,7 @@ class ReservationUtilities {
 		/*end periods*/
 
 		$allowHourly = (sysConfig::get('EXTENSION_PAY_PER_RENTALS_ALLOW_HOURLY') == 'True') ? true : false;
-		$minTime = 15; //slotMinutes
+		$minTime = 60; //slotMinutes
 
         if(isset($_POST['freeTrialButton']) && $_POST['freeTrialButton'] == '1') {
             $freeOn = explode(',',$_POST['freeTrial']);
@@ -449,13 +449,60 @@ class ReservationUtilities {
 		 */
 		$timeBooked = array();
 		$timeBookedDate = array();
+		$toRemoveStart = array();
+		$toRemoveEnd = array();
 		foreach ($timeBookings as $iBook) {
 			$timeDateParse = date_parse($iBook);
+			$postStartDate = isset($_POST['start_date'])?date_parse($_POST['start_date']):date_parse(date('Y-m-d'));
+			$postEndDate = isset($_POST['end_date'])?date_parse($_POST['end_date']):date_parse(date('Y-m-d'));
+			if(sysConfig::get('EXTENSION_PAY_PER_RENTALS_ENABLE_TIME_DROPDOWN') == 'True'){
+				if($timeDateParse['year'] == $postStartDate['year'] && $timeDateParse['month'] == $postStartDate['month'] && $timeDateParse['day'] == $postStartDate['day']){
+					$toRemoveStart[] = $timeDateParse['hour'];
+				}
+				if($timeDateParse['year'] == $postEndDate['year'] && $timeDateParse['month'] == $postEndDate['month'] && $timeDateParse['day'] == $postEndDate['day']){
+					$toRemoveEnd[] = $timeDateParse['hour'];
+				}
+			}
 			$stringStart = 'new Date(' . $timeDateParse['year'] . ',' . ($timeDateParse['month'] - 1) . ',' . $timeDateParse['day'] . ',' . $timeDateParse['hour'] . ',' . $timeDateParse['minute'] . ')';
 			$stringEnd = 'new Date(' . $timeDateParse['year'] . ',' . ($timeDateParse['month'] - 1) . ',' . $timeDateParse['day'] . ',' . $timeDateParse['hour'] . ',' . ($timeDateParse['minute'] + 1) . ')';
 			$timeBooked[] = "{title:'Not Available',start:" . $stringStart . ",end:" . $stringEnd . ", allDay:false}";
 			$timeBookedDate[] = $stringStart;
 		}
+		 $oldIbookDate = '';
+		foreach($timeBookings as $iBookDate){
+			if(!empty($oldIbookDate)){
+				$oldpostStartDate = date_parse($oldIbookDate);
+			}else{
+				$oldpostStartDate = '';
+			}
+			$postStartDate = date_parse($iBookDate);
+			if($oldpostStartDate != '' && $oldpostStartDate['year'] == $postStartDate['year'] && $oldpostStartDate['month'] == $postStartDate['month'] && $oldpostStartDate['day'] == $postStartDate['day']){
+				continue;
+			}
+			$toRemoveStart1 = array();
+			foreach ($timeBookings as $iBook) {
+				$timeDateParse = date_parse($iBook);
+				if(sysConfig::get('EXTENSION_PAY_PER_RENTALS_ENABLE_TIME_DROPDOWN') == 'True'){
+					if($timeDateParse['year'] == $postStartDate['year'] && $timeDateParse['month'] == $postStartDate['month'] && $timeDateParse['day'] == $postStartDate['day']){
+						$toRemoveStart1[] = $timeDateParse['hour'];
+					}
+					$dayDisabled = true;
+					$starttimeVal1 = (int) sysConfig::get('EXTENSION_PAY_PER_RENTALS_START_TIME');
+					$endtimeVal1 = (int) sysConfig::get('EXTENSION_PAY_PER_RENTALS_END_TIME');
+					for($iT=$starttimeVal1;$iT<=$endtimeVal1;$iT++){
+						if(!in_array($iT,$toRemoveStart1)){
+							$dayDisabled = false;
+							break;
+						}
+					}
+					if($dayDisabled){
+						$booked[] = '"' . date('Y-n-j', strtotime($iBookDate)) . '"';
+					}
+				}
+			}
+			$oldIbookDate = $iBookDate;
+		}
+		//ob_start(array('ReservationUtilities','fatal_error_handler'));
 		ob_start();
 		?>
 	<script>
@@ -477,7 +524,7 @@ class ReservationUtilities {
 	var allowSelection = true;
 	var allowSelectionMin = true;
 	var allowSelectionMax = true;
-
+	var isChecked = <?php echo (($isChecked == false)?'false':'true');?>;
 	var startArray = [<?php echo implode(',', $timeBooked);?>];
 	var bookedTimesArr = [<?php echo implode(',', $timeBookedDate);?>];
     var isCatalog = <?php echo ($App->getEnv() == 'catalog')?'true':'false';?>;
@@ -571,7 +618,9 @@ class ReservationUtilities {
 
 		$selfID.find('.datePicker').datepick({
 			useThemeRoller: true,
+			<?php if($App->getEnv() == 'catalog'){ ?>
 			minDate: '0',
+			<?php } ?>
 			dateFormat: '<?php echo getJsDateFormat();?>',
 			rangeSelect: <?php echo ((sysConfig::get('EXTENSION_PAY_PER_RENTALS_FORCE_START_DATE') == 'True') ? 'false' : 'true');?>,
 			rangeSeparator: ',',
@@ -593,11 +642,11 @@ class ReservationUtilities {
 				today = new Date($.datepick.formatDate('yy-m-d', new Date()));
 				/*if (today.getTime() > new Date(dateFormatted).getTime()){
 					return [false, ''];
-				}else */if ($.inArray(dayShortNames[dateObj.getDay()], disabledDays) > -1) {
+				}else */if ($.inArray(dayShortNames[dateObj.getDay()], disabledDays) > -1 && !isChecked) {
 					return [false, 'ui-datepicker-disabled ui-datepicker-shipable', 'Disabled By Admin'];
-				} else if ($.inArray(dateFormatted, bookedDates) > -1 || isDisabled == true) {
+				} else if ($.inArray(dateFormatted, bookedDates) > -1 && !isChecked || isDisabled == true) {
 					return [false, 'ui-datepicker-reserved', 'Reserved for '+ ((isDisabled == false)?popArr[$.inArray(dateFormatted, bookedDates)]:disabledBy)];
-				} else if ($.inArray(dateFormatted, disabledDatesPadding) > -1 && disabledWithMessage == false) {
+				} else if ($.inArray(dateFormatted, disabledDatesPadding) > -1 && disabledWithMessage == false && !isChecked) {
 					return [false, 'ui-datepicker-disabled', 'Disabled by Admin'];
 				} else if ($.inArray(dateFormatted, shippingDaysPadding) > -1) {
 					return [true, 'hasd dayto-' + shippingDaysArray[$.inArray(dateFormatted, shippingDaysPadding)], 'Available'];
@@ -620,7 +669,7 @@ class ReservationUtilities {
 									);
 							dateTo.setHours(0, 0, 0, 0);
 
-							if (dateObj >= dateFrom && dateObj <= dateTo) {
+							if (dateObj >= dateFrom && dateObj <= dateTo && !isChecked) {
 								return [false, 'ui-datepicker-disabled', '<?php echo sysLanguage::get('PPR_DISABLED_BY_ADMIN'); ?>'];
 							}
 						}
@@ -699,12 +748,7 @@ class ReservationUtilities {
 				}
 			},
 			onDayClick: function (date, inst, td) {
-				date.setHours(0, 0, 0, 0);
-				var dateFormatted = $.datepick.formatDate('yy-m-d', date);
-				if($.inArray(dateFormatted, disabledDatesPadding) > -1 && disabledWithMessage){
-					alert('If you require service within 48 hours, please contact us directly at (877) 922-2337. Representatives are standing by and we’ll make every effort to service your request.');
-					return false;
-				}else{
+
 				var shippingLabel;
 				var myclass = '';
 				var sDay = 0;
@@ -712,6 +756,11 @@ class ReservationUtilities {
 				var sDaysArr;
 				var shippingDaysBefore = $selfID.find('input[name=rental_shipping]:checked').attr('days_before');
 				var shippingDaysAfter = $selfID.find('input[name=rental_shipping]:checked').attr('days_after');
+				var dateFormatted = $.datepick.formatDate('yy-m-d', date);
+				if($.inArray(dateFormatted, disabledDatesPadding) > -1 && disabledWithMessage){
+					alert('If you require service within 48 hours, please contact us directly at (877) 922-2337. Representatives are standing by and we make every effort to service your request.');
+					return false;
+				}else{
 				if($selfID.find('input[name=rental_shipping]:checked').attr('min_rental')){
 					minRentalPeriod = $selfID.find('input[name=rental_shipping]:checked').attr('min_rental');
 					minRentalPeriodMessage = $('#'+minRentalPeriod).html();
@@ -763,25 +812,25 @@ class ReservationUtilities {
 				}
 
 				//end check here
-				if (allowSelectionMin == false) {
+				if (allowSelectionMin == false && !isChecked) {
 					alert(minRentalPeriodMessage);
 					return false;
 				}
-				if (allowSelectionMax == false) {
+				if (allowSelectionMax == false && !isChecked) {
 					alert(maxRentalPeriodMessage);
 					return false;
 				}
-				if (allowSelection == false) {
+				if (allowSelection == false && !isChecked) {
 					alert('<?php echo sysLanguage::get('PPR_ERR_RESERVATION_BETWEEN'); ?>');
 					return false;
 				}
-				if (allowSelectionBefore == false) {
+				if (allowSelectionBefore == false && !isChecked) {
 					var shippingDaysBefore = $selfID.find('input[name=rental_shipping]:checked').attr('days_before');
 					shippingLabel = $selfID.find('input[name=rental_shipping]:checked').parent().parent().find('td').first().html();
 					alert('<?php echo sysLanguage::get('PPR_ERR_SHIP_METHOD'); ?> ' + shippingLabel + ', <?php echo sysLanguage::get('PPR_ERR_NEED_TO_ALLOW'); ?> ' + shippingDaysBefore + ' <?php echo sysLanguage::get('PPR_ERR_SHIP_DAYS_BEFORE_RESERVATION'); ?>');
 					return false;
 				}
-				if (allowSelectionAfter == false) {
+				if (allowSelectionAfter == false && !isChecked) {
 					var shippingDaysAfter = $selfID.find('input[name=rental_shipping]:checked').attr('days_after');
 					shippingLabel = $selfID.find('input[name=rental_shipping]:checked').parent().parent().find('td').first().html();
 					alert('<?php echo sysLanguage::get('PPR_ERR_SHIP_METHOD'); ?> ' + shippingLabel + ', <?php echo sysLanguage::get('PPR_ERR_NEED_TO_ALLOW'); ?> ' + shippingDaysBefore + ' <?php echo sysLanguage::get('PPR_ERR_SHIP_DAYS_AFTER_RESERVATION'); ?>');
@@ -918,7 +967,7 @@ class ReservationUtilities {
 					$selfID.find('.datePicker').datepick('option', 'initStatus', '<?php echo sysLanguage::get('PPR_SELECT_START_DATE'); ?>');
 				}
 			<?php
-   		if ($allowHourly && sysConfig::get('EXTENSION_PAY_PER_RENTALS_USE_FULL_DAYS') == 'False' && (sysConfig::get('EXTENSION_ORDER_CREATOR_SHOW_TIMES') == 'False' || $App->getEnv() == 'catalog')) {
+   		if ($allowHourly && sysConfig::get('EXTENSION_PAY_PER_RENTALS_USE_FULL_DAYS') == 'False' && (sysConfig::get('EXTENSION_ORDER_CREATOR_SHOW_TIMES') == 'False' && sysConfig::get('EXTENSION_PAY_PER_RENTALS_ENABLE_TIME_DROPDOWN') == 'False' || $App->getEnv() == 'catalog' && sysConfig::get('EXTENSION_PAY_PER_RENTALS_ENABLE_TIME_DROPDOWN') == 'False')) {
 					?>
 					$selfID.find('.calendarTime').show();
 					$selfID.find('.calendarTime').fullCalendar('gotoDate', date);
@@ -940,6 +989,7 @@ class ReservationUtilities {
 
 				}
 				?>
+			}
 			},
 			onSelect: function (value, date, inst) {
 				var dates = value.split(',');
@@ -998,6 +1048,44 @@ class ReservationUtilities {
 					} else {
 						isStart = true;
 					}
+		   if(isStart == true){
+		   var $this = $selfID.find('.datePicker');
+		   showAjaxLoader($this, 'xlarge');
+		   $.ajax({
+			   cache: false,
+			   dataType: 'json',
+			   type: 'post',
+			   url: <?php echo $checkRes;?>,
+			   data: $selfID.parent().find('.reservationTable *, .pprButttons *').serialize(),
+			   success: function (data) {
+				   if (data.success == true) {
+					   removeAjaxLoader($this);
+					   $selfID.find('.shippingTable').html(data.htmlShipping);
+					   if($('#googleAddress').size() > 0){
+						   $selfID.find('.shipSelect').hide();
+					   }
+					   if ($selfID.find('input[name=rental_shipping]').size() > 0 && $selfID.find('input[name=rental_shipping]:checked').size() == 0) {
+						   $selfID.find('input[name=rental_shipping]').each(function () {
+							   $(this).trigger('click');
+						   });
+					   }
+					   $selfID.parent().find('.priceQuote').html($('.rental_qty').val()+'X ('+data.price + ' ' + data.message+') ='+data.totalPrice);
+					   if(isCatalog){
+						   $selfID.parent().find('.inCart').show();
+						   $selfID.parent().find('.inCart').button();
+					   }
+					   if($selfID.find('.timesInputs').size() > 0 && $selfID.find('.timesInputs').html() != data.timeInputs){
+						   $selfID.find('.timesInputs').html(data.timeInputs);
+						   $selfID.find('.start_time').trigger('change');
+					   }
+				   } else if (data.success == 'not_supported') {
+					   $selfID.parent().find('.priceQuote').html(data.price);
+				   } else {
+					   alert('<?php echo sysLanguage::get('PPR_NOTICE_RESERVATION_NOT_AVAILABLE'); ?>.');
+				   }
+			   }
+		   });
+		   }
 					<?php
 				}
 				?>
@@ -1080,6 +1168,9 @@ class ReservationUtilities {
 					success: function (data) {
 						if (data.success == true) {
 							$selfID.find('.shippingTable').html(data.htmlShipping);
+							if($('#googleAddress').size() > 0){
+								$selfID.find('.shipSelect').hide();
+							}
 							if ($selfID.find('input[name=rental_shipping]').size() > 0 && $selfID.find('input[name=rental_shipping]:checked').size() == 0) {
 								$selfID.find('input[name=rental_shipping]').each(function () {
 									$(this).trigger('click');
@@ -1237,6 +1328,12 @@ class ReservationUtilities {
 								if (data.success == true) {
 									removeAjaxLoader($this);
 									$selfID.find('.shippingTable').html(data.htmlShipping);
+									if($selfID.find('.timesInputs').size() > 0){
+										$selfID.find('.timesInputs').html(data.timeInputs);
+									}
+									if($('#googleAddress').size() > 0){
+										$selfID.find('.shipSelect').hide();
+									}
 									if ($selfID.find('input[name=rental_shipping]').size() > 0 && $selfID.find('input[name=rental_shipping]:checked').size() == 0) {
 										$selfID.find('input[name=rental_shipping]').each(function () {
 											$(this).trigger('click');
@@ -1263,7 +1360,7 @@ class ReservationUtilities {
 			}
 		});
 
-		$selfID.find('.end_time').change(function(){
+		$selfID.find('.end_time').live('change', function(){
 			if($selfID.find('.start_date').val() != '' && $selfID.find('.end_date').val() != ''){
 				var $this = $selfID.find('.datePicker');
 
@@ -1278,6 +1375,9 @@ class ReservationUtilities {
 						if (data.success == true) {
 							removeAjaxLoader($this);
 							$selfID.find('.shippingTable').html(data.htmlShipping);
+							if($('#googleAddress').size() > 0){
+								$selfID.find('.shipSelect').hide();
+							}
 							if ($selfID.find('input[name=rental_shipping]').size() > 0 && $selfID.find('input[name=rental_shipping]:checked').size() == 0) {
 								$selfID.find('input[name=rental_shipping]').each(function () {
 									$(this).trigger('click');
@@ -1299,7 +1399,7 @@ class ReservationUtilities {
 				});
 			}
 		});
-		$selfID.find('.start_time').change(function(){
+		$selfID.find('.start_time').live('change', function(){
 			if($selfID.find('.start_date').val() != '' && $selfID.find('.end_date').val() != ''){
 				var $this = $selfID.find('.datePicker');
 
@@ -1314,6 +1414,9 @@ class ReservationUtilities {
 						if (data.success == true) {
 							removeAjaxLoader($this);
 							$selfID.find('.shippingTable').html(data.htmlShipping);
+							if($('#googleAddress').size() > 0){
+								$selfID.find('.shipSelect').hide();
+							}
 							if ($selfID.find('input[name=rental_shipping]').size() > 0 && $selfID.find('input[name=rental_shipping]:checked').size() == 0) {
 								$selfID.find('input[name=rental_shipping]').each(function () {
 									$(this).trigger('click');
@@ -1376,6 +1479,9 @@ class ReservationUtilities {
 		}
 
 		$selfID.find('.calendarTime').hide();
+		if($('#googleAddress').size() > 0){
+			$selfID.find('.shipSelect').hide();
+		}
 		<?php
    		if (sysConfig::get('EXTENSION_PAY_PER_RENTALS_USE_UPS_RESERVATION') == 'True' && sysConfig::get('EXTENSION_PAY_PER_RENTALS_CHECK_GOOGLE_ZONES_BEFORE') == 'False') {
 			?>
@@ -1443,9 +1549,9 @@ class ReservationUtilities {
 		}
 		?>
 
-		$('.start_date, .end_date').change(function(){
-			var dd1 = new Date($(this).parent().find('.start_date').val());
-			var dd2 = new Date($(this).parent().find('.end_date').val());
+		$('.start_date, .end_date, .start_time, .end_time').live('change',function(){
+			var dd1 = new Date($('.dateSelectedCalendar').find('.start_date').val());
+			var dd2 = new Date($('.dateSelectedCalendar').find('.end_date').val());
 
 			if(dd1 == 'Invalid Date' || dd2 == 'Invalid Date'){
 				$('.dateQuotes').html('');
@@ -1462,7 +1568,15 @@ class ReservationUtilities {
 				}else{
 					dd2_day = dd2.getDate();
 				}
-				$('.dateQuotes').html(m_names[dd1.getMonth()] + ' ' +dd1_day + ', ' +dd1.getFullYear() + '&nbsp;&nbsp;&nbsp;To&nbsp;&nbsp;&nbsp;' + m_names[dd2.getMonth()] + ' ' +dd2_day + ', ' +dd2.getFullYear());
+				var hours1 = '';
+				var hours2 = '';
+				if($('.dateSelectedCalendar').find('.start_time')){
+					hours1 = $('.dateSelectedCalendar').find('.start_time').val();
+				}
+				if($('.dateSelectedCalendar').find('.end_time')){
+					hours2 = $('.dateSelectedCalendar').find('.end_time').val();
+				}
+				$('.dateQuotes').html(m_names[dd1.getMonth()] + ' ' +dd1_day + ', ' +dd1.getFullYear() + ' '+hours1 +'&nbsp;&nbsp;&nbsp;To&nbsp;&nbsp;&nbsp;' + m_names[dd2.getMonth()] + ' ' +dd2_day + ', ' +dd2.getFullYear() + ' '+ hours2);
 			}
 		});
 		var $priceText = $('<div class="priceText"><?php echo sysLanguage::get('TEXT_DATES_PRICE');?> </div>');
@@ -1503,6 +1617,30 @@ class ReservationUtilities {
 		$('.pprButttons').css('left',firstColumnWidth+'px');
 		//$('.refreshCal').css('left',(1.4*firstColumnWidth)+'px');
 		$('.calendarTable').css('padding-bottom', '40px');
+		$('.hasOverride').live('change', function(){
+			    var isChecked = $(this).is(':checked');
+				var $calLoader = $selfID.find('.datePicker');
+				showAjaxLoader($calLoader, 'xlarge');
+				$.ajax({
+					cache: false,
+					dataType: 'json',
+					type: 'post',
+					url: <?php echo $callLink; ?>,
+					data: 'action=<?php echo $callAction;?>&' + $selfID.parent().find('.reservationTable *, .ui-widget-footer-box *, .pprButttons *').serialize(),
+					success: function (data) {
+						if (data.success == true) {
+							removeAjaxLoader($calLoader);
+							$selfID.parent().html(data.calendar);
+
+							$('#getQuotes').button();
+							$selfID.parent().find('.inCart').hide();
+							$selfID.parent().find('.start_date').val('');
+							$selfID.parent().find('.end_date').val('');
+							$calLoader.trigger('EventAfterLoadedCalendar');
+						}
+					}
+				});
+		});
 	});
 	</script>
 	<style>
@@ -1719,6 +1857,17 @@ class ReservationUtilities {
 		<?php
 		}
         ?>
+		<?php
+		if($App->getEnv() == 'admin'){
+		?>
+			<div class="overrideInventory">
+				<div>
+					<?php echo sysLanguage::get('ENTRY_OVERRIDE');?><input type="checkbox" class="hasOverride" name="hasOverride" value="1" <?php echo ($isChecked == true?'checked="checked"':'')?>>
+				</div>
+			</div>
+		<?php
+		}
+		?>
 		<div class="shippingInfoDiv">
 			<div colspan="2">
 				<table cellpadding="0" cellspacing="3" border="0" width="100%">
@@ -1840,16 +1989,49 @@ class ReservationUtilities {
 			  ->addClass('end_time');
 
 		      for($i=$starttimeVal;$i<=$endtimeVal;$i++){
+				  $notAddStart = false;
+				  $notAddEnd = false;
+				  if(in_array($i, $toRemoveStart)){
+					  $notAddStart = true;
+				  }
+				  if(in_array($i, $toRemoveStart)){
+					  $notAddEnd = true;
+				  }
 			    if((int)$i < 10){
 			        $val = '0'.$i.':00:00';
-				    $myVal = '0'.$i.':00';
+					if($i > 12){
+						$am = ' PM';
+						$j = $i % 12;
+					}elseif($i == 12){
+						$am = 'PM';
+						$j = '12';
+					}
+					else{
+						$am = ' AM';
+						$j = $i;
+					}
+				    $myVal = '0'.$j.':00'. $am;
 			    }else{
 				    $val = $i.':00:00';
-				    $myVal = $i.':00';
+					if($i > 12){
+						$am = ' PM';
+						$j = $i % 12;
+					}elseif($i == 12){
+						$am = ' PM';
+						$j = '12';
+					}
+					else{
+						$am = ' AM';
+						$j = $i;
+					}
+				    $myVal = $j.':00'.$am;
 			    }
-
+				if(!$notAddStart){
 			    $hourStart->addOption($val, $myVal);
+				}
+				if(!$notAddEnd){
 			    $hourEnd->addOption($val, $myVal);
+				}
 
 			    if($time_increment == 30 && $i<$endtimeVal){
 				    if((int)$i < 10){
@@ -1866,8 +2048,8 @@ class ReservationUtilities {
 
 
 		      }
-			echo sysLanguage::get('EXTENSION_PAY_PER_RENTALS_START_TIME'). $hourStart->draw();
-		  	echo '&nbsp;&nbsp;&nbsp;&nbsp;'.sysLanguage::get('EXTENSION_PAY_PER_RENTALS_END_TIME').$hourEnd->draw();
+			echo sysLanguage::get('EXTENSION_PAY_PER_RENTALS_START_TIME_DELIVERY'). $hourStart->draw();
+		  	echo '&nbsp;&nbsp;&nbsp;&nbsp;'.sysLanguage::get('EXTENSION_PAY_PER_RENTALS_END_TIME_PICKUP').$hourEnd->draw();
 	 ?>
 	  </div>
      <?php
@@ -1929,6 +2111,7 @@ class ReservationUtilities {
 			<?php
    		$calendar = ob_get_contents();
 		ob_end_clean();
+		//ob_end_flush();
 		return $calendar;
 	}
 

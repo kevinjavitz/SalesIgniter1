@@ -10,6 +10,8 @@
 
 		$PayPerRental->max_period = (int)$_POST['reservation_max_period'];
 		$PayPerRental->max_type = (int)$_POST['reservation_max_type'];
+		$PayPerRental->turnover = $_POST['reservation_turnover_period'];
+		$PayPerRental->turnover_type = (int)$_POST['reservation_turnover_type'];
 		$PayPerRental->deposit_amount = (float)$_POST['reservation_deposit_amount'];
 		$PayPerRental->insurance = (float)$_POST['reservation_insurance'];
                  $PayPerRental->min_period = (int)$_POST['reservation_min_period'];

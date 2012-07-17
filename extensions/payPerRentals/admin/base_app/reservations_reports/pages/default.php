@@ -167,7 +167,16 @@
 							$isFuture = false;
 							foreach($pibInfo['OrdersProductsReservation'] as $oprInfo){
 								$reserveStartDate = strtotime('-' . $oprInfo['shipping_days_before'] . ' days' ,strtotime($oprInfo['start_date'])); //+-ship_days
-								$reserveEndDate = strtotime('+' . $oprInfo['shipping_days_after'] . ' days' , strtotime($oprInfo['end_date']));
+								$Qturnover = Doctrine_Query::create()
+								->from('ProductsPayPerRental')
+								->where('products_id = ?', $productId)
+								->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+								if(isset($Qturnover[0]) && $Qturnover[0]['turnover'] != ''){
+									$turnover = (sysConfig::get('EXTENSION_PAY_PER_RENTALS_TURNOVER_TIME') - 1) * 60 * 60 *24;
+								}else{
+									$turnover = (intval($Qturnover[0]['turnover']) - 1) * 60 * 60 *24;//here should be used type
+								}
+								$reserveEndDate = strtotime('+' . $oprInfo['shipping_days_after'] . ' days' , strtotime($oprInfo['end_date'])) /*+ $turnover*/;
 								if ($oprInfo['rental_status_id'] == 0){
 									if ($oprInfo['date_returned'] != '0000-00-00 00:00:00'){
 										$reservedStatus = '4';

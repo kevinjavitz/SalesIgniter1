@@ -145,6 +145,7 @@ $(document).ready(function (){
 			data: attrv,
 			url: js_app_link('appExt=orderCreator&app=default&appPage=new&action=loadReservationData'+oID),
 			success: function (data) {
+                if(data.success){
 				var $dialog = $('<div></div>').dialog({
 					title: 'Select Reservation Settings',
 					width: 600,
@@ -225,6 +226,10 @@ $(document).ready(function (){
 						}
 					}
 				});
+                } else{
+                    alert('Please retry.');
+                    removeAjaxLoader($(mainField));
+                }
 			}
 		})
 

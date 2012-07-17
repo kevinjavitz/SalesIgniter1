@@ -230,6 +230,15 @@ class OrderCreatorPaymentManager extends OrderPaymentManager implements Serializ
 					'text' => htmlBase::newElement('button')->addClass('paymentRefundButton')->setText('Refund')->attr('data-payment_module', $paymentHistory['payment_module'])->attr('data-payment_history_id', $paymentHistory['payment_history_id'])->draw()
 				);
 
+				$rowColumns[] = array(
+					'addCls' => 'ui-widget-content',
+					'align' => 'center',
+					'css' => array(
+						'border-top' => 'none',
+						'border-left' => 'none'
+					),
+					'text' => '<a class="removePayment ui-icon ui-icon-closethick" idpayment="'.$paymentHistory['payment_history_id'].'"></a>'
+				);
 			//}
 
 			$paymentHistoryTable->addBodyRow(array(
@@ -311,6 +320,14 @@ class OrderCreatorPaymentManager extends OrderPaymentManager implements Serializ
 				'border-left' => 'none'
 			),
 			'text' => '&nbsp;'
+		);
+		$headerColumns[] = array(
+			'addCls' => 'main ui-widget-header',
+			'css' => array(
+				'border-left' => 'none'
+			),
+			'align' => 'left',
+			'text' => 'Null Payment'
 		);
 		
 

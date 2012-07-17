@@ -23,30 +23,32 @@ $customerId = htmlBase::newElement('input')
 	->setType('hidden')
 	->setName('customers_id')
 	->val($Customer->customers_id);
+if($Address){
+	$addressArray = $Address->toArray();
+	$addressArray['id'] = $Address->address_book_id;
+	$addressArray['entry_name'] = $Address->entry_firstname . ' ' . $Address->entry_lastname;
 
-$addressArray = $Address->toArray();
-$addressArray['id'] = $Address->address_book_id;
-$addressArray['entry_name'] = $Address->entry_firstname . ' ' . $Address->entry_lastname;
+	$addressArray['address_type'] = 'customer';
+	$OrderCustomerAddress = new OrderCreatorAddress($addressArray);
 
-$addressArray['address_type'] = 'customer';
-$OrderCustomerAddress = new OrderCreatorAddress($addressArray);
+	$addressArray['address_type'] = 'billing';
+	$OrderBillingAddress = new OrderCreatorAddress($addressArray);
 
-$addressArray['address_type'] = 'billing';
-$OrderBillingAddress = new OrderCreatorAddress($addressArray);
+	$addressArray['address_type'] = 'delivery';
+	$OrderDeliveryAddress = new OrderCreatorAddress($addressArray);
 
-$addressArray['address_type'] = 'delivery';
-$OrderDeliveryAddress = new OrderCreatorAddress($addressArray);
+	$addressArray['address_type'] = 'pickup';
+	$OrderPickupAddress = new OrderCreatorAddress($addressArray);
 
-$addressArray['address_type'] = 'pickup';
-$OrderPickupAddress = new OrderCreatorAddress($addressArray);
 
+	$Editor->AddressManager->addAddressObj($OrderCustomerAddress);
+	$Editor->AddressManager->addAddressObj($OrderBillingAddress);
+	$Editor->AddressManager->addAddressObj($OrderDeliveryAddress);
+	$Editor->AddressManager->addAddressObj($OrderPickupAddress);
+}
 $Editor->setCustomerId($Customer->customers_id);
 $Editor->setEmailAddress($Customer->customers_email_address);
 $Editor->setTelephone($Customer->customers_telephone);
-$Editor->AddressManager->addAddressObj($OrderCustomerAddress);
-$Editor->AddressManager->addAddressObj($OrderBillingAddress);
-$Editor->AddressManager->addAddressObj($OrderDeliveryAddress);
-$Editor->AddressManager->addAddressObj($OrderPickupAddress);
 
 $response = array(
 	'success' => true,

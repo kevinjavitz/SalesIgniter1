@@ -43,7 +43,7 @@ function addIcon(icon) { // Add icon attributes
 
 function drawOverlay(){
 	if(poly) { map.removeOverlay(poly); }
-	points.length = 0;
+	points = [];
 	for(i = 0; i < markers.length; i++) {
 		var markerLatLng = markers[i].getLatLng();
 		points.push(markerLatLng);
@@ -132,7 +132,10 @@ $(document).ready(function (){
 			contentUrl: js_app_link('rType=ajax&app=zones&appPage=default&action=getActionWindow&window=new&zID=' + zoneId),
 			onShow: function (ui) {
 				var self = this;
-
+                markers = [];
+                points = [];
+                count = 0;
+                poly = false;
 				map = new GMap2($(self).find('#googleMap')[0]);
 				//     map.setCenter(new GLatLng(37.4419, -122.1419), 13);
 				map.setUIToDefault();
@@ -184,7 +187,10 @@ $(document).ready(function (){
 			contentUrl: js_app_link('rType=ajax&app=zones&appPage=default&action=getActionWindow&window=new'),
 			onShow: function (ui) {
 				var self = this;
-
+                markers = [];
+                points = [];
+                count = 0;
+                poly = false;
 				map = new GMap2($(self).find('#googleMap')[0]);
 				//     map.setCenter(new GLatLng(37.4419, -122.1419), 13);
 				map.setUIToDefault();

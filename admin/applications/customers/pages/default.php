@@ -1,5 +1,4 @@
 <?php
-    global $currencies;
 
 	$Qcustomers = Doctrine_Query::create()
 	->from('Customers c')
@@ -67,14 +66,18 @@ $tableGrid->addButtons(array(
 		array('text' => sysLanguage::get('TABLE_HEADING_SELECT')),
 		array('text' => sysLanguage::get('TABLE_HEADING_CUSTOMERS_ID')),
 		array('text' => '<a href="'.itw_app_link('sortLastname='.(isset($_GET['sortLastname'])?($_GET['sortLastname'] == 'ASC'?'DESC':'ASC'):'ASC').'&'.tep_get_all_get_params(array('sortDate','sortFirstname','sortLastname')),null,null).'">'.sysLanguage::get('TABLE_HEADING_LASTNAME').'</a>'),
-		array('text' => '<a href="'.itw_app_link('sortFirstname='.(isset($_GET['sortFirstname'])?($_GET['sortFirstname'] == 'ASC'?'DESC':'ASC'):'ASC').'&'.tep_get_all_get_params(array('sortLastname','sortDate','sortFirstname')),null,null).'">'.sysLanguage::get('TABLE_HEADING_FIRSTNAME').'</a>'),
-		array('text' => sysLanguage::get('TABLE_HEADING_MEMBER_OR_USER')),
-		array('text' => sysLanguage::get('TABLE_HEADING_MEMBERSHIP_STATUS')),
-        array('text' => sysLanguage::get('TABLE_HEADING_TOTAL')),
-        array('text' => sysLanguage::get('TABLE_HEADING_LAST_ORDER_NUMBER')),
-        array('text' => sysLanguage::get('TABLE_HEADING_LAST_ORDER_DATE')),
-		array('text' => '<a href="'.itw_app_link('sortDate='.(isset($_GET['sortDate'])?($_GET['sortDate'] == 'ASC'?'DESC':'ASC'):'ASC').'&'.tep_get_all_get_params(array('sortFirstname','sortLastname','sortDate')),null,null).'">'.sysLanguage::get('TABLE_HEADING_ACCOUNT_CREATED').'</a>')
-	);
+		array('text' => '<a href="'.itw_app_link('sortFirstname='.(isset($_GET['sortFirstname'])?($_GET['sortFirstname'] == 'ASC'?'DESC':'ASC'):'ASC').'&'.tep_get_all_get_params(array('sortLastname','sortDate','sortFirstname')),null,null).'">'.sysLanguage::get('TABLE_HEADING_FIRSTNAME').'</a>')
+		);
+		if(sysConfig::get('ALLOW_RENTALS') == 'true'){
+			$tableGridHeader[] = array('text' => sysLanguage::get('TABLE_HEADING_MEMBER_OR_USER'));
+			$tableGridHeader[] = array('text' => sysLanguage::get('TABLE_HEADING_MEMBERSHIP_STATUS'));
+		}
+		$tableGridHeader[] = array('text' => sysLanguage::get('TABLE_HEADING_TOTAL_ORDERS'));
+		$tableGridHeader[] =  array('text' => sysLanguage::get('TABLE_HEADING_TOTAL'));
+		$tableGridHeader[] = array('text' => sysLanguage::get('TABLE_HEADING_LAST_ORDER_NUMBER'));
+		$tableGridHeader[] = array('text' => sysLanguage::get('TABLE_HEADING_LAST_ORDER_DATE'));
+		$tableGridHeader[] = array('text' => '<a href="'.itw_app_link('sortDate='.(isset($_GET['sortDate'])?($_GET['sortDate'] == 'ASC'?'DESC':'ASC'):'ASC').'&'.tep_get_all_get_params(array('sortFirstname','sortLastname','sortDate')),null,null).'">'.sysLanguage::get('TABLE_HEADING_ACCOUNT_CREATED').'</a>');
+
 	
 	EventManager::notify('AdminCustomerListingAddHeader', &$tableGridHeader);
 	
@@ -119,16 +122,23 @@ $tableGrid->addButtons(array(
 
 			$Qorders = $Qorders->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 
-            $Qproducts = Doctrine_Query::create()
-                ->select('sum(op.final_price) as totalPrice')
+			/*$Qproducts = Doctrine_Query::create()
+            ->select('sum(op.final_price * op.products_quantity + op.products_tax/100*op.final_price * op.products_quantity) as totalPrice')
                 ->from('Orders o')
                 ->leftJoin('o.OrdersProducts op')
                 ->where('o.customers_id = ?', $customerId);
 
             EventManager::notify('OrdersProductsListingBeforeExecute', &$Qproducts);
 
-            $Qproducts = $Qproducts->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+            $Qproducts = $Qproducts->execute(array(), Doctrine_Core::HYDRATE_ARRAY);*/
 
+			$Qtotals = Doctrine_Query::create()
+			->select('sum(ot.value) as totalPrice')
+			->from('Orders o')
+			->leftJoin('o.OrdersTotal ot')
+			->whereIn('ot.module_type', array('ot_total','total'))
+			->andWhere('o.customers_id = ?', $customerId)
+			->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 
             $arrowIcon = htmlBase::newElement('icon')->setType('info');
 
@@ -163,14 +173,17 @@ $tableGrid->addButtons(array(
 				array('text' => $htmlCheckbox->draw()),
 				array('text' => $customer['customers_id']),
 				array('text' => $customer['customers_lastname']),
-				array('text' => $customer['customers_firstname']),
-				array('text' => $member, 'align' => 'center'),
-				array('text' => $activate, 'align' => 'center'),
-                array('text' => $currencies->format($Qproducts[0]['totalPrice']), 'align' => 'center'),
-                array('text' => $Qorders[0]['lastOrder'], 'align' => 'center'),
-                array('text' => tep_date_short($Qorders[0]['lastDate']), 'align' => 'center'),
-				array('text' => tep_date_short($customer['CustomersInfo']['customers_info_date_account_created']), 'align' => 'center')
-			);
+				array('text' => $customer['customers_firstname']));
+				if(sysConfig::get('ALLOW_RENTALS') == 'true'){
+					$tableGridBody[] = array('text' => $member, 'align' => 'center');
+					$tableGridBody[] = array('text' => $activate, 'align' => 'center');
+				}
+			   $tableGridBody[] = array('text' => $Qorders[0]['total'], 'align' => 'center');
+               $tableGridBody[] = array('text' => $currencies->format($Qtotals[0]['totalPrice']), 'align' => 'center');
+               $tableGridBody[] = array('text' => $Qorders[0]['lastOrder'], 'align' => 'center');
+               $tableGridBody[] = array('text' => tep_date_short($Qorders[0]['lastDate']), 'align' => 'center');
+			   $tableGridBody[] = array('text' => tep_date_short($customer['CustomersInfo']['customers_info_date_account_created']), 'align' => 'center');
+
 			
 			EventManager::notify('AdminCustomerListingAddBody', $customer, &$tableGridBody);
 

@@ -594,9 +594,19 @@ class rentalStoreUser_addressBook {
 			}
 		}
 
+		if (sysConfig::get('EXTENSION_PAY_PER_RENTALS_CHECK_GOOGLE_ZONES_BEFORE') == 'True'){
+			if (Session::exists('PPRaddressCheck')){
+				$pprAddress = Session::get('PPRaddressCheck');
+				$street = $pprAddress['address']['street_address'];
+				$city = $pprAddress['address']['city'];
+				//$country = $pprAddress['address']['country'];
+				//$state = $pprAddress['address']['state'];
+				$zip = $pprAddress['address']['postcode'];
+			}
+		}
 		if (isset($fields['street_address'])){
 			$returnArray['street_address'] = htmlBase::newElement('input')
-			->setValue((isset($fields['street_address']['value']) ? $fields['street_address']['value'] : ''))
+			->setValue((isset($fields['street_address']['value']) ? $fields['street_address']['value'] : (isset($street)?$street:'')))
 			->setRequired((isset($fields['street_address']['required']) ? $fields['street_address']['required'] : false))
 			->setName($namePrefix . 'street_address');
 		}
@@ -610,16 +620,17 @@ class rentalStoreUser_addressBook {
 
 		if (isset($fields['city'])){
 			$returnArray['city'] = htmlBase::newElement('input')
-			->setValue((isset($fields['city']['value']) ? $fields['city']['value'] : ''))
+			->setValue((isset($fields['city']['value']) ? $fields['city']['value'] : (isset($city)?$city:'')))
 			->setRequired((isset($fields['city']['required']) ? $fields['city']['required'] : false))
 			->setName($namePrefix . 'city');
 		}
 
 		if (isset($fields['postcode'])){
 			$returnArray['postcode'] = htmlBase::newElement('input')
-			->setValue((isset($fields['postcode']['value']) ? $fields['postcode']['value'] : ''))
+			->setValue((isset($fields['postcode']['value']) ? $fields['postcode']['value'] : (isset($zip)?$zip:'')))
 			->setRequired((isset($fields['postcode']['required']) ? $fields['postcode']['required'] : false))
-			->setName($namePrefix . 'postcode');
+			->setName($namePrefix . 'postcode')
+			->attr('id',$namePrefix .'postcode');
 		}
 
 		if (isset($fields['state'])){
@@ -637,7 +648,11 @@ class rentalStoreUser_addressBook {
 					foreach($Qzones as $zInfo){
 						$returnArray['state']->addOption($zInfo['zone_name'], $zInfo['zone_name']);
 					}
-					$returnArray['state']->selectOptionByValue((isset($fields['state']['value']) ? $fields['state']['value'] : ''));
+					if(isset($fields['state']['value'])){
+						$returnArray['state']->selectOptionByValue($fields['state']['value']);
+					}else{
+						$returnArray['state']->selectOptionByValue(sysConfig::get('ONEPAGE_DEFAULT_STATE'));
+					}
 				}else{
 					$returnArray['state'] = htmlBase::newElement('input')
 					->setValue((isset($fields['state']['value']) ? $fields['state']['value'] : ''))

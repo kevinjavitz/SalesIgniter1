@@ -1,5 +1,6 @@
 <?php
 	$OrderProduct = $Editor->ProductManager->get((int) $_POST['idP']);
+    if(is_object($OrderProduct)){
 	$OrderProduct->setPurchaseType($_POST['purchase_type']);
 	$Product = $OrderProduct->productClass;
 	$PurchaseType = $OrderProduct->purchaseTypeClass;
@@ -10,7 +11,7 @@ $goodDates = '';
 $events_date = '';
 $selectedDates = array();
 $start = date('m/d/Y H:i:s');
-
+if($_POST['purchase_type'] == 'reservation'){
     if (sysConfig::get('EXTENSION_PAY_PER_RENTALS_USE_EVENTS') == 'False'){
         if($PurchaseType->consumptionAllowed() === '1' && !isset($_POST['has_info'])){
             $starting_date = date('Y-m-d H:i:s');
@@ -87,9 +88,9 @@ $start = date('m/d/Y H:i:s');
 		}
 
 	}
-
+    $hasInv = true;
 	if (isset($resInfo['start_date']) && isset($resInfo['end_date'])){
-
+		$hasInv = $PurchaseType->hasInventoryForDates($_POST['qty'],$resInfo['start_date'],$resInfo['end_date']);
 		if(isset($_POST['shipping']) && $_POST['shipping'] != 'undefined'){
 			$shippingInfo = explode('_', $_POST['shipping']);
 			$resInfo['shipping_module'] = $shippingInfo[0];
@@ -194,11 +195,12 @@ $start = date('m/d/Y H:i:s');
 		}
 		//}
 		$OrderProduct->setPInfo($reservationInfo);
-
+	}
 		EventManager::attachActionResponse(array(
 		'success' => true,
 		'calendar' => $html2,
 		'events_date' => $events_date,
+		'hasInventory' => $hasInv,
 		'selectedDates' => $selectedDates,
 		'goodDates' => $goodDates,
         'start_date' => $start,
@@ -210,6 +212,12 @@ $start = date('m/d/Y H:i:s');
 		'success' => false,
 		'price'	=> (isset($reservationInfo['price'])?$reservationInfo['price']:0)
 	), 'json');
+	}
+	}else{
+		EventManager::attachActionResponse(array(
+			'success' => false,
+			'price'	=> (isset($reservationInfo['price'])?$reservationInfo['price']:0)
+		), 'json');
 	}
 
 

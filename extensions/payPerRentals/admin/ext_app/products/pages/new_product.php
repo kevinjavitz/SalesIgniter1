@@ -53,6 +53,7 @@ class payPerRentals_admin_products_new_product extends Extension_payPerRentals {
         $freeTrialPriceInput = htmlBase::newElement('input')->setName('reservation_free_try_price');
 		//$monthsInput = htmlBase::newElement('input')->setName('reservation_max_months');
 		$maxInput = htmlBase::newElement('input')->setName('reservation_max_period');
+		$turnoverInput = htmlBase::newElement('input')->setName('reservation_turnover_period');
 		//$authMethodInput = htmlBase::newElement('selectbox')->setName('products_auth_method')->addOption('auth', 'Authorization Charge')->addOption('rental', 'Rental Fee');
 		$depositChargeInput = htmlBase::newElement('input')->setName('reservation_deposit_amount');
 		$insuranceInput = htmlBase::newElement('input')->setName('reservation_insurance');
@@ -62,6 +63,11 @@ class payPerRentals_admin_products_new_product extends Extension_payPerRentals {
 		->setName('reservation_max_type');
 		foreach($QPayPerRentalTypes as $iType){
 			$htypeMax->addOption($iType['pay_per_rental_types_id'], $iType['pay_per_rental_types_name']);
+		}
+		$htypeTurnover = htmlBase::newElement('selectbox')
+				->setName('reservation_turnover_type');
+		foreach($QPayPerRentalTypes as $iType){
+			$htypeTurnover->addOption($iType['pay_per_rental_types_id'], $iType['pay_per_rental_types_name']);
 		}
 
 		$htypeMin = htmlBase::newElement('selectbox')
@@ -315,7 +321,9 @@ class payPerRentals_admin_products_new_product extends Extension_payPerRentals {
             $freeTrialPriceInput->val($payPerRental['free_try_price']);
 			//$monthsInput->val($payPerRental['max_months']);
 			$maxInput->val($payPerRental['max_period']);
+			$turnoverInput->val($payPerRental['turnover']);
 			$htypeMax->selectOptionByValue($payPerRental['max_type']);
+			$htypeTurnover->selectOptionByValue($payPerRental['turnover_type']);
 			$depositChargeInput->val($payPerRental['deposit_amount']);
 			$insuranceInput->val($payPerRental['insurance']);
             $minInput->val($payPerRental['min_period']);
@@ -469,6 +477,12 @@ class payPerRentals_admin_products_new_product extends Extension_payPerRentals {
 				array('addCls' => 'main', 'text' => $authChargeInput)
 			)
 		));*/
+		$mainTable->addBodyRow(array(
+			'columns' => array(
+				array('addCls' => 'main', 'text' => sysLanguage::get('TEXT_PAY_PER_RENTAL_TURNOVER')),
+				array('addCls' => 'main', 'text' => $turnoverInput->draw(). $htypeTurnover->draw())
+			)
+		));
 		
 		$mainTable->addBodyRow(array(
 			'columns' => array(

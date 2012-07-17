@@ -52,6 +52,39 @@ class OrderProduct {
 		return $this->pInfo['products_tax'];
 	}
 
+	public function getStartDate(){
+		if(isset($this->pInfo['reservationInfo']['start_date'])){
+			return date('m/d/Y', strtotime($this->pInfo['reservationInfo']['start_date']));
+		}
+
+		return date('m/d/Y');
+
+	}
+
+	public function getStartTime(){
+		if(isset($this->pInfo['reservationInfo']['start_date'])){
+			return date('H', strtotime($this->pInfo['reservationInfo']['start_date']));
+		}
+
+		return sysConfig::get('EXTENSION_PAY_PER_RENTALS_START_TIME');
+	}
+
+	public function getEndDate(){
+		if(isset($this->pInfo['reservationInfo']['end_date'])){
+			return date('m/d/Y', strtotime($this->pInfo['reservationInfo']['end_date']));
+		}
+
+		return date('m/d/Y');
+	}
+
+	public function getEndTime(){
+		if(isset($this->pInfo['reservationInfo']['end_date'])){
+			return date('H', strtotime($this->pInfo['reservationInfo']['end_date']));
+		}
+
+		return sysConfig::get('EXTENSION_PAY_PER_RENTALS_START_TIME');
+	}
+
 	public function getQuantity(){
 		return $this->pInfo['products_quantity'];
 	}

@@ -401,6 +401,9 @@ set_time_limit(0);
 								$stores = explode(',', $items['v_store_id']);
 
 								$CategoriesToStores =& $Category->CategoriesToStores;
+								foreach($CategoriesToStores as $iCategory){
+									$stores[] = $iCategory->stores_id;
+								}
 								$CategoriesToStores->delete();
 								foreach($stores as $storeId){
 									if(!empty($storeId)){

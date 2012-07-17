@@ -93,18 +93,19 @@ class Extension_payPerRentals extends ExtensionBase {
 		if($Module->getType() == 'Order' && sysConfig::get('EXTENSION_PAY_PER_RENTALS_USE_ONE_SHIPPING_METHOD') == 'False'){
 			$totalPrice = 0;
 			foreach($ShoppingCart->getProducts() as $cartProduct) {
+						$cost = 0;
 						if ($cartProduct->hasInfo('reservationInfo') === true){
 							$reservationInfo1 = $cartProduct->getInfo('reservationInfo');
 							if(isset($reservationInfo1['shipping']) && isset($reservationInfo1['shipping']['module']) && $reservationInfo1['shipping']['module'] == 'zonereservation'){
 								$selectedMethod = $reservationInfo1['shipping']['id'];
 								$weight += $cartProduct->getWeight();
-								$cost = 0;
+
 								if(isset($reservationInfo1['shipping']['cost'])){
 									$cost = $reservationInfo1['shipping']['cost'];
 								}
-								$totalPrice += $cartProduct->getFinalPrice(true) * $cartProduct->getQuantity() - $cost * $cartProduct->getQuantity();
 							}
 						}
+				$totalPrice += $cartProduct->getFinalPrice(true) * $cartProduct->getQuantity() - $cost * $cartProduct->getQuantity();
 			}
 
 
@@ -137,6 +138,10 @@ class Extension_payPerRentals extends ExtensionBase {
 	public function OrderTotalShippingProcess(&$totalShippingCost, &$shippingmodulesInfo){
 		global $ShoppingCart;
 		$hasShipping = false;
+		$totalPrice = 0;
+		foreach($ShoppingCart->getProducts() as $cartProduct){
+			$totalPrice += $cartProduct->getFinalPrice()* $cartProduct->getQuantity();
+		}
 		foreach($ShoppingCart->getProducts() as $cartProduct){
 			if ($cartProduct->getPurchaseType() != 'reservation'){
 				continue;
@@ -156,9 +161,15 @@ class Extension_payPerRentals extends ExtensionBase {
 						$hasShipping = true;
 						$shippingmodulesInfo .= 'Shipping('.$shippingInfo['title'].')';
 					}else{
+						if(isset($shippingInfo['free_delivery_over']) && $shippingInfo['free_delivery_over'] != -1 && $shippingInfo['free_delivery_over'] <= $totalPrice){
+							$shippingInfo['cost'] = 0;
+							$shippingmodulesInfo = 'Free delivery';
+						}else{
+							$shippingmodulesInfo = 'Shipping('.$shippingInfo['title'].')';
+						}
 						$totalShippingCost = $shippingInfo['cost'] - 1;
 						$hasShipping = true;
-						$shippingmodulesInfo = 'Shipping('.$shippingInfo['title'].')';
+
 					}
 				}
 			}
@@ -284,7 +295,7 @@ class Extension_payPerRentals extends ExtensionBase {
 	}
 
 	public function ProductInventoryBarcodeGetItemCount(&$invData, &$invItem, &$addTotal){
-		if ($invData['type'] == 'reservation'){
+		/*if ($invData['type'] == 'reservation'){
 			$today = date('Y-n-j', mktime(0, 0, 0, date('m'), date('d'), date('Y')));
 			$plusFive = date('Y-n-j', mktime(0, 0, 0, date('m'), date('d') + 5, date('Y')));
 
@@ -301,7 +312,7 @@ class Extension_payPerRentals extends ExtensionBase {
 			if ($Qreserved){
 				$addTotal = false;
 			}
-		}
+		} */
 	}
 
 	public function OrderQueryBeforeExecute(&$Qorder){
@@ -638,7 +649,9 @@ class Extension_payPerRentals extends ExtensionBase {
 				$table = '<table style="width:100%" width="100%"><tr><td>Item</td><td>Qty</td><td>Arrival</td><td>Departure</td><td>Total</td></tr>';
 				foreach($Qorders as $iOrder){
 					foreach($iOrder['OrdersProducts'] as $iOrderProducts){
+						$isReservation = false;
 						foreach($iOrderProducts['OrdersProductsReservation'] as $iReservation){
+							$isReservation = true;
 							if(sysConfig::get('EXTENSION_PAY_PER_RENTALS_ENABLE_TIME_FEES') == 'True'){
 								$parseDateStart = date_parse($iReservation['start_date']);
 								$parseDateEnd = date_parse($iReservation['end_date']);
@@ -687,6 +700,15 @@ class Extension_payPerRentals extends ExtensionBase {
 							$table .= '<td>'.$iOrderProducts['products_quantity'].'</td>';
 							$table .= '<td>'.date('m/d/Y',strtotime($iReservation['start_date'])).'<br/>'.$timeSlotStart.'</td>';//date('H:i:s',strtotime($iReservation['end_date']))
 							$table .= '<td>'.date('m/d/Y',strtotime($iReservation['end_date'])).'<br/>'.$timeSlotEnd.'</td>';//date('H:i:s',strtotime($iReservation['start_date']))
+							$table .= '<td>'.$currencies->format(($iOrderProducts['final_price']*$iOrderProducts['products_quantity'])).'</td>';
+							$table .= '</tr>';
+						}
+						if(!$isReservation){
+							$table .= '<tr>';
+							$table .= '<td>'.$iOrderProducts['products_name'].'</td>';
+							$table .= '<td>'.$iOrderProducts['products_quantity'].'</td>';
+							$table .= '<td>'.'not applicable'.'</td>';//date('H:i:s',strtotime($iReservation['end_date']))
+							$table .= '<td>'.'not applicable'.'</td>';//date('H:i:s',strtotime($iReservation['start_date']))
 							$table .= '<td>'.$currencies->format(($iOrderProducts['final_price']*$iOrderProducts['products_quantity'])).'</td>';
 							$table .= '</tr>';
 						}

@@ -1,0 +1,68 @@
+.cs-corner-all
+{
+	border-radius: 4px;
+	-webkit-border-radius: 4px;
+	-moz-border-radius: 4px;
+}
+.cs-corner-top
+{
+	border-radius: 4px 4px 0 0;
+	-webkit-border-radius: 4px 4px 0 0;
+	-moz-border-radius: 4px 4px 0 0; 
+}
+/* Can't be combined on one element - use long version if you wan't that - for example - 'border-left-radius' 'border-right-radius'*/
+.cs-corner-bottom
+{
+	border-radius: 0 0 4px 4px; 
+	-webkit-border-radius: 0 0 4px 4px; 
+	-moz-border-radius: 0 0 4px 4px ;
+}
+.cs-corner-right
+{
+	border-radius: 0 4px 4px 0; 
+	-webkit-border-radius: 0  4px 4px 0; 
+	-moz-border-radius: 0  4px 4px 0;
+}
+.cs-corner-left
+{
+	border-radius:  4px 0 0 4px ; 
+	-webkit-border-radius:   4px 0 0 4px ; 
+	-moz-border-radius:   4px 0 0 4px ;
+}
+
+/*Can't be used on existing elements that have graident set, set '!important' here if you want that */
+.cs-gradient-blue
+{
+	color:#FFF !important;
+	background: #81a8ce !important; /* Old browsers */
+	background: linear-gradient(top,  #81a8ce 0%,#5e87b0 100%) !important; /* W3C */
+}
+.cs-gradient-blue a{color:#FFF}
+.cs-gradient-black
+{
+	color:#FFF !important;
+	background: #646464 !important; /* Old browsers */
+	background: linear-gradient(top,  #646464 0%,#323232 100%) !important; /* W3C */
+}
+
+.cs-gradient-white
+{
+	color:#000 !important;
+	background: #fdfdfd !important; /* Old browsers */
+	background: linear-gradient(top,  #fdfdfd 0%,#eeeeee 100%) !important; /* W3C */
+}
+
+.cs-gradient-red
+{
+	color:#FFF !important;
+	background: #ff6464 !important; /* Old browsers */
+	background: linear-gradient(top,  #ff6464 0%,#ff0000 100%) !important; /* W3C */
+} 
+
+
+.cs-gradient-grey
+{
+	color:#000 !important;
+	background: #eeeeee !important; /* Old browsers */
+	background: linear-gradient(top,  #eeeeee 0%,#cccccc 100%) !important; /* W3C */
+}

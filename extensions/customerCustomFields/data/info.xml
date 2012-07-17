@@ -1,0 +1,8 @@
+<data>
+	<name>Customer Custom Fields</name>
+	<key>customerCustomFields</key>
+	<version>1.0</version>
+	<author>Cristian Arcu ( http://www.itwebexperts.com )</author>
+	<status_key>EXTENSION_CUSTOMER_CUSTOM_FIELDS_ENABLED</status_key>
+	<installed_key>EXTENSION_CUSTOMER_CUSTOM_FIELDS_INSTALLED</installed_key>
+</data>

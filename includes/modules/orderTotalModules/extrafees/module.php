@@ -16,6 +16,17 @@ class OrderTotalExtrafees extends OrderTotalModuleBase
 		global $order, $ShoppingCart;
 		//get session exists extra fees.
 		//i calculate again the mandatory fees
+		$hasFees = false;
+		if(isset($ShoppingCart)){
+			foreach($ShoppingCart->getProducts() as $cartProduct) {
+				$purchaseType = $cartProduct->getPurchaseType();
+				if($purchaseType == 'reservation' && $cartProduct->hasInfo('reservationInfo')){
+					$hasFees = true;
+					break;
+				}
+			}
+		}
+		if($hasFees){
 		if(Session::exists('pickupFees_time') && Session::get('pickupFees_fee') > 0){
 			$order->info['total'] += Session::get('pickupFees_fee');
 			$this->addOutput(array(
@@ -87,6 +98,7 @@ class OrderTotalExtrafees extends OrderTotalModuleBase
 			}
 		}
 	}
+}
 }
 
 ?>

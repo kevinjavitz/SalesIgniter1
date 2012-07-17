@@ -28,7 +28,7 @@ class PDFInfoBoxInvoiceStatus extends PDFInfoBoxAbstract {
 			        ->andWhereIn('ot.module_type', array('total', 'ot_total'))
 			        ->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 
-		        $totalValue = $Qorders[0]['OrdersTotal'][0]['value'];
+		        $totalValue = floatval($Qorders[0]['OrdersTotal'][0]['value']);
 
 		        $Qhistory = Doctrine_Query::create()
 			        ->from('OrdersPaymentsHistory')
@@ -38,10 +38,10 @@ class PDFInfoBoxInvoiceStatus extends PDFInfoBoxAbstract {
 			        ->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 				$paidValue = 0;
 				foreach($Qhistory as $oHistory){
-					$paidValue += $oHistory['payment_amount'];
+					$paidValue += floatval($oHistory['payment_amount']);
 				}
 
-				if($paidValue >= $totalValue){
+				if(number_format($paidValue,2) -  number_format($totalValue,2) >= 0){
 					$htmlText = 'PAID';
 				}else{
 					$htmlText = 'NOT PAID ('.$currencies->format($totalValue-$paidValue).' still to be paid)';

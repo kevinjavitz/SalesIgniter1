@@ -14,6 +14,13 @@
 		->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 
 		$paymentHistory = $Qhistory[0];
+		$QStatushistory = Doctrine_Query::create()
+				->from('OrdersStatusHistory')
+				->where('orders_id = ?', $Editor->getOrderId())
+				->orderBy('orders_status_history_id DESC')
+				->limit(1)
+				->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+		$statusHistory = $QStatushistory[0];
 		
 		if (array_key_exists('card_details', $paymentHistory) && is_null($paymentHistory['card_details']) === false){
 			$cardInfo = unserialize(cc_decrypt($paymentHistory['card_details']));
@@ -60,6 +67,7 @@
 	
 	EventManager::attachActionResponse(array(
 		'success' => $success,
-		'tableRow' => $html
+		'tableRow' => $html,
+		'status' => (isset($statusHistory['orders_status_id'])?$statusHistory['orders_status_id']:'')
 	), 'json');
 ?>

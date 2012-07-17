@@ -1,7 +1,8 @@
 <?php
 	$Qorders = Doctrine_Query::create()
-	->select('o.orders_id, a.entry_name, o.date_purchased, o.customers_id, o.last_modified, o.currency, o.currency_value, s.orders_status_id, sd.orders_status_name, ot.text as order_total, o.payment_module,o.admin_id')
+	->select('o.orders_id, a.entry_name,c.customers_email_address, o.date_purchased, o.customers_id, o.last_modified, o.currency, o.currency_value, s.orders_status_id, sd.orders_status_name, ot.text as order_total, o.payment_module')
 	->from('Orders o')
+	->leftJoin('o.Customers c')
 	->leftJoin('o.OrdersTotal ot')
 	->leftJoin('o.OrdersAddresses a')
 	->leftJoin('o.OrdersStatus s')
@@ -19,7 +20,9 @@
 	}elseif (isset($_GET['status']) && is_numeric($_GET['status']) && $_GET['status'] > 0){
 		$Qorders->andWhere('s.orders_status_id = ?', (int)$_GET['status']);
 	}
-
+    if(isset($_GET['customer_name_or_email']) && !empty($_GET['customer_name_or_email'])){
+		$Qorders->andWhere('a.entry_name LIKE "%'.$_GET['customer_name_or_email'].'%" OR c.customers_email_address LIKE "%'.$_GET['customer_name_or_email'].'%"');
+	}
 	if (isset($_GET['start_date']) && !empty($_GET['start_date'])){
         $datetime = date('Y-m-d h:i:s', strtotime($_GET['start_date']));            
 		$Qorders->andWhere('o.date_purchased >= ?', $datetime);
@@ -225,6 +228,13 @@
 		$startdateField->val($_GET['start_date']);
 	}
 
+$customerNameEmailField = htmlBase::newElement('input')
+		->setName('customer_name_or_email')
+		->setLabel('Customer ')
+		->setLabelPosition('before');
+if (isset($_GET['customer_name_or_email']) && !empty($_GET['customer_name_or_email'])){
+	$customerNameEmailField->val($_GET['customer_name_or_email']);
+}
 	$enddateField = htmlBase::newElement('input')
 	->setName('end_date')
 	->setLabel('End Date: ')
@@ -300,6 +310,7 @@
 
 	$searchForm
 	->append($limitField)
+	->append($customerNameEmailField)
 	->append($startdateField)
 	->append($enddateField)
 	->append($statusField);

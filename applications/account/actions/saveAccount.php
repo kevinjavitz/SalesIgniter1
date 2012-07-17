@@ -51,7 +51,7 @@
 				$userAccount->setDateOfBirth($accountValidation['dob']);
 			}
 		}
-
+		EventManager::notify('CheckoutSetupPostFields');
 		$userAccount->setLanguageId($_POST['language_id']);
 		$userAccount->updateCustomerAccount();
 

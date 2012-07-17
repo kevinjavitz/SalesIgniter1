@@ -44,7 +44,7 @@ class Extension_ordersCustomFields extends ExtensionBase {
 			if($customFields['field_label'] != 'Destination Type'){
 				$additionalDetails .= '<b>'.$customFields['field_label'] .'</b>:'.$customFields['value'].'<br/>';
 			}else{
-				$destinationName = '<b>'.$customFields['field_label'] .'</b>:'.$customFields['value'];
+				$destinationName = '<b>'.'Type' .'</b>:'.$customFields['value'];
 			}
 		}
 		$emailEvent->setVar('additional_information', $additionalDetails);

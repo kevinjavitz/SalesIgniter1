@@ -1,6 +1,8 @@
 <?php
 	$html = '';
 	$resultsMode = 'html';
+	$f = '';
+	$g = '';
 	if (isset($_GET['export']) && $_GET['export'] == 'csv'){
 		$resultsMode = 'csv';
 		$html = 'Client Name,' . 
@@ -17,24 +19,34 @@
 			'Delivery Method,' . 
 			'Comments';
 		$html .= "\n";
+		//$f = 'opr.start_date is null OR ';
+		//$g = 'opr.rental_state is null OR ';
 	}
 	$Qreservations = Doctrine_Query::create()
-	->from('OrdersProductsReservation opr')
-	->leftJoin('opr.OrdersProducts op')
-	->leftJoin('op.Orders o')
+	->from('Orders o')
 	->leftJoin('o.OrdersAddresses oa')
+	->leftJoin('o.OrdersProducts op')
+	->leftJoin('op.OrdersProductsReservation opr')
 	->leftJoin('opr.ProductsInventoryBarcodes ib')
 	->leftJoin('ib.ProductsInventory i')
 	->leftJoin('opr.ProductsInventoryQuantity iq')
 	->leftJoin('iq.ProductsInventory i2')
-	->where('opr.start_date BETWEEN "' . $_GET['start_date'] . '" AND "' . $_GET['end_date'] . '"')
-	->andWhere('oa.address_type = "delivery" or oa.address_type is null');
-
+	/*			->leftJoin('rb.RentalBookings rb_child')
+	->leftJoin('rb_child.Orders o_child')
+	->leftJoin('o_child.OrdersAddresses oa_child')
+	->leftJoin('rb_child.OrdersProducts op_child')
+	->leftJoin('rb_child.ProductsInventoryBarcodes ib_child')
+	->leftJoin('ib_child.ProductsInventory i_child')
+	->leftJoin('rb_child.ProductsInventoryQuantity iq_child')
+	->leftJoin('iq_child.ProductsInventory i2_child')*/
+	->where($f.'opr.start_date BETWEEN "' . $_GET['start_date'] . '" AND "' . $_GET['end_date'] . '"')
+	->andWhere('oa.address_type = ?', 'delivery')
+	->andWhere('opr.parent_id is null');
 	
 	if (isset($_GET['include_sent'])){
 		$Qreservations->andWhereIn('opr.rental_state', array('reserved', 'out'));
 	}else{
-		$Qreservations->andWhere('opr.rental_state = ?', 'reserved');
+		$Qreservations->andWhere($g . 'opr.rental_state = "'. 'reserved'.'"');
 	}
 
 	if(isset($_GET['eventSort'])){
@@ -76,35 +88,20 @@
 	$Qreservations = $Qreservations->execute();
 	if ($Qreservations !== false){
 		$Orders = $Qreservations->toArray(true);
-		foreach($Orders as $rInfo){
+		foreach($Orders as $oInfo){
 			if ($resultsMode != 'csv'){
 				$html .= '<tr class="dataTableRow"><td colspan="11" style="border-bottom:1px solid #000000;">Order id:'.$oInfo['orders_id'].' </td></tr>';
 			}
-			if(!is_null($rInfo['orders_products_id']) && $rInfo['orders_products_id'] > 0){
-				$oInfo = $rInfo['OrdersProducts']['Orders'];
-				$opInfo = $rInfo['OrdersProducts'];
-			//foreach($oInfo['OrdersProducts'] as $opInfo){
-			//	foreach($opInfo['OrdersProductsReservation'] as $rInfo){
+
+			foreach($oInfo['OrdersProducts'] as $opInfo){
 				$orderAddress = $oInfo['OrdersAddresses']['delivery'];
 				$orderId = $oInfo['orders_id'];
 				$productName = $opInfo['products_name'];
 				$shippingMethod = $oInfo['shipping_module'];
 
 				$customersName = $orderAddress['entry_name'];
-			}else{
-				    $shippingMethod = '';
-				    $QQueue = Doctrine_Query::create()
-					->from('QueueProductsReservation qpr')
-					->leftJoin('qpr.PayPerRentalQueueToReservations pprqr')
-				    ->where('pprqr.orders_products_reservations_id = ?', $rInfo['orders_products_reservations_id'])
-				    ->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
-					$productName = $QQueue[0]['products_name'];
-					$QCustomer = Doctrine_Query::create()
-					->from('Customers c')
-					->where('customers_id = ?', $QQueue[0]['customers_id'])
-					->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
-					$customersName = $QCustomer[0]['customers_firstname'].' '. $QCustomer[0]['customers_lastname'];
-			}
+				foreach($opInfo['OrdersProductsReservation'] as $rInfo){
+
 					$trackMethod = $rInfo['track_method'];
 					$useCenter = 0;
 
@@ -356,33 +353,102 @@
 					}else{
 						$showOrder = '';
 					}
+					if($opInfo['purchase_type'] == 'reservation'){
+						$rentalType = 'Rental';
+					}else{
+						$rentalType = 'Retail';
+					}
 					$Qhistory = Doctrine_Query::create()
 					->from('OrdersStatusHistory')
 					->where('orders_id = ?', $oInfo['orders_id'])
 					->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 					$comments = '';
 					foreach($Qhistory as $history){
-						$comments .= stripslashes($history['comments'])."\n";
+						if(!is_null($history['comments']) && !empty($history['comments'])){
+							$str = trim($history['comments']);
+							$str = str_replace(array("\r\n", "\r", "\n", "\t"),' ', $str);
+							if($str != ''){
+								$comments .= escapeCsvElement($str,',').'. ';
+							}
+						}
 					}
-					$html .= '"' . addslashes($showName) . '",' .
-						'"' . $showOrder . '",' .
-						'"' . addslashes($orderAddress['entry_street_address']) . '",' .
-						'"' . addslashes($orderAddress['entry_city']) . '",' .
-						'"' . addslashes($orderAddress['entry_state']) . '",' .
-						'"' . addslashes($orderAddress['entry_postcode']) . '",' .
-						'"' . $oInfo['customers_telephone'] . '",' .
-						'"Rental",' .
-						'"' . addslashes($productName) . '",' .
-						'"' . $opInfo['products_quantity']. '",' .
-						'"' . $shipOn . '",' .
-						'"' . addslashes(strip_tags($oInfo['shipping_module'])) . '",' .
-						'"'.addslashes($comments).'"';
-
+					$html .= escapeCsvElement($showName,',') .',' .
+							escapeCsvElement($showOrder,',') .',' .
+							escapeCsvElement($orderAddress['entry_street_address'],',') .',' .
+							escapeCsvElement($orderAddress['entry_city'],',') .',' .
+							escapeCsvElement($orderAddress['entry_state'],',') .',' .
+							escapeCsvElement($orderAddress['entry_postcode'],',') .',' .
+							escapeCsvElement($oInfo['customers_telephone'],',') .',' .
+							escapeCsvElement($rentalType,',') .',' .
+							escapeCsvElement($productName,',') .',' .
+							escapeCsvElement($opInfo['products_quantity'],',') .',' .
+							escapeCsvElement($shipOn,',') .',' .
+							escapeCsvElement(strip_tags($oInfo['shipping_module']),',') .',' .
+							escapeCsvElement($comments,',');
 					$html .= "\n";
 				}
-		//	}
+			}
+			if ($resultsMode == 'csv'){
+				$QOrderRetail = Doctrine_Query::create()
+						->from('OrdersProducts op')
+						->where('op.orders_id = ?', $oInfo['orders_id'])
+						->andWhere('op.purchase_type <> ?','reservation')
+						->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+				foreach($QOrderRetail as $orderRetail){
+					$orderAddress = $oInfo['OrdersAddresses']['delivery'];
+					$orderId = $oInfo['orders_id'];
+					$productName = $orderRetail['products_name'];
+					$shippingMethod = $oInfo['shipping_module'];
+					$customersName = $orderAddress['entry_name'];
+					if (!isset($currentName) || $currentName != $customersName){
+						$currentName = $customersName;
+						$showName = $currentName;
+					}else{
+						$showName = '';
+					}
+					if (!isset($currentOrder) || $currentOrder != $oInfo['orders_id']){
+						$currentOrder = $oInfo['orders_id'];
+						$showOrder = $currentOrder;
+					}else{
+						$showOrder = '';
+					}
+					if($orderRetail['purchase_type'] == 'reservation'){
+						$rentalType = 'Rental';
+					}else{
+						$rentalType = 'Retail';
+					}
+					$Qhistory = Doctrine_Query::create()
+							->from('OrdersStatusHistory')
+							->where('orders_id = ?', $oInfo['orders_id'])
+							->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+					$comments = '';
+					foreach($Qhistory as $history){
+						if(!is_null($history['comments']) && !empty($history['comments'])){
+							$str = trim($history['comments']);
+							$str = str_replace(array("\r\n", "\r", "\n", "\t"),' ', $str);
+							if($str != ''){
+								$comments .= escapeCsvElement($str,',').'. ';
+							}
+						}
+					}
+					$html .= escapeCsvElement($showName,',') .',' .
+							escapeCsvElement($showOrder,',') .',' .
+							escapeCsvElement($orderAddress['entry_street_address'],',') .',' .
+							escapeCsvElement($orderAddress['entry_city'],',') .',' .
+							escapeCsvElement($orderAddress['entry_state'],',') .',' .
+							escapeCsvElement($orderAddress['entry_postcode'],',') .',' .
+							escapeCsvElement($oInfo['customers_telephone'],',') .',' .
+							escapeCsvElement($rentalType,',') .',' .
+							escapeCsvElement($productName,',') .',' .
+							escapeCsvElement($orderRetail['products_quantity'],',') .',' .
+							escapeCsvElement('',',') .',' .
+							escapeCsvElement(strip_tags($oInfo['shipping_module']),',') .',' .
+							escapeCsvElement($comments,',');
+					$html .= "\n";
+				}
+			}
 
-	//	}
+		}
 	}
 	
 	if ($resultsMode == 'csv'){

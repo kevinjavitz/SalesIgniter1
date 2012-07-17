@@ -66,6 +66,26 @@ class OrderShippingModuleBase extends ModuleBase
 		return false;
 	}
 
+	public function getBillingAddress() {
+		global $Editor, $userAccount;
+		if (isset($Editor) && is_object($Editor)){
+			$Address = $Editor->AddressManager->getAddress('billing');
+			return $Address->toArray();
+		}
+		if (isset($userAccount)){
+			$addressBook = $userAccount->plugins['addressBook'];
+		}
+		if (isset($addressBook) && is_object($addressBook)){
+			if ($addressBook->entryExists('billing') === true){
+				$deliveryAddress = $addressBook->getAddress('billing');
+			}
+			else {
+				$deliveryAddress = $addressBook->getAddress('billing');
+			}
+			return $deliveryAddress;
+		}
+		return false;
+	}
 	public function updateStatus() {
 		global $order, $onePageCheckout;
 

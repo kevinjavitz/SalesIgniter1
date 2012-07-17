@@ -286,7 +286,8 @@
 		public function restoreContents(){
 			$contents = $this->dbUtil->getCartFromDatabase();
 			foreach($contents as $cartProduct){
-				$this->addProduct($cartProduct->getIdString(),$cartProduct->getPurchaseType(),$cartProduct->getQuantity(), $cartProduct->getInfo());
+				//$this->addProduct($cartProduct->getIdString(),$cartProduct->getPurchaseType(),$cartProduct->getQuantity(), $cartProduct->getInfo());
+				$this->contents->add(new ShoppingCartProduct($cartProduct->getInfo()));
 			}
 		}
 		

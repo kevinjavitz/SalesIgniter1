@@ -133,7 +133,12 @@ if (sysConfig::get('ACCOUNT_CITY_BIRTH') == 'true') {
 	'</div>';
 	
 	$pageContents .= $formTable->draw();
-	
+	$contents = EventManager::notifyWithReturn('CheckoutSetupFields');
+	if (!empty($contents)){
+		foreach($contents as $content){
+			$pageContents .= $content;
+		}
+	}
 	$pageButtons = htmlBase::newElement('button')
 	->usePreset('continue')
 	->css(array('float' => 'right'))

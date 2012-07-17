@@ -9,6 +9,7 @@
 */
 
 // start profiling
+set_time_limit(0);
 if (isset($_GET['runProfile'])){
 	xhprof_enable(XHPROF_FLAGS_CPU + XHPROF_FLAGS_MEMORY);
 }
@@ -39,6 +40,7 @@ error_reporting(E_ALL & ~E_DEPRECATED);
 	require('includes/classes/ExtensionConfigReader.php');
 	require('includes/classes/system_configuration.php');
 	include('includes/conversionArrays.php');
+	//include('includes/classes/ChromePhp.php');
 
 	date_default_timezone_set('America/New_York');
 	sysConfig::init();

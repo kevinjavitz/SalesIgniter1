@@ -84,11 +84,16 @@
 
 	function initialize() {
 		map = new GMap2(document.getElementById("gMap"));
-		if(typeof lpArr[0] != 'undefined'){
-			map.setCenter(new GLatLng(lpArr[0], lpArr[1]), 14);
+		var latlngbounds = new GLatLngBounds();
+		for (var i = 0; i < lpArrX.length; i++){
+			latlngbounds.extend(new GLatLng(parseFloat(lpArrX[i]),parseFloat(lpArrY[i])));
+		}
+		map.setCenter(latlngbounds.getCenter(), map.getBoundsZoomLevel(latlngbounds));
+		/*if(typeof lpArr[0] != 'undefined'){
+			map.setCenter(new GLatLng(lpArr[0], lpArr[1]), 7);
 		}else{
 			map.setCenter(new GLatLng(41.551756, -70.558548), 4);
-		}
+		} */
 		map.addControl(new GLargeMapControl());
 		geocoder = new GClientGeocoder();
 

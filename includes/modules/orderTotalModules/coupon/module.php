@@ -1,6 +1,14 @@
 <?php
 class OrderTotalCoupon extends OrderTotalModuleBase
 {
+	public $credit_class;
+	public $include_shipping;
+	public $include_tax;
+	public $calculate_tax;
+	public $tax_class;
+	public $user_prompt;
+	public $header;
+	public $deduction;
 
 	public function __construct() {
 		/*
@@ -22,6 +30,16 @@ class OrderTotalCoupon extends OrderTotalModuleBase
 		}
 	}
 
+	public function getDiscount(){
+		$order_total = $this->get_order_total();
+		$discountAmount = $this->calculate_credit($order_total);
+		$taxDiscountAmount = 0.0; //Fred
+		$this->deduction = $discountAmount;
+		if ($this->calculate_tax != 'None'){ //Fred - changed from 'none' to 'None'!
+			$taxDiscountAmount = $this->calculate_tax_deduction($order_total, $this->deduction, $this->calculate_tax);
+		}
+		return $taxDiscountAmount + $discountAmount;
+	}
 	public function process() {
 		global $order, $onePageCheckout;
 
@@ -43,6 +61,8 @@ class OrderTotalCoupon extends OrderTotalModuleBase
 						'value' => 0
 				));
 			}else{
+				$minModule = OrderTotalModules::getModule('minorder', true);
+				if($order->info['subtotal'] -($discountAmount + $taxDiscountAmount) >= $minModule->getConfigData('MODULE_ORDER_TOTAL_MINORDER_AMOUNT')){
 				$order->info['tax'] -= $taxDiscountAmount;
 				if($order->info['total'] - $discountAmount > 0){
 					$order->info['total'] -= $discountAmount;
@@ -54,6 +74,7 @@ class OrderTotalCoupon extends OrderTotalModuleBase
 						'text' => '<b>-' . $this->formatAmount($discountAmount + $taxDiscountAmount) . '</b>',
 						'value' => -($discountAmount + $taxDiscountAmount)
 					));
+				}
 			}
 
 		}
@@ -106,8 +127,9 @@ class OrderTotalCoupon extends OrderTotalModuleBase
 						$couponAmount = $order->info['shipping_cost'] + $Coupon['coupon_amount'];
 					}
 				}
+				$couponMinOrder = $Coupon['coupon_minimum_order'];
 
-				if ($Coupon['coupon_minimum_order'] <= $this->get_order_total()){
+				if ($couponMinOrder <= $this->get_order_total()){
 					if (!empty($Coupon['restrict_to_products']) || !empty($Coupon['restrict_to_purchase_type'])){
 						if($onePageCheckout->isMembershipCheckout()) {
 							$success = false;
@@ -371,6 +393,9 @@ class OrderTotalCoupon extends OrderTotalModuleBase
 		if ($this->include_shipping == 'False'){
 			$order_total = $order_total - $order->info['shipping_cost'];
 		}
+		/*if ($this->include_tax == 'False' && $this->include_shipping == 'False'){
+			$order_total = $order->info['subtotal'];
+		} */
 		// OK thats fine for global coupons but what about restricted coupons
 		// where you can only redeem against certain products/categories.
 		// and I though this was going to be easy !!!
@@ -393,10 +418,26 @@ class OrderTotalCoupon extends OrderTotalModuleBase
 						foreach($ShoppingCart->getProducts() as $cartProduct){
 							if (in_array($cartProduct->getPurchaseType(), $types)){
 								$totalPrice += $cartProduct->getFinalPrice(($this->include_tax == 'True')) * $cartProduct->getQuantity();
+								if($cartProduct->hasInfo('reservationInfo')){
+									if($this->include_shipping == 'False'){
+										$pInfo = $cartProduct->getInfo('reservationInfo');
+										$totalPrice -= $pInfo['shipping']['cost'];
+									}
+								}
 							}
 						}
 					}
 					$order_total = $totalPrice;
+				}
+				if(!empty($Coupon['products_excluded'])){
+					$products = explode(',', $Coupon['products_excluded']);
+					foreach($ShoppingCart->getProducts() as $cartProduct){
+						$pInfo = $cartProduct->getInfo();
+						$pId = str_replace($pInfo['aID_string'],'', $pInfo['id_string']);
+						if(in_array($pId, $products)){
+							$order_total -= $cartProduct->getFinalPrice(($this->include_tax == 'True')) * $cartProduct->getQuantity();
+						}
+					}
 				}
 			}
 		}

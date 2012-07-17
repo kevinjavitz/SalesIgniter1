@@ -235,7 +235,9 @@ class InfoBoxPayPerRental extends InfoBoxAbstract {
 								}
 							}
 						}else{
-							$childLinkEl = htmlBase::newElement('a')
+							$headerEl->addClass('cats')
+							->attr('rel',$catId);
+							/*$childLinkEl = htmlBase::newElement('a')
 									->addClass('ui-widget ui-widget-content ui-corner-all cats')
 									->css('border-color', 'transparent')
 									->html('<span class="ui-icon ui-icon-triangle-1-e ui-icon-categories-bullet" style="vertical-align:middle;"></span><span class="ui-categories-text" style="vertical-align:middle;">'.sysLanguage::get('INFOBOX_CATEGORIES_VIEW_PRODUCTS').'</span>')
@@ -243,7 +245,7 @@ class InfoBoxPayPerRental extends InfoBoxAbstract {
 
 							$liElement = htmlBase::newElement('li')
 									->append($childLinkEl);
-							$ulElement->addItemObj($liElement);
+							$ulElement->addItemObj($liElement);*/
 						}
 						$flyoutContainer->append($ulElement);
 
@@ -1440,9 +1442,14 @@ class InfoBoxPayPerRental extends InfoBoxAbstract {
 								success: function(data) {
 									$ellem.find('.invCenter').replaceWith(data.data);
 									<?php if(sysConfig::get('EXTENSION_INVENTORY_CENTERS_USE_LP') == 'True'){?>
-										lpArr = data.lpPos.split(',');
-										if(typeof GMap2 != 'undefined' && data.lpPos != '0,0'){
-											map.setCenter(new GLatLng(lpArr[0],lpArr[1]), 14);
+										lpArrX = data.lpPosX;
+										lpArrY = data.lpPosY;
+										if(typeof GMap2 != 'undefined'){
+											var latlngbounds = new GLatLngBounds();
+											for (var i = 0; i < lpArrX.length; i++){
+												latlngbounds.extend(new GLatLng(parseFloat(lpArrX[i]),parseFloat(lpArrY[i])));
+											}
+											map.setCenter(latlngbounds.getCenter(), map.getBoundsZoomLevel(latlngbounds));
 										}
 										excludedTimes = new Array();
 										if(data.excluded_times != null){
@@ -1468,8 +1475,10 @@ class InfoBoxPayPerRental extends InfoBoxAbstract {
 			                           	    $('.hstart').html('');
 											$('.hend').html('');
 											var endTime = <?php echo sysConfig::get('EXTENSION_PAY_PER_RENTALS_END_TIME');?>;
-											for (i=data.start_time;i<endTime;i++){
-												if($.inArray(i, excludedTimes) == -1){
+											var k = 0;
+											for (i=data.start_time-1;i<endTime;i++){
+												k++;
+												if(excludedTimes.indexOf(i) == -1 && k > 1){
 													var timeVal = (i % 12) + (i<12?':00 AM':':00 PM');
 													if(i == 12){
 														timeVal = '12:00 PM';

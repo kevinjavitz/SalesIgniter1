@@ -243,20 +243,20 @@
 				$FormTable->addRow(sysLanguage::get('ENTRY_CITY'));
 				$FormTable->addRow($Fields['city']);
 				if(sysConfig::get('CHECKOUT_COUNTRY_BEFORE_STATE') == 'True'){
-					$FormTable->addRow(sysLanguage::get('ENTRY_COUNTRY'));
+					$FormTable->addRow('<span class="countryName">'.sysLanguage::get('ENTRY_COUNTRY').'</span>');
 					$FormTable->addRow($Fields['country']);
 				}
 
 				if (isset($Fields['state'])){
-					$FormTable->addRow(sysLanguage::get('ENTRY_STATE'));
+					$FormTable->addRow('<span class="countryState">'.sysLanguage::get('ENTRY_STATE').'</span>');
 					$FormTable->addRow($Fields['state']);
 				}
 
-				$FormTable->addRow(sysLanguage::get('ENTRY_POST_CODE'));
+				$FormTable->addRow('<span class="countryPostcode">'.sysLanguage::get('ENTRY_POST_CODE').'</span>');
 				$FormTable->addRow($Fields['postcode']);
 
 				if(sysConfig::get('CHECKOUT_COUNTRY_BEFORE_STATE') == 'False'){
-					$FormTable->addRow(sysLanguage::get('ENTRY_COUNTRY'));
+					$FormTable->addRow('<span class="countryName">'.sysLanguage::get('ENTRY_COUNTRY').'</span>');
 					$FormTable->addRow($Fields['country']);
 				}
 
@@ -361,6 +361,12 @@
 		}
 ?>
 <?php
+$contents = EventManager::notifyWithReturn('CheckoutSetupFields');
+if (!empty($contents)){
+	foreach($contents as $content){
+		echo $content;
+	}
+}
 	if($userAccount->isLoggedIn() === false){
 ?>
 

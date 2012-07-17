@@ -79,7 +79,7 @@
 					<title>Use prorated calculation of prices</title>
 					<description>Use prorated calculation of prices.</description>
 					<sort_order>20</sort_order>
-					<set_function>tep_cfg_select_option(array('Prorated','No Pro-rates: extra lower time periods allowed.','No Pro-rates: extra time periods not allowed.'),</set_function>
+					<set_function>tep_cfg_select_option(array('Prorated','Prorated without division','No Pro-rates: extra lower time periods allowed.','No Pro-rates: extra time periods not allowed.'),</set_function>
 				</EXTENSION_PAY_PER_RENTALS_PRICING_CONFIG>
 				<EXTENSION_PAY_PER_RENTALS_SHOW_PRICES_DATES_BEFORE>
 					<value>True</value>
@@ -137,6 +137,19 @@
 					<sort_order>31</sort_order>
 					<set_function>tep_cfg_select_option(array('True','False'),</set_function>
 				</EXTENSION_PAY_PER_RENTALS_MORE_HOURS_ONE_DAY>
+                <EXTENSION_PAY_PER_RENTALS_TURNOVER_TIME>
+                    <value>1</value>
+                    <title>Number of days after shipping days when the product becomes available</title>
+                    <description>If 0 product becomes available the same day it is schedulled for return</description>
+                    <sort_order>31</sort_order>
+                </EXTENSION_PAY_PER_RENTALS_TURNOVER_TIME>
+                <EXTENSION_PAY_PER_RENTALS_IGNORE_BARCODE_STATUS>
+                    <value>False</value>
+                    <title>Ignore barcode status</title>
+                    <description>Unavailable barcode status wont be taken into account</description>
+                    <sort_order>31</sort_order>
+                    <set_function>tep_cfg_select_option(array('True','False'),</set_function>
+                </EXTENSION_PAY_PER_RENTALS_IGNORE_BARCODE_STATUS>
 				<EXTENSION_PAY_PER_RENTALS_SHOW_PRICE_TOTAL_ON_LISTING>
 					<value>True</value>
 					<title>Do you want to show price total on listing when ppr before is selected?</title>
@@ -541,6 +554,20 @@
 			<set_function>tep_cfg_select_option(array('True','False'),</set_function>
 		</EXTENSION_PAY_PER_RENTALS_ALLOW_HOURLY>
 
+        <EXTENSION_PAY_PER_RENTALS_GOOGLE_ZONES_COUNTRY_DISABLED>
+               <value>False</value>
+               <title>Disable Country in check address for google zones</title>
+               <description>Disable Country in check address for google zones</description>
+               <sort_order>32</sort_order>
+               <set_function>tep_cfg_select_option(array('True','False'),</set_function>
+        </EXTENSION_PAY_PER_RENTALS_GOOGLE_ZONES_COUNTRY_DISABLED>
+        <EXTENSION_PAY_PER_RENTALS_GOOGLE_ZONES_STATE_DISABLED>
+                    <value>False</value>
+                    <title>Disable State in check address for google zones</title>
+                    <description>Disable State in check address for google zones</description>
+                    <sort_order>32</sort_order>
+                    <set_function>tep_cfg_select_option(array('True','False'),</set_function>
+        </EXTENSION_PAY_PER_RENTALS_GOOGLE_ZONES_STATE_DISABLED>
         <EXTENSION_PAY_PER_RENTALS_DISCOUNT_MAX_DAYS>
             <value>30</value>
             <title>Number of days before the discount is calculated from the reservation orders</title>

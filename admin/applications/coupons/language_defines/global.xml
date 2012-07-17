@@ -221,4 +221,6 @@
     <define key="TEXT_INFO_COUPON_PRODUCTS_HELP"><![CDATA[A comma separated list of product_ids that this coupon can be used with. Leave blank for no restrictions.]]></define>
     <define key="TEXT_INFO_COUPON_CATEGORIES_HELP"><![CDATA[A comma separated list of cpaths that this coupon can be used with, leave blank for no restrictions.]]></define>
     <define key="TEXT_INFO_COUPON_PURCHASE_TYPE_HELP"><![CDATA[Purchase types that this coupon can be used with, leave unchecked for no restrictions.]]></define>
+    <define key="TEXT_PRODUCTS"><![CDATA[Products.]]></define>
+    <define key="TEXT_EXCLUDED_PRODUCTS"><![CDATA[Excluded Products.]]></define>
 </definitions>

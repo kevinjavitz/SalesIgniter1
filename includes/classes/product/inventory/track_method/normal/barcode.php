@@ -4,7 +4,7 @@ class productInventoryNormal_barcode {
 		$this->invData = $invData;
 		$this->invUnavailableStatus = array(
 			'B', //Broken
-			'O', //Out
+			//'O', //Out
 			'P'  //Purchased
 		);
 	}
@@ -36,6 +36,14 @@ class productInventoryNormal_barcode {
 			}
 		}
 		return $count;
+	}
+	public function getTotalInventoryItemCount(){
+		$Qcheck = Doctrine_Query::create()
+		->from('ProductsInventoryBarcodes ib')
+		->where('ib.inventory_id = ?', $this->invData['inventory_id']);
+		EventManager::notify('ProductInventoryBarcodeGetInventoryItemsQueryBeforeExecute', $this->invData, &$Qcheck);
+		$Result = $Qcheck->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+		return count($Result);
 	}
 
 	public function addStockToCollection(&$Product, &$CollectionObj){

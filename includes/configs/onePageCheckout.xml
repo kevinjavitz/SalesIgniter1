@@ -19,6 +19,11 @@
 					<description><![CDATA[Default country for new address and for checking out wihtout account]]></description>
 					<set_function><![CDATA[tep_cfg_pull_down_country_list(]]></set_function>
 				</ONEPAGE_DEFAULT_COUNTRY>
+                <ONEPAGE_DEFAULT_STATE>
+                    <title><![CDATA[Default Address State]]></title>
+                    <value><![CDATA[]]></value>
+                    <description><![CDATA[Default state for new address and for checking out wihtout account]]></description>
+                </ONEPAGE_DEFAULT_STATE>
 				<ONEPAGE_ACCOUNT_CREATE>
 					<title><![CDATA[Account Creation]]></title>
 					<value><![CDATA[create]]></value>

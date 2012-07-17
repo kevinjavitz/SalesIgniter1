@@ -526,15 +526,7 @@ class RentalStoreUser implements Serializable {
 	}
 
 	public function encryptPassword($plain){
-		$password = '';
-
-		for ($i=0; $i<10; $i++) {
-			$password .= tep_rand();
-		}
-
-		$salt = substr(md5($password), 0, 2);
-		$password = md5($salt . $plain) . ':' . $salt;
-		return $password;
+		return tep_encrypt_password($plain);
 	}
 
 	public function requestReactivation(){

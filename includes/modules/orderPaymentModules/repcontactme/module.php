@@ -77,7 +77,7 @@ class OrderPaymentRepcontactme extends StandardPaymentModule
 	}
 		
 	private function onSuccess($logData){
-		$this->logPayment($logData);
+		//$this->logPayment($logData);
 	}
 		
 	private function onFail($info){

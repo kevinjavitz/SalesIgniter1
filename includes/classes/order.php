@@ -599,7 +599,7 @@ class OrderProcessor {
 		$emailEvent->setVar('order_id', (isset($this->newOrder['orderID'])?$this->newOrder['orderID']:$this->orderId));
 		$emailEvent->setVar('invoice_link', itw_app_link('order_id=' . (isset($this->newOrder['orderID'])?$this->newOrder['orderID']:$this->orderId), 'account', 'history_info', 'SSL', false));
 		$emailEvent->setVar('date_ordered', strftime(sysLanguage::getDateFormat('long')));
-		$emailEvent->setVar('full_name', $userAccount->getFullName());
+		$emailEvent->setVar('full_name', $userAccount->getFirstName());
 		$emailEvent->setVar('ordered_products', (isset($this->newOrder['productsOrdered']) ? $this->newOrder['productsOrdered'] : ((isset($products_ordered)&&(!empty($products_ordered)))?$products_ordered:$this->products_ordered) ));
 		$emailEvent->setVar('billing_address', $billToFormatted);
 		if(sysConfig::get('ONEPAGE_CHECKOUT_SHIPPING_ADDRESS') == 'true'){
@@ -622,9 +622,15 @@ class OrderProcessor {
 				if(strpos(strtolower($this->newOrder['orderTotals'][$i]['title']),'total') === false && strpos(strtolower($this->newOrder['orderTotals'][$i]['title']),'sub-total') === false){
 					$orderTotalsTitle .= strip_tags($this->newOrder['orderTotals'][$i]['title'])  . "<br/>";
 				}
+				if(strpos(strtolower($this->newOrder['orderTotals'][$i]['title']),'sub-total') !== false ){
+					$orderTotalsTitle .= strip_tags($this->newOrder['orderTotals'][$i]['title'])  . "<br/>";
+				}
 			}
 			for ($i=0, $n=sizeof($this->newOrder['orderTotals']); $i<$n; $i++) {
 				if(strpos(strtolower($this->newOrder['orderTotals'][$i]['title']),'total') === false && strpos(strtolower($this->newOrder['orderTotals'][$i]['title']),'sub-total') === false){
+					$orderTotalsValue .= strip_tags($this->newOrder['orderTotals'][$i]['text'])  . "<br/>";
+				}
+				if(strpos(strtolower($this->newOrder['orderTotals'][$i]['title']),'sub-total') !== false){
 					$orderTotalsValue .= strip_tags($this->newOrder['orderTotals'][$i]['text'])  . "<br/>";
 				}
 				if(strpos(strtolower($this->newOrder['orderTotals'][$i]['title']),'total') !== false){
@@ -636,9 +642,15 @@ class OrderProcessor {
 				if(strpos(strtolower($this->totals[$i]['title']),'total') === false && strpos(strtolower($this->totals[$i]['title']),'sub-total') === false){
 					$orderTotalsTitle .= strip_tags($this->totals[$i]['title']) . "<br/>";
 				}
+				if(strpos(strtolower($this->totals[$i]['title']),'sub-total') !== false){
+					$orderTotalsTitle .= strip_tags($this->totals[$i]['title']) . "<br/>";
+				}
 			}
 			for ($i=0, $n=sizeof($this->totals); $i<$n; $i++) {
 				if(strpos(strtolower($this->totals[$i]['title']),'total') === false && strpos(strtolower($this->totals[$i]['title']),'sub-total') === false){
+					$orderTotalsValue .= strip_tags($this->totals[$i]['text'])  . "<br/>";
+				}
+				if(strpos(strtolower($this->totals[$i]['title']),'sub-total') !== false){
 					$orderTotalsValue .= strip_tags($this->totals[$i]['text'])  . "<br/>";
 				}
 				if(strpos(strtolower($this->totals[$i]['title']),'total') !== false){

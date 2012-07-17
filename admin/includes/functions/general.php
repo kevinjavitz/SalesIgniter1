@@ -2060,6 +2060,23 @@ function makeCategoriesArrayForParrent($categoryId = 0, &$catArr){
 		}
 }
 
+function makeCategoriesChildrenArray($categoryId = 0, &$catArr){
+	$catArr[] = $categoryId;
+	echo $categoryId;
+	$Qcategories = Doctrine_Query::create()
+			->from('Categories c')
+			->leftJoin('c.CategoriesDescription cd')
+			->where('parent_id = ?', $categoryId)
+			->andWhere('language_id = ?', Session::get('languages_id'))
+			->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+
+	foreach($Qcategories as $iCat){
+		//$catArr[] = $iCat['categories_id'];
+		makeCategoriesChildrenArray($iCat['categories_id'], $catArr);
+	}
+
+}
+
 	function makeUniqueCategory($categoryId, $category_seo, $removeLast){
 		/*$QCategories = Doctrine_Query::create()
 		->from('Categories c')
@@ -2104,4 +2121,24 @@ function createSeoUrl($catArr){
 	return $catName;
 }
 
+function escapeCsvElement($str, $sep) {
+	$quot = false;
+	$si = 0;
+	$slen = strlen($str);
+	$ret = '';
+	while ($si < $slen) {
+		$ch = $str[$si];
+		if ($ch == $sep)
+			$quot = true;
+		if ($ch == '"') {
+			$quot = true;
+			$ret .= '"';
+		}
+		$ret .= $ch;
+		$si++;
+	}
+	if ($quot)
+		return '"' . $ret . '"';
+	return $str;
+}
 ?>

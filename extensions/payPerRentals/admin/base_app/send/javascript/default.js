@@ -89,7 +89,7 @@ function exportData(valType){
 	dataArr.push('filter_shipping=' + $('#filterShipping').val());
 	dataArr.push('filter_category=' + $('#filterCategory').val());
 	if ($('#includeSent:checked').size() > 0){
-		dataArr.include_sent = 1;
+		dataArr.push('include_sent=1');
 	}
 	if(valType == 'e'){
 		if($('#eventSort').length){

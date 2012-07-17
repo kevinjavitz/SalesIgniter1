@@ -215,11 +215,11 @@ $contents = EventManager::notifyWithReturn('OrderInfoAddBlock',$QlastOrder[0]['o
                 <td class="main"><?php
 	                $billingAddress = $Order->getFormattedAddress('billing');
                     echo $billingAddress;
-                    $shippingAddress = $Order->getFormattedAddress('shipping');
+                    $shippingAddress = $Order->getFormattedAddress('delivery');
                 ?></td>
               </tr>
 				<?php
-				if($billingAddress != $shippingAddress){
+				//if($billingAddress != $shippingAddress){
 	            ?>
 	            <tr>
 		            <td class="main"><b><?php echo sysLanguage::get('HEADING_SHIPPING_ADDRESS'); ?></b></td>
@@ -230,7 +230,7 @@ $contents = EventManager::notifyWithReturn('OrderInfoAddBlock',$QlastOrder[0]['o
 			            ?></td>
 	            </tr>
 				<?php
-                }
+                //}
 	            ?>
               <tr>
                 <td class="main"><b><?php echo sysLanguage::get('HEADING_PAYMENT_METHOD'); ?></b></td>
@@ -510,6 +510,7 @@ $ShoppingCart->emptyCart(true);
 	Session::remove('payment_recurring');
 	Session::remove('cancel_request');
 	Session::remove('onepage');
+	Session::remove('minfee');
 
 	$onePageCheckout->setMode('');
 	if(Session::exists('add_to_queue_ppr_product')){

@@ -61,6 +61,7 @@
 		if (isset($accountValidation['city_birth'])){
 			$userAccount->setCityBirth($accountValidation['city_birth']);
 		}
+		EventManager::notify('CheckoutSetupPostFields');
 		if (isset($_GET['cID'])){
 			$userAccount->updateCustomerAccount();
 			$addressBook->updateAddress((int)$_POST['default_address_id'], $accountValidation);

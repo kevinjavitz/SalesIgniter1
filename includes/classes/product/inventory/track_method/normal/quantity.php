@@ -39,6 +39,14 @@ class productInventoryNormal_quantity {
 		}
 		return $count;
 	}
+	public function getTotalInventoryItemCount(){
+		$Qcheck = Doctrine_Query::create()
+				->from('ProductsInventoryQuantity')
+				->where('inventory_id = ?', $this->invData['inventory_id']);
+		EventManager::notify('ProductInventoryQuantityGetInventoryItemsQueryBeforeExecute', $this->invData, &$Qcheck);
+		$Result = $Qcheck->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+		return count($Result);
+	}
 	
 	public function addStockToCollection(&$Product, &$CollectionObj){
 		global $Editor;

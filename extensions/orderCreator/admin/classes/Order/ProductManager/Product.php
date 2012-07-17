@@ -110,6 +110,53 @@ class OrderCreatorProduct extends OrderProduct implements Serializable {
 		return '<input type="text" size="5" class="ui-widget-content taxRate" name="product[' . $this->id . '][tax_rate]" value="' . $this->getTaxRate() . '">%';
 	}
 
+	public function getStartDateEdit(){
+		return '<input type="text"  class="ui-widget-content start_date" name="product[' . $this->id . '][start_date]" value="' . $this->getStartDate() . '">';
+	}
+
+	public function getEndDateEdit(){
+		return '<input type="text"  class="ui-widget-content end_date" name="product[' . $this->id . '][end_date]" value="' . $this->getEndDate() . '">';
+	}
+
+	public function getStartTimeEdit(){
+		$startTime = htmlBase::newElement('selectbox')
+		->setName('product[' . $this->id . '][start_time]')
+		->addClass('start_time');
+
+
+		for($i = sysConfig::get('EXTENSION_PAY_PER_RENTALS_START_TIME');$i <= sysConfig::get('EXTENSION_PAY_PER_RENTALS_END_TIME');$i++){
+			if($i == 12){
+				$startTime->addOption($i,'12:00 PM');
+			}else{
+				$startTime->addOption($i,($i % 12) . ($i<12?':00 AM':':00 PM'));
+			}
+		}
+		$startTime->selectOptionByValue($this->getStartTime());
+		return $startTime->draw();
+		//return '<input type="text"  class="ui-widget-content start_date" name="product[' . $this->id . '][start_date]" value="' . $this->getStartDate() . '">';
+	}
+
+	public function getEndTimeEdit(){
+		$endTime = htmlBase::newElement('selectbox')
+				->setName('product[' . $this->id . '][end_time]')
+				->addClass('end_time');
+
+
+		for($i = sysConfig::get('EXTENSION_PAY_PER_RENTALS_START_TIME');$i <= sysConfig::get('EXTENSION_PAY_PER_RENTALS_END_TIME');$i++){
+			if($i == 12){
+				$endTime->addOption($i,'12:00 PM');
+			}else{
+				$endTime->addOption($i,($i % 12) . ($i<12?':00 AM':':00 PM'));
+			}
+		}
+
+		$endTime->selectOptionByValue($this->getEndTime());
+		return $endTime->draw();
+		//return '<input type="text"  class="ui-widget-content start_date" name="product[' . $this->id . '][start_date]" value="' . $this->getStartDate() . '">';
+	}
+
+
+
 	public function getBarcodeEdit(){
         $content = $this->getBarcodeEdit2(0);
         if($content){
@@ -143,7 +190,7 @@ class OrderCreatorProduct extends OrderProduct implements Serializable {
 	}
 
 	public function getQuantityEdit(){
-		return '<input type="text" size="3" class="ui-widget-content productQty" name="product[' . $this->id . '][qty]" value="' . $this->getQuantity() . '">&nbsp;x';
+		return '<input type="number" size="3" class="ui-widget-content productQty" name="product[' . $this->id . '][qty]" value="' . $this->getQuantity() . '">';
 	}
 
 	public function getNameEdit($excludedPurchaseTypes = array()){
@@ -165,7 +212,7 @@ class OrderCreatorProduct extends OrderProduct implements Serializable {
 				//}
 			}
 			$purchaseTypeInput->selectOptionByValue($this->getPurchaseType());
-			$productsName .= '<br><nobr><small>&nbsp;<i> - Purchase Type: ' . $purchaseTypeInput->draw() . '</i></small></nobr>';
+			//$productsName .= ' ' . $purchaseTypeInput->draw() . '';
 		}
 
 		$productsName .= $this->purchaseTypeClass->orderAfterEditProductName($this);
