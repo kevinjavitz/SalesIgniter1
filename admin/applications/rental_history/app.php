@@ -1,5 +1,6 @@
 <?php
 	$appContent = $App->getAppContentFile();
-	
-	require(sysConfig::getDirFsCatalog() . 'includes/classes/product.php');
+	if(!class_exists('Product')){
+		require(sysConfig::getDirFsCatalog() . 'includes/classes/product.php');
+	}
 ?>

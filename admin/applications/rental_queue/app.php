@@ -14,7 +14,9 @@
 		}
 
 	if (isset($_GET['cID'])){
-		require(sysConfig::getDirFsCatalog() . 'includes/classes/product.php');
+		if(!class_exists('Product')){
+			require(sysConfig::getDirFsCatalog() . 'includes/classes/product.php');
+		}
 
 		$userAccount = new rentalStoreUser($_GET['cID']);
 		$userAccount->loadPlugins();

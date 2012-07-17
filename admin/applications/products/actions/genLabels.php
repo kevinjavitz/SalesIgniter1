@@ -1,6 +1,8 @@
 <?php
 	include_once("includes/functions/barcode.php" );
- 	require('../includes/classes/product.php');
+	if(!class_exists('Product')){
+ 		require('../includes/classes/product.php');
+	}
 	require('includes/classes/pdf_labels.php');
 
 	$labelType = $_GET['labelType'];
