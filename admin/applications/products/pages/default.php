@@ -1,5 +1,7 @@
 <?php
-	require('../includes/classes/product.php');
+	if(!class_exists('Product')){
+		require('../includes/classes/product.php');
+	}
 
 	function addGridRow($productClass, &$tableGrid, &$infoBoxes){
 		global $allGetParams, $editButton, $copyButton, $deleteButton, $currencies;
