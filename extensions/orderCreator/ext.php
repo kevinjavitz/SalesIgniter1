@@ -6,15 +6,14 @@ class Extension_orderCreator extends ExtensionBase {
 	}
 
 	public function preSessionInit(){
-		//$this->removeSession = true;
+		$this->removeSession = true;
 		if (isset($_GET['appExt']) && $_GET['appExt'] == 'orderCreator'){
 			if (!isset($_GET['action']) && !isset($_POST['action']) && !isset($_GET['error'])){
-				//$this->removeSession = true;
+				$this->removeSession = true;
 			}else{
-				//$this->removeSession = false;
+				$this->removeSession = false;
 			}
 			
-		}
 			/* 
 			 * Require any core classes
 			 */
@@ -25,12 +24,13 @@ class Extension_orderCreator extends ExtensionBase {
 			 */
 			require(dirname(__FILE__) . '/admin/classes/Order/Base.php');
 		}
+	}
 	
 	public function postSessionInit(){
 		if (Session::exists('OrderCreator')){
 			if (basename($_SERVER['PHP_SELF']) != 'stylesheet.php' && basename($_SERVER['PHP_SELF']) != 'javascript.php'){
 				if (isset($this->removeSession) && $this->removeSession === true){
-					//Session::remove('OrderCreator');
+					Session::remove('OrderCreator');
 				}
 			}
 		}
