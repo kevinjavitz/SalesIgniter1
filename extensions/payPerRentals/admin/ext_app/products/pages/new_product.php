@@ -45,7 +45,12 @@ class payPerRentals_admin_products_new_product extends Extension_payPerRentals {
 		->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 		
 		$overbookingInput = htmlBase::newElement('checkbox')->setName('reservation_overbooking')->setValue('1');
-                $consumptionInput = htmlBase::newElement('checkbox')->setName('reservation_consumption')->setValue('1');
+        $consumptionInput = htmlBase::newElement('checkbox')->setName('reservation_consumption')->setValue('1');
+        $commissionInput = htmlBase::newElement('checkbox')->setName('reservation_commission')->setValue('1');
+        $freeTrialInput = htmlBase::newElement('checkbox')->setName('reservation_free_trial')->setValue('1');
+        $freeTrialLengthInput = htmlBase::newElement('input')->setName('reservation_free_try_on_length');
+        $freeTrialLengthTypeInput = htmlBase::newElement('selectbox')->addClass('ui-widget-content')->setName('reservation_free_try_on_length_type');
+        $freeTrialPriceInput = htmlBase::newElement('input')->setName('reservation_free_try_price');
 		//$monthsInput = htmlBase::newElement('input')->setName('reservation_max_months');
 		$maxInput = htmlBase::newElement('input')->setName('reservation_max_period');
 		//$authMethodInput = htmlBase::newElement('selectbox')->setName('products_auth_method')->addOption('auth', 'Authorization Charge')->addOption('rental', 'Rental Fee');
@@ -265,13 +270,13 @@ class payPerRentals_admin_products_new_product extends Extension_payPerRentals {
 		foreach($QhiddenDates as $iHidden){
 			$hiddenid = $iHidden['hidden_dates_id'];
 			$hiddenStartDate = htmlBase::newElement('input')
-			->addClass('ui-widget-content date_hidden')
+			->addClass('ui-widget-content date_hidden_start')
 			->setName('pprhidden[' . $hiddenid . '][start_date]')
 			->attr('size', '15')
 			->val(strftime('%Y-%m-%d', strtotime($iHidden['hidden_start_date'])));
 
 			$hiddenEndDate = htmlBase::newElement('input')
-			->addClass('ui-widget-content date_hidden')
+			->addClass('ui-widget-content date_hidden_end')
 			->setName('pprhidden[' . $hiddenid . '][end_date]')
 			->attr('size', '15')
 			->val(strftime('%Y-%m-%d', strtotime($iHidden['hidden_end_date'])));
@@ -281,6 +286,7 @@ class payPerRentals_admin_products_new_product extends Extension_payPerRentals {
 			$divLi5 = '<div style="float:left;width:40px;">'.$deleteIcon.'</div>';
 
 			$liObj = new htmlElement('li');
+            $liObj->addClass('listHiddenDates');
 			$liObj->css(array(
 				'font-size' => '.8em',
 				'list-style' => 'none',
@@ -301,7 +307,12 @@ class payPerRentals_admin_products_new_product extends Extension_payPerRentals {
 
 		if (isset($payPerRental)){
 			$overbookingInput->setChecked(($payPerRental['overbooking'] == 1));
-                        $consumptionInput->setChecked(($payPerRental['consumption'] == 1));
+            $consumptionInput->setChecked(($payPerRental['consumption'] == 1));
+            $commissionInput->setChecked(($payPerRental['commission'] == 1));
+            $freeTrialInput->setChecked(($payPerRental['free_trial'] == 1));
+			$freeTrialLengthInput->val($payPerRental['free_try_on_length']);
+            $freeTrialLengthTypeInput->selectOptionByValue($payPerRental['free_try_on_length_type']);
+            $freeTrialPriceInput->val($payPerRental['free_try_price']);
 			//$monthsInput->val($payPerRental['max_months']);
 			$maxInput->val($payPerRental['max_period']);
 			$htypeMax->selectOptionByValue($payPerRental['max_type']);
@@ -311,7 +322,15 @@ class payPerRentals_admin_products_new_product extends Extension_payPerRentals {
 			$htypeMin->selectOptionByValue($payPerRental['min_type']);
 			//$authMethodInput->selectOptionByValue($Product['products_auth_method']);
 		}
-		
+
+        $QPayPerRentalTypes = Doctrine_Query::create()
+            ->from('PayPerRentalTypes')
+            ->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+
+        foreach($QPayPerRentalTypes as $iType){
+            $freeTrialLengthTypeInput->addOption($iType['pay_per_rental_types_id'], $iType['pay_per_rental_types_name']);
+        }
+
 		$shippingInputs = array(array(
 			'id' => 'noShip',
 			'value' => 'false',
@@ -381,13 +400,40 @@ class payPerRentals_admin_products_new_product extends Extension_payPerRentals {
 				array('addCls' => 'main', 'text' => $overbookingInput)
 			)
 		));
-                
-                $mainTable->addBodyRow(array(
+
+        $mainTable->addBodyRow(array(
 			'columns' => array(
 				array('addCls' => 'main', 'text' => sysLanguage::get('TEXT_PAY_PER_RENTAL_CONSUMPTION')),
 				array('addCls' => 'main', 'text' => $consumptionInput)
 			)
 		));
+
+        $mainTable->addBodyRow(array(
+            'columns' => array(
+                array('addCls' => 'main', 'text' => sysLanguage::get('TEXT_PAY_PER_RENTAL_COMMISSION')),
+                array('addCls' => 'main', 'text' => $commissionInput)
+            )
+        ));
+
+        $mainTable->addBodyRow(array(
+            'columns' => array(
+                array('addCls' => 'main', 'text' => sysLanguage::get('TEXT_PAY_PER_RENTAL_FREE_TRIAL')),
+                array('addCls' => 'main', 'text' => $freeTrialInput)
+            )
+        ));
+
+        $mainTable->addBodyRow(array(
+            'columns' => array(
+                array('addCls' => 'main', 'text' => ''),
+                array('addCls' => 'main', 'text' => $freeTrialLengthInput->draw().$freeTrialLengthTypeInput->draw().' Free Try On Length'),
+            )
+        ));
+        $mainTable->addBodyRow(array(
+            'columns' => array(
+                array('addCls' => 'main', 'text' => ''),
+                array('addCls' => 'main', 'text' => $freeTrialPriceInput->draw().' Free Try On Price'),
+            )
+        ));
 		
 		$mainTable->addBodyRow(array(
 			'columns' => array(

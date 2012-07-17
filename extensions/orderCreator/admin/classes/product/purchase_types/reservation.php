@@ -39,18 +39,34 @@ class OrderCreatorProductPurchaseTypeReservation extends PurchaseType_reservatio
 
 		$excludedBarcode = array();
 		$excludedQuantity = array();
+        $barcodes = explode(',',$ResInfo['bar_id']);
+
 		for($count=1; $count <= $ResInfo['quantity']; $count++){
 			$Reservation = new OrdersProductsReservation();
-			$Reservation->start_date = $StartDateFormatted;
-			$Reservation->end_date = $EndDateFormatted;
 			$Reservation->insurance = $Insurance;
 			$Reservation->event_name = $EventName;
+
 			if (sysConfig::get('EXTENSION_PAY_PER_RENTALS_USE_GATES') == 'True'){
 				$Reservation->event_gate = $EventGate;
 			}
 			$Reservation->event_date = $EventDate;
 			$Reservation->track_method = $TrackMethod;
-			$Reservation->rental_state = 'reserved';
+
+            if($this->consumptionAllowed() === '1'){
+                $barcode = substr($barcodes[$count -1 ],0,strrpos($barcodes[$count -1 ],'(',0));
+                $dates = substr($barcodes[$count -1 ],strrpos($barcodes[$count -1 ],'(',0) + 1, strrpos($barcodes[$count -1 ],')',0) - strlen($barcode) - 1);
+                $dates =   explode('-',$dates);
+                $StartDateFormatted = date('Y-m-d H:i:s', strtotime($dates[0]));
+                $EndDateFormatted = date('Y-m-d H:i:s', strtotime($dates[1]));
+                $Reservation->rental_state = 'out';
+                $Reservation->start_date = $StartDateFormatted;
+                $Reservation->end_date = $EndDateFormatted;
+            }else{
+                $Reservation->rental_state = 'reserved';
+                $Reservation->start_date = $StartDateFormatted;
+                $Reservation->end_date = $EndDateFormatted;
+            }
+
 			if(isset($_POST['estimateOrder'])){
 				$Reservation->is_estimate = 1;
 			}else{
@@ -65,12 +81,18 @@ class OrderCreatorProductPurchaseTypeReservation extends PurchaseType_reservatio
 			}
 			if(!isset($_POST['estimateOrder'])){
 				if ($TrackMethod == 'barcode'){
-					$barId = $this->getAvailableBarcode($ProductObj, $excludedBarcode, $allInfo['usableBarcodes']);
-					if($barId != -1){
-						$Reservation->barcode_id = $barId;
-					}else{
-						$Editor->addErrorMessage('Reservation already taken for the date. Please reselect');
-					}
+                                        if($this->consumptionAllowed() === '1' && isset($barcode)){
+                                            $Reservation->barcode_id = $barcode;
+                                        }
+                                        else{
+                                            $barId = $this->getAvailableBarcode($ProductObj, $excludedBarcode, $allInfo['usableBarcodes']);
+                                            if($barId != -1){
+                                                    $Reservation->barcode_id = $barId;
+                                            }
+                                            else{
+                                                    $Editor->addErrorMessage('si'.$ResInfo['bar_id'].'Reservation already taken for the date. Please reselect');
+                                            }
+                                        }
 					$excludedBarcode[] = $Reservation->barcode_id;
 					$Reservation->ProductsInventoryBarcodes->status = 'R';
 				}elseif ($TrackMethod == 'quantity'){
@@ -166,9 +188,10 @@ class OrderCreatorProductPurchaseTypeReservation extends PurchaseType_reservatio
 			'shipping_method' => (isset($shippingInfo[1])?$shippingInfo[1]:''),
 			'start_date'      => $resInfo['start_date'],
 			'end_date'        => $resInfo['end_date'],
-			'days_before'        => $resInfo['days_before'],
-			'days_after'        => $resInfo['days_after'],
-			'quantity'        => $resInfo['quantity']
+			'days_before'     => $resInfo['days_before'],
+			'days_after'      => $resInfo['days_after'],
+			'quantity'        => $resInfo['quantity'],
+            'bar_id'          => $resInfo['bar_id']
 		);
 		if (sysConfig::get('EXTENSION_PAY_PER_RENTALS_USE_EVENTS') == 'True'){
 			$dataArray['event_name'] = $resInfo['event_name'];

@@ -17,7 +17,6 @@ class featuredManagerInstall extends extensionInstaller {
 	}
 	
 	public function install(){
-		if (sysConfig::exists('EXTENSION_FEATURED_MANAGER_ENABLED') === true) return;
 		
 		parent::install();
 	}

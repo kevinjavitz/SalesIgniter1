@@ -1,0 +1,35 @@
+<definitions>
+	<define key="HEADING_TITLE"><![CDATA[Suppliers]]></define>
+	<define key="HEADING_TITLE_SEARCH"><![CDATA[Search:]]></define>
+	<define key="HEADING_TITLE_GOTO"><![CDATA[Go To:]]></define>
+	<define key="TABLE_HEADING_ID"><![CDATA[ID]]></define>
+	<define key="TABLE_HEADING_SUPPLIERS"><![CDATA[Suppliers]]></define>
+    <define key="TABLE_HEADING_SELECT"><![CDATA[Select]]></define>
+    <define key="TABLE_PLEASE_SELECT"><![CDATA[Please Select]]></define>
+	<define key="TEXT_NEW_SUPPLIER"><![CDATA[New Supplier in "%s"]]></define>
+	<define key="TEXT_SUPPLIERS"><![CDATA[Suppliers:]]></define>
+    <define key="TEXT_DATE_ADDED"><![CDATA[Date Added:]]></define>
+    <define key="TEXT_LAST_MODIFIED"><![CDATA[Last Modified:]]></define>
+    <define key="TEXT_SUPPLIER_DATE_ADDED"><![CDATA[This product was added to our catalog on %s.]]></define>
+	<define key="TEXT_SUPPLIER_DATE_AVAILABLE"><![CDATA[This product will be in stock on %s.]]></define>
+	<define key="TEXT_INFO_HEADING_DELETE_SUPPLIER"><![CDATA[Delete Supplier]]></define>
+	<define key="TEXT_INFO_HEADING_MOVE_SUPPLIER"><![CDATA[Move Supplier]]></define>
+	<define key="TEXT_DELETE_SUPPLIER_INTRO"><![CDATA[Are you sure you want to permanently delete this supplier?]]></define>
+    <define key="TEXT_CANNOT_DELETE_SUPPLIER"><![CDATA[<b>This supplier cannot be deleted.</b><br><br>This product is already present in rental/rented queue]]></define>
+	<define key="TEXT_SORT_ORDER"><![CDATA[Sort Order:]]></define>
+	<define key="TABLE_HEADING_VIEW_COMMENTS"><![CDATA[ Supplier Action]]></define>
+    <define key="TEXT_ORDER_BY"><![CDATA[Order By: ]]></define>
+	<define key="TAB_GENERAL"><![CDATA[General]]></define>
+	<define key="TEXT_SUPPLIER_NAME"><![CDATA[Name:]]></define>
+	<define key="TEXT_SUPPLIER_ADDRESS"><![CDATA[Address:]]></define>
+	<define key="TEXT_SUPPLIER_PHONE"><![CDATA[Phone:]]></define>
+	<define key="TEXT_SUPPLIER_WEB"><![CDATA[Website:]]></define>
+	<define key="TEXT_SUPPLIER_NOTES"><![CDATA[Notes:]]></define>
+    <define key="TEXT_BUTTON_NEW_SUPPLIER"><![CDATA[New Supplier]]></define>
+	<define key="TEXT_INFO_DATE_ADDED"><![CDATA[Date Added:]]></define>;
+	<define key="TEXT_INFO_LAST_MODIFIED"><![CDATA[Last Modified:]]></define>
+	<define key="TEXT_PRODUCTS"><![CDATA[Products:]]></define>
+	<define key="TEXT_SEARCH_RESULTS"><![CDATA[Show at a time:]]></define>
+	<define key="ERROR_DIRECTORY_NOT_WRITEABLE"><![CDATA[Error: I can not write to this directory. Please set the right user permissions on: %s]]></define>
+	<define key="ERROR_DIRECTORY_DOES_NOT_EXIST"><![CDATA[Error: Directory does not exist: %s]]></define>
+</definitions>

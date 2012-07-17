@@ -17,8 +17,6 @@ class eventManagerInstall extends extensionInstaller {
 	}
 	
 	public function install(){
-		if (sysConfig::exists('EXTENSION_EVENT_MANAGER_ENABLED') === true) return;
-		
 		parent::install();
 	}
 	

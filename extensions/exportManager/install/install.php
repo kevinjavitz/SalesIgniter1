@@ -17,8 +17,6 @@ class exportManagerInstall extends extensionInstaller {
 	}
 	
 	public function install(){
-		if (sysConfig::exists('EXTENSION_EXPORT_MANAGER_ENABLED') === true) return;
-		
 		parent::install();
 	}
 	

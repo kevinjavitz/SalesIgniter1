@@ -17,8 +17,7 @@ class orderCreatorInstall extends extensionInstaller {
 	}
 
 	public function install(){
-		if (sysConfig::exists('EXTENSION_ORDER_CREATOR_ENABLED') === true) return;
-		
+
 		parent::install();
 	}
 	

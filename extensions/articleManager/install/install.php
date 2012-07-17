@@ -17,8 +17,6 @@ class articleManagerInstall extends extensionInstaller {
 	}
 	
 	public function install(){
-		if (sysConfig::exists('EXTENSION_ARTICLE_MANAGER_ENABLED') === true) return;
-		
 		parent::install();
 	}
 	

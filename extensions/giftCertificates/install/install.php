@@ -17,8 +17,6 @@
         }
 
         public function install(){
-            if (sysConfig::exists('EXTENSION_GIFT_CERTIFICATES_ENABLED') === true) return;
-
             parent::install();
         }
 

@@ -17,8 +17,7 @@ class infoPagesInstall extends extensionInstaller {
 	}
 	
 	public function install(){
-		if (sysConfig::exists('EXTENSION_INFO_PAGES_ENABLED') === true) return;
-		
+
 		parent::install();
 		
 		$Pages = Doctrine_Core::getTable('Pages');

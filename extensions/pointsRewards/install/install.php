@@ -17,7 +17,6 @@ class pointsRewardsInstall extends extensionInstaller {
 	}
 
 	public function install(){
-		if (sysConfig::exists('EXTENSION_POINTS_REWARDS_SYSTEM_ENABLED') === true) return;
 
 		parent::install();
 	}

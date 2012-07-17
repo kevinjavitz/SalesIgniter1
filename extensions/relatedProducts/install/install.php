@@ -17,8 +17,7 @@ class relatedProductsInstall extends extensionInstaller {
 	}
 	
 	public function install(){
-		if (sysConfig::exists('EXTENSION_RELATED_PRODUCTS_ENABLED') === true) return;
-		
+
 		parent::install();
 	}
 	

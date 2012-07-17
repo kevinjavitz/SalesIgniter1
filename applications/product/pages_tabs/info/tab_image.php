@@ -81,11 +81,16 @@ if(sysConfig::get('SHOW_PRODUCT_INFO_BUTTONS_TOP') !== 'False'){
 			//$boxObj->addButton($qtyInput);
 		}
 		if(isset($boxInfo['button']) && is_object($boxInfo['button'])){
-			//$boxObj->addButton($boxInfo['button']);
+			$boxObj->addButton($boxInfo['button']);
 		}
+
+        if(isset($boxInfo['button2']) && is_object($boxInfo['button2'])){
+            $boxObj->addButton($boxInfo['button2']);
+        }
 
 		EventManager::notifyWithReturn('ProductInfoTabImageBeforeDrawPurchaseType', &$product, &$boxObj, &$boxInfo);
 		$boxInfo['button']->addClass('buttonSmall');
+        //$boxInfo['button2']->addClass('buttonSmall');
 		//$boxObj->addContentRow($boxInfo['content']);
 		switch($boxInfo['purchase_type']){
 			case 'rental':
@@ -93,7 +98,8 @@ if(sysConfig::get('SHOW_PRODUCT_INFO_BUTTONS_TOP') !== 'False'){
 				$typesTable->addBodyRow(array(
 					'align' => 'center',
 					'columns' => array(
-						array('text' => $boxInfo['button'])
+						array('text' => $boxInfo['button'])/*,
+                        array('text' => $boxInfo['button2']) */
 					)
 				));
 				break;
@@ -260,6 +266,8 @@ if(sysConfig::get('SHOW_PRODUCT_INFO_BUTTONS_BOTTOM') == 'True'){
 		}
 		
 		$boxInfo['content'] .= tep_draw_hidden_field('products_id', $productID);
+        $boxInfo['content'] .= tep_draw_hidden_field('freeTrial', $boxInfo['freeTrial']);
+        $boxInfo['content'] .= tep_draw_hidden_field('freeTrialButton', '');
 
 		$boxObj = htmlBase::newElement('infobox')
 		->setForm(array(
@@ -269,6 +277,7 @@ if(sysConfig::get('SHOW_PRODUCT_INFO_BUTTONS_BOTTOM') == 'True'){
 		->css('width', 'auto')->removeCss('margin-left')->removeCss('margin-right')
 		->setHeader($boxInfo['header'])
 		->setButtonBarLocation('bottom');
+
 
 		if ($boxInfo['allowQty'] === true){
 			$qtyInput = htmlBase::newElement('input')
@@ -284,6 +293,10 @@ if(sysConfig::get('SHOW_PRODUCT_INFO_BUTTONS_BOTTOM') == 'True'){
 		if(isset($boxInfo['button']) && is_object($boxInfo['button'])){
 			$boxObj->addButton($boxInfo['button']);
 		}
+
+        if(isset($boxInfo['button2']) && is_object($boxInfo['button2'])){
+            $boxObj->addButton($boxInfo['button2']);
+        }
 
 		EventManager::notifyWithReturn('ProductInfoTabImageBeforeDrawPurchaseType', &$product, &$boxObj, &$boxInfo);
 
@@ -313,7 +326,7 @@ if(sysConfig::get('SHOW_PRODUCT_INFO_BUTTONS_BOTTOM') == 'True'){
 	
 	echo '<div style="text-align:center;">' . 
 		$purchaseTable->draw() . 
-		'<div style="clear:both;"></div>' . 
+		'<div style="clear:both;"></div>' .
 	'</div>' . 
 	'<div style="clear:both;"></div>';
 

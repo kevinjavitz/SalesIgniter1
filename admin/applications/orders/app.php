@@ -1,8 +1,9 @@
 <?php
 	$appContent = $App->getAppContentFile();
-
+if(!class_exists('Product')){
 	require(sysConfig::getDirFsCatalog() . 'includes/classes/Order/Base.php');
 	require(sysConfig::getDirFsCatalog() . 'includes/classes/product.php');
+}
 	require('includes/classes/data_populate/export.php');
 	if ($App->getAppPage() == 'details'){
 		$oID = (int)$_GET['oID'];

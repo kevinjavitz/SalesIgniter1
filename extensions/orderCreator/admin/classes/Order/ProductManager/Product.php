@@ -111,8 +111,21 @@ class OrderCreatorProduct extends OrderProduct implements Serializable {
 	}
 
 	public function getBarcodeEdit(){
-		return '<input type="text" size="10" class="ui-widget-content barcodeName" name="product[' . $this->id . '][barcode]" value="' . $this->getBarcode() . '">';
-	}
+        $content = $this->getBarcodeEdit2(0);
+        if($content){
+             return '<input type="text" size="10" class="ui-widget-content barcodeName" name="product[' . $this->id . '][barcode]" barid="" value="">';
+        }
+        else{
+            return '<input type="text" size="10" class="ui-widget-content barcodeName" name="product[' . $this->id . '][barcode]" barid="' . $this->getBarcodeId2() . '" value="' . $this->getBarcode() . '">';
+        }
+
+
+    }
+
+    public function getBarcodeEditRemove(){
+        return '<input type="text" size="10" class="ui-widget-content barcodeName" name="product[' . $this->id . '][barcode]" barid="' . $this->getBarcodeId2() . '" value="' . $this->getBarcode() . '">'.htmlBase::newElement('icon')->setType('delete')->addClass('removeBarcode')->draw();
+    }
+
 
 	public function getPriceEdit($incQty = false, $incTax = false){
 		global $Editor, $currencies;
@@ -135,7 +148,7 @@ class OrderCreatorProduct extends OrderProduct implements Serializable {
 
 	public function getNameEdit($excludedPurchaseTypes = array()){
 		global $typeNames;
-		$productsName = $this->getName();
+		$productsName = '<span class="productName">'.$this->getName().'</span>';
 
 		if ($this->getPurchaseType() != 'membership'){
 			$PurchaseTypes = Doctrine_Core::getTable('Products')
@@ -146,10 +159,10 @@ class OrderCreatorProduct extends OrderProduct implements Serializable {
 			->addClass('ui-widget-content purchaseType')
 			->setName('product[' . $this->id . '][purchase_type]');
 			foreach($PurchaseTypes as $typeName){
-				if (!in_array($typeName, $excludedPurchaseTypes)){
+				//if (!in_array($typeName, $excludedPurchaseTypes)){
 					$attr = array();
 					$purchaseTypeInput->addOptionWithAttributes($typeName, $typeNames[$typeName],$attr);
-				}
+				//}
 			}
 			$purchaseTypeInput->selectOptionByValue($this->getPurchaseType());
 			$productsName .= '<br><nobr><small>&nbsp;<i> - Purchase Type: ' . $purchaseTypeInput->draw() . '</i></small></nobr>';

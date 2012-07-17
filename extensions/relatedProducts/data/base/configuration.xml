@@ -78,5 +78,29 @@
 				</EXTENSION_RELATED_PRODUCTS_SHOPPING_CART>
 			</configurations>
 		</general>
+        <custom>
+            <title>Custom Products Fields</title>
+            <description>Search related products custom fields</description>
+            <configurations>
+                <EXTENSION_RELATED_PRODUCTS_CUSTOM_FIELDS>
+                    <title>Select Custom Fields</title>
+                    <description>Select Custom Fields</description>
+                    <sort_order>29</sort_order>
+                    <set_function><![CDATA[tep_cfg_select_multioption(tep_cfg_pull_down_custom_list(),]]></set_function>
+                </EXTENSION_RELATED_PRODUCTS_CUSTOM_FIELDS>
+            </configurations>
+        </custom>
+        <attributes>
+            <title>Products Attributes</title>
+            <description>Search related products attributes</description>
+            <configurations>
+                <EXTENSION_RELATED_PRODUCTS_ATTRIBUTES>
+                    <title>Select Attributes</title>
+                    <description>Select Product Attributes</description>
+                    <sort_order>29</sort_order>
+                    <set_function><![CDATA[tep_cfg_select_multioption(tep_cfg_pull_down_attributes_list(),]]></set_function>
+                </EXTENSION_RELATED_PRODUCTS_ATTRIBUTES>
+            </configurations>
+        </attributes>
 	</tabs>
 </ConfigurationGroup>

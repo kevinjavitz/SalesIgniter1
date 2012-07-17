@@ -243,6 +243,10 @@ class inventoryCenters_admin_products_new_product extends Extension_inventoryCen
 			'text' => $this->stockMethodText
 		);
 	}
+
+    public function getSelectBox(){
+        return $this->selectBox;
+    }
 	
 	public function NewProductAddBarcodeListingBody(&$barcodes, &$currentBarcodesTableBody){
 		if ($this->allowTableAddition() === false) return;
@@ -262,17 +266,36 @@ class inventoryCenters_admin_products_new_product extends Extension_inventoryCen
 		
 		$Result = $QinventoryCenter->execute(array(), Doctrine::HYDRATE_ARRAY);
 
-		$box = clone $this->selectBox;
-		if ($Result) {
-			$box->selectOptionByValue($Result[0]['id']);
-		}
-		$colText = $box;
 
-		
+        $QStores = Doctrine_Query::create()
+            ->from('Stores')
+            ->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+
+        $stores = htmlBase::newElement('selectbox');
+
+        if ($this->stockMethod == 'Store' && $this->multiStoreEnabled === true){
+            $stores->addClass('invStore')->setName('invStore');
+        }else{
+            $stores->addClass('invCenter')->setName('invCenter');
+        }
+
+        foreach($QStores as $store){
+            $stores->addOption($store['stores_id'], $store['stores_name']);
+        }
+
+		if ($Result) {
+            $stores->selectOptionByValue($Result['0']['id']);
+		}
+
+        $colText = $stores;
+
 		$currentBarcodesTableBody[] = array(
 			'addCls' => 'ui-widget-content ui-grid-cell centerAlign',
 			'text' => $colText
 		);
+
+
+
 	}
 	
 	public function NewProductAddAttributeQuantityRows($settings, $inventoryColumns, &$pInfo, &$quantityTable){

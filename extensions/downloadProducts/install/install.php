@@ -17,8 +17,6 @@ class downloadProductsInstall extends extensionInstaller {
 	}
 	
 	public function install(){
-		if (sysConfig::exists('EXTENSION_DOWNLOADPRODUCTS_ENABLED') === true) return;
-		
 		parent::install();
 	}
 	

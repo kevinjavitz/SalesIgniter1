@@ -6,20 +6,39 @@
 	$purchaseTypeClasses[] = $purchaseTypeClass;
 	$pprTable = Doctrine_Core::getTable('ProductsPayPerRental')->findOneByProductsId($pID_string);
 	$insurancePrice = $pprTable->insurance;
-	if (sysConfig::get('EXTENSION_PAY_PER_RENTALS_USE_GLOBAL_MIN_RENTAL_DAYS') == 'False') {
+    $currencies = new currencies();
+
+    $freeTrialButton = 0;
+    if(isset($_POST['freeTrialButton']) && $_POST['freeTrialButton'] == '1') {
+        $freeTrialButton = $_POST['freeTrialButton'];
+        $freeTrial = $_POST['freeTrial'];
+        $freeOn = explode(',',$_POST['freeTrial']);
+        $minRentalPeriod = ReservationUtilities::getPeriodTime($freeOn[0], $freeOn[1]) * 60 * 1000;
+    }
+    elseif(isset($_GET['freeTrialButton']) && $_GET['freeTrialButton'] == '1') {
+        $freeTrialButton = $_GET['freeTrialButton'];
+        $freeTrial = $_GET['freeTrial'];
+        $freeOn = explode(',',$_GET['freeTrial']);
+        $minRentalPeriod = ReservationUtilities::getPeriodTime($freeOn[0], $freeOn[1]) * 60 * 1000;
+    }
+    elseif (sysConfig::get('EXTENSION_PAY_PER_RENTALS_USE_GLOBAL_MIN_RENTAL_DAYS') == 'False') {
 		$minRentalPeriod = ReservationUtilities::getPeriodTime($pprTable->min_period, $pprTable->min_type) * 60 * 1000;
-	} else {
+	}else{
 		$minRentalPeriod = (int)sysConfig::get('EXTENSION_PAY_PER_RENTALS_MIN_RENTAL_DAYS') * 24 * 60 * 60 * 1000;
 	}
 	$maxRentalPeriod = -1;
 
-	if ($pprTable->max_period > 0) {
+    if($freeTrialButton) {
+        $maxRentalPeriod = ReservationUtilities::getPeriodTime($freeOn[0], $freeOn[1]) * 60 * 1000;
+    }
+	elseif($pprTable->max_period > 0) {
 		$maxRentalPeriod = ReservationUtilities::getPeriodTime($pprTable->max_period, $pprTable->max_type) * 60 * 1000;
 	}
 
 	ob_start();
 ?>
-
+    <input type="hidden" name="freeTrial" value="<?php echo $freeTrial ?>">
+    <input type="hidden" name="freeTrialButton" value="<?php echo $freeTrialButton ?>">
 	<?php
       if ($purchaseTypeClass->getDepositAmount() > 0){
 		$infoIcon = htmlBase::newElement('icon')
@@ -31,18 +50,36 @@
 		));
 	?>
 	 <div class="depositText" style="display:block;">
-        <?php echo sysLanguage::get('PPR_DEPOSIT_AMOUNT') . ' - '. $currencies->format($purchaseTypeClass->getDepositAmount()) . $infoIcon->draw();?>
+         <?php
+          if($freeTrialButton) {
+            echo sysLanguage::get('PPR_DEPOSIT_AMOUNT') . ' - '. $currencies->format(0) . $infoIcon->draw();
+          }else{
+            echo sysLanguage::get('PPR_DEPOSIT_AMOUNT') . ' - '. $currencies->format($purchaseTypeClass->getDepositAmount()) . $infoIcon->draw();
+          }?>
 	 </div>
 		<?php
 	}
 		?>
 	<div class="pricingTable" style="display:block;">
-        <?php echo $purchaseTypeClass->getPricingTable();?>
+        <?php
+    if($freeTrialButton) {
+        echo $freeOn[0] . ' '.ReservationUtilities::getPeriodType($freeOn[1]).' - '. $currencies->format($freeOn[2]);
+    }else{
+        echo $purchaseTypeClass->getPricingTable();
+    }?>
 	</div>
 	<div class="periodsInsurance">
 <?php
 	//this part needs redone
-	 if ($maxRentalPeriod > 0){
+    if($freeTrialButton) {
+        ?>
+        <div class="maxPeriod" style="display:block;">
+            <?php echo sysLanguage::get('TEXT_MAX') . ' ' . ReservationUtilities::getPeriodType($freeOn[1]);?>:
+            <?php echo $freeOn[0] . ' '.ReservationUtilities::getPeriodType($freeOn[1]);?>
+        </div>
+        <?php
+    }
+    elseif (!$freeTrialButton && $maxRentalPeriod > 0){
 ?>
 	<div class="maxPeriod" style="display:block;">
         <?php echo sysLanguage::get('TEXT_MAX') . ' ' . ReservationUtilities::getPeriodType($pprTable->max_type);?>:
@@ -55,8 +92,11 @@
 if ($minRentalPeriod > 0){
 ?>
 	<div class="minPeriod" style="display:block;">
-		<?php
-	if (sysConfig::get('EXTENSION_PAY_PER_RENTALS_USE_GLOBAL_MIN_RENTAL_DAYS') == 'False') {
+        <?php
+    if($freeTrialButton) {
+        echo sysLanguage::get('TEXT_MIN') . ' ' . ReservationUtilities::getPeriodType($freeOn[1]) .': '. $freeOn[0].' '.ReservationUtilities::getPeriodType($freeOn[1]);
+    }
+	elseif (sysConfig::get('EXTENSION_PAY_PER_RENTALS_USE_GLOBAL_MIN_RENTAL_DAYS') == 'False') {
 		echo sysLanguage::get('TEXT_MIN') . ' ' . ReservationUtilities::getPeriodType($pprTable->min_type) .': '. $pprTable->min_period.' '.ReservationUtilities::getPeriodType($pprTable->min_type);
 	}else{
 		echo sysLanguage::get('TEXT_MIN') . ' ' . sysLanguage::get('TEXT_DAYS').': '. sysConfig::get('EXTENSION_PAY_PER_RENTALS_MIN_RENTAL_DAYS');
@@ -78,7 +118,12 @@ if ($insurancePrice > 0){
 			->css(array(
 				'cursor' => 'pointer'
 			));
-			echo $infoIconIns->draw(). $currencies->format($insurancePrice) ;
+            if($freeTrialButton) {
+                echo $infoIconIns->draw(). $currencies->format(0) ;
+            }
+            else {
+                echo $infoIconIns->draw(). $currencies->format($insurancePrice) ;
+            }
 		?>
 	</div>
 <?php

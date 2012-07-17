@@ -17,8 +17,6 @@ class categoriesPagesInstall extends extensionInstaller {
 	}
 	
 	public function install(){
-		if (sysConfig::exists('EXTENSION_CATEGORIES_PAGES_ENABLED') === true) return;
-		
 		parent::install();
 	}
 	

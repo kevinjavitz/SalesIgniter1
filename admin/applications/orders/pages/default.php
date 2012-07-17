@@ -1,6 +1,6 @@
 <?php
 	$Qorders = Doctrine_Query::create()
-	->select('o.orders_id, a.entry_name, o.date_purchased, o.customers_id, o.last_modified, o.currency, o.currency_value, s.orders_status_id, sd.orders_status_name, ot.text as order_total, o.payment_module')
+	->select('o.orders_id, a.entry_name, o.date_purchased, o.customers_id, o.last_modified, o.currency, o.currency_value, s.orders_status_id, sd.orders_status_name, ot.text as order_total, o.payment_module,o.admin_id')
 	->from('Orders o')
 	->leftJoin('o.OrdersTotal ot')
 	->leftJoin('o.OrdersAddresses a')
@@ -55,7 +55,8 @@
 		array('text' => sysLanguage::get('TABLE_HEADING_CUSTOMERS')),
 		array('text' => sysLanguage::get('TABLE_HEADING_ORDER_TOTAL')),
 		array('text' => sysLanguage::get('TABLE_HEADING_DATE_PURCHASED')),
-		array('text' => sysLanguage::get('TABLE_HEADING_STATUS'))
+		array('text' => sysLanguage::get('TABLE_HEADING_STATUS')),
+        array('text' => sysLanguage::get('TABLE_HEADING_PLACED'))
 	);
 
 	EventManager::notify('OrdersListingAddGridHeader', &$gridHeaderColumns);
@@ -71,8 +72,17 @@
 	if ($orders){
 		foreach($orders as $order){
 			$orderId = $order['orders_id'];
+            $orderAdmin = $order['admin_id'];
 
-			$arrowIcon = htmlBase::newElement('icon')->setType('info');
+            if($orderAdmin != 0){
+                $admins = Doctrine_Core::getTable('Admin');
+                $admin = $admins->findOneByAdminId($orderAdmin);
+                $placedBy = $admin->admin_firstname;
+            }
+            else
+                $placedBy = 'By Customer';
+
+            $arrowIcon = htmlBase::newElement('icon')->setType('info');
 
 			$htmlCheckbox = htmlBase::newElement('checkbox')
 			->setName('selectedOrder[]')
@@ -85,7 +95,8 @@
 				array('text' => $order['OrdersAddresses']['customer']['entry_name']),
 				array('text' => strip_tags($order['order_total']), 'align' => 'right'),
 				array('text' => tep_datetime_short($order['date_purchased']), 'align' => 'center'),
-				array('text' => $order['OrdersStatus']['OrdersStatusDescription'][Session::get('languages_id')]['orders_status_name'], 'align' => 'center')
+				array('text' => $order['OrdersStatus']['OrdersStatusDescription'][Session::get('languages_id')]['orders_status_name'], 'align' => 'center'),
+                array('text' => $placedBy)
 			);
 
 			EventManager::notify('OrdersListingAddGridBody', &$order, &$gridBodyColumns);

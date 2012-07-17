@@ -7,6 +7,18 @@
 			<title>General</title>
 			<description>General Settings</description>
 			<configurations>
+                <SEARCH_CUSTOMERS_PER_STORE>
+                    <title>Search Customers per showing Stores</title>
+                    <value>True</value>
+                    <description>Enable or disable searching customers per showing stores on order creator</description>
+                    <set_function>
+                        <type>radio</type>  
+                        <values>
+                            <value>True</value>
+                            <value>False</value>
+                        </values>
+                    </set_function>
+                </SEARCH_CUSTOMERS_PER_STORE>
 				<ACCOUNT_GENDER>
 					<title><![CDATA[Gender]]></title>
 					<value><![CDATA[false]]></value>

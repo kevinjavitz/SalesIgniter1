@@ -17,8 +17,7 @@ class ordersCustomFieldsInstall extends extensionInstaller {
 	}
 
 	public function install(){
-		if (sysConfig::exists('EXTENSION_ORDERS_CUSTOM_FIELDS_ENABLED') === true) return;
-		
+
 		parent::install();
 	}
 	

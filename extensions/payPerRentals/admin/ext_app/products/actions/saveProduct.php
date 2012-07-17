@@ -48,11 +48,41 @@
 			$PayPerRental->overbooking = '0';
 		}
                 
-                if (isset($_POST['reservation_consumption'])){
+        if (isset($_POST['reservation_consumption'])){
 			$PayPerRental->consumption = (int)$_POST['reservation_consumption'];
 		}else{
 			$PayPerRental->consumption = '0';
 		}
+
+        if (isset($_POST['reservation_commission'])){
+            $PayPerRental->commission = (int)$_POST['reservation_commission'];
+        }else{
+            $PayPerRental->commission = '0';
+        }
+
+        if (isset($_POST['reservation_free_trial'])){
+            $PayPerRental->free_trial = (int)$_POST['reservation_free_trial'];
+        }else{
+            $PayPerRental->free_trial = '0';
+        }
+
+        if (isset($_POST['reservation_free_try_on_length'])){
+            $PayPerRental->free_try_on_length = (int)$_POST['reservation_free_try_on_length'];
+        }else{
+            $PayPerRental->free_try_on_length = '0';
+        }
+
+        if (isset($_POST['reservation_free_try_on_length_type'])){
+            $PayPerRental->free_try_on_length_type = (int)$_POST['reservation_free_try_on_length_type'];
+        }else{
+            $PayPerRental->free_try_on_length_type = '0';
+        }
+
+        if (isset($_POST['reservation_free_try_price'])){
+            $PayPerRental->free_try_price = (int)$_POST['reservation_free_try_price'];
+        }else{
+            $PayPerRental->free_try_price = '0';
+        }
 		
 		$Product->save();
 

@@ -21,7 +21,13 @@ $(document).ready(function () {
 	});
 
 	$('.editButton').click(function () {
-		var getVars = getLinkParams([
+
+
+        if($('.gridBodyRow.state-active').html() == null){
+            alert('Please select one user first');
+            return false;
+        }
+        var getVars = getLinkParams([
 			'rType=ajax',
 			'action=getActionWindow',
 			'window=new_edit',
@@ -106,6 +112,31 @@ $(document).ready(function () {
 						'rType=ajax',
 						'action=saveMember'
 					]);
+
+                    var errors = '';
+                    var emailReg = /^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/;
+
+                    if($('input[name$="admin_firstname"]').val() == '')
+                        errors += 'Please enter Firstname\n';
+                    if($('input[name$="admin_lastname"]').val() == '')
+                        errors += 'Please enter Lastname\n';
+                    if($('input[name$="admin_email_address"]').val() == '')
+                        errors += 'Please enter Email\n';
+                    if($('input[name$="admin_pass"]').val() == '')
+                        errors += 'Please enter Password\n';
+                    if($('input[name$="admin_override_password"]').val() == '')
+                        errors += 'Please enter Override Password\n';
+                    if(!emailReg.test($('input[name$="admin_email_address"]').val()))
+                        errors += 'Please enter valid Email\n';
+                    if($('input[name$="admin_pass"]').val().indexOf(' ') > 0)
+                        errors += 'Please do not enter white spaces on Password\n';
+                    if($('input[name$="admin_override_password"]').val().indexOf(' ') > 0)
+                        errors += 'Please do not enter white spaces on Override Password\n';
+
+                    if(errors != '') {
+                        alert(errors);
+                        return false;
+                    }
 
 					$.ajax({
 						cache: false,

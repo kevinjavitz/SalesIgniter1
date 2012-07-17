@@ -285,6 +285,9 @@ class QuickBooks_IPP
 		
 		// Encryption key (used for database storage)
 		$this->_key = $encryption_key;
+		
+		// Default to QuickBooks desktop
+		//$this->flavor(QuickBooks_IPP_IDS::FLAVOR_DESKTOP);
 	}
 	
 	/**
@@ -963,7 +966,7 @@ class QuickBooks_IPP
 	 * @param string $xml	
 	 * @return QuickBooks_IPP_Object										
 	 */
-	public function IDS($Context, $realmID, $resource, $optype, $xml = '')
+	public function IDS($Context, $realmID, $resource, $optype, $xml = '', $ID = null)
 	{
 		if (substr($resource, 0, 6) == 'Report')
 		{
@@ -975,6 +978,11 @@ class QuickBooks_IPP
 			$resource == QuickBooks_IPP_IDS::RESOURCE_PAYMENTMETHOD)
 		{
 			$resource = 'payment-method';
+		}
+		else if ($this->flavor() == QuickBooks_IPP_IDS::FLAVOR_ONLINE and 
+			$resource == QuickBooks_IPP_IDS::RESOURCE_SALESRECEIPT)
+		{
+			$resource = 'sales-receipt';
 		}
 		
 		if ($this->flavor() == QuickBooks_IPP_IDS::FLAVOR_ONLINE and 
@@ -994,20 +1002,31 @@ class QuickBooks_IPP
 		
 		//$url = 'https://services.intuit.com/sb/' . strtolower($resource) . '/' . $this->_ids_version . '/' . $realmID;
 		
-		if ($this->flavor() == QuickBooks_IPP_IDS::FLAVOR_ONLINE and 
-			$optype == QuickBooks_IPP_IDS::OPTYPE_FINDBYID)
+		if ($this->flavor() == QuickBooks_IPP_IDS::FLAVOR_ONLINE)
 		{
-			$parse = QuickBooks_IPP_IDS::parseIDType($xml);
-			
-			$url = $this->_baseurl . '/' . strtolower($resource) . '/' . $this->_ids_version . '/' . $realmID . '/' . $parse[1];
-                     
-			$post = false;
-			$xml = null;
+			if ($optype == QuickBooks_IPP_IDS::OPTYPE_FINDBYID)
+			{
+				$parse = QuickBooks_IPP_IDS::parseIDType($xml);
+				
+				$url = $this->_baseurl . '/' . strtolower($resource) . '/' . $this->_ids_version . '/' . $realmID . '/' . $parse[1];
+				
+				$post = false;
+				$xml = null;
+			}
+			else if ($optype == QuickBooks_IPP_IDS::OPTYPE_MOD)
+			{
+				$parse = QuickBooks_IPP_IDS::parseIDType($ID);
+				
+				$url = $this->_baseurl . '/' . strtolower($resource) . '/' . $this->_ids_version . '/' . $realmID . '/' . $parse[1];
+			}
+			else
+			{
+				$url = $this->_baseurl . '/' . strtolower($resource) . '/' . $this->_ids_version . '/' . $realmID;
+			}
 		}
 		else
 		{
 			$url = $this->_baseurl . '/' . strtolower($resource) . '/' . $this->_ids_version . '/' . $realmID;
-                     
 		}
 		
 		$response = $this->_request($Context, QuickBooks_IPP::REQUEST_IDS, $url, $optype, $xml, $post);
@@ -1017,7 +1036,7 @@ class QuickBooks_IPP
 		{
 			return false;
 		}
-
+		
 		$data = $this->_stripHTTPHeaders($response);
 
 		if (!$this->_ids_parser)
@@ -1038,7 +1057,7 @@ class QuickBooks_IPP
 		$err_db = null;
 		
 		// Try to parse the responses into QuickBooks_IPP_Object_* classes
-		$parsed = $Parser->parseIDS($data, $optype, $xml_errnum, $xml_errmsg, $err_code, $err_desc, $err_db);
+		$parsed = $Parser->parseIDS($data, $optype, $this->flavor(), $xml_errnum, $xml_errmsg, $err_code, $err_desc, $err_db);
 		
 		$this->_setLastDebug(__CLASS__, array( 'ids_parser_duration' => microtime(true) - $start ));
 		

@@ -17,8 +17,6 @@ class fedEXInstall extends extensionInstaller {
 	}
 	
 	public function install(){
-		if (sysConfig::exists('EXTENSION_FED_EX_ENABLED') === true) return;
-		
 		parent::install();
 	}
 	

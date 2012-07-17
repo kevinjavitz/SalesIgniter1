@@ -3,23 +3,23 @@
 	<key>customerGroups</key>
 	<description>Configuration Settings For The Customer Groups Extension</description>
 	<tabs>
-	<general>
-	<title>General</title>
-	<description>General Extension Settings</description>
-	<configurations>
-		<EXTENSION_CUSTOMER_GROUPS_INSTALLED editable="false">
-			<title>Installation Status</title>
-			<value>False</value>
-			<description></description>
-		</EXTENSION_CUSTOMER_GROUPS_INSTALLED>
-		<EXTENSION_CUSTOMER_GROUPS_ENABLED>
-			<title>Enable Customer Groups</title>
-			<value>True</value>
-			<description>Enable Or Disable The Customer Groups Extension</description>
-			<sort_order>1</sort_order>
-			<set_function>tep_cfg_select_option(array('True','False'),</set_function>
-		</EXTENSION_CUSTOMER_GROUPS_ENABLED>
-	</configurations>
-	</general>
+	    <general>
+	        <title>General</title>
+	        <description>General Extension Settings</description>
+	        <configurations>
+		        <EXTENSION_CUSTOMER_GROUPS_INSTALLED editable="false">
+			        <title>Installation Status</title>
+			        <value>False</value>
+			        <description></description>
+		        </EXTENSION_CUSTOMER_GROUPS_INSTALLED>
+		        <EXTENSION_CUSTOMER_GROUPS_ENABLED>
+			        <title>Enable Customer Groups</title>
+			        <value>True</value>
+			        <description>Enable Or Disable The Customer Groups Extension</description>
+			        <sort_order>1</sort_order>
+			        <set_function>tep_cfg_select_option(array('True','False'),</set_function>
+		        </EXTENSION_CUSTOMER_GROUPS_ENABLED>
+	        </configurations>
+	    </general>
 	</tabs>
 </ConfigurationGroup>

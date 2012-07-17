@@ -1,4 +1,5 @@
 <?php
+
 $Orders = Doctrine_Core::getTable('Orders');
 	if (isset($_GET['oID'])){
 		$NewOrder = $Orders->find((int) $_GET['oID']);
@@ -142,9 +143,9 @@ $Orders = Doctrine_Core::getTable('Orders');
 		$NewOrder->save();
 
 		if($Editor->hasData('store_id') && $appExtension->isInstalled('multiStore') && $appExtension->isEnabled('multiStore')){
-			$NewOrder->OrdersToStores->stores_id = $Editor->getData('store_id');
+			$NewOrder->OrdersToStores->stores_id = $_POST['customers_store'];//$Editor->getData('store_id');
 			if (!isset($_GET['oID'])){
-				$NewOrder->Customers->CustomersToStores->stores_id = $Editor->getData('store_id');
+				$NewOrder->Customers->CustomersToStores->stores_id = $_POST['customers_store'];//$Editor->getData('store_id');
 			}
 		}
 

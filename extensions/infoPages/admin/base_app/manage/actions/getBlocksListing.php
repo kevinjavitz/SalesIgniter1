@@ -25,13 +25,14 @@
 	$pages = $tableGrid->getResults();
 	if ($pages){
 		$editButton = htmlBase::newElement('button')
-		->setText('Edit')
+        ->addClass('editButton ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only')
+        ->setText('Edit')
 		->css(array(
 			'font-size' => '.8em'
 		));
 		
 		$deleteButton = htmlBase::newElement('button')
-		->addClass('deleteButton')
+		->addClass('deleteButton ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only')
 		->usePreset('delete')
 		->css(array(
 			'font-size' => '.8em'

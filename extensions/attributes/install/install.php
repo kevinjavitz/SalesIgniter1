@@ -17,8 +17,6 @@ class attributesInstall extends extensionInstaller {
 	}
 	
 	public function install(){
-		if (sysConfig::exists('EXTENSION_ATTRIBUTES_ENABLED') === true) return;
-		
 		parent::install();
 	}
 	

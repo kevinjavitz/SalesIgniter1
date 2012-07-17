@@ -241,11 +241,15 @@ product[85544][price]:17.99
 			}
 
 			$productsTable->addBodyRow(array(
-				'attr' => array(
-					'data-id' => $orderedProduct->getId()
-				),
-				'columns' => $bodyColumns
-			));
+                'attr' => array(
+                    'data-id' => $orderedProduct->getId(),
+                    'data-product_id' => $orderedProduct->getProductsId()
+                ),
+                'columns' => $bodyColumns
+            ));
+
+
+
 		}
 		return $productsTable;
 	}

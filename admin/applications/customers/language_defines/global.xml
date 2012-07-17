@@ -3,7 +3,7 @@
 	<define key="HEADING_TITLE_SEARCH"><![CDATA[Search:]]></define>
 	<define key="TABLE_HEADING_SELECT"><![CDATA[Select]]></define>
 	<define key="TABLE_HEADING_CUSTOMERS_ID"><![CDATA[ID]]></define>
-
+    <define key="TEXT_EMAIL_ADDRESS_EXISTS"><![CDATA[Your email address already exists, please log into your account or use a different email address.]]></define>
 	<define key="TABLE_HEADING_FIRSTNAME"><![CDATA[First Name]]></define>
 	<define key="TABLE_HEADING_LASTNAME"><![CDATA[Last Name]]></define>
 	<define key="TABLE_HEADING_ACCOUNT_CREATED"><![CDATA[Account Created]]></define>
@@ -43,6 +43,7 @@
 	<define key="TEXT_NOT_MEMBER"><![CDATA[Currently not a member]]></define>
 	<define key="TEXT_MEMBERSHIP_STATUS"><![CDATA[Membership status:]]></define>
 	<define key="TEXT_MAKE_MEMBER"><![CDATA[Make this customer a member:]]></define>
+    <define key="TEXT_AUTO_BILLING"><![CDATA[Auto billing:]]></define>
 	<define key="TEXT_MAKE_THIS_CANDIDATE"><![CDATA[Make this candidate:]]></define>
 	<define key="TEXT_PAYPAL"><![CDATA[Paypal]]></define>
 	<define key="TEXT_AUTHORIZE"><![CDATA[Authorize.Net]]></define>
@@ -162,4 +163,7 @@
 	<define key="TABLE_HEADING_PAYMENT_METHOD"><![CDATA[Payment Method]]></define>
 	<define key="TABLE_HEADING_TRANS_STATUS"><![CDATA[Status]]></define>
 	<define key="TABLE_HEADING_TRANS_ERROR"><![CDATA[Result]]></define>
+    <define key="TABLE_HEADING_TOTAL"><![CDATA[Total Orders]]></define>
+    <define key="TABLE_HEADING_LAST_ORDER_NUMBER"><![CDATA[Last Order #]]></define>
+    <define key="TABLE_HEADING_LAST_ORDER_DATE"><![CDATA[Last Order Date]]></define>
 </definitions>

@@ -17,8 +17,7 @@ class galleryInstall extends extensionInstaller {
 	}
 	
 	public function install(){
-		if (sysConfig::exists('EXTENSION_GALLERY_ENABLED') === true) return;
-		
+
 		parent::install();
 	}
 	

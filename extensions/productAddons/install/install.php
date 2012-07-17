@@ -8,8 +8,7 @@ class productAddonsInstall extends extensionInstaller {
 	}
 	
 	public function install(){
-		if (sysConfig::exists('EXTENSION_PRODUCT_ADDONS_ENABLED') === true) return;
-		
+
 		parent::install();
 	}
 	

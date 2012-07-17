@@ -17,8 +17,7 @@ class inventoryCentersInstall extends extensionInstaller {
 	}
 	
 	public function install(){
-		if (sysConfig::exists('EXTENSION_INVENTORY_CENTERS_ENABLED') === true) return;
-		
+
 		parent::install();
 	}
 	

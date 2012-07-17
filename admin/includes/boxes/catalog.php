@@ -40,6 +40,13 @@
 		}
 	}
 
+    if (sysPermissions::adminAccessAllowed('suppliers', 'default') === true){
+    $contents['children'][] = array(
+        'link' => itw_app_link(null, 'suppliers', 'default', 'SSL'),
+        'text' => sysLanguage::get('BOX_CATALOG_SUPPLIERS')
+    );
+}
+
 
 	EventManager::notify('BoxCatalogAddLink', &$contents);
 	if(count($contents['children']) == 0){

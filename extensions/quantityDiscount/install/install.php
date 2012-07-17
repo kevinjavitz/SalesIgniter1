@@ -17,8 +17,7 @@ class quantityDiscountInstall extends extensionInstaller {
 	}
 	
 	public function install(){
-		if (sysConfig::exists('EXTENSION_QUANTITY_DISCOUNT_ENABLED') === true) return;
-		
+
 		parent::install();
 	}
 	

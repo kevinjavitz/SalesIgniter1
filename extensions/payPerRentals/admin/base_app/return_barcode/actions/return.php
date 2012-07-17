@@ -26,13 +26,55 @@
 			->leftJoin('i.ProductsInventoryBarcodes b')
 			->where('b.barcode = ?', $returnBarcodes[$i]['barcode'])
 			->fetchOne();
+
 			if ($Qbarcode === false){
-				$msgWarning[] = sprintf(
-					sysLanguage::get('TEXT_BARCODE_NOT_RECOGNIZED'),
-					$returnBarcodes[$i]['barcode']
-				);
-				continue;
-			}
+
+                $Qbarcode = Doctrine_Query::create()
+                    ->select('b.purchase_type type, i.barcode_id')
+                    ->from('OrdersProductsReservation i')
+                    ->leftJoin('i.OrdersProducts b')
+                    ->where('b.orders_id = ?', $returnBarcodes[$i]['barcode'])
+                    ->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+
+                if ($Qbarcode === false){
+                        $msgWarning[] = sprintf(
+                        sysLanguage::get('TEXT_BARCODE_NOT_RECOGNIZED'),
+                        $returnBarcodes[$i]['barcode']
+                    );
+                    continue;
+                }
+                $inventory = $Qbarcode;
+
+                for($j=0;$j<sizeof($inventory);$j++){
+                    $barcode = $inventory[$j]['barcode_id'];
+
+                    if ($inventory[$j]['type'] == 'reservation'){
+                        $Qbooking = Doctrine_Query::create()
+                            ->from('OrdersProductsReservation')
+                            ->where('barcode_id = ?', $barcode)
+                            ->andWhere('rental_state = ?', 'out')
+                            ->andWhere('parent_id is null')
+                            ->fetchOne();
+
+                        if ($Qbooking === false){
+                            $error = true;
+                        }else{
+                            $status = 'A';
+                            if($returnBarcodes[$i]['broken'] === '1')
+                                $status = 'B';
+
+                            ReservationUtilities::returnReservation(
+                                $Qbooking['orders_products_reservations_id'],
+                                $status,
+                                $returnBarcodes[$i]['comment'],
+                                '',
+                                $returnBarcodes[$i]['broken']
+                            );
+                        }
+                    }
+                }
+
+            }else{
 
 			$inventory = $Qbarcode->toArray(true);
 			$barcode = $inventory['ProductsInventoryBarcodes'][0];
@@ -45,7 +87,7 @@
 				->andWhere('parent_id is null')
 				->fetchOne();
 				if ($Qbooking === false){
-					$error = true;
+				//	$error = true;
 				}else{
 					ReservationUtilities::returnReservation(
 						$Qbooking['orders_products_reservations_id'],
@@ -123,8 +165,8 @@
 						));
 					}
 				}*/
-			}
-
+			    }
+            }
 			if ($error === true){
 				$msgError[] = sprintf(
 					sysLanguage::get('TEXT_BARCODE_NOT_RENTED'),

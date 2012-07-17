@@ -648,7 +648,7 @@ function confirmDialog(options){
 		},
 		buttons : [
 			{
-				text : jsLanguage.get('TEXT_BUTTON_CONFIRM'),
+				text : 'OK',//jsLanguage.get('TEXT_BUTTON_CONFIRM'),
 				icon : 'ui-icon-check',
 				click : onConfirm || function () {
 					var dialogEl = this;
@@ -680,7 +680,7 @@ function confirmDialog(options){
 				}
 			},
 			{
-				text : jsLanguage.get('TEXT_BUTTON_CANCEL'),
+				text : 'Cancel',//jsLanguage.get('TEXT_BUTTON_CANCEL'),
 				icon : 'ui-icon-closethick',
 				click : o.onCancel || function () {
 					$(this).dialog('close').remove();
@@ -733,6 +733,7 @@ function popupWindowFavorites(w, h) {
 			$(this).dialog('destroy').remove();
 		},
 		open : function (e, ui) {
+            var bookmarkUrl = window.location;
 			var getParams = js_get_all_get_params(['app', 'appPage', 'appExt', 'action', 'noCache']);
 			getParams = getParams.substr(0, getParams.length - 1);
 
@@ -743,7 +744,7 @@ function popupWindowFavorites(w, h) {
 			html += '<tr><td>Application: </td><td><input type="hidden" name="settings[app]" value="' + thisApp + '">' + thisApp + '</td></tr>';
 			html += '<tr><td>Application Page: </td><td><input type="hidden" name="settings[appPage]" value="' + thisAppPage + '">' + thisAppPage + '</td></tr>';
 			html += '<tr><td>Other Params: </td><td><input type="hidden" name="settings[get]" value="' + getParams + '">' + getParams + '</td></tr>';
-			html += '<tr><td>Link Name: </td><td><input type="text" name="settings[name]" /></td></tr>';
+			html += '<tr><td>Link Name: </td><td><input type="hidden" name="url" value="' + bookmarkUrl + '"><input type="text" name="link_name" /></td></tr>';
 			html += '</tbody></table>';
 
 			$(this).html(html);
@@ -761,7 +762,44 @@ function popupWindowFavorites(w, h) {
 					dataType : 'json',
 					success : function (data) {
 						hideAjaxLoader($('#favoritesDialog'));
-						dialog.dialog('close');
+
+                        var bookmarkUrl = data.url;
+                        var bookmarkTitle = data.link_name;
+
+                        $.browser.chrome = /chrome/.test(navigator.userAgent.toLowerCase());
+
+                        if(!$.browser.chrome){
+
+                            if (window.sidebar) // For Mozilla Firefox Bookmark
+                            {
+                                window.sidebar.addPanel(bookmarkTitle, bookmarkUrl,"");
+
+                            }
+                            else if(window.external || document.all){ // For IE Favorite                        {
+                                window.external.AddFavorite( bookmarkUrl, bookmarkTitle);
+                            }
+                            else if(window.opera) // For Opera Browsers
+                            {
+                                $(this).attr("href",bookmarkUrl);
+                                $(this).attr("title",bookmarkTitle);
+                                $(this).attr("rel","sidebar");
+                                $(this).click();
+                            }
+                            else // for other browsers which does not support
+                            {
+                                alert('Please hold CTRL+D and click the link to bookmark it in your browser.');
+                            }
+
+                            dialog.dialog('close');
+
+                        }else // for other browsers which does not support
+                        {
+                            dialog.dialog('close');
+                            alert('Please hold CTRL+D and click the link to bookmark it in your browser.');
+                        }
+
+
+
 					}
 				});
 			},

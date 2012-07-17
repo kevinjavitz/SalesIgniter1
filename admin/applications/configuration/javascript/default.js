@@ -152,11 +152,13 @@ $(document).ready(function () {
 		if ($(this).attr('type') == 'checkbox'){
 			if (this.checked){
 				origValues[inputName].push($(this).val());
+                $(this).removeClass('notEdited').addClass('edited');
 			}
 			clickFnc = true;
 		}else if ($(this).attr('type') == 'radio'){
 			if (this.checked){
 				origValues[inputName] = $(this).val();
+                $(this).removeClass('notEdited').addClass('edited');
 			}
 			clickFnc = true;
 		}else{
@@ -177,7 +179,7 @@ $(document).ready(function () {
 				$('[name="' + inputName + '"]').removeClass('notEdited').addClass('edited');
 				$(this).parentsUntil('tbody').last().find('.ui-icon-alert').show();
 			}else{
-				$('[name="' + inputName + '"]').removeClass('edited').addClass('notEdited');
+				//$('[name="' + inputName + '"]').removeClass('edited').addClass('notEdited');
 				$(this).parentsUntil('tbody').last().find('.ui-icon-alert').hide();
 			}
 		};
@@ -198,6 +200,19 @@ $(document).ready(function () {
 	});
 	
 	$('.saveButton').click(function () {
+        var reporting = false;
+        var level = false;
+
+        $('input[name="configuration[ERROR_REPORTING_LEVEL][]"]').each(function () {
+            level = true;
+            if (this.checked)
+                reporting = true;
+        });
+
+        if(!reporting && level == true){
+            alert('Please select at least 1 Reporting Level');
+            return false;
+        }
 		showAjaxLoader($('.edited'), 'small');
 		$.post(js_app_link('app=configuration&appPage=default&key=' + CONFIGURATION_GROUP_KEY + '&action=save'), $('.edited').serialize(), function (data, textStatus, jqXHR) {
 			if (data.success === true){

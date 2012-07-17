@@ -38,7 +38,11 @@ class productListing {
 					'showModule'    => new $className
 				);
 				if ($cInfo['products_listing_default_sorting'] == '1'){
-					$this->defaultSortKey = $cInfo['products_listing_sort_key'];
+					if($cInfo['products_listing_heading_valign'] == '1'){
+						$this->defaultSortKey = $cInfo['products_listing_sort_key'].'_d';
+					}else{
+						$this->defaultSortKey = $cInfo['products_listing_sort_key'].'_a';
+					}
 				}
 			}
 		}
@@ -210,8 +214,8 @@ class productListing {
 			}
 			if (!Session::exists('sortingKey')){
 				if (!empty($this->defaultSortKey) && !isset($_GET[$this->sortKey])){
-					$_GET[$this->sortKey] = $this->defaultSortKey . '_a';
-					Session::set('sortingKey', $this->defaultSortKey . '_a');
+					$_GET[$this->sortKey] = $this->defaultSortKey;
+					Session::set('sortingKey', $this->defaultSortKey);
 				}else if(empty($this->defaultSortKey) && !isset($_GET[$this->sortKey])){
 					$_GET[$this->sortKey] = 'products_name_a';
 					Session::set('sortingKey', 'products_name_a');					

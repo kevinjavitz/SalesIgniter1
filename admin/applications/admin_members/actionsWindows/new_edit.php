@@ -36,12 +36,20 @@ $emailInput = htmlBase::newElement('input')
 	->setLabelPosition('before')
 	->val($Admin->admin_email_address);
 
+$passwordInput = htmlBase::newElement('input')
+    ->setName('admin_pass')
+    ->setLabel(sysLanguage::get('TEXT_INFO_PASSWORD'))
+    ->setLabelSeparator('<br />')
+    ->setLabelPosition('before')
+    ->val($Admin->admin_pass);
+
 $overridePasswordInput = htmlBase::newElement('input')
 	->setName('admin_override_password')
 	->setLabel(sysLanguage::get('TEXT_INFO_OVERRIDE_PASSWORD'))
 	->setLabelSeparator('<br />')
 	->setLabelPosition('before')
 	->val($Admin->admin_override_password);
+
 
 $htmlSimpleAdmin = htmlBase::newElement('checkbox')
 	->setName('simple_admin')
@@ -101,6 +109,7 @@ else {
 $infoBox->addContentRow($firstNameInput->draw());
 $infoBox->addContentRow($lastNameInput->draw());
 $infoBox->addContentRow($emailInput->draw());
+$infoBox->addContentRow($passwordInput->draw());
 $infoBox->addContentRow($overridePasswordInput->draw());
 $infoBox->addContentRow($groupInput->draw());
 $infoBox->addContentRow($htmlSimpleAdmin->draw());

@@ -11,6 +11,8 @@
 */
 
 	$Store->google_key = $_POST['google_key'];
+    $Store->commission = $_POST['commission'];
+    $Store->commission_type = $_POST['commission_type'];
 	$Store->save();
 
 ?>

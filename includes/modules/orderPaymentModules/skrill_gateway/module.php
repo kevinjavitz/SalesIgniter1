@@ -193,13 +193,15 @@ class OrderPaymentSkrill_gateway extends StandardPaymentModule
                 $parameters['recipient_description'] = sysConfig::get('STORE_NAME');
                 $parameters['transaction_id'] = substr(Session::get('cart_MoneyBookers_GATEWAY_ID'), strpos(Session::get('cart_MoneyBookers_GATEWAY_ID'), '-') + 1);
                 
-                if (sysConfig::get('ENABLE_SSL') == 'true'){
+        if (sysConfig::get('ENABLE_SSL') == 'true'){
                         //$parameters['return_url'] = sysConfig::get('HTTPS_SERVER') . sysConfig::getDirWsCatalog() . 'ext/modules/payment/skrill_gateway/gateway.php';
 			$parameters['status_url'] = sysConfig::get('HTTPS_SERVER') . sysConfig::getDirWsCatalog() . 'ext/modules/payment/skrill_gateway/status.php';
+          //  $parameters['status_url2'] = sysConfig::get('HTTPS_SERVER') . sysConfig::getDirWsCatalog() . 'ext/modules/payment/skrill_gateway/status.php';
 		}
 		else {
                         //$parameters['return_url'] = sysConfig::get('HTTP_SERVER') . sysConfig::getDirWsCatalog() . 'ext/modules/payment/skrill_gateway/gateway.php';
 			$parameters['status_url'] = sysConfig::get('HTTP_SERVER') . sysConfig::getDirWsCatalog() . 'ext/modules/payment/skrill_gateway/status.php';
+          //  $parameters['status_url2'] = sysConfig::get('HTTP_SERVER') . sysConfig::getDirWsCatalog() . 'ext/modules/payment/skrill_gateway/status.php';
 		}
                 
                 $parameters['return_url_text'] = sysLanguage::get('TEXT_RETURN_MERCHANT'). sysConfig::get('STORE_NAME');
@@ -209,15 +211,15 @@ class OrderPaymentSkrill_gateway extends StandardPaymentModule
 		}
                 
                 $parameters['logo_url'] = sysConfig::get('HTTPS_SERVER') . sysConfig::getDirWsCatalog() .'/templates/newred/images/logo.png';
-                $parameters['merchant_fields'] = Session::getSessionId() . ';' . $userAccount->getCustomerId() . ';' . $_SERVER['REMOTE_ADDR'];
+                //$parameters['merchant_fields'] = 'osCID='.Session::getSessionId() . ',user=' . $userAccount->getCustomerId() . ',customerIp=' . $_SERVER['REMOTE_ADDR'];
 		
                 
                 //Customer details
                 $parameters['pay_from_email'] = $onePageCheckout->onePage['info']['email_address'];
                 $parameters['firstname'] = $deliveryAddress['entry_firstname'];
-		$parameters['lastname'] = $deliveryAddress['entry_lastname'];
+		        $parameters['lastname'] = $deliveryAddress['entry_lastname'];
                 $parameters['address1'] = $deliveryAddress['entry_street_address'];
-		$parameters['address2'] = $deliveryAddress['entry_suburb'];
+		        $parameters['address2'] = $deliveryAddress['entry_suburb'];
                 $parameters['phone_number'] = $onePageCheckout->onePage['info']['telephone'];
                 $parameters['postal_code'] = $deliveryAddress['entry_postcode'];
                 $parameters['city'] = $deliveryAddress['entry_city'];
@@ -276,7 +278,7 @@ class OrderPaymentSkrill_gateway extends StandardPaymentModule
 				}
 
 				if($planInfo['reccurring'] == 1){
-					$parameters['merchant_fields'] = Session::getSessionId() . ';' . $userAccount->getCustomerId() . ';' . $_SERVER['REMOTE_ADDR']. ';'.'f'.';'.(Session::exists('refid')?Session::get('refid'):'n');
+					$parameters['merchant_fields'] = 'recurring';
 					if (isset($p3Val)){
 						$parameters['rec_period'] = $p3Val;
 						$parameters['rec_cycle'] = $t3Val;
@@ -289,7 +291,7 @@ class OrderPaymentSkrill_gateway extends StandardPaymentModule
 					}										
 					
 				}else{
-					$parameters['merchant_fields'] = Session::getSessionId() . ';' . $userAccount->getCustomerId() . ';' . $_SERVER['REMOTE_ADDR'] .';nonrecurring'.';'.(Session::exists('refid')?Session::get('refid'):'n');
+					$parameters['merchant_fields'] = 'nonrecurring';
 					$parameters['amount'] = $packagePrice;
 					
                                 }
@@ -308,7 +310,7 @@ class OrderPaymentSkrill_gateway extends StandardPaymentModule
 		}
                 
                 if (isset($onePageCheckout->onePage['info']['account_action']) === true){
-			$parameters['merchant_fields'] .= $onePageCheckout->onePage['info']['account_action']; 
+			$parameters['merchant_fields'] .= ','.$onePageCheckout->onePage['info']['account_action'];
                 }
                     
 		$process_button_string = '';

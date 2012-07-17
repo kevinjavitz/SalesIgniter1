@@ -17,8 +17,6 @@ class categoryDescription2Install extends extensionInstaller {
 	}
 	
 	public function install(){
-		if (sysConfig::exists('EXTENSION_CATEGORIES_DESCRIPTION2_ENABLED') === true) return;
-		
 		parent::install();
 	}
 	

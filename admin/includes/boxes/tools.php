@@ -86,6 +86,13 @@
 		);
 	}
 
+    if (sysPermissions::adminAccessAllowed('products', 'genLabels') === true){
+        $contents['children'][] = array(
+            'link' => itw_app_link('action=genLabels&labelType=barcodes&print=all', 'products', 'new_product'),
+            'text' => 'Print All Barcodes'
+        );
+    }
+
 	EventManager::notify('BoxToolsAddLink', &$contents);
 if(count($contents['children']) == 0){
 	$contents = array();

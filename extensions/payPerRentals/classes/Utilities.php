@@ -121,6 +121,14 @@ class ReservationUtilities {
 	public static function getCalendar($productsId, $purchaseTypeClasses, $rQty = 1, $showShipping = true, $callType = 'catalog', $usableBarcodes = array(), $hasButton = true)
 	{
 		global $App;
+        if(isset($_POST['freeTrialButton']) && $_POST['freeTrialButton'] == '1') {
+            $freeTrialButton = $_POST['freeTrialButton'];
+            $freeTrial = $_POST['freeTrial'];
+        }
+        elseif(isset($_GET['freeTrialButton']) && $_GET['freeTrialButton'] == '1') {
+            $freeTrialButton = $_GET['freeTrialButton'];
+            $freeTrial = $_GET['freeTrial'];
+        }
 		if($callType == 'catalog'){
 			if($App->getEnv() == 'catalog'){
 				$callLink = 'js_catalog_app_link(\'rType=ajax&appExt=payPerRentals&app=build_reservation&appPage=default\')';
@@ -136,10 +144,10 @@ class ReservationUtilities {
 		}
 		if($App->getEnv() == 'catalog'){
 			$upsQuotes = 'js_catalog_app_link(\'appExt=payPerRentals&app=build_reservation&appPage=default&action=getUpsQuotes&products_id=\'+$(\'.pID\').val()+\'&qty=\'+$selfID.find(\'.rental_qty\').val())';
-			$checkRes = 'js_catalog_app_link(\'rType=ajax&appExt=payPerRentals&app=build_reservation&appPage=default&action=checkRes\')';
+			$checkRes = 'js_catalog_app_link(\'rType=ajax&appExt=payPerRentals&app=build_reservation&freeTrialButton='.$freeTrialButton.'&freeTrial='.$freeTrial.'&appPage=default&action=checkRes\')';
 		}else{
 			$upsQuotes = 'js_app_link(\'appExt=orderCreator&app=default&appPage=new&action=getUpsQuotes&products_id=\'+$(\'.pID\').val()+\'&qty=\'+$selfID.find(\'.rental_qty\').val())';
-			$checkRes = 'js_app_link(\'rType=ajax&appExt=orderCreator&app=default&appPage=new&action=checkRes\')';
+			$checkRes = 'js_app_link(\'rType=ajax&appExt=orderCreator&app=default&freeTrialButton='.$freeTrialButton.'&freeTrial='.$freeTrial.'&appPage=new&action=checkRes\')';
 		}
 
 		$countryZones = 'js_catalog_app_link(\'appExt=payPerRentals&app=build_reservation&appPage=default&action=getCountryZones\')';
@@ -188,7 +196,17 @@ class ReservationUtilities {
 		$allowHourly = (sysConfig::get('EXTENSION_PAY_PER_RENTALS_ALLOW_HOURLY') == 'True') ? true : false;
 		$minTime = 15; //slotMinutes
 
-		if (sysConfig::get('EXTENSION_PAY_PER_RENTALS_USE_GLOBAL_MIN_RENTAL_DAYS') == 'False') {
+        if(isset($_POST['freeTrialButton']) && $_POST['freeTrialButton'] == '1') {
+            $freeOn = explode(',',$_POST['freeTrial']);
+            $minRentalPeriod = ReservationUtilities::getPeriodTime($freeOn[0], $freeOn[1]) * 60 * 1000;
+            $minRentalMessage = sysLanguage::get('PPR_ERR_AT_LEAST') . ' ' . $freeOn[0] . ' ' . ReservationUtilities::getPeriodType($freeOn[1]) . ' ' . sysLanguage::get('PPR_ERR_DAYS_RESERVED');
+        }
+        elseif(isset($_GET['freeTrialButton']) && $_GET['freeTrialButton'] == '1') {
+            $freeOn = explode(',',$_GET['freeTrial']);
+            $minRentalPeriod = ReservationUtilities::getPeriodTime($freeOn[0], $freeOn[1]) * 60 * 1000;
+            $minRentalMessage = sysLanguage::get('PPR_ERR_AT_LEAST') . ' ' . $freeOn[0] . ' ' . ReservationUtilities::getPeriodType($freeOn[1]) . ' ' . sysLanguage::get('PPR_ERR_DAYS_RESERVED');
+        }
+        elseif (sysConfig::get('EXTENSION_PAY_PER_RENTALS_USE_GLOBAL_MIN_RENTAL_DAYS') == 'False') {
 			$minRentalPeriod = ReservationUtilities::getPeriodTime($pprTable->min_period, $pprTable->min_type) * 60 * 1000;
 			$minRentalMessage = sysLanguage::get('PPR_ERR_AT_LEAST') . ' ' . $pprTable->min_period . ' ' . ReservationUtilities::getPeriodType($pprTable->min_type) . ' ' . sysLanguage::get('PPR_ERR_DAYS_RESERVED');
 		} else {
@@ -198,7 +216,15 @@ class ReservationUtilities {
 
 		$maxRentalPeriod = -1;
 		$maxRentalMessage = '';
-		if ($pprTable->max_period > 0) {
+        if(isset($_POST['freeTrialButton']) && $_POST['freeTrialButton'] == '1') {
+            $maxRentalPeriod = ReservationUtilities::getPeriodTime($freeOn[0], $freeOn[1]) * 60 * 1000;
+            $maxRentalMessage = sysLanguage::get('PPR_ERR_MAXIMUM') . ' ' . $freeOn[0] . ' ' . ReservationUtilities::getPeriodType($freeOn[1]) . ' ' . sysLanguage::get('PPR_ERR_DAYS_RESERVED');
+        }
+        elseif(isset($_GET['freeTrialButton']) && $_GET['freeTrialButton'] == '1') {
+            $maxRentalPeriod = ReservationUtilities::getPeriodTime($freeOn[0], $freeOn[1]) * 60 * 1000;
+            $maxRentalMessage = sysLanguage::get('PPR_ERR_MAXIMUM') . ' ' . $freeOn[0] . ' ' . ReservationUtilities::getPeriodType($freeOn[1]) . ' ' . sysLanguage::get('PPR_ERR_DAYS_RESERVED');
+        }
+        elseif ($pprTable->max_period > 0) {
 			$maxRentalPeriod = ReservationUtilities::getPeriodTime($pprTable->max_period, $pprTable->max_type) * 60 * 1000;
 			$maxRentalMessage = sysLanguage::get('PPR_ERR_MAXIMUM') . ' ' . $pprTable->max_period . ' ' . ReservationUtilities::getPeriodType($pprTable->max_type) . ' ' . sysLanguage::get('PPR_ERR_DAYS_RESERVED');
 		}
@@ -1590,7 +1616,7 @@ class ReservationUtilities {
 
 		.inCart{
 			position:relative;
-			top:21px;
+			top:26px;
 			left:50%;
 		}
 
@@ -1963,8 +1989,11 @@ class ReservationUtilities {
 	}
 
 	public static function returnReservation($bID, $status, $comment, $lost, $broken){
-		global $appExtension, $messageStack;
-		
+		global $appExtension,$currencies, $messageStack;
+        $consumption = false;
+        $subtotal = 0;
+        $total = 0;
+
 		$Qcheck = Doctrine_Query::create()
 		->select('orders_products_id')
 		->from('OrdersProductsReservation')
@@ -1974,6 +2003,7 @@ class ReservationUtilities {
 		if (isset($Qcheck[0]['orders_products_id']) && is_null($Qcheck[0]['orders_products_id']) === false){
 			$ReservationQuery = Doctrine_Query::create()
 			->from('Orders o')
+            ->leftJoin('o.OrdersTotal ot')
 			->leftJoin('o.Customers c')
 			->leftJoin('o.OrdersAddresses oa')
 			->leftJoin('o.OrdersProducts op')
@@ -2014,18 +2044,43 @@ class ReservationUtilities {
 			}
 			foreach($Products as $pInfo){
 				if (isset($pInfo->OrdersProductsReservation)){
+                    $purchase_type = $pInfo['purchase_type'];
 					$Reservations = $pInfo->OrdersProductsReservation;
 				}else{
 					$Reservations = array($pInfo);
 				}
 				foreach($Reservations as $oprInfo){
-					$reservationId = $oprInfo->orders_products_reservations_id;
-					$trackMethod = $oprInfo->track_method;
+                    if(!class_exists('Product')){
+                        require(sysConfig::getDirFsCatalog() . 'includes/classes/product.php');
+                    }
+					$product = new Product($pInfo->products_id);
 
-					$oprInfo->rental_state = 'returned';
-					$oprInfo->date_returned = date('Y-m-d h:i:s');
+                    $reservationId = $oprInfo->orders_products_reservations_id;
+					$trackMethod = $oprInfo->track_method;
 					$oprInfo->broken = $broken;
 					//$oprInfo->lost = $lost;
+
+                    if($purchase_type == 'reservation'){
+                        $purchaseTypeClass = $product->getPurchaseType('reservation');
+                        if($purchaseTypeClass->consumptionAllowed() === '1'){
+                            $consumption = true;
+                            if ($oprInfo->rental_state == 'out'){
+                                $now = date('Y-m-d H:i:s');
+                                $prices = $purchaseTypeClass->getReservationPrice($oprInfo->start_date,$now,$oprInfo,'', (sysConfig::get('EXTENSION_PAY_PER_RENTALS_INSURE_ALL_PRODUCTS_AUTO') == 'True'));
+                                $oprInfo->end_date = $now;
+                                $oprInfo->OrdersProducts->products_price = $prices['price'];
+                                $oprInfo->OrdersProducts->final_price = $prices['totalPrice'];
+                                $oprInfo->rental_state = 'returned';
+                                $oprInfo->date_returned = $now;
+                                $subtotal += $prices['price'];
+                                $total += $prices['totalPrice'];
+                                $oprInfo->ProductsInventoryBarcodes->status = $status;
+                            }else{
+                                $subtotal +=  $oprInfo->OrdersProducts->products_price;
+                                $total += $oprInfo->OrdersProducts->final_price;
+                            }
+                        }
+                    }
 
 					if (!empty($comment)){
 						if ($reservationId == 'barcode'){
@@ -2122,6 +2177,26 @@ class ReservationUtilities {
 					}
 				}
 			}
+
+            if (isset($oInfo->OrdersTotal) and $consumption === True){
+                $Totals =  $oInfo->OrdersTotal;
+                foreach($Totals as $totInfo){
+                    $tax = $total - $subtotal;
+                    if($totInfo['module'] == 'subtotal'){
+                        $totInfo['value'] = $subtotal;
+                        $totInfo['text'] = $currencies->currencies[DEFAULT_CURRENCY]['symbol_left']. ' '.$subtotal;
+                    }
+                    if($totInfo['module'] == 'tax'){
+                        $totInfo['value'] = $tax;
+                        $totInfo['text'] = $currencies->currencies[DEFAULT_CURRENCY]['symbol_left']. ' '.$tax;
+                    }
+                    if($totInfo['module'] == 'total'){
+                        $totInfo['value'] = $total;
+                        $totInfo['text'] = $currencies->currencies[DEFAULT_CURRENCY]['symbol_left']. ' '.$total;
+                    }
+                }
+
+            }
 		}
 		$Reservation->save();
 	}

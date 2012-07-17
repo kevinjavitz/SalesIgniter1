@@ -17,8 +17,7 @@ class gorentalsDepotInstall extends extensionInstaller {
 	}
 	
 	public function install(){
-		if (sysConfig::exists('EXTENSION_GORENTALS_DEPOT_ENABLED') === true) return;
-		
+
 		parent::install();
 	}
 	

@@ -17,8 +17,7 @@ class photoGalleryInstall extends extensionInstaller {
 	}
 	
 	public function install(){
-		if (sysConfig::exists('EXTENSION_PHOTO_GALLERY_ENABLED') === true) return;
-		
+
 		parent::install();
 	}
 	

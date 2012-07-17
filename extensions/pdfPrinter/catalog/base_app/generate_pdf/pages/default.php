@@ -3,8 +3,13 @@
 
 require(sysConfig::getDirFsCatalog() . 'includes/classes/Order/Base.php');
 
+
+//require_once(sysConfig::getDirFsCatalog(). 'dompdf/dompdf_config.inc.php');
+require_once(sysConfig::getDirFsCatalog(). 'mpdf54/mpdf.php');
+
 require_once(sysConfig::getDirFsCatalog(). 'dompdf/dompdf_config.inc.php');
 //require_once(sysConfig::getDirFsCatalog(). 'mpdf54/mpdf.php');
+
 
 require(sysConfig::getDirFsCatalog() . 'includes/classes/pdftemplate.php');
 
@@ -13,15 +18,15 @@ if(isset($_GET['oID']) && !isset($_GET['type'])){
 	$multiStore = $appExtension->getExtension('multiStore');
 	if ($multiStore !== false && $multiStore->isEnabled() === true){
 		$QordersStore = Doctrine_Query::create()
-		->from('OrdersToStores')
-		->where('orders_id=?', $_GET['oID'])
-		->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
-	    $orderStore = (isset($QordersStore[0]['stores_id'])?$QordersStore[0]['stores_id']:0);
+				->from('OrdersToStores')
+				->where('orders_id=?', $_GET['oID'])
+				->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+		$orderStore = (isset($QordersStore[0]['stores_id'])?$QordersStore[0]['stores_id']:0);
 		$QInvLayouts = Doctrine_Query::create()
-			->select('invoice_layout, estimate_layout')
-			->from('Stores')
-			->where('stores_id=?', $orderStore)
-			->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+				->select('invoice_layout, estimate_layout')
+				->from('Stores')
+				->where('stores_id=?', $orderStore)
+				->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 		$invLayout = $QInvLayouts[0]['invoice_layout'];
 		$estLayout = $QInvLayouts[0]['estimate_layout'];
 
@@ -91,7 +96,7 @@ function addInputsPDF($El, $Config) {
 function processContainerChildrenPDF($MainObj, &$El) {
 	foreach($MainObj->Children as $childObj){
 		$NewEl = htmlBase::newElement('div')
-			->addClass('container');
+				->addClass('container');
 
 		if ($childObj->Configuration->count() > 0){
 			addInputsPDF($NewEl, $childObj->Configuration);
@@ -116,7 +121,7 @@ function processContainerColumnsPDF(&$Container, $Columns) {
 
 	foreach($Columns as $col){
 		$ColEl = htmlBase::newElement('div')
-			->addClass('column');
+				->addClass('column');
 
 		if ($col->Configuration->count() > 0){
 			addInputsPDF($ColEl, $col->Configuration);
@@ -141,10 +146,10 @@ function processContainerColumnsPDF(&$Container, $Columns) {
 				$className = 'PDFInfoBox' . ucfirst($wid->identifier);
 				if (!class_exists($className)){
 					$QboxPath = Doctrine_Query::create()
-						->select('box_path')
-						->from('PDFTemplatesInfoboxes')
-						->where('box_code = ?', $wid->identifier)
-						->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+							->select('box_path')
+							->from('PDFTemplatesInfoboxes')
+							->where('box_code = ?', $wid->identifier)
+							->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 					require(sysConfig::getDirFsCatalog(). $QboxPath[0]['box_path'] . 'pdfinfobox.php');
 				}
 				$Class = new $className;
@@ -171,7 +176,7 @@ function processContainerColumnsPDF(&$Container, $Columns) {
 }
 
 
-$Construct = htmlBase::newElement('p')->attr('id', 'bodyContainer');
+$Construct = htmlBase::newElement('div')->attr('id', 'bodyContainer');
 
 $Layout = Doctrine_Core::getTable('PDFTemplateManagerLayouts')->find($layout_id);
 if ($Layout->Containers->count() > 0){
@@ -181,7 +186,7 @@ if ($Layout->Containers->count() > 0){
 		}
 
 		$MainEl = htmlBase::newElement('div')
-			->addClass('container');
+				->addClass('container');
 
 		if ($MainObj->Configuration->count() > 0){
 			addInputsPDF($MainEl, $MainObj->Configuration);
@@ -240,10 +245,10 @@ function parseContainerPDF($Container) {
 				$className = 'PDFInfoBox' . ucfirst($wInfo->identifier);
 				if (!class_exists($className)){
 					$Qbox = Doctrine_Query::create()
-						->select('box_path')
-						->from('PDFTemplatesInfoboxes')
-						->where('box_code = ?', $wInfo->identifier)
-						->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+							->select('box_path')
+							->from('PDFTemplatesInfoboxes')
+							->where('box_code = ?', $wInfo->identifier)
+							->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 
 					require($Qbox[0]['box_path'] . 'pdfinfobox.php');
 				}
@@ -272,7 +277,7 @@ if ($Layout){
 
 	if ($Layout->Styles->count() > 0){
 		$StyleBuilder = new StyleBuilder();
-		$StyleBuilder->setSelector('body');
+		$StyleBuilder->setSelector('@page');
 		$rules = array();
 		foreach($Layout->Styles as $sInfo){
 			$StyleBuilder->addRule($sInfo->definition_key, $sInfo->definition_value);
@@ -287,57 +292,56 @@ if ($Layout){
 
 ob_start();
 ?>
-<style type="text/css">
-	@page {
-		margin: 0;
-	}
-
-<?php
+<style>
+	<?php
 	echo $addCss;
 	?>
-		/*body {
-		 margin-top: 3.5cm;
-		 margin-bottom: 3cm;
-		 margin-left: 1.5cm;
-		 margin-right: 1.5cm;
-		 font-family: sans-serif;
-		 text-align: justify;
-	 }*/
 
 	.container{
-		display: block;
+		display:block;
 	}
-	.column{
-		display: inline-block;
-		vertical-align: top;
-	}
-
-	hr {
-		page-break-after: always;
+	a img{
 		border: 0;
 	}
-
-	.page-number:before {
-		content: counter(page);
+	.column{
+		float:left;
 	}
-
+	.container:after {
+		content:"\0020";
+		display:block;
+		height:0;
+		clear:both;
+		visibility:hidden;
+		overflow:hidden;
+	}
 </style>
 <?php
 echo $Construct->draw();
 $myPdf = ob_get_contents();
 ob_end_clean();
-$dompdf = new DOMPDF();
+//echo utf8_decode($myPdf);
+//itwExit();
+/*$dompdf = new DOMPDF();
 $dompdf->set_base_path(sysConfig::get('DIR_FS_DOCUMENT_ROOT'));
 $dompdf->load_html(utf8_decode($myPdf));
 $dompdf->render();
 $pdf = $dompdf->output();
 file_put_contents(sysConfig::getDirFsCatalog(). 'temp/pdf/'.$iName.'_'.(isset($_GET['oID'])?$_GET['oID']:'').'.pdf', $pdf);
 
+*/
+
+$dompdf = new mPDF('utf-8');
+$dompdf->WriteHTML(utf8_decode($myPdf));
+$dompdf->Output(sysConfig::getDirFsCatalog(). 'temp/pdf/'.$iName.'_'.(isset($_GET['oID'])?$_GET['oID']:'').'.pdf');
+
+
+
 /*
 $dompdf = new mPDF();
 $dompdf->WriteHTML(utf8_decode($myPdf));
 $dompdf->Output(sysConfig::getDirFsCatalog(). 'temp/pdf/'.$iName.'_'.(isset($_GET['oID'])?$_GET['oID']:'').'.pdf');
 */
+
 
 header("Location: " .sysConfig::getDirWsCatalog(). 'temp/pdf/'.$iName.'_'.(isset($_GET['oID'])?$_GET['oID']:'').'.pdf');
 itwExit();

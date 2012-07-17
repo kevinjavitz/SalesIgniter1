@@ -115,8 +115,8 @@
 			array('addCls' => 'main', 'text' => 'Barcode'),
 			array('addCls' => 'main', 'text' => 'Type'),
 			array('addCls' => 'main', 'text' => 'Status'),
-                        array('addCls' => 'main', 'text' => 'Supplier'),
-                        array('addCls' => 'main', 'text' => 'Acquisition Cost')
+            array('addCls' => 'main', 'text' => 'Supplier'),
+            array('addCls' => 'main', 'text' => 'Acquisition Cost')
 		);
 
 		EventManager::notify('NewProductAddBarcodeOptionsHeader', &$barcodeTableHeaders);
@@ -140,9 +140,22 @@
 		->setLabelPosition('after')
 		->setLabelSeparator('&nbsp;');
                 
-                $costInput = htmlBase::newElement('input')
-		->setName('adquisitionCost')
-		->addClass('adquisitionCost');
+        $costInput = htmlBase::newElement('input')
+		->setName('acquisitionCost')
+		->addClass('acquisitionCost');
+
+        $QSuppliers = Doctrine_Query::create()
+            ->from('Suppliers')
+            ->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+
+        $suppliers = htmlBase::newElement('selectbox')
+            ->addClass('ui-widget-content')
+            ->setName('suppliersId')
+            ->addClass('suppliersId');
+
+        foreach($QSuppliers as $supplier){
+            $suppliers->addOption($supplier['suppliers_id'], $supplier['suppliers_name']);
+        }
 
 		$barcodeTableBody = array(
 			array(
@@ -157,13 +170,13 @@
 				'addCls' => 'centerAlign main',
 				'text' => $barcodeStatuses['A']
 			),
+            array(
+				'addCls' => 'centerAlign main',
+				'text' => $suppliers->draw()
+			),
                         array(
 				'addCls' => 'centerAlign main',
-				'text' => $barcodeStatuses['A']
-			),                        
-                        array(
-				'addCls' => 'centerAlign main',
-				'text' => $costInput->draw() 
+				'text' => $costInput->draw()
 			)
 		);
 
@@ -219,11 +232,11 @@
 				'addCls' => 'ui-widget-content ui-state-default ui-grid-cell',
 				'text' => 'Status'
 			),
-                        array(
+            array(
 				'addCls' => 'ui-widget-content ui-state-default ui-grid-cell',
 				'text' => 'Supplier'
 			),
-                        array(
+            array(
 				'addCls' => 'ui-widget-content ui-state-default ui-grid-cell',
 				'text' => 'Acquisition Cost'
 			)
@@ -248,10 +261,25 @@
 			'addCls' => 'ui-grid-row ui-grid-heading-row',
 			'columns' => $currentBarcodesTableHeaders
 		));
-		
+
+        $QSuppliers = Doctrine_Query::create()
+            ->from('Suppliers')
+            ->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+
 		$row = 0;
 		if (!empty($dataSet)){
 			foreach($dataSet as $bInfo){
+
+                $suppliers = htmlBase::newElement('selectbox')
+                    ->addClass('ui-widget-content')
+                    ->setName('suppliersId')
+                    ->addClass('suppliersId')
+                    ->selectOptionByValue($bInfo['suppliers_id']);
+
+                foreach($QSuppliers as $supplier){
+                    $suppliers->addOption($supplier['suppliers_id'], $supplier['suppliers_name']);
+                }
+
 				$currentBarcodesTableBody = array(
 					array(
 						'addCls' => 'ui-widget-content ui-grid-cell ui-grid-cell-first centerAlign',
@@ -269,11 +297,11 @@
 						'addCls' => 'ui-widget-content ui-grid-cell',
 						'text' => $barcodeStatuses[$bInfo['status']]
 					),
-                                        array(
+                    array(
 						'addCls' => 'ui-widget-content ui-grid-cell',
-						'text' => $bInfo['suppliers_id']
+						'text' => $suppliers->draw()
 					),
-                                        array(
+                    array(
 						'addCls' => 'ui-widget-content ui-grid-cell',
 						'text' => $bInfo['acquisition_cost']
 					)

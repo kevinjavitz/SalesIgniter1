@@ -17,8 +17,7 @@ class manageQuickBooksInstall extends extensionInstaller {
 	}
 	
 	public function install(){
-		if (sysConfig::exists('EXTENSION_MANAGE_QUICKBOOKS_ENABLED') === true) return;
-		
+
 		parent::install();
 	}
 	

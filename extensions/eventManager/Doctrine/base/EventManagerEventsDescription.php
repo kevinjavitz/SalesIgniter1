@@ -71,6 +71,14 @@ class EventManagerEventsDescription extends Doctrine_Record {
 			'autoincrement' => false
 		));
 
+        $this->hasColumn('events_featured', 'integer', 4, array(
+            'type'          => 'integer',
+            'length'        => 4,
+            'unsigned'      => 0,
+            'primary'       => false,
+            'default'       => '0',
+            'autoincrement' => false
+        ));
 
 	}
 	public function newLanguageProcess($fromLangId, $toLangId){

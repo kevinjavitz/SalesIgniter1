@@ -69,6 +69,8 @@
 			$addressBook->insertAddress($accountValidation, true);
 		}
 
+        EventManager::notify('NewCustomerAccountBeforeExecute', $_GET['cID']);
+
 		if (array_key_exists('planid', $_POST) || array_key_exists('activate', $_POST) || array_key_exists('make_member', $_POST)){
 			if (array_key_exists('activate', $_POST)){
 				$membership->setActivationStatus($_POST['activate']);
@@ -100,11 +102,18 @@
 					$membership->setNextBillDate($next_bill_date);
 				}
 			}
+            if (array_key_exists('auto_billing', $_POST)){
+                $membership->setAutoBilling(1);
+            }else{
+                $membership->setAutoBilling(0);
+            }
+
 			if (array_key_exists('make_member', $_POST)){
 				$membership->createNewMembership();
 			}else{
 				$membership->updateMembership();
 			}
+
 		
 			/* Send email based on certian conditions - BEGIN */
 

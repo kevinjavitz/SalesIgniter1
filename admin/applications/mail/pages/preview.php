@@ -54,13 +54,6 @@ switch ($_POST['customers_email_address']) {
 			}
 		?><table border="0" width="100%" cellpadding="0" cellspacing="2">
 			<tr>
-				<td><?php
-					echo htmlBase::newElement('button')
-					->usePreset('back')
-					->setType('submit')
-					->setName('back')
-					->draw();
-				?></td>
 				<td align="right"><?php
 					echo htmlBase::newElement('button')
 					->usePreset('cancel')

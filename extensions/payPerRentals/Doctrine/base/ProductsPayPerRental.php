@@ -190,7 +190,7 @@ class ProductsPayPerRental extends Doctrine_Record {
 			'autoincrement' => false,
 		));
                 
-                $this->hasColumn('consumption', 'integer', 1, array(
+        $this->hasColumn('consumption', 'integer', 1, array(
 			'type' => 'integer',
 			'length' => 1,
 			'unsigned' => 0,
@@ -199,6 +199,16 @@ class ProductsPayPerRental extends Doctrine_Record {
 			'notnull' => true,
 			'autoincrement' => false,
 		));
+
+        $this->hasColumn('commission', 'integer', 1, array(
+            'type' => 'integer',
+            'length' => 1,
+            'unsigned' => 0,
+            'primary' => false,
+            'default' => '0',
+            'notnull' => true,
+            'autoincrement' => false,
+        ));
 		
 		$this->hasColumn('deposit_amount', 'decimal', 15, array(
 			'type' => 'decimal',
@@ -266,5 +276,41 @@ class ProductsPayPerRental extends Doctrine_Record {
 			'autoincrement' => false,
 		));
 
+        $this->hasColumn('free_trial', 'integer', 4, array(
+            'type' => 'integer',
+            'length' => 4,
+            'unsigned' => 0,
+            'primary' => false,
+            'notnull' => false,
+            'autoincrement' => false,
+        ));
+
+        $this->hasColumn('free_try_on_length', 'integer', 4, array(
+            'type' => 'integer',
+            'length' => 4,
+            'unsigned' => 0,
+            'primary' => false,
+            'notnull' => false,
+            'autoincrement' => false,
+        ));
+
+        $this->hasColumn('free_try_on_length_type', 'integer', 4, array(
+            'type' => 'integer',
+            'length' => 4,
+            'unsigned' => 0,
+            'primary' => false,
+            'notnull' => false,
+            'autoincrement' => false,
+        ));
+
+        $this->hasColumn('free_try_price', 'decimal', 15, array(
+            'type' => 'decimal',
+            'length' => 15,
+            'primary' => false,
+            'default' => '0.0000',
+            'notnull' => true,
+            'autoincrement' => false,
+            'scale' => 4,
+        ));
 	}
 }

@@ -256,6 +256,7 @@
 	<define key="TEXT_BUTTON_IN_CART"><![CDATA[Add To Cart]]></define>
 	<define key="TEXT_BUTTON_RESERVE"><![CDATA[Reserve]]></define>
 	<define key="TEXT_BUTTON_PAY_PER_RENTAL"><![CDATA[Pay Per Rental]]></define>
+    <define key="TEXT_BUTTON_PAY_PER_RENTAL_TRY"><![CDATA[Try On Free]]></define>
 	<define key="TEXT_BUTTON_RENT_NOW"><![CDATA[Rent Now]]></define>
 	<define key="TEXT_BUTTON_IN_QUEUE"><![CDATA[Add To Queue]]></define>
 	<define key="TEXT_BUTTON_IN_QUEUE_SERIES"><![CDATA[Add All To Queue]]></define>
@@ -616,7 +617,7 @@
 	<define key="PPR_INFO_SELECTED_DAYS"><![CDATA[Selected Days.]]></define>
 	<define key="PPR_INFO_SHIPPING_DAYS"><![CDATA[Shipping Days.]]></define>
 	<define key="TEXT_DATES_SELECTED"><![CDATA[Dates Selected:]]></define>
-	<define key="TEXT_DATES_PRICE"><![CDATA[Price:]]></define>
+    <define key="TEXT_DATES_PRICE"><![CDATA[Reservation Price:]]></define>
 	<define key="TEXT_January"><![CDATA[January]]></define>
 	<define key="TEXT_February"><![CDATA[February]]></define>
 	<define key="TEXT_March"><![CDATA[March]]></define>

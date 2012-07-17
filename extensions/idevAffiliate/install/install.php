@@ -7,7 +7,6 @@ class idevAffiliateInstall extends extensionInstaller {
 	}
 
 	public function install(){
-		if (sysConfig::exists('EXTENSION_IDEVAFFILIATE_ENABLED') === true) return;
 
 		parent::install();
 	}

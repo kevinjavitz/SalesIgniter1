@@ -606,6 +606,29 @@ class PDF_Labels
 		}
 	}
 
+    function loadAllBarcodes() {
+
+        $Qbarcode = Doctrine_Query::create()
+            ->select('pi.products_id, pib.barcode, pib.barcode_id')
+            ->from('ProductsInventoryBarcodes pib')
+            ->leftJoin('pib.ProductsInventory pi')
+
+            ->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+        foreach ($Qbarcode as $barcode){
+
+            $product = new product($barcode['ProductsInventory']['products_id']);
+            $this->labels[] = array(
+                'products_name'        => $product->getName(),
+                'barcode'              => $barcode['barcode'],
+                'barcode_type'         => sysConfig::get('SYSTEM_BARCODE_FORMAT'),
+                'barcode_id'           => $barcode['barcode_id'],
+                'products_description' => strip_tags($product->getDescription()),
+                'customers_address'    => false
+            );
+        }
+
+    }
+
 	function loadLabelInfo($id, $type, $singleBarcode = false) {
 		switch($type){
 			case 'R':

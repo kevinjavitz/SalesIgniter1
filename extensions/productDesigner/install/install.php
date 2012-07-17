@@ -17,8 +17,7 @@ class productDesignerInstall extends extensionInstaller {
 	}
 	
 	public function install(){
-		if (sysConfig::exists('EXTENSION_PRODUCT_DESIGNER_ENABLED') === true) return;
-		
+
 		parent::install();
 	}
 	
