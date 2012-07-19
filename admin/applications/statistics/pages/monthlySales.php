@@ -8,6 +8,10 @@
 	if (isset($_GET['invert']) && $_GET['invert'] == 'yes'){
 		$invert = true;
 	}
+	$status = '';
+	if (isset($_GET['status'])){
+		$status = $_GET['status'];
+	}
 
 	function mirror_out($field){
 		global $csv_accum;
@@ -174,6 +178,35 @@
 
 	echo sysLanguage::get('HEADING_TITLE_PRODUCT') . ': ' . $productDrop->draw();
 
+	$categoriesDrop = htmlBase::newElement('selectbox')
+			->setName('categories_id')
+			->attr('onchange', 'this.form.submit();');
+
+	$categoriesDrop->addOption('0', 'Please Select');
+
+	$lID = (int)Session::get('languages_id');
+
+	$Qcategories = Doctrine_Query::create()
+			->from('Categories c')
+			->leftJoin('c.CategoriesDescription cd')
+			->where('cd.language_id = ?', $lID)
+			->orderBy('cd.categories_name asc, c.categories_id desc');
+
+	EventManager::notify('CategoriesListingQueryBeforeExecute', &$Qcategories);
+
+	$Qcategories = $Qcategories->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+
+	if(isset($_GET['categories_id'])){
+		$categoriesDrop->selectOptionByValue($_GET['categories_id']);
+	}
+
+	foreach($Qcategories as $cat){
+		$categoriesDrop->addOption($cat['categories_id'], $cat['CategoriesDescription'][0]['categories_name']);
+	}
+
+	echo sysLanguage::get('HEADING_TITLE_CATEGORY') . ': ' . $categoriesDrop->draw();
+
+
 	EventManager::notify('MonthlySalesAddFilters');
 
 	if ($sel_month<>0){
@@ -237,7 +270,7 @@
 	$csv_accum .= "\n";
 
 	// order totals, the driving force
-	$status = '';
+	//$status = '';
 
 	$Qsales = Doctrine_Query::create()
 	->select('
@@ -250,11 +283,13 @@
 	')
 	->from('Orders o')
 	->leftJoin('o.OrdersProducts op')
+	->leftJoin('op.Products p')
+	->leftJoin('p.ProductsToCategories p2c')
 	->leftJoin('o.OrdersTotal ot');
 
 	EventManager::notify('OrdersListingBeforeExecuteLeft', &$Qsales);
 
-	$Qsales->andWhereIn('ot.module_type', array('total', 'ot_total'))
+	$Qsales->whereIn('ot.module_type', array('total', 'ot_total'))
 	->groupBy('YEAR(o.date_purchased) , MONTH(o.date_purchased)' . ($sel_month > 0 ? ' , DAYOFMONTH(o.date_purchased)' : ''))
 	->orderBy('o.date_purchased ' . ($invert ? 'asc' : 'desc'));
 
@@ -262,15 +297,22 @@
 		$Qsales->andWhere('op.products_id = ?', $_GET['products_id']);
 	}
 
+	if(isset($_GET['categories_id']) && $_GET['categories_id'] > 0){
+		$catArr = array();
+		makeCategoriesChildrenArray($_GET['categories_id'], $catArr);
+		$Qsales->andWhere('p2c.categories_id is null OR FIND_IN_SET(p2c.categories_id, "'.implode(',',$catArr).'") > 0');
+	}
+
+
 	if (isset($_GET['status']) && ($_GET['status'] > 0)){
-		$Qsales->andWhere('o.orders_status = ?', $status);
+		$Qsales->andWhere('o.orders_status = ?', $_GET['status']);
 	}
 
 	if ($sel_month > 0){
 		$Qsales->andWhere('MONTH(o.date_purchased) = ?', $sel_month);
 	}
 
-    EventManager::notify('AdminOrdersListingBeforeExecute', &$Qsales);
+    //EventManager::notify('AdminOrdersListingBeforeExecute', &$Qsales);
 
 	$Result = $Qsales->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 	if ($Result){
@@ -342,59 +384,83 @@
 			$Queries = array();
 
 			$Queries['salesRental'] = Doctrine_Query::create()
-			->select('o.orders_id, SUM(op.final_price * op.products_quantity) as total')
+			//->select('o.orders_id, SUM(op.final_price * op.products_quantity) as total')
 			->from('Orders o')
 			->leftJoin('o.OrdersProducts op')
-			->andWhere('op.purchase_type = ?', 'membership');
+			->leftJoin('op.Products p')
+			->leftJoin('p.ProductsToCategories p2c')
+			->where('op.purchase_type = ?', 'membership');
 
 			$Queries['netNoTax'] = Doctrine_Query::create()
-			->select('o.orders_id, SUM(op.final_price * op.products_quantity) as total')
+			//->select('o.orders_id, SUM(op.final_price * op.products_quantity) as total')
 			->from('Orders o')
 			->leftJoin('o.OrdersProducts op')
+			->leftJoin('op.Products p')
+			->leftJoin('p.ProductsToCategories p2c')
 			->where('op.products_tax = ?', '0');
 
+
 			$Queries['netTax'] = Doctrine_Query::create()
-			->select('o.orders_id, SUM(op.final_price * op.products_quantity) as total')
+			//->select('o.orders_id, SUM(op.final_price * op.products_quantity) as total')
 			->from('Orders o')
 			->leftJoin('o.OrdersProducts op')
+			->leftJoin('op.Products p')
+			->leftJoin('p.ProductsToCategories p2c')
 			->where('op.products_tax > ?', '0');
 
 			$Queries['grossSales'] = Doctrine_Query::create()
-			->select('o.orders_id, SUM(op.final_price * op.products_quantity * (1 + (op.products_tax / 100.0))) as total')
+			//->select('o.orders_id, SUM(op.final_price * op.products_quantity * (1 + (op.products_tax / 100.0))) as total')
 			->from('Orders o')
 			->leftJoin('o.OrdersProducts op')
-			->where('op.products_tax >= ?', '0');
+			->leftJoin('op.Products p')
+			->leftJoin('p.ProductsToCategories p2c')
+			->leftJoin('o.OrdersTotal ot')
+			->whereIn('ot.module_type', array('ot_total','total'));
 
 			$Queries['salesTax'] = Doctrine_Query::create()
-			->select('o.orders_id, SUM((op.final_price * op.products_quantity * (1 + (op.products_tax / 100.0))) - (op.final_price * op.products_quantity)) as total')
+			//->select('o.orders_id, SUM((op.final_price * op.products_quantity * (1 + (op.products_tax / 100.0))) - (op.final_price * op.products_quantity)) as total')
 			->from('Orders o')
 			->leftJoin('o.OrdersProducts op')
+			->leftJoin('op.Products p')
+			->leftJoin('p.ProductsToCategories p2c')
 			->where('op.products_tax > ?', '0');
 
 			$Queries['taxCollected'] = Doctrine_Query::create()
-			->select('o.orders_id, SUM(ot.value) as total')
+			//->select('o.orders_id, SUM(ot.value) as total')
 			->from('Orders o')
+			->leftJoin('o.OrdersProducts op')
+			->leftJoin('op.Products p')
+			->leftJoin('p.ProductsToCategories p2c')
 			->leftJoin('o.OrdersTotal ot')
 			->whereIn('ot.module_type', array('ot_tax','tax'));
 
 			$Queries['shippingCollected'] = Doctrine_Query::create()
-			->select('o.orders_id, SUM(ot.value) as total')
+			//->select('o.orders_id, SUM(ot.value) as total')
 			->from('Orders o')
+			->leftJoin('o.OrdersProducts op')
+			->leftJoin('op.Products p')
+			->leftJoin('p.ProductsToCategories p2c')
 			->leftJoin('o.OrdersTotal ot')
 			->whereIn('ot.module_type', array('ot_shipping','shipping'));
 
 			if ($loworder) {
 				$Queries['lowOrderFees'] = Doctrine_Query::create()
-				->select('o.orders_id, SUM(ot.value) as total')
+				//->select('o.orders_id, SUM(ot.value) as total')
 				->from('Orders o')
+				->leftJoin('o.OrdersProducts op')
+				->leftJoin('op.Products p')
+				->leftJoin('p.ProductsToCategories p2c')
 				->leftJoin('o.OrdersTotal ot')
 				->where('ot.module_type = ?', 'ot_loworderfee');
 			}
 
 			if ($extra_class){
 				$Queries['otherOrderFees'] = Doctrine_Query::create()
-				->select('o.orders_id, SUM(ot.value) as total')
+				//->select('o.orders_id, SUM(ot.value) as total')
 				->from('Orders o')
+				->leftJoin('o.OrdersProducts op')
+				->leftJoin('op.Products p')
+				->leftJoin('p.ProductsToCategories p2c')
 				->leftJoin('o.OrdersTotal ot')
 				->whereNotIn('ot.module_type', $classValueArr);
 			}
@@ -403,39 +469,103 @@
 				$queryObj->andWhere('MONTH(o.date_purchased) = ?', $sInfo['i_month'])
 				->andWhere('YEAR(o.date_purchased) = ?', $sInfo['row_year']);
 
-				if ($status <> ''){
-					$queryObj->andWhere('o.orders_status = ?', $status);
+				if(isset($_GET['products_id']) && $_GET['products_id'] > 0){
+					$queryObj->andWhere('op.products_id = ?', $_GET['products_id']);
+				}
+
+				if(isset($_GET['categories_id']) && $_GET['categories_id'] > 0){
+					$queryObj->andWhere('p2c.categories_id is null OR FIND_IN_SET(p2c.categories_id, "'.implode(',',$catArr).'") > 0');
+				}
+
+				if (isset($_GET['status']) && ($_GET['status'] > 0)){
+					$queryObj->andWhere('o.orders_status = ?', $_GET['status']);
 				}
 
 				if ($sel_month <> 0){
 					$queryObj->andWhere('DAYOFMONTH(o.date_purchased) = ?', $sInfo['row_day']);
 				}
 
-				EventManager::notify('AdminOrdersListingBeforeExecute', &$queryObj);
+				//EventManager::notify('AdminOrdersListingBeforeExecute', &$queryObj);
 
 				$$finalVarName = $queryObj->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 			}
 
-			$rentals_sales_this_row = $salesRental[0]['total'];
-			$zero_rated_net_sales_this_row = $netNoTax[0]['total'];
-			$net_sales_this_row = $netTax[0]['total'];
-			$gross_sales_this_row = $grossSales[0]['total'];
+			$rentals_sales_this_row = 0;
+			foreach($salesRental as $sRental){
+				foreach($sRental['OrdersProducts'] as $iProd){
+					$rentals_sales_this_row += (float)$iProd['final_price'] * $iProd['products_quantity'];
+				}
+			}
+
+			$zero_rated_net_sales_this_row = 0;
+			foreach($netNoTax as $nNotax){
+				foreach($nNotax['OrdersProducts'] as $iProd){
+					$zero_rated_net_sales_this_row += (float)$iProd['final_price'] * $iProd['products_quantity'];
+				}
+			}
+
+			$net_sales_this_row = 0;
+			foreach($netTax as $nTax){
+				foreach($nTax['OrdersProducts'] as $iProd){
+					$net_sales_this_row += (float)$iProd['final_price'] * $iProd['products_quantity'];
+				}
+			}
+
+			$gross_sales_this_row = 0;
+			foreach($grossSales as $gSales){
+				foreach($gSales['OrdersTotal'] as $iProd){
+					$gross_sales_this_row += (float)$iProd['value'];
+				}
+			}
+
 			$sales_tax_this_row = $salesTax[0]['total'];
-			$tax_this_row = $taxCollected[0]['total'];
-			$shiphndl_this_row = $shippingCollected[0]['total'];
+
+			$sales_tax_this_row = 0;
+			foreach($salesTax as $sTax){
+				foreach($sTax['OrdersProducts'] as $iProd){
+					$sales_tax_this_row += (float)$iProd['final_price'] * $iProd['products_quantity'] * (float)$iProd['products_tax']/100;
+				}
+			}
+
+
+
+			$tax_this_row = 0;
+			foreach($taxCollected as $taxCollec){
+				foreach($taxCollec['OrdersTotal'] as $iProd){
+					$tax_this_row += (float)$iProd['value'];
+				}
+			}
+
+			$shiphndl_this_row = 0;
+			foreach($shippingCollected as $shippingCollect){
+				foreach($shippingCollect['OrdersTotal'] as $iProd){
+					$shiphndl_this_row += (float)$iProd['value'];
+				}
+			}
+
 			if ($loworder){
-				$loworder_this_row = $QlowOrderFees[0]['total'];
+				$loworder_this_row = 0;
+				foreach($lowOrderFees as $lowOrder){
+					foreach($lowOrder['OrdersTotal'] as $iProd){
+						$loworder_this_row += (float)$iProd['value'];
+					}
+				}
 			}
 			if ($extra_class){
-				$other_this_row = $otherOrderFees[0]['total'];
+				$other_this_row = 0;
+				foreach($otherOrderFees as $otherOrder){
+					foreach($otherOrder['OrdersTotal'] as $iProd){
+						$other_this_row += (float)$iProd['value'];
+					}
+				}
 			}
 
 			// Correct any rounding errors
-			$rentals_sales_this_row = (floor(($rentals_sales_this_row * 100) + 0.5)) / 100;
+			/*$rentals_sales_this_row = (floor(($rentals_sales_this_row * 100) + 0.5)) / 100;
 			$net_sales_this_row = (floor(($net_sales_this_row * 100) + 0.5)) / 100;
 			$sales_tax_this_row = (floor(($sales_tax_this_row * 100) + 0.5)) / 100;
 			$zero_rated_net_sales_this_row = (floor(($zero_rated_net_sales_this_row * 100) + 0.5)) / 100;
-			$tax_this_row = (floor(($tax_this_row * 100) + 0.5)) / 100;
+			$tax_this_row = (floor(($tax_this_row * 100) + 0.5)) / 100;*/
 
 			// accumulate row results in footer
 			$footer_gross += $gross_sales_this_row; // Gross Income
