@@ -113,6 +113,18 @@ Casa Grande, AZ  85122]]></value>
 					<description><![CDATA[Allow customer to checkout even if there is insufficient stock]]></description>
 					<set_function><![CDATA[tep_cfg_select_option(array('true', 'false'),]]></set_function>
 				</STOCK_ALLOW_CHECKOUT>
+                <SHOW_COMMENTS_CHECKOUT>
+                    <title><![CDATA[Show comments on checkout]]></title>
+                    <value><![CDATA[true]]></value>
+                    <description><![CDATA[Show comments on checkout page]]></description>
+                    <set_function><![CDATA[tep_cfg_select_option(array('true', 'false'),]]></set_function>
+                </SHOW_COMMENTS_CHECKOUT>
+                <CHECKOUT_COUNTRY_BEFORE_STATE>
+                    <title><![CDATA[Show country before state on checkout]]></title>
+                    <value><![CDATA[False]]></value>
+                    <description><![CDATA[Show country before state on checkout]]></description>
+                    <set_function><![CDATA[tep_cfg_select_option(array('True', 'False'),]]></set_function>
+                </CHECKOUT_COUNTRY_BEFORE_STATE>
 				<SHOW_COMMENTS_CHECKOUT>
 					<title><![CDATA[Show comments on checkout]]></title>
 					<value><![CDATA[true]]></value>
