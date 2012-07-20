@@ -24,6 +24,7 @@
   	<define key="TEXT_NUMBER_OF_PRODUCTS"><![CDATA[Number of Products: ]]></define>
   	<define key="TEXT_SHOW"><![CDATA[<b>Show:</b>]]></define>
   	<define key="TEXT_ALL_CATEGORIES"><![CDATA[All Genere]]></define>
+    <define key="TEXT_TITLE_PRODUCTS"><![CDATA[Products]]></define>
   	<define key="TEXT_ALL_MANUFACTURERS"><![CDATA[All Distributors]]></define>
   	<define key="TEXT_DUPLICATE_RENTAL_ITEM"><![CDATA[This item is already present in your rental queue. Please select another item.]]></define>
 </definitions>

@@ -78,7 +78,80 @@
 			echo $categoryTable->draw() . '<br />';
 
 		}
+
+
     }
+
+    if(sysConfig::get('SHOW_LIST_CATEGORIES') == 'true'){
+        $Qtop = Doctrine_Query::create()
+            ->from('Categories c')
+            ->where('c.parent_id = ?', 0)
+            ->andWhere('c.categories_id = ?', (int)$current_category_id)
+            ->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+
+        if($Qtop){
+            echo '<h1 id="productTitle">'.sysLanguage::get('TEXT_TITLE_PRODUCTS').'</h1>';
+            $Qsubs = Doctrine_Query::create()
+                ->from('Categories c')
+                ->leftJoin('c.CategoriesDescription cd')
+                ->where('c.parent_id = ?', (int)$current_category_id)
+                ->andWhere('cd.language_id=?', Session::get('languages_id'))
+                ->orderBy('cd.categories_name')
+                ->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+
+            if($Qsubs){
+                echo '<ul>';
+
+                foreach($Qsubs as $subs){
+                    $subId = $subs['CategoriesDescription'][0]['categories_seo_url'];
+                    $subName = $subs['CategoriesDescription'][0]['categories_name'];
+                    echo '<li class="listCategory"><a href="' .  itw_app_link(null, 'index', $subId) . '">'.$subName.'</a>';
+
+                    $Qchildrens = Doctrine_Query::create()
+                        ->from('Categories c')
+                        ->leftJoin('c.CategoriesDescription cd')
+                        ->where('c.parent_id = ?', $subs['categories_id'])
+                        ->andWhere('cd.language_id=?', Session::get('languages_id'))
+                        ->orderBy('cd.categories_name')
+                        ->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+
+                    if($Qchildrens){
+                        $marginLeft = 0;
+                        $marginTop = 0;
+                        foreach($Qchildrens as $child){
+                            $childId = $child['CategoriesDescription'][0]['categories_seo_url'];
+                            $childName = $child['CategoriesDescription'][0]['categories_name'];
+                            $childImage = $child['categories_image'];
+                            echo '<div class="listChilds" style="margin-left:'. $marginLeft .'px;margin-top:'. $marginTop .'px;"><a href="' .  itw_app_link(null, 'index', $childId) . '">';
+
+                            if(!empty($childImage)) {
+                                echo '<img src="imagick_thumb.php?path=rel&imgSrc=' . 'images/'. $childImage . '&width='.$categoryImageWidth.'&height='.$categoryImageHeight.'" alt="' . $childName . '" /></a>';
+                            }
+
+                            echo '<br><div class="childName"><a class="" href="' .  itw_app_link(null, 'index', $childId) . '">'.$childName.'</a></div></div>';
+                            if(sysConfig::exists('CHILD_MARGIN')){
+                                $marginLeft += sysConfig::get('CHILD_MARGIN');
+                            }
+
+                            if(sysConfig::exists('CHILD_TOP')){
+                                $marginTop = sysConfig::get('CHILD_TOP');
+                            }
+
+                            if($marginLeft > 800){
+                                $marginLeft = 0;
+                                $marginTop = 0;
+                            }
+                        }
+                    }
+                    echo '</li>';
+                }
+
+                echo '</ul>';
+            }
+
+        }
+    }
+
 	EventManager::notify('IndexNestedListingAfterListing');
 
 	echo '<div>';
