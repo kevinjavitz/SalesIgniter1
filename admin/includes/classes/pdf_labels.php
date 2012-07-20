@@ -39,7 +39,32 @@ class PDF_Labels
 
 	function setLabelsType($val) { $this->labelsType = $val; }
 
-	function setLabelLocation($val) { $this->labelLocation = $val; }
+	function setLabelLocation($val) {
+        if($val == 0){
+            $this->startLocation['row'] = 1;
+            $this->startLocation['col'] = 1;
+        }
+        if($val == 1){
+            $this->startLocation['row'] = 1;
+            $this->startLocation['col'] = 2;
+        }
+        if($val == 2){
+            $this->startLocation['row'] = 2;
+            $this->startLocation['col'] = 1;
+        }
+        if($val == 3){
+            $this->startLocation['row'] = 2;
+            $this->startLocation['col'] = 2;
+        }
+        if($val == 4){
+            $this->startLocation['row'] = 3;
+            $this->startLocation['col'] = 1;
+        }
+        if($val == 5){
+            $this->startLocation['row'] = 3;
+            $this->startLocation['col'] = 2;
+        }
+    }
 
 	function setInventoryCenter($val) { $this->invCenter = $val; }
 
