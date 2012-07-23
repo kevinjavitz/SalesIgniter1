@@ -88,6 +88,7 @@ class InfoBoxFeaturedProduct extends InfoBoxAbstract {
 
 	public function show(){
 		global $appExtension;
+        $WidgetSettings = $this->getWidgetProperties();
 		$productsImage = '';
 		$Query = Doctrine_Query::create()
 			->from('Products p')
@@ -98,49 +99,73 @@ class InfoBoxFeaturedProduct extends InfoBoxAbstract {
 			->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 			$imgWidth = '560';
 			$imgHeight = '560';
-		if (isset($Query[0]['products_id'])){
-			$Product = new product((int)$Query[0]['products_id']);
-			$productImage = $Product->getImage();
-			$thumbUrl = 'imagick_thumb.php?path=rel&imgSrc=';
+        $i=0;
+        $marginLeft = $WidgetSettings->marginLeft;
+        $margins = $marginLeft;
+		foreach ($Query as $featured){
 
-			$image = $thumbUrl  . $productImage;
-			EventManager::notify('ProductInfoProductsImageShow', &$image, &$Product);
+            if($i < $WidgetSettings->qty){
+                $i++;
+                $Product = new product($featured['products_id']);
+                $productImage = $Product->getImage();
+                $thumbUrl = 'imagick_thumb.php?path=rel&imgSrc=';
+                $image = $thumbUrl  . $productImage;
+                EventManager::notify('ProductInfoProductsImageShow', &$image, &$Product);
 
-			$productsImage = '<div><div class="prodDesc"><div class="prodDescInner"><a href="'.itw_app_link('products_id='.$Product->getID(),'product','info').'">'.substr(strip_tags($Product->getDescription()),0, 100).'...<br/><span>VIEW DETAILS</span></a></div></div>' ;
+                $productsImage .= '<div><div class="prodDesc"><div class="prodDescInner"><a href="'.itw_app_link('products_id='.$Product->getID(),'product','info').'">'.substr(strip_tags($Product->getDescription()),0, 100).'...<br/><span>VIEW DETAILS</span></a></div></div>' ;
 
-			$AdditionalImages = Doctrine_Query::create()
-				->select('file_name')
-				->from('ProductsAdditionalImages')
-				->where('products_id = ?', $Query[0]['products_id'])
-				->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
-			if (sizeof($AdditionalImages) > 0){
-				$productsImage .= '<div style="margin-left:30px;margin-top:100px;vertical-align:top;display:inline-block;" class="productImageGalleryFeatured">' .
+                $AdditionalImages = Doctrine_Query::create()
+                    ->select('file_name')
+                    ->from('ProductsAdditionalImages')
+                    ->where('products_id = ?', $featured['products_id'])
+                    ->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+                if (sizeof($AdditionalImages) > 0){
+                    $productsImage .= '<div style="margin-left:30px;margin-top:100px;vertical-align:top;display:inline-block;" class="productImageGalleryFeatured">' .
 
-					'<a class="fancyBox addSelected" style="display:block" index="0" rel="gallery" href="' . $image . '"><img class="additionalImage" imgSrc="' . $image . '&width='.$imgWidth.'&height='.$imgHeight.'" src="' . $image . '&width=50&height=50"></a>';
+                        '<a class="fancyBox addSelected" style="display:block" index="0" rel="gallery" href="' . $image . '"><img class="additionalImage" imgSrc="' . $image . '&width='.$imgWidth.'&height='.$imgHeight.'" src="' . $image . '&width=50&height=50"></a>';
 
-				$imgSrc =  'images/';
-				$ind = 0;
-				foreach($AdditionalImages as $imgInfo){
-					$addImage = $thumbUrl . $imgSrc . $imgInfo['file_name'];
-					$productImageSrc = $addImage . '&width='.$imgWidth.'&height='.$imgHeight.'';
-					$thumbSrc = $addImage . '&width=50&height=50';
-					$ind++;
+                    $imgSrc =  'images/';
+                    $ind = 0;
+                    foreach($AdditionalImages as $imgInfo){
+                        $addImage = $thumbUrl . $imgSrc . $imgInfo['file_name'];
+                        $productImageSrc = $addImage . '&width='.$imgWidth.'&height='.$imgHeight.'';
+                        $thumbSrc = $addImage . '&width=50&height=50';
+                        $ind++;
 
-					$productsImage .= '<a style="display:block;" class="fancyBox" index="'.$ind.'" rel="gallery" href="' . $addImage . '"><img class="additionalImage" imgSrc="' . $productImageSrc . '" src="' . $thumbSrc . '"></a>';
-				}
+                        $productsImage .= '<a style="display:block;" class="fancyBox" index="'.$ind.'" rel="gallery" href="' . $addImage . '"><img class="additionalImage" imgSrc="' . $productImageSrc . '" src="' . $thumbSrc . '"></a>';
+                    }
 
-				$productsImage .= '</div>';
-			}else{
-				$productsImage .= '<a class="fancyBox" style="display:none" index="0" rel="gallery" href="' . $image . '"><img class="additionalImage" imgSrc="' . $image . '&width='.$imgWidth.'&height='.$imgHeight.'" src="' . $image . '&width=50&height=50"></a>';
-			}
+                    $productsImage .= '</div>';
+                }else{
+                    $productsImage .= '<a class="fancyBox" style="display:none" index="0" rel="gallery" href="' . $image . '"><img class="additionalImage" imgSrc="' . $image . '&width='.$imgWidth.'&height='.$imgHeight.'" src="' . $image . '&width=50&height=50"></a>';
+                }
+                if($WidgetSettings->thumbnailImage == 1){
+                    $productsImage .=
+                        '<div style="text-align:center;display:inline-block;"><a id="productsImageFeatured" class="fancyBox" href="'.$image.'">' .
+                        '<img class="" src="' . $image . '" alt="' . $image . '" /><br />' .
+                        '' .
+                        '</a>' .
+                        '</div>';
+                }else{
 
-			$productsImage .=
-				'<div style="margin-left:30px;text-align:center;display:inline-block;"><a id="productsImageFeatured" class="fancyBox" href="'.$image.'">' .
-				'<img class="" src="' . $image . '&width='.$imgWidth.'&height='.$imgHeight.'" alt="' . $image . '" /><br />' .
-				'' .
-				'</a>' .
-				'</div>';
-			$productsImage .= '</div>';
+                    if($i==1)
+                        $productsImage .= '<div>';
+                    else{
+                        $productsImage .= '<div style="margin-left:'.$margins.'px;margin-top:'.$WidgetSettings->marginTop.'px;">';
+                        $margins = $margins + $marginLeft;
+                    }
+                    $productsImage .=
+                        '<a class="fancyBox" href="'.itw_app_link('products_id='.$Product->getID(),'product','info').'">' .
+                            '<img class="" src="' . $image . '" alt="' . $image . '" /><br />' .
+                            '' .
+                            '</a>' .
+                            '</div>';
+
+
+                }
+            }
+
+            $productsImage .= '</div>';
 
 		}
 		$this->setBoxContent($productsImage);
