@@ -1,5 +1,7 @@
 <?php
-	require('../includes/classes/product.php');
+	if(!class_exists('Product')){
+		require('../includes/classes/product.php');
+	}
 	$fp = fopen(sysConfig::getDirFsCatalog().'feed/feed.xml', 'wb');
 
 	function WriteHeader(){

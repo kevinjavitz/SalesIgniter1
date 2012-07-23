@@ -113,18 +113,18 @@ Casa Grande, AZ  85122]]></value>
 					<description><![CDATA[Allow customer to checkout even if there is insufficient stock]]></description>
 					<set_function><![CDATA[tep_cfg_select_option(array('true', 'false'),]]></set_function>
 				</STOCK_ALLOW_CHECKOUT>
-				<DISPLAY_REFERRAL_OTHER deprecated="true">
-					<title><![CDATA[Display "Other" Referral option]]></title>
-					<value><![CDATA[true]]></value>
-					<description><![CDATA[Display "Other - please specify" with text box in referral source in account creation]]></description>
-					<set_function><![CDATA[tep_cfg_select_option(array('true', 'false'),]]></set_function>
-				</DISPLAY_REFERRAL_OTHER>
-				<DISPLAY_REFERRAL_SOURCE deprecated="true">
-					<title><![CDATA[Display Referral options if "ref=###" is set]]></title>
-					<value><![CDATA[true]]></value>
-					<description><![CDATA[Display referral selection dropdown in referral source in account creation when "ref=###" is set]]></description>
-					<set_function><![CDATA[tep_cfg_select_option(array('true', 'false'),]]></set_function>
-				</DISPLAY_REFERRAL_SOURCE>
+                <SHOW_COMMENTS_CHECKOUT>
+                    <title><![CDATA[Show comments on checkout]]></title>
+                    <value><![CDATA[true]]></value>
+                    <description><![CDATA[Show comments on checkout page]]></description>
+                    <set_function><![CDATA[tep_cfg_select_option(array('true', 'false'),]]></set_function>
+                </SHOW_COMMENTS_CHECKOUT>
+                <CHECKOUT_COUNTRY_BEFORE_STATE>
+                    <title><![CDATA[Show country before state on checkout]]></title>
+                    <value><![CDATA[False]]></value>
+                    <description><![CDATA[Show country before state on checkout]]></description>
+                    <set_function><![CDATA[tep_cfg_select_option(array('True', 'False'),]]></set_function>
+                </CHECKOUT_COUNTRY_BEFORE_STATE>
 				<SHOW_COMMENTS_CHECKOUT>
 					<title><![CDATA[Show comments on checkout]]></title>
 					<value><![CDATA[true]]></value>
@@ -185,6 +185,22 @@ Casa Grande, AZ  85122]]></value>
 					<description><![CDATA[Show subcategories of the current category]]></description>
 					<set_function><![CDATA[tep_cfg_select_option(array('true', 'false'),]]></set_function>
 				</SHOW_SUBCATEGORIES>
+                <SHOW_LIST_CATEGORIES>
+                    <title><![CDATA[List categories from the top category]]></title>
+                    <value><![CDATA[true]]></value>
+                    <description><![CDATA[List categories from the top category]]></description>
+                    <set_function><![CDATA[tep_cfg_select_option(array('true', 'false'),]]></set_function>
+                </SHOW_LIST_CATEGORIES>
+                <CHILD_MARGIN>
+                    <title><![CDATA[If list categories from the top category, margin between childs]]></title>
+                    <value>225</value>
+                    <description><![CDATA[Margin between childs]]></description>
+                </CHILD_MARGIN>
+                <CHILD_TOP>
+                    <title><![CDATA[If list categories from the top category, top child]]></title>
+                    <value>-318</value>
+                    <description><![CDATA[Top child]]></description>
+                </CHILD_TOP>
 				<PRODUCT_INFO_SHOW_MODEL>
 					<title><![CDATA[Show model on product Info]]></title>
 					<value><![CDATA[true]]></value>
@@ -215,15 +231,15 @@ Casa Grande, AZ  85122]]></value>
 					<description><![CDATA[Show the templates menu (mainly for easy template testing, needs Template Switching Allowed to be true).]]></description>
 					<set_function><![CDATA[tep_cfg_select_option(array('true', 'false'),]]></set_function>
 				</TEMPLATE_SWITCHING_MENU>
-				<DIR_WS_TEMPLATES_DEFAULT>
-					<title><![CDATA[Default Template Directory]]></title>
-					<value><![CDATA[newred]]></value>
-					<description><![CDATA[Subdirectory (in templates/) where the template files are stored which should be loaded by default.]]></description>
-					<set_function>
-						<type>selectbox</type>
-						<data_function>itw_get_templates_array</data_function>
-					</set_function>
-				</DIR_WS_TEMPLATES_DEFAULT>
+                <DIR_WS_TEMPLATES_DEFAULT>
+                    <title><![CDATA[Default Template Directory]]></title>
+                    <value><![CDATA[newred]]></value>
+                    <description><![CDATA[Subdirectory (in templates/) where the template files are stored which should be loaded by default.]]></description>
+                    <set_function>
+                        <type>selectbox</type>
+                        <data_function>itw_get_templates_array</data_function>
+                    </set_function>
+                </DIR_WS_TEMPLATES_DEFAULT>
 			</configurations>
 		</template>
 		<gift_voucher>

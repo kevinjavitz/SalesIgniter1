@@ -129,6 +129,7 @@ product[85544][price]:17.99
 				$Editor->addErrorMessage('Your Order has a deleted product:'.$Product->getName().'. Please remove or replace this product and then update order again.');
 				break;
 			}
+		}
 		foreach($this->removedElements as $removed){
 			$allInfo = $removed->getPInfo();
 			Doctrine_Query::create()

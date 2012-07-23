@@ -1,6 +1,8 @@
 <?php
 	require(sysConfig::get('DIR_WS_CLASSES') . 'rental_queue.php');
-	require('../includes/classes/product.php');
+	if(!class_exists('Product')){
+		require('../includes/classes/product.php');
+	}
 	$processed = array(
 		'noneInQueue' => array(),
 		'noInventory' => array()

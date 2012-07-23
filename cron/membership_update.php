@@ -29,10 +29,11 @@ if (sysConfig::get('RENTAL_UPGRADE_CYCLE') == 'true'){
   	$Qcustomer = Doctrine_Query::create()
   	->select('c.customers_id, cm.next_bill_date as billDate, cm.free_trial_flag as isTrial, cm.free_trial_ends as trialEnds')
   	->from('Customers c')
-  	->leftJoin('c.CustomersMembership cm');
+  	->leftJoin('c.CustomersMembership cm')
+    ->where('cm.auto_billing = ?', 1);
 	if(isset($_GET['custID'])){
-		$Qcustomer->where('customers_id = ?', $_GET['custID'])
-                  ->andWhere('cm.auto_billing = ?', 1);
+		$Qcustomer->andWhere('customers_id = ?', $_GET['custID']);
+
 	}
 	$Qcustomer = $Qcustomer->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 
