@@ -34,7 +34,7 @@
 		       <value></value>
                      <description>Oauth Secret Supplied By ITWebExperts/Intuit</description>
               </EXTENSION_MANAGE_QUICKBOOKS_SECRET>
-		<EXTENSION_MANAGE_QUICKBOOKS_ENCRYPT>
+		<EXTENSION_MANAGE_QUICKBOOKS_ENCRYPT>  
                      <title>Encryption Key</title>
 		       <value></value>
                      <description>Encryption Key For Secure Transfer</description>

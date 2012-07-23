@@ -18,7 +18,7 @@
 
 
 QuickBooks_Loader::load('/QuickBooks/IPP/Service.php');
-
+  
 class QuickBooks_IPP_Service_Customer extends QuickBooks_IPP_Service
 {
 	public function findAll($Context, $realmID, $query = null, $page = 1, $size = 999)

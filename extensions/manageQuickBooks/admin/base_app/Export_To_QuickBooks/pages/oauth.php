@@ -9,7 +9,7 @@
 
 	This script and its source is not redistributable
 */
-
+    
 
 require_once sysConfig::getDirFsCatalog() . 'extensions/manageQuickBooks/QuickBooks.php';
 error_reporting(E_ALL);
