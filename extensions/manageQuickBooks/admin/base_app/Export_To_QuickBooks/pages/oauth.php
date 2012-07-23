@@ -38,12 +38,14 @@ if (!QuickBooks_Utilities::initialized($dsn))
 }
 $IntuitAnywhere = new QuickBooks_IPP_IntuitAnywhere($dsn, $encryption_key, $oauth_consumer_key, $oauth_consumer_secret, $this_url, $that_url);
 
+echo "SalesIgniter is now exporting to QuickBooks - Please wait..\n";
+echo "You will receive an email will the process completes.";
+
 // Try to handle the OAuth request 
 if ($IntuitAnywhere->handle($the_username, $the_tenant))
 
 {
-
-	; // The user has been connected, and will be redirected to $that_url automatically. 
+   ; // The user has been connected, and will be redirected to $that_url automatically. 
 
 }
 else

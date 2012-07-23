@@ -39,6 +39,11 @@
 		       <value></value>
                      <description>Encryption Key For Secure Transfer</description>
               </EXTENSION_MANAGE_QUICKBOOKS_ENCRYPT>
+		<EXTENSION_MANAGE_QUICKBOOKS_EMAIL>
+                     <title>Email</title>
+			<value></value>
+			<description>Email To Receive Notice When Export Is Complete</description>
+		</EXTENSION_MANAGE_QUICKBOOKS_EMAIL>
 
 	</configurations>
 	</general>

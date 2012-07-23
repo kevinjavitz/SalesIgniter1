@@ -19,7 +19,7 @@
  * 
  *
  */
-abstract class QuickBooks_IPP_Service
+class QuickBooks_IPP_Service
 {
 	/**
 	 * The last raw XML request
@@ -102,33 +102,67 @@ abstract class QuickBooks_IPP_Service
 		return $return;
 	}
 	
-	protected function _delete($Context, $realmID, $resource, $IDType, $xml = '')
-	{
+	protected function _delete($Context, $realmID, $resource, $IDType)
+	{error_log("here1", 3, "/home/bunnyboo/error_log3");		
 		$IPP = $Context->IPP();
+		$parse = QuickBooks_IPP_IDS::parseIDType($IDType);
+		// 
 		
-		if (!$xml)
-		{
-			$parse = QuickBooks_IPP_IDS::parseIDType($IDType);
-			
+		
+		
+		$unsets = array(
+			'Id', 
+			'SyncToken', 
+			'MetaData', 
+			'ExternalKey', 
+			'Synchronized', 
+			'PartyReferenceId', 
+			'SalesTaxCodeId', 		// @todo These are customer/vendor specific and probably shouldn't be here
+			'SalesTaxCodeName',
+			'OpenBalanceDate', 
+			'OpenBalance', 
+			);
+		
+		error_log("here2", 3, "/home/bunnyboo/error_log3");		 
+		if ($IPP->flavor() == QuickBooks_IPP_IDS::FLAVOR_DESKTOP)
+		{ 
+			// Build the XML request
 			$xml = '';
 			$xml .= '<?xml version="1.0" encoding="UTF-8"?>' . QUICKBOOKS_CRLF;
-			$xml .= '<' . $resource . 'Query xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.intuit.com/sb/cdm/' . $IPP->version() . '">' . QUICKBOOKS_CRLF;
-			$xml .= '	<TransactionIdSet>' . QUICKBOOKS_CRLF;
-			$xml .= '		<Id idDomain="' . $parse[0] . '">' . $parse[1] . '</Id>' . QUICKBOOKS_CRLF;
-			$xml .= '	</TransactionIdSet>' . QUICKBOOKS_CRLF;
-			$xml .= '</' . $resource . 'Query>';
+			
+			$xml .= '<Del RequestId="' . md5(mt_rand() . microtime()) . '" ' . '	xmlns="http://www.intuit.com/sb/cdm/v2">' . QUICKBOOKS_CRLF;
+			
+			$xml .= '<Object xsi:type="Customer" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">' .  QUICKBOOKS_CRLF;
+			
+			$xml .= '   <Id idDomain="' . $parse[0] . '">' . $parse[1] . '</Id>' . QUICKBOOKS_CRLF;
+			$xml .= '<TypeOf>Person</TypeOf>' . QUICKBOOKS_CRLF;
+			
+		    $xml .= '</Object>' . QUICKBOOKS_CRLF;
+			$xml .= '</Del>';
 		}
-		
+		else
+		{
+			$xml = '';
+			$xml .= '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' . QUICKBOOKS_CRLF;
+			$xml .= $Object->asIDSXML(0, null, QuickBooks_IPP_IDS::OPTYPE_DELETE, $IPP->flavor());
+		}
+		error_log("here4" . print_r($xml,1), 3, "/home/bunnyboo/error_log3");	
+		// Send the data to IPP 
 		$return = $IPP->IDS($Context, $realmID, $resource, QuickBooks_IPP_IDS::OPTYPE_DELETE, $xml);
 		$this->_setLastRequestResponse($Context->lastRequest(), $Context->lastResponse());
 		$this->_setLastDebug($Context->lastDebug());
 		
-		if (count($return))
+		if ($IPP->errorCode() != QuickBooks_IPP::ERROR_OK)
 		{
-			return $return[0];
+			$this->_setError(
+				$IPP->errorCode(), 
+				$IPP->errorText(), 
+				$IPP->errorDetail());
+			
+			return false;
 		}
 		
-		return null;
+		return $return;
 	}
 	
 	/**
@@ -178,7 +212,7 @@ abstract class QuickBooks_IPP_Service
 		
 	}
 	
-	protected function _findAll($Context, $realmID, $resource, $query = null, $sort = null, $page = 1, $size = 50, $xml = '')
+	protected function _findAll($Context, $realmID, $resource, $query = null, $sort = null, $page = 1, $size = 999, $xml = '')
 	{
 		$IPP = $Context->IPP();
 		
