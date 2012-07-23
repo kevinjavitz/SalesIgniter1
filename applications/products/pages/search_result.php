@@ -38,6 +38,9 @@
 			}
 		}
 	}
+	foreach($conditions as $key => $v){
+		$conditions[$key] = Extension_customFields::ProductSearchFormatVal($v);
+	}
 
 	$Qproducts = Doctrine_Query::create()
 	->select('DISTINCT p.products_id')
