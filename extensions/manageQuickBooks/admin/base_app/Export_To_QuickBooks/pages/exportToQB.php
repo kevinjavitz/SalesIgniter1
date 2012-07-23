@@ -1,6 +1,6 @@
 <?php
 /*
-	Manage QuickBooks Extension Version 1
+	Manage QuickBooks Extension Version 1 
 	
 	I.T. Web Experts, Rental Store v2
 	http://www.itwebexperts.com
