@@ -172,6 +172,7 @@
 	->leftJoin('p.ProductsDescription pd')
 	->leftJoin('p.ProductsToBox p2b')
 	->where('p.products_status = ?', '1')
+    ->andWhere('p.is_hidden = ?', '0')
 	//->andWhere('p.products_featured = ?', '0')
 	->andWhere('p2b.products_id is null')
 	->andWhere('pd.language_id = ?', (int)Session::get('languages_id'));
