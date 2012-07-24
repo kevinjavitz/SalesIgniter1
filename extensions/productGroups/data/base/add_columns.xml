@@ -1,0 +1,9 @@
+<data>
+	<Membership>
+		<ppr_prod_group>
+			<type>string</type>
+			<length>999</length>
+			<primary>false</primary>
+		</ppr_prod_group>
+	</Membership>
+</data>

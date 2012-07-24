@@ -13,6 +13,7 @@
 	$Field->show_on_listing = (isset($_POST['show_on_listing']) ? '1' : '0');
 	$Field->show_name_on_listing = (isset($_POST['show_name_on_listing']) ? '1' : '0');
 	$Field->show_on_labels = (isset($_POST['show_on_labels']) ? '1' : '0');
+	$Field->show_as_checkbox = (isset($_POST['show_as_checkbox']) ? '1' : '0');
 	$Field->labels_max_chars = $_POST['labels_max_chars'];
 	$Field->include_in_search = (isset($_POST['include_in_search']) ? '1' : '0');
 	EventManager::notify('CustomFieldsSaveOptions', &$Field);

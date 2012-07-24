@@ -1,4 +1,5 @@
 <?php
+	$_POST['amount'] = floatval (preg_replace("/[^-0-9\.]/","",$_POST['amount']));
 	$success = $Editor->PaymentManager->refundPayment($_POST['payment_module'], $_POST['payment_history_id'], $_POST['amount']);
 	
 	$html = '';

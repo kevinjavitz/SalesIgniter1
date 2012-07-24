@@ -44,7 +44,9 @@
 	if ($days > 0){
 		$tableColumns[] = array('addCls' => 'main', 'text' => '<b>' . sysLanguage::get('AMC_MEMBERSHIP_DAYS') . '</b>', 'align' => 'center');
 	}
+	if (sysConfig::get('RENTAL_SHOW_NUMBER_TITLES_COLUMN') == 'true'){
 	$tableColumns[] = array('addCls' => 'main', 'text' => '<b>' . sysLanguage::get('AMC_N_OF_TITLES') . '</b>', 'align' => 'center');
+	}
 	if (sysConfig::get('RENTAL_SHOW_TAX_COLUMN') == 'true'){
 		$tableColumns[] = array('addCls' => 'main', 'text' => '<b>' . sysLanguage::get('AMC_TAX') . '</b>', 'align' => 'center');
 	}

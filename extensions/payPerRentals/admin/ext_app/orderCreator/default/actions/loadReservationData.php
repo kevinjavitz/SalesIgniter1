@@ -2,7 +2,8 @@
 	$pID_string	= array();
 	$purchaseTypeClasses = array();
 	$OrderProduct = $Editor->ProductManager->get((int)$_POST['idP']);
-
+	$calendar = '';
+    if(is_object($OrderProduct)){
    	$OrderProduct->setPurchaseType('reservation');
 	$Product = $OrderProduct->productClass;
 
@@ -19,9 +20,12 @@
 	$pInfo['usableBarcodes'] = $usableBarcodes;
     $OrderProduct->setPInfo($pInfo);
 	$calendar = ReservationUtilities::getCalendar($pID_string, $purchaseTypeClasses, (isset($_POST['rental_qty'])?$_POST['rental_qty']:1), true, 'catalog', $usableBarcodes);
-
+		$success = true;
+	}else{
+		$success = false;
+	}
 	EventManager::attachActionResponse(array(
-		'success'   => true,
+		'success'   => $success,
 		'calendar'  => $calendar
 	   ), 'json');
 ?>

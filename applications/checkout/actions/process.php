@@ -60,7 +60,30 @@ if (isset($_GET['type']) && $_GET['type'] == 'addressBook'){
 			$accountValidation['email_address'] = $userAccount->getEmailAddress();
 		}
 		$error = $userAccount->validate($accountValidation);
+		if(Session::exists('current_store_id') && sysConfig::get('EXTENSION_PAY_PER_RENTALS_USE_ZIPCODES_SHIPPING') == 'True' && Session::exists('zipClient'.Session::get('current_store_id'))){
+			$shipZipCode = '';
+			if(isset($_POST['shipping_diff']) && isset($_POST['shipping_postcode'])){
+				$shipZipCode = $_POST['shipping_postcode'];
+			}else{
+				if(isset($_POST['billing_postcode'])){
+					$shipZipCode = $_POST['billing_postcode'];
+				}
+			}
+			//echo $shipZipCode;
+			$shipModule = OrderShippingModules::getModule('zonereservation', true);
+			foreach($shipModule->getMethods() as $methodId => $mInfo){
+					if(in_array((int)Session::get('zipClient'.Session::get('current_store_id')), $mInfo['zipcodesArr'])){
+						if(!in_array((int)$shipZipCode, $mInfo['zipcodesArr'])){
+							$error = true;
+							$messageStack->addSession('pageStack','Your delivery zipcode cannot be different in a different zone of:'.Session::get('zipClient'.Session::get('current_store_id')));
+							break;
+						}
+					}
 
+			}
+			//if($shipZipCode != Session::get('zipClient'.Session::get('current_store_id'))){
+			//}
+		}
 		$billingAddressArray = array(
 			'entry_gender' => (isset($_POST['billing_gender']) ? $_POST['billing_gender'] : 'm'),
 			'entry_dob' => (isset($_POST['billing_dob']) ? $_POST['billing_dob'] : ''),
@@ -201,7 +224,45 @@ if (isset($_GET['type']) && $_GET['type'] == 'addressBook'){
 			$onePageCheckout->onePage['info']['dob'] = $_POST['billing_dob'];
 			$userAccount->setDateOfBirth($onePageCheckout->onePage['info']['dob']);
 		}
+			OrderShippingModules::loadModules();
+		$shipModule = OrderShippingModules::getModule('zonereservation');
+		if(sysConfig::get('EXTENSION_PAY_PER_RENTALS_CHECK_GOOGLE_ZONES_BEFORE') == 'True' && $shipModule->getType() == 'Order'){
 
+
+			$billingAddress = $shipModule->getBillingAddress();
+			$countryName = tep_get_country_name($billingAddress['entry_country_id']);
+			$point = array(
+				'entry_street_address' => $billingAddress['entry_street_address'],
+				'entry_city'           => $billingAddress['entry_city'],
+				'entry_postcode'       => $billingAddress['entry_postcode'],
+				'entry_country_name'   => $countryName,
+				'entry_state'          => $billingAddress['entry_state']
+			);
+
+			$coordinates = getPPRGoogleCoordinates($point);
+
+			$shipMethodsIn = getShippingMethods($coordinates['lng'], $coordinates['lat'], $shipModule->getMethods());
+
+			$shippingMethodsIds = array();
+			for($i=0; $i<sizeof($shipMethodsIn); $i++){
+				$shippingMethodsIds[] = $shipMethodsIn[$i]['id'];
+			}
+			$inZone = false;
+			foreach($shipModule->getMethods() as $methodId => $mInfo){
+				if(in_array((int)$methodId, $shippingMethodsIds)){
+					$inZone = true;
+					break;
+				}
+			}
+			if(!$inZone){
+				$error = true;
+				$messageStack->addSession('pageStack','Please check your postal code');
+			}
+		}
+
+
+		EventManager::notify('CheckoutSetupPostFields');
+		//here I add event to add extra customer fields, I can even validate them, but I will use js validation
 		$onePageCheckout->onePage['createAccount'] = false;
 		if ($error == false) {
 			if ($userAccount->isLoggedIn() === false){

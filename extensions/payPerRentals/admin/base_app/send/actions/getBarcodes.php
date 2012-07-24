@@ -25,7 +25,8 @@
 			->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 		if($QBarcode){
 			$jsonData[] = array(
-				'value' => $barcode['id'],
+				'value1' => $barcode['id'],
+				'value' => $QBarcode[0]['barcode'],
 				'label' => $QBarcode[0]['barcode']
 			);
 		}

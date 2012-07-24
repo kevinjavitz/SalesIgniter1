@@ -21,7 +21,10 @@
 				$cartContent['reservationInfo'] = $dataArr['reservationInfo'];
 				$cartContent['price'] = $dataArr['price'];
 				$cartContent['final_price'] = $dataArr['final_price'];
-
+				$cartContent['noOrderShipping'] = '';
+				if(isset($dataArr['orderShipping']) && !empty($dataArr['orderShipping'])){
+					$cartContent['orderShipping'] = $dataArr['orderShipping'];
+				}
 			}
 		}
 	}

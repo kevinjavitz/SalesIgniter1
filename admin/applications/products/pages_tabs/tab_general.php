@@ -18,6 +18,14 @@
 	->setName('products_featured')
 	->setLabel(sysLanguage::get('TEXT_PRODUCT_NON_FEATURED'))
 	->setValue('0');
+$ProductFeaturedHidden = htmlBase::newElement('radio')
+	->setName('is_hidden')
+	->setLabel(sysLanguage::get('TEXT_PRODUCT_HIDDEN'))
+	->setValue('1');
+$ProductFeaturedNotHidden = htmlBase::newElement('radio')
+	->setName('is_hidden')
+	->setLabel(sysLanguage::get('TEXT_PRODUCT_NON_HIDDEN'))
+	->setValue('0');
 	
 	$ProductDateAvailable = htmlBase::newElement('input')
 	->setName('products_date_available')
@@ -65,6 +73,11 @@
 		}else{
 			$ProductFeaturedStatusDisabled->setChecked(true);
 		}
+		if ($Product['is_hidden'] == '1'){
+			$ProductFeaturedHidden->setChecked(true);
+		}else{
+			$ProductFeaturedNotHidden->setChecked(true);
+		}
 		
 		if ($Product['products_on_order'] == '1'){
 			$ProductOnOrder->setChecked(true);
@@ -87,6 +100,10 @@
   <tr>
    <td class="main"><?php echo sysLanguage::get('TEXT_PRODUCTS_FEATURED'); ?></td>
    <td class="main"><?php echo $ProductFeaturedStatusEnabled->draw() . $ProductFeaturedStatusDisabled->draw(); ?></td>
+  </tr>
+<tr>
+		 <td class="main"><?php echo sysLanguage::get('TEXT_PRODUCTS_HIDDEN'); ?></td>
+		 <td class="main"><?php echo $ProductFeaturedHidden->draw() . $ProductFeaturedNotHidden->draw(); ?></td>
   </tr>
   <tr>
    <td class="main"><?php echo sysLanguage::get('TEXT_PRODUCTS_DATE_AVAILABLE'); ?><br><small>(YYYY-MM-DD)</small></td>

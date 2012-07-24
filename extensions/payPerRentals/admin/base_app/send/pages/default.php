@@ -126,6 +126,13 @@
 
       }
 	      ?>
+		  <?php
+		  if (sysConfig::get('EXTENSION_INVENTORY_CENTERS_USE_LP') == 'True'){
+			  ?>
+			  <td class="dataTableHeadingContent" style="text-align:left;"><?php echo sysLanguage::get('TABLE_HEADING_LP');?></td>
+ 			<?php
+		  }
+		  ?>
 	   <td class="dataTableHeadingContent"><?php echo 'Dates';?></td>
 	   <td class="dataTableHeadingContent" style="text-align:left;"><?php echo "Location";?></td>
 	   <td class="dataTableHeadingContent"><?php echo 'Shipping Method';?></td>

@@ -6,6 +6,8 @@
 	<define key="TEXT_BLOCK_NAME"><![CDATA[Block Name: ]]></define>
 	<define key="TEXT_BLOCK_START_DATE"><![CDATA[Block Start Date: ]]></define>
     <define key="TEXT_BLOCK_END_DATE"><![CDATA[Block End Date: ]]></define>
-	<define key="TEXT_RECURRING"><![CDATA[Recurring: ]]></define>
+	<define key="TEXT_RECURRING_YEAR"><![CDATA[Recurring year: ]]></define>
+    <define key="TEXT_RECURRING_MONTH"><![CDATA[Recurring month: ]]></define>
+    <define key="TEXT_RECURRING_DAY"><![CDATA[Recurring day: ]]></define>
 
 </definitions>

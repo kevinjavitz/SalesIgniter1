@@ -30,13 +30,13 @@ class OrderShippingZonereservation extends OrderShippingModuleBase
 			if($this->type == 'Order' && Session::exists('onlyReservations') && (isset($_GET['app']) && $_GET['app'] == 'checkout')){
 				$this->setEnabled(true);
 			}
-			if(sysConfig::get('EXTENSION_PAY_PER_RENTALS_SHOW_SHIPPING') == 'False'){
+			if(sysConfig::get('EXTENSION_PAY_PER_RENTALS_SHOW_SHIPPING') == 'False' && Session::exists('onlyReservations')){
 				$this->setEnabled(true);
 			}
 		}
-		/*if(sysConfig::get('EXTENSION_PAY_PER_RENTALS_SHOW_SHIPPING_ON_CALENDAR_IF_ORDER') == 'True' && (isset($_GET['app']) && $_GET['app'] == 'checkout')){
+		if(sysConfig::get('EXTENSION_PAY_PER_RENTALS_SHOW_SHIPPING_ON_CALENDAR_IF_ORDER') == 'True' && (isset($_GET['app']) && $_GET['app'] == 'checkout')){
 			$this->setEnabled(false);
-		} */
+		}
 
 
 		/*if (isset($_GET['app']) && $_GET['app'] == 'checkout' && (!Session::exists('onlyReservations') || Session::get('onlyReservations') == false)){
@@ -122,13 +122,34 @@ class OrderShippingZonereservation extends OrderShippingModuleBase
 			$shipping_num_boxes_prod = 1;
 			$this->getNumBoxes($shipping_weight_prod, $shipping_num_boxes_prod);//adding boxes weight
 
+		if(sysConfig::get('EXTENSION_PAY_PER_RENTALS_CHECK_GOOGLE_ZONES_BEFORE') == 'True'){
+			$billingAddress = $this->getBillingAddress();
+			$countryName = tep_get_country_name($billingAddress['entry_country_id']);
+			$point = array(
+				'entry_street_address' => $billingAddress['entry_street_address'],
+				'entry_city'           => $billingAddress['entry_city'],
+				'entry_postcode'       => $billingAddress['entry_postcode'],
+				'entry_country_name'   => $countryName,
+				'entry_state'          => $billingAddress['entry_state']
+			);
+			$coordinates = getPPRGoogleCoordinates($point);
+			//print_r($coordinates);
+			//echo 'ccooooo';
+			$shipMethodsIn = getShippingMethods($coordinates['lng'], $coordinates['lat'], $this->methods);
+			$shippingMethodsIds = array();
+			for($i=0; $i<sizeof($shipMethodsIn); $i++){
+				$shippingMethodsIds[] = $shipMethodsIn[$i]['id'];
+			}
+		}
 			foreach($this->methods as $methodId => $mInfo){
 				if(Session::exists('current_store_id') && sysConfig::get('EXTENSION_PAY_PER_RENTALS_USE_ZIPCODES_SHIPPING') == 'True' && Session::exists('zipClient'.Session::get('current_store_id')) === true){
 					if(!in_array((int)Session::get('zipClient'.Session::get('current_store_id')), $mInfo['zipcodesArr']) || Session::get('zipClient'.Session::get('current_store_id')) == ''){
 						continue;
 					}
 				}
-
+				if(sysConfig::get('EXTENSION_PAY_PER_RENTALS_CHECK_GOOGLE_ZONES_BEFORE') == 'True' && !in_array((int)$methodId, $shippingMethodsIds)){
+					continue;
+				}
 				if ($mInfo['status'] == 'True' && ($method == 'method' . $methodId || $method == '')){
 
 					$shippingCost =  $mInfo['cost'];
@@ -146,8 +167,7 @@ class OrderShippingZonereservation extends OrderShippingModuleBase
 					if($this->type == 'Order' && (isset($_GET['app']) && $_GET['app'] != 'checkout') && sysConfig::get('EXTENSION_PAY_PER_RENTALS_SHOW_SHIPPING_ON_CALENDAR_IF_ORDER') == 'False'){
 						$shippingCost = 0;
 					}
-					//echo $totalPrice.'-'.$mInfo['free_delivery_over'];
-					if($mInfo['free_delivery_over'] < $totalPrice && $mInfo['free_delivery_over'] != -1 ){
+					if($mInfo['free_delivery_over'] <= $totalPrice && $mInfo['free_delivery_over'] != -1 ){
 						$shippingCost = 0;
 					}
 					$showCost = $shippingCost;

@@ -114,6 +114,13 @@
 	->setValue('1')
 	->setChecked(false);
 
+	$showAsCheckboxOnSearch = htmlBase::newElement('checkbox')
+	->setId('showAsCheckboxonSearch_' . $windowAction)
+	->setName('show_as_checkbox')
+	->setLabel('<b>' . sysLanguage::get('ENTRY_SHOW_AS_CHECKBOX') . '</b>')
+	->setLabelPosition('after')
+	->setValue('1')
+	->setChecked(false);
 	$includeSearchCheckbox = htmlBase::newElement('checkbox')
 	->setId('showOnSite_' . $windowAction)
 	->setName('include_in_search')
@@ -148,6 +155,8 @@
 
 		$showLabelCheckbox->setId('showOnLabels_' . $Field['field_id'] . $windowAction)
 		->setChecked(($Field['show_on_labels'] == '1'));
+		$showAsCheckboxOnSearch->setId('showAsCheckboxonSearch_' . $Field['field_id'] . $windowAction)
+		->setChecked(($Field['show_as_checkbox'] == '1'));
 		
 		$searchKeyInput->setValue($Field['search_key']);
 		$maxCharsInput->setValue($Field['labels_max_chars']);
@@ -205,6 +214,9 @@
 	$finalTable->addBodyRow(array('columns' => array(
 		array('addCls' => 'main', 'text' => $showLabelCheckbox)
 	)));
+	$finalTable->addBodyRow(array('columns' => array(
+	array('addCls' => 'main', 'text' => $showAsCheckboxOnSearch)
+)));
 	$finalTable->addBodyRow(array('columns' => array(
 		array('addCls' => 'main', 'text' => '<b>' . sysLanguage::get('ENTRY_MAX_LABEL_CHARS') . '</b>')
 	)));

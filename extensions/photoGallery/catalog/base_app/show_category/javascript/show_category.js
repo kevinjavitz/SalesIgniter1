@@ -4,6 +4,7 @@ $(document).ready(function (){
 			displaySlideQty:1,
 			moveSlideQty: 1,
 			speed:500,
+            auto:true,
 			easing:'easeInOutQuad',
 			prevSelector:'#prevmainGallery',
 			nextSelector:'#nextmainGallery',

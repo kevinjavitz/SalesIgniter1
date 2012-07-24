@@ -39,10 +39,16 @@ class Extension_ordersCustomFields extends ExtensionBase {
 		->where('orders_id =?',$order['orderID'])
 		->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 		$additionalDetails = '';
+		$destinationName = '';
 		foreach($QCustomFields as $customFields){
-			$additionalDetails .= '<b>'.$customFields['field_label'] .'</b>:'.$customFields['value'];
+			if($customFields['field_label'] != 'Destination Type'){
+				$additionalDetails .= '<b>'.$customFields['field_label'] .'</b>:'.$customFields['value'].'<br/>';
+			}else{
+				$destinationName = '<b>'.'Type' .'</b>:'.$customFields['value'];
+			}
 		}
 		$emailEvent->setVar('additional_information', $additionalDetails);
+		$emailEvent->setVar('destination_name', $destinationName);
 	}
 	
 	public function OrderInfoAddBlock($orderId){

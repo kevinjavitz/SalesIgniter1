@@ -28,9 +28,9 @@ class InfoBoxBlogSlideArticles extends InfoBoxAbstract {
 	}
 
 	public function video_from_url($url, $imgWidth, $imgHeight){
-		parse_str(parse_url($url,PHP_URL_QUERY), $out);
-		if($out['host'] == 'www.youtube.com' || $out['host'] == 'youtube.com'){
-			$string = '<object width="'.$imgWidth.'" height="'.$imgHeight.'" data="http://www.youtube.com/v/'.$out['v'].'" type="application/x-shockwave-flash"><param name="wmode" value="transparent" /><param name="src" value="http://www.youtube.com/v/'.$out['v'].'" /></object>';
+		$out = parse_url($url);
+		if($out['host'] == 'www.youtu.be' || $out['host'] == 'youtu.be'){
+			$string = '<object width="'.$imgWidth.'" height="'.$imgHeight.'" data="http://www.youtube.com/v'.$out['path'].'" type="application/x-shockwave-flash"><param name="wmode" value="transparent" /><param name="src" value="http://www.youtube.com/v'.$out['path'].'" /></object>';
 		}else{
 			//preg_match('#http://(?:\w+.)?vimeo.com/(?:video/|moogaloop\.swf\?clip_id=)(\w+)#i', $url, $match);
 			preg_match('/^http:\/\/(www\.)?vimeo\.com\/(clip\:)?(\d+).*$/', $url, $match);
@@ -66,6 +66,7 @@ class InfoBoxBlogSlideArticles extends InfoBoxAbstract {
 		$moveSlideQty = $boxWidgetProperties->moveQty;
 		$speed = $boxWidgetProperties->speed;
 		$duration = $boxWidgetProperties->duration;
+		$startAuto = ($boxWidgetProperties->startAuto == 'startAuto'?'true':'false');
 		$easing = $boxWidgetProperties->easing;
 		$javascript = '';
 		ob_start();
@@ -85,6 +86,7 @@ class InfoBoxBlogSlideArticles extends InfoBoxAbstract {
 			moveSlideQty: <?php echo $moveSlideQty;?>,
 			speed:<?php echo $speed;?>,
 		    easing:'<?php echo $easing;?>',
+			auto:<?php echo $startAuto;?>,
 			prevSelector:'#prev<?php echo $id;?>',
 			nextSelector:'#next<?php echo $id;?>',
 			pause:<?php echo $duration;?>
@@ -140,7 +142,7 @@ class InfoBoxBlogSlideArticles extends InfoBoxAbstract {
 
 					$thumbUrl = 'imagick_thumb.php?path=rel&imgSrc='.$src.'&width='.$imageWidth.'&height='.$imageHeight;
 				}else{
-					$thumbUrl = 'imagick_thumb.php?path=rel&imgSrc=images/'.$post['post_featured_image'].'&width='.$imageWidth.'&height='.$imageHeight;
+					$thumbUrl = 'imagick_thumb.php?path=rel&imgSrc='.$blog->getFilesUploadPath('image', 'rel'). $post['post_featured_image'].'&width='.$imageWidth.'&height='.$imageHeight;
 				}
 				$contentHtml.= '<div class="slidepictPart">';
 				if($thumbUrl !=''){

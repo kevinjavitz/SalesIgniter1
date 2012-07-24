@@ -94,7 +94,7 @@ class InfoBoxBlogLatestArticles extends InfoBoxAbstract {
 						$contentHtml.= '</a>';
 					}
 				}else{
-					$contentHtml.= '<img src="' . $blog->getFilesUploadPath('image', 'rel') . 'feedicon.png"/>';
+					//$contentHtml.= '<img src="' . $blog->getFilesUploadPath('image', 'rel') . 'feedicon.png"/>';
 				}
 				$contentHtml.= '</div>';
 
@@ -106,7 +106,7 @@ class InfoBoxBlogLatestArticles extends InfoBoxAbstract {
 				}
 			} else {
 				$contentHtml.= '<div class="pictPart">';
-				$contentHtml.= '<img src="' . $blog->getFilesUploadPath('image', 'rel') . 'feedicon.png"/>';
+				//$contentHtml.= '<img src="' . $blog->getFilesUploadPath('image', 'rel') . 'feedicon.png"/>';
 				$contentHtml.= '</div>';
 			}
 

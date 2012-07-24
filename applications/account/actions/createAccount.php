@@ -45,7 +45,7 @@
 		if (array_key_exists('gender', $_POST)) $userAccount->setGender($accountValidation['entry_gender']);
 		if (array_key_exists('dob', $_POST)) $userAccount->setDateOfBirth($accountValidation['dob']);
 		if (array_key_exists('city_birth', $_POST)) $userAccount->setCityBirth($accountValidation['entry_city_birth']);
-
+		EventManager::notify('AccountSetupPostFields');
 		$customerId = $userAccount->createNewAccount();
 
 		$addressBook->insertAddress($accountValidation, true, true);

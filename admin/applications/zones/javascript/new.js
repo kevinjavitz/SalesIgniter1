@@ -43,7 +43,7 @@ function addIcon(icon) { // Add icon attributes
 
 function drawOverlay(){
 	if(poly) { map.removeOverlay(poly); }
-	points.length = 0;
+	points = [];
 	for(i = 0; i < markers.length; i++) {
 		var markerLatLng = markers[i].getLatLng();
 		points.push(markerLatLng);
@@ -128,6 +128,8 @@ $(document).ready(function (){
 				filebrowserBrowseUrl: DIR_WS_ADMIN + 'rentalwysiwyg/editor/filemanager/browser/default/browser.php'
 			});
 		});
+    markers = [];
+    points = [];
 
 	map = new GMap2(document.getElementById('googleMap'));
 	//     map.setCenter(new GLatLng(37.4419, -122.1419), 13);

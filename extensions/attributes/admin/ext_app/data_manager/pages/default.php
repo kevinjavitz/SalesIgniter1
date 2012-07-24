@@ -64,8 +64,10 @@ class attributes_admin_data_manager_default extends Extension_attributes {
 			->leftJoin('a.ProductsOptionsValues ov')
 			->leftJoin('ov.ProductsOptionsValuesToProductsOptions v2o')
 			->leftJoin('ov.ProductsOptionsValuesDescription ovd')
+			->where('od.language_id = ?', Session::get('languages_id'))
+			->andWhere('ovd.language_id = ?', Session::get('languages_id'))
 			->orderBy('o2g.sort_order, v2o.sort_order')
-			->execute()->toArray();
+			->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 
 
 
@@ -104,7 +106,7 @@ class attributes_admin_data_manager_default extends Extension_attributes {
 				$u++;
 				$attr[$u] = array(
 					'option' => $p,
-					'name' => $attribute['ProductsOptionsValues']['ProductsOptionsValuesDescription'][$lID]['products_options_values_name'],
+					'name' => $attribute['ProductsOptionsValues']['ProductsOptionsValuesDescription'][0]['products_options_values_name'],
 					'image' => $attribute['options_values_image'],
 					'views' => implode(';', $views),
 					'price' => $attribute['options_values_price'],
@@ -112,7 +114,7 @@ class attributes_admin_data_manager_default extends Extension_attributes {
 					'useinventory' => $attribute['use_inventory'],
 					'sort' => $attribute['ProductsOptionsValues']['ProductsOptionsValuesToProductsOptions'][0]['sort_order']);
 
-				$options[$p] = array('name'=> $attribute['ProductsOptions']['ProductsOptionsDescription'][$lID]['products_options_name'],
+				$options[$p] = array('name'=> $attribute['ProductsOptions']['ProductsOptionsDescription'][0]['products_options_name'],
 					'sort'=> $attribute['ProductsOptions']['ProductsOptionsToProductsOptionsGroups'][0]['sort_order']);
 
 				//$productsAttributes[$attribute['products_id']][$u] = $attr;
@@ -223,12 +225,13 @@ class attributes_admin_data_manager_default extends Extension_attributes {
 	
 	public function DataImportBeforeSave(&$items, &$Product){
 		$ProductsAttributes =& $Product->ProductsAttributes;
-		$ProductsAttributes->delete();
+
 		$countOpt = 1;
 		if (isset($items['v_attribute_group']) && !empty($items['v_attribute_group'])){
 			$groupName = $items['v_attribute_group'];
 		}
 		$isAttribute = false;
+		$p = 1;
 		while(true){
 			if (!isset($items['v_option_' . $countOpt])){
 				break;
@@ -284,7 +287,32 @@ class attributes_admin_data_manager_default extends Extension_attributes {
 					if (!isset($attributeCount)) {
 						$attributeCount = 0;
 					}
+					if($p == 1){
+						$p = 0;
+						$ProductsAttributes->delete();
+						if(isset($Product->products_id) && !is_null($Product->products_id)){
+							$QInventoryId = Doctrine_Query::create()
+							->from('ProductsInventory')
+							->where('products_id = ?', $Product->products_id)
+							->andWhere('controller = ?', 'attribute')
+							->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 
+							foreach($QInventoryId as $invId){
+									Doctrine_Query::create()
+									->delete('ProductsInventoryQuantity')
+									->where('inventory_id = ?', $invId['inventory_id'])
+									->execute();
+									Doctrine_Query::create()
+									->delete('ProductsInventoryBarcodes')
+									->where('inventory_id = ?', $invId['inventory_id'])
+									->execute();
+									Doctrine_Query::create()
+									->delete('ProductsInventory')
+									->where('inventory_id = ?', $invId['inventory_id'])
+									->execute();
+							}
+						}
+					}
 					$ProductsAttributes[$attributeCount]->groups_id = (isset($groupName)
 						? $attribute['ProductsOptionsToProductsOptionsGroups'][0]['products_options_groups_id'] : null);
 					$ProductsAttributes[$attributeCount]->options_id = $attribute['products_options_id'];

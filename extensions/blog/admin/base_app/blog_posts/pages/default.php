@@ -61,7 +61,10 @@
 		$Qposts->andWhere('pd.blog_post_title LIKE ?', '%' . $search . '%');
 	}
 
-	
+	if(isset($_GET['searchCat']) && $_GET['searchCat'] != '-1'){
+		$Qposts->andWhere('p2c.blog_categories_id = ?', $_GET['searchCat']);
+	}
+	EventManager::notify('BlogPostsListingQueryBeforeExecute', &$Qposts);
 	$tableGrid = htmlBase::newElement('newGrid')
 	->usePagination(true)
 
@@ -95,7 +98,7 @@
    <td class="smallText" align="right" colspan="2"><?php
    $searchForm = htmlBase::newElement('form')
    ->attr('name', 'search')
-   ->attr('action', itw_app_link(null, null, null, 'SSL'))
+   ->attr('action', itw_app_link('appExt=blog', 'blog_posts', 'default', 'SSL'))
    ->attr('method', 'get');
    
     $searchField = htmlBase::newElement('input')->setName('search')
@@ -103,8 +106,27 @@
 	if (isset($_GET['search'])){
 		$searchField->setValue($_GET['search']);
 	}
+	$searchCategory = htmlBase::newElement('selectbox')
+	->setName('searchCat');
+	   if(isset($_GET['searchCat'])){
+		   $searchCategory->selectOptionByValue($_GET['searchCat']);
+	   }
    
-   $searchForm->append($searchField);
+	   $Qcategories = Doctrine_Query::create()
+		   ->from('BlogCategories c')
+		   ->leftJoin('c.BlogCategoriesDescription cd')
+		   ->where('cd.language_id = ?', Session::get('languages_id'))
+		   ->orderBy('c.sort_order, cd.blog_categories_title');
+	   EventManager::notify('BlogCategoryListingQueryBeforeExecute', &$Qcategories);
+	   $Result = $Qcategories->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+	   $searchCategory->addOption('-1','Any Category');
+       foreach($Result as $iCat){
+	       $searchCategory->addOption($iCat['blog_categories_id'], $iCat['BlogCategoriesDescription'][0]['blog_categories_title']);
+       }
+   $htmlSubmit =htmlBase::newElement('button')
+  ->setType('submit')
+  ->setText('Search');
+   $searchForm->append($searchCategory)->append($searchField)->append($htmlSubmit);
    echo $searchForm->draw();
    ?></td>
   </tr>

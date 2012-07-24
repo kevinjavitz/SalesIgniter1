@@ -38,6 +38,9 @@
 			}
 		}
 	}
+	foreach($conditions as $key => $v){
+		$conditions[$key] = Extension_customFields::ProductSearchFormatVal($v);
+	}
 
 	$Qproducts = Doctrine_Query::create()
 	->select('DISTINCT p.products_id')
@@ -45,6 +48,7 @@
 	->leftJoin('p.ProductsDescription pd')
 	->leftJoin('p.ProductsToBox p2b')
 	->where('p.products_status = ?', '1')
+	->andWhere('p.is_hidden = ?', '0')
 	->andWhere('p2b.products_id is null')
 	->andWhere('pd.language_id = ?', (int)Session::get('languages_id'));
 

@@ -21,9 +21,7 @@ if (isset($_POST['settings']) && isset($_POST['settings']['name']) && !empty($_P
 
 
 	$json = array(
-			'success' => true,
-            'link_name' => $_POST['link_name'],
-            'url' => $_POST['url']
+			'success' => true
 	);
 
 EventManager::attachActionResponse($json, 'json');

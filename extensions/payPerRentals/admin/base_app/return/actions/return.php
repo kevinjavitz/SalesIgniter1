@@ -10,7 +10,7 @@
 
 	if (!is_array($rentals) || sizeof($rentals) <= 0){
 		$error = true;
-		$messageStack->addSession('pageStack', sysLanguage::get('TEXT_NO_BARCODE_ENTERED'), 'error');
+		//$messageStack->addSession('pageStack', sysLanguage::get('TEXT_NO_BARCODE_ENTERED'), 'error');
 	}
 
 	if ($error === false){
@@ -51,8 +51,10 @@
 				}
 			}
 		}
-		$messageStack->addSession('pageStack', sysLanguage::get('TEXT_SUCCESS_MOVIES_RETURNED'), 'success');
+		//$messageStack->addSession('pageStack', sysLanguage::get('TEXT_SUCCESS_MOVIES_RETURNED'), 'success');
 	}
 	
-	EventManager::attachActionResponse(itw_app_link('appExt=payPerRentals', 'return', 'default'), 'redirect');
+EventManager::attachActionResponse(array(
+	'success' => true
+), 'json');
 ?>

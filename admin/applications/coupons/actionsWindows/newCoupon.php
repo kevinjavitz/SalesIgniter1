@@ -1,4 +1,49 @@
 <?php
+function get_category_tree_list($parent_id = '0', $checked = false, $include_itself = true, $ProdID){
+	$langId = Session::get('languages_id');
+	$catList = '';
+	$QCategories = Doctrine_Query::create()
+			->from('Categories c')
+			->leftJoin('c.CategoriesDescription cd')
+			->where('cd.language_id = ?', $langId)
+			->andWhere('c.parent_id = ?', $parent_id)
+			->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+	foreach($QCategories as $cat){
+		$catList .= '<optgroup label="' . $cat['CategoriesDescription'][0]['categories_name'] . '">';
+		$QProducts = Doctrine_Query::create()
+				->from('Products p')
+				->leftJoin('p.ProductsDescription pd')
+				->leftJoin('p.ProductsToCategories p2c')
+				->where('pd.language_id = ?', $langId)
+				->andWhere('p2c.categories_id = ?', $cat['categories_id'])
+				->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+		foreach($QProducts as $products){
+			$catList .= '<option value="' . $products['products_id'] . '">(' . $products['products_model'] . ") " . $products['ProductsDescription'][0]['products_name'] . '</option>';
+		}
+		if (tep_childs_in_category_count($cat['categories_id']) > 0){
+			$catList .= get_category_tree_list($cat['categories_id'], $checked, false);
+		}
+		$catList .= '</optgroup>';
+	}
+	return $catList;
+}
+ function no_category($ProdID){
+	$langId = Session::get('languages_id');
+	$catList = '<optgroup label="nocategory">';
+	$QProducts = Doctrine_Query::create()
+			->from('Products p')
+			->leftJoin('p.ProductsDescription pd')
+			->leftJoin('p.ProductsToCategories p2c')
+			->where('pd.language_id = ?', $langId)
+			->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+	foreach($QProducts as $products){
+		if(count($products['ProductsToCategories']) == 0){
+			$catList .= '<option value="' . $products['products_id'] . '">(' . $products['products_model'] . ") " . $products['ProductsDescription'][0]['products_name'] . '</option>';
+		}
+	}
+	$catList .= '</optgroup>';
+	return $catList;
+}
 	$Coupons = Doctrine_Core::getTable('Coupons');
 	if (isset($_GET['cID'])){
 		$Coupon = $Coupons->find((int) $_GET['cID']);
@@ -65,6 +110,52 @@
 	foreach(sysLanguage::getLanguages() as $lInfo){
 		$infoBox->addContentRow($lInfo['showName']('&nbsp;') . ': ' . tep_draw_textarea_field('coupon_description[' . $lInfo['id'] . ']','physical','24','3', $Coupon->CouponsDescription[$lInfo['id']]->coupon_description));
 	}
+$table = htmlBase::newElement('table')
+		->setCellPadding(3)
+		->setCellSpacing(0)
+		->css('width', '100%');
+$table->addHeaderRow(array(
+	'columns' => array(
+		array('attr' => array('width' => '40%'), 'text' => sysLanguage::get('TEXT_PRODUCTS')),
+		array('text' => '&nbsp;'),
+		array('attr' => array('width' => '40%'), 'text' => sysLanguage::get('TEXT_EXCLUDED_PRODUCTS'))
+	)
+));
+$addonProducts = '';
+//print_r($pInfo);
+if(!empty($Coupon->products_excluded)){
+	$products = explode(',', $Coupon->products_excluded);
+}
+if(isset($products)){
+	foreach($products as $pID){
+		$excludedProducts .= '<div><a href="#" class="ui-icon ui-icon-circle-close removeButton"></a><span class="main">' .tep_get_products_name($pID) . '</span>' . tep_draw_hidden_field('products_excluded[]', $pID) . '</div>';
+	}
+}
+$table->addBodyRow(array(
+	'columns' => array(
+		array(
+			'addCls' => 'main',
+			'attr' => array(
+				'valign' => 'top'
+			),
+			'text' => '<select multiple="multiple" size="30" style="width:100%;" id="productListAddons">' .  no_category('')  . get_category_tree_list('0',false,true) . '</select>'
+		),
+		array(
+			'addCls' => 'main',
+			'text' => '<button type="button" id="moveRightAddon"><span>&nbsp;&nbsp;&raquo;&nbsp;&nbsp;</span></button>'
+		),
+		array(
+			'addCls' => 'main',
+			'attr' => array(
+				'id' => 'addons',
+				'valign' => 'top'
+			),
+			'text' => $excludedProducts
+		)
+	)
+));
+$addonTables = $table->draw();
+$infoBox->addContentRow($addonTables);
 	
 	EventManager::attachActionResponse($infoBox->draw(), 'html');
 ?>

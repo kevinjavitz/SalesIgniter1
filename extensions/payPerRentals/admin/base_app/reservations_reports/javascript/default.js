@@ -257,6 +257,15 @@ function popupWindowEditReservation(type, rID, barcode_id, selectedBarcodes, pro
 				}
 		});
 
+        $('.prodName').autocomplete({
+            source: js_app_link('appExt=payPerRentals&app=reservations_reports&appPage=default&action=getProducts'),
+            minLength: 1,
+            select: function(event, ui) {
+                $('.prodName').val(ui.item.label);
+                $('#searchFormReports').submit();
+                return true;
+            }
+        });
         $('#start_date').change(function(){
             var d = new Date($(this).val());
             //var curDate = $('#calendarTime').fullCalendar('gotoDate',);

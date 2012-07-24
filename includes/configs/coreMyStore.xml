@@ -324,6 +324,13 @@ Casa Grande, AZ  85122]]></value>
 					<title><![CDATA[Send Extra Order Emails To]]></title>
 					<value><![CDATA[]]></value>
 					<description><![CDATA[Send extra order emails to the following email addresses, in this format: Name 1 &lt;email@address1&gt;, Name 2 &lt;email@address2&gt;]]></description>
+			                    <set_function>
+			                        <type>textarea</type>
+			                        <attributes>
+			                            <rows>5</rows>
+			                            <cols>40</cols>
+			                        </attributes>
+			                    </set_function>
 				</SEND_EXTRA_ORDER_EMAILS_TO>
 				<DISPLAY_CART>
 					<title><![CDATA[Display Cart After Adding Product]]></title>
@@ -515,5 +522,29 @@ Casa Grande, AZ  85122]]></value>
 				</SHOW_ENLAGE_IMAGE_TEXT>
 			</configurations>
 		</order_status>
+        <search_products>
+            <title>Search Products</title>
+            <description>Search Products Settings</description>
+            <configurations>
+                <SHOW_INCLUDE_SUBCATEGORIES>
+                <title><![CDATA[Show Include subcategories]]></title>
+                <value><![CDATA[true]]></value>
+                <description><![CDATA[Show Include subcategories]]></description>
+                <set_function><![CDATA[tep_cfg_select_option(array('true', 'false'),]]></set_function>
+            </SHOW_INCLUDE_SUBCATEGORIES>
+            <SHOW_PRICE_FROM_TO>
+                <title><![CDATA[Show Price From-To]]></title>
+                <value><![CDATA[false]]></value>
+                <description><![CDATA[Show Price From To]]></description>
+                <set_function><![CDATA[tep_cfg_select_option(array('true', 'false'),]]></set_function>
+            </SHOW_PRICE_FROM_TO>
+            <SHOW_DATE_FROM_TO>
+                <title><![CDATA[Show Date From-To]]></title>
+                <value><![CDATA[false]]></value>
+                <description><![CDATA[Show Date From To]]></description>
+                <set_function><![CDATA[tep_cfg_select_option(array('true', 'false'),]]></set_function>
+            </SHOW_DATE_FROM_TO>
+        </configurations>
+        </search_products>
 	</tabs>
 </ConfigurationGroup>

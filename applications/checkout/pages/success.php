@@ -215,11 +215,11 @@ $contents = EventManager::notifyWithReturn('OrderInfoAddBlock',$QlastOrder[0]['o
                 <td class="main"><?php
 	                $billingAddress = $Order->getFormattedAddress('billing');
                     echo $billingAddress;
-                    $shippingAddress = $Order->getFormattedAddress('shipping');
+                    $shippingAddress = $Order->getFormattedAddress('delivery');
                 ?></td>
               </tr>
 				<?php
-				if($billingAddress != $shippingAddress){
+				//if($billingAddress != $shippingAddress){
 	            ?>
 	            <tr>
 		            <td class="main"><b><?php echo sysLanguage::get('HEADING_SHIPPING_ADDRESS'); ?></b></td>
@@ -230,7 +230,7 @@ $contents = EventManager::notifyWithReturn('OrderInfoAddBlock',$QlastOrder[0]['o
 			            ?></td>
 	            </tr>
 				<?php
-                }
+                //}
 	            ?>
               <tr>
                 <td class="main"><b><?php echo sysLanguage::get('HEADING_PAYMENT_METHOD'); ?></b></td>
@@ -510,8 +510,19 @@ $ShoppingCart->emptyCart(true);
 	Session::remove('payment_recurring');
 	Session::remove('cancel_request');
 	Session::remove('onepage');
+	Session::remove('minfee');
 
 	$onePageCheckout->setMode('');
+	if(Session::exists('add_to_queue_ppr_product')){
+		$cartProduct = Session::get('add_to_queue_ppr_product');
+		$pID_string = $cartProduct->getIdString();
+		$purchaseType = $cartProduct->getPurchaseType();
+		$pInfo = $cartProduct->getInfo();
+		$qty = $cartProduct->getQuantity();
+		$ShoppingCart->addProduct($pID_string,$purchaseType,$qty,$pInfo,true);
+		Session::remove('add_to_queue_ppr_product');
+		//tep_redirect( itw_app_link('appExt=payPerRentals','rentalQueue','default'));
+	}
 	if(Session::exists('add_to_queue_product_id')){
 		$pID = Session::get('add_to_queue_product_id');
 		$attribs = Session::get('add_to_queue_product_attrib');

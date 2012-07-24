@@ -53,6 +53,15 @@ class ProductsOptionsValuesDescription extends Doctrine_Record {
 			'notnull'       => true,
 			'autoincrement' => false,
 		));
+		$this->hasColumn('products_options_front_values_name', 'string', 64, array(
+			'type'          => 'string',
+			'length'        => 64,
+			'fixed'         => false,
+			'primary'       => false,
+			'default'       => '',
+			'notnull'       => true,
+			'autoincrement' => false,
+		));
 	}
 	
 	public function newLanguageProcess($fromLangId, $toLangId){

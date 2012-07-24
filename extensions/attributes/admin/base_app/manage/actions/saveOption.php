@@ -13,11 +13,12 @@
 	
 	$Descriptions =& $Option->ProductsOptionsDescription;
 	foreach($_POST['option_name'] as $langId => $optionName){
-		$Descriptions[$langId]->products_options_name = $optionName;
+		$Descriptions[$langId]->products_options_name = $optionName['admin'];
+		$Descriptions[$langId]->products_options_front_name = $optionName['front'];
 		$Descriptions[$langId]->language_id = $langId;
 		
 		if ($langId == Session::get('languages_id')){
-			$outputName = $optionName;
+			$outputName = $optionName['admin'];
 		}
 	}
 

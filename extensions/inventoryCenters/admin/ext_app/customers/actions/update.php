@@ -1,6 +1,7 @@
 <?php
-
-include(sysConfig::getDirFsCatalog().'extensions/inventoryCenters/admin/classes/user_extended.php');
+    if(!class_exists('rentalStoreUserExtended')){
+		require(sysConfig::getDirFsCatalog().'extensions/inventoryCenters/admin/classes/user_extended.php');
+	}
 
 	$userAccountExt = new rentalStoreUserExtended($userAccount);
 	$userAccountExt->loadPlugins();

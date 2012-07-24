@@ -1,6 +1,6 @@
 <?php
 	$Table = Doctrine_Core::getTable('ProductsOptionsToProductsOptionsGroups');
-	$Table->setAttribute(Doctrine_Core::ATTR_COLL_KEY, 'products_options_id');
+	$Table->setAttribute(Doctrine_Core::ATTR_COLL_KEY, 'products_options_groups_id');
 	$groupId = $_GET['group_id'];
 	$AllOptions = $Table->findByProductsOptionsGroupsId($groupId);
 	$currentValues = $AllOptions->toArray();

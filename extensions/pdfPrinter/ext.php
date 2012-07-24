@@ -33,22 +33,32 @@ class Extension_pdfPrinter extends ExtensionBase {
 	}
 
 	public function OrderBeforeSendEmail(&$order, &$emailEvent, &$products_ordered, &$sendVariables){
+		global $appExtension;
 		$oID = $order['orderID'];
 		$file = '';
 		if(sysConfig::get('EXTENSION_PDF_INVOICE_ATTACH_TO_ORDER_EMAIL') == 'True'){
 			$file = (itw_catalog_app_link('appExt=pdfPrinter&suffix='.$oID.'&oID=' . $oID, 'generate_pdf', 'default','NONSSL'));
 			$sendVariables['attach'] = 'temp/pdf/invoice_'.$oID.'.pdf';
+			$_GET['oID'] = $oID;
+			$_GET['suffix'] = $oID;
 		}elseif(sysConfig::get('EXTENSION_PDF_AGREEMENT_ATTACH_TO_ORDER_EMAIL') == 'True'){
 			$file = (itw_catalog_app_link('appExt=pdfPrinter&type=a&suffix='.$oID.'&oID=' . $oID, 'generate_pdf', 'default','NONSSL'));
 			$sendVariables['attach'] = 'temp/pdf/agreement_'.$oID.'.pdf';
+			$_GET['oID'] = $oID;
+			$_GET['suffix'] = $oID;
+			$_GET['type'] = 'a';
 		}
-		if(!empty($file)){
+		/*if(!empty($file)){
 			$ch=curl_init();
 			curl_setopt($ch,CURLOPT_URL, $file);
 			curl_exec($ch);
 			curl_close($ch);
-		}
-
+		}*/
+		$_GET['fromEmail'] = '1';
+		require sysConfig::getDirFsCatalog(). '/extensions/pdfPrinter/catalog/base_app/generate_pdf/pages/default.php';
+		unset($_GET['oID']);
+		unset($_GET['suffix']);
+		unset($_GET['fromEmail']);
 	}
 
 	public function OrderCreatorBeforeSendNewEmail(&$order, &$emailEvent, &$products_ordered, &$sendVariables, $isEstimate = 0){

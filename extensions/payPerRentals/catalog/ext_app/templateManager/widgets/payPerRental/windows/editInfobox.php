@@ -14,6 +14,8 @@
 
 	$hasGeographic = '<input type="checkbox" name="hasGeographic" '.(isset($WidgetSettings->hasGeographic) && $WidgetSettings->hasGeographic == true ? 'checked="checked"': '').'"';
 
+	$hasLaunchPoints = '<input type="checkbox" name="hasLP" '.(isset($WidgetSettings->hasLP) && $WidgetSettings->hasLP == true ? 'checked="checked"': '').'"';
+	$hasTimesHeader = '<input type="checkbox" name="hasTimesHeader" '.(isset($WidgetSettings->hasTimesHeader) && $WidgetSettings->hasTimesHeader == true ? 'checked="checked"': '').'"';
 	$showQty = '<input type="checkbox" name="showQty" '.(isset($WidgetSettings->showQty) && $WidgetSettings->showQty == true ? 'checked="checked"': '').'"';
 
 	$showTimes = '<input type="checkbox" name="showTimes" '.(isset($WidgetSettings->showTimes) && $WidgetSettings->showTimes == true ? 'checked="checked"': '').'"';
@@ -73,6 +75,18 @@
 		)
 	));
 
+	$WidgetSettingsTable->addBodyRow(array(
+		'columns' => array(
+			array('text' => sysLanguage::get('INFOBOX_PAYPERRENTAL_HASLP')),
+			array('text' => $hasLaunchPoints)
+		)
+	));
+$WidgetSettingsTable->addBodyRow(array(
+		'columns' => array(
+			array('text' => sysLanguage::get('INFOBOX_PAYPERRENTAL_TIMESHEADER')),
+			array('text' => $hasTimesHeader)
+		)
+	));
 	$WidgetSettingsTable->addBodyRow(array(
 		'columns' => array(
 			array('text' => sysLanguage::get('INFOBOX_PAYPERRENTAL_SHOWQTY')),

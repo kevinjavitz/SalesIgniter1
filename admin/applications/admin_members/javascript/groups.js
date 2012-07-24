@@ -8,7 +8,7 @@ $(document).ready(function () {
 		}
 
 		var saveUrlParams = [];
-		saveUrlParams.push('action=saveMember');
+		saveUrlParams.push('action=saveGroup');
 		if ($(this).hasClass('editButton')){
 			saveUrlParams.push('gID=' + $('.gridContainer').newGrid('getSelectedData', 'group_id'));
 		}

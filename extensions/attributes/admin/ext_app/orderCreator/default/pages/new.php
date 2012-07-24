@@ -43,8 +43,8 @@ class attributes_admin_orderCreator_default_new extends Extension_attributes {
 					$Attribute->price_prefix = $oInfo['prefix'];
 					$Attribute->options_id = $optionId;
 					$Attribute->options_values_id = $oInfo['value'];
-					$Attribute->products_options = $aInfo[0]['ProductsOptions']['ProductsOptionsDescription'][$langId]['products_options_name'];
-					$Attribute->products_options_values = $aInfo[0]['ProductsOptionsValues']['ProductsOptionsValuesDescription'][$langId]['products_options_values_name'];
+					$Attribute->products_options = $aInfo[0]['ProductsOptions']['ProductsOptionsDescription'][$langId]['products_options_front_name'];
+					$Attribute->products_options_values = $aInfo[0]['ProductsOptionsValues']['ProductsOptionsValuesDescription'][$langId]['products_options_front_values_name'];
 					$OrderedProduct->OrdersProductsAttributes->add($Attribute);
 				}
 				

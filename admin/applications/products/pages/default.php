@@ -73,7 +73,7 @@
 				array('text' => $productId, 'format' => 'int'),
 				array('text' => (int)$purchaseTypeNew->getCurrentStock(), 'align' => 'center', 'format' => 'int'),
 				array('text' => (int)$purchaseTypeUsed->getCurrentStock(), 'align' => 'center', 'format' => 'int'),
-				array('text' => (int)($purchaseTypeReservation ? $purchaseTypeReservation->getCurrentStock() : 0), 'align' => 'center', 'format' => 'int'),
+				array('text' => (int)($purchaseTypeReservation ? $purchaseTypeReservation->getTotalStock() : 0), 'align' => 'center', 'format' => 'int'),
 				array('text' => (int)$purchaseTypeRental->getCurrentStock(), 'align' => 'center', 'format' => 'int'),
 				array('text' => '<a href="'. itw_app_link($allGetParams . 'pID='.$productId, null, 'new_product').'#page-4">'.'[View/Edit/Add]'.'</a>', 'align' => 'center'),
 				array('text' => $statusIcon->draw(), 'align' => 'center'),

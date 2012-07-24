@@ -1,10 +1,10 @@
 <?php
 
-$myFile = dirname(__FILE__) . "/testFile.txt";
+/*$myFile = dirname(__FILE__) . "/testFile.txt";
 $fh = fopen($myFile, 'w') or die("can't open file");
 $stringData = print_r($_POST,true);
 fwrite($fh, $stringData);
-fclose($fh);
+fclose($fh);*/
 
 $_SERVER['HTTP_ACCEPT_LANGUAGE'] = 'en';
 

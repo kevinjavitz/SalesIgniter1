@@ -33,9 +33,9 @@ if (isset($_GET['zID'])){
 		$address = '';
 		$polygon = unserialize($GoogleZones->gmaps_polygon);
 		$scriptCommands = '';
-		for($i=0, $n=sizeof($polygon); $i<$n; $i++){
-			if(!empty($polygon[$i]['lat']) || !empty($polygon[$i]['lng'])){
-				$scriptCommands .= 'leftClick(poly, new GLatLng(' . $polygon[$i]['lat'] . ', ' . $polygon[$i]['lng'] . ', true));';
+		foreach($polygon as $iPolygon){
+			if(!empty($iPolygon['lat']) || !empty($iPolygon['lng'])){
+				$scriptCommands .= 'leftClick(poly, new GLatLng(' . $iPolygon['lat'] . ', ' . $iPolygon['lng'] . ', true));';
 			}
 		}
 	}

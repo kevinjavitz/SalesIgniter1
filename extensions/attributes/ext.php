@@ -197,9 +197,9 @@ class Extension_attributes extends ExtensionBase {
 			attributesUtil::insertOrderedProductAttribute($attribute);
 			if (isset($attribute['ProductsOptions']['ProductsOptionsDescription'][$langId]) && isset($attribute['ProductsOptionsValues']['ProductsOptionsValuesDescription'][$langId])){
 				$products_ordered .= "\t" .
-					$attribute['ProductsOptions']['ProductsOptionsDescription'][$langId]['products_options_name'] .
+					(!empty($attribute['ProductsOptions']['ProductsOptionsDescription'][$langId]['products_options_front_name'])?$attribute['ProductsOptions']['ProductsOptionsDescription'][$langId]['products_options_front_name']:$attribute['ProductsOptions']['ProductsOptionsDescription'][$langId]['products_options_name']) .
 					': ' .
-					$attribute['ProductsOptionsValues']['ProductsOptionsValuesDescription'][$langId]['products_options_values_name']."\n";
+					(!empty($attribute['ProductsOptionsValues']['ProductsOptionsValuesDescription'][$langId]['products_options_front_values_name'])?$attribute['ProductsOptionsValues']['ProductsOptionsValuesDescription'][$langId]['products_options_front_values_name']:$attribute['ProductsOptionsValues']['ProductsOptionsValuesDescription'][$langId]['products_options_values_name'])."\n";
 			}else{
 				$products_ordered .= "\t" . 'attribute_name_not_set_for_language:attribute_value_not_set_for_language';
 			}
@@ -270,7 +270,15 @@ class Extension_attributes extends ExtensionBase {
 			if (sizeof($attributes) > 0){
 				$langId = Session::get('languages_id');
 				foreach($attributes as $aInfo){
-					$optionText = ' - ' . $aInfo['products_options'] . ': ' . $aInfo['products_options_values'];
+					$QOptionName = Doctrine_Query::create()
+					->from('ProductsOptionsDescription')
+					->where('products_options_id = ?', $aInfo['options_id'])
+					->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+					$QOptionValuesName = Doctrine_Query::create()
+					->from('ProductsOptionsValuesDescription')
+					->where('products_options_values_id = ?', $aInfo['options_values_id'])
+					->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+					$optionText = ' - ' . (!empty($QOptionName[0]['products_options_front_name'])?$QOptionName[0]['products_options_front_name']:$QOptionName[0]['products_options_name']) . ': ' . (!empty($QOptionValuesName[0]['products_options_values_front_name'])?$QOptionValuesName[0]['products_options_values_front_name']:$QOptionValuesName[0]['products_options_values_name']);
 					if ($aInfo['options_values_price'] != '0'){
 						$optionText .= ' ( ' . $aInfo['price_prefix'] . $currencies->format($aInfo['options_values_price'] * $orderedProduct->getQuantity()) . ' )';
 					}
@@ -430,9 +438,9 @@ class Extension_attributes extends ExtensionBase {
 
 						$orderedProduct .= '<br />' .
 							'<small>&nbsp;<i> - ' .
-							$attribute['ProductsOptions']['ProductsOptionsDescription'][$langId]['products_options_name'] .
+							(!empty($attribute['ProductsOptions']['ProductsOptionsDescription'][$langId]['products_options_front_name'])?$attribute['ProductsOptions']['ProductsOptionsDescription'][$langId]['products_options_front_name']:$attribute['ProductsOptions']['ProductsOptionsDescription'][$langId]['products_options_name']) .
 							': ' .
-							$attribute['ProductsOptionsValues']['ProductsOptionsValuesDescription'][$langId]['products_options_values_name'];
+							(!empty($attribute['ProductsOptionsValues']['ProductsOptionsValuesDescription'][$langId]['products_options_front_values_name'])?$attribute['ProductsOptionsValues']['ProductsOptionsValuesDescription'][$langId]['products_options_front_values_name']:$attribute['ProductsOptionsValues']['ProductsOptionsValuesDescription'][$langId]['products_options_values_name']);
 
 						if ($attribute['options_values_price'] != '0'){
 							$orderedProduct .= ' ( ' . $attribute['price_prefix'] . $currencies->format($attribute['options_values_price'] * $cartProduct->getQuantity(), true, $order->info['currency'], $order->info['currency_value']) . ' )';
@@ -518,7 +526,7 @@ class Extension_attributes extends ExtensionBase {
 		foreach($ProductsAttributes as $attribute){
 			if (!array_key_exists($attribute['options_id'], $Attributes)){
 				$Attributes[$attribute['options_id']] = array(
-					'options_name' => $attribute['ProductsOptions']['ProductsOptionsDescription'][Session::get('languages_id')]['products_options_name'],
+					'options_name' => !empty($attribute['ProductsOptions']['ProductsOptionsDescription'][Session::get('languages_id')]['products_options_front_name'])?$attribute['ProductsOptions']['ProductsOptionsDescription'][Session::get('languages_id')]['products_options_front_name']:$attribute['ProductsOptions']['ProductsOptionsDescription'][Session::get('languages_id')]['products_options_name'],
 					'option_type' => $attribute['ProductsOptions']['option_type'],
 					'use_image' => $attribute['ProductsOptions']['use_image'],
 					'use_multi_image' => $attribute['ProductsOptions']['use_multi_image'],
@@ -530,7 +538,7 @@ class Extension_attributes extends ExtensionBase {
 			$curArray = array(
 				'options_values_id' => $attribute['options_values_id'],
 				'options_values_price' => $attribute['options_values_price'],
-				'options_values_name' => $attribute['ProductsOptionsValues']['ProductsOptionsValuesDescription'][Session::get('languages_id')]['products_options_values_name'],
+				'options_values_name' => !empty($attribute['ProductsOptionsValues']['ProductsOptionsValuesDescription'][Session::get('languages_id')]['products_options_front_values_name'])?$attribute['ProductsOptionsValues']['ProductsOptionsValuesDescription'][Session::get('languages_id')]['products_options_front_values_name']:$attribute['ProductsOptionsValues']['ProductsOptionsValuesDescription'][Session::get('languages_id')]['products_options_values_name'],
 				'price_prefix' => $attribute['price_prefix']
 			);
 

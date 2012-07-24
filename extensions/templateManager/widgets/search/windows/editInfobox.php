@@ -370,7 +370,8 @@
 	
 	$liItems = '';
 
-	$Qitems = (array)$WidgetSettings->searchOptions;
+	if(isset($WidgetSettings->searchOptions))
+		$Qitems = (array)$WidgetSettings->searchOptions;
 
 	if (isset($Qitems)){
 		foreach($Qitems as $type){

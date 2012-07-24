@@ -82,6 +82,12 @@
 			return false;
 		}
 
+		function getTotalStock(){
+			if (is_null($this->invMethod) === false){
+				return $this->invMethod->getTotalInventoryStock();
+			}
+			return false;
+		}
 		function getInventoryItems(){
 			if (is_null($this->invMethod) === false){
 				return $this->invMethod->getInventoryItems();

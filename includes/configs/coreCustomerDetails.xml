@@ -85,6 +85,12 @@
 					<description><![CDATA[Enable newsletter subscription]]></description>
 					<set_function><![CDATA[tep_cfg_select_option(array('true', 'false'),]]></set_function>
 				</ACCOUNT_NEWSLETTER>
+				<ACCOUNT_MEMBERSHIP_CARD>
+					<title><![CDATA[Enable membership cards]]></title>
+					<value><![CDATA[false]]></value>
+					<description><![CDATA[Enable membership cards]]></description>
+					<set_function><![CDATA[tep_cfg_select_option(array('true', 'false'),]]></set_function>
+				</ACCOUNT_MEMBERSHIP_CARD>
 				<ACCOUNT_COMPANY_REQUIRED>
 					<title><![CDATA[Company required]]></title>
 					<value><![CDATA[false]]></value>

@@ -80,6 +80,12 @@
 		$FormTable->addRow(sysLanguage::get('ENTRY_TELEPHONE_NUMBER'));
 		$FormTable->addRow(tep_draw_input_field('telephone') . '&nbsp;' . ((sysConfig::get('ACCOUNT_TELEPHONE_REQUIRED') == 'true')?'<a style="display: inline-block;" tooltip="Input Required" class="ui-icon ui-icon-gear ui-icon-required"></a>':''));
     }
+	$contents = EventManager::notifyWithReturn('CheckoutSetupFields');
+	if (!empty($contents)){
+		foreach($contents as $content){
+			echo $content;
+		}
+	}
 	ob_start();
 
 	echo '<table border="0" width="100%" cellspacing="0" cellpadding="2">

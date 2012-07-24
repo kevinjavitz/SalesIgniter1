@@ -1,5 +1,11 @@
 <?php
 class membershipUpdate_cron {
+	public $adminEmailContent;
+	public $testMode;
+	public $paymentDeclinedStatusID;
+	public $paymentSuccessStatusID;
+	public $retryMaxTimes;
+	public $billingAction;
 	public function __construct(){
 		$this->adminEmailContent = array();
 		$this->testMode = false;

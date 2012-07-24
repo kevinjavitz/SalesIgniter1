@@ -38,7 +38,10 @@ class OrderShippingUsps extends OrderShippingModuleBase
 	private $nationalTitle;
 	private $nationalCost;
 	private $intnationalCost;
-
+	private $service;
+	private $translated;
+	private $showEstimated;
+	private $position;
 
 	public function __construct() {
 		/*
@@ -61,7 +64,7 @@ class OrderShippingUsps extends OrderShippingModuleBase
 			$this->nationalCost = $this->getConfigData('MODULE_ORDER_SHIPPING_USPS_NATIONAL_ERROR_COST');
 			$this->intnationalTitle = $this->getConfigData('MODULE_ORDER_SHIPPING_USPS_INTNATIONAL_ERROR_DESC');
 			$this->intnationalCost = $this->getConfigData('MODULE_ORDER_SHIPPING_USPS_INTNATIONAL_ERROR_COST');
-
+			$this->showEstimated = $this->getConfigData('MODULE_ORDER_SHIPPING_USPS_SHOW_ESTIMATED_TIME');
 			$this->types = array('EXPRESS' => 'Express Mail',
 			        'FIRST CLASS' => 'First-Class Mail',
 			        'PRIORITY' => 'Priority Mail',
@@ -84,15 +87,35 @@ class OrderShippingUsps extends OrderShippingModuleBase
 			        'Priority Mail Int Flat Rate Med Box' => 'Priority Mail&lt;sup&gt;&amp;reg;&lt;/sup&gt; International Medium Flat Rate Box',
 			        'Priority Mail Int Flat Rate Lrg Box' => 'Priority Mail&lt;sup&gt;&amp;reg;&lt;/sup&gt; International Large Flat Rate Box',
 			        'First Class Mail Int Lrg Env' => 'First-Class Mail&lt;sup&gt;&amp;reg;&lt;/sup&gt; International Large Envelope**',
-			        'First Class Mail Int Package' => 'First-Class Mail&lt;sup&gt;&amp;reg;&lt;/sup&gt; International Package**'
+			        'First Class Mail Int Package' => 'First-Class Mail&lt;sup&gt;&amp;reg;&lt;/sup&gt; International Parcel**'
+			);
+			$this->translated = array(
+				htmlspecialchars('Priority Mail&lt;sup&gt;&amp;reg;&lt;/sup&gt; International') => 'USPS Priority International Package with tracking',
+				htmlspecialchars('Priority Mail&lt;sup&gt;&amp;reg;&lt;/sup&gt; International Small Flat Rate Box**') => 'USPS Priority International Small Flat Rate Box with tracking (limit 2 items or less)',
+				htmlspecialchars('Priority Mail&lt;sup&gt;&amp;reg;&lt;/sup&gt; International Medium Flat Rate Box') => 'USPS Priority International Medium Flat Rate Box with tracking (limit 10 items or less)',
+				htmlspecialchars('Priority Mail&lt;sup&gt;&amp;reg;&lt;/sup&gt; International Large Flat Rate Box') => 'USPS Priority International Large Flat Rate Box with tracking (limit 15 items or less)',
+				htmlspecialchars('First-Class Mail&lt;sup&gt;&amp;reg;&lt;/sup&gt; International Parcel**') => 'USPS First-Class International Package (no tracking)'
 			);
 
+			$this->position = array(
+				'USPS First-Class International Package (no tracking)' => 1,
+				'USPS Priority International Package with tracking' => 2,
+				'USPS Priority International Small Flat Rate Box with tracking (limit 2 items or less)' => 3,
+				'USPS Priority International Medium Flat Rate Box with tracking (limit 10 items or less)' => 4,
+				'USPS Priority International Large Flat Rate Box with tracking (limit 15 items or less)' => 5,
+			);
 
 			$this->countries = $this->country_list();
 			$isEnabled = true;
 			EventManager::notify('ShippingMethodCheckBeforeConstruct', &$isEnabled);
 			$this->setEnabled($isEnabled);
 		}
+	}
+	public function my_cmp($a, $b) {
+		if ($a['position'] == $b['position']) {
+			return 0;
+		}
+		return ($a['position'] < $b['position']) ? -1 : 1;
 	}
 	
 	public function quote($method = ''){
@@ -148,13 +171,16 @@ class OrderShippingUsps extends OrderShippingModuleBase
 					$methodName = $qInfo['method'];
 					
 					$methodShow = (isset($this->types[$methodName]) ? $this->types[$methodName] : $methodName);
-					if (isset($qInfo['time'])){
+					$methodShow = (isset($this->translated[$methodShow])?$this->translated[$methodShow]: $methodShow);
+					$position = (isset($this->position[$methodShow])?$this->position[$methodShow]: 0);
+					if (isset($qInfo['time']) && $this->showEstimated == 'True'){
 						$methodShow .= '<br><small><i> - Est. Delivery: ' . $qInfo['time'] . '</i></small>';
 					}
 					
 					$this->quotes['methods'][] = array(
 						'id'    => urlencode($methodName),
 						'title' => html_entity_decode(htmlspecialchars_decode($methodShow)),
+						'position' => $position,
 						'cost'  => ($qInfo['cost'] + $this->handlingCost) * $shipping_num_boxes
 					);
 				}
@@ -171,17 +197,20 @@ class OrderShippingUsps extends OrderShippingModuleBase
 				$this->quotes['methods'][] = array(
 					'id'    => 'usps_error_national',
 					'title' => $this->nationalTitle,
+					'position' => 0,
 					'cost'  => $this->nationalCost
 				);
 			}else{
 				$this->quotes['methods'][] = array(
 					'id'    => 'usps_error_intnational',
 					'title' => $this->intnationalTitle,
+					'position' => 0,
 					'cost'  => $this->intnationalCost
 				);
 			}
 			//$this->quotes['error'] = sysLanguage::get('MODULE_ORDER_SHIPPING_USPS_TEXT_ERROR');
 		}
+		usort($this->quotes['methods'],array($this, "my_cmp"));
 
 		return $this->quotes;
 	}

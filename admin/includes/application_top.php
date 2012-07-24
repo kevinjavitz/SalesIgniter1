@@ -8,6 +8,7 @@
 	This script and it's source is not redistributable
 */
 // start profiling
+set_time_limit(0);
 if (isset($_GET['runProfile'])){
 	xhprof_enable(XHPROF_FLAGS_CPU + XHPROF_FLAGS_MEMORY);
 }

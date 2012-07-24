@@ -9,4 +9,12 @@
 			<length>999</length>
 		</admins_stores>
 	</Admin>
+    <CustomersBasket>
+        <stores_id>
+            <type>integer</type>
+            <length>4</length>
+            <primary>false</primary>
+            <notnull>true</notnull>
+        </stores_id>
+    </CustomersBasket>
 </data>

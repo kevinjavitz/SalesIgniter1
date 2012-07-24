@@ -1,0 +1,28 @@
+<definitions>
+	<define key="NAVBAR_TITLE"><![CDATA[Queue Contents]]></define>
+	
+	<define key="HEADING_TITLE"><![CDATA[What's In My Queue?]]></define>
+	
+	<define key="TABLE_HEADING_REMOVE"><![CDATA[Remove]]></define>
+	<define key="TABLE_HEADING_QUANTITY"><![CDATA[Qty.]]></define>
+	<define key="TABLE_HEADING_MODEL"><![CDATA[Model]]></define>
+	<define key="TABLE_HEADING_PRODUCTS"><![CDATA[Product(s)]]></define>
+	<define key="TABLE_HEADING_TOTAL"><![CDATA[Total]]></define>
+
+	<define key="SUB_TITLE_SUB_TOTAL"><![CDATA[Sub-Total:]]></define>
+	<define key="SUB_TITLE_TOTAL"><![CDATA[Total:]]></define>
+
+		<define key="TEXT_QUEUE_EMPTY"><![CDATA[Your Queue is empty!]]></define>
+	<define key="TEXT_INFO_NO_SHIPPING"><![CDATA[*Note: Pricing does not include selected shipping method(s) cost.]]></define>
+
+	<define key="OUT_OF_STOCK_CANT_CHECKOUT"><![CDATA[Products marked with *** dont exist in desired quantity in our stock.<br>Please alter the quantity of products marked with (***), Thank you]]></define>
+	<define key="OUT_OF_STOCK_CAN_CHECKOUT"><![CDATA[Products marked with *** dont exist in desired quantity in our stock.<br>You can buy them anyway and check the quantity we have in stock for immediate deliver in the checkout process.]]></define>
+
+	<define key="TEXT_BUTTON_UPDATE_QUEUE"><![CDATA[Update Queue]]></define>
+	<define key="TEXT_BUTTON_CONTINUE_CART"><![CDATA[Continue Shopping]]></define>
+	<define key="TEXT_BUTTON_CHANGE_DATES"><![CDATA[Change Dates]]></define>
+	<define key="TEXT_QUEUE_SENT"><![CDATA[Sent Items]]></define>
+	<define key="TABLE_HEADING_DATE_SHIPPED"><![CDATA[Date shipped]]></define>
+
+	<define key="TEXT_AGREE_TO_TERMS"><![CDATA[I agree to the terms and conditions]]></define>
+</definitions>

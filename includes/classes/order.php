@@ -592,14 +592,14 @@ class OrderProcessor {
 		global $appExtension, $paymentModules, $products_ordered, $order_has_streaming_or_download;
 		$userAccount = &$this->getUserAccount();
 		$addressBook =& $userAccount->plugins['addressBook'];
-		$sendToFormatted = $addressBook->formatAddress('delivery', false);
-		$billToFormatted = $addressBook->formatAddress('billing', false);
+		$sendToFormatted = $addressBook->formatAddress('delivery', true);
+		$billToFormatted = $addressBook->formatAddress('billing', true);
 
 		$emailEvent = new emailEvent('order_success', $userAccount->getLanguageId());
 		$emailEvent->setVar('order_id', (isset($this->newOrder['orderID'])?$this->newOrder['orderID']:$this->orderId));
 		$emailEvent->setVar('invoice_link', itw_app_link('order_id=' . (isset($this->newOrder['orderID'])?$this->newOrder['orderID']:$this->orderId), 'account', 'history_info', 'SSL', false));
 		$emailEvent->setVar('date_ordered', strftime(sysLanguage::getDateFormat('long')));
-		$emailEvent->setVar('full_name', $userAccount->getFullName());
+		$emailEvent->setVar('full_name', $userAccount->getFirstName());
 		$emailEvent->setVar('ordered_products', (isset($this->newOrder['productsOrdered']) ? $this->newOrder['productsOrdered'] : ((isset($products_ordered)&&(!empty($products_ordered)))?$products_ordered:$this->products_ordered) ));
 		$emailEvent->setVar('billing_address', $billToFormatted);
 		if(sysConfig::get('ONEPAGE_CHECKOUT_SHIPPING_ADDRESS') == 'true'){
@@ -614,18 +614,54 @@ class OrderProcessor {
 		}
 		$emailEvent->setVar('order_comments', $this->info['comments']);
 
-		$orderTotals = '';
+		$orderTotalsTitle = '';
+		$orderTotalsValue = '';
+		$totalVal = '';
 		if (isset($this->newOrder['orderTotals'])){
 			for ($i=0, $n=sizeof($this->newOrder['orderTotals']); $i<$n; $i++) {
-				$orderTotals .= strip_tags($this->newOrder['orderTotals'][$i]['title']) . ' ' . strip_tags($this->newOrder['orderTotals'][$i]['text']) . "\n";
+				if(strpos(strtolower($this->newOrder['orderTotals'][$i]['title']),'total') === false && strpos(strtolower($this->newOrder['orderTotals'][$i]['title']),'sub-total') === false){
+					$orderTotalsTitle .= strip_tags($this->newOrder['orderTotals'][$i]['title'])  . "<br/>";
+				}
+				if(strpos(strtolower($this->newOrder['orderTotals'][$i]['title']),'sub-total') !== false ){
+					$orderTotalsTitle .= strip_tags($this->newOrder['orderTotals'][$i]['title'])  . "<br/>";
+				}
+			}
+			for ($i=0, $n=sizeof($this->newOrder['orderTotals']); $i<$n; $i++) {
+				if(strpos(strtolower($this->newOrder['orderTotals'][$i]['title']),'total') === false && strpos(strtolower($this->newOrder['orderTotals'][$i]['title']),'sub-total') === false){
+					$orderTotalsValue .= strip_tags($this->newOrder['orderTotals'][$i]['text'])  . "<br/>";
+				}
+				if(strpos(strtolower($this->newOrder['orderTotals'][$i]['title']),'sub-total') !== false){
+					$orderTotalsValue .= strip_tags($this->newOrder['orderTotals'][$i]['text'])  . "<br/>";
+				}
+				if(strpos(strtolower($this->newOrder['orderTotals'][$i]['title']),'total') !== false){
+					$totalVal = strip_tags($this->newOrder['orderTotals'][$i]['title']) .': '.strip_tags($this->newOrder['orderTotals'][$i]['text']).'<br/>';
+				}
 			}
 		}else{
 			for ($i=0, $n=sizeof($this->totals); $i<$n; $i++) {
-				$orderTotals .= strip_tags($this->totals[$i]['title']) . ' ' . strip_tags($this->totals[$i]['text']) . "\n";
+				if(strpos(strtolower($this->totals[$i]['title']),'total') === false && strpos(strtolower($this->totals[$i]['title']),'sub-total') === false){
+					$orderTotalsTitle .= strip_tags($this->totals[$i]['title']) . "<br/>";
+				}
+				if(strpos(strtolower($this->totals[$i]['title']),'sub-total') !== false){
+					$orderTotalsTitle .= strip_tags($this->totals[$i]['title']) . "<br/>";
+				}
+			}
+			for ($i=0, $n=sizeof($this->totals); $i<$n; $i++) {
+				if(strpos(strtolower($this->totals[$i]['title']),'total') === false && strpos(strtolower($this->totals[$i]['title']),'sub-total') === false){
+					$orderTotalsValue .= strip_tags($this->totals[$i]['text'])  . "<br/>";
+				}
+				if(strpos(strtolower($this->totals[$i]['title']),'sub-total') !== false){
+					$orderTotalsValue .= strip_tags($this->totals[$i]['text'])  . "<br/>";
+				}
+				if(strpos(strtolower($this->totals[$i]['title']),'total') !== false){
+					$totalVal = strip_tags($this->totals[$i]['title']) .': '.strip_tags($this->totals[$i]['text']).'<br/>';
+				}
 			}
 
 		}
-		$emailEvent->setVar('orderTotals', $orderTotals);
+		$emailEvent->setVar('totalNames', $orderTotalsTitle);
+		$emailEvent->setVar('totalValues', $orderTotalsValue);
+		$emailEvent->setVar('totalVal', $totalVal);
 
 		if (!empty($this->info['payment_module'])){
 			$emailEvent->setVar('paymentTitle', $this->info['payment_module']);

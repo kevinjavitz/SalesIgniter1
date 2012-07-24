@@ -28,9 +28,9 @@ class forcedSet_catalog_checkout_default extends Extension_forcedSet {
 		global $ShoppingCart, $messageStack;
 		$userAccount = &Session::getReference('userAccount');
 		$arrRelation = array();
-		$shoppingProducts = $ShoppingCart->getProducts()->getContents();
-		for($i=0;$i< sizeof($shoppingProducts);$i++){
-			$cartProduct = $shoppingProducts[$i];
+		$shoppingProducts = $ShoppingCart->getProducts();
+
+		foreach($shoppingProducts as $cartProduct){
 			if ($cartProduct->getPurchaseType() == 'reservation'){
 				$pID = $cartProduct->getIdString();
 				if (!in_array($pID, $arrRelation)){
@@ -56,8 +56,7 @@ class forcedSet_catalog_checkout_default extends Extension_forcedSet {
 						}
 					}
 
-					for($j=0;$j<sizeof($shoppingProducts);$j++){
-						$cartProductNew = $shoppingProducts[$j]; 
+					foreach($shoppingProducts as $cartProductNew){
 						if ($cartProductNew->getPurchaseType() == 'reservation'){
 							$pIDTest = $cartProductNew->getIdString();
 							$QcategoryCartProduct = Doctrine_Query::create()
@@ -75,6 +74,7 @@ class forcedSet_catalog_checkout_default extends Extension_forcedSet {
 				}
 			}
 		}		
+		if(count($arrRelation) > 0){
 		foreach($ShoppingCart->getProducts() as $cartProduct){
 				if ($cartProduct->getPurchaseType() == 'reservation'){
 					$pID = $cartProduct->getIdString();
@@ -99,6 +99,7 @@ class forcedSet_catalog_checkout_default extends Extension_forcedSet {
 					}
 				}
 		}
+	}
 	}
 
 }

@@ -5,7 +5,17 @@
 		public static function checkLoggedIn(){
 			global $navigation, $App;
 			if (Session::exists('login_id') === false) {
-				$navigation->set_snapshot();
+				if(strpos($_SERVER["REQUEST_URI"],'login/default.php') === false){
+					$pageURL = 'http';
+					if ($_SERVER["HTTPS"] == "on") {$pageURL .= "s";}
+					$pageURL .= "://";
+					if ($_SERVER["SERVER_PORT"] != "80") {
+						$pageURL .= $_SERVER["SERVER_NAME"].":".$_SERVER["SERVER_PORT"].$_SERVER["REQUEST_URI"];
+					} else {
+						$pageURL .= $_SERVER["SERVER_NAME"].$_SERVER["REQUEST_URI"];
+					}
+					Session::set('redirectToAdminUrl', $pageURL);
+				}
 				tep_redirect(itw_app_link(null, 'login', 'default', 'SSL'));
 			}
 		}

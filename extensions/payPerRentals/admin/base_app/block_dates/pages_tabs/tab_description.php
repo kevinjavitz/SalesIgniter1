@@ -1,21 +1,37 @@
 <?php
 	if (isset($_GET['pID'])){
 		$name = $Period->block_name;
-		$start_date = $Period->block_start_date;
-		$end_date = $Period->block_end_date;
-		$reccuring = (($Period->recurring == 1)?true:false);
+		$start_date = date('Y-m-d H:i',strtotime($Period->block_start_date));
+		$end_date = date('Y-m-d H:i', strtotime($Period->block_end_date));
+		$reccuring_year = (($Period->recurring_year == 1)?true:false);
+		$reccuring_month = (($Period->recurring_month == 1)?true:false);
+		$reccuring_day = (($Period->recurring_day == 1)?true:false);
 
 	}else{
 		$name = '';
 		$start_date = date('Y-m-d');
 		$end_date = date('Y-m-d');
-		$reccuring = false;
+		$reccuring_year = false;
+		$reccuring_month = false;
+		$reccuring_day = false;
 	}
-	$htmlCheckbox = htmlBase::newElement('checkbox')
-	->setName('reccuring')
-	->setLabel(sysLanguage::get('TEXT_RECURRING'))
+	$htmlCheckboxYear = htmlBase::newElement('checkbox')
+	->setName('reccuring_year')
+	->setLabel(sysLanguage::get('TEXT_RECURRING_YEAR'))
 	->setLabelPosition('before')
-	->setChecked($reccuring);
+	->setChecked($reccuring_year);
+
+	$htmlCheckboxMonth = htmlBase::newElement('checkbox')
+	->setName('reccuring_month')
+	->setLabel(sysLanguage::get('TEXT_RECURRING_MONTH'))
+	->setLabelPosition('before')
+	->setChecked($reccuring_month);
+
+	$htmlCheckboxDay = htmlBase::newElement('checkbox')
+	->setName('reccuring_day')
+	->setLabel(sysLanguage::get('TEXT_RECURRING_DAY'))
+	->setLabelPosition('before')
+	->setChecked($reccuring_day);
 
 ?>
  <table cellpadding="3" cellspacing="0" border="0">
@@ -41,8 +57,14 @@
 	<td colspan="2"><?php echo tep_draw_separator('pixel_trans.gif', '1', '10'); ?></td>
  </tr>
 	 <tr>
-		 <td colspan="2" class="main"><?php echo $htmlCheckbox->draw(); ?></td>
+		 <td colspan="2" class="main"><?php echo $htmlCheckboxYear->draw(); ?></td>
 	  </tr>
+	 <tr>
+		 <td colspan="2" class="main"><?php echo $htmlCheckboxMonth->draw(); ?></td>
+	 </tr>
+	 <tr>
+		 <td colspan="2" class="main"><?php echo $htmlCheckboxDay->draw(); ?></td>
+	 </tr>
 	  <tr>
 		 <td colspan="2"><?php echo tep_draw_separator('pixel_trans.gif', '1', '10'); ?></td>
 	  </tr>

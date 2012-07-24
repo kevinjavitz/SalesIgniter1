@@ -221,6 +221,93 @@
   <tr>
    <td colspan="2"><?php echo tep_draw_separator('pixel_trans.gif', '1', '10'); ?></td>
   </tr>
+  <tr>
+	  <td class="main"><?php echo sysLanguage::get('TEXT_INVENTORY_LAUNCH_POINTS'); ?></td>
+	  <td class="main"><?php
+		  $Qcheck = Doctrine_Query::create()
+			  ->select('MAX(lp_id) as nextId')
+			  ->from('InventoryCentersLaunchPoints')
+			  ->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+		  $TableLaunchPoints = htmlBase::newElement('table')
+			  ->setCellPadding(3)
+			  ->setCellSpacing(0)
+			  ->addClass('ui-widget ui-widget-content LaunchPointsTable')
+			  ->css(array(
+				  'width' => '100%'
+			  ))
+			  ->attr('data-next_id', $Qcheck[0]['nextId'] + 1)
+			  ->attr('language_id', Session::get('languages_id'));
+		  $TableLaunchPoints->addHeaderRow(array(
+				  'addCls' => 'ui-state-hover LaunchPointsTableHeader',
+				  'columns' => array(
+					  array('text' => '<div style="float:left;width:280px;">' .sysLanguage::get('TABLE_HEADING_LAUNCH_POINT_NAME').'</div>'.
+						  '<div style="float:left;width:80px;">' .sysLanguage::get('TABLE_HEADING_LAUNCH_POINT_MARKER_COLOR').'</div>'.
+						  '<div style="float:left;width:120px;">' .sysLanguage::get('TABLE_HEADING_LAUNCH_POINT_POSITION').'</div>'.
+						  '<div style="float:left;width:380px;">' .sysLanguage::get('TABLE_HEADING_LAUNCH_POINT_DESC').'</div>'.
+						  '<div style="float:left;width:40px;">'.htmlBase::newElement('icon')->setType('insert')->addClass('insertIconHidden')->draw().
+						  '</div><br style="clear:both"/>'
+					  )
+				  )
+			  ));
+		  $deleteIcon = htmlBase::newElement('icon')->setType('delete')->addClass('deleteIconHidden')->draw();
+		  $hiddenList = htmlBase::newElement('list')
+			  ->addClass('hiddenList');
+		  if(isset($_GET['cID'])){
+			  $QLP = Doctrine_Query::create()
+				  ->from('InventoryCentersLaunchPoints')
+				  ->where('inventory_center_id = ?', $_GET['cID'])
+				  ->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+			  foreach($QLP as $ilp){
+				  $lpid = $ilp['lp_id'];
+				  $htmlLPName = htmlBase::newElement('input')
+				  ->addClass('ui-widget-content lp_name')
+				  ->setName('lp[' . $lpid . '][lp_name]')
+				  ->attr('size', '30')
+				  ->val($ilp['lp_name']);
+				  $htmlLPMarkerColor = htmlBase::newElement('input')
+				  ->addClass('ui-widget-content lp_marker_color')
+				  ->setName('lp[' . $lpid . '][lp_marker_color]')
+				  ->attr('size', '10')
+				  ->val($ilp['lp_marker_color']);
+				  $htmlLPPosition = htmlBase::newElement('input')
+				  ->addClass('ui-widget-content lp_position')
+				  ->setName('lp[' . $lpid . '][lp_position]')
+				  ->attr('size', '15')
+				  ->val($ilp['lp_position']);
+				  $htmlLPDesc = htmlBase::newElement('textarea')
+				  ->addClass('ui-widget-content lp_desc')
+				  ->setName('lp[' . $lpid . '][lp_desc]')
+				  ->attr('rows','15')
+				  ->attr('cols','5')
+				  ->val($ilp['lp_desc']);
+				  $divLi1 = '<div style="float:left;width:280px;">'.$htmlLPName->draw().'</div>';
+				  $divLi2 = '<div style="float:left;width:80px;">'.$htmlLPMarkerColor->draw().'</div>';
+				  $divLi3 = '<div style="float:left;width:120px;">'.$htmlLPPosition->draw().'</div>';
+				  $divLi4 = '<div style="float:left;width:380px;">'.$htmlLPDesc->draw().'</div>';
+				  $divLi5 = '<div style="float:left;width:40px;">'.$deleteIcon.'</div>';
+				  $liObj = new htmlElement('li');
+				  $liObj->css(array(
+						  'font-size' => '.8em',
+						  'list-style' => 'none',
+						  'line-height' => '1.1em',
+						  'border-bottom' => '1px solid #cccccc',
+						  'cursor' => 'crosshair'
+					  ))
+				  ->html($divLi1.$divLi2.$divLi3.$divLi4.$divLi5.'<br style="clear:both;"/>');
+				  $hiddenList->addItemObj($liObj);
+			  }
+		  }
+		  $TableLaunchPoints->addBodyRow(array(
+				  'columns' => array(
+					  array('align' => 'center', 'text' => $hiddenList->draw(),'addCls' => 'launchPoints')
+				  )
+			  ));
+		  echo $TableLaunchPoints->draw();
+		  ?></td>
+  </tr>
+  <tr>
+   <td colspan="2"><?php echo tep_draw_separator('pixel_trans.gif', '1', '10'); ?></td>
+  </tr>
 	 <?php
   $htmlContinent = htmlBase::newElement('selectbox')
   ->setName('continent');

@@ -1,0 +1,31 @@
+<definitions>
+	<define key="HEADING_TITLE"><![CDATA[Customer Custom Fields]]></define>
+	<define key="TABLE_HEADING_OPTION_TEXT"><![CDATA[Option Text]]></define>
+	<define key="TABLE_HEADING_SORT_ORDER"><![CDATA[Sort Order]]></define>
+	<define key="WINDOW_TITLE_NEW_FIELD"><![CDATA[Create New Field]]></define>
+	<define key="WINDOW_TITLE_EDIT_FIELD"><![CDATA[Edit Field]]></define>
+	<define key="WINDOW_TITLE_NEW_GROUP"><![CDATA[Create New Group]]></define>
+	<define key="WINDOW_TITLE_EDIT_GROUP"><![CDATA[Edit Group]]></define>
+	<define key="ENTRY_GROUP_NAME"><![CDATA[Group Name: ]]></define>
+	<define key="ENTRY_FIELD_NAME"><![CDATA[Field Name: ]]></define>
+	<define key="ENTRY_SHOW_ON_SITE"><![CDATA[ Show On Product Info]]></define>
+	<define key="ENTRY_SHOW_ON_TAB"><![CDATA[ Show On Tab]]></define>
+	<define key="ENTRY_SHOW_ON_PRODUCT_LISTING"><![CDATA[ Show On Product Listing]]></define>
+	<define key="ENTRY_SHOW_NAME_ON_PRODUCT_LISTING"><![CDATA[ Show Name On Product Listing]]></define>
+	<define key="ENTRY_SHOW_ON_LABELS"><![CDATA[ Show On PDF Labels]]></define>
+	<define key="ENTRY_SEARCH_KEY"><![CDATA[Search Key (if search field):]]></define>
+	<define key="ENTRY_INPUT_TYPE"><![CDATA[Input Type:]]></define>
+	<define key="ENTRY_MAX_LABEL_CHARS"><![CDATA[Maximim Chars (If on label):]]></define>
+	<define key="TEXT_TYPE"><![CDATA[Type: ]]></define>
+	<define key="ENTRY_REQUIRED"><![CDATA[Required: ]]></define>
+	<define key="TEXT_TRASH_BIN"><![CDATA[Drop Here To Trash]]></define>
+	<define key="TEXT_BUTTON_NEW_FIELD"><![CDATA[New Field]]></define>
+	<define key="TEXT_BUTTON_NEW_GROUP"><![CDATA[New Group]]></define>
+	<define key="ENTRY_INCLUDE_IN_SEARCH"><![CDATA[Include in quick search:]]></define>
+    <define key="ENTRY_MAX_CHARS"><![CDATA[Max Length]]></define>
+    <define key="ENTRY_MIN_CHARS"><![CDATA[Min Length]]></define>
+    <define key="ENTRY_PATTERN"><![CDATA[Pattern]]></define>
+    <define key="ENTRY_PLACEHOLDER"><![CDATA[Placeholder]]></define>
+    <define key="ENTRY_CUSTOM_MESSAGE"><![CDATA[Custom Error Message]]></define>
+
+</definitions>

@@ -65,22 +65,75 @@
 		}
 		
 		public function add(ShoppingCartProduct &$cartProduct, $runDbAction = true){
+			global $userAccount, $messageStack;
 			$pID_string = $cartProduct->getIdString();
 			$purchaseType = $cartProduct->getPurchaseType();
 			$pInfo = $cartProduct->getInfo();
 			
 			$check = $this->findProductAsKey($cartProduct, $purchaseType);
+			$canAdd = true;
 			if ($check !== false){
 				$action = 'update';
 				$this->contents[$check] =& $cartProduct;
 			}else{
 				$action = 'insert';
+				if(isset($pInfo['is_queue'])){
+					if ($userAccount->isLoggedIn() === true){
+						if ($userAccount->isRentalMember()){
+							if ($userAccount->membershipIsActivated()){
+								$membership =& $userAccount->plugins['membership'];
+								if($membership->isPastDue()){
+									$customerCanRent =  'pastdue';
+								}else{
+									$customerCanRent = true;
+								}
+							}else{
+								$customerCanRent = 'inactive';
+							}
+						}else{
+							$customerCanRent = 'membership';
+						}
+						$membership =& $userAccount->plugins['membership'];
+						$errorMsg = '';
+						if ($customerCanRent !== true){
+							switch($customerCanRent){
+								case 'membership':
+									if (Session::exists('account_action') === true){
+										Session::remove('account_action');
+									}
+									$errorMsg = sprintf(sysLanguage::get('TEXT_NOT_RENTAL_CUSTOMER'),itw_app_link('checkoutType=rental','checkout','default','SSL'), itw_app_link(null,'account','login'));
+									break;
+								case 'inactive':
+									$errorMsg = sprintf(sysLanguage::get('TEXT_NOT_ACTIVE_CUSTOMER'), ($membership->isPastDue()?itw_app_link((isset($membership)?'edit='.$membership->getRentalAddressId():''),'account','billing_address_book','SSL'):itw_app_link('checkoutType=rental','checkout','default','SSL')));
+									break;
+								case 'pastdue':
+									$errorMsg = sprintf(sysLanguage::get('RENTAL_CUSTOMER_IS_PAST_DUE'), itw_app_link((isset($membership)?'edit='.$membership->getRentalAddressId():''),'account','billing_address_book','SSL'));//
+									break;
+							}
+							$messageStack->addSession('pageStack', $errorMsg, 'warning');
+							tep_redirect(itw_app_link(tep_get_all_get_params(array('action')), 'product', 'info'));
+						}
+						//check product group
+						EventManager::notify('CanAddToQueueProduct', &$pID_string, $cartProduct, &$canAdd);
+						if($pInfo['already_queue'] == false && $canAdd){
+							$cartProduct->purchaseTypeClass->onInsertQueueProduct(&$cartProduct);
+							EventManager::notify('AddToQueueProduct', &$pID_string, $cartProduct);
+						}
+					}else{
+						$canAdd = false;
+						Session::set('add_to_queue_ppr_product', $cartProduct);
+						$messageStack->addSession('pageStack',sysLanguage::get('TO_ADD_TO_QUEUE_PPR_MESSAGE'),'warning');
+						tep_redirect(itw_app_link('checkoutType=rental','checkout','default','SSL'));
+					}
+				}
+				if($canAdd){
 				$this->contents[] =& $cartProduct;
+				}
 			}
 			
 			EventManager::notify('AddToContentsBeforeProcess', &$pID_string, $cartProduct);
 		
-			if ($runDbAction === true){
+			if ($runDbAction === true && $canAdd){
 				$this->dbUtil->runAction($action, $cartProduct);
 			}
 
@@ -95,6 +148,10 @@
 				$pID_string = $cartProduct->getIdString();
 				$purchaseType = $cartProduct->getPurchaseType();
 
+				if($cartProduct->hasInfo('is_queue')){
+					$cartProduct->purchaseTypeClass->onRemoveQueueProduct($cartProduct);
+					EventManager::notify('RemoveFromQueueProduct', &$pID_string, $cartProduct);
+				}
 				$cartProduct->purchaseTypeClass->processRemoveFromCart();
 
 				unset($this->contents[$key]);

@@ -14,6 +14,10 @@ class OrdersPaymentsHistory extends Doctrine_Record {
 
 	public function setUp(){
 		$this->setUpParent();
+		$this->hasOne('Orders', array(
+			'local' => 'orders_id',
+			'foreign' => 'orders_id'
+		));
 	}
 
 	public function setUpParent(){

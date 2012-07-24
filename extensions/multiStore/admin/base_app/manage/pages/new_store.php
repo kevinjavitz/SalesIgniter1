@@ -113,6 +113,9 @@ $table->addBodyRow(array(
 			),
 			array(
 				'addCls' => 'main',
+				'attr' => array(
+					'valign' => 'top'
+				),
 				'text' => '<button type="button" id="moveRight"><span>&nbsp;&nbsp;>>&nbsp;&nbsp;</span></button>'
 			),
 			array(

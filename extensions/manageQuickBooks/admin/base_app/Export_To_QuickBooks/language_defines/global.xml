@@ -13,11 +13,11 @@
        <define key="QB_COMPLETE"><![CDATA[Done exporting to QuickBooks.]]></define>
 	<define key="QB_CUSTOMER_ADDED"><![CDATA[Customer added - ]]></define>
        <define key="QB_CUSTOMER_ERROR"><![CDATA[An error occurred on customer ]]></define>
-       <define key="QB_SALE_ADDED"><![CDATA[ - Added a SalesReceipt ]]></define>
-       <define key="QB_SALE_ERROR"><![CDATA[There was an error adding a SalesReceipt.]]></define>
+       <define key="QB_SALE_ADDED"><![CDATA[ - Added an Invoice ]]></define>
+       <define key="QB_SALE_ERROR"><![CDATA[There was an error adding an Invoice.]]></define>
        <define key="QB_WARNING"><![CDATA[NOTE: It is a good idea to make sure that you have a backup of your QuickBooks data before Connecting To Quickbooks.]]></define>
        <define key="TEXT_BUTTON_DO_EXPORT_NOW"><![CDATA[Do Export]]></define>
 
        
-
+   
 </definitions>

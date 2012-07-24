@@ -17,7 +17,7 @@
 
 
 	if ($_GET['filter'] == '1' || !isset($_GET['filter'])){
-		$Qcustomers->andWhere('cm.ismember = "M" and cm.activate = "Y" and DATEDIFF(cm.next_bill_date, CURDATE()) < '.sysConfig::get('RENTAL_DAYS_CUSTOMER_PAST_DUE').'');
+		$Qcustomers->andWhere('cm.ismember = "M" and cm.activate = "Y" and DATEDIFF(cm.next_bill_date, CURDATE()) < -'.'1'/*sysConfig::get('RENTAL_DAYS_CUSTOMER_PAST_DUE')*/.'');
 	}else{
 		$Qcustomers->andWhere('cm.ismember = "M" and count(rq.customers_id)>0 and ((cm.activate = "Y" and DATEDIFF(cm.next_bill_date, CURDATE()) < '.sysConfig::get('RENTAL_DAYS_CUSTOMER_PAST_DUE').') OR cm.activate = "N")');
 	}

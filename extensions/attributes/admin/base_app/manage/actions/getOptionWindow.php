@@ -2,7 +2,7 @@
 	$windowAction = $_GET['windowAction'];
 	if ($windowAction == 'edit'){
 		$Qvalue = Doctrine_Query::create()
-		->select('o.products_options_id, o.option_type, o.use_image, o.use_multi_image, o.update_product_image, od.products_options_name')
+		->select('o.products_options_id, o.option_type, o.use_image, o.use_multi_image, o.update_product_image, od.products_options_name, od.products_options_front_name')
 		->from('ProductsOptions o')
 		->leftJoin('o.ProductsOptionsDescription od')
 		->where('o.products_options_id = ?', $_GET['option_id'])
@@ -12,21 +12,25 @@
 
 	$languages = tep_get_languages();
 	$optionNames = htmlBase::newElement('table')->setCellPadding('3')->setCellSpacing('0');
-	for ($i=0, $n=sizeof($languages); $i<$n; $i++){
-		$langID = $languages[$i]['id'];
+foreach(sysLanguage::getLanguages() as $lInfo){
+	$langID = $lInfo['id'];
 				
-		$langImage = htmlBase::newElement('image')
-		->setSource(DIR_WS_CATALOG_LANGUAGES . $languages[$i]['directory'] . '/images/' . $languages[$i]['image'])
-		->setTitle($languages[$i]['name']);
+	$langImage = htmlBase::newElement('div')
+	->html($lInfo['showName']('&nbsp;'));
 				
-		$optionNameInput = htmlBase::newElement('input')->setName('option_name[' . $langID . ']');
+		$optionNameInput = htmlBase::newElement('input')->setName('option_name[' . $langID . '][admin]');
 		if (isset($Qvalue)){
 			$optionNameInput->setValue($Qvalue['ProductsOptionsDescription'][$langID]['products_options_name']);
+		}
+		$optionNameInputFront = htmlBase::newElement('input')->setName('option_name[' . $langID . '][front]');
+		if (isset($Qvalue)){
+			$optionNameInputFront->setValue($Qvalue['ProductsOptionsDescription'][$langID]['products_options_front_name']);
 		}
 		$optionNames->addBodyRow(array(
 			'columns' => array(
 				array('addCls' => 'main', 'text' => ''),
-				array('addCls' => 'main', 'text' => $optionNameInput)
+				array('addCls' => 'main', 'text' => $optionNameInput),
+				array('addCls' => 'main', 'text' => $optionNameInputFront)
 			)
 		));
 	}

@@ -25,6 +25,9 @@
 			return $this->trackMethod->getInventoryItemCount();
 		}
 
+		function getTotalInventoryStock(){
+			return $this->trackMethod->getTotalInventoryItemCount();
+		}
 		function updateStock($orderId, $orderProductId, $cartProduct){
 			return $this->trackMethod->updateStock($orderId, $orderProductId, $cartProduct);
 		}

@@ -7,10 +7,12 @@
 			->leftJoin('a.ProductsAttributesViews v')
 			->leftJoin('a.ProductsOptions o')
 			->leftJoin('o.ProductsOptionsDescription od')
+			->leftJoin('o.ProductsOptionsToProductsOptionsGroups o2o')
 			->leftJoin('a.ProductsOptionsValues ov')
 			->leftJoin('ov.ProductsOptionsValuesDescription ovd')
 			->leftJoin('ov.ProductsOptionsValuesToProductsOptions v2o')
-			->orderBy('a.sort_order, v2o.sort_order');
+			->orderBy('a.sort_order,o2o.sort_order, v2o.sort_order')
+			->andWhere('o2o.products_options_groups_id = a.groups_id');
 
 			if (is_null($pId) === false){
 				$Query->andWhere('a.products_id = ?', (int)$pId);
@@ -49,12 +51,12 @@
 			$newRecord->options_id = $attribute['ProductsOptions']['products_options_id'];
 			$newRecord->options_values_id = $attribute['ProductsOptionsValues']['products_options_values_id'];
 			if (isset($attribute['ProductsOptions']['ProductsOptionsDescription'][$langId])){
-				$newRecord->products_options = $attribute['ProductsOptions']['ProductsOptionsDescription'][$langId]['products_options_name'];
+				$newRecord->products_options = $attribute['ProductsOptions']['ProductsOptionsDescription'][$langId]['products_options_front_name'];
 			}else{
 				$newRecord->products_options = 'attribute_name_not_defined_for_language';
 			}
 			if (isset($attribute['ProductsOptionsValues']['ProductsOptionsValuesDescription'][$langId])){
-				$newRecord->products_options_values = $attribute['ProductsOptionsValues']['ProductsOptionsValuesDescription'][$langId]['products_options_values_name'];
+				$newRecord->products_options_values = $attribute['ProductsOptionsValues']['ProductsOptionsValuesDescription'][$langId]['products_options_front_values_name'];
 			}else{
 				$newRecord->products_options_values  = 'attribute_value_not_defined_for_language';
 			}
@@ -101,7 +103,7 @@
 			foreach($ProductsAttributes as $attribute){
 				if (!array_key_exists($attribute['options_id'], $Attributes)){
 					$Attributes[$attribute['options_id']] = array(
-					'options_name'          => $attribute['ProductsOptions']['ProductsOptionsDescription'][Session::get('languages_id')]['products_options_name'],
+					'options_name'          => (!empty($attribute['ProductsOptions']['ProductsOptionsDescription'][Session::get('languages_id')]['products_options_front_name'])?$attribute['ProductsOptions']['ProductsOptionsDescription'][Session::get('languages_id')]['products_options_front_name']:$attribute['ProductsOptions']['ProductsOptionsDescription'][Session::get('languages_id')]['products_options_name']),
 					'option_type'           => $attribute['ProductsOptions']['option_type'],
 					'use_image'             => $attribute['ProductsOptions']['use_image'],
 					'use_multi_image'       => $attribute['ProductsOptions']['use_multi_image'],
@@ -113,7 +115,7 @@
 				$curArray = array(
 				'options_values_id'    => $attribute['options_values_id'],
 				'options_values_price' => $attribute['options_values_price'],
-				'options_values_name'  => $attribute['ProductsOptionsValues']['ProductsOptionsValuesDescription'][Session::get('languages_id')]['products_options_values_name'],
+				'options_values_name'  => (!empty($attribute['ProductsOptionsValues']['ProductsOptionsValuesDescription'][Session::get('languages_id')]['products_options_front_values_name'])?$attribute['ProductsOptionsValues']['ProductsOptionsValuesDescription'][Session::get('languages_id')]['products_options_front_values_name']:$attribute['ProductsOptionsValues']['ProductsOptionsValuesDescription'][Session::get('languages_id')]['products_options_values_name']),
 				'price_prefix'         => $attribute['price_prefix']
 				);
 

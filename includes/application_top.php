@@ -9,6 +9,7 @@
 */
 
 // start profiling
+set_time_limit(0);
 if (isset($_GET['runProfile'])){
 	xhprof_enable(XHPROF_FLAGS_CPU + XHPROF_FLAGS_MEMORY);
 }
@@ -39,6 +40,7 @@ error_reporting(E_ALL & ~E_DEPRECATED);
 	require('includes/classes/ExtensionConfigReader.php');
 	require('includes/classes/system_configuration.php');
 	include('includes/conversionArrays.php');
+	//include('includes/classes/ChromePhp.php');
 
 	date_default_timezone_set('America/New_York');
 	sysConfig::init();
@@ -318,7 +320,11 @@ $breadcrumb->add(sysLanguage::get('HEADER_TITLE_CATALOG') .' '. sysLanguage::get
 						}
 					}
 				}
+					if(isset($_POST['isQueue'])){
+						tep_redirect(itw_app_link('appExt=payPerRentals','rentalQueue','default'));
+					}else{
 				tep_redirect($goto);
+					}
 				break;
 			case 'removeCartProduct':
 				$ShoppingCart->removeProduct($_GET['pID'], $_GET['purchaseTypeVal']);

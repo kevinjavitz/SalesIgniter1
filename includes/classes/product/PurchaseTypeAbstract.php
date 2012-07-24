@@ -86,6 +86,10 @@
 			return $this->inventoryCls->getCurrentStock();
 		}
 
+		public function getTotalStock(){
+			if ($this->enabled === false || is_null($this->inventoryCls)) return null;
+			return $this->inventoryCls->getTotalStock();
+		}
 		public function hasInventory(){
 			if ($this->enabled === false) return false;
 			if (is_null($this->inventoryCls)) return true;

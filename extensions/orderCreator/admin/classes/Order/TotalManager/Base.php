@@ -21,11 +21,12 @@ class OrderCreatorTotalManager extends OrderTotalManager {
 	
 	public function updateFromPost(){
 		global $currencies, $Editor;
+		$this->clear();
 		foreach($_POST['order_total'] as $id => $tInfo){
 			$OrderTotal = $this->get($tInfo['type']);
 
 			$addTotal = false;
-			if (is_null($OrderTotal) === true){
+			if (is_null($OrderTotal) === true || ($tInfo['type'] != 'tax' && $tInfo['type'] != 'total' && $tInfo['type'] != 'subtotal')){
 				$OrderTotal = new OrderCreatorTotal();
 				$OrderTotal->setModuleType($tInfo['type']);
 				$addTotal = true;

@@ -31,6 +31,17 @@
 		'v_products_categories'
 	));
 
+	$QMaxAddImage = Doctrine_Query::create()
+	->select('count(*) as max')
+	->from('ProductsAdditionalImages')
+	->groupBy('products_id')
+	->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+    $max = max($QMaxAddImage);
+	for($p = 1; $p<=$max['max'];$p++){
+		$dataExport->setHeaders(array(
+			'v_products_additional_image_'.$p
+		));
+	}
 	foreach(sysLanguage::getLanguages() as $lInfo){
 		$lID = $lInfo['id'];
 		$dataExport->setHeaders(array(
@@ -117,6 +128,17 @@
 					'v_products_head_keywords_tag_' . $lID => $Qdescription[$lID]['products_head_keywords_tag']
 				));
 			}
+		}
+		$QAddImages = Doctrine_Query::create()
+		->from('ProductsAdditionalImages')
+		->where('products_id = ?', $pInfo['products_id'])
+		->execute()->toArray();
+		$p = 1;
+		foreach($QAddImages as $iImage){
+			$pInfo = array_merge($pInfo, array(
+				'v_products_additional_image_' . $p              => $iImage['file_name']
+			));
+			$p++;
 		}
 		$categories = explode(',', $pInfo['v_products_categories']);
 		$catPaths = array();

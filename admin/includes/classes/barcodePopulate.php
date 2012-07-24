@@ -527,11 +527,11 @@ class barcodePopulate{
 								$pr['v_comments'] = '';
 							}
 
-							if(($appExtension->isInstalled('attributes') && $appExtension->isEnabled('attributes')) && !isset($usedStores[$myStore])){
+							if(($appExtension->isInstalled('attributes') && $appExtension->isEnabled('attributes')) && ($appExtension->isInstalled('multiStore') && $appExtension->isEnabled('multiStore')) && !isset($usedStores[$myStore])){
 								$usedStores[$myStore] = 1;
 								$this->generateAttributesQuantity(&$pr, $myStore, $iID, $usecenter, $isStore, $optionArr, $combosArr, $nrValues);
 								$mydata[] = $pr;
-							}elseif($appExtension->isInstalled('attributes') == false || $appExtension->isEnabled('attributes') == false){
+							}else{//if($appExtension->isInstalled('attributes') == false || $appExtension->isEnabled('attributes') == false){
 								$mydata[] = $pr;
 							}
 
@@ -608,14 +608,14 @@ class barcodePopulate{
 							$pr['v_barcode'] = $qi['barcode'];
 							$pr['v_barcode_status'] = $qi['status'];
 
-							if(($appExtension->isInstalled('attributes') && $appExtension->isEnabled('attributes')) && (!isset($usedStores1[$myStore])) && !array_key_exists($qi['attributes'], $myAttributes[$myStore])){
+							if(($appExtension->isInstalled('attributes') && $appExtension->isEnabled('attributes')) && ($appExtension->isInstalled('multiStore') && $appExtension->isEnabled('multiStore')) && (!isset($usedStores1[$myStore])) && !array_key_exists($qi['attributes'], $myAttributes[$myStore])){
 								$usedStores1[$myStore] = 1;
 								$this->generateAttributesBarcodes(&$pr, $myStore, $iID, $usecenter, $isStore, $optionArr, $combosArr, $nrValues, &$myAttributes);
 								$mydata[] = $pr;
-							}elseif($appExtension->isInstalled('attributes') == false || $appExtension->isEnabled('attributes') == false){
-								$mydata[] = $pr;
 							}elseif(array_key_exists($qi['attributes'], $myAttributes[$myStore])){
 								$pr[$myAttributes[$myStore][$qi['attributes']]] = $qi['barcode'];
+								$mydata[] = $pr;
+							} else{
 								$mydata[] = $pr;
 							}
 

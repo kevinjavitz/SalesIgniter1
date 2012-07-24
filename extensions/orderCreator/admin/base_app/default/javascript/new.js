@@ -4,8 +4,75 @@ function number_format(number){
 	) / 100;
 }
 
-$(document).ready(function (){
+function updateOC($myRow){
+    showAjaxLoader($myRow, 'xlarge');
+    var myStartDate = $myRow.find('.start_date').val();
 
+    if($myRow.find('.start_time').size() > 0){
+        myStartDate = myStartDate+' '+$myRow.find('.start_time').val()+':00:00';
+    }
+
+    var myEndDate = $myRow.find('.end_date').val();
+
+    if($myRow.find('.end_time').size() > 0){
+        myEndDate = myEndDate+' '+$myRow.find('.end_time').val()+':00:00';
+    }
+    $.ajax({
+        cache: false,
+        dataType: 'json',
+        type: 'post',
+        url: js_app_link('appExt=orderCreator&app=default&appPage=new&action=saveResInfo'),
+        data: 'qty='+$myRow.find('.productQty').val()+'&start_date='+myStartDate+'&end_date='+myEndDate+'&purchase_type='+$myRow.attr('data-product_type')+'&idP='+$myRow.attr('data-id')+'&'+$myRow.find('.pName *').serialize(),
+        success: function (data) {
+            removeAjaxLoader($myRow);
+            if (data.success == true && data.price != null) {
+                $myRow.find('.priceEx').val(data.price).trigger('keyup');
+            }else{
+                $myRow.find('.priceEx').trigger('keyup');
+            }
+            if(data.hasInventory == true){
+                $myRow.find('.ui-widget-content').css('background','#ffffff');
+                $myRow.find('.ui-widget-content').css('color','#000000');
+            }else{
+                $myRow.find('.ui-widget-content').css('background','#ff0000');
+                $myRow.find('.ui-widget-content').css('color','#ffffff');
+            }
+
+        }
+    });
+}
+
+$(document).ready(function (){
+    $('#tabsCustomer').tabs();
+    /*$('#ui-widget-content-left').panel({
+        collapseType:'slide-left',
+        trueVerticalText:true,
+        collapsed:false,
+        width:'350px'
+    });*/
+    $('#accordion').accordion();
+    /*$('#panelLeft_1, #panelLeft_2, #panelLeft_3, #panelLeft_4').panel({
+        accordion:'my_group'
+    });*/
+
+    $('#panelCenter_1').panel({
+        collapsible:false
+    });
+
+    $('#panelCenter_2').panel({
+        collapsible:true
+    });
+
+    $('#panelCenter_3').panel({
+        collapsible:true
+    });
+
+    $('#panelCenter_5').panel({
+        collapsible:true
+    });
+
+
+    //makeTabsVertical('#tabsCustomer');
     /*$('select[name="payment_method"]').live('change', function(){
 		var $self = $(this);
 		showAjaxLoader($self, 'small');
@@ -51,6 +118,50 @@ $(document).ready(function (){
             alert('Please enter tracking number');
             return false;
         }
+    });
+    
+     $('.removePayment').click(function(){
+        var $self = $(this);
+
+        $('<div></div>').dialog({
+            autoOpen: true,
+            width: 300,
+            modal: true,
+            resizable: false,
+            allowClose: false,
+            title: 'Delete Paymen tConfirm',
+            open: function (e){
+                $(e.target).html('Are you sure you want to null this payment');
+            },
+            close: function (){
+                $(this).dialog('destroy');
+            },
+            buttons: {
+                'Delete': function(){
+                    var $selfD = $(this);
+                    $.ajax({
+                        url: js_app_link('appExt=orderCreator&app=default&appPage=new&action=removePayment'),
+                        cache: false,
+                        dataType: 'json',
+                        data: 'idpayment=' + $self.attr('idpayment')+'&oID='+getVars['oID'],
+                        type: 'post',
+                        success: function (data){
+                            if(data.success == true){
+                                $self.parent().parent().remove();
+                            }else{
+                                alert('Cannot be deleted');
+                            }
+                            $selfD.dialog('destroy');
+                        }
+                    });
+                },
+                'Don\'t Delete': function(){
+                    $(this).dialog('destroy');
+                }
+            }
+        });
+
+        return false;
     });
 
 	$('#emailEstimate').click(function(){
@@ -98,13 +209,13 @@ $(document).ready(function (){
 				return false;
 			}
 
-			showAjaxLoader($('.addressTable'), 'xlarge');
+			showAjaxLoader($('#tabsCustomer'), 'xlarge');
 			$.ajax({
 				cache: false,
 				dataType: 'json',
 				url: js_app_link('appExt=orderCreator&app=default&appPage=new&action=loadCustomerInfo&cID=' + ui.item.value+oID),
 				success: function (data){
-					removeAjaxLoader($('.addressTable'));
+					removeAjaxLoader($('#tabsCustomer'));
 
 					$('.customerAddress').html(data.customer);
 					$('.billingAddress').html(data.billing);
@@ -116,8 +227,7 @@ $(document).ready(function (){
 					$('input[name=account_password]').attr('disabled', 'disabled');
 					$('input[name=member_number]').attr('disabled', 'disabled');
                     $('input[name=customer_search]').attr('disabled','disabled');
-					$('.productSection, .totalSection, .paymentSection, .commentSection').show();
-
+					//$('.ui-widget-content-middle, .trackingSection, .productSection, .totalSection, .paymentSection, .commentSection').show();
 					if (data.productTable){
 						$('.productTable').replaceWith(data.productTable);
 					}
@@ -160,14 +270,14 @@ $(document).ready(function (){
 	});
 	
 	$('.customerSearchReset').click(function (){
-		$('.addressTable').find('input').val('');
-		$('.addressTable').find('select').val('');
+		$('#tabsCustomer').find('input').val('');
+		$('#tabsCustomer').find('select').val('');
 		$('input[name=customer_search]').val('');
 		$('input[name=email]').val('');
 		$('input[name=telephone]').val('');
 		$('input[name=account_password]').removeAttr('disabled');
         $('input[name=customer_search]').removeAttr('disabled');
-		$('.productSection, .totalSection, .paymentSection, .commentSection').hide();
+		//$('.ui-widget-content-middle, .trackingSection, .productSection, .totalSection, .paymentSection, .commentSection').hide();
 	});
 	
 	$('.purchaseType').live('change', function (){
@@ -230,6 +340,8 @@ $(document).ready(function (){
 				if (data.hasError == true){
 					alert(data.errorMessage);
 					$(self).val('');
+				}else if(data.noObject == true){
+                    $Row.find('.priceEx').trigger('keyup');
 				}else{
 					$Row.find('td:eq(1)').html(data.name);
 					$Row.find('td:eq(2)').html(data.barcodes);
@@ -386,10 +498,14 @@ $(document).ready(function (){
 		$Row.find('.taxRate').trigger('keyup');
 	})
 
-	$('.productQty').live('keyup', function (){
+	$('.productQty').live('change', function (){
 		var $Row = $(this).parent().parent();
-		$Row.find('.priceEx').trigger('keyup');
+        if($Row.hasClass('firstRow') == false){
+		    $Row.find('.priceEx').trigger('keyup');
+            updateOC($Row);
+        }
 	});
+
 
 	$('.insertTotalIcon').live('click', function (){
 		var $TableBody = $(this).parent().parent().parent().parent().find('tbody');
@@ -407,59 +523,12 @@ $(document).ready(function (){
 		'</tr>');
 	});
 
+    var $Row = $('.productTable .firstRow');
 	$('.insertProductIcon').live('click', function (){
-		var $TableBody = $(this).parent().parent().parent().parent().find('tbody:first');
-		var productInput = '';
+		//var $TableBody = $Row.parent();
+		//var productInput = '';
 
-		var loadProductRow = function (pID, prtype,barcode){
-			showAjaxLoader($Row, 'normal');
-			$.ajax({
-				cache: false,
-				dataType: 'json',
-				url: js_app_link('appExt=orderCreator&app=default&appPage=new&action=loadProductRow&pID=' + pID+'&purchaseType=' + prtype+oID),
-				success: function (data) {
-					removeAjaxLoader($Row);
-					if (data.hasError == true){
-						alert(data.errorMessage);
-					}
-					else {
-						var html = data.html;
-						var $myRow = $(html).insertAfter($Row);
-						$Row.remove();
-						var va = $myRow.find('.purchaseType option:nth-child(2)').val();
-						//alert(va);
-						//alert($myRow.find('.purchaseType option').size());
-						if($myRow.find('.purchaseType option').size() == 2){
-							$myRow.parent().find('.purchaseType').first().val(va);
-						}
-						$myRow.find('.purchaseType').trigger('change');
-                        $myRow.find('.barcodeName').val(barcode);
-                        $myRow.find('.startConsumption').trigger('click');
-
-					}
-				}
-			});
-		};
-
-		var $Row;
-		if ($(this).data('product_entry_method') == 'autosuggest'){
-			productInput = '<input class="productSearch" name="product_search" style="width:95%">';
-		}else if ($(this).data('product_entry_method') == 'dropmenu'){
-			showAjaxLoader($('.productSection'), 'xlarge');
-			$.ajax({
-				cache: false,
-				url: js_app_link('appExt=orderCreator&app=default&appPage=new&action=getProductsDropBox'+oID),
-				dataType: 'html',
-				success: function (data){
-					$Row.find('.productInput').html(data);
-					$Row.find('.productSelectBox').change(function (){
-						loadProductRow($(this).val());
-					});
-					removeAjaxLoader($('.productSection'));
-				}
-			});
-		}
-		$Row = $('<tr></tr>')
+		/*$Row = $('<tr></tr>')
 			.append('<td class="ui-widget-content" align="right" valign="top" style="border-top:none"></td>')
 			.append('<td class="ui-widget-content productInput" valign="top" style="border-top:none;border-left:none">' + productInput + '</td>')
 			.append('<td class="ui-widget-content" valign="top" style="border-top:none;border-left:none"></td>')
@@ -471,48 +540,188 @@ $(document).ready(function (){
 			.append('<td class="ui-widget-content" align="right" valign="top" style="border-top:none;border-left:none"></td>')
 			.append('<td class="ui-widget-content" align="right" valign="top" style="border-top:none;border-left:none"><span class="ui-icon ui-icon-closethick deleteIcon"></span></td>');
 
-		$TableBody.prepend($Row);
+		$TableBody.prepend($Row);*/
+        loadProductRow($Row.attr('data-product_id'), $Row.attr('data-product_type'));
 
-		if ($(this).data('product_entry_method') == 'autosuggest'){
-			$Row.find('.productSearch').autocomplete({
-				source: js_app_link('appExt=orderCreator&app=default&appPage=new&action=findProduct'),
-				select: function (e, ui) {
-                    var barcode = 0;
-                    var product = 0;
-                    var $productRow;
 
-                    if(ui.item.consumption == '1'){
-                        $Row.parent().find('.bar_id').each(function(){
-                            if(ui.item.barcode == $(this).html())
-                                barcode = 1;
-                        });
+	});
 
-                        $Row.parent().find('.productName').each(function(){
-                            if(ui.item.label == $(this).html()){
-                               $productRow = $(this).parent();
-                               product = 1;
-                            }
-                        });
+    var loadProductRow = function (pID, prtype,barcode){
+        showAjaxLoader($Row, 'normal');
+        //showAjaxLoader($Row, 'xlarge');
 
-                        if(barcode == 0 && product == 0)
-                            loadProductRow(ui.item.value, ui.item.prtype, ui.item.barcode);
-                        if(barcode == 1 && product == 1)
-                            alert('Product already selected');
-                        if(barcode == 0 && ui.item.bar_id == null && product == 1)
-                            alert('Product already selected');
-                        if(barcode == 0 && ui.item.bar_id != null && product == 1){
-                            var newBarcode=  '<div class="barcode" ><span class="bar_id" barid="' + ui.item.bar_id + '">' + ui.item.barcode + '</span><a class="ui-icon ui-icon-closethick removeBarcode"></a><br/><small><i>- Start Date: <span class="res_start_date">'+ ui.item.date + '</span><br/>- End Date: <span class="res_end_date" >' + ui.item.date + '</span></small></div>';
-                            $productRow.find('.barcodes').append(newBarcode);
-                            $productRow.find('.startConsumption').trigger('click');
-                        }
+        var myStartDate = $Row.find('.start_date').val();
+
+        if($Row.find('.start_time').size() > 0){
+            myStartDate = myStartDate+' '+$Row.find('.start_time').val()+':00:00';
+        }
+
+        var myEndDate = $Row.find('.end_date').val();
+
+        if($Row.find('.end_time').size() > 0){
+            myEndDate = myEndDate+' '+$Row.find('.end_time').val()+':00:00';
+        }
+
+        $.ajax({
+            cache: false,
+            dataType: 'json',
+            type:'post',
+            url: js_app_link('appExt=orderCreator&app=default&appPage=new&action=loadProductRow&pID=' + pID+'&purchaseType=' + prtype+oID),
+            data: 'qty='+$Row.find('.productQty').val()+'&start_date='+myStartDate+'&end_date='+myEndDate,
+            success: function (data) {
+                removeAjaxLoader($Row);
+                if (data.hasError == true){
+                    alert(data.errorMessage);
+                }
+                else {
+                    var html = data.html;
+                    var $myRow = $(html).insertAfter($Row);
+                    $('.productQty').css('width','50px');
+                    if(data.price != null){
+                        $myRow.find('.priceEx').val(data.price).trigger('keyup');
                     }else{
-                        loadProductRow(ui.item.value, ui.item.prtype, ui.item.barcode);
+                        $myRow.find('.priceEx').trigger('keyup');
                     }
+                    if(data.hasInventory == true){
+                        $myRow.find('.ui-widget-content').css('background','#ffffff');
+                        $myRow.find('.ui-widget-content').css('color','#000000');
+                    }else{
+                        $myRow.find('.ui-widget-content').css('background','#ff0000');
+                        $myRow.find('.ui-widget-content').css('color','#ffffff');
+                    }
+                    $myRow.find('.barcodeName').val(barcode);
+                    $myRow.find('.startConsumption').trigger('click');
+
+                    $myRow.find('.start_date').datepicker({
+                        onSelect: function(dateText, inst) {
+                            updateOC($myRow);
+                        }
+                    });
+
+                    $myRow.find('.end_date').datepicker({
+                        onSelect: function(dateText, inst) {
+                            updateOC($myRow);
+                        }
+                    });
+
+                    $myRow.find('.start_time').change(function(){
+                        updateOC($myRow);
+                    });
+
+                    $myRow.find('.end_time').change(function(){
+                        updateOC($myRow);
+                    });
+
+
 
                 }
-			});
-		}
-	});
+            }
+        });
+    };
+
+    $Row.find('.end_date').datepicker(
+            /*        {
+             onSelect: function(dateText, inst) {
+             var $Row = $(this).parent();
+
+             if($Row.find('.end_date').val() == ''){
+             $Row.find('.end_date').val($Row.find('.start_date').val());
+             }
+             }
+             }*/
+    );
+    $Row.find('.start_date').datepicker();
+
+    $('.productTable tbody tr').each(function(){
+        var $Row = $(this);
+        if($Row.hasClass('firstRow') == false){
+            $('.productQty').css('width','50px');
+
+            $Row.find('.start_date').datepicker({
+                onSelect: function(dateText, inst) {
+                    updateOC($Row);
+                }
+            });
+
+            $Row.find('.end_date').datepicker({
+                onSelect: function(dateText, inst) {
+                    updateOC($Row);
+                }
+            });
+
+            $Row.find('.start_time').change(function(){
+                updateOC($Row);
+            });
+
+            $Row.find('.end_time').change(function(){
+                updateOC($Row);
+            });
+
+            updateOC($Row);
+        }
+    });
+
+    /*if ($('.productTable').data('product_entry_method') == 'autosuggest'){
+        productInput = '<input class="productSearch" name="product_search" style="width:95%">';
+    }else if ($('.productTable').data('product_entry_method') == 'dropmenu'){
+        showAjaxLoader($('.productSection'), 'xlarge');
+        $.ajax({
+            cache: false,
+            url: js_app_link('appExt=orderCreator&app=default&appPage=new&action=getProductsDropBox'+oID),
+            dataType: 'html',
+            success: function (data){
+                $('.productTable .productInput').html(data);
+                $('.productTable .productSelectBox').change(function (){
+                    loadProductRow($(this).val());
+                });
+                removeAjaxLoader($('.productSection'));
+            }
+        });
+    }*/
+
+    if ($('.productTable').data('product_entry_method') == 'autosuggest'){
+
+        $('.productTable .productSearch').autocomplete({
+            source: js_app_link('appExt=orderCreator&app=default&appPage=new&action=findProduct'),
+            select: function (e, ui) {
+                var barcode = 0;
+                var product = 0;
+                var $productRow;
+
+                if(ui.item.consumption == '1'){
+                    $Row.parent().find('.bar_id').each(function(){
+                        if(ui.item.barcode == $(this).html())
+                            barcode = 1;
+                    });
+
+                    $Row.parent().find('.productName').each(function(){
+                        if(ui.item.label == $(this).html()){
+                            $productRow = $(this).parent();
+                            product = 1;
+                        }
+                    });
+
+                    if(barcode == 0 && product == 0)
+                        loadProductRow(ui.item.value, ui.item.prtype, ui.item.barcode);
+                    if(barcode == 1 && product == 1)
+                        alert('Product already selected');
+                    if(barcode == 0 && ui.item.bar_id == null && product == 1)
+                        alert('Product already selected');
+                    if(barcode == 0 && ui.item.bar_id != null && product == 1){
+                        var newBarcode=  '<div class="barcode" ><span class="bar_id" barid="' + ui.item.bar_id + '">' + ui.item.barcode + '</span><a class="ui-icon ui-icon-closethick removeBarcode"></a><br/><small><i>- Start Date: <span class="res_start_date">'+ ui.item.date + '</span><br/>- End Date: <span class="res_end_date" >' + ui.item.date + '</span></small></div>';
+                        $productRow.find('.barcodes').append(newBarcode);
+                        $productRow.find('.startConsumption').trigger('click');
+                    }
+                }else{
+                    $Row.attr('data-id','none');
+                    $Row.attr('data-product_id',ui.item.pr_id);
+                    $Row.attr('data-product_type',ui.item.prtype);
+                    //loadProductRow(ui.item.value, ui.item.prtype, ui.item.barcode);
+                }
+
+            }
+        });
+    }
 
 	$('.deleteProductIcon').live('click', function (){
 		var $Row = $(this).parent().parent();
@@ -524,61 +733,28 @@ $(document).ready(function (){
 			success: function (data){
 				removeAjaxLoader($Row);
                 $Row.remove();
-                var $TotalRow = null;
-                var total = 0;
-                var subtotal = 0;
-                var tax = 0;
-
-                $('.priceEx').each(function (){
-                    var Quantity = parseFloat($(this).parent().parent().find('.productQty').val());
-                    var Price = parseFloat($(this).val());
-
-                    subtotal += Price * Quantity;
-                    tax += (Price * Quantity) * (parseFloat($(this).parent().parent().find('.taxRate').val()) / 100);
-                });
-
-                $('.orderTotalTable > tbody > tr').each(function (){
-                    var $Row = $(this);
-                    if ($Row.data('code') == 'subtotal'){
-                        $Row.find('.orderTotalValue').attr('readonly','readonly');
-                        $Row.find('.orderTotalValue').val(number_format(subtotal));
-                        total += subtotal;
-                    }else if ($Row.data('code') == 'tax'){
-                        $Row.find('.orderTotalValue').attr('readonly','readonly');
-                        $Row.find('.orderTotalValue').val(number_format(tax));
-                        total += tax;
-                    }else if ($Row.data('code') == 'total'){
-                        $Row.find('.orderTotalValue').attr('readonly','readonly');
-                        $TotalRow = $(this);
-                    }else{
-                        total += parseFloat($Row.find('.orderTotalValue').val());
-                    }
-                });
-
-                if ($TotalRow){
-                    $TotalRow.find('.orderTotalValue span').html(number_format(total));
-                    $TotalRow.find('.orderTotalValue input').val(number_format(total));
-                    $TotalRow.find('.orderTotalValue').val(number_format(total));
-                }
-
-
+			$('.priceEx').trigger('keyup');
 
 			}
 		});
 	});
 
 	$('.deleteIcon').live('click', function (){
-		if (this.Tooltip){
-			this.Tooltip.remove();
-		}
-		$(this).parent().parent().remove();
+        if($(this).parent().parent().attr('data-code') != 'subtotal' && $(this).parent().parent().attr('data-code') != 'total' && $(this).parent().parent().attr('data-code') != 'tax'){
+            if (this.Tooltip){
+                this.Tooltip.remove();
+            }
+            $(this).parent().parent().remove();
+            $('.priceEx').trigger('keyup');
+        }
 	});
 	
 	$('select.country').live('change', function (){
 		var $self = $(this);
+        var state = $(this).parent().parent().parent().find('.stateCol select option:selected').val();
 		showAjaxLoader($self, 'small');
 		$.ajax({
-			url: js_app_link('appExt=orderCreator&app=default&appPage=new&action=getCountryZones&addressType=' + $self.attr('data-address_type') + '&country=' + $self.val()+'&state='+$('.stateCol select option:selected').val()+oID),
+			url: js_app_link('appExt=orderCreator&app=default&appPage=new&action=getCountryZones&addressType=' + $self.attr('data-address_type') + '&country=' + $self.val()+'&state='+state+oID),
 			cache: false,
 			dataType: 'html',
 			success: function (html){
@@ -601,6 +777,9 @@ $(document).ready(function (){
 			success: function (data){
 				if (data.success == true){
 					$('.paymentsTable tbody:nth-child(2)').append(data.tableRow);
+                    if(data.status != ''){
+                        $('select[name="status"]').val(data.status);
+                    }
 				}else if (typeof data.success == 'object'){
 					alert(data.success.error_message);
 				}else{
@@ -735,23 +914,29 @@ $(document).ready(function (){
 			});
 		}
 	});
-	
+	//data-webforms2-force-js-validation
 	$('.saveAddressButton').click(function (){
-        if($('input[name="address[customer][entry_name]"]').val() == ''){
-            alert("Please select/type a Customer first");
+        var canSubmit = true;
+        $('#tabsCustomer input').each(function(){
+            if($(this).is(':required') && !$(this).is(':valid') || $(this).is(':invalid')){
+                canSubmit = false;
+            }
+        });
+        if(!canSubmit){
+            alert("Please select a Customer first");
             return false;
         }
 
-        showAjaxLoader($('.customerSection'), 'xlarge');
+		showAjaxLoader($('#tabsCustomer'), 'xlarge');
 
         $.ajax({
 			cache: false,
 			dataType: 'html',
 			url: js_app_link('appExt=orderCreator&app=default&appPage=new&action=saveCustomerInfo'+oID),
-			data: $('.customerSection *').serialize(),
+			data: $('#tabsCustomer *').serialize(),
 			type: 'post',
 			success: function (data){
-				$('.productSection, .totalSection, .paymentSection, .commentSection').show();
+				//$('.ui-widget-content-middle, .trackingSection, .productSection, .totalSection, .paymentSection, .commentSection').show();
 				$('select[name=payment_method]').change(function(){
 					var $self = $(this);
 					showAjaxLoader($self, 'small');
@@ -776,7 +961,7 @@ $(document).ready(function (){
 					});
 				});
 				$('select[name=payment_method]').trigger('change');
-				removeAjaxLoader($('.customerSection'));
+				removeAjaxLoader($('#tabsCustomer'));
 			}
 		});
 	});
@@ -810,7 +995,7 @@ $(document).ready(function (){
 	
 
 	if (!getVars['error'] && !getVars['oID']){
-		$('.productSection, .totalSection, .paymentSection, .commentSection').hide();
+		//$('.ui-widget-content-middle, .trackingSection, .productSection, .totalSection, .paymentSection, .commentSection').hide();
 	}
 
     $('.startConsumption').each(function (){

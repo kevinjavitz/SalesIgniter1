@@ -26,6 +26,7 @@ class PDFInfoBoxAllTotalsValue extends PDFInfoBoxAbstract {
 				->from('Orders o')
 				->leftJoin('o.OrdersTotal ot')
 				->where('orders_id=?', $oID)
+				->orderBy('sort_order')
 				->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 
 				foreach($Qorders as $iOrder){

@@ -629,8 +629,16 @@ function confirmDialog(options){
 			$(this).dialog('close').remove();
 		};
 	}
+    var id = '';
+    var title = '';
+    if(o.id && o.id != ''){
+        id = 'id="'+o.id+'"';
+    }
+    if(o.title && o.title != ''){
+        title = 'title="'+o.title+'"';
+    }
 
-	$('<div></div>').html(o.content).attr('title', o.title).dialog({
+	$('<div '+id+' '+title+'>'+o.content+'</div>').dialog({
 		resizable : false,
 		allowClose : false,
 		modal : true,
@@ -733,7 +741,6 @@ function popupWindowFavorites(w, h) {
 			$(this).dialog('destroy').remove();
 		},
 		open : function (e, ui) {
-            var bookmarkUrl = window.location;
 			var getParams = js_get_all_get_params(['app', 'appPage', 'appExt', 'action', 'noCache']);
 			getParams = getParams.substr(0, getParams.length - 1);
 
@@ -744,7 +751,7 @@ function popupWindowFavorites(w, h) {
 			html += '<tr><td>Application: </td><td><input type="hidden" name="settings[app]" value="' + thisApp + '">' + thisApp + '</td></tr>';
 			html += '<tr><td>Application Page: </td><td><input type="hidden" name="settings[appPage]" value="' + thisAppPage + '">' + thisAppPage + '</td></tr>';
 			html += '<tr><td>Other Params: </td><td><input type="hidden" name="settings[get]" value="' + getParams + '">' + getParams + '</td></tr>';
-			html += '<tr><td>Link Name: </td><td><input type="hidden" name="url" value="' + bookmarkUrl + '"><input type="text" name="link_name" /></td></tr>';
+			html += '<tr><td>Link Name: </td><td><input type="text" name="settings[name]" /></td></tr>';
 			html += '</tbody></table>';
 
 			$(this).html(html);
@@ -763,40 +770,13 @@ function popupWindowFavorites(w, h) {
 					success : function (data) {
 						hideAjaxLoader($('#favoritesDialog'));
 
-                        var bookmarkUrl = data.url;
-                        var bookmarkTitle = data.link_name;
 
-                        $.browser.chrome = /chrome/.test(navigator.userAgent.toLowerCase());
 
-                        if(!$.browser.chrome){
 
-                            if (window.sidebar) // For Mozilla Firefox Bookmark
-                            {
-                                window.sidebar.addPanel(bookmarkTitle, bookmarkUrl,"");
 
-                            }
-                            else if(window.external || document.all){ // For IE Favorite                        {
-                                window.external.AddFavorite( bookmarkUrl, bookmarkTitle);
-                            }
-                            else if(window.opera) // For Opera Browsers
-                            {
-                                $(this).attr("href",bookmarkUrl);
-                                $(this).attr("title",bookmarkTitle);
-                                $(this).attr("rel","sidebar");
-                                $(this).click();
-                            }
-                            else // for other browsers which does not support
-                            {
-                                alert('Please hold CTRL+D and click the link to bookmark it in your browser.');
-                            }
 
                             dialog.dialog('close');
 
-                        }else // for other browsers which does not support
-                        {
-                            dialog.dialog('close');
-                            alert('Please hold CTRL+D and click the link to bookmark it in your browser.');
-                        }
 
 
 
@@ -1072,6 +1052,23 @@ function setConfirmUnload(on, callback) {
 var $_GET = getUrlVars();
 /* Declare Global Variables For All Javascript Access -- END -- */
 
+// Prevent the backspace key from navigating back.
+$(document).unbind('keydown').bind('keydown', function (event) {
+    var doPrevent = false;
+    if (event.keyCode === 8) {
+        var d = event.srcElement || event.target;
+        if ((d.tagName.toUpperCase() === 'INPUT' && (d.type.toUpperCase() === 'TEXT' || d.type.toUpperCase() === 'PASSWORD'))
+                || d.tagName.toUpperCase() === 'TEXTAREA') {
+            doPrevent = d.readOnly || d.disabled;
+        }
+        else {
+            doPrevent = true;
+        }
+    }
+    if (doPrevent) {
+        event.preventDefault();
+    }
+});
 $(document).ready(function () {
 	$('#addToFavorites').click(function () {
 		return popupWindowFavorites(300, 200);

@@ -5,4 +5,5 @@
 	<author>Nicholas Horlocker ( http://www.itwebexperts.com )</author>
 	<tables></tables>
 	<status_key>EXTENSION_CUSTOMER_WISHLIST_ENABLED</status_key>
+	<installed_key>EXTENSION_CUSTOMER_WISHLIST_INSTALLED</installed_key>
 </data>

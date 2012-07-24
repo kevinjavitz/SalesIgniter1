@@ -28,6 +28,16 @@ class OrderTotalManager extends SplObjectStorage {
 		$this->attach($orderTotal);
 	}
 
+	public function clear() {
+		$this->rewind();
+		while( $item = $this->current() ) {
+			$this->detach( $item );
+			$item = $this->next();
+		}
+		if( count( $this ) > 0 ) {
+			$this->detach( $this->current() );
+		}
+	}
 	public function getTotalValue($type){
 		$OrderTotal = $this->get($type);
 		if (is_null($OrderTotal) === false){

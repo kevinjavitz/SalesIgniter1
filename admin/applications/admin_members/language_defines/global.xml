@@ -75,4 +75,5 @@
 	<define key="TEXT_BUTTON_FILE_PERMISSION"><![CDATA[File Permissions]]></define>
 	
 	<define key="TEXT_INFO_OVERRIDE_PASSWORD"><![CDATA[Override Password ( Used for password protected actions )]]></define>
+    <define key="TEXT_INFO_ADMIN_PASSWORD"><![CDATA[Admin Password ( Used for login )]]></define>
 </definitions>

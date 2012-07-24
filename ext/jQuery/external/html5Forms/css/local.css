@@ -1,0 +1,73 @@
+input, textarea, select {
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    background-color:#fff;
+    border:1px solid #ccc;
+    font-size:14px;
+    min-height:25px;
+    display:block;
+
+    -webkit-border-radius:5px;
+    -moz-border-radius:5px;
+    border-radius:5px;
+
+    -webkit-transition: all 0.3s ease-in-out;
+    -moz-transition: all 0.3s ease-in-out;
+    -ms-transition: all 0.3s ease-in-out;
+    -o-transition: all 0.3s ease-in-out;
+    transition: all 0.3s ease-in-out;
+}
+
+textarea {
+    min-height:200px;
+    overflow: hidden;
+}
+
+input:focus, textarea:focus {
+    -webkit-box-shadow:0 0 25px #ccc;
+    -moz-box-shadow:0 0 25px #ccc;
+    box-shadow:0 0 25px #ccc;
+
+    -webkit-transform: scale(1.02);
+    -moz-transform: scale(1.02);
+    -ms-transform: scale(1.02);
+    -o-transform: scale(1.02);
+    transform: scale(1.02);
+}
+
+input[type="number"]:focus {
+    -o-transform: none !important;
+}
+
+/* The interesting bit */
+
+input:not(:focus), textarea:not(:focus) {
+    opacity:0.5;
+}
+
+input:required, textarea:required{
+    background:url("/ext/jQuery/external/html5Forms/images/asterisk_orange.png") no-repeat right 7px;
+}
+
+[required] {
+    background:url("/ext/jQuery/external/html5Forms/images/asterisk_orange.png") no-repeat right 7px;
+}
+
+input:valid, textarea:valid {
+
+    /* Make this important if you want IE10 to work right. */
+    /*background:url("/ext/jQuery/external/html5Forms/images/tick.png") no-repeat right 5px !important;*/
+}
+
+.wf2_valid {
+    background:url("/ext/jQuery/external/html5Forms/images/tick.png") no-repeat right 5px;
+}
+
+input:focus:invalid, textarea:focus:invalid {
+    background:url("/ext/jQuery/external/html5Forms/images/cancel.png") no-repeat right 7px;
+}
+
+input.wf2_invalid:focus {
+    background:url("/ext/jQuery/external/html5Forms/images/cancel.png") no-repeat right 7px;
+}
+
+

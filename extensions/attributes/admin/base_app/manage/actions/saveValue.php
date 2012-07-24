@@ -8,11 +8,12 @@
 	
 	$Descriptions =& $Value->ProductsOptionsValuesDescription;
 	foreach($_POST['value_name'] as $langId => $valueName){
-		$Descriptions[$langId]->products_options_values_name = $valueName;
+		$Descriptions[$langId]->products_options_values_name = $valueName['admin'];
+		$Descriptions[$langId]->products_options_front_values_name = $valueName['front'];
 		$Descriptions[$langId]->language_id = $langId;
 		
 		if ($langId == Session::get('languages_id')){
-			$outputName = $valueName;
+			$outputName = $valueName['admin'];
 		}
 	}
 

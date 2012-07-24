@@ -25,7 +25,7 @@
 	);
 
 	$Qvalues = Doctrine_Query::create()
-	->select('v.products_options_values_id, vd.products_options_values_name')
+	->select('v.products_options_values_id, vd.products_options_values_name, vd.products_options_front_values_name')
 	->from('ProductsOptionsValues v')
 	->leftJoin('v.ProductsOptionsValuesDescription vd')
 	->where('vd.language_id = ?', $languageId)

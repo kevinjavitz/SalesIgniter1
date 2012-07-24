@@ -33,7 +33,13 @@
 	//$Coupon->restrict_to_customers = $_POST['restrict_to_customers'];
 	$Coupon->coupon_start_date = $_POST['coupon_start_date'];
 	$Coupon->coupon_expire_date = $_POST['coupon_expire_date'];
-	
+$Coupon->products_excluded = '';
+if (isset($_POST['products_excluded'])){
+	$array = array_filter($_POST['products_excluded']);
+	if(count($array) > 0){
+		$Coupon->products_excluded = implode(',', $array);
+	}
+}
 	foreach(sysLanguage::getLanguages() as $lInfo){
 		$Coupon->CouponsDescription[$lInfo['id']]->language_id = $lInfo['id'];
 		$Coupon->CouponsDescription[$lInfo['id']]->coupon_name = $_POST['coupon_name'][$lInfo['id']];

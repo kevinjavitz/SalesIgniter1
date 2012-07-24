@@ -35,10 +35,10 @@ if (!empty($zip)) {
     
 if (empty($store)) {
     $url = itw_app_link('', 'index','default');
-	$messageStack->addSession('pageStack', 'No store was found for the given zip. You were redirected to our main store.', 'success');
+	//$messageStack->addSession('pageStack', 'No store was found for the given zip. You were redirected to our main store.', 'success');
 } else {
 	if(!isset($zipExists) || isset($zipExists) && $zipExists == true){
-		Session::set('zipClient'.$store->stores_id, ltrim(rtrim(urldecode($zip))));
+		//Session::set('zipClient'.$store->stores_id, ltrim(rtrim(urldecode($zip))));
         $url = 'http://'.$store->stores_domain;
 		$messageStack->addSession('pageStack', 'Thank you the closest store to you is '.$store->stores_name.', we have redirected you to this store\'s homepage', 'success');
 	}else{
@@ -47,10 +47,10 @@ if (empty($store)) {
 	}
 }
 
-if(!empty($store) && Session::get('current_store_id') == $store->stores_id){
+if(!empty($store) /*&& Session::get('current_store_id') == $store->stores_id*/){
 	if(!isset($zipExists) || isset($zipExists) && $zipExists == true){
-		Session::set('zipClient'.$store->stores_id, ltrim(rtrim(urldecode($zip))));
-		$url .= '/products/all.php';
+		//Session::set('zipClient'.$store->stores_id, ltrim(rtrim(urldecode($zip))));
+		$url .= '/multiStore/zip/default.php?action=selectZip&zipClient='.ltrim(rtrim(urldecode($zip)));
 	}else{
 		$messageStack->addSession('pageStack', 'We do not serve the zip code area you are in', 'success');
 		$url .= '/products/all.php';

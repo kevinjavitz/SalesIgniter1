@@ -176,6 +176,26 @@ class OrderCreator extends Order implements Serializable {
 		return $this->TotalManager->edit();
 	}
 
+	public function editCustomer(){
+		return $this->AddressManager->editCustomer();
+	}
+
+	public function editBilling(){
+		return $this->AddressManager->editBilling();
+	}
+
+	public function editShipping(){
+		return $this->AddressManager->editShipping();
+	}
+
+	public function hasPickup(){
+		return $this->AddressManager->hasPickup();
+	}
+
+	public function editPickup(){
+		return $this->AddressManager->editPickup();
+	}
+
 	public function editAddresses(){
 		return $this->AddressManager->editAll();
 	}
@@ -234,7 +254,11 @@ class OrderCreator extends Order implements Serializable {
 
 	public function editEmailAddress(){
 		$input = htmlBase::newElement('input')
+		->setType('email')
+		->attr('required','')
+		->attr('placeholder','email')
 		->setName('email')
+		->addClass('emailAddr')
 		->val($this->getEmailAddress());
 
 		return $input->draw();

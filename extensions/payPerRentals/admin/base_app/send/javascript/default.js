@@ -58,16 +58,17 @@ function updateRes(valType){
 					},
 					minLength: 0,
 					select: function(event, ui) {
-						$barInput.val(ui.item.label);
-						$barInput.attr('barid', ui.item.value);
-						return false;
+						$barInput.val(ui.item.value);
+						$barInput.attr('barid', ui.item.value1);
+						return true;
 					}
 				});
 			});
 
 			$('.barcodeReplacement').focus(function(){
 				if($(this).val() == ''){
-					$(this).keyup().autocomplete("search", "");
+                    $(this).autocomplete('search','');
+                    return false;
 				}
 			});
 		}
@@ -88,7 +89,7 @@ function exportData(valType){
 	dataArr.push('filter_shipping=' + $('#filterShipping').val());
 	dataArr.push('filter_category=' + $('#filterCategory').val());
 	if ($('#includeSent:checked').size() > 0){
-		dataArr.include_sent = 1;
+		dataArr.push('include_sent=1');
 	}
 	if(valType == 'e'){
 		if($('#eventSort').length){

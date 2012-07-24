@@ -54,6 +54,18 @@ class productInventoryAttribute_quantity {
 		return $count;
 	}
 
+	public function getTotalInventoryItemCount(){
+		$Qcheck = Doctrine_Query::create()
+				->from('ProductsInventoryQuantity')
+				->where('inventory_id = ?', $this->invData['inventory_id']);
+		EventManager::notify('ProductInventoryQuantityGetInventoryItemsQueryBeforeExecute', $this->invData, &$Qcheck);
+		if (is_null($this->aID_string) === false){
+			$attributePermutations = attributesUtil::permutateAttributesFromString($this->aID_string);
+			$Qcheck->andWhereIn('attributes', $attributePermutations);
+		}
+		$Result = $Qcheck->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+		return count($Result);
+	}
 	public function updateStock($orderId, $orderProductId, $cartProduct){
 		$aID_string = attributesUtil::getAttributeString($cartProduct->getInfo('attributes'));
 		$attributePermutations = attributesUtil::permutateAttributesFromString($aID_string);

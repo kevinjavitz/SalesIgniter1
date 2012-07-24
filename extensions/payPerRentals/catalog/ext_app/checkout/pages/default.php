@@ -130,7 +130,7 @@ class payPerRentals_catalog_checkout_default extends Extension_payPerRentals {
 
 	public function CheckoutSetShippingStatus(){
 		global $appExtension, $order, $ShoppingCart, $onePageCheckout;
-		if ($this->isEnabled() === false) return;
+		//if ($this->isEnabled() === false) return;
 
 		$reservationProducts = 0;
 
@@ -162,8 +162,11 @@ class payPerRentals_catalog_checkout_default extends Extension_payPerRentals {
 
 			//$onePageCheckout->onePage['info']['shipping'] = false;
 			//$onePageCheckout->onePage['shippingEnabled'] = false;
-
+		    if($onlyReservations == false){
+				Session::remove('onlyReservations');
+			}else{
 			Session::set('onlyReservations', $onlyReservations);
+			}
 		//}
 	}
 	

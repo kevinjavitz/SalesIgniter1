@@ -3,6 +3,15 @@
 $Orders = Doctrine_Core::getTable('Orders');
 	if (isset($_GET['oID'])){
 		$NewOrder = $Orders->find((int) $_GET['oID']);
+		if(sysConfig::get('EXTENSION_ORDER_CREATOR_TELEPHONE_NUMBER_REQUIRED') == 'True'){
+			if(isset($_POST['telephone']) && !empty($_POST['telephone'])){
+				$Editor->setTelephone($_POST['telephone']);
+			}else{
+				$Editor->addErrorMessage('Telephone Number not set');
+			}
+		}else{
+			$Editor->setTelephone($_POST['telephone']);
+		}
 	}else{
 		$NewOrder = new Orders();
 		$createAccount = false;
@@ -57,7 +66,11 @@ $Orders = Doctrine_Core::getTable('Orders');
 	if(isset($_POST['estimateOrder'])){
 		$NewOrder->orders_status  = sysConfig::get('ORDERS_STATUS_ESTIMATE_ID');
 	}else{
+		if($_POST['status'] != sysConfig::get('ORDERS_STATUS_ESTIMATE_ID')){
 		$NewOrder->orders_status = $_POST['status'];
+		}else{
+			$NewOrder->orders_status = sysConfig::get('ORDERS_STATUS_PROCESSING_ID');
+		}
 	}
 	if(sysConfig::get('EXTENSION_ORDER_CREATOR_NEEDS_LICENSE_PASSPORT') == 'True' && $_POST['isType'] == 'walkin'){
 		$hasData = false;
@@ -91,27 +104,65 @@ $Orders = Doctrine_Core::getTable('Orders');
 
 	$Editor->AddressManager->updateFromPost();
 	$Editor->AddressManager->addAllToCollection($NewOrder->OrdersAddresses);
+    //updateCustomerAccount with new customer information
 
+$CustomerAddress = $Editor->AddressManager->getAddress('customer');
+if($CustomerAddress){
+	$NewOrder->Customers->customers_firstname = $CustomerAddress->getFirstName();
+	$NewOrder->Customers->customers_lastname = $CustomerAddress->getLastName();
+	$NewOrder->Customers->customers_email_address = $Editor->getEmailAddress();
+	$NewOrder->Customers->customers_telephone = $Editor->getTelephone();
+	$AddressBook = Doctrine::getTable('AddressBook')->find($NewOrder->Customers->customers_default_address_id);
+	if($AddressBook){
+		$AddressBook->entry_gender = $CustomerAddress->getGender();
+		if(sysConfig::get('ACCOUNT_COMPANY') == 'true'){
+			$AddressBook->entry_company = $CustomerAddress->getCompany();
+		}
+		$AddressBook->entry_firstname = $CustomerAddress->getFirstName();
+		$AddressBook->entry_lastname = $CustomerAddress->getLastName();
+		$AddressBook->entry_street_address = $CustomerAddress->getStreetAddress();
+		$AddressBook->entry_suburb = $CustomerAddress->getSuburb();
+		$AddressBook->entry_postcode = $CustomerAddress->getPostcode();
+		$AddressBook->entry_city = $CustomerAddress->getCity();
+		$AddressBook->entry_state = $CustomerAddress->getState();
+		$AddressBook->entry_country_id = $CustomerAddress->getCountryId();
+		$AddressBook->entry_zone_id = $CustomerAddress->getZoneId();
+		$AddressBook->save();
+	}
+}
+//$NewOrder->Customers->AddressBook->add($AddressBook);
+    /*End Update Customer Account*/
 	$Editor->ProductManager->updateFromPost();
 	$Editor->ProductManager->addAllToCollection($NewOrder->OrdersProducts);
 
+	$NewOrder->OrdersTotal->clear();
+	$Editor->TotalManager->clear();
 	$Editor->TotalManager->updateFromPost();
 	$Editor->TotalManager->addAllToCollection($NewOrder->OrdersTotal);
 
-	EventManager::notify('OrderSaveBeforeSave', $NewOrder);
+EventManager::notify('OrderSaveBeforeSave', &$NewOrder);
 	//echo '<pre>';print_r($NewOrder->toArray());itwExit();
-
+    $hasPayment = false;
 	if($Editor->hasErrors()){
 		$success = false;
 	}else{
 		$success = true;
+		if (isset($_GET['oID']) && isset($NewOrder->orders_id)){
+			Doctrine_Query::create()
+			->delete('OrdersTotal')
+			->where('orders_id = ?', $NewOrder->orders_id)
+			->execute();
+		}
 		$NewOrder->save();
 		if (!isset($_GET['oID'])){
 			$NewOrder->bill_attempts = 1;
 			if(!isset($_POST['estimateOrder'])){
+				if(floatval($_POST['payment_amount']) > 0){
 				$NewOrder->payment_module = $_POST['payment_method'];
+					$hasPayment = true;
 				$success = $Editor->PaymentManager->processPayment($_POST['payment_method'], $NewOrder);
 				$Editor->addErrorMessage($success['error_message']);
+				}
 			}else{
 				$success = true;
 			}
@@ -122,7 +173,13 @@ $Orders = Doctrine_Core::getTable('Orders');
 
 		$StatusHistory = new OrdersStatusHistory();
 		if(!isset($_POST['estimateOrder'])){
+			if(!$hasPayment){
+				if($_POST['status'] != sysConfig::get('ORDERS_STATUS_ESTIMATE_ID')){
 			$StatusHistory->orders_status_id = $_POST['status'];
+				}else{
+					$StatusHistory->orders_status_id = sysConfig::get('ORDERS_STATUS_PROCESSING_ID');
+				}
+			}
 		}else{
 			$StatusHistory->orders_status_id = sysConfig::get('ORDERS_STATUS_ESTIMATE_ID');
 		}

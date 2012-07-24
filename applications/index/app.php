@@ -15,9 +15,13 @@ $category_depth = 'top';
 			$current_category_id = $ResultSet[0]['categories_id'];
 			Session::set('current_category_id', $current_category_id);
 		}
-	}elseif(isset($_GET['cPath']) && !empty($_GET['cPath'])){
+		/*if(isset($_GET['cPath']) && !empty($_GET['cPath'])){
+			$ResultSet = Doctrine_Manager::getInstance()
+			->getCurrentConnection()
+			->fetchAssoc('select categories_id from categories_description where categories_id = "' . $_GET['cPath'] .'" and language_id = "'.Session::get('languages_id').'" ');
 		$current_category_id = $_GET['cPath'];
 		Session::set('current_category_id', $current_category_id);
+		}*/
 	}
 
 	if (!empty($catSeoUrl) && $catSeoUrl != 'default'){

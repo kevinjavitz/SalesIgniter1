@@ -264,6 +264,89 @@ $(document).ready(function (){
 		uploadManagerField($(this));
 	});
 
+	$('.deleteIconHidden').live('click', function (){
+		$(this).parent().parent().remove();
+	});
+	$(this).find('.insertIconHidden').click(function () {
+		var nextId = $(this).parent().parent().parent().parent().parent().attr('data-next_id');
+		var langId = $(this).parent().parent().parent().parent().parent().attr('language_id');
+		$(this).parent().parent().parent().parent().parent().attr('data-next_id', parseInt(nextId) + 1);
+		var $td2 = $('<div style="float:left;width:280px;"></div>').attr('align', 'center').append('<input class="ui-widget-content prod_model" size="30" type="text" name="lp[' + nextId + '][lp_name]">');
+        var $td3 = $('<div style="float:left;width:80px;"></div>').attr('align', 'center').append('<input class="ui-widget-content lp_marker_color" size="10" type="text" name="lp[' + nextId + '][lp_marker_color]">');
+        var $td4 = $('<div style="float:left;width:120px;"></div>').attr('align', 'center').append('<input class="ui-widget-content lp_position" size="15" type="text" name="lp[' + nextId + '][lp_position]">');
+        var $td5 = $('<div style="float:left;width:380px;"></div>').attr('align', 'center').append('<textarea class="ui-widget-content lp_desc" size="45" type="text" name="lp[' + nextId + '][lp_desc]" rows="15" cols="5"></textarea>');
+		var $td9 = $('<div style="float:left;width:40px;"></div>').attr('align', 'center').append('<a class="ui-icon ui-icon-closethick deleteIconHidden"></a>');
+		var $newTr = $('<li style="list-style:none"></li>').append($td2).append($td3).append($td4).append($td5).append($td9).append('<br style="clear:both;"/>');//<input type="hidden" name="sortvprice[]">
+		$(this).parent().parent().parent().parent().parent().find('.hiddenList').append($newTr);
+        $('.lp_marker_color').each(function(){
+            var self = this;
+            $(this).ColorPicker({
+                onSubmit: function(hsb, hex, rgb, el) {
+                    $(self).val('#' + hex);
+                    $(self).ColorPickerHide();
+                    $(self).trigger('onSubmit');
+                },
+                onBeforeShow: function () {
+                    $(this).ColorPickerSetColor(this.value);
+                    $(self).trigger('onBeforeShow');
+                },
+                onChange: function (hsb, hex, rgb, el) {
+                    $(self).val('#' + hex);
+                    $(self).trigger('onChange');
+                }
+            });
+        });
+        $('textarea[name="lp[' + nextId + '][lp_desc]"]').each(function(){
+            CKEDITOR.replace(this, {
+                filebrowserBrowseUrl: DIR_WS_ADMIN + 'rentalwysiwyg/editor/filemanager/browser/default/browser.php'
+            });
+        });
+	});
+    $('.lp_marker_color').each(function(){
+        var self = this;
+        $(this).ColorPicker({
+            onSubmit: function(hsb, hex, rgb, el) {
+                $(self).val('#' + hex);
+                $(self).ColorPickerHide();
+                $(self).trigger('onSubmit');
+            },
+            onBeforeShow: function () {
+                $(this).ColorPickerSetColor(this.value);
+                $(self).trigger('onBeforeShow');
+            },
+            onChange: function (hsb, hex, rgb, el) {
+                $(self).val('#' + hex);
+                $(self).trigger('onChange');
+            }
+        });
+    });
+    $('.lp_desc').each(function(){
+        CKEDITOR.replace(this, {
+            filebrowserBrowseUrl: DIR_WS_ADMIN + 'rentalwysiwyg/editor/filemanager/browser/default/browser.php'
+        });
+    });
+    /*$('.lp_name').keyup(function() {
+       var link = js_app_link('appExt=inventoryCenters&app=manage&appPage=new&action=getLp');
+       var $barInput = $(this);
+       $(this).autocomplete({
+           source: function(request, response) {
+               $.ajax({
+                   url: link,
+                   data: 'term='+request.term,
+                   dataType: 'json',
+                   type: 'POST',
+                   success: function(data){
+                       response(data);
+                   }
+               });
+           },
+           minLength: 1,
+           select: function(event, ui) {
+               $barInput.val(ui.item.label);
+               return true;
+           }
+       });
+   });*/
 	$('#countryDrop').trigger('change');
 	map = new GMap2(document.getElementById('googleMap'));
 	map.setUIToDefault();

@@ -22,5 +22,6 @@
 	<define key="TEXT_BUTTON_NEW_FIELD"><![CDATA[New Field]]></define>
 	<define key="TEXT_BUTTON_NEW_GROUP"><![CDATA[New Group]]></define>
 	<define key="ENTRY_INCLUDE_IN_SEARCH"><![CDATA[Include in quick search:]]></define>
+    <define key="ENTRY_SHOW_AS_CHECKBOX"><![CDATA[Show as checkbox]]></define>
 
 </definitions>

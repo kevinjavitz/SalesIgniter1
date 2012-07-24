@@ -40,6 +40,8 @@
 	$Store->home_redirect_store_info = (isset($_POST['home_redirect_store_info'])?1:0);
 	if(isset($_POST['stores_countries'])){
 		$Store->stores_countries = implode(',',$_POST['stores_countries']);
+	}else{
+		$Store->stores_countries = '';
 	}
 	$Store->stores_owner = $_POST['stores_owner'];
 

@@ -113,64 +113,25 @@ class OrderCreatorProductPurchaseTypeReservation extends PurchaseType_reservatio
 		}
 	}
 	public function getBookedDaysArrayNew($starting, $qty, &$reservArr, &$bookedDates, $newReservations){
-		$reservArr = ReservationUtilities::getMyReservations(
-			$this->productInfo['id'],
-			$starting,
-			$this->overBookingAllowed()
-		);
-
-		foreach($reservArr as $iReservation){
-			if (isset($iReservation['start']) && isset($iReservation['end'])){
-				$startTime = strtotime($iReservation['start']);
-				$endTime = strtotime($iReservation['end']);
-				while($startTime <= $endTime){
-					$dateFormated = date('Y-n-j', $startTime);
-					if (isset($bookedDates[$dateFormated]['barcode']) && !is_null($bookedDates[$dateFormated]['barcode']) && $this->getTrackMethod() == 'barcode' && !in_array($iReservation['barcode'], $bookedDates[$dateFormated]['barcode'])){
-						$bookedDates[$dateFormated]['barcode'][] = $iReservation['barcode'];
-						//check if all the barcodes are already or make a new function to make checks by qty... (this function can return also the free barcode?)
-					}
-					else {
-						if (isset($bookedDates[$dateFormated]['qty'])){
-							$bookedDates[$dateFormated]['qty'] = $bookedDates[$dateFormated]['qty'] + 1;
-						}
-						else {
-							$bookedDates[$dateFormated]['qty'] = 1;
-						}
-						//check if there is still qty available.
-					}
-
-					$startTime += 60 * 60 * 24;
-				}
-			}
-		}
 		$bookingsArr = array();
-		$prodBarcodes = array();
-		foreach($this->getProductsBarcodes() as $iBarcode){
-			$prodBarcodes[] = $iBarcode['id'];
-		}
 
-		if(count($prodBarcodes) < $qty){
-			return false;
-		}else{
-			foreach($bookedDates as $dateFormated => $iBook){
-				if ($this->getTrackMethod() == 'barcode'){
-					$myqty = 0;
-					if(isset($iBook['barcode'])){
-						foreach($iBook['barcode'] as $barcode){
-							if(in_array($barcode,$prodBarcodes)){
-								$myqty ++;
+		foreach($this->getResArr() as $productId1 => $val1){
+			foreach($val1 as $ptype1 => $qtyDate2){
+				foreach($qtyDate2 as $Type => $qtyDate1){
+					foreach($qtyDate1 as $date1 => $qty1){
+						$timeDateParseStart = date('Y-n-j', strtotime($date1));
+
+						if($Type == 'days'){
+							if(/*$this->maxQty -*/ $qty1 - $qty < 0){
+								$bookingsArr[] = $timeDateParseStart;
 							}
 						}
 					}
-					if(count($prodBarcodes) - $myqty<$qty){
-						$bookingsArr[] = $dateFormated;
-					}
-				}else{
-					if($prodBarcodes['available'] - $iBook['qty'] < $qty){
-						$bookingsArr[] = $dateFormated;
-					}
 				}
 			}
+		}
+		if($this->getMaxQty() < $qty){
+			return false;
 		}
 		return $bookingsArr;
 	}
@@ -202,6 +163,7 @@ class OrderCreatorProductPurchaseTypeReservation extends PurchaseType_reservatio
 				}
 			}
 		}
+		EventManager::notify('SaveResInfoOrderCreatorNew', &$dataArray, $resInfo);
 		$this->processAddToOrderOrCart($dataArray, $pInfo);
 
 		EventManager::notify('ReservationProcessAddToCart', $pInfo['reservationInfo']);

@@ -1,6 +1,9 @@
 <?php
 
-	require('includes/functions/google_maps_ppr.php');
+require(sysConfig::getDirFsCatalog() . 'includes/functions/google_maps_ppr.php');
+if (!class_exists('Services_JSON')){
+	require(sysConfig::getDirFsCatalog() . 'includes/classes/json.php');
+}
 
 	$appContent = $App->getAppContentFile();
 

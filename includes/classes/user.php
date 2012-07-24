@@ -458,6 +458,7 @@ class RentalStoreUser implements Serializable {
 			$Customer->customers_gender = $this->customerInfo['gender'];
 		}
 
+		EventManager::notify('UpdateCustomerAccountBeforeExecute', &$Customer);
 		$Customer->customers_number = $this->customerInfo['memberNumber'];
 		$Customer->customers_account_frozen = ($this->customerInfo['frozen'] === true ? '1' : '0');
 
@@ -525,15 +526,7 @@ class RentalStoreUser implements Serializable {
 	}
 
 	public function encryptPassword($plain){
-		$password = '';
-
-		for ($i=0; $i<10; $i++) {
-			$password .= tep_rand();
-		}
-
-		$salt = substr(md5($password), 0, 2);
-		$password = md5($salt . $plain) . ':' . $salt;
-		return $password;
+		return tep_encrypt_password($plain);
 	}
 
 	public function requestReactivation(){

@@ -32,8 +32,12 @@ class Extension_referral extends ExtensionBase {
 	}
 
 	public function getReferralCode(){
+		global $userAccount;
 		$userAccount = &Session::getReference('userAccount');
-		return $userAccount->getFirstName() . '!' . $userAccount->getCustomerId();
+		if(is_object($userAccount)){
+			return $userAccount->getFirstName() . '!' . $userAccount->getCustomerId();
+		}
+		return false;
 	}
 
 	public function EmailEventPreParseTemplateText_create_account(&$templateText){

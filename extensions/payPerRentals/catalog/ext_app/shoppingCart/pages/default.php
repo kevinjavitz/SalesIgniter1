@@ -26,8 +26,25 @@ class payPerRentals_catalog_shoppingCart_default extends Extension_payPerRentals
 	}
 
 	public function ShoppingCartListingBeforeSubtotal(&$div){
-		global $currencies, $appExtension;
+		global $currencies, $appExtension, $ShoppingCart;
 		if(sysConfig::get('EXTENSION_PAY_PER_RENTALS_ENABLE_TIME_FEES') == 'True'){
+			if(sysConfig::get('EXTENSION_PAY_PER_RENTALS_SAME_DATES_FOR_RESERVATIONS') == 'True'){
+				$reservationInfo1 = false;
+				foreach($ShoppingCart->getProducts() as $cartProduct){
+					if ($cartProduct->hasInfo('reservationInfo') === true){
+						$reservationInfo1 = $cartProduct->getInfo('reservationInfo');
+						break;
+					}
+				}
+				$parseDateStart = date_parse($reservationInfo1['start_date']);
+				$parseDateEnd = date_parse($reservationInfo1['end_date']);
+				$deliveryHour = $parseDateStart['hour'];
+				$pickupHour = $parseDateEnd['hour'];
+			}else{
+				//the calculation will need to be done in checkres(actually in getReservationPrice) but again it will be problems because this should be a tax per order
+				$pickupHour = 0;
+				$deliveryHour = 0;
+			}
 			$multiStore = $appExtension->getExtension('multiStore');
 			if ($multiStore !== false && $multiStore->isEnabled() === true){
 				$QTimeFees = Doctrine_Query::create()
@@ -42,6 +59,8 @@ class payPerRentals_catalog_shoppingCart_default extends Extension_payPerRentals
 					->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 			}
 			$dataArr = array();
+			$isCheckedPickup = 1;
+			$isCheckedDelivery = 1;
 			foreach($QTimeFees as $timeFee){
 				$dataArr[] = array(
 					'label' => '<b>'.$timeFee['timefees_name'].'('.$currencies->format($timeFee['timefees_fee']).')'.'</b>',
@@ -49,12 +68,18 @@ class payPerRentals_catalog_shoppingCart_default extends Extension_payPerRentals
 					'addCls' => 'timeFee',
 					'labelPosition' => 'after'
 				);
+				if($pickupHour >= $timeFee['timefees_start'] && $pickupHour <= $timeFee['timefees_end']){
+					$isCheckedPickup = $timeFee['timefees_id'];
+				}
+				if($deliveryHour >= $timeFee['timefees_start'] && $deliveryHour <= $timeFee['timefees_end']){
+					$isCheckedDelivery = $timeFee['timefees_id'];
+				}
 			}
 
 			$optionTypeRadiosPickup = htmlBase::newElement('radio')
 				->addGroup(array(
 					'name' => 'pickup_time',
-					'checked' => Session::exists('pickupFees_time')?Session::get('pickupFees_time'):1,
+					'checked' => $isCheckedPickup,//Session::exists('pickupFees_time')?Session::get('pickupFees_time'):1
 					'separator' => '<br />',
 					'data' => $dataArr
 			));
@@ -62,7 +87,7 @@ class payPerRentals_catalog_shoppingCart_default extends Extension_payPerRentals
 			$optionTypeRadiosDelivery = htmlBase::newElement('radio')
 				->addGroup(array(
 					'name' => 'delivery_time',
-					'checked' => Session::exists('deliveryFees_time')?Session::get('deliveryFees_time'):1,
+					'checked' => $isCheckedDelivery,//Session::exists('deliveryFees_time')?Session::get('deliveryFees_time'):1
 					'separator' => '<br />',
 					'data' => $dataArr
 				));
@@ -83,6 +108,11 @@ class payPerRentals_catalog_shoppingCart_default extends Extension_payPerRentals
 
 			ob_start();
 			?>
+				<style type="text/css">
+					.timefeesDiv{
+						display:none;
+					}
+				</style>
 			<script type="text/javascript">
 				$(document).ready(function(){
 					$('.timeFee').click(function(){
@@ -159,7 +189,7 @@ class payPerRentals_catalog_shoppingCart_default extends Extension_payPerRentals
 				->addClass('methodText')
 				->html('Choose Extra Fees');
 			$divRadioExtra = htmlBase::newElement('div')
-				->addClass('timefeesDiv');
+				->addClass('timefeesDivExtra');
 			$divRadioExtra->append($divTextExtra)->append($optionTypeRadiosExtra);
 
 

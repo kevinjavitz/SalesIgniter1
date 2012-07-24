@@ -7,7 +7,8 @@
 		$product = new product($pElem);
 		$purchaseTypeClasses[] = $product->getPurchaseType('reservation');
 	}
-	$calendar = ReservationUtilities::getCalendar($pID_string, $purchaseTypeClasses, (isset($_POST['rental_qty'])?$_POST['rental_qty']:1), true);
+	$isChecked= isset($_POST['hasOverride'])?true:false;
+	$calendar = ReservationUtilities::getCalendar($pID_string, $purchaseTypeClasses, (isset($_POST['rental_qty'])?$_POST['rental_qty']:1), true,'catalog',array(),true, $isChecked);
 
 	EventManager::attachActionResponse(array(
 		'success' => true,

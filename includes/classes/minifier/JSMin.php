@@ -1,4 +1,5 @@
 <?php
+set_time_limit(0);
 /**
  * JSMin.php - modified PHP implementation of Douglas Crockford's JSMin.
  *

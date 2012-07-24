@@ -17,5 +17,10 @@
 	<define key="TEXT_INVENTORY_SORT_ORDER"><![CDATA[Sort Order: ]]></define>
 	<define key="TEXT_INVENTORY_SHORT_DETAILS"><![CDATA[Short Details: ]]></define>
 	<define key="TEXT_INVENTORY_IMAGE"><![CDATA[Image: ]]></define>
+	<define key="TABLE_HEADING_LAUNCH_POINT_NAME"><![CDATA[Launch Point Name: ]]></define>
+	<define key="TEXT_INVENTORY_LAUNCH_POINTS"><![CDATA[Launch Points: ]]></define>
+    <define key="TABLE_HEADING_LAUNCH_POINT_MARKER_COLOR"><![CDATA[Marker: ]]></define>
+    <define key="TABLE_HEADING_LAUNCH_POINT_POSITION"><![CDATA[GPS Position: ]]></define>
+    <define key="TABLE_HEADING_LAUNCH_POINT_DESC"><![CDATA[Description: ]]></define>
 
 </definitions>

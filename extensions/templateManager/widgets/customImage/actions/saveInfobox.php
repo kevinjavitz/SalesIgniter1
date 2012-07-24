@@ -13,7 +13,7 @@ function parseItemLink($itemId) {
 		if (isset($_POST['image_link_category_path'][$itemId])){
 			foreach($_POST['image_link_category_path'][$itemId] as $id){
 				if ($id == 'none') break;
-				$catPath .= '_' . $id;
+				$catPath = $id;
 			}
 		}
 		$itemLink = array(

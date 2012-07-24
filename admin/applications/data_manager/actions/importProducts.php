@@ -262,7 +262,26 @@ set_time_limit(0);
 			$Product->products_price_used = '0.0000';
 			$Product->products_price_stream = '0.0000';
 			$Product->products_price_download = '0.0000';
-	
+			$p = 1;
+			$addArr = array();
+			while(true){
+				if(isset($items['v_products_additional_image_'.$p]) && $items['v_products_additional_image_'.$p] != ''){
+					$addArr[] = $items['v_products_additional_image_'.$p];
+				}else{
+					break;
+				}
+				$p++;
+			}
+			if(count($addArr) > 0){
+				$ProductsAdditionalImages = $Product->ProductsAdditionalImages;
+				$ProductsAdditionalImages->delete();
+					foreach($addArr as $fileName){
+						if (!in_array($fileName, $saved)){
+							$ProductsAdditionalImages[]->file_name = $fileName;
+							$saved[] = $fileName;
+						}
+					}
+			}
 			if (isset($items['v_products_price']) && !empty($items['v_products_price'])){
 				$Product->products_price = (float)$items['v_products_price'];
 			}
@@ -382,6 +401,9 @@ set_time_limit(0);
 								$stores = explode(',', $items['v_store_id']);
 
 								$CategoriesToStores =& $Category->CategoriesToStores;
+								foreach($CategoriesToStores as $iCategory){
+									$stores[] = $iCategory->stores_id;
+								}
 								$CategoriesToStores->delete();
 								foreach($stores as $storeId){
 									if(!empty($storeId)){

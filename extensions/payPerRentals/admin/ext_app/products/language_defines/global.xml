@@ -37,4 +37,5 @@
 	<define key="TEXT_PAY_PER_RENTAL_HIDDEN_DATES"><![CDATA[Product not enabled between these dates ]]></define>
 	<define key="TABLE_HEADING_HIDDEN_START_DATE"><![CDATA[Start Date ]]></define>
 	<define key="TABLE_HEADING_HIDDEN_END_DATE"><![CDATA[End Date ]]></define>
+    <define key="TEXT_PAY_PER_RENTAL_TURNOVER"><![CDATA[Turnover Time ]]></define>
 </definitions>

@@ -77,6 +77,23 @@
 	EventManager::notify('InventoryCentersBeforeSave', &$InventoryCenter);
 
 	$InventoryCenter->save();
+$InventoryCentersLaunchPointsTable = Doctrine_Core::getTable('InventoryCentersLaunchPoints');
+Doctrine_Query::create()
+	->delete('InventoryCentersLaunchPoints')
+//->whereNotIn('price_per_rental_per_products_id', $saveArray)
+	->where('inventory_center_id =?', $InventoryCenter->inventory_center_id)
+	->execute();
+if(isset($_POST['lp'])){
+	foreach($_POST['lp'] as $lpid => $ilp){
+		$InventoryCentersLaunchPoints = $InventoryCentersLaunchPointsTable->create();
+		$InventoryCentersLaunchPoints->lp_name = $ilp['lp_name'];
+		$InventoryCentersLaunchPoints->lp_marker_color = $ilp['lp_marker_color'];
+		$InventoryCentersLaunchPoints->lp_position = $ilp['lp_position'];
+		$InventoryCentersLaunchPoints->lp_desc = $ilp['lp_desc'];
+		$InventoryCentersLaunchPoints->inventory_center_id = $InventoryCenter->inventory_center_id;
+		$InventoryCentersLaunchPoints->save();
+	}
+}
 	
 	EventManager::attachActionResponse(itw_app_link(tep_get_all_get_params(array('action', 'cID')) . 'cID=' . $InventoryCenter->inventory_center_id, null, 'default'), 'redirect');
 ?>

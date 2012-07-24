@@ -19,7 +19,21 @@ class payPerRentals_admin_customers_edit extends Extension_payPerRentals {
 	public function load(){
 		if ($this->isEnabled() === false) return;
 		
-		EventManager::attachEvent('AdminCustomerEditBuildTabs', null, $this);
+		EventManager::attachEvents(array(
+				'AdminCustomerEditBuildTabs',
+				'CustomerInfoAddTableContainer'), null, $this);
+	}
+	public function CustomerInfoAddTableContainer(&$cInfo){
+		if(sysConfig::get('EXTENSION_PAY_PER_RENTAL_ALLOW_MEMBERSHIP') == 'True'){
+			$pprRentals = htmlBase::newElement('input')
+				->setName('ppr_rentals')
+				->setLabel('Number of rentals')
+				->setLabelPosition('before')
+				->setValue($cInfo->ppr_rentals);
+			return '<div class="main" style="margin-top:.5em;font-weight:bold;">Pay Per Rentals</div><div class="ui-widget ui-widget-content ui-corner-all" style="padding:.5em;">'.$pprRentals->draw().'</div>';
+		}else{
+			return '';
+		}
 	}
 	
 	public function AdminCustomerEditBuildTabs($Customer, &$tabsObj){

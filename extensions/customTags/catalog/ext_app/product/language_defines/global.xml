@@ -1,0 +1,6 @@
+<definitions>
+	<define key="TEXT_PRODUCT_ADD_TAGS"><![CDATA[Add Tags]]></define>
+	<define key="TEXT_SAVE_TAGS"><![CDATA[Save Tags]]></define>
+	<define key="TEXT_TAGS_LIST"><![CDATA[Tags List: ]]></define>
+	<define key="TEXT_TAGS_LIST_ADD"><![CDATA[Add you first tags for this product ]]></define>
+</definitions>

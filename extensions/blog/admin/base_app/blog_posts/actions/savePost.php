@@ -28,17 +28,28 @@
 
 	$languages = tep_get_languages();
 	$PostsDescription = $Post->BlogPostsDescription;
+	$defaultTitle = 'No Title';
+	$defaultText = '';
+	for ($i=0, $n=sizeof($languages); $i<$n; $i++) {
+		$lang_id = $languages[$i]['id'];
+		if(!empty($_POST['blog_post_title'][$lang_id])){
+			$defaultTitle = $_POST['blog_post_title'][$lang_id];
+		}
+		if(!empty($_POST['blog_post_text'][$lang_id])){
+			$defaultText = $_POST['blog_post_text'][$lang_id];
+		}
+	}
 	for ($i=0, $n=sizeof($languages); $i<$n; $i++) {
 		$lang_id = $languages[$i]['id'];
 
 		$PostsDescription[$lang_id]->language_id = $lang_id;
-		$PostsDescription[$lang_id]->blog_post_title = isset($_POST['blog_post_title'][$lang_id])?$_POST['blog_post_title'][$lang_id]:'No Title';
-		$PostsDescription[$lang_id]->blog_post_text = isset($_POST['blog_post_text'][$lang_id])?$_POST['blog_post_text'][$lang_id]:'';
+		$PostsDescription[$lang_id]->blog_post_title = isset($_POST['blog_post_title'][$lang_id])&& !empty($_POST['blog_post_title'][$lang_id])?$_POST['blog_post_title'][$lang_id]:$defaultTitle;
+		$PostsDescription[$lang_id]->blog_post_text = isset($_POST['blog_post_text'][$lang_id])&& !empty($_POST['blog_post_text'][$lang_id])?$_POST['blog_post_text'][$lang_id]:$defaultText;
 		//$PostsDescription[$lang_id]->blog_post_seo_url = tep_friendly_seo_url($PostsDescription[$lang_id]->blog_post_title);
 
-		$PostsDescription[$lang_id]->blog_post_head_title = isset($_POST['blog_post_head_title'][$lang_id])?$_POST['blog_post_head_title'][$lang_id]:$_POST['blog_post_title'][$lang_id];
-		$PostsDescription[$lang_id]->blog_post_head_desc =  isset($_POST['blog_post_head_desc'][$lang_id])? $_POST['blog_post_head_desc'][$lang_id]:$_POST['blog_post_title'][$lang_id];
-		$PostsDescription[$lang_id]->blog_post_head_keywords = isset($_POST['blog_post_head_keywords'][$lang_id])? $_POST['blog_post_head_desc'][$lang_id]:$_POST['blog_post_title'][$lang_id];
+		$PostsDescription[$lang_id]->blog_post_head_title = !empty($_POST['blog_post_head_title'][$lang_id])?$_POST['blog_post_head_title'][$lang_id]:$defaultTitle;
+		$PostsDescription[$lang_id]->blog_post_head_desc =  !empty($_POST['blog_post_head_desc'][$lang_id])? $_POST['blog_post_head_desc'][$lang_id]:'';
+		$PostsDescription[$lang_id]->blog_post_head_keywords = !empty($_POST['blog_post_head_keywords'][$lang_id])? $_POST['blog_post_head_keywords'][$lang_id]:'';
 
         if (empty($_POST['blog_post_seo_url'][$lang_id])){
 			$PostsDescription[$lang_id]->blog_post_seo_url = tep_friendly_seo_url($PostsDescription[$lang_id]->blog_post_title);
@@ -46,17 +57,8 @@
 	        $PostsDescription[$lang_id]->blog_post_seo_url = $_POST['blog_post_seo_url'][$lang_id];
         }
         
-		if (!empty($_POST['blog_post_head_title'][$lang_id])){
-			$PostsDescription[$lang_id]->blog_post_head_title = $_POST['blog_post_head_title'][$lang_id];
-		}
 
-		if (!empty($_POST['blog_post_head_desc'][$lang_id])){
-			$PostsDescription[$lang_id]->blog_post_head_desc = $_POST['blog_post_head_desc'][$lang_id];
-		}
 
-		if (!empty($_POST['blog_post_head_keywords'][$lang_id])){
-			$PostsDescription[$lang_id]->blog_post_head_keywords = $_POST['blog_post_head_keywords'][$lang_id];
-		}
 	}
 
 

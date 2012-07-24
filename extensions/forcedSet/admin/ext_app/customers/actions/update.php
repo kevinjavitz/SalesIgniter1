@@ -1,7 +1,7 @@
 <?php
-
+    if(!class_exists('rentalStoreUserExtended')){
 	include(sysConfig::getDirFsCatalog().'extensions/forcedSet/admin/classes/user_extended.php');
-
+	}
 	$userAccountExt = new rentalStoreUserExtended($userAccount);
 	$userAccountExt->loadPlugins();
 	if(isset($_POST['allowOne'])){

@@ -244,6 +244,15 @@ class Products extends Doctrine_Record {
 			'notnull'       => true,
 			'autoincrement' => false
 		));
+		$this->hasColumn('is_hidden', 'integer', 1, array(
+				'type'          => 'integer',
+				'length'        => 1,
+				'unsigned'      => 0,
+				'primary'       => false,
+				'default'       => '0',
+				'notnull'       => true,
+				'autoincrement' => false
+	));
 		$this->hasColumn('products_last_sold', 'timestamp', null, array(
 			'type'          => 'timestamp',
 			'primary'       => false,

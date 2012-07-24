@@ -18,17 +18,18 @@
 			array('text' => tep_draw_pull_down_menu('categories_id', tep_get_categories(array(array('id' => '', 'text' => sysLanguage::get('TEXT_ALL_CATEGORIES'))))))
 		)
 	));
-	
+	if(sysConfig::get('SHOW_INCLUDE_SUBCATEGORIES') == 'true'){
 	$AdvancedTable->addBodyRow(array(
 		'columns' => array(
 			array('text' => ''),
 			array('text' => tep_draw_checkbox_field('inc_subcat', '1', true) . ' ' . sysLanguage::get('ENTRY_INCLUDE_SUBCATEGORIES'))
 		)
 	));
+	}
 
 	
 	EventManager::notify('AdvancedSearchAddSearchFields', &$AdvancedTable);
-	
+	if(sysConfig::get('SHOW_PRICE_FROM_TO') == 'true'){
 	$AdvancedTable->addBodyRow(array(
 		'columns' => array(
 			array('text' => sysLanguage::get('ENTRY_PRICE_FROM')),
@@ -42,7 +43,8 @@
 			array('text' => htmlBase::newElement('input')->setName('pto'))
 		)
 	));
-	
+	}
+	if(sysConfig::get('SHOW_DATE_FROM_TO') == 'true'){
 	$AdvancedTable->addBodyRow(array(
 		'columns' => array(
 			array('text' => sysLanguage::get('ENTRY_DATE_FROM')),
@@ -56,6 +58,7 @@
 			array('text' => htmlBase::newElement('input')->setName('dto'))
 		)
 	));
+	}
 	
 	$pageContents = '<form name="advanced_search" action="' . itw_app_link(null, 'products', 'search_result') . '" method="get" onsubmit="return check_form(this);">' . 
 		tep_hide_session_id() . 

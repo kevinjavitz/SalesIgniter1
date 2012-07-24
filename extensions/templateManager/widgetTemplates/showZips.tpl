@@ -56,7 +56,7 @@ global $currencies;
 		<td>
 	<?php
 	    if(Session::exists('zipClient'.Session::get('current_store_id'))){
-		$module = OrderShippingModules::getModule('zonereservation');
+		$module = OrderShippingModules::getModule('zonereservation', true);
 		$quotes = $module->quote();
 		echo $currencies->format($quotes['methods'][0]['cost']);
 	}else{

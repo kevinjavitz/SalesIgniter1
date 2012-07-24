@@ -19,4 +19,8 @@
 	<define key="TEXT_BUTTON_RESET_FILTER"><![CDATA[Reset Filter]]></define>
 	<define key="TEXT_INFO_CHECK_RETURNS"><![CDATA[Please checkmark the reservations you want to return, and click Return]]></define>
 	<define key="TEXT_BUTTON_RETURN_RENTALS"><![CDATA[Return]]></define>
+    <define key="TEXT_BUTTON_RETURN"><![CDATA[Return]]></define>
+    <define key="TEXT_BUTTON_GET_RES"><![CDATA[Get Returns]]></define>
+    <define key="TEXT_BUTTON_EXPORT_RESULTS"><![CDATA[Export Returns]]></define>
+    <define key="TEXT_BUTTON_RETURN_RENTALS"><![CDATA[Return]]></define>
 </definitions>

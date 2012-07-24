@@ -19,6 +19,10 @@ $App->addJavascriptFile('ext/jQuery/ui/jquery.effects.fold.js');
 $App->addJavascriptFile('ext/jQuery/ui/jquery.effects.fade.js');
 $App->addJavascriptFile('ext/jQuery/ui/jquery.ui.tabs.js');
 $App->addJavascriptFile('admin/rental_wysiwyg/ckeditor.js');
+require(sysConfig::getDirFsCatalog() . 'includes/functions/google_maps_ppr.php');
+if (!class_exists('Services_JSON')){
+	require(sysConfig::getDirFsCatalog() . 'includes/classes/json.php');
+}
 /*
 //Add New Columns That Break Old Carts
 //--BEGIN--

@@ -7,6 +7,8 @@ $appContent = $App->getAppContentFile();
 		$App->addJavascriptFile('ext/jQuery/external/uploadify/swfobject.js');
 		$App->addJavascriptFile('ext/jQuery/external/uploadify/jquery.uploadify.js');
 		$App->addJavascriptFile('ext/jQuery/external/fancybox/jquery.fancybox.js');
+		$App->addJavascriptFile('ext/jQuery/external/colorPicker/jquery.colorpicker.js');
+		$App->addStylesheetFile('ext/jQuery/external/colorPicker/jquery.colorpicker.css');
 
 		$App->addStylesheetFile('ext/jQuery/external/datepick/css/jquery.datepick.css');
 		$App->addStylesheetFile('ext/jQuery/external/uploadify/jquery.uploadify.css');

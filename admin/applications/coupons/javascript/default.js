@@ -138,6 +138,35 @@ $(document).ready(function (){
 					dateFormat: 'yy-mm-dd',
 					defaultDate: '+365'
 				});
+                $('.removeButton').click(function (e){
+                    $(this).parent().remove();
+                    return false;
+                });
+                $('#moveRightAddon').click(function (){
+                    if ($('option:selected', $('#productListAddons')).size() > 0){
+
+                        $('option:selected', $('#productListAddons')).each(function(){
+                            var $selected = $(this);
+                        var productID = $selected.val();
+                        var productName = $selected.html();
+                        var exists = false;
+                        $('input[type="hidden"]', $('#addons')).each(function (){
+                            if ($(this).val() == productID){
+                                exists = true;
+                            }
+                        });
+                        if (exists == true){
+                            return false;
+                        }
+                        var newHTML = $('<div><a href="Javascript:void()" class="ui-icon ui-icon-circle-close removeButton"></a><span class="main">' + productName + '</span><input type="hidden" name="products_excluded[]" value="' + productID + '"></div>');
+                        newHTML.appendTo('#addons');
+                        });
+                        $('.removeButton', newHTML).click(function (e){
+                            $(this).parent().remove();
+                            return false;
+                        });
+                    }
+                }).button();
 			}
 		});
 	});

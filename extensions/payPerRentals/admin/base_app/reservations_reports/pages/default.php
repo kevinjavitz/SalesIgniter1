@@ -167,7 +167,16 @@
 							$isFuture = false;
 							foreach($pibInfo['OrdersProductsReservation'] as $oprInfo){
 								$reserveStartDate = strtotime('-' . $oprInfo['shipping_days_before'] . ' days' ,strtotime($oprInfo['start_date'])); //+-ship_days
-								$reserveEndDate = strtotime('+' . $oprInfo['shipping_days_after'] . ' days' , strtotime($oprInfo['end_date']));
+								$Qturnover = Doctrine_Query::create()
+								->from('ProductsPayPerRental')
+								->where('products_id = ?', $productId)
+								->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+								if(isset($Qturnover[0]) && $Qturnover[0]['turnover'] != ''){
+									$turnover = (sysConfig::get('EXTENSION_PAY_PER_RENTALS_TURNOVER_TIME') - 1) * 60 * 60 *24;
+								}else{
+									$turnover = (intval($Qturnover[0]['turnover']) - 1) * 60 * 60 *24;//here should be used type
+								}
+								$reserveEndDate = strtotime('+' . $oprInfo['shipping_days_after'] . ' days' , strtotime($oprInfo['end_date'])) /*+ $turnover*/;
 								if ($oprInfo['rental_status_id'] == 0){
 									if ($oprInfo['date_returned'] != '0000-00-00 00:00:00'){
 										$reservedStatus = '4';
@@ -298,6 +307,9 @@
 
 	if (isset($_GET['productsID']) && !empty($_GET['productsID'])){
 		$Qproducts->andWhere('p.products_id = ?', $_GET['productsID']);		
+	}
+	if(isset($_GET['prodName']) && !empty($_GET['prodName'])){
+		$Qproducts->andWhere('pd.products_name LIKE ?', $_GET['prodName'].'%');
 	}
 
 	if (isset($_GET['barcodeName']) && !empty($_GET['barcodeName'])){
@@ -546,13 +558,23 @@
 	    $htmlBarcodeInput->setValue($_GET['barcodeName']);
     }
 
+   $htmlProductInput = htmlBase::newElement('input')
+   ->setName('prodName')
+   ->setLabel('Product: ')
+   ->setLabelPosition('before')
+   ->addClass('prodName');
+   if(isset($_GET['prodName']) && !empty($_GET['prodName'])){
+	   $htmlProductInput->setValue($_GET['prodName']);
+   }
     //$htmlBr = htmlBase::newElement('br');
 	$htmlBarcodeButton = htmlBase::newElement('button')
-	->setText('Check Barcode')
+	->setText('Search')
+	->setType('submit')
 	->addClass('checkBarcode');
 
     $searchForm
 	->append($htmlBarcodeInput)
+	->append($htmlProductInput)
 	->append($htmlBarcodeButton)
     ->append($limitField)
     ->append($limitByInventory)
@@ -660,13 +682,40 @@
    ?>
    </div>
 	  <div id="calendarTime" style="float:left;width:<?php echo $minSize;?>px;margin-top:5px;"></div>
+	  <table id="header-fixed" style="float:left;width:<?php echo $minSize;?>px;table-layout: fixed;border-spacing: 1px;"></table>
+	  <table id="header-fixed2" style="float:left;width:1918px;border-spacing: 1px;"></table>
 	  <br style="clear:both;"/>
   </div>
  </div>
 <?php
 	$minTime = 30;
 ?>
+<style type="text/css">
+	#header-fixed {
+		display:none;
+		position:absolute;
+		left:316px;
+		top:150px;
+	}
+	#header-fixed2 {
+		display:none;
+		position:absolute;
+		left:316px;
+		top:150px;
+	}
+	.fc-agenda-bg{
+		display:none;
+	}
+	?
+</style>
 	<script type="text/javascript">
+	var tableOffset;
+	var $fixedHeader;
+	var $header;
+	var tableOffset2;
+	var $fixedHeader2;
+	var $header2;
+	var $p = 0;
 var barcodesArr = [<?php echo implode(',', $barcodesArr);?>];
 var barcodePos = Array();
 var $linesArray = Array();
@@ -873,6 +922,13 @@ var startArray =[<?php echo implode(',', $timeBooked);?>];
 
 					});
 					$('.fc-content table td').css('cursor','pointer');
+					$p++;
+					if($p == 1){
+						tableOffset2 = $("#calendarTime .fc-agenda-body table").offset().top;
+						$header2 = $("#calendarTime .fc-agenda-body table").find('tr:first').clone();
+						$fixedHeader2 = $("#header-fixed2").append($header2);
+						$p++;
+					}
 				}else{
 					viewType = 'day';
 					$('#secWindow').css('width',startSec);
@@ -887,6 +943,30 @@ var startArray =[<?php echo implode(',', $timeBooked);?>];
 			});
 
 			$('div.ui-tooltip-wiki').css('min-width', '300px');
+			tableOffset = $("#calendarTime .fc-view-basicWeek table").offset().top;
+			$header = $("#calendarTime .fc-view-basicWeek table > thead").clone();
+			$fixedHeader = $("#header-fixed").append($header);
+		});
+		$(window).bind("scroll", function() {
+			if(viewType == 'day'){
+				var offset = $(this).scrollTop();
+				$fixedHeader.css('top', (window.pageYOffset-150) + 'px');
+				if (offset >= tableOffset && $fixedHeader.is(":hidden")) {
+					$fixedHeader.show();
+				}
+				else if (offset < tableOffset) {
+					$fixedHeader.hide();
+				}
+			}else{
+				var offset2 = $(this).scrollTop();
+				$fixedHeader2.css('top', (window.pageYOffset-150) + 'px');
+				if (offset2 >= tableOffset2 && $fixedHeader2.is(":hidden")) {
+					$fixedHeader2.show();
+				}
+				else if (offset2 < tableOffset2) {
+					$fixedHeader2.hide();
+				}
+			}
 		});
 	</script>
 

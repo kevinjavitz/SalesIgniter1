@@ -140,7 +140,7 @@ class Extension_customFields extends ExtensionBase {
                                   ));
     }
 
-    public function SearchBoxAddGuidedOptions(&$boxContent, $fieldId, &$count, $dropdown = false){
+    public function SearchBoxAddGuidedOptions(&$boxContent, $fieldId, &$count, $dropdown = false, $orderBy = false, $overRide = false){
         $searchItemDisplay = 4;
         $Qfields = Doctrine_Query::create()
                 ->select('f.search_key, f.field_id, fd.field_name, f2p.value')
@@ -180,6 +180,25 @@ class Extension_customFields extends ExtensionBase {
 	                    $boxDropDown = htmlBase::newElement('selectbox')
 		                    ->setName($fInfo['search_key'] . '['.$count.']')
 		                    ->addOption('', 'Please Select');
+                    }
+                    
+                	if($overRide)
+                   		$overRide = explode(',', $overRide);
+                    if(is_array($overRide) && count($overRide) > 0){
+                    	$dropArray = Array();
+                    	foreach( $overRide as $oR )
+                    		$dropArray[] = Array('id' => $oR, 'text' => $oR);
+                    }
+                    
+                    if($orderBy){
+	                    if( $orderBy == 'A-Z' )
+	                    	usort($dropArray, "sortDropdownAZ");
+	                    if( $orderBy == 'Z-A' )
+	                    	usort($dropArray, "sortDropdownZA");
+	                    if( $orderBy == '0-9' )
+	                    	usort($dropArray, "sortDropdownNumAsc");
+	                    if( $orderBy == '9-0' )
+	                    	usort($dropArray, "sortDropdownNumDesc");
                     }
 
                     foreach($dropArray as $fieldInfo){
@@ -318,6 +337,13 @@ class Extension_customFields extends ExtensionBase {
          }
      }
      */
+    
+	public function ProductSearchFormatVal($val, $replaceSearch = true){
+    	if($replaceSearch)
+    		$val = str_replace('.', '%', $val);
+    	
+    	return str_replace('_', '.', $val);
+    }
 
     /* 
       * Searches on all field/value pairs
@@ -350,7 +376,11 @@ class Extension_customFields extends ExtensionBase {
 	    $currentProductIdsToQuery = '';
 	    if (isset($this->validSearchKeys) && count($this->validSearchKeys) > 0){
 		    foreach($this->validSearchKeys as $k => $v){
-			    if(empty($v))   continue;
+			    if(empty($v))
+			    	continue;
+			    if(is_array($v) && empty($v[0]))
+			    	continue;
+			    
 			    if($firstKeyCheck == false && is_array($productIds)){
 				    $currentProductIdsToQuery = ' AND f2p.product_id IN(' . implode(',', $productIds) . ') ';
 			    }
@@ -358,7 +388,7 @@ class Extension_customFields extends ExtensionBase {
 
 				    $query = Doctrine_Manager::getInstance()
 					    ->getCurrentConnection()
-				        ->fetchAssoc('SELECT f2p.product_id FROM products_custom_fields_to_products f2p LEFT JOIN products_custom_fields f using(field_id) WHERE f.field_id = "' . $this->validSearchKeys['field_id'] . '" AND f2p.value = "' . str_replace('.', '%', $v) . '"' . $currentProductIdsToQuery);
+				        ->fetchAssoc('SELECT f2p.product_id FROM products_custom_fields_to_products f2p LEFT JOIN products_custom_fields f using(field_id) WHERE f.field_id = "' . $this->validSearchKeys['field_id'] . '" AND f2p.value = "' . $this->ProductSearchFormatVal($v) . '"' . $currentProductIdsToQuery);
 
 				    if(sizeof($query) > 0){
 					    foreach($query as $result){
@@ -371,7 +401,7 @@ class Extension_customFields extends ExtensionBase {
 			    }elseif (is_array($v)){
 				    $addSearch = array();
 				    foreach($v as $count => $val){
-					    $addSearch[] = 'f2p.value = "' . str_replace('.', '%', $val) . '"';
+					    $addSearch[] = 'f2p.value = "' . $this->ProductSearchFormatVal($val) . '"';
 				    }
 
 				    $query = Doctrine_Manager::getInstance()
@@ -381,7 +411,7 @@ class Extension_customFields extends ExtensionBase {
 			    }else{
 				    $query =  Doctrine_Manager::getInstance()
 					    ->getCurrentConnection()
-					    ->fetchAssoc('SELECT f2p.product_id FROM products_custom_fields_to_products f2p LEFT JOIN products_custom_fields f using(field_id) WHERE f.search_key = "' . $k . '" AND f2p.value = "' . str_replace('.', '%', $v) . '"' . $currentProductIdsToQuery);
+					    ->fetchAssoc('SELECT f2p.product_id FROM products_custom_fields_to_products f2p LEFT JOIN products_custom_fields f using(field_id) WHERE f.search_key = "' . $k . '" AND f2p.value = "' . $this->ProductSearchFormatVal($v) . '"' . $currentProductIdsToQuery);
 			    }
 			    if(sizeof($query) > 0){
 				    $productIds = false;
@@ -596,7 +626,7 @@ class Extension_customFields extends ExtensionBase {
 
     public function AdvancedSearchAddSearchFields(&$AdvancedTable){
         $Qfields = Doctrine_Query::create()
-                ->select('f.search_key, f.field_id, fd.field_name, f2p.value')
+                ->select('f.search_key, f.field_id, fd.field_name, f2p.value,f.show_as_checkbox')
                 ->from('ProductsCustomFields f')
                 ->leftJoin('f.ProductsCustomFieldsDescription fd')
                 ->leftJoin('f.ProductsCustomFieldsToProducts f2p')
@@ -622,18 +652,27 @@ class Extension_customFields extends ExtensionBase {
                     }
 
                     natsort($added);
-
+					if($fInfo['show_as_checkbox'] == '0'){
                     $dropArray = array(array('id' => '', 'text' => sysLanguage::get('TEXT_PLEASE_SELECT')));
+					}
                     foreach($added as $value){
                         $dropArray[] = array(
                             'id'   => addslashes($value),
                             'text' => $value
                         );
                     }
+					if($fInfo['show_as_checkbox'] == '1'){
+						$searchOptions = '';
+						foreach($dropArray as $elemCheckbox){
+							$searchOptions .= '<input type="checkbox" name="'.$fInfo['search_key'].'[]" value="'.$elemCheckbox['id'].'"/>'.$elemCheckbox['text'];
+						}
+					}else{
+						$searchOptions = tep_draw_pull_down_menu($fInfo['search_key'], $dropArray);
+					}
                     $AdvancedTable->addBodyRow(array(
                                                     'columns' => array(
                                                         array('addCls' => 'fieldKey', 'text' => $fInfo['ProductsCustomFieldsDescription'][0]['field_name']),
-                                                        array('addCls' => 'fieldValue', 'text' => tep_draw_pull_down_menu($fInfo['search_key'], $dropArray))
+                                                        array('addCls' => 'fieldValue', 'text' => $searchOptions)
                                                     )
                                                ));
                     unset($dropArray);
@@ -641,5 +680,31 @@ class Extension_customFields extends ExtensionBase {
             }
         }
     }
+}
+
+function sortDropdownAZ($a, $b){ return strcasecmp( $a['text'], $b['text'] ); }
+function sortDropdownZA($a, $b){ return ((int)strcasecmp( $a['text'], $b['text'] ) * -1); }
+function sortDropdownNumAsc($a, $b){
+	$a = $a['text']; $b = $b['text'];
+	$__a = $a; $__b = $b;
+	
+	if(count(explode('-', $a))){ $_a = explode('-', $a); $a = $_a[0]; }
+	if(count(explode('-', $b))){ $_b = explode('-', $b); $b = $_b[0]; }
+	$a = preg_replace('/[^0-9.]/', '', $a);
+	$b = preg_replace('/[^0-9.]/', '', $b);
+	
+	if(bccomp( $a, $b ) == 0){
+		if($__a > $__b)
+			return -1;
+		elseif($__a < $__b)
+			return 1;
+		else
+			return 0;
+	}
+	
+	return bccomp( $a, $b );
+}
+function sortDropdownNumDesc($a, $b){
+	return (sortDropdownNumAsc($a, $b) * -1);
 }
 ?>

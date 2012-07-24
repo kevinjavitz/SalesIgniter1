@@ -64,6 +64,9 @@ body, div, td {
 font-family: Verdana,Arial,sans-serif;
 font-size: 12px;
 }
+<?php
+	if ($env == 'admin'){
+		?>
 body {
 background: none repeat scroll 0 0 #666666;
 color: #000000;
@@ -73,28 +76,6 @@ font-weight: normal;
 margin: 0;
 padding: 0;
 }
-a { text-decoration: none;color: #626262; }
-a:hover { text-decoration: underline;color: #626262; }
-
-form { display: inline; }
-div, td, th, span, li {
-font-size: 1em;
-}
-textarea { width: 100%;font-size: 11px; }
-textarea.required {
-background: none repeat scroll 0 0 #FFD3D3;
-}
-h1 { font-size: 22px;color: #c30;margin: 10px;font-weight: normal; }
-h2 { font-size: 18px;color: #c00 }
-h3 { font-size: 15px; }
-h4 { font-size: 13px;color: #c30;margin: 10px;font-weight: bold; }
-p { line-height:100%;}
-p *{ line-height:100%;}
-
-.inputRequirement { color: red;}
-.main, .main { font-size: .9em;line-height: 1.5em; }
-.smallText { font-family: Arial, sans-serif;font-size: .9em; }
-.column { margin:0; }
 #logoBar {
 filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#3F3F3F', endColorstr='#222222');
 background: -moz-linear-gradient(center top , #3F3F3F 0%, #222222 100%) no-repeat scroll 0 0 transparent;
@@ -128,6 +109,34 @@ position: relative;
 text-align: center;
 text-decoration: none !important;
 }
+textarea.required {
+background: none repeat scroll 0 0 #FFD3D3;
+}
+	<?php
+	}
+?>
+
+
+a { text-decoration: none;color: #626262; }
+a:hover { text-decoration: underline;color: #626262; }
+form { display: inline; }
+div, td, th, span, li {
+font-size: 1em;
+}
+textarea { width: 100%;font-size: 11px; }
+
+h1 { font-size: 22px;color: #c30;margin: 10px;font-weight: normal; }
+h2 { font-size: 18px;color: #c00 }
+h3 { font-size: 15px; }
+h4 { font-size: 13px;color: #c30;margin: 10px;font-weight: bold; }
+p { line-height:100%;}
+p *{ line-height:100%;}
+
+.inputRequirement { color: red;}
+.main, .main { font-size: .9em;line-height: 1.5em; }
+.smallText { font-family: Arial, sans-serif;font-size: .9em; }
+.column { margin:0; }
+
 
 <?php
     /* Overwrites for the core css framework --END-- */

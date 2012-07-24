@@ -63,7 +63,7 @@ $Original = $TemplateLayouts->find((int) $_GET['lID']);
 
 $New = $TemplateLayouts->create();
 $New->template_id = $Original->template_id;
-$New->layout_name = $_POST['layout_name'];
+$New->layout_name = $_POST['layoutName'];
 
 foreach($Original->Configuration as $Config){
 	$New->Configuration[$Config->configuration_key]->configuration_value = $Config->configuration_value;

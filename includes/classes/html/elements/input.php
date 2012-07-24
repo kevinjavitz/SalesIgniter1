@@ -8,6 +8,7 @@ class htmlElement_input implements htmlElementPlugin {
 	
 	public function __construct(){
 		$this->inputElement = new htmlElement('input');
+		$this->inputElement->attr('type','text');
 		$this->labelElement = false;
 		$this->labelElementPosition = 'before';
 		$this->labelElementSeparator = '';

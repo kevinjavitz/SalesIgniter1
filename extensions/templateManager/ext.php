@@ -420,7 +420,7 @@ class Extension_templateManager extends ExtensionBase
 							$WidgetClass->setBoxId($WidgetSettings->id);
 						}
 						if (isset($WidgetSettings->widget_title) && !empty($WidgetSettings->widget_title)){
-							$WidgetClass->setBoxHeading($WidgetSettings->widget_title->{Session::get('languages_id')});
+							$WidgetClass->setBoxHeading(!empty($WidgetSettings->widget_title->{Session::get('languages_id')})?$WidgetSettings->widget_title->{Session::get('languages_id')}:$WidgetSettings->widget_title->{sysConfig::get('DEFAULT_LANGUAGE')});
 						}
 
 						$WidgetClass->setWidgetProperties($WidgetSettings);
