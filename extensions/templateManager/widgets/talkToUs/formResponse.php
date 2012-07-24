@@ -3,11 +3,11 @@
     require('includes/application_top.php');
 
     $valid = true;
-
-	include('captcha/securimage.php');
-	$img = new Securimage();
-	$valid = $img->check($_POST['code']);
-
+    if (sysConfig::get('CATPCHA_ENABLED') == 'True'){
+        include('captcha/securimage.php');
+        $img = new Securimage();
+        $valid = $img->check($_POST['code']);
+    }
 	if (!$valid){
 		$messageStack->addSession('pageStack', 'Sorry, the code entered was invalid', 'error');
 	}else{

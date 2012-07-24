@@ -60,15 +60,18 @@ class InfoBoxTalkToUs extends InfoBoxAbstract {
 			->attr('id','messageTalkToUs')
 			->setName('message');
 
-			$htmlImg = htmlBase::newElement('span')
-			->html('<img src="'. tep_href_link('securimage_show.php', session_name() . '=' . session_id()).'">');
+        if (sysConfig::get('CATPCHA_ENABLED') == 'True'){
+            $htmlImg = htmlBase::newElement('span')
+                ->html('<img src="'. tep_href_link('securimage_show.php', session_name() . '=' . session_id()).'">');
 
-			$htmlCode = htmlBase::newElement('input')
-			->setName('code')
-			->setLabel('Antibot:')
-			->setLabelPosition('before')
-			->setLabelSeparator('<br/>')
-			->setId('codeTalkToUs');
+            $htmlCode = htmlBase::newElement('input')
+                ->setName('code')
+                ->setLabel('Antibot:')
+                ->setLabelPosition('before')
+                ->setLabelSeparator('<br/>')
+                ->setId('codeTalkToUs');
+        }
+
 
 
 			$htmlButton = htmlBase::newElement('button')

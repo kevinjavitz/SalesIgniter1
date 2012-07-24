@@ -117,12 +117,18 @@
 
                     if($Qchildrens){
                         $marginLeft = 0;
-                        $marginTop = 0;
+                        $marginTop = 30;
+                        $marginBottom = 0;
+
+                        if(sysConfig::exists('CHILD_BOTTOM')){
+                            $marginBottom = sysConfig::get('CHILD_BOTTOM');
+                        }
+
                         foreach($Qchildrens as $child){
                             $childId = $child['CategoriesDescription'][0]['categories_seo_url'];
                             $childName = $child['CategoriesDescription'][0]['categories_name'];
                             $childImage = $child['categories_image'];
-                            echo '<div class="listChilds" style="margin-left:'. $marginLeft .'px;margin-top:'. $marginTop .'px;"><a href="' .  itw_app_link(null, 'index', $childId) . '">';
+                            echo '<div class="listChilds" style="margin-left:'. $marginLeft .'px;margin-top:'. $marginTop .'px;margin-bottom:'.$marginBottom.'px;"><a href="' .  itw_app_link(null, 'index', $childId) . '">';
 
                             if(!empty($childImage)) {
                                 echo '<img src="imagick_thumb.php?path=rel&imgSrc=' . 'images/'. $childImage . '&width='.$categoryImageWidth.'&height='.$categoryImageHeight.'" alt="' . $childName . '" /></a>';
@@ -137,9 +143,11 @@
                                 $marginTop = sysConfig::get('CHILD_TOP');
                             }
 
+
+
                             if($marginLeft > 800){
                                 $marginLeft = 0;
-                                $marginTop = 0;
+                                $marginTop = sysConfig::get('CHILD_TOP')/3;
                             }
                         }
                     }
@@ -164,7 +172,7 @@
 	->leftJoin('p.ProductsDescription pd')
 	->leftJoin('p.ProductsToBox p2b')
 	->where('p.products_status = ?', '1')
-	->andWhere('p.is_hidden = ?', '0')
+    ->andWhere('p.is_hidden = ?', '0')
 	//->andWhere('p.products_featured = ?', '0')
 	->andWhere('p2b.products_id is null')
 	->andWhere('pd.language_id = ?', (int)Session::get('languages_id'));
