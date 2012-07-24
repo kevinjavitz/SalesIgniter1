@@ -2,7 +2,10 @@
 class productListing_productsPricePayPerRentalRates {
 
    public function sortColumns(){
+     	
 		$selectSortKeys = array();
+		
+
 	    $QPricePerRentalProducts = Doctrine_Query::create()
 		->from('PricePerRentalPerProducts pprp')
 		->leftJoin('pprp.PricePayPerRentalPerProductsDescription pprpd')
@@ -24,6 +27,8 @@ class productListing_productsPricePayPerRentalRates {
 		$purchaseTypeClass = $productClass->getPurchaseType('reservation');
 
 		if (is_null($purchaseTypeClass) === false && sysConfig::get('EXTENSION_PAY_PER_RENTALS_ENABLED') == 'True'){
+		
+	
 
 			$QPricePerRentalProducts = Doctrine_Query::create()
 				->from('PricePerRentalPerProducts pprp')

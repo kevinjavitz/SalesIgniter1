@@ -22,6 +22,30 @@
 			<notnull>true</notnull>
 		</rental_notes>
 	</Orders>
+	<ProductsPayPerRental>
+		<turnover>
+			<type>int</type>
+			<length>11</length>
+		</turnover>
+		<turnover_type>
+			<type>int</type>
+			<length>11</length>
+		</turnover_type>
+	</ProductsPayPerRental>
+	<PayPerRentalBlockedDates>
+		<recurring_year>
+			<type>string</type>
+			<length>1</length>
+		</recurring_year>
+		<recurring_month>
+			<type>string</type>
+			<length>1</length>
+		</recurring_month>
+		<recurring_day>
+			<type>string</type>
+			<length>1</length>
+		</recurring_day>
+	</PayPerRentalBlockedDates>
 	<Coupons>
 		<min_reservation_time>
 			<type>integer</type>
@@ -114,4 +138,10 @@
 			<notnull>true</notnull>
 		</ppr_rentals>
 	</Customers>
+	<PricePerRentalPerProducts>
+		<customer_group>
+			<type>varchar</type>
+			<length>21</length>
+		</customer_group>
+	</PricePerRentalPerProducts>
 </data>

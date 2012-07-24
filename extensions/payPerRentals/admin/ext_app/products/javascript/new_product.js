@@ -35,6 +35,43 @@ $(document).ready(function (){
 		$(this).parent().parent().remove();
 	});
 
+    
+	$('form[name="new_product"]').submit(function()  {
+		var $checkDefault = false;
+		var $defaultCount = 0;
+		if ($('select[name*="customer_group"]').size() != 0)
+		{
+			$('select[name*="customer_group"]').each(function() {
+               	if ($(this).val() == 0)
+			  { $checkDefault = true; $defaultCount++; }
+			});
+			if (!$checkDefault)
+				alert("One of the customer group prices must be set as the default.");
+					
+		else 
+			$checkDefault = true;
+
+		return $checkDefault;
+	});
+
+	$('.ajaxSave').click(function()  {
+		var $checkDefault = false;
+		var $defaultCount = 0;
+		if ($('select[name*="customer_group"]').size() != 0)
+		{
+			$('select[name*="customer_group"]').each(function() {
+               	if ($(this).val() == 0)
+			  { $checkDefault = true; $defaultCount++; }
+			});
+			if (!$checkDefault)
+				alert("One of the customer group prices must be set as the default.");
+		}			
+		
+	});
+	
+
+
+
 	$('.deleteIconHidden').live('click', function (){
 		$(this).parent().parent().remove();
 	});
@@ -45,14 +82,17 @@ $(document).ready(function (){
         var langId = $(this).parent().parent().parent().parent().parent().attr('language_id');
         $(this).parent().parent().parent().parent().parent().attr('data-next_id', parseInt(nextId) + 1);
 
-        var $td1 = $('<div style="float:left;width:150px;"></div>').append('<input class="ui-widget-content" style="width:100%;" type="text" name="pprp[' + nextId + '][details][' + langId + ']">');
+        var $td1 = $('<div style="float:left;width:150px;"></div>').append('<input class="ui-widget-content" width="100%" type="text" name="pprp[' + nextId + '][details][' + langId + ']">');
         var $td2 = $('<div style="float:left;width:80px;"></div>').attr('align', 'center').append('<input class="ui-widget-content" size="8" type="text" name="pprp[' + nextId + '][number_of]">');
-        var $td5 = $('<div style="float:left;width:80px;"></div>').attr('align', 'center').append('<input size="3" class="ui-widget-content" type="text" name="pprp[' + nextId + '][price]">');
+        var $td5 = $('<div style="float:left;width:80px;"></div>').attr('align', 'center').append('<input size="6" class="ui-widget-content" type="text" name="pprp[' + nextId + '][price]">');
         var sb =$('<select name="pprp[' + nextId + '][type]"></select>');
         $('#types_select option').clone().appendTo(sb);
         var $td51 = $('<div style="float:left;width:100px;"></div>').attr('align', 'center').append(sb);
         var $td9 = $('<div style="float:left;width:40px;"></div>').attr('align', 'center').append('<a class="ui-icon ui-icon-closethick deleteIcon"></a>');
-        var $newTr = $('<li></li>').append($td2).append($td51).append($td5).append($td1).append($td9).append('<br style="clear:both;"/>');//<input type="hidden" name="sortvprice[]">
+        var sb2 = $('<select name="pprp[' + nextId + '][customer_group]"></select>');
+        $('#groups_select option').clone().appendTo(sb2);
+        var $td52 = $('<div style="float:left;width:450px;"></div>').attr('align','center').append(sb2);
+        var $newTr = $('<li></li>').append($td2).append($td51).append($td5).append($td1).append($td52).append($td9).append('<br style="clear:both;"/>');//<input type="hidden" name="sortvprice[]">
         $(this).parent().parent().parent().parent().parent().find('.sortableList').append($newTr);
     });
 

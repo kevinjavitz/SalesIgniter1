@@ -23,12 +23,11 @@ class productListing_productsPricePayPerRental {
 	}
 
 	public function show(&$productClass, &$purchaseTypesCol){
-		global $currencies, $appExtension, $ShoppingCart;
+		global $currencies, $appExtension, $userAccount;
 		$tableRow = array();
 		$purchaseTypeClass = $productClass->getPurchaseType('reservation');
 
 		if (is_null($purchaseTypeClass) === false && sysConfig::get('EXTENSION_PAY_PER_RENTALS_ENABLED') == 'True' && in_array('reservation', $productClass->getPurchaseTypesArray())){
-
 			if (sysConfig::get('EXTENSION_PAY_PER_RENTALS_DATE_SELECTION') == 'Using calendar after browsing products and clicking Reserve' && $purchaseTypeClass->hasInventory()){
 				$payPerRentalButton = htmlBase::newElement('button')
 				->setText(sysLanguage::get('TEXT_BUTTON_PAY_PER_RENTAL'))
@@ -43,219 +42,45 @@ class productListing_productsPricePayPerRental {
 				$extraContent = '';
 				EventManager::notify('ProductListingModuleShowBeforeShow', 'reservation', $productClass, &$payPerRentalButton, &$extraContent);
 
+				if ($userAccount->getCustomerId() != 0) {
+					$QCustomerGroup = Doctrine_Query::create()
+					->from('CustomersToCustomerGroups cg')
+					->where('cg.customers_id =?', $userAccount->getCustomerId())
+					->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+		   			 $group = $QCustomerGroup[0]['customer_groups_id'];
+				}
+				else {
+					$group = '0';
+				}
 				$QPricePerRentalProducts = Doctrine_Query::create()
 				->from('PricePerRentalPerProducts pprp')
 				->leftJoin('pprp.PricePayPerRentalPerProductsDescription pprpd')
 				->where('pprp.pay_per_rental_id =?',$purchaseTypeClass->getId())
+				->andWhere('pprp.customer_group =?', $group)
 				->andWhere('pprpd.language_id =?', Session::get('languages_id'))
 				->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
-				if(sysConfig::get('EXTENSION_PAY_PER_RENTAL_ALLOW_MEMBERSHIP') == 'False'){
-					$i = 1;
-					foreach($QPricePerRentalProducts as $iPrices){
-					$tableRow[$i] = '<tr>
-										<td class="main">'.$iPrices['PricePayPerRentalPerProductsDescription'][0]['price_per_rental_per_products_name'].':</td>
-										<td class="main">' . $purchaseTypeClass->displayReservePrice($iPrices['price']) . '</td>
-									  </tr>';
-						$i++;
-					}
-					$pageForm = htmlBase::newElement('form')
-							->attr('name', 'build_reservation')
-							->attr('action', itw_app_link('appExt=payPerRentals&products_id=' . $productClass->getID(), 'build_reservation', 'default'))
-							->attr('method', 'post');
-					$reservationInfo1 = false;
-					foreach($ShoppingCart->getProducts() as $cartProduct){
-						if ($cartProduct->hasInfo('reservationInfo') === true){
-							$reservationInfo1 = $cartProduct->getInfo('reservationInfo');
-							break;
-						}
-					}
-					if(sysConfig::get('EXTENSION_PAY_PER_RENTALS_SAME_DATES_FOR_RESERVATIONS') == 'True' && $reservationInfo1 !== false){
-						$start_date = '';
-						$end_date = '';
-						$start_time = '';
-						$end_time = '';
-						$days_before = '';
-						$days_after = '';
 
-						if (isset($reservationInfo1['days_before'])){
-							$days_before = $reservationInfo1['days_before'];
-						}
-						if ($reservationInfo1['days_after']){
-							$days_after = $reservationInfo1['days_after'];
-						}
-						if ($reservationInfo1['start_date']){
-							$start_date = $reservationInfo1['start_date'];
-						}
-						if ($reservationInfo1['end_date']){
-							$end_date = $reservationInfo1['end_date'];
-						}
-							if(sysConfig::get('EXTENSION_PAY_PER_RENTALS_ENABLE_TIME_DROPDOWN') == 'True'){
-							if ($reservationInfo1['start_date']){
-								$startParsed = explode(' ',$reservationInfo1['start_date']);
-								if(isset($startParsed[1])){
-									$start_time = $startParsed[1];
-								}
-							}
-							if ($reservationInfo1['end_date']){
-								$endParsed = explode(' ',$reservationInfo1['end_date']);
-								if(isset($endParsed[1])){
-									$end_time = $endParsed[1];
-								}
-							}
-						}
-
-						if ($reservationInfo1['quantity']){
-							$qtyVal = (int)$reservationInfo1['quantity'];
-						}else{
-							$qtyVal = 1;
-						}
-
-						$payPerRentalButton = htmlBase::newElement('button')
-								->setType('submit')
-								->setText(sysLanguage::get('TEXT_BUTTON_RESERVE'))
-								->addClass('inCart')
-								->setName('add_reservation_product');
-						$isav = true;
-						if ($reservationInfo1['shipping']['cost']) {
-							$ship_cost = (float) $reservationInfo1['shipping']['cost'];
-						}
-						$depositAmount = $purchaseTypeClass->getDepositAmount();
-						$thePrice = 0;
-						$rInfo = '';
-						$price = $purchaseTypeClass->getReservationPrice($start_date, $end_date, $rInfo,'', (sysConfig::get('EXTENSION_PAY_PER_RENTALS_INSURE_ALL_PRODUCTS_AUTO') == 'True'));
-						$thePrice += $price['price'];
-
-						$pricing = $currencies->format($qtyVal * $thePrice - $qtyVal * $depositAmount + $ship_cost);
-
-						if (isset($start_date)) {
-							$htmlStartDate = htmlBase::newElement('input')
-									->setType('hidden')
-									->setName('start_date')
-									->setValue($start_date);
-						}
-
-						if (isset($start_time)) {
-							$htmlStartTime = htmlBase::newElement('input')
-									->setType('hidden')
-									->setName('start_time')
-									->setValue($start_time);
-						}
-
-						if (isset($end_time)) {
-							$htmlEndTime = htmlBase::newElement('input')
-									->setType('hidden')
-									->setName('end_time')
-									->setValue($end_time);
-						}
-
-						if (isset($days_before)) {
-							$htmlDaysBefore = htmlBase::newElement('input')
-									->setType('hidden')
-									->setName('days_before')
-									->setValue($days_before);
-						}
-
-						if (isset($days_after)) {
-							$htmlDaysAfter = htmlBase::newElement('input')
-									->setType('hidden')
-									->setName('days_after')
-									->setValue($days_after);
-						}
-
-						$htmlRentalQty = htmlBase::newElement('input');
-						if(sysConfig::get('EXTENSION_PAY_PER_RENTALS_SHOW_QTY_LISTING') == 'False'){
-							$htmlRentalQty->setType('hidden');
-						}else{
-							$htmlRentalQty->attr('size','3');
-						}
-						$htmlRentalQty->setName('rental_qty')
-								->setValue($qtyVal);
-
-						if(sysConfig::get('EXTENSION_PAY_PER_RENTALS_INSURE_ALL_PRODUCTS_AUTO') == 'True'){
-							$htmlHasInsurance = htmlBase::newElement('input')
-									->setType('hidden')
-									->setName('hasInsurance')
-									->setValue('1');
-							$pageForm->append($htmlHasInsurance);
-						}
-
-						$htmlProductsId = htmlBase::newElement('input')
-								->setType('hidden')
-								->setName('products_id')
-								->setValue($productClass->getID());
-						if (isset($end_date)) {
-							$htmlEndDate = htmlBase::newElement('input')
-									->setType('hidden')
-									->setName('end_date')
-									->setValue($end_date);
-						}
-
-						if (isset($htmlStartDate)) {
-							$pageForm->append($htmlStartDate);
-						}
-						if (isset($htmlEndDate)) {
-							$pageForm->append($htmlEndDate);
-						}
-
-						if (isset($htmlStartTime)) {
-							$pageForm->append($htmlStartTime);
-						}
-						if (isset($htmlEndTime)) {
-							$pageForm->append($htmlEndTime);
-						}
-
-						if (isset($htmlDaysBefore)) {
-							$pageForm->append($htmlDaysBefore);
-						}
-
-						if (isset($htmlDaysAfter)) {
-							$pageForm->append($htmlDaysAfter);
-						}
-
-						$purchaseTypesCol = 'reservation';
-						$pageForm->append($htmlRentalQty);
-						$pageForm->append($htmlProductsId);
-						$pageForm->append($payPerRentalButton);
-
-
-						$ship_cost = 0;
-						$isR = false;
-						$isRV = '';
-						if ($reservationInfo1['shipping']['id']) {
-							$htmlShippingDays = htmlBase::newElement('input')
-									->setType('hidden')
-									->setName('rental_shipping');
-							if (sysConfig::get('EXTENSION_PAY_PER_RENTALS_USE_UPS_RESERVATION') == 'False'){
-								$htmlShippingDays->setValue("zonereservation_" . $reservationInfo1['shipping']['id']);
-								if ($reservationInfo1['shipping']['cost']) {
-									$ship_cost = (float) $reservationInfo1['shipping']['cost'];
-								}
-
-							}else{
-								$htmlShippingDays->setValue("upsreservation_" . $reservationInfo1['shipping']['id']);
-								if(isset($_POST['rental_shipping'])){
-									$isR = true;
-									$isRV = $_POST['rental_shipping'];
-								}
-								$_POST['rental_shipping'] = 'upsreservation_'. $reservationInfo1['shipping']['id'];
-							}
-							$pageForm->append($htmlShippingDays);
-						}
-					}
+				$i = 1;
+				foreach($QPricePerRentalProducts as $iPrices){
+				$tableRow[$i] = '<tr>
+                                    <td class="main">'.$iPrices['PricePayPerRentalPerProductsDescription'][0]['price_per_rental_per_products_name'].':</td>
+                                    <td class="main">' . $purchaseTypeClass->displayReservePrice($iPrices['price']) . '</td>
+				                  </tr>';
+					$i++;
 				}
-				if (sizeof($tableRow) > 0 || sysConfig::get('EXTENSION_PAY_PER_RENTAL_ALLOW_MEMBERSHIP') == 'True'){
+
+				if (sizeof($tableRow) > 0){
 					$tableRow[0] = '<tr>
 					   <td class="main" colspan="2" style="font-size:.8em;" align="center">' . $extraContent . $payPerRentalButton->draw() . '</td>
 					  </tr>';
-				}
 					ksort($tableRow);
-
+				}
 			}elseif (sysConfig::get('EXTENSION_PAY_PER_RENTALS_DATE_SELECTION') != 'Using calendar after browsing products and clicking Reserve'){
 				$isav = false;
 				$deleteS = false;
 				$isdouble = false;
 				//if(Session::exists('isppr_inventory_pickup') === false){ //&& Session::exists('isppr_city') === true && Session::get('isppr_city') != ''){
-				if (sysConfig::get('EXTENSION_INVENTORY_CENTERS_USE_LOCATION') == 'True'){
+				if(sysConfig::get('EXTENSION_PAY_PER_RENTALS_CHOOSE_PICKUP') == 'True' && $appExtension->isInstalled('inventoryCenters') && $appExtension->isEnabled('inventoryCenters')){
 					$Qproducts = Doctrine_Query::create()
 					->from('ProductsInventoryBarcodes b')
 					->leftJoin('b.ProductsInventory i')
@@ -331,9 +156,8 @@ class productListing_productsPricePayPerRental {
 					}
 					if (Session::exists('isppr_inventory_pickup')){
 						$pickup = Session::get('isppr_inventory_pickup');
-					}
-					if (Session::exists('isppr_inventory_lp')){
-						$lp = Session::get('isppr_inventory_lp');
+					}else{
+						//check the inventory center for this one $productClass->getID()
 					}
 					if (Session::exists('isppr_inventory_dropoff')){
 						$dropoff = Session::get('isppr_inventory_dropoff');
@@ -349,13 +173,6 @@ class productListing_productsPricePayPerRental {
 					->setText(sysLanguage::get('TEXT_BUTTON_RESERVE'))
 					->addClass('inCart')
 					->setName('add_reservation_product');
-					if(sysConfig::get('EXTENSION_PAY_PER_RENTAL_ALLOW_MEMBERSHIP') == 'True'){
-						$payPerRentalButtonQueue = htmlBase::newElement('button')
-							->setType('submit')
-							->setText(sysLanguage::get('TEXT_BUTTON_RESERVE_QUEUE'))
-							->addClass('inCart')
-							->setName('add_queue_reservation_product');
-					}
 					$isav = true;
 					if (Session::exists('isppr_shipping_cost')) {
 						$ship_cost = (float) Session::get('isppr_shipping_cost');
@@ -442,12 +259,6 @@ class productListing_productsPricePayPerRental {
 						->setName('pickup')
 						->setValue($pickup);
 					}
-					if(isset($lp)){
-						$htmlLP = htmlBase::newElement('input')
-							->setType('hidden')
-							->setName('lp')
-							->setValue($lp);
-					}
 					if (isset($dropoff)) {
 						$htmlDropoff = htmlBase::newElement('input')
 						->setType('hidden')
@@ -499,20 +310,13 @@ class productListing_productsPricePayPerRental {
 					if (isset($htmlPickup)) {
 						$pageForm->append($htmlPickup);
 					}
-					if(isset($htmlLP)){
-						$pageForm->append($htmlLP);
-					}
 					if (isset($htmlDropoff)) {
 						$pageForm->append($htmlDropoff);
 					}
 					$purchaseTypesCol = 'reservation';
 					$pageForm->append($htmlRentalQty);
 					$pageForm->append($htmlProductsId);
-					if(sysConfig::get('EXTENSION_PAY_PER_RENTAL_ALLOW_MEMBERSHIP') == 'True'){
-						$pageForm->append($payPerRentalButtonQueue);
-					}else{
-						$pageForm->append($payPerRentalButton);
-					}
+					$pageForm->append($payPerRentalButton);
 
 					if (sysConfig::get('EXTENSION_PAY_PER_RENTALS_USE_EVENTS') == 'True') {
 						$pageForm->append($htmlEventDate)

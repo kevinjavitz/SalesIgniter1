@@ -87,5 +87,10 @@ class PricePerRentalPerProducts extends Doctrine_Record {
 			'notnull' => false,
 			'autoincrement' => false,
 		));
+		$this->hasColumn('customer_group', 'varchar', 21, array(
+		    'type' => 'varchar',
+		    'length' => 21,
+		    
+		    ));
 	}
 }

@@ -1,7 +1,5 @@
 <?php
-	if(!class_exists('Product')){
-		require('../includes/classes/product.php');
-	}
+	require('../includes/classes/product.php');
 	$product = new product((int)$_GET['pID']);
 	
 	$array = array();

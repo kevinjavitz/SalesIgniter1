@@ -190,6 +190,8 @@
 		  	$timeInputs .= '&nbsp;&nbsp;&nbsp;&nbsp;'.sysLanguage::get('EXTENSION_PAY_PER_RENTALS_END_TIME_PICKUP').$hourEnd->draw();
 	    if (is_array($pricing) && is_numeric($pricing['price'])){
 		    $price += $pricing['price'];
+		   
+		    
 		    $totalPrice += $pricing['totalPrice'];
 		    $message .= strip_tags($pricing['message']);
 			if($Module->getType() == 'Order' && isset($pricing['orderShipping'])){

@@ -553,8 +553,8 @@ class ReservationUtilities {
 			selectedStartTimeTd = null;
 			isTimeStart = false;
 			selectedEndTime = null;
-			selectedEndTimeTd = null;
-			<?php
+			selectedEndTimeTd = null; 
+			<?php 
 	if (sysConfig::get('EXTENSION_PAY_PER_RENTALS_FORCE_START_DATE') == 'True') {
 				?>
 				$selfID.find('.datePicker').datepick('setDate', -1);
@@ -581,6 +581,8 @@ class ReservationUtilities {
 
 				$selfID.find('.start_date').val(today_month + '/' + today_day + '/' + todayDate.getFullYear()).trigger('change');
 				$selfID.find('.end_date').val('').trigger('change');
+				
+				
 
 				<?php
 
@@ -603,6 +605,8 @@ class ReservationUtilities {
 				$selfID.find('.start_date').val('').trigger('change');
 				$selfID.find('.end_date').val('').trigger('change');
 				$selfID.find('.calendarTime').hide();
+				$selfID.parent().find('.priceQuote').html('');
+				
 				<?php
 
 			}
@@ -1576,7 +1580,8 @@ class ReservationUtilities {
 				if($('.dateSelectedCalendar').find('.end_time')){
 					hours2 = $('.dateSelectedCalendar').find('.end_time').val();
 				}
-				$('.dateQuotes').html(m_names[dd1.getMonth()] + ' ' +dd1_day + ', ' +dd1.getFullYear() + ' '+hours1 +'&nbsp;&nbsp;&nbsp;To&nbsp;&nbsp;&nbsp;' + m_names[dd2.getMonth()] + ' ' +dd2_day + ', ' +dd2.getFullYear() + ' '+ hours2);
+				//$('.dateQuotes').html(m_names[dd1.getMonth()] + ' ' +dd1_day + ', ' +dd1.getFullYear() + ' '+hours1 +'&nbsp;&nbsp;&nbsp;To&nbsp;&nbsp;&nbsp;' + m_names[dd2.getMonth()] + ' ' +dd2_day + ', ' +dd2.getFullYear() + ' '+ hours2);
+				$('.dateQuotes').html(m_names[dd1.getMonth()] + ' ' +dd1_day + ', ' +dd1.getFullYear() +'&nbsp;&nbsp;&nbsp;To&nbsp;&nbsp;&nbsp;' + m_names[dd2.getMonth()] + ' ' +dd2_day + ', ' +dd2.getFullYear());
 			}
 		});
 		var $priceText = $('<div class="priceText"><?php echo sysLanguage::get('TEXT_DATES_PRICE');?> </div>');
@@ -1606,11 +1611,11 @@ class ReservationUtilities {
 		$('.pprButttons').css('height',(100)+'px');
 		$('.pprButttons_wrapper').css('width','100%');
 		$('.pprButttons_wrapper').css('margin-bottom','50px');
-		/*if(isCatalog){
-			$('.refreshCal').css('top',($('.pprButttons').position().top + 58)+'px');
-		}else{*/
-		//$('.refreshCal').css('top',($('.pprButttons').position().top + 115)+'px');
-		//}
+		//if(isCatalog){
+			//$('.refreshCal').css('top',($('.pprButttons').position().top + 162)+'px');
+		/*} else{
+		$('.refreshCal').css('top',($('.pprButttons').position().top + 115)+'px');
+		}*/
 		var firstColumnWidth = $('.calendarTable').width()*7/100;
 		var secColumnWidth = $('.calendarTable').width()*80/100;
 
@@ -1749,7 +1754,9 @@ class ReservationUtilities {
 			display:none;
 		}
 		.divPriceWrap, .dateQuotesWrap{
-			height:25px !important;
+		    min-height: 25px;
+			height:auto !important;
+			height: 25px;
 			border:0;
 			width:350px;
 			font-size:11px !important;
@@ -1787,10 +1794,7 @@ class ReservationUtilities {
 		.wrapDates{
 			text-align:right;
 		}
-		.divPriceWrap{
-			height:25px !important;
-			line-height:25px;
-		}
+		
 		.ui-datepicker-current label{
 			display:none;
 		}

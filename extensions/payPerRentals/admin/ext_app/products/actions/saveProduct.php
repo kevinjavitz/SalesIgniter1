@@ -1,7 +1,19 @@
 <?php
+	//one of the group prices must be set as default if enabled
+	$defaultSet = false;
+	if(isset($_POST['pprp'])){
+			foreach($_POST['pprp'] as $iPriceId => $iPrice){
+			  if ($iPrice['customer_group'] == '0')
+			    $defaultSet = true;
+			}
+			if (!$defaultSet)
+			 	return;
+	}
 	/*This part makes it possible to save the reservation as ajax
 	but considers all the products have reservation enabled. ignores the forgeting
 	of checking enabled before the first save*/
+
+	
 	$PayPerRental = $Product->ProductsPayPerRental;
 	$Product->save();
     /*end part*/
@@ -10,8 +22,6 @@
 
 		$PayPerRental->max_period = (int)$_POST['reservation_max_period'];
 		$PayPerRental->max_type = (int)$_POST['reservation_max_type'];
-		$PayPerRental->turnover = $_POST['reservation_turnover_period'];
-		$PayPerRental->turnover_type = (int)$_POST['reservation_turnover_type'];
 		$PayPerRental->deposit_amount = (float)$_POST['reservation_deposit_amount'];
 		$PayPerRental->insurance = (float)$_POST['reservation_insurance'];
                  $PayPerRental->min_period = (int)$_POST['reservation_min_period'];
@@ -50,41 +60,11 @@
 			$PayPerRental->overbooking = '0';
 		}
                 
-        if (isset($_POST['reservation_consumption'])){
+                if (isset($_POST['reservation_consumption'])){
 			$PayPerRental->consumption = (int)$_POST['reservation_consumption'];
 		}else{
 			$PayPerRental->consumption = '0';
 		}
-
-        if (isset($_POST['reservation_commission'])){
-            $PayPerRental->commission = (int)$_POST['reservation_commission'];
-        }else{
-            $PayPerRental->commission = '0';
-        }
-
-        if (isset($_POST['reservation_free_trial'])){
-            $PayPerRental->free_trial = (int)$_POST['reservation_free_trial'];
-        }else{
-            $PayPerRental->free_trial = '0';
-        }
-
-        if (isset($_POST['reservation_free_try_on_length'])){
-            $PayPerRental->free_try_on_length = (int)$_POST['reservation_free_try_on_length'];
-        }else{
-            $PayPerRental->free_try_on_length = '0';
-        }
-
-        if (isset($_POST['reservation_free_try_on_length_type'])){
-            $PayPerRental->free_try_on_length_type = (int)$_POST['reservation_free_try_on_length_type'];
-        }else{
-            $PayPerRental->free_try_on_length_type = '0';
-        }
-
-        if (isset($_POST['reservation_free_try_price'])){
-            $PayPerRental->free_try_price = (int)$_POST['reservation_free_try_price'];
-        }else{
-            $PayPerRental->free_try_price = '0';
-        }
 		
 		$Product->save();
 
@@ -98,7 +78,7 @@
 				->andWhere('pay_per_rental_id =?',$Product->ProductsPayPerRental->pay_per_rental_id)
 				->execute();
 			}
-		
+		 
 			foreach($_POST['pprp'] as $pprid => $iPrice){
 
 				$PricePerProduct = $PricePerRentalPerProducts->create();
@@ -116,6 +96,7 @@
 				$PricePerProduct->number_of = $iPrice['number_of'];
 				$PricePerProduct->pay_per_rental_types_id = $iPrice['type'];
 				$PricePerProduct->pay_per_rental_id = $Product->ProductsPayPerRental->pay_per_rental_id;
+				$PricePerProduct->customer_group = $iPrice['customer_group'];
 				$PricePerProduct->save();
 			}
 		}

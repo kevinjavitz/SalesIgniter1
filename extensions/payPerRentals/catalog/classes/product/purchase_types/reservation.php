@@ -2982,17 +2982,28 @@ class PurchaseType_reservation extends PurchaseTypeAbstract
     }
 
     public function getPricingTable() {
-		global $currencies;
+		global $currencies, $userAccount;
 		$table = '';
 		$table .= '<table cellpadding="0" cellspacing="0" border="0">';
 
+		if ($userAccount->getCustomerId() != 0) {
+			$QCustomerGroup = Doctrine_Query::create()
+				->from('CustomersToCustomerGroups cg')
+				->where('cg.customers_id =?', $userAccount->getCustomerId())
+				->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+		    $group = $QCustomerGroup[0]['customer_groups_id'];
+		}
+		else {
+			$group = '0';
+		}
 		$QPricePerRentalProducts = Doctrine_Query::create()
 			->from('PricePerRentalPerProducts pprp')
 			->leftJoin('pprp.PricePayPerRentalPerProductsDescription pprpd')
 			->where('pprp.pay_per_rental_id =?', $this->getId())
+			->andWhere('pprp.customer_group =?', $group)
 			->andWhere('pprpd.language_id=?', Session::get('languages_id'))
 			->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
-
+		
 		foreach($QPricePerRentalProducts as $iPrices){
 			$table .= '<tr>' .
 				'<td class="main">' . $iPrices['PricePayPerRentalPerProductsDescription'][0]['price_per_rental_per_products_name'] . ': </td>' .
@@ -3740,7 +3751,8 @@ class PurchaseType_reservation extends PurchaseTypeAbstract
 	}
 
 	public function findBestPrice($dateArray, $freeTrial) {
-		global $currencies, $appExtension, $Editor;
+	
+		global $currencies, $appExtension, $Editor, $userAccount;
         if($freeTrial){
             $return['price'] = round($this->freeTrialPrice(), 2);
             $return['totalPrice'] = round($this->freeTrialPrice(), 2);
@@ -3814,11 +3826,38 @@ class PurchaseType_reservation extends PurchaseTypeAbstract
 		$valKey = '';
 		$maxRounded = 0;
 		$minutesArray = array();
-
-		$QPricePerRentalProducts = Doctrine_Query::create()
+		
+		
+		if ($userAccount->getCustomerId() != 0) {
+			$QCustomerGroup = Doctrine_Query::create()
+				->from('CustomersToCustomerGroups cg')
+				->where('cg.customers_id =?', $userAccount->getCustomerId())
+				->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+		    $group = $QCustomerGroup[0]['customer_groups_id'];
+		
+			$count = $QPricePerRentalProducts = Doctrine_Query::create()
+				->from('PricePerRentalPerProducts pprp')
+				->where('pprp.pay_per_rental_id =?', $this->getId())
+				->andWhere('pprp.customer_group =?', $group)
+				->count();	
+	   
+		}
+		if ($userAccount->getCustomerId() == 0 || $count <= 0)	{
+			$QPricePerRentalProducts = Doctrine_Query::create()
+				->from('PricePerRentalPerProducts pprp')
+				->where('pprp.pay_per_rental_id =?', $this->getId())
+				->andWhere('pprp.customer_group =?', '0')
+				->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+		}
+		else {
+			$QPricePerRentalProducts = Doctrine_Query::create()
 			->from('PricePerRentalPerProducts pprp')
 			->where('pprp.pay_per_rental_id =?', $this->getId())
+			->andWhere('pprp.customer_group =?', $group)
 			->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+		}
+
+
 
 		$QPayPerRentalTypes = Doctrine_Query::create()
 			->from('PayPerRentalTypes')
@@ -3860,6 +3899,8 @@ class PurchaseType_reservation extends PurchaseTypeAbstract
 					}
 				}
 			}
+					
+			
 			$minutesArray[$iPrices['number_of'] * $pprTypes[$iPrices['pay_per_rental_types_id']]] = ($discount !== false ? $iPrices['price'] - $discount : $iPrices['price']);
 			$tMinutes[] = $pprTypes[$iPrices['pay_per_rental_types_id']];
 			$messArr[$iPrices['number_of'] * $pprTypes[$iPrices['pay_per_rental_types_id']]] = $iPrices['number_of'] . ' ' . $pprTypesDesc[$iPrices['pay_per_rental_types_id']];
@@ -3882,7 +3923,7 @@ class PurchaseType_reservation extends PurchaseTypeAbstract
 				//}
 			}
 			$nMinutes = ceil(($endTime - $startTime) / (60 * $valKey));
-		}elseif (sysConfig::get('EXTENSION_PAY_PER_RENTALS_PRICING_CONFIG') == 'No Pro-rates: extra time periods not allowed.'){
+		}elseif (sysConfig::get('EXTENSION_PAY_PER_RENTALS_PRICING_CONFIG') == 'No Prorates: extra time periods not allowed.'){
 			$p1 = 0;
 			foreach($minutesArray as $k => $v){
 				$p1++;
@@ -3956,7 +3997,7 @@ class PurchaseType_reservation extends PurchaseTypeAbstract
 				else {
 					$normalPrice = -1;
 				}
-				if ($normalPrice > $biggerPrice || $normalPrice == -1){
+			if ($normalPrice > $biggerPrice || $normalPrice == -1){
 					$price = $biggerPrice;
 					$message .= '1X' . substr($messArr[$myKeys[$i]], 0, strlen($messArr[$myKeys[$i]]) - 1) . '@' . $currencies->format($minutesArray[$myKeys[$i]]);
 				}
@@ -3998,6 +4039,7 @@ class PurchaseType_reservation extends PurchaseTypeAbstract
 				$message = '';
 		}
 				$price = $price + $nMinutesAddon * $maxRounded; //here I need to check if price of the next item is bigger
+				
 			$message = $nMinutesAddon . 'X' . $messArr[$valKey] . '@' . $currencies->format($minutesArray[$valKey]) . '/' . substr($messArr[$valKey], 0, strlen($messArr[$valKey]) - 1) . $message;
 			}
 		}
@@ -4074,6 +4116,7 @@ class PurchaseType_reservation extends PurchaseTypeAbstract
 		}
 		if ($semName == '' && $f){
 			$returnPrice = $this->findBestPrice($dateArray,$freeTrial);
+			
 		}
 		else {
 			if ($semName == ''){
@@ -4083,6 +4126,7 @@ class PurchaseType_reservation extends PurchaseTypeAbstract
 			$returnPrice['totalPrice'] = $this->getPriceSemester($semName);
 			$returnPrice['message'] = sysLanguage::get('PPR_PRICE_BASED_ON_SEMESTER') . $semName . ' ';
 		}
+
 
 		if ($rInfo != '' && isset($rInfo['shipping']) && isset($rInfo['shipping']['cost'])){
 			$productPricing['shipping'] = $rInfo['shipping']['cost'];
@@ -4135,6 +4179,7 @@ class PurchaseType_reservation extends PurchaseTypeAbstract
 				if ($onlyShow){
 					$returnPrice['price'] += $productPricing['shipping'];
 				}
+			
 				$returnPrice['totalPrice'] += $productPricing['shipping'];
 				if($productPricing['shipping'] > 0){
 					$returnPrice['orderShipping'] = $productPricing['shipping'];
@@ -4145,6 +4190,7 @@ class PurchaseType_reservation extends PurchaseTypeAbstract
 				if ($onlyShow){
 					$returnPrice['price'] += $this->getDepositAmount();
 				}
+				
 				$returnPrice['totalPrice'] += $this->getDepositAmount();
 				$returnPrice['message'] .= ' + ' . $currencies->format($this->getDepositAmount()) . ' ' . sysLanguage::get('EXTENSION_PAY_PER_RENTALS_CALENDAR_DEPOSIT');
 			}
@@ -4153,6 +4199,7 @@ class PurchaseType_reservation extends PurchaseTypeAbstract
 				if ($onlyShow){
 					$returnPrice['price'] += (float)$rInfo['insurance'];
 				}
+			
 				$returnPrice['totalPrice'] += (float)$rInfo['insurance'];
 			}
 			elseif ($includeInsurance) {
@@ -4169,6 +4216,7 @@ class PurchaseType_reservation extends PurchaseTypeAbstract
 
 			EventManager::notify('PurchaseTypeAfterSetup', &$returnPrice);
 		}
+
 		return $returnPrice;
 	}
 

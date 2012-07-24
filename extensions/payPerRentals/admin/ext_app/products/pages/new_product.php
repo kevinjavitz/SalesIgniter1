@@ -35,6 +35,7 @@ class payPerRentals_admin_products_new_product extends Extension_payPerRentals {
 	}
 	
 	public function NewProductTabBody(&$Product){
+	    $currencies = new currencies();
 		//todo separate price by store
 		if ($Product['products_id'] > 0){
 			$payPerRental = $Product['ProductsPayPerRental'];
@@ -44,16 +45,15 @@ class payPerRentals_admin_products_new_product extends Extension_payPerRentals {
 		->from('PayPerRentalTypes')
 		->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 		
+		$QGroups = Doctrine_Query::create()
+		->from('CustomerGroups')
+		->orderBy('customer_groups_id')
+		->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+		
 		$overbookingInput = htmlBase::newElement('checkbox')->setName('reservation_overbooking')->setValue('1');
         $consumptionInput = htmlBase::newElement('checkbox')->setName('reservation_consumption')->setValue('1');
-        $commissionInput = htmlBase::newElement('checkbox')->setName('reservation_commission')->setValue('1');
-        $freeTrialInput = htmlBase::newElement('checkbox')->setName('reservation_free_trial')->setValue('1');
-        $freeTrialLengthInput = htmlBase::newElement('input')->setName('reservation_free_try_on_length');
-        $freeTrialLengthTypeInput = htmlBase::newElement('selectbox')->addClass('ui-widget-content')->setName('reservation_free_try_on_length_type');
-        $freeTrialPriceInput = htmlBase::newElement('input')->setName('reservation_free_try_price');
 		//$monthsInput = htmlBase::newElement('input')->setName('reservation_max_months');
 		$maxInput = htmlBase::newElement('input')->setName('reservation_max_period');
-		$turnoverInput = htmlBase::newElement('input')->setName('reservation_turnover_period');
 		//$authMethodInput = htmlBase::newElement('selectbox')->setName('products_auth_method')->addOption('auth', 'Authorization Charge')->addOption('rental', 'Rental Fee');
 		$depositChargeInput = htmlBase::newElement('input')->setName('reservation_deposit_amount');
 		$insuranceInput = htmlBase::newElement('input')->setName('reservation_insurance');
@@ -63,11 +63,6 @@ class payPerRentals_admin_products_new_product extends Extension_payPerRentals {
 		->setName('reservation_max_type');
 		foreach($QPayPerRentalTypes as $iType){
 			$htypeMax->addOption($iType['pay_per_rental_types_id'], $iType['pay_per_rental_types_name']);
-		}
-		$htypeTurnover = htmlBase::newElement('selectbox')
-				->setName('reservation_turnover_type');
-		foreach($QPayPerRentalTypes as $iType){
-			$htypeTurnover->addOption($iType['pay_per_rental_types_id'], $iType['pay_per_rental_types_name']);
 		}
 
 		$htypeMin = htmlBase::newElement('selectbox')
@@ -82,7 +77,7 @@ class payPerRentals_admin_products_new_product extends Extension_payPerRentals {
 		->select('MAX(price_per_rental_per_products_id) as nextId')
 		->from('PricePerRentalPerProducts')
 		->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
-
+//begin pricing table
 		$Table = htmlBase::newElement('table')
 		->setCellPadding(3)
 		->setCellSpacing(0)
@@ -96,7 +91,7 @@ class payPerRentals_admin_products_new_product extends Extension_payPerRentals {
 		$Table->addHeaderRow(array(
 				'addCls' => 'ui-state-hover pprPriceTableHeader',
 				'columns' => array(
-					array('text' => '<div style="float:left;width:80px;">' .sysLanguage::get('TABLE_HEADING_NUMBER_OF').'</div>'.'<div style="float:left;width:100px;">'.sysLanguage::get('TABLE_HEADING_TYPE').'</div>'.'<div style="float:left;width:80px;">'.sysLanguage::get('TABLE_HEADING_PRICE').'</div>'.'<div style="float:left;width:150px;">'.sysLanguage::get('TABLE_HEADING_DETAILS').'</div>'.'<div style="float:left;width:40px;">'.htmlBase::newElement('icon')->setType('insert')->addClass('insertIcon')->draw().'</div><br style="clear:both"/>')
+					array('text' => '<div style="float:left;width:80px;">' .sysLanguage::get('TABLE_HEADING_NUMBER_OF').'</div>'.'<div style="float:left;width:100px;">'.sysLanguage::get('TABLE_HEADING_TYPE').'</div>'.'<div style="float:left;width:80px;">'.sysLanguage::get('TABLE_HEADING_PRICE').'</div>'.'<div style="float:left;width:150px;">'.sysLanguage::get('TABLE_HEADING_DETAILS').'</div>'.'<div style="float:left;width:450px;">'.sysLanguage::get('TABLE_HEADING_CUSTOMER_GROUP').'</div>'.'<div style="float:left;width:40px;">'.htmlBase::newElement('icon')->setType('insert')->addClass('insertIcon')->draw().'</div><br style="clear:both"/>')
 				)
 		));
 
@@ -108,21 +103,31 @@ class payPerRentals_admin_products_new_product extends Extension_payPerRentals {
 		->where('pay_per_rental_id =?',$Product['ProductsPayPerRental']['pay_per_rental_id'])
 		->orderBy('price_per_rental_per_products_id')
 		->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
-
+	
 		$htype = htmlBase::newElement('selectbox')
 		->attr('id','types_select');
 		foreach($QPayPerRentalTypes as $iType){
 			$htype->addOption($iType['pay_per_rental_types_id'], $iType['pay_per_rental_types_name']);
 		}
+		//get customer group names
+		$htype2 = htmlBase::newElement('selectbox')
+		->attr('id','groups_select')
+		->attr('style','display:none');
+		
+	    foreach($QGroups as $iGroup) {
+	     $htype2->addOption($iGroup['customer_groups_id'], $iGroup['customer_groups_name']);
+	    }
+	    
 		$sortableList = htmlBase::newElement('sortable_list');
 		foreach($QPricePerRentalProducts as $iPrice){
+		
 			$pprid = $iPrice['price_per_rental_per_products_id'];
 			$Text = htmlBase::newElement('div');
 			$br = htmlBase::newElement('br');
 			foreach(sysLanguage::getLanguages() as $lInfo){
 				$Textl = htmlBase::newElement('input')
 				->addClass('ui-widget-content')
-				->setLabel($lInfo['showName']())
+				//->setLabel($lInfo['showName']())
 				->setLabelPosition('before')
 				->setName('pprp[' . $pprid . '][details]['.$lInfo['id'].']')
 				->css(array(
@@ -143,7 +148,7 @@ class payPerRentals_admin_products_new_product extends Extension_payPerRentals {
 			->setName('pprp[' . $pprid . '][number_of]')
 			->attr('size', '8')
 			->val($iPrice['number_of']);
-
+	
 			$price = htmlBase::newElement('input')
 			->addClass('ui-widget-content')
 			->setName('pprp[' . $pprid . '][price]')
@@ -154,6 +159,15 @@ class payPerRentals_admin_products_new_product extends Extension_payPerRentals {
 			->addClass('ui-widget-content')
 			->setName('pprp[' . $pprid . '][type]')
 			->selectOptionByValue($iPrice['pay_per_rental_types_id']);
+			
+			$group = htmlBase::newElement('selectbox')
+			->addClass('ui-widget-content')
+			->setName('pprp[' . $pprid . '][customer_group]')
+			->selectOptionByValue($iPrice['customer_group']);
+			foreach($QGroups as $iGroup) {
+				$group->addOption($iGroup['customer_groups_id'], $iGroup['customer_groups_name']);
+			}
+			
 
 			foreach($QPayPerRentalTypes as $iType){
 				$type->addOption($iType['pay_per_rental_types_id'], $iType['pay_per_rental_types_name']);
@@ -163,7 +177,8 @@ class payPerRentals_admin_products_new_product extends Extension_payPerRentals {
 			$divLi2 = '<div style="float:left;width:100px;">'.$type->draw().'</div>';
 			$divLi3 = '<div style="float:left;width:80px;">'.$price->draw().'</div>';
 			$divLi4 = '<div style="float:left;width:150px;">'.$Text->draw().'</div>';
-			$divLi5 = '<div style="float:left;width:40px;">'.$deleteIcon.'</div>';
+			$divLi5 = '<div style="float:left;width:450px;">'.$group->draw().'</div>';
+			$divLi6 = '<div style="float:left;width:40px;">'.$deleteIcon.'</div>';
 
 			$liObj = new htmlElement('li');
 			$liObj->css(array(
@@ -172,7 +187,7 @@ class payPerRentals_admin_products_new_product extends Extension_payPerRentals {
 				'border-bottom' => '1px solid #cccccc',
 				'cursor' => 'crosshair'
 			))
-			->html($divLi1.$divLi2.$divLi3.$divLi4.$divLi5.'<br style="clear:both;"/>');//<input name="sortvprice[]" type="hidden">
+			->html($divLi1.$divLi2.$divLi3.$divLi4.$divLi5.$divLi6.'<br style="clear:both;"/>');//<input name="sortvprice[]" type="hidden">
 			$sortableList->addItemObj($liObj);
 
 				/*array('align' => 'center', 'text' => $numberOf->draw(),'addCls' => 'pricePPR'),
@@ -181,11 +196,15 @@ class payPerRentals_admin_products_new_product extends Extension_payPerRentals {
 						array('align' => 'center', 'text' => $Text->draw(),'addCls' => 'pricePPR'),
 						array('align' => 'center', 'text' => $deleteIcon)*/
 		}
-
 		$Table->addBodyRow(array(
 				'columns' => array(
 					array('align' => 'center', 'text' => $sortableList->draw(),'addCls' => 'pricePPR')
 				)
+		));
+		$Table->addBodyRow(array(
+			'columns' => array(
+				array( 'text' => '<b>' . $htype2->draw() . '</b>'),
+			)
 		));
 
 
@@ -276,13 +295,13 @@ class payPerRentals_admin_products_new_product extends Extension_payPerRentals {
 		foreach($QhiddenDates as $iHidden){
 			$hiddenid = $iHidden['hidden_dates_id'];
 			$hiddenStartDate = htmlBase::newElement('input')
-			->addClass('ui-widget-content date_hidden_start')
+			->addClass('ui-widget-content date_hidden')
 			->setName('pprhidden[' . $hiddenid . '][start_date]')
 			->attr('size', '15')
 			->val(strftime('%Y-%m-%d', strtotime($iHidden['hidden_start_date'])));
 
 			$hiddenEndDate = htmlBase::newElement('input')
-			->addClass('ui-widget-content date_hidden_end')
+			->addClass('ui-widget-content date_hidden')
 			->setName('pprhidden[' . $hiddenid . '][end_date]')
 			->attr('size', '15')
 			->val(strftime('%Y-%m-%d', strtotime($iHidden['hidden_end_date'])));
@@ -292,7 +311,6 @@ class payPerRentals_admin_products_new_product extends Extension_payPerRentals {
 			$divLi5 = '<div style="float:left;width:40px;">'.$deleteIcon.'</div>';
 
 			$liObj = new htmlElement('li');
-            $liObj->addClass('listHiddenDates');
 			$liObj->css(array(
 				'font-size' => '.8em',
 				'list-style' => 'none',
@@ -313,32 +331,17 @@ class payPerRentals_admin_products_new_product extends Extension_payPerRentals {
 
 		if (isset($payPerRental)){
 			$overbookingInput->setChecked(($payPerRental['overbooking'] == 1));
-            $consumptionInput->setChecked(($payPerRental['consumption'] == 1));
-            $commissionInput->setChecked(($payPerRental['commission'] == 1));
-            $freeTrialInput->setChecked(($payPerRental['free_trial'] == 1));
-			$freeTrialLengthInput->val($payPerRental['free_try_on_length']);
-            $freeTrialLengthTypeInput->selectOptionByValue($payPerRental['free_try_on_length_type']);
-            $freeTrialPriceInput->val($payPerRental['free_try_price']);
+                        $consumptionInput->setChecked(($payPerRental['consumption'] == 1));
 			//$monthsInput->val($payPerRental['max_months']);
 			$maxInput->val($payPerRental['max_period']);
-			$turnoverInput->val($payPerRental['turnover']);
 			$htypeMax->selectOptionByValue($payPerRental['max_type']);
-			$htypeTurnover->selectOptionByValue($payPerRental['turnover_type']);
 			$depositChargeInput->val($payPerRental['deposit_amount']);
 			$insuranceInput->val($payPerRental['insurance']);
             $minInput->val($payPerRental['min_period']);
 			$htypeMin->selectOptionByValue($payPerRental['min_type']);
 			//$authMethodInput->selectOptionByValue($Product['products_auth_method']);
 		}
-
-        $QPayPerRentalTypes = Doctrine_Query::create()
-            ->from('PayPerRentalTypes')
-            ->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
-
-        foreach($QPayPerRentalTypes as $iType){
-            $freeTrialLengthTypeInput->addOption($iType['pay_per_rental_types_id'], $iType['pay_per_rental_types_name']);
-        }
-
+		
 		$shippingInputs = array(array(
 			'id' => 'noShip',
 			'value' => 'false',
@@ -408,40 +411,13 @@ class payPerRentals_admin_products_new_product extends Extension_payPerRentals {
 				array('addCls' => 'main', 'text' => $overbookingInput)
 			)
 		));
-
-        $mainTable->addBodyRow(array(
+                
+                $mainTable->addBodyRow(array(
 			'columns' => array(
 				array('addCls' => 'main', 'text' => sysLanguage::get('TEXT_PAY_PER_RENTAL_CONSUMPTION')),
 				array('addCls' => 'main', 'text' => $consumptionInput)
 			)
 		));
-
-        $mainTable->addBodyRow(array(
-            'columns' => array(
-                array('addCls' => 'main', 'text' => sysLanguage::get('TEXT_PAY_PER_RENTAL_COMMISSION')),
-                array('addCls' => 'main', 'text' => $commissionInput)
-            )
-        ));
-
-        $mainTable->addBodyRow(array(
-            'columns' => array(
-                array('addCls' => 'main', 'text' => sysLanguage::get('TEXT_PAY_PER_RENTAL_FREE_TRIAL')),
-                array('addCls' => 'main', 'text' => $freeTrialInput)
-            )
-        ));
-
-        $mainTable->addBodyRow(array(
-            'columns' => array(
-                array('addCls' => 'main', 'text' => ''),
-                array('addCls' => 'main', 'text' => $freeTrialLengthInput->draw().$freeTrialLengthTypeInput->draw().' Free Try On Length'),
-            )
-        ));
-        $mainTable->addBodyRow(array(
-            'columns' => array(
-                array('addCls' => 'main', 'text' => ''),
-                array('addCls' => 'main', 'text' => $freeTrialPriceInput->draw().' Free Try On Price'),
-            )
-        ));
 		
 		$mainTable->addBodyRow(array(
 			'columns' => array(
@@ -477,12 +453,6 @@ class payPerRentals_admin_products_new_product extends Extension_payPerRentals {
 				array('addCls' => 'main', 'text' => $authChargeInput)
 			)
 		));*/
-		$mainTable->addBodyRow(array(
-			'columns' => array(
-				array('addCls' => 'main', 'text' => sysLanguage::get('TEXT_PAY_PER_RENTAL_TURNOVER')),
-				array('addCls' => 'main', 'text' => $turnoverInput->draw(). $htypeTurnover->draw())
-			)
-		));
 		
 		$mainTable->addBodyRow(array(
 			'columns' => array(
@@ -508,10 +478,10 @@ class payPerRentals_admin_products_new_product extends Extension_payPerRentals {
 		
 		$pricingTable->addBodyRow(array(
 			'columns' => array(
-				array('text' => '&nbsp;'),
+				
 				array(
 					'addCls' => 'main',
-					'colspan' => '4',
+					'colspan' => '3',
 					'text' => '<h3>' . sysLanguage::get('TEXT_PAY_PER_RENTAL_PRICING') . '</h3>',
 					'css' => array(
 						'color' => '#ff0000'
@@ -531,6 +501,7 @@ class payPerRentals_admin_products_new_product extends Extension_payPerRentals {
 				array('addCls' => 'mainPricePPR', 'text' => '<b>' . $Table->draw().$htype->draw() . '</b>'),
 			)
 		));
+		
  		
 		return '<div id="tab_' . $this->getExtensionKey() . '">' . 
 			$mainTable->draw() . 
