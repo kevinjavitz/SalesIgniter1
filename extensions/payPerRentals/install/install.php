@@ -20,19 +20,22 @@ class payPerRentalsInstall extends extensionInstaller {
 
 		parent::install();
 		
-		$QGroupCount = Doctrine_Query::create()
-		->from('CustomerGroups')
-		->where('customer_groups_name = "default"')
-		->count();
-		if ($QGroupCount == 0) {
-			$default = new CustomerGroups();
-			$default->customer_groups_id = 0;
-			$default->customer_groups_credit = 0;
-			$default->customer_groups_discount = 0;
-			$default->customer_groups_name = 'default';
-			$default->save();
-			$default->customer_groups_id = 0;  //necessary to be 0 for pricing purposes
-			$default->save();				   //save again since the first save set to autoincrement
+		if (sysConfig::get('EXTENSION_CUSTOMER_GROUPS_ENABLED') == 'True')
+		{
+			$QGroupCount = Doctrine_Query::create()
+				->from('CustomerGroups')
+				->where('customer_groups_name = "default"')
+				->count();
+			if ($QGroupCount == 0) {
+				$default = new CustomerGroups();
+				$default->customer_groups_id = 0;
+				$default->customer_groups_credit = 0;
+				$default->customer_groups_discount = 0;
+				$default->customer_groups_name = 'default';
+				$default->save();
+				$default->customer_groups_id = 0;  //necessary to be 0 for pricing purposes
+				$default->save();				   //save again since the first save set to autoincrement
+			}
 		}
 		
 		$status = new RentalStatus();

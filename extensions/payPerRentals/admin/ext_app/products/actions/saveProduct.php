@@ -1,13 +1,15 @@
 <?php
 	//one of the group prices must be set as default if enabled
-	$defaultSet = false;
-	if(isset($_POST['pprp'])){
-			foreach($_POST['pprp'] as $iPriceId => $iPrice){
-			  if ($iPrice['customer_group'] == '0')
-			    $defaultSet = true;
-			}
-			if (!$defaultSet)
-			 	return;
+	if (sysConfig::get('EXTENSION_CUSTOMER_GROUPS_ENABLED') == 'True') {
+		$defaultSet = false;
+		if(isset($_POST['pprp'])){
+				foreach($_POST['pprp'] as $iPriceId => $iPrice){
+				  if ($iPrice['customer_group'] == '0')
+				    $defaultSet = true;
+				}
+				if (!$defaultSet)
+				 	return;
+		}
 	}
 	/*This part makes it possible to save the reservation as ajax
 	but considers all the products have reservation enabled. ignores the forgeting
@@ -96,7 +98,9 @@
 				$PricePerProduct->number_of = $iPrice['number_of'];
 				$PricePerProduct->pay_per_rental_types_id = $iPrice['type'];
 				$PricePerProduct->pay_per_rental_id = $Product->ProductsPayPerRental->pay_per_rental_id;
-				$PricePerProduct->customer_group = $iPrice['customer_group'];
+				if (sysConfig::get('EXTENSION_CUSTOMER_GROUPS_ENABLED') == 'True') {
+					$PricePerProduct->customer_group = $iPrice['customer_group'];
+				}
 				$PricePerProduct->save();
 			}
 		}

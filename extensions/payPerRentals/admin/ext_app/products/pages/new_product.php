@@ -45,10 +45,12 @@ class payPerRentals_admin_products_new_product extends Extension_payPerRentals {
 		->from('PayPerRentalTypes')
 		->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 		
-		$QGroups = Doctrine_Query::create()
-		->from('CustomerGroups')
-		->orderBy('customer_groups_id')
-		->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+		if (sysConfig::get('EXTENSION_CUSTOMER_GROUPS_ENABLED') == 'True') {
+			$QGroups = Doctrine_Query::create()
+				->from('CustomerGroups')
+				->orderBy('customer_groups_id')
+				->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+		}
 		
 		$overbookingInput = htmlBase::newElement('checkbox')->setName('reservation_overbooking')->setValue('1');
         $consumptionInput = htmlBase::newElement('checkbox')->setName('reservation_consumption')->setValue('1');
@@ -77,7 +79,7 @@ class payPerRentals_admin_products_new_product extends Extension_payPerRentals {
 		->select('MAX(price_per_rental_per_products_id) as nextId')
 		->from('PricePerRentalPerProducts')
 		->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
-//begin pricing table
+		//begin pricing table
 		$Table = htmlBase::newElement('table')
 		->setCellPadding(3)
 		->setCellSpacing(0)
@@ -88,12 +90,22 @@ class payPerRentals_admin_products_new_product extends Extension_payPerRentals {
 		->attr('data-next_id', $Qcheck[0]['nextId'] + 1)
 		->attr('language_id', Session::get('languages_id'));
 
+		if (sysConfig::get('EXTENSION_CUSTOMER_GROUPS_ENABLED') == 'True') {
 		$Table->addHeaderRow(array(
 				'addCls' => 'ui-state-hover pprPriceTableHeader',
 				'columns' => array(
 					array('text' => '<div style="float:left;width:80px;">' .sysLanguage::get('TABLE_HEADING_NUMBER_OF').'</div>'.'<div style="float:left;width:100px;">'.sysLanguage::get('TABLE_HEADING_TYPE').'</div>'.'<div style="float:left;width:80px;">'.sysLanguage::get('TABLE_HEADING_PRICE').'</div>'.'<div style="float:left;width:150px;">'.sysLanguage::get('TABLE_HEADING_DETAILS').'</div>'.'<div style="float:left;width:450px;">'.sysLanguage::get('TABLE_HEADING_CUSTOMER_GROUP').'</div>'.'<div style="float:left;width:40px;">'.htmlBase::newElement('icon')->setType('insert')->addClass('insertIcon')->draw().'</div><br style="clear:both"/>')
 				)
 		));
+		}
+		else {
+		$Table->addHeaderRow(array(
+				'addCls' => 'ui-state-hover pprPriceTableHeader',
+				'columns' => array(
+					array('text' => '<div style="float:left;width:80px;">' .sysLanguage::get('TABLE_HEADING_NUMBER_OF').'</div>'.'<div style="float:left;width:100px;">'.sysLanguage::get('TABLE_HEADING_TYPE').'</div>'.'<div style="float:left;width:80px;">'.sysLanguage::get('TABLE_HEADING_PRICE').'</div>'.'<div style="float:left;width:150px;">'.sysLanguage::get('TABLE_HEADING_DETAILS').'</div>'.'<div style="float:left;width:40px;">'.htmlBase::newElement('icon')->setType('insert')->addClass('insertIcon')->draw().'</div><br style="clear:both"/>')
+				)
+		));
+		}
 
 		$deleteIcon = htmlBase::newElement('icon')->setType('delete')->addClass('deleteIcon')->draw();
 
@@ -109,15 +121,16 @@ class payPerRentals_admin_products_new_product extends Extension_payPerRentals {
 		foreach($QPayPerRentalTypes as $iType){
 			$htype->addOption($iType['pay_per_rental_types_id'], $iType['pay_per_rental_types_name']);
 		}
-		//get customer group names
-		$htype2 = htmlBase::newElement('selectbox')
-		->attr('id','groups_select')
-		->attr('style','display:none');
+		if (sysConfig::get('EXTENSION_CUSTOMER_GROUPS_ENABLED') == 'True') {
+			//	get customer group names
+			$htype2 = htmlBase::newElement('selectbox')
+				->attr('id','groups_select')
+				->attr('style','display:none');
 		
-	    foreach($QGroups as $iGroup) {
-	     $htype2->addOption($iGroup['customer_groups_id'], $iGroup['customer_groups_name']);
-	    }
-	    
+		    foreach($QGroups as $iGroup) {
+		     $htype2->addOption($iGroup['customer_groups_id'], $iGroup['customer_groups_name']);
+	    	}
+		}
 		$sortableList = htmlBase::newElement('sortable_list');
 		foreach($QPricePerRentalProducts as $iPrice){
 		
@@ -160,14 +173,16 @@ class payPerRentals_admin_products_new_product extends Extension_payPerRentals {
 			->setName('pprp[' . $pprid . '][type]')
 			->selectOptionByValue($iPrice['pay_per_rental_types_id']);
 			
-			$group = htmlBase::newElement('selectbox')
-			->addClass('ui-widget-content')
-			->setName('pprp[' . $pprid . '][customer_group]')
-			->selectOptionByValue($iPrice['customer_group']);
-			foreach($QGroups as $iGroup) {
-				$group->addOption($iGroup['customer_groups_id'], $iGroup['customer_groups_name']);
-			}
 			
+			if (sysConfig::get('EXTENSION_CUSTOMER_GROUPS_ENABLED') == 'True') {
+				$group = htmlBase::newElement('selectbox')
+					->addClass('ui-widget-content')
+					->setName('pprp[' . $pprid . '][customer_group]')
+					->selectOptionByValue($iPrice['customer_group']);
+					foreach($QGroups as $iGroup) {
+						$group->addOption($iGroup['customer_groups_id'], $iGroup['customer_groups_name']);
+					}
+			}
 
 			foreach($QPayPerRentalTypes as $iType){
 				$type->addOption($iType['pay_per_rental_types_id'], $iType['pay_per_rental_types_name']);
@@ -177,7 +192,11 @@ class payPerRentals_admin_products_new_product extends Extension_payPerRentals {
 			$divLi2 = '<div style="float:left;width:100px;">'.$type->draw().'</div>';
 			$divLi3 = '<div style="float:left;width:80px;">'.$price->draw().'</div>';
 			$divLi4 = '<div style="float:left;width:150px;">'.$Text->draw().'</div>';
-			$divLi5 = '<div style="float:left;width:450px;">'.$group->draw().'</div>';
+			if (sysConfig::get('EXTENSION_CUSTOMER_GROUPS_ENABLED') == 'True') {
+				$divLi5 = '<div style="float:left;width:450px;"><input type="hidden" id="custGroupEnabled" value="true" />'.$group->draw().'</div>';
+			}
+			else 
+				$divLi5 = '<input type="hidden" id="custGroupEnabled" value="false" />';
 			$divLi6 = '<div style="float:left;width:40px;">'.$deleteIcon.'</div>';
 
 			$liObj = new htmlElement('li');
@@ -201,11 +220,13 @@ class payPerRentals_admin_products_new_product extends Extension_payPerRentals {
 					array('align' => 'center', 'text' => $sortableList->draw(),'addCls' => 'pricePPR')
 				)
 		));
-		$Table->addBodyRow(array(
-			'columns' => array(
-				array( 'text' => '<b>' . $htype2->draw() . '</b>'),
-			)
-		));
+		if (sysConfig::get('EXTENSION_CUSTOMER_GROUPS_ENABLED') == 'True') {
+			$Table->addBodyRow(array(
+				'columns' => array(
+					array( 'text' => '<b>' . $htype2->draw() . '</b>'),
+				)
+			));
+		}
 
 
 		/*End Metrics*/

@@ -41,25 +41,53 @@ class productListing_productsPricePayPerRental {
 				);
 				$extraContent = '';
 				EventManager::notify('ProductListingModuleShowBeforeShow', 'reservation', $productClass, &$payPerRentalButton, &$extraContent);
-
+if (sysConfig::get('EXTENSION_CUSTOMER_GROUPS_ENABLED') == 'True') {
 				if ($userAccount->getCustomerId() != 0) {
 					$QCustomerGroup = Doctrine_Query::create()
 					->from('CustomersToCustomerGroups cg')
 					->where('cg.customers_id =?', $userAccount->getCustomerId())
 					->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 		   			 $group = $QCustomerGroup[0]['customer_groups_id'];
+		   			 
+		   			 $count = $QPricePerRentalProducts = Doctrine_Query::create()
+						->from('PricePerRentalPerProducts pprp')
+						->where('pprp.pay_per_rental_id =?', $purchaseTypeClass->getId())
+						->andWhere('pprp.customer_group =?', $group)
+						->count();	
+		   			
 				}
 				else {
-					$group = '0';
+					$group = '0'; $count = 0;
 				}
-				$QPricePerRentalProducts = Doctrine_Query::create()
-				->from('PricePerRentalPerProducts pprp')
-				->leftJoin('pprp.PricePayPerRentalPerProductsDescription pprpd')
-				->where('pprp.pay_per_rental_id =?',$purchaseTypeClass->getId())
-				->andWhere('pprp.customer_group =?', $group)
-				->andWhere('pprpd.language_id =?', Session::get('languages_id'))
-				->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
-
+				if ($userAccount->getCustomerId() == 0 || $count <= 0)	{
+					$QPricePerRentalProducts = Doctrine_Query::create()
+						->from('PricePerRentalPerProducts pprp')
+						->leftJoin('pprp.PricePayPerRentalPerProductsDescription pprpd')
+						->where('pprp.pay_per_rental_id =?',$purchaseTypeClass->getId())
+						->andWhere('pprp.customer_group =?', '0')
+						->andWhere('pprpd.language_id =?', Session::get('languages_id'))
+						->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+				}
+				else {
+					$QPricePerRentalProducts = Doctrine_Query::create()
+						->from('PricePerRentalPerProducts pprp')
+						->leftJoin('pprp.PricePayPerRentalPerProductsDescription pprpd')
+						->where('pprp.pay_per_rental_id =?',$purchaseTypeClass->getId())
+						->andWhere('pprp.customer_group =?', $group)
+						->andWhere('pprpd.language_id =?', Session::get('languages_id'))
+						->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+				}
+			  }
+			  else {
+			  	$QPricePerRentalProducts = Doctrine_Query::create()
+						->from('PricePerRentalPerProducts pprp')
+						->leftJoin('pprp.PricePayPerRentalPerProductsDescription pprpd')
+						->where('pprp.pay_per_rental_id =?',$purchaseTypeClass->getId())
+						->andWhere('pprpd.language_id =?', Session::get('languages_id'))
+						->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+			  }
+			
+		
 				$i = 1;
 				foreach($QPricePerRentalProducts as $iPrices){
 				$tableRow[$i] = '<tr>
