@@ -528,7 +528,7 @@ class payPerRentals_admin_products_new_product extends Extension_payPerRentals {
  		
 		return '<div id="tab_' . $this->getExtensionKey() . '">' . 
 			$mainTable->draw() . 
-			'<hr />' . $h . 
+			'<hr />' . 
 			(isset($pricingPeriods)?$pricingPeriods->draw():'') .
 			$pricingTable->draw() . 
 		'</div>' . $hiddenCustGroup;
