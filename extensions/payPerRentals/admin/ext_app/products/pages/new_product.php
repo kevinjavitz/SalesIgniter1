@@ -72,6 +72,12 @@ class payPerRentals_admin_products_new_product extends Extension_payPerRentals {
 		foreach($QPayPerRentalTypes as $iType){
 			$htypeMin->addOption($iType['pay_per_rental_types_id'], $iType['pay_per_rental_types_name']);
 		}
+		
+		if (sysConfig::get('EXTENSION_CUSTOMER_GROUPS_ENABLED') == 'True') {
+				$hiddenCustGroup = '<div style="float:left;width:450px;"><input type="hidden" id="custGroupEnabled" value="true" />';
+			}
+			else 
+				$hiddenCustGroup = '<input type="hidden" id="custGroupEnabled" value="false" />';
 
 		/*Period Metrics*/
 
@@ -192,11 +198,6 @@ class payPerRentals_admin_products_new_product extends Extension_payPerRentals {
 			$divLi2 = '<div style="float:left;width:100px;">'.$type->draw().'</div>';
 			$divLi3 = '<div style="float:left;width:80px;">'.$price->draw().'</div>';
 			$divLi4 = '<div style="float:left;width:150px;">'.$Text->draw().'</div>';
-			if (sysConfig::get('EXTENSION_CUSTOMER_GROUPS_ENABLED') == 'True') {
-				$divLi5 = '<div style="float:left;width:450px;"><input type="hidden" id="custGroupEnabled" value="true" />'.$group->draw().'</div>';
-			}
-			else 
-				$divLi5 = '<input type="hidden" id="custGroupEnabled" value="false" />';
 			$divLi6 = '<div style="float:left;width:40px;">'.$deleteIcon.'</div>';
 
 			$liObj = new htmlElement('li');
@@ -220,6 +221,7 @@ class payPerRentals_admin_products_new_product extends Extension_payPerRentals {
 					array('align' => 'center', 'text' => $sortableList->draw(),'addCls' => 'pricePPR')
 				)
 		));
+		
 		if (sysConfig::get('EXTENSION_CUSTOMER_GROUPS_ENABLED') == 'True') {
 			$Table->addBodyRow(array(
 				'columns' => array(
@@ -526,10 +528,10 @@ class payPerRentals_admin_products_new_product extends Extension_payPerRentals {
  		
 		return '<div id="tab_' . $this->getExtensionKey() . '">' . 
 			$mainTable->draw() . 
-			'<hr />' .
+			'<hr />' . $h . 
 			(isset($pricingPeriods)?$pricingPeriods->draw():'') .
 			$pricingTable->draw() . 
-		'</div>';
+		'</div>' . $hiddenCustGroup;
 	}
 }
 ?>
