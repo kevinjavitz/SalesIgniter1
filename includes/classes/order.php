@@ -594,14 +594,15 @@ class OrderProcessor {
 		$addressBook =& $userAccount->plugins['addressBook'];
 		$sendToFormatted = $addressBook->formatAddress('delivery', true);
 		$billToFormatted = $addressBook->formatAddress('billing', true);
-
-		$emailEvent = new emailEvent('order_success', $userAccount->getLanguageId());
+        $phone = $userAccount->getTelephoneNumber();
+        $emailEvent = new emailEvent('order_success', $userAccount->getLanguageId());
 		$emailEvent->setVar('order_id', (isset($this->newOrder['orderID'])?$this->newOrder['orderID']:$this->orderId));
 		$emailEvent->setVar('invoice_link', itw_app_link('order_id=' . (isset($this->newOrder['orderID'])?$this->newOrder['orderID']:$this->orderId), 'account', 'history_info', 'SSL', false));
 		$emailEvent->setVar('date_ordered', strftime(sysLanguage::getDateFormat('long')));
 		$emailEvent->setVar('full_name', $userAccount->getFirstName());
 		$emailEvent->setVar('ordered_products', (isset($this->newOrder['productsOrdered']) ? $this->newOrder['productsOrdered'] : ((isset($products_ordered)&&(!empty($products_ordered)))?$products_ordered:$this->products_ordered) ));
 		$emailEvent->setVar('billing_address', $billToFormatted);
+        $emailEvent->setVar('phone', $phone);
 		if(sysConfig::get('ONEPAGE_CHECKOUT_SHIPPING_ADDRESS') == 'true'){
 			$emailEvent->setVar('shipping_address', $sendToFormatted);
 		}
@@ -637,6 +638,7 @@ class OrderProcessor {
 					$totalVal = strip_tags($this->newOrder['orderTotals'][$i]['title']) .': '.strip_tags($this->newOrder['orderTotals'][$i]['text']).'<br/>';
 				}
 			}
+
 		}else{
 			for ($i=0, $n=sizeof($this->totals); $i<$n; $i++) {
 				if(strpos(strtolower($this->totals[$i]['title']),'total') === false && strpos(strtolower($this->totals[$i]['title']),'sub-total') === false){
