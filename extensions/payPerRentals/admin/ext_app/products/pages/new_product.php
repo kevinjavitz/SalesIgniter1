@@ -227,7 +227,14 @@ class payPerRentals_admin_products_new_product extends Extension_payPerRentals {
 				)
 		));
 		
-		
+	if (sysConfig::get('EXTENSION_CUSTOMER_GROUPS_ENABLED') == 'True') {
+	  	
+      $Table->addBodyRow(array(
+	        'columns' => array(
+	          array( 'text' => '<b>' . $htype2->draw() . '</b>'),
+	        )
+	      ));
+	    }
 
 
 		/*End Metrics*/
