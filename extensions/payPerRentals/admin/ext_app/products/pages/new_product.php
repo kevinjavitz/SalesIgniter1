@@ -198,6 +198,11 @@ class payPerRentals_admin_products_new_product extends Extension_payPerRentals {
 			$divLi2 = '<div style="float:left;width:100px;">'.$type->draw().'</div>';
 			$divLi3 = '<div style="float:left;width:80px;">'.$price->draw().'</div>';
 			$divLi4 = '<div style="float:left;width:150px;">'.$Text->draw().'</div>';
+			if (sysConfig::get('EXTENSION_CUSTOMER_GROUPS_ENABLED') == 'True') {
+			  $divLi5 = '<div style="float:left;width:450px;"><input type="hidden" id="custGroupEnabled" value="true" />'.$group->draw().'</div>';
+		    }
+		    else 
+		      $divLi5 = '<input type="hidden" id="custGroupEnabled" value="false" />';
 			$divLi6 = '<div style="float:left;width:40px;">'.$deleteIcon.'</div>';
 
 			$liObj = new htmlElement('li');
@@ -222,13 +227,7 @@ class payPerRentals_admin_products_new_product extends Extension_payPerRentals {
 				)
 		));
 		
-		if (sysConfig::get('EXTENSION_CUSTOMER_GROUPS_ENABLED') == 'True') {
-			$Table->addBodyRow(array(
-				'columns' => array(
-					array( 'text' => '<b>' . $htype2->draw() . '</b>'),
-				)
-			));
-		}
+		
 
 
 		/*End Metrics*/
